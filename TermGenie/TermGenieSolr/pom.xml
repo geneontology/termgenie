@@ -5,7 +5,7 @@
 		<artifactId>TermGenie</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>SolrTermGenie</artifactId>
+	<artifactId>TermGenieSolr</artifactId>
 	<name>Solr Adaptor for TermGenie</name>
 	<dependencies>
 		<dependency>
