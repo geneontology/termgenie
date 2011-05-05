@@ -12,6 +12,7 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 
 	@Override
 	public List<String> getAvailableOntologies() {
+		// TODO Where do you get the list of available ontologies from?
 		return Arrays.asList("GeneOntology", "Test1","Test2");
 	}
 
