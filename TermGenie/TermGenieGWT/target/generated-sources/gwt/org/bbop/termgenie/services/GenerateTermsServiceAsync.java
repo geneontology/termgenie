@@ -35,7 +35,7 @@ public interface GenerateTermsServiceAsync
         {
             if ( instance == null )
             {
-                instance = (GenerateTermsServiceAsync) GWT.create( GenerateTermsService.class );
+                instance = GWT.create( GenerateTermsService.class );
                 ServiceDefTarget target = (ServiceDefTarget) instance;
                 target.setServiceEntryPoint( GWT.getModuleBaseURL() + "generate" );
             }

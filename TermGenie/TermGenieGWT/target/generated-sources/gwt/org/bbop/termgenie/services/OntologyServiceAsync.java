@@ -2,10 +2,9 @@ package org.bbop.termgenie.services;
 
 import java.util.List;
 
-import org.bbop.termgenie.services.OntologyService.TermSuggestion;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public interface OntologyServiceAsync
@@ -35,9 +34,9 @@ public interface OntologyServiceAsync
         {
             if ( instance == null )
             {
-                instance = (OntologyServiceAsync) GWT.create( OntologyService.class );
+                instance = GWT.create( OntologyService.class );
                 ServiceDefTarget target = (ServiceDefTarget) instance;
-                target.setServiceEntryPoint( GWT.getModuleBaseURL() + "OntologyService" );
+                target.setServiceEntryPoint( GWT.getModuleBaseURL() + "ontology" );
             }
             return instance;
         }

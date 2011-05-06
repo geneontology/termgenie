@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.services.OntologyService;
+import org.bbop.termgenie.services.TermSuggestion;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

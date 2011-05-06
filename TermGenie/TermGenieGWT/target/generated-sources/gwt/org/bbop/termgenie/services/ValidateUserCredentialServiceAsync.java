@@ -25,7 +25,7 @@ public interface ValidateUserCredentialServiceAsync
         {
             if ( instance == null )
             {
-                instance = (ValidateUserCredentialServiceAsync) GWT.create( ValidateUserCredentialService.class );
+                instance = GWT.create( ValidateUserCredentialService.class );
                 ServiceDefTarget target = (ServiceDefTarget) instance;
                 target.setServiceEntryPoint( GWT.getModuleBaseURL() + "checkuser" );
             }
