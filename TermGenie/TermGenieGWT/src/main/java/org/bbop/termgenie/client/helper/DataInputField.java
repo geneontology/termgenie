@@ -10,12 +10,12 @@ import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public interface DataInputField
 {
@@ -32,6 +32,8 @@ public interface DataInputField
 	public List<String> getListSimpleValue();
 	
 	public List<String> getPrefixValues();
+	
+	public Widget getWidget();
 	
 	public static class TextFieldInput extends TextBox implements DataInputField {
 
@@ -53,6 +55,11 @@ public interface DataInputField
 		@Override
 		public List<String> getPrefixValues() {
 			return null;
+		}
+
+		@Override
+		public Widget getWidget() {
+			return this;
 		}
 	}
 	
@@ -80,6 +87,11 @@ public interface DataInputField
 		@Override
 		public List<String> getPrefixValues() {
 			return null;
+		}
+		
+		@Override
+		public Widget getWidget() {
+			return this;
 		}
 	}
 	
@@ -127,60 +139,56 @@ public interface DataInputField
 			}
 			return selectedPrefixes;
 		}
+		
+		@Override
+		public Widget getWidget() {
+			return this;
+		}
 	}
 	
 	public static class ListAutoCompleteInputField extends VerticalPanel implements DataInputField {
 
-		private final List<RemovableWidget<AutoCompleteInputField>> fields;
-		private final Button moreButton;
+		private final List<AutoCompleteInputField> fields;
+		private final ModifyButtonsWidget buttonsWidget;
 		
 		public ListAutoCompleteInputField(final SuggestOracle oracle, final GWTCardinality cardinality) {
 			super();
-			this.fields = new ArrayList<RemovableWidget<AutoCompleteInputField>>();
-			this.moreButton = new Button("add");
-			moreButton.addClickHandler(new ClickHandler() {
+			fields = new ArrayList<AutoCompleteInputField>();
+			buttonsWidget = new ModifyButtonsWidget();
+			buttonsWidget.addAddHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					synchronized (fields) {
-						if (fields.size() < cardinality.getMax()) {
-							RemovableWidget<AutoCompleteInputField> widget = createWidget(oracle, cardinality);
-							ListAutoCompleteInputField.this.remove(widget);
-							ListAutoCompleteInputField.this.add(widget);
-							if (fields.size() < cardinality.getMax()) {
-								ListAutoCompleteInputField.this.add(moreButton);
-							}
-						}
+					remove(buttonsWidget);
+					if (fields.size() < cardinality.getMax()) {
+						AutoCompleteInputField widget = new AutoCompleteInputField(oracle);
+						fields.add(widget);
+						add(widget);
+					}
+					add(buttonsWidget);
+				}
+			});
+			buttonsWidget.addRemoveHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					int size = fields.size();
+					if (size > 0 && size > cardinality.getMin()) {
+						AutoCompleteInputField field = fields.remove(size - 1);
+						remove(field);
 					}
 				}
 			});
 			
 			int startCount = Math.min(cardinality.getMax(), Math.max(1, cardinality.getMin()));
 			for (int i = 0; i < startCount; i++) {
-				RemovableWidget<AutoCompleteInputField> widget = createWidget(oracle, cardinality);
+				AutoCompleteInputField widget = new AutoCompleteInputField(oracle);
+				fields.add(widget);
 				add(widget);
 			}
+			add(buttonsWidget);
 		}
 
-		private RemovableWidget<AutoCompleteInputField> createWidget(final SuggestOracle oracle, final GWTCardinality cardinality) {
-			final RemovableWidget<AutoCompleteInputField> widget = new RemovableWidget<AutoCompleteInputField>(new AutoCompleteInputField(oracle));
-			fields.add(widget);
-			widget.addRemoveHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					synchronized (fields) {
-						int size = fields.size();
-						if (size > cardinality.getMin()) {
-							fields.remove(widget);
-							widget.removeFromParent();
-						}
-					}
-				}
-			});
-			return widget;
-		}
-		
 		@Override
 		public Collection<Kind> getKind() {
 			return Collections.singleton(Kind.List);
@@ -194,8 +202,8 @@ public interface DataInputField
 		@Override
 		public List<String> getListSimpleValue() {
 			List<String> values = new ArrayList<String>(fields.size());
-			for (RemovableWidget<AutoCompleteInputField> field : fields) {
-				values.add(field.getChildWidget().getSimpleValue());
+			for (AutoCompleteInputField field : fields) {
+				values.add(field.getSimpleValue());
 			}
 			return values;
 		}
@@ -203,6 +211,11 @@ public interface DataInputField
 		@Override
 		public List<String> getPrefixValues() {
 			return null;
+		}
+		
+		@Override
+		public Widget getWidget() {
+			return this;
 		}
 		
 	}

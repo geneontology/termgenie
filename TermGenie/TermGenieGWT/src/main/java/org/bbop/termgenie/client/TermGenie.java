@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,7 +51,7 @@ public class TermGenie implements EntryPoint {
 				
 				// Add main content to the middle of the dock panel
 				final AllTermListPanel allTermListPanel = getAllTermListPanel();
-				dockPanel.add(decorateWidget(allTermListPanel));
+				dockPanel.add(decorateWidget(new ScrollPanel(allTermListPanel)));
 				
 				
 				// create Handlers

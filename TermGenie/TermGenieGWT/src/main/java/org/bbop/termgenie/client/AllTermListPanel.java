@@ -54,6 +54,10 @@ public class AllTermListPanel extends VerticalPanel {
 		}
 	}
 
+	public void removeTemplate(GWTTermTemplate template) {
+		termTemplateWidgets.removeTemplate(template);
+	}
+	
 	/**
 	 * Manage template selector panel.
 	 */
@@ -111,10 +115,17 @@ public class AllTermListPanel extends VerticalPanel {
 			panels = new LinkedHashMap<String, TermTemplateWidget>();
 		}
 
+		synchronized void removeTemplate(GWTTermTemplate template) {
+			TermTemplateWidget templateWidget = panels.remove(template.getName());
+			if (templateWidget != null) {
+				remove(templateWidget);
+			}
+		}
+
 		synchronized void addTermTemplate(GWTTermTemplate termTemplate) {
 			TermTemplateWidget panel = panels.get(termTemplate.getName());
 			if (panel == null) {
-				panel = new TermTemplateWidget(termTemplate);
+				panel = new TermTemplateWidget(termTemplate, AllTermListPanel.this);
 				panels.put(termTemplate.getName(), panel);
 				add(panel);
 			} else {
