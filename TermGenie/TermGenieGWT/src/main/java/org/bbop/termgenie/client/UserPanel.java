@@ -1,8 +1,11 @@
 package org.bbop.termgenie.client;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -11,7 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class UserPanel extends HorizontalPanel {
+public class UserPanel extends FlowPanel {
 
 	private final TextBox usernameTextBox;
 	private final PasswordTextBox passwordTextBox;
@@ -39,11 +42,21 @@ public class UserPanel extends HorizontalPanel {
 		globalSubmitButton.setSize("160px", "40px");
 		
 		commitcheckbox.setValue(false);
-
+		usernameTextBox.setEnabled(false);
+		passwordTextBox.setEnabled(false);
+		
+		commitcheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				usernameTextBox.setEnabled(event.getValue());
+				passwordTextBox.setEnabled(event.getValue());
+			}
+		});
+		
 		// layout internal widgets
 		// username, password
 		final Grid userCredentialGrid = new Grid();
-		add(userCredentialGrid);
 		userCredentialGrid.resize(2, 2);
 		userCredentialGrid.setCellSpacing(3);
 		userCredentialGrid.setCellPadding(3);
@@ -56,16 +69,20 @@ public class UserPanel extends HorizontalPanel {
 
 		// commit button and checkbox
 		final HorizontalPanel commitPanel = new HorizontalPanel();
-		add(commitPanel);
+		
 		commitPanel.setSpacing(10);
-		commitPanel.add(commitcheckbox);
-		commitPanel.setCellVerticalAlignment(commitcheckbox, HasVerticalAlignment.ALIGN_MIDDLE);
-		commitPanel.setCellHorizontalAlignment(commitcheckbox, HasHorizontalAlignment.ALIGN_CENTER);
+		
 		commitPanel.add(globalSubmitButton);
 		commitPanel.setCellVerticalAlignment(globalSubmitButton, HasVerticalAlignment.ALIGN_MIDDLE);
 		commitPanel.setCellHorizontalAlignment(globalSubmitButton,
 				HasHorizontalAlignment.ALIGN_CENTER);
 
+		commitPanel.add(commitcheckbox);
+		commitPanel.setCellVerticalAlignment(commitcheckbox, HasVerticalAlignment.ALIGN_MIDDLE);
+		commitPanel.setCellHorizontalAlignment(commitcheckbox, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		add(commitPanel);
+		add(userCredentialGrid);
 	}
 	
 	public String getUserName() {

@@ -6,11 +6,9 @@ import org.bbop.termgenie.services.GenerateTermsServiceAsync;
 import org.bbop.termgenie.services.OntologyServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -30,12 +28,6 @@ public class TermGenie implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		RootPanel rootPanel = RootPanel.get("mainlayoutbody");
-		
-		final DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
-		dockPanel.setSize("99%", "99%");
-		
-		rootPanel.add(dockPanel, 1, 1);
 		
 		AsyncCallback<List<String>> callback = new LoggingCallback<List<String>>() {
 			
@@ -43,16 +35,16 @@ public class TermGenie implements EntryPoint {
 			public void onSuccess(List<String> ontologies) {
 				// Top selection choice: Decide to which ontology the terms are added.
 				final OntologySelectionPanel ontologySelectionPanel = getOntologySelectionPanel(ontologies);
-				dockPanel.addNorth(decorateWidget(ontologySelectionPanel), 40.0d);
+				RootPanel.get("selectOntology").add(decorateWidget(ontologySelectionPanel));
 				
 				// User credentials and final submit button for adding a term
 				final UserPanel userPanel = getUserPanel();
-				dockPanel.addSouth(decorateWidget(userPanel), 100.0d);
+				RootPanel.get("submitAndCredentials").add(decorateWidget(userPanel));
 				
 				// Add main content to the middle of the dock panel
 				final AllTermListPanel allTermListPanel = getAllTermListPanel();
-				dockPanel.add(decorateWidget(new ScrollPanel(allTermListPanel)));
-				
+				RootPanel rootPanel = RootPanel.get("selectTemplatesAndCreateTerms");
+				rootPanel.add(decorateWidget(new ScrollPanel(allTermListPanel)));
 				
 				// create Handlers
 				createOntologSelectionHandler(ontologySelectionPanel, allTermListPanel);
