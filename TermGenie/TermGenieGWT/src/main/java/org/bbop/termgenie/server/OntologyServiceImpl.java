@@ -16,4 +16,10 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 		return Arrays.asList("GeneOntology", "Test1","Test2");
 	}
 
+	@Override
+	public List<TermSuggestion> autocompleteQuery(String query, String ontology) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
