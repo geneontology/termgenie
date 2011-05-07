@@ -206,5 +206,9 @@ public class GWTTermTemplate implements IsSerializable {
 		public void setMax(int max) {
 			this.max = max;
 		}
+		
+		public boolean isUnique() {
+			return min == 1 && max == 1;
+		}
 	}
 }

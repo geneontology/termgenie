@@ -9,9 +9,11 @@ import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.services.GenerateTermsService;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
+import org.bbop.termgenie.shared.Pair;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -19,26 +21,18 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GenerateTermsServiceImpl extends RemoteServiceServlet implements GenerateTermsService {
 
 	@Override
-	public boolean checkTerms() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean generateTerms() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public GWTTermTemplate[] getAvailableGWTTermTemplates(String ontology) {
-		List<GWTTermTemplate> gwtTemplates = new ArrayList<GWTTermTemplate>();
-		for(TermTemplate template : DefaultTermTemplates.defaultTemplates) {
-			gwtTemplates.add(GWTTemplateTools.createGWTermTemplate(template));
+		if ("GeneOntology".equals(ontology)) {
+			List<GWTTermTemplate> gwtTemplates = new ArrayList<GWTTermTemplate>();
+			for (TermTemplate template : DefaultTermTemplates.defaultTemplates) {
+				gwtTemplates.add(GWTTemplateTools.createGWTermTemplate(template));
+			}
+			return gwtTemplates.toArray(new GWTTermTemplate[gwtTemplates.size()]);
 		}
-		return gwtTemplates.toArray(new GWTTermTemplate[gwtTemplates.size()]);
+		else {
+			return new GWTTermTemplate[0];
+		}
 	}
-
 	
 	static class GWTTemplateTools {
 		
@@ -68,5 +62,12 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			}
 			return gwtField;
 		}
+	}
+
+	@Override
+	public boolean generateTerms(String ontology, Pair<GWTTermTemplate, GWTTermGenerationParameter>[] allParameters,
+			boolean commit, String username, String password) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

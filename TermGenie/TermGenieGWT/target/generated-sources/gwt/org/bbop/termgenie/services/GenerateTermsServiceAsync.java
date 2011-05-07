@@ -1,6 +1,8 @@
 package org.bbop.termgenie.services;
 
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
+import org.bbop.termgenie.shared.Pair;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -8,20 +10,19 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public interface GenerateTermsServiceAsync
 {
+	/**
+     * GWT-RPC service  asynchronous (client-side) interface
+     * @see org.bbop.termgenie.services.GenerateTermsService#getAvailableGWTTermTemplates
+     */
 	void getAvailableGWTTermTemplates(String ontology, AsyncCallback<GWTTermTemplate[]> callback);
 	
     /**
      * GWT-RPC service  asynchronous (client-side) interface
-     * @see org.bbop.termgenie.services.GenerateTermsService
+     * @see org.bbop.termgenie.services.GenerateTermsService#generateTerms
      */
-    void checkTerms( AsyncCallback<java.lang.Boolean> callback );
-
-
-    /**
-     * GWT-RPC service  asynchronous (client-side) interface
-     * @see org.bbop.termgenie.services.GenerateTermsService
-     */
-    void generateTerms( AsyncCallback<java.lang.Boolean> callback );
+    void generateTerms(String ontology,
+    		Pair<GWTTermTemplate, GWTTermGenerationParameter>[] allParameters,
+			boolean commit, String username, String password, AsyncCallback<Boolean> callback);
 
 
     /**
