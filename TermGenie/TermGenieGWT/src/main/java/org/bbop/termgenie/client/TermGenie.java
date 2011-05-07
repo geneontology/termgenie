@@ -111,7 +111,7 @@ public class TermGenie implements EntryPoint {
 	
 	private void processTermGenerationRequest() {
 		// gather input data from fields
-		final String ontology = getOntology();
+		final String ontology = getOntologySelectionPanel().getSelectedOntology();
 		final Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = getAllParameters();
 	
 		List<GWTValidationHint> allErrors = new ArrayList<GWTValidationHint>();
@@ -176,12 +176,8 @@ public class TermGenie implements EntryPoint {
 		GenerateTermsServiceAsync.Util.getInstance().generateTerms(ontology, allParameters, false, null, null, callback);
 	}
 	
-	private String getOntology() {
-		return getOntologySelectionPanel().getSelectedOntology();
-	}
-	
+	@SuppressWarnings("unchecked")
 	private Pair<GWTTermTemplate, GWTTermGenerationParameter>[] getAllParameters() {
-		// TODO gather data from widgets
-		return null;
+		return getAllTermListPanel().getAllParameters().toArray(new Pair[0]);
 	}
 }

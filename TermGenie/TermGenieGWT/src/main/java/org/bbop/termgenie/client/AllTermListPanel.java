@@ -1,10 +1,14 @@
 package org.bbop.termgenie.client;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.bbop.termgenie.client.helper.TermTemplateWidget;
 import org.bbop.termgenie.services.GenerateTermsServiceAsync;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
+import org.bbop.termgenie.shared.Pair;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,6 +60,10 @@ public class AllTermListPanel extends VerticalPanel {
 
 	public void removeTemplate(GWTTermTemplate template) {
 		termTemplateWidgets.removeTemplate(template);
+	}
+	
+	List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> getAllParameters() {
+		return termTemplateWidgets.getAllParameters();
 	}
 	
 	/**
@@ -131,6 +139,20 @@ public class AllTermListPanel extends VerticalPanel {
 			} else {
 				panel.appendRow();
 			}
+		}
+		
+		List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> getAllParameters() {
+			List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> result = 
+				new ArrayList<Pair<GWTTermTemplate,GWTTermGenerationParameter>>();
+			for (String key : panels.keySet()) {
+				TermTemplateWidget templateWidget = panels.get(key);
+				GWTTermTemplate termTemplate = templateWidget.getGwtTermTemplate();
+				List<GWTTermGenerationParameter> parameters = templateWidget.extractParameters();
+				for (GWTTermGenerationParameter parameter : parameters) {
+					result.add(new Pair<GWTTermTemplate, GWTTermGenerationParameter>(termTemplate, parameter));
+				} 
+			}
+			return result;
 		}
 	}
 

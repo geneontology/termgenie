@@ -1,11 +1,15 @@
 package org.bbop.termgenie.client.helper;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.bbop.termgenie.client.AllTermListPanel;
 import org.bbop.termgenie.client.helper.DataInputField.AutoCompleteInputField;
+import org.bbop.termgenie.client.helper.DataInputField.Kind;
 import org.bbop.termgenie.client.helper.DataInputField.ListAutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.PrefixAutoCompleteInputField;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
@@ -167,5 +171,32 @@ public class TermTemplateWidget extends FlowPanel {
 		synchronized (grid) {
 			return table.isEmpty();
 		}
+	}
+	
+	/**
+	 * @return termTermplate
+	 */
+	public GWTTermTemplate getGwtTermTemplate() {
+		return template;
+	}
+	
+	/**
+	 * @return list of parameters for the termTermplate
+	 */
+	public List<GWTTermGenerationParameter> extractParameters() {
+		List<GWTTermGenerationParameter> result = new ArrayList<GWTTermGenerationParameter>();
+		GWTTemplateField[] fields = template.getFields();
+		for(ArrayList<DataInputField> dataFields : table) {
+			GWTTermGenerationParameter parameter = new GWTTermGenerationParameter();
+			for (int i = 0; i < fields.length; i++) {
+				GWTTemplateField field = fields[i];
+				DataInputField inputField = dataFields.get(i);
+				Collection<Kind> kind = inputField.getKind();
+				// TODO
+				
+			}
+			result.add(parameter);
+		}
+		return result;
 	}
 }
