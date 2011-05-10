@@ -1,9 +1,12 @@
 package org.bbop.termgenie.shared;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.MultiValueMap;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
@@ -101,9 +104,21 @@ public class FieldValidator {
 		List<GWTValidationHint> errors = new ArrayList<GWTValidationHint>();
 
 		for (GWTTemplateField field : fields) {
+			GWTCardinality cardinality = field.getCardinality();
+
+			int count = parameter.getTerms().getCount(field);
+			int stringCount = parameter.getStrings().getCount(field);
+			MultiValueMap<?> values = parameter.getTerms();
+
+			if (count > 0 && stringCount > 0) {
+				errors.add(new GWTValidationHint(field, "Conflicting values (string and ontology term) for field"));
+			}
+			if (stringCount > count) {
+				count = stringCount;
+				values = parameter.getStrings();
+			}
+
 			if (field.isRequired()) {
-				GWTCardinality cardinality = field.getCardinality();
-				int count = parameter.getCount(field);
 				// assert minimum
 				if (count < cardinality.getMin()) {
 					errors.add(new GWTValidationHint(field, "Minimum Cardinality not met."));
@@ -116,16 +131,36 @@ public class FieldValidator {
 
 				// check fields for missing content
 				for (int i = 0; i < count; i++) {
-					if (field.getOntology() != null) {
-						OntologyTerm term = parameter.getOntologyTerm(field, i);
-						if (term == null) {
-							errors.add(new GWTValidationHint(field,
-									"Required ontology term missing."));
-						}
-					} else {
-						if (parameter.getStringValue(field, i) == null) {
-							errors.add(new GWTValidationHint(field,
-									"Required String parameter missing."));
+					Object term = values.getValue(field, i);
+					if (term == null) {
+						errors.add(new GWTValidationHint(field, "Required value missing."));
+					}
+				}
+
+			}
+
+			// check prefixes
+			String[] defPrefixes = field.getFunctionalPrefixes();
+			int prefixCount = parameter.getPrefixes().getCount(field);
+			if (defPrefixes == null || defPrefixes.length == 0) {
+				if (prefixCount > 0) {
+					errors.add(new GWTValidationHint(field, "No prefixes expected."));
+				}
+			} else {
+				if (prefixCount > 1) {
+					errors.add(new GWTValidationHint(field, "Expected only one list of prefixes."));
+				}
+				List<String> prefixes = parameter.getPrefixes().getValue(field, 0);
+				if (prefixes != null) {
+					if (prefixes.size() > defPrefixes.length) {
+						errors.add(new GWTValidationHint(field,
+								"Expected only a list of prefixes of max length: "
+										+ defPrefixes.length));
+					}
+					Set<String> defSetPrefixes = new HashSet<String>(Arrays.asList(defPrefixes));
+					for (String prefix : prefixes) {
+						if (!defSetPrefixes.contains(prefix)) {
+							errors.add(new GWTValidationHint(field, "Unknow prefix: " + prefix));
 						}
 					}
 				}

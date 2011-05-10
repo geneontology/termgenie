@@ -11,52 +11,34 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GWTTermGenerationParameter implements IsSerializable {
 
-	private MultiValueMap<OntologyTerm> values;
+	private MultiValueMap<OntologyTerm> terms;
 	private MultiValueMap<String> strings;
+	private MultiValueMap<List<String>> prefixes;
 
 	public GWTTermGenerationParameter() {
-		values = new MultiValueMap<OntologyTerm>();
+		terms = new MultiValueMap<OntologyTerm>();
 		strings = new MultiValueMap<String>();
-	}
-
-	public OntologyTerm getOntologyTerm(GWTTemplateField field, int pos) {
-		return values.getValue(field, pos);
-	}
-
-	public int getCount(GWTTemplateField field) {
-		return values.getCount(field);
-	}
-
-	public String getStringValue(GWTTemplateField field, int pos) {
-		return strings.getValue(field, pos);
-	}
-
-	public void addOntologyTerm(OntologyTerm ontologyTerm, GWTTemplateField field, int pos) {
-		values.addValue(ontologyTerm, field, pos);
-	}
-
-	public void addString(String value, GWTTemplateField field, int pos) {
-		strings.addValue(value, field, pos);
+		prefixes = new MultiValueMap<List<String>>();
 	}
 
 	/**
-	 * @return the values
+	 * @return the terms
 	 */
-	MultiValueMap<OntologyTerm> getValues() {
-		return values;
+	public MultiValueMap<OntologyTerm> getTerms() {
+		return terms;
 	}
 
 	/**
-	 * @param values the values to set
+	 * @param terms the terms to set
 	 */
-	void setValues(MultiValueMap<OntologyTerm> values) {
-		this.values = values;
+	void setTerms(MultiValueMap<OntologyTerm> terms) {
+		this.terms = terms;
 	}
 
 	/**
 	 * @return the strings
 	 */
-	MultiValueMap<String> getStrings() {
+	public MultiValueMap<String> getStrings() {
 		return strings;
 	}
 
@@ -66,6 +48,22 @@ public class GWTTermGenerationParameter implements IsSerializable {
 	void setStrings(MultiValueMap<String> strings) {
 		this.strings = strings;
 	}
+	
+	/**
+	 * @return the prefixes
+	 */
+	public MultiValueMap<List<String>> getPrefixes() {
+		return prefixes;
+	}
+
+	/**
+	 * @param prefixes the prefixes to set
+	 */
+	void setPrefixes(MultiValueMap<List<String>> prefixes) {
+		this.prefixes = prefixes;
+	}
+
+
 
 	public static final class OntologyTerm implements IsSerializable {
 		private String ontology;

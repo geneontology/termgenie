@@ -10,6 +10,7 @@ import org.bbop.termgenie.shared.FieldValidator;
 import org.bbop.termgenie.shared.FieldValidator.GWTValidationHint;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
+import org.bbop.termgenie.shared.GenerationResponse;
 import org.bbop.termgenie.shared.Pair;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -29,7 +30,7 @@ public class TermGenie implements EntryPoint {
 	private UserPanel userPanel;
 
 	private AllTermListPanel allTermListPanel;
-
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -164,10 +165,10 @@ public class TermGenie implements EntryPoint {
 			boolean commit, String username, String password)
 	{
 		// submit request to server
-		AsyncCallback<Boolean> callback = new LoggingCallback<Boolean>() {
+		AsyncCallback<GenerationResponse> callback = new LoggingCallback<GenerationResponse>() {
 			
 			@Override
-			public void onSuccess(Boolean result) {
+			public void onSuccess(GenerationResponse result) {
 				// TODO Auto-generated method stub
 				// success? 
 				// what to do next?			

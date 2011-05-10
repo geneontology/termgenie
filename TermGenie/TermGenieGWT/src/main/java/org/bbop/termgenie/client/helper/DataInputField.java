@@ -1,12 +1,12 @@
 package org.bbop.termgenie.client.helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
+import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -19,42 +19,20 @@ import com.google.gwt.user.client.ui.Widget;
 
 public interface DataInputField
 {
-	public enum Kind {
-		Simple,
-		List,
-		Prefix
-	}
-	
-	public Collection<Kind> getKind();
-	
-	public String getSimpleValue();
-	
-	public List<String> getListSimpleValue();
-	
-	public List<String> getPrefixValues();
+	public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field);
 	
 	public Widget getWidget();
 	
 	public static class TextFieldInput extends TextBox implements DataInputField {
 
 		@Override
-		public Collection<Kind> getKind() {
-			return Collections.singleton(Kind.Simple);
-		}
-
-		@Override
-		public String getSimpleValue() {
-			return getText();
-		}
-
-		@Override
-		public List<String> getListSimpleValue() {
-			return null;
-		}
-
-		@Override
-		public List<String> getPrefixValues() {
-			return null;
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			String text = getText().trim();
+			if (text != null && !text.isEmpty()) {
+				parameter.getStrings().addValue(text, field, 0);
+				return true;
+			}
+			return false;
 		}
 
 		@Override
@@ -65,33 +43,39 @@ public interface DataInputField
 	
 	public static class AutoCompleteInputField extends SuggestBox implements DataInputField {
 		
+		private volatile OntologyTerm ontologyTerm = null;
+		
 		public AutoCompleteInputField(SuggestOracle oracle) {
 			super(oracle);
 		}
 
 		@Override
-		public Collection<Kind> getKind() {
-			return Collections.singleton(Kind.Simple);
-		}
-
-		@Override
-		public String getSimpleValue() {
-			return getText();
-		}
-
-		@Override
-		public List<String> getListSimpleValue() {
-			return null;
-		}
-
-		@Override
-		public List<String> getPrefixValues() {
-			return null;
-		}
-		
-		@Override
 		public Widget getWidget() {
 			return this;
+		}
+
+		@Override
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			OntologyTerm term = ontologyTerm;
+			if (term != null) {
+				parameter.getTerms().addValue(term, field, 0);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * @param ontologyTerm the ontologyTerm to set
+		 */
+		void setOntologyTerm(OntologyTerm ontologyTerm) {
+			this.ontologyTerm = ontologyTerm;
+		}
+
+		/**
+		 * @return the ontologyTerm
+		 */
+		OntologyTerm getOntologyTerm() {
+			return ontologyTerm;
 		}
 	}
 	
@@ -115,34 +99,32 @@ public interface DataInputField
 		}
 		
 		@Override
-		public Collection<Kind> getKind() {
-			return Arrays.asList(Kind.Simple, Kind.Prefix);
-		}
-
-		@Override
-		public String getSimpleValue() {
-			return field.getSimpleValue();
-		}
-
-		@Override
-		public List<String> getListSimpleValue() {
-			return null;
-		}
-
-		@Override
-		public List<String> getPrefixValues() {
-			List<String> selectedPrefixes = new ArrayList<String>(prefixes.size());
-			for (CheckBox box : prefixes) {
-				if (box.getValue()) {
-					selectedPrefixes.add(box.getText());
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			OntologyTerm term = this.field.getOntologyTerm();
+			if (term != null) {
+				parameter.getTerms().addValue(term, field, 0);
+				List<String> selectedPrefixes = new ArrayList<String>(prefixes.size());
+				for (CheckBox box : prefixes) {
+					if (box.getValue()) {
+						selectedPrefixes.add(box.getText());
+					}
 				}
+				parameter.getPrefixes().addValue(selectedPrefixes, field, 0);
+				return true;
 			}
-			return selectedPrefixes;
+			return false;
 		}
-		
+
 		@Override
 		public Widget getWidget() {
 			return this;
+		}
+		
+		/**
+		 * @param ontologyTerm the ontologyTerm to set
+		 */
+		void setOntologyTerm(OntologyTerm ontologyTerm) {
+			field.setOntologyTerm(ontologyTerm);
 		}
 	}
 	
@@ -190,33 +172,20 @@ public interface DataInputField
 		}
 
 		@Override
-		public Collection<Kind> getKind() {
-			return Collections.singleton(Kind.List);
-		}
-
-		@Override
-		public String getSimpleValue() {
-			return null;
-		}
-
-		@Override
-		public List<String> getListSimpleValue() {
-			List<String> values = new ArrayList<String>(fields.size());
-			for (AutoCompleteInputField field : fields) {
-				values.add(field.getSimpleValue());
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			int pos = 0;
+			for (AutoCompleteInputField inputField : fields) {
+				OntologyTerm term = inputField.getOntologyTerm();
+				if (term != null) {
+					parameter.getTerms().addValue(term, field, pos++);
+				}
 			}
-			return values;
+			return pos > 0;
 		}
 
-		@Override
-		public List<String> getPrefixValues() {
-			return null;
-		}
-		
 		@Override
 		public Widget getWidget() {
 			return this;
 		}
-		
 	}
 }

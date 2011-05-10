@@ -1,6 +1,7 @@
 package org.bbop.termgenie.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -59,10 +60,15 @@ public class AllTermListPanel extends VerticalPanel {
 	}
 
 	public void removeTemplate(GWTTermTemplate template) {
-		termTemplateWidgets.removeTemplate(template);
+		if (termTemplateWidgets != null) {
+			termTemplateWidgets.removeTemplate(template);
+		}
 	}
 	
 	List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> getAllParameters() {
+		if (termTemplateWidgets == null) {
+			return Collections.emptyList();
+		}
 		return termTemplateWidgets.getAllParameters();
 	}
 	

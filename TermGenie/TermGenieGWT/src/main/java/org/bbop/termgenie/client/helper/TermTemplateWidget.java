@@ -1,12 +1,14 @@
 package org.bbop.termgenie.client.helper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bbop.termgenie.client.AllTermListPanel;
+import org.bbop.termgenie.client.LoggingCallback.ErrorPanel;
+import org.bbop.termgenie.client.LoggingCallback.LoggingErrorPanel;
 import org.bbop.termgenie.client.helper.DataInputField.AutoCompleteInputField;
-import org.bbop.termgenie.client.helper.DataInputField.Kind;
 import org.bbop.termgenie.client.helper.DataInputField.ListAutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.PrefixAutoCompleteInputField;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
@@ -16,6 +18,7 @@ import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.logging.client.HasWidgetsLogHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -27,6 +30,10 @@ import com.google.gwt.user.client.ui.SuggestOracle;
  */
 public class TermTemplateWidget extends FlowPanel {
 	
+	private static final Logger logger = Logger.getLogger(TermTemplateWidget.class.getName()); 
+	static {
+		logger.addHandler(new HasWidgetsLogHandler(ErrorPanel.getInstance()));
+	}
 	private final GWTTermTemplate template;
 	private ArrayList<ArrayList<DataInputField>> table = new ArrayList<ArrayList<DataInputField>>();
 	private final Label lblRequired = new Label("Required");
@@ -191,9 +198,14 @@ public class TermTemplateWidget extends FlowPanel {
 			for (int i = 0; i < fields.length; i++) {
 				GWTTemplateField field = fields[i];
 				DataInputField inputField = dataFields.get(i);
-				Collection<Kind> kind = inputField.getKind();
-				// TODO
-				
+				boolean success = inputField.extractParameter(parameter, field);
+				if (!success) {
+					
+					if (logger.isLoggable(Level.INFO)) {
+						logger.info("Could not extract information from field");
+					}
+					LoggingErrorPanel.popup();
+				}
 			}
 			result.add(parameter);
 		}

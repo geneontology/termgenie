@@ -2,6 +2,7 @@ package org.bbop.termgenie.services;
 
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
+import org.bbop.termgenie.shared.GenerationResponse;
 import org.bbop.termgenie.shared.Pair;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -29,7 +30,7 @@ public interface GenerateTermsService extends RemoteService {
 	 * 
 	 * @return if the operation succeeded
 	 */
-	public boolean generateTerms(String ontology,
+	public GenerationResponse generateTerms(String ontology,
 			Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters,
 			boolean commit, String username, String password);
 }
