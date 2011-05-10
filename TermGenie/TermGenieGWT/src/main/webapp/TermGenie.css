@@ -13,3 +13,10 @@ h2 {
   margin: 10px 5px 10px;
   text-align: left;
 }
+
+.input-field-error-markup {
+	color: red;
+	border-style: solid;
+	border-width: 2px;
+	border-color: red;
+}

@@ -8,31 +8,42 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SubmitFeedbackPanel extends PopupPanel {
 
 	private static volatile SubmitFeedbackPanel instance;
 	
-	private DockLayoutPanel globalPanel;
-	private Label headerLabel;
-	private ScrollPanel scrollPanel;
+	private final DockLayoutPanel globalPanel;
+	private final Label headerLabel;
+	private final ScrollPanel scrollPanel;
+	private final VerticalPanel messagesPanel;
 	
 	public synchronized static void popup() {
-		if (instance == null) {
-			instance = new SubmitFeedbackPanel();
-		}
+		SubmitFeedbackPanel instance = getInstance();
 		if (!instance.isShowing()) {
 			instance.center();
 		}
 	}
 	
-	public void setLabelText(String label) {
-		headerLabel.setText(label);
+	private synchronized static SubmitFeedbackPanel getInstance() {
+		if (instance == null) {
+			instance = new SubmitFeedbackPanel();
+		}
+		return instance; 
 	}
 	
-	public void setMainWidget(Widget widget) {
-		scrollPanel.setWidget(widget);
+	public static void setLabelText(String label) {
+		getInstance().headerLabel.setText(label);
+	}
+	
+	public static void addMessage(Widget widget) {
+		getInstance().messagesPanel.add(widget);
+	}
+	
+	public static void clearMessages() {
+		getInstance().messagesPanel.clear();
 	}
 	
 	private SubmitFeedbackPanel() {
@@ -43,10 +54,12 @@ public class SubmitFeedbackPanel extends PopupPanel {
 		globalPanel = new DockLayoutPanel(Unit.PX);
 		headerLabel = new Label("Status");
 		scrollPanel = new ScrollPanel();
+		messagesPanel = new VerticalPanel();
 		
 		// configure internal widgets
 		add(globalPanel);
 		globalPanel.setSize("450px", "350px");
+		scrollPanel.setWidget(messagesPanel);
 		
 		Button closeButton = new Button("Close");
 		closeButton.addClickHandler(new ClickHandler() {

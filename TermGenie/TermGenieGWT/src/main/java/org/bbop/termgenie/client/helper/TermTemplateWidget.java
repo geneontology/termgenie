@@ -2,12 +2,11 @@ package org.bbop.termgenie.client.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bbop.termgenie.client.AllTermListPanel;
 import org.bbop.termgenie.client.LoggingCallback.ErrorPanel;
-import org.bbop.termgenie.client.LoggingCallback.LoggingErrorPanel;
+import org.bbop.termgenie.client.SubmitFeedbackPanel;
 import org.bbop.termgenie.client.helper.DataInputField.AutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.ListAutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.PrefixAutoCompleteInputField;
@@ -194,21 +193,32 @@ public class TermTemplateWidget extends FlowPanel {
 	public List<GWTTermGenerationParameter> extractParameters() {
 		List<GWTTermGenerationParameter> result = new ArrayList<GWTTermGenerationParameter>();
 		GWTTemplateField[] fields = template.getFields();
+		boolean hasErrors = false;
+		int lineCount = 0;
 		for(ArrayList<DataInputField> dataFields : table) {
+			lineCount++;
 			GWTTermGenerationParameter parameter = new GWTTermGenerationParameter();
 			for (int i = 0; i < fields.length; i++) {
 				GWTTemplateField field = fields[i];
 				DataInputField inputField = dataFields.get(i);
 				boolean success = inputField.extractParameter(parameter, field);
 				if (!success) {
-					
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("Could not extract information from field");
-					}
-					LoggingErrorPanel.popup();
+					StringBuilder sb = new StringBuilder();
+					sb.append("For template ");
+					sb.append(template.getName());
+					sb.append(", line ");
+					sb.append(lineCount);
+					sb.append(", the input field ");
+					sb.append(field.getName());
+					sb.append(" has errors.");
+					SubmitFeedbackPanel.addMessage(new Label(sb.toString()));
+					hasErrors = true;
 				}
 			}
 			result.add(parameter);
+		}
+		if (hasErrors) {
+			SubmitFeedbackPanel.popup();
 		}
 		return result;
 	}
