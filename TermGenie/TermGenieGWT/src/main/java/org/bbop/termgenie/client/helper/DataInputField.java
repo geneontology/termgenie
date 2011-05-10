@@ -3,16 +3,16 @@ package org.bbop.termgenie.client.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bbop.termgenie.services.TermSuggestion;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
-import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestOracle;
+import com.google.gwt.user.client.ui.GenericSuggestBox;
+import com.google.gwt.user.client.ui.GenericSuggestOracle;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,11 +41,9 @@ public interface DataInputField
 		}
 	}
 	
-	public static class AutoCompleteInputField extends SuggestBox implements DataInputField {
+	public static class AutoCompleteInputField extends GenericSuggestBox<TermSuggestion> implements DataInputField {
 		
-		private volatile OntologyTerm ontologyTerm = null;
-		
-		public AutoCompleteInputField(SuggestOracle oracle) {
+		public AutoCompleteInputField(GenericSuggestOracle<TermSuggestion> oracle) {
 			super(oracle);
 		}
 
@@ -56,26 +54,20 @@ public interface DataInputField
 
 		@Override
 		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
-			OntologyTerm term = ontologyTerm;
-			if (term != null) {
-				parameter.getTerms().addValue(term, field, 0);
+			TermSuggestion suggestion = getTermSuggestion();
+			if (suggestion != null) {
+				parameter.getTerms().addValue(suggestion.getIdentifier(), field, 0);
 				return true;
 			}
 			return false;
 		}
-
-		/**
-		 * @param ontologyTerm the ontologyTerm to set
-		 */
-		void setOntologyTerm(OntologyTerm ontologyTerm) {
-			this.ontologyTerm = ontologyTerm;
-		}
-
-		/**
-		 * @return the ontologyTerm
-		 */
-		OntologyTerm getOntologyTerm() {
-			return ontologyTerm;
+		
+		TermSuggestion getTermSuggestion() {
+			TermSuggestion suggestion = getCurrentItem();
+			if (suggestion == null) {
+				
+			}
+			return suggestion;
 		}
 	}
 	
@@ -84,7 +76,7 @@ public interface DataInputField
 		private final AutoCompleteInputField field;
 		private final List<CheckBox> prefixes;
 		
-		public PrefixAutoCompleteInputField(SuggestOracle oracle, String[] functionalPrefixes) {
+		public PrefixAutoCompleteInputField(GenericSuggestOracle<TermSuggestion> oracle, String[] functionalPrefixes) {
 			super();
 			setSize("100%", "100%");
 			
@@ -100,9 +92,9 @@ public interface DataInputField
 		
 		@Override
 		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
-			OntologyTerm term = this.field.getOntologyTerm();
+			TermSuggestion term = this.field.getTermSuggestion();
 			if (term != null) {
-				parameter.getTerms().addValue(term, field, 0);
+				parameter.getTerms().addValue(term.getIdentifier(), field, 0);
 				List<String> selectedPrefixes = new ArrayList<String>(prefixes.size());
 				for (CheckBox box : prefixes) {
 					if (box.getValue()) {
@@ -120,12 +112,6 @@ public interface DataInputField
 			return this;
 		}
 		
-		/**
-		 * @param ontologyTerm the ontologyTerm to set
-		 */
-		void setOntologyTerm(OntologyTerm ontologyTerm) {
-			field.setOntologyTerm(ontologyTerm);
-		}
 	}
 	
 	public static class ListAutoCompleteInputField extends VerticalPanel implements DataInputField {
@@ -133,7 +119,7 @@ public interface DataInputField
 		private final List<AutoCompleteInputField> fields;
 		private final ModifyButtonsWidget buttonsWidget;
 		
-		public ListAutoCompleteInputField(final SuggestOracle oracle, final GWTCardinality cardinality) {
+		public ListAutoCompleteInputField(final GenericSuggestOracle<TermSuggestion> oracle, final GWTCardinality cardinality) {
 			super();
 			fields = new ArrayList<AutoCompleteInputField>();
 			buttonsWidget = new ModifyButtonsWidget();
@@ -175,9 +161,9 @@ public interface DataInputField
 		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
 			int pos = 0;
 			for (AutoCompleteInputField inputField : fields) {
-				OntologyTerm term = inputField.getOntologyTerm();
+				TermSuggestion term = inputField.getTermSuggestion();
 				if (term != null) {
-					parameter.getTerms().addValue(term, field, pos++);
+					parameter.getTerms().addValue(term.getIdentifier(), field, pos++);
 				}
 			}
 			return pos > 0;

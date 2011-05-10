@@ -131,8 +131,8 @@ public class FieldValidator {
 
 				// check fields for missing content
 				for (int i = 0; i < count; i++) {
-					Object term = values.getValue(field, i);
-					if (term == null) {
+					Object value = values.getValue(field, i);
+					if (value == null) {
 						errors.add(new GWTValidationHint(field, "Required value missing."));
 					}
 				}

@@ -1,12 +1,14 @@
 package org.bbop.termgenie.services;
 
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 public class TermSuggestion implements Suggestion, IsSerializable
 {
 	private String label;
-	private String identifier;
+	private OntologyTerm identifier;
 	private String description;
 	private String externalLink;
 	
@@ -20,7 +22,7 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	 * @param description
 	 * @param externalLink
 	 */
-	public TermSuggestion(String label, String identifier, String description,
+	public TermSuggestion(String label, OntologyTerm identifier, String description,
 			String externalLink) {
 		super();
 		this.label = label;
@@ -46,14 +48,14 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	/**
 	 * @return the identifier
 	 */
-	public String getIdentifier() {
+	public OntologyTerm getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * @param identifier the identifier to set
 	 */
-	public void setIdentifier(String identifier) {
+	public void setIdentifier(OntologyTerm identifier) {
 		this.identifier = identifier;
 	}
 
@@ -102,7 +104,7 @@ public class TermSuggestion implements Suggestion, IsSerializable
 		sb.append("</tr>");
 		sb.append("<tr>");
 		sb.append("<td>").append(label).append("</td>");
-		sb.append("<td>").append(identifier).append("</td>");
+		sb.append("<td>").append(identifier.getTermId()).append("</td>");
 		if (description != null) {
 			sb.append("<td>").append(description).append("</td>");
 		}

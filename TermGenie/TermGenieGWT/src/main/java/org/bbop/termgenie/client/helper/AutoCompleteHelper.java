@@ -9,14 +9,15 @@ import org.bbop.termgenie.services.OntologyServiceAsync;
 import org.bbop.termgenie.services.TermSuggestion;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.SuggestOracle;
+import com.google.gwt.user.client.ui.GenericSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestOracle.Request;
 
 /**
  * Tools for handling auto complete functionality.
  */
 public class AutoCompleteHelper {
 	
-	private final static Map<String, SuggestOracle> oracles = new HashMap<String, SuggestOracle>();
+	private final static Map<String, GenericSuggestOracle<TermSuggestion>> oracles = new HashMap<String, GenericSuggestOracle<TermSuggestion>>();
 	
 	/**
 	 * Retrieve or create (if it not exists) an oracle for the given ontology.
@@ -24,24 +25,29 @@ public class AutoCompleteHelper {
 	 * @param ontology
 	 * @return oracle
 	 */
-	public static SuggestOracle getSuggestOracle(final String ontology) {
+	public static GenericSuggestOracle<TermSuggestion> getSuggestOracle(final String ontology) {
 		synchronized (oracles) {
-			SuggestOracle suggestOracle = oracles.get(ontology);
+			GenericSuggestOracle<TermSuggestion> suggestOracle = oracles.get(ontology);
 			if (suggestOracle == null) {
-				suggestOracle = new SuggestOracle() {
+				suggestOracle = new GenericSuggestOracle<TermSuggestion>() {
 
 					@Override
-					public void requestSuggestions(final Request request, final Callback callback) {
+					public void requestSuggestions(final Request request, final GenericOracleCallback<TermSuggestion> callback) {
 						String query = request.getQuery();
 						AsyncCallback<List<TermSuggestion>> t = new LoggingCallback<List<TermSuggestion>>() {
 							
 							@Override
 							public void onSuccess(List<TermSuggestion> result) {
-								callback.onSuggestionsReady(request, new Response(result));
+								callback.onSuggestionsReady(request, new GenericResponse<TermSuggestion>(result));
 							}
 						};
 						OntologyServiceAsync.Util.getInstance().autocompleteQuery(query, ontology, t);
 						
+					}
+
+					@Override
+					public boolean isDisplayStringHTML() {
+						return true;
 					}
 				};
 				oracles.put(ontology, suggestOracle);

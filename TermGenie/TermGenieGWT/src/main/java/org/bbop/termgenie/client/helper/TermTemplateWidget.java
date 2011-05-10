@@ -11,6 +11,7 @@ import org.bbop.termgenie.client.LoggingCallback.LoggingErrorPanel;
 import org.bbop.termgenie.client.helper.DataInputField.AutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.ListAutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.PrefixAutoCompleteInputField;
+import org.bbop.termgenie.services.TermSuggestion;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
@@ -20,10 +21,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.logging.client.HasWidgetsLogHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.GenericSuggestOracle;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SuggestOracle;
 
 /**
  * Widget for rendering the input fields for a given term template.
@@ -117,7 +118,7 @@ public class TermTemplateWidget extends FlowPanel {
 		String ontology = field.getOntology();
 		DataInputField dataField;
 		if (ontology != null) {
-			SuggestOracle oracle = AutoCompleteHelper.getSuggestOracle(ontology);
+			GenericSuggestOracle<TermSuggestion> oracle = AutoCompleteHelper.getSuggestOracle(ontology);
 			GWTCardinality cardinality = field.getCardinality();
 			if (cardinality.getMin() == 1 && cardinality.getMax() == 1) {
 				String[] functionalPrefixes = field.getFunctionalPrefixes();

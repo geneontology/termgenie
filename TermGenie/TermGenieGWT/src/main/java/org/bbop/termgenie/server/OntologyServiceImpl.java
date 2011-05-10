@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.TermSuggestion;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -19,7 +20,18 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 
 	@Override
 	public List<TermSuggestion> autocompleteQuery(String query, String ontology) {
-		// TODO Auto-generated method stub
+		if (query.equals("t1")) {
+			TermSuggestion s1 = new TermSuggestion("test1", new OntologyTerm("GeneOntology",
+					"GO:0000001"), null, null);
+			TermSuggestion s11 = new TermSuggestion("test11", new OntologyTerm("GeneOntology",
+			"GO:0000011"), null, null);
+			return Arrays.asList(s1,s11);
+		}
+		else if (query.equals("t2")) {
+			TermSuggestion s2 = new TermSuggestion("test2", new OntologyTerm("GeneOntology",
+			"GO:0000002"), null, null);
+			return Arrays.asList(s2);
+		}
 		return null;
 	}
 
