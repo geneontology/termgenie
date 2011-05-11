@@ -38,6 +38,23 @@ public interface OntologyAware {
 		public abstract String getLabel();
 		public abstract String getDescription();
 		public abstract String getReferenceLink();
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("OntologyTerm [");
+			if (getId() != null)
+				builder.append("getId()=").append(getId()).append(", ");
+			if (getLabel() != null)
+				builder.append("getLabel()=").append(getLabel()).append(", ");
+			if (getDescription() != null)
+				builder.append("getDescription()=").append(getDescription()).append(", ");
+			if (getReferenceLink() != null)
+				builder.append("getReferenceLink()=").append(getReferenceLink());
+			builder.append("]");
+			return builder.toString();
+		}
+
 		
 	}
 }
