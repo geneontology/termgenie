@@ -9,12 +9,12 @@ import org.bbop.termgenie.client.AllTermListPanel.AllExtractionResults;
 import org.bbop.termgenie.services.GenerateTermsServiceAsync;
 import org.bbop.termgenie.services.OntologyServiceAsync;
 import org.bbop.termgenie.services.ValidateUserCredentialServiceAsync;
-import org.bbop.termgenie.shared.FieldValidator;
-import org.bbop.termgenie.shared.FieldValidator.GWTValidationHint;
+import org.bbop.termgenie.shared.GWTFieldValidator;
+import org.bbop.termgenie.shared.GWTFieldValidator.GWTValidationHint;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
-import org.bbop.termgenie.shared.GenerationResponse;
-import org.bbop.termgenie.shared.Pair;
+import org.bbop.termgenie.shared.GWTGenerationResponse;
+import org.bbop.termgenie.shared.GWTPair;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -125,12 +125,12 @@ public class TermGenie implements EntryPoint {
 			SubmitFeedbackPanel.popup("Error");
 			return;
 		}
-		final Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = allExtractionResults.getAllParameters();
+		final GWTPair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = allExtractionResults.getAllParameters();
 	
 		List<GWTValidationHint> allErrors = new ArrayList<GWTValidationHint>();
 		// validate input data
-		for (Pair<GWTTermTemplate, GWTTermGenerationParameter> pair : allParameters) {
-			List<GWTValidationHint> errors = FieldValidator.validateParameters(pair.getOne(), pair.getTwo());
+		for (GWTPair<GWTTermTemplate, GWTTermGenerationParameter> pair : allParameters) {
+			List<GWTValidationHint> errors = GWTFieldValidator.validateParameters(pair.getOne(), pair.getTwo());
 			if (!errors.isEmpty()) {
 				allErrors.addAll(errors);
 			}
@@ -179,14 +179,14 @@ public class TermGenie implements EntryPoint {
 	}
 
 	private void submitTermGenerationRequest(String ontology,
-			Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters,
+			GWTPair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters,
 			final boolean commit, String username, String password)
 	{
 		// submit request to server
-		AsyncCallback<GenerationResponse> callback = new LoggingCallback<GenerationResponse>() {
+		AsyncCallback<GWTGenerationResponse> callback = new LoggingCallback<GWTGenerationResponse>() {
 			
 			@Override
-			public void onSuccess(GenerationResponse result) {
+			public void onSuccess(GWTGenerationResponse result) {
 				if (result == null) {
 					SubmitFeedbackPanel.addMessage(new Label("No response was generated from the server."));
 					SubmitFeedbackPanel.popup("Error");

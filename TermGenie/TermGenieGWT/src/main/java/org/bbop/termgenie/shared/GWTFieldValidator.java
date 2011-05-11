@@ -12,7 +12,7 @@ import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class FieldValidator {
+public class GWTFieldValidator {
 
 	public static class GWTValidationHint implements IsSerializable {
 

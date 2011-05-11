@@ -10,7 +10,7 @@ import org.bbop.termgenie.client.helper.TermTemplateWidget.ExtractionResult;
 import org.bbop.termgenie.services.GenerateTermsServiceAsync;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
-import org.bbop.termgenie.shared.Pair;
+import org.bbop.termgenie.shared.GWTPair;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -160,8 +160,8 @@ public class AllTermListPanel extends VerticalPanel {
 		}
 		
 		AllExtractionResults getAllParameters() {
-			List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> result = 
-				new ArrayList<Pair<GWTTermTemplate,GWTTermGenerationParameter>>();
+			List<GWTPair<GWTTermTemplate, GWTTermGenerationParameter>> result = 
+				new ArrayList<GWTPair<GWTTermTemplate,GWTTermGenerationParameter>>();
 			boolean success = true;
 			for (String key : panels.keySet()) {
 				TermTemplateWidget templateWidget = panels.get(key);
@@ -169,7 +169,7 @@ public class AllTermListPanel extends VerticalPanel {
 				ExtractionResult extractionResult = templateWidget.extractParameters();
 				success = success && extractionResult.success;
 				for (GWTTermGenerationParameter parameter : extractionResult.parameters) {
-					result.add(new Pair<GWTTermTemplate, GWTTermGenerationParameter>(termTemplate, parameter));
+					result.add(new GWTPair<GWTTermTemplate, GWTTermGenerationParameter>(termTemplate, parameter));
 				} 
 			}
 			return new AllExtractionResults(result, success);
@@ -178,24 +178,24 @@ public class AllTermListPanel extends VerticalPanel {
 
 	public static class AllExtractionResults {
 		
-		static final AllExtractionResults EMPTY = new AllExtractionResults(Collections.<Pair<GWTTermTemplate, GWTTermGenerationParameter>>emptyList(), false);
+		static final AllExtractionResults EMPTY = new AllExtractionResults(Collections.<GWTPair<GWTTermTemplate, GWTTermGenerationParameter>>emptyList(), false);
 		
-		final List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> parameters;
+		final List<GWTPair<GWTTermTemplate, GWTTermGenerationParameter>> parameters;
 		public final boolean success;
 		
 		/**
 		 * @param parameters
 		 * @param success
 		 */
-		AllExtractionResults(List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> parameters, boolean success) {
+		AllExtractionResults(List<GWTPair<GWTTermTemplate, GWTTermGenerationParameter>> parameters, boolean success) {
 			super();
 			this.parameters = parameters;
 			this.success = success;
 		}
 		
 		@SuppressWarnings("unchecked")
-		Pair<GWTTermTemplate, GWTTermGenerationParameter>[] getAllParameters() {
-			return parameters.toArray(new Pair[parameters.size()]);
+		GWTPair<GWTTermTemplate, GWTTermGenerationParameter>[] getAllParameters() {
+			return parameters.toArray(new GWTPair[parameters.size()]);
 		}
 	}
 	

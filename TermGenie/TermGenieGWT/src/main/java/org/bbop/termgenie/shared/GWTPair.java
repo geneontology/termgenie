@@ -2,19 +2,19 @@ package org.bbop.termgenie.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Pair<A extends IsSerializable, B extends IsSerializable> implements IsSerializable{
+public class GWTPair<A extends IsSerializable, B extends IsSerializable> implements IsSerializable{
 
 	private A one;
 	private B two;
 	
-	private Pair() {
+	private GWTPair() {
 	}
 
 	/**
 	 * @param one
 	 * @param two
 	 */
-	public Pair(A one, B two) {
+	public GWTPair(A one, B two) {
 		this();
 		this.one = one;
 		this.two = two;

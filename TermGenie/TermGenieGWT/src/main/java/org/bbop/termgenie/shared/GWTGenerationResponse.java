@@ -2,11 +2,11 @@ package org.bbop.termgenie.shared;
 
 import java.util.Collection;
 
-import org.bbop.termgenie.shared.FieldValidator.GWTValidationHint;
+import org.bbop.termgenie.shared.GWTFieldValidator.GWTValidationHint;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GenerationResponse implements IsSerializable {
+public class GWTGenerationResponse implements IsSerializable {
 
 	private String generalError;
 	private GWTValidationHint[] errors;
@@ -16,11 +16,11 @@ public class GenerationResponse implements IsSerializable {
 	 * Default constructor, required for {@link IsSerializable}.
 	 */
 	@SuppressWarnings("unused")
-	private GenerationResponse() {
+	private GWTGenerationResponse() {
 		super();
 	}
 	
-	public GenerationResponse(String generalError, Collection<GWTValidationHint> errors, Collection<String> terms) {
+	public GWTGenerationResponse(String generalError, Collection<GWTValidationHint> errors, Collection<String> terms) {
 		if (errors != null) {
 			this.errors = errors.toArray(new GWTValidationHint[errors.size()]);
 		}

@@ -2,8 +2,8 @@ package org.bbop.termgenie.services;
 
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
-import org.bbop.termgenie.shared.GenerationResponse;
-import org.bbop.termgenie.shared.Pair;
+import org.bbop.termgenie.shared.GWTGenerationResponse;
+import org.bbop.termgenie.shared.GWTPair;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,8 +22,8 @@ public interface GenerateTermsServiceAsync
      * @see org.bbop.termgenie.services.GenerateTermsService#generateTerms
      */
     void generateTerms(String ontology,
-    		Pair<GWTTermTemplate, GWTTermGenerationParameter>[] allParameters,
-			boolean commit, String username, String password, AsyncCallback<GenerationResponse> callback);
+    		GWTPair<GWTTermTemplate, GWTTermGenerationParameter>[] allParameters,
+			boolean commit, String username, String password, AsyncCallback<GWTGenerationResponse> callback);
 
 
     /**
