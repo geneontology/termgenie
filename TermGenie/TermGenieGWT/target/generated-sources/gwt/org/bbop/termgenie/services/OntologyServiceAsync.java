@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public interface OntologyServiceAsync
@@ -20,7 +19,7 @@ public interface OntologyServiceAsync
      * GWT-RPC service  asynchronous (client-side) interface
      * @see org.bbop.termgenie.services.OntologyService
      */
-    void autocompleteQuery(String query, String ontology, AsyncCallback<List<TermSuggestion>> callback);
+    void autocompleteQuery(String query, String ontology, int max, AsyncCallback<List<TermSuggestion>> callback);
 
 
 	/**

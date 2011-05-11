@@ -1,5 +1,6 @@
 package org.bbop.termgenie.core.rules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,48 +13,94 @@ public interface TermGenerationEngine {
 
 	public List<OntologyTerm> generateTerms(TermTemplate templateName, TermGenerationParameters parameters);
 	
-	
 	public final class TermGenerationParameters {
 		
-		private final Map<String, OntologyTerm> terms;
-		
-		private final Map<String, String> strings;
-		
+		private final MultiValueMap<OntologyTerm> terms;
+		private final MultiValueMap<String> strings;
+		private final MultiValueMap<List<String>> prefixes;
+
 		public TermGenerationParameters() {
-			terms = new HashMap<String, OntologyTerm>();
-			strings = new HashMap<String, String>();
-		}
-		
-		public OntologyTerm getOntologyTerm(TemplateField field) {
-			return terms.get(getKey(field));
-		}
-		
-		public OntologyTerm getOntologyTerm(TemplateField field, int pos) {
-			return terms.get(getKey(field, pos));
+			terms = new MultiValueMap<OntologyTerm>();
+			strings = new MultiValueMap<String>();
+			prefixes = new MultiValueMap<List<String>>();
 		}
 
-		public String getStringValue(TemplateField field) {
-			return strings.get(getKey(field));
+		/**
+		 * @return the terms
+		 */
+		public MultiValueMap<OntologyTerm> getTerms() {
+			return terms;
+		}
+
+		/**
+		 * @return the strings
+		 */
+		public MultiValueMap<String> getStrings() {
+			return strings;
+		}
+
+		/**
+		 * @return the prefixes
+		 */
+		public MultiValueMap<List<String>> getPrefixes() {
+			return prefixes;
+		}
+	}
+	
+	public static class MultiValueMap<V>{
+		
+		private Map<String, List<V>> values = new HashMap<String, List<V>>();
+		
+		public V getValue(TemplateField key, int pos) {
+			List<V> list = values.get(calculateInteralKey(key));
+			if (list != null && list.size() > pos) {
+				return list.get(pos);
+			}
+			return null;
+		}
+
+		public int getCount(TemplateField key) {
+			List<V> list = values.get(calculateInteralKey(key));
+			if (list != null) {
+				return list.size();
+			}
+			return 0;
 		}
 		
-		public void addOntologyTerm(OntologyTerm ontologyTerm, TemplateField field) {
-			terms.put(getKey(field), ontologyTerm);
-		}
-
-		public void addOntologyTerm(OntologyTerm ontologyTerm, TemplateField field, int pos) {
-			terms.put(getKey(field, pos), ontologyTerm);
+		public void addValue(V value, TemplateField key, int pos) {
+			final String internalKey = calculateInteralKey(key);
+			List<V> list = values.get(internalKey);
+			if (list == null) {
+				list = new ArrayList<V>(pos + 1);
+				for (int i = 0; i < pos; i++) {
+					list.add(null);
+				}
+				list.add(value);
+				values.put(internalKey, list);
+			} else {
+				for (int i = (list.size()) - 1; i < pos; i++) {
+					list.add(null);
+				}
+				list.add(value);
+			}
 		}
 		
-		public void addString(String value, TemplateField field) {
-			strings.put(getKey(field), value);
+		public String calculateInteralKey(TemplateField key) {
+			return key.getName();
 		}
 
-		private String getKey(TemplateField field) {
-			return field.getName();
+		/**
+		 * @return the values
+		 */
+		Map<String, List<V>> getValues() {
+			return values;
 		}
 
-		private String getKey(TemplateField field, int pos) {
-			return getKey(field)+"|"+Integer.toString(pos);
+		/**
+		 * @param values the values to set
+		 */
+		void setValues(Map<String, List<V>> values) {
+			this.values = values;
 		}
 	}
 }

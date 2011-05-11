@@ -8,15 +8,16 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 
 public class SimpleSolrClient implements OntologyTermSuggestor
 {
 	
-	public List<OntologyTerm> suggestTerms(String query, int maxCount) {
+	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
 		// TODO implement me
-		throw new RuntimeException("Not implemented");
+		return null;
 	}	
 
 	/**

@@ -34,6 +34,10 @@ public interface OntologyAware {
 	 */
 	public abstract static class OntologyTerm
 	{
+		public abstract String getId();
+		public abstract String getLabel();
+		public abstract String getDescription();
+		public abstract String getReferenceLink();
 		
 	}
 }

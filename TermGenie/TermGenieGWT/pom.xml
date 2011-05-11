@@ -74,8 +74,11 @@
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieSolr</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

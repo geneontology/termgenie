@@ -17,6 +17,8 @@ import com.google.gwt.user.client.ui.SuggestOracle.Request;
  */
 public class AutoCompleteHelper {
 	
+	private static final int MAX_SUGGESTIONS = 10;
+	
 	private final static Map<String, GenericSuggestOracle<TermSuggestion>> oracles = new HashMap<String, GenericSuggestOracle<TermSuggestion>>();
 	
 	/**
@@ -41,7 +43,7 @@ public class AutoCompleteHelper {
 								callback.onSuggestionsReady(request, new GenericResponse<TermSuggestion>(result));
 							}
 						};
-						OntologyServiceAsync.Util.getInstance().autocompleteQuery(query, ontology, t);
+						OntologyServiceAsync.Util.getInstance().autocompleteQuery(query, ontology, MAX_SUGGESTIONS, t);
 						
 					}
 
