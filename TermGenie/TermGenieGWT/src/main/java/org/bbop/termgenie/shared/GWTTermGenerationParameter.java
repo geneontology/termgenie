@@ -11,65 +11,65 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GWTTermGenerationParameter implements IsSerializable {
 
-	private MultiValueMap<OntologyTerm> terms;
-	private MultiValueMap<String> strings;
-	private MultiValueMap<List<String>> prefixes;
+	private GWTMultiValueMap<GWTOntologyTerm> terms;
+	private GWTMultiValueMap<String> strings;
+	private GWTMultiValueMap<List<String>> prefixes;
 
 	public GWTTermGenerationParameter() {
-		terms = new MultiValueMap<OntologyTerm>();
-		strings = new MultiValueMap<String>();
-		prefixes = new MultiValueMap<List<String>>();
+		terms = new GWTMultiValueMap<GWTOntologyTerm>();
+		strings = new GWTMultiValueMap<String>();
+		prefixes = new GWTMultiValueMap<List<String>>();
 	}
 
 	/**
 	 * @return the terms
 	 */
-	public MultiValueMap<OntologyTerm> getTerms() {
+	public GWTMultiValueMap<GWTOntologyTerm> getTerms() {
 		return terms;
 	}
 
 	/**
 	 * @param terms the terms to set
 	 */
-	void setTerms(MultiValueMap<OntologyTerm> terms) {
+	void setTerms(GWTMultiValueMap<GWTOntologyTerm> terms) {
 		this.terms = terms;
 	}
 
 	/**
 	 * @return the strings
 	 */
-	public MultiValueMap<String> getStrings() {
+	public GWTMultiValueMap<String> getStrings() {
 		return strings;
 	}
 
 	/**
 	 * @param strings the strings to set
 	 */
-	void setStrings(MultiValueMap<String> strings) {
+	void setStrings(GWTMultiValueMap<String> strings) {
 		this.strings = strings;
 	}
 	
 	/**
 	 * @return the prefixes
 	 */
-	public MultiValueMap<List<String>> getPrefixes() {
+	public GWTMultiValueMap<List<String>> getPrefixes() {
 		return prefixes;
 	}
 
 	/**
 	 * @param prefixes the prefixes to set
 	 */
-	void setPrefixes(MultiValueMap<List<String>> prefixes) {
+	void setPrefixes(GWTMultiValueMap<List<String>> prefixes) {
 		this.prefixes = prefixes;
 	}
 
 
 
-	public static final class OntologyTerm implements IsSerializable {
+	public static final class GWTOntologyTerm implements IsSerializable {
 		private String ontology;
 		private String termId;
 
-		public OntologyTerm() {
+		public GWTOntologyTerm() {
 			super();
 		}
 
@@ -77,7 +77,7 @@ public class GWTTermGenerationParameter implements IsSerializable {
 		 * @param ontology
 		 * @param termId
 		 */
-		public OntologyTerm(String ontology, String termId) {
+		public GWTOntologyTerm(String ontology, String termId) {
 			super();
 			this.ontology = ontology;
 			this.termId = termId;
@@ -114,7 +114,7 @@ public class GWTTermGenerationParameter implements IsSerializable {
 		}
 	}
 	
-	public static class MultiValueMap<V> implements IsSerializable{
+	public static class GWTMultiValueMap<V> implements IsSerializable{
 		
 		private Map<String, List<V>> values = new HashMap<String, List<V>>();
 		

@@ -20,8 +20,9 @@ public class SubmitFeedbackPanel extends PopupPanel {
 	private final ScrollPanel scrollPanel;
 	private final VerticalPanel messagesPanel;
 	
-	public synchronized static void popup() {
+	public synchronized static void popup(String header) {
 		SubmitFeedbackPanel instance = getInstance();
+		instance.setLabelText(header);
 		if (!instance.isShowing()) {
 			instance.center();
 		}
@@ -34,8 +35,8 @@ public class SubmitFeedbackPanel extends PopupPanel {
 		return instance; 
 	}
 	
-	public static void setLabelText(String label) {
-		getInstance().headerLabel.setText(label);
+	private void setLabelText(String label) {
+		headerLabel.setText(label);
 	}
 	
 	public static void addMessage(Widget widget) {

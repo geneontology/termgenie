@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bbop.termgenie.shared.GWTTermGenerationParameter.MultiValueMap;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTMultiValueMap;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
@@ -108,7 +108,7 @@ public class FieldValidator {
 
 			int count = parameter.getTerms().getCount(field);
 			int stringCount = parameter.getStrings().getCount(field);
-			MultiValueMap<?> values = parameter.getTerms();
+			GWTMultiValueMap<?> values = parameter.getTerms();
 
 			if (count > 0 && stringCount > 0) {
 				errors.add(new GWTValidationHint(field, "Conflicting values (string and ontology term) for field"));

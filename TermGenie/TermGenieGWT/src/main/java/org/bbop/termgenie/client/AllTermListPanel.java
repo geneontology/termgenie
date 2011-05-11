@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bbop.termgenie.client.helper.TermTemplateWidget;
+import org.bbop.termgenie.client.helper.TermTemplateWidget.ExtractionResult;
 import org.bbop.termgenie.services.GenerateTermsServiceAsync;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate;
@@ -65,11 +66,17 @@ public class AllTermListPanel extends VerticalPanel {
 		}
 	}
 	
-	List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> getAllParameters() {
+	AllExtractionResults getAllParameters() {
 		if (termTemplateWidgets == null) {
-			return Collections.emptyList();
+			return AllExtractionResults.EMPTY;
 		}
 		return termTemplateWidgets.getAllParameters();
+	}
+	
+	void clearAllTermTemplates() {
+		if (termTemplateWidgets != null) {
+			termTemplateWidgets.clear();
+		}
 	}
 	
 	/**
@@ -147,21 +154,51 @@ public class AllTermListPanel extends VerticalPanel {
 			}
 		}
 		
-		List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> getAllParameters() {
+		public synchronized void clear() {
+			panels.clear();
+			super.clear();
+		}
+		
+		AllExtractionResults getAllParameters() {
 			List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> result = 
 				new ArrayList<Pair<GWTTermTemplate,GWTTermGenerationParameter>>();
+			boolean success = true;
 			for (String key : panels.keySet()) {
 				TermTemplateWidget templateWidget = panels.get(key);
 				GWTTermTemplate termTemplate = templateWidget.getGwtTermTemplate();
-				List<GWTTermGenerationParameter> parameters = templateWidget.extractParameters();
-				for (GWTTermGenerationParameter parameter : parameters) {
+				ExtractionResult extractionResult = templateWidget.extractParameters();
+				success = success && extractionResult.success;
+				for (GWTTermGenerationParameter parameter : extractionResult.parameters) {
 					result.add(new Pair<GWTTermTemplate, GWTTermGenerationParameter>(termTemplate, parameter));
 				} 
 			}
-			return result;
+			return new AllExtractionResults(result, success);
 		}
 	}
 
+	public static class AllExtractionResults {
+		
+		static final AllExtractionResults EMPTY = new AllExtractionResults(Collections.<Pair<GWTTermTemplate, GWTTermGenerationParameter>>emptyList(), false);
+		
+		final List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> parameters;
+		public final boolean success;
+		
+		/**
+		 * @param parameters
+		 * @param success
+		 */
+		AllExtractionResults(List<Pair<GWTTermTemplate, GWTTermGenerationParameter>> parameters, boolean success) {
+			super();
+			this.parameters = parameters;
+			this.success = success;
+		}
+		
+		@SuppressWarnings("unchecked")
+		Pair<GWTTermTemplate, GWTTermGenerationParameter>[] getAllParameters() {
+			return parameters.toArray(new Pair[parameters.size()]);
+		}
+	}
+	
 	/**
 	 * If a new selector is set (e.g. ontology change), remove all the current
 	 * content for this panel.

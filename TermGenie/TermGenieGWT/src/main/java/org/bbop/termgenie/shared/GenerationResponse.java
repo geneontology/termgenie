@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GenerationResponse implements IsSerializable {
 
+	private String generalError;
 	private GWTValidationHint[] errors;
 	private String[] generatedTerms;
 	
@@ -19,13 +20,14 @@ public class GenerationResponse implements IsSerializable {
 		super();
 	}
 	
-	public GenerationResponse(Collection<GWTValidationHint> errors, Collection<String> terms) {
+	public GenerationResponse(String generalError, Collection<GWTValidationHint> errors, Collection<String> terms) {
 		if (errors != null) {
 			this.errors = errors.toArray(new GWTValidationHint[errors.size()]);
 		}
 		if (terms != null) {
 			this.generatedTerms = terms.toArray(new String[terms.size()]);
 		}
+		this.generalError = generalError;
 	}
 	
 	/**
@@ -55,6 +57,18 @@ public class GenerationResponse implements IsSerializable {
 	public void setGeneratedTerms(String[] generatedTerms) {
 		this.generatedTerms = generatedTerms;
 	}
-	
-	
+
+	/**
+	 * @return the generalError
+	 */
+	public String getGeneralError() {
+		return generalError;
+	}
+
+	/**
+	 * @param generalError the generalError to set
+	 */
+	public void setGeneralError(String generalError) {
+		this.generalError = generalError;
+	}
 }

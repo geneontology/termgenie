@@ -190,7 +190,7 @@ public class TermTemplateWidget extends FlowPanel {
 	/**
 	 * @return list of parameters for the termTermplate
 	 */
-	public List<GWTTermGenerationParameter> extractParameters() {
+	public ExtractionResult extractParameters() {
 		List<GWTTermGenerationParameter> result = new ArrayList<GWTTermGenerationParameter>();
 		GWTTemplateField[] fields = template.getFields();
 		boolean hasErrors = false;
@@ -204,22 +204,34 @@ public class TermTemplateWidget extends FlowPanel {
 				boolean success = inputField.extractParameter(parameter, field);
 				if (!success) {
 					StringBuilder sb = new StringBuilder();
-					sb.append("For template ");
+					sb.append("For template \"");
 					sb.append(template.getName());
-					sb.append(", line ");
+					sb.append("\", line number (");
 					sb.append(lineCount);
-					sb.append(", the input field ");
+					sb.append("), the input field \"");
 					sb.append(field.getName());
-					sb.append(" has errors.");
+					sb.append("\" has errors.");
 					SubmitFeedbackPanel.addMessage(new Label(sb.toString()));
 					hasErrors = true;
 				}
 			}
 			result.add(parameter);
 		}
-		if (hasErrors) {
-			SubmitFeedbackPanel.popup();
+		return new ExtractionResult(result, !hasErrors);
+	}
+	
+	public static class ExtractionResult {
+		public final List<GWTTermGenerationParameter> parameters;
+		public final boolean success;
+		
+		/**
+		 * @param parameters
+		 * @param success
+		 */
+		ExtractionResult(List<GWTTermGenerationParameter> parameters, boolean success) {
+			super();
+			this.parameters = parameters;
+			this.success = success;
 		}
-		return result;
 	}
 }

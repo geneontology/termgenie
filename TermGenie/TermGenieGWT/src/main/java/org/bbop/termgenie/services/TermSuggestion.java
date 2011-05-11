@@ -1,6 +1,6 @@
 package org.bbop.termgenie.services;
 
-import org.bbop.termgenie.shared.GWTTermGenerationParameter.OntologyTerm;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTOntologyTerm;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 public class TermSuggestion implements Suggestion, IsSerializable
 {
 	private String label;
-	private OntologyTerm identifier;
+	private GWTOntologyTerm identifier;
 	private String description;
 	private String externalLink;
 	
@@ -22,7 +22,7 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	 * @param description
 	 * @param externalLink
 	 */
-	public TermSuggestion(String label, OntologyTerm identifier, String description,
+	public TermSuggestion(String label, GWTOntologyTerm identifier, String description,
 			String externalLink) {
 		super();
 		this.label = label;
@@ -48,14 +48,14 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	/**
 	 * @return the identifier
 	 */
-	public OntologyTerm getIdentifier() {
+	public GWTOntologyTerm getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * @param identifier the identifier to set
 	 */
-	public void setIdentifier(OntologyTerm identifier) {
+	public void setIdentifier(GWTOntologyTerm identifier) {
 		this.identifier = identifier;
 	}
 

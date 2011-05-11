@@ -1,8 +1,11 @@
 package org.bbop.termgenie.client;
 
+import static org.bbop.termgenie.shared.ErrorMessages.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bbop.termgenie.client.AllTermListPanel.AllExtractionResults;
 import org.bbop.termgenie.services.GenerateTermsServiceAsync;
 import org.bbop.termgenie.services.OntologyServiceAsync;
 import org.bbop.termgenie.services.ValidateUserCredentialServiceAsync;
@@ -17,6 +20,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -113,7 +117,15 @@ public class TermGenie implements EntryPoint {
 	private void processTermGenerationRequest() {
 		// gather input data from fields
 		final String ontology = getOntologySelectionPanel().getSelectedOntology();
-		final Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = getAllParameters();
+		
+		SubmitFeedbackPanel.clearMessages();
+		AllExtractionResults allExtractionResults = getAllTermListPanel().getAllParameters();
+		// check if there were already some obvious errors.
+		if (!allExtractionResults.success) {
+			SubmitFeedbackPanel.popup("Error");
+			return;
+		}
+		final Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = allExtractionResults.getAllParameters();
 	
 		List<GWTValidationHint> allErrors = new ArrayList<GWTValidationHint>();
 		// validate input data
@@ -125,7 +137,10 @@ public class TermGenie implements EntryPoint {
 		}
 	
 		if (!allErrors.isEmpty()) {
-			// TODO show errors				
+			for (GWTValidationHint error : allErrors) {
+				SubmitFeedbackPanel.addMessage(new Label(error.getHint()));
+			}
+			SubmitFeedbackPanel.popup("Error");
 			return;
 		}
 		
@@ -135,6 +150,10 @@ public class TermGenie implements EntryPoint {
 		if (doCommit) {
 			// user credentials
 			final String username = getUserPanel().getUserName();
+			if (username == null || username.isEmpty()) {
+				SubmitFeedbackPanel.addMessage(new Label(MISSING_USERNAME));
+				SubmitFeedbackPanel.popup("Error");
+			}
 			final String password = getUserPanel().getPassword();
 			
 			// validate credentials
@@ -144,7 +163,8 @@ public class TermGenie implements EntryPoint {
 				public void onSuccess(Boolean result) {
 					// success?
 					if (result.booleanValue() == false) {
-						// TODO show error
+						SubmitFeedbackPanel.addMessage(new Label(UNKOWN_USERNAME_PASSWORD));
+						SubmitFeedbackPanel.popup("Error");
 						return;
 					}
 					// submit request to server
@@ -152,33 +172,53 @@ public class TermGenie implements EntryPoint {
 				}
 			};
 			ValidateUserCredentialServiceAsync.Util.getInstance().isValidUser(username, password, callback);
-			return;
 		}
 		else {
 			submitTermGenerationRequest(ontology, allParameters, doCommit, null, null);
-			return;
 		}
 	}
 
 	private void submitTermGenerationRequest(String ontology,
 			Pair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters,
-			boolean commit, String username, String password)
+			final boolean commit, String username, String password)
 	{
 		// submit request to server
 		AsyncCallback<GenerationResponse> callback = new LoggingCallback<GenerationResponse>() {
 			
 			@Override
 			public void onSuccess(GenerationResponse result) {
-				// TODO Auto-generated method stub
-				// success? 
-				// what to do next?			
+				if (result == null) {
+					SubmitFeedbackPanel.addMessage(new Label("No response was generated from the server."));
+					SubmitFeedbackPanel.popup("Error");
+					return;
+				}
+				GWTValidationHint[] errors = result.getErrors();
+				if (errors != null && errors.length > 0) {
+					for (GWTValidationHint error : errors) {
+						SubmitFeedbackPanel.addMessage(new Label(error.getHint()));
+					}
+					SubmitFeedbackPanel.popup("Error");
+					return;
+				}
+				String[] generatedTerms = result.getGeneratedTerms();
+				if (generatedTerms == null || generatedTerms.length == 0) {
+					SubmitFeedbackPanel.addMessage(new Label("No terms could be generated from your input."));
+					SubmitFeedbackPanel.popup("Error");
+					return;
+				}
+				for (String generatedTerm : generatedTerms) {
+					SubmitFeedbackPanel.addMessage(new Label(generatedTerm));
+				}
+				SubmitFeedbackPanel.popup("Success");
+				
+				// if commit was true, clear the templates, 
+				// so that the user cannot generate them a second time
+				// TODO decide if this is required
+				if (commit) {
+					getAllTermListPanel().clear();
+				}
 			}
 		};
 		GenerateTermsServiceAsync.Util.getInstance().generateTerms(ontology, allParameters, false, null, null, callback);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private Pair<GWTTermTemplate, GWTTermGenerationParameter>[] getAllParameters() {
-		return getAllTermListPanel().getAllParameters().toArray(new Pair[0]);
 	}
 }
