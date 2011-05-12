@@ -60,7 +60,7 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 	private TermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = OntologyTools.instance.getOntologyName(ontology);
 		GWTOntologyTerm identifier = new GWTOntologyTerm(ontologyName, term.getId());
-		return new TermSuggestion(term.getLabel(), identifier , term.getDescription(), term.getReferenceLink());
+		return new TermSuggestion(term.getLabel(), identifier , term.getDescription(), term.getSynonyms());
 	}
 	
 	protected List<OntologyTerm> autocomplete(String query, Ontology ontology, int max) {

@@ -64,4 +64,22 @@ public class TermTemplate implements OntologyAware {
 	public List<TemplateRule> getRules() {
 		return rules;
 	}
+	
+	/**
+	 * Retrieve the field for a given name.
+	 * 
+	 * @param name
+	 * @return field or null
+	 */
+	public TemplateField getField(String name) {
+		if (name == null) {
+			return null;
+		}
+		for (TemplateField field : fields) {
+			if (field.getName().equals(name)) {
+				return field;
+			}
+		}
+		return null;
+	}
 }

@@ -31,7 +31,7 @@ public interface TermGenerationEngine {
 		 * @param termTemplate
 		 * @param parameters
 		 */
-		private TermGenerationInput(TermTemplate termTemplate, TermGenerationParameters parameters) {
+		public TermGenerationInput(TermTemplate termTemplate, TermGenerationParameters parameters) {
 			super();
 			this.termTemplate = termTemplate;
 			this.parameters = parameters;
@@ -52,7 +52,7 @@ public interface TermGenerationEngine {
 		}
 	}
 
-	public final class TermGenerationOutput {
+	public class TermGenerationOutput {
 
 		private final OntologyTerm term;
 		private final TermGenerationInput input;
@@ -65,7 +65,7 @@ public interface TermGenerationEngine {
 		 * @param success
 		 * @param message
 		 */
-		private TermGenerationOutput(OntologyTerm term, TermGenerationInput input, boolean success, String message) {
+		public TermGenerationOutput(OntologyTerm term, TermGenerationInput input, boolean success, String message) {
 			super();
 			this.term = term;
 			this.input = input;

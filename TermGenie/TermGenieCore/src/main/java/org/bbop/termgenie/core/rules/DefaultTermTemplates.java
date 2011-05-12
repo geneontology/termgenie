@@ -18,7 +18,7 @@ import owltools.graph.OWLGraphWrapper;
  */
 public class DefaultTermTemplates {
 
-	final static Ontology GENE_ONTOLOGY = new Ontology() {
+	protected final static Ontology GENE_ONTOLOGY = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -36,7 +36,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology GENE_ONTOLOGY_BP = new Ontology() {
+	protected final static Ontology GENE_ONTOLOGY_BP = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -54,7 +54,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology GENE_ONTOLOGY_MF = new Ontology() {
+	protected final static Ontology GENE_ONTOLOGY_MF = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -72,7 +72,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology GENE_ONTOLOGY_CC = new Ontology() {
+	protected final static Ontology GENE_ONTOLOGY_CC = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -90,7 +90,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology PROTEIN_ONTOLOGY = new Ontology() {
+	protected final static Ontology PROTEIN_ONTOLOGY = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -108,7 +108,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology UBERON_ONTOLOGY_METAZOAN = new Ontology() {
+	protected final static Ontology UBERON_ONTOLOGY_METAZOAN = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -126,7 +126,7 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static Ontology UBERON_ONTOLOGY_PLANT = new Ontology() {
+	protected final static Ontology UBERON_ONTOLOGY_PLANT = new Ontology() {
 		
 		@Override
 		public String getUniqueName() {
@@ -144,17 +144,17 @@ public class DefaultTermTemplates {
 		}
 	};
 	
-	final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
+	protected final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
 			createRules("Dummy Rule\n     2nd line","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_BP),
 			new TemplateField("DefX_Ref", false));
 	
-	final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf", 
+	protected final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_MF),
 			new TemplateField("DefX_Ref", false));
 	
-	final static TermTemplate involved_in = create(GENE_ONTOLOGY, "involved_in", 
+	protected final static TermTemplate involved_in = create(GENE_ONTOLOGY, "involved_in", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("part", true, GENE_ONTOLOGY_BP),
 			new TemplateField("whole", true, GENE_ONTOLOGY_BP),
@@ -163,7 +163,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate takes_place_in = create(GENE_ONTOLOGY, "takes_place_in", 
+	protected final static TermTemplate takes_place_in = create(GENE_ONTOLOGY, "takes_place_in", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("process", true, GENE_ONTOLOGY_BP),
 			new TemplateField("location", true, GENE_ONTOLOGY_CC),
@@ -172,7 +172,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate part_of_cell_component = create(GENE_ONTOLOGY, "part_of_cell_component", 
+	protected final static TermTemplate part_of_cell_component = create(GENE_ONTOLOGY, "part_of_cell_component", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("part", true, GENE_ONTOLOGY_CC),
 			new TemplateField("whole", true, GENE_ONTOLOGY_CC),
@@ -182,7 +182,7 @@ public class DefaultTermTemplates {
 			new TemplateField("Comment", false));
 	
 	
-	final static TermTemplate protein_binding = create(GENE_ONTOLOGY, "protein_binding", 
+	protected final static TermTemplate protein_binding = create(GENE_ONTOLOGY, "protein_binding", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, PROTEIN_ONTOLOGY),
 			new TemplateField("Name", false),
@@ -190,7 +190,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate metazoan_development = create(GENE_ONTOLOGY, "metazoan_development", 
+	protected final static TermTemplate metazoan_development = create(GENE_ONTOLOGY, "metazoan_development", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, UBERON_ONTOLOGY_METAZOAN),
 			new TemplateField("Name", false),
@@ -198,7 +198,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis", 
+	protected final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, UBERON_ONTOLOGY_METAZOAN),
 			new TemplateField("Name", false),
@@ -206,7 +206,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate plant_development = create(GENE_ONTOLOGY, "plant_development", 
+	protected final static TermTemplate plant_development = create(GENE_ONTOLOGY, "plant_development", 
 			"Dummy Rule",
 			new TemplateField("target", true, UBERON_ONTOLOGY_PLANT),
 			new TemplateField("Name", false),
@@ -214,7 +214,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate plant_morphogenesis = create(GENE_ONTOLOGY, "plant_morphogenesis", 
+	protected final static TermTemplate plant_morphogenesis = create(GENE_ONTOLOGY, "plant_morphogenesis", 
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, UBERON_ONTOLOGY_PLANT),
 			new TemplateField("Name", false),
@@ -222,7 +222,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref", false),
 			new TemplateField("Comment", false));
 	
-	final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
+	protected final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
 			createRules("Dummy Rule\n2nd line","Dummy Name Rule\n2nd line"),
 			new TemplateField("protein units", true, TemplateField.TWO_TO_N_CARDINALITY, null, PROTEIN_ONTOLOGY),
 			new TemplateField("Name", false),

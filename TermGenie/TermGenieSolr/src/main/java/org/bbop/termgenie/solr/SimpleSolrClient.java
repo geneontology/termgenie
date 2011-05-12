@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -155,7 +156,12 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public String getReferenceLink() {
+			public Set<String> getSynonyms() {
+				return null;
+			}
+
+			@Override
+			public String getLogicalDefinition() {
 				return null;
 			}
 		};

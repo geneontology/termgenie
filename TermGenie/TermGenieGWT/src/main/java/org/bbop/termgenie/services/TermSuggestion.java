@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services;
 
+import java.util.Set;
+
 import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTOntologyTerm;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -10,7 +12,7 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	private String label;
 	private GWTOntologyTerm identifier;
 	private String description;
-	private String externalLink;
+	private Set<String> synonyms;
 	
 	public TermSuggestion() {
 		super();
@@ -20,15 +22,15 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	 * @param label
 	 * @param identifier
 	 * @param description
-	 * @param externalLink
+	 * @param synonyms
 	 */
 	public TermSuggestion(String label, GWTOntologyTerm identifier, String description,
-			String externalLink) {
+			Set<String> synonyms) {
 		super();
 		this.label = label;
 		this.identifier = identifier;
 		this.description = description;
-		this.externalLink = externalLink;
+		this.synonyms = synonyms;
 	}
 
 	/**
@@ -74,17 +76,17 @@ public class TermSuggestion implements Suggestion, IsSerializable
 	}
 
 	/**
-	 * @return the externalLink
+	 * @return the synonyms
 	 */
-	public String getExternalLink() {
-		return externalLink;
+	public Set<String> getSynonyms() {
+		return synonyms;
 	}
 
 	/**
-	 * @param externalLink the externalLink to set
+	 * @param synonyms the synonyms to set
 	 */
-	public void setExternalLink(String externalLink) {
-		this.externalLink = externalLink;
+	public void setSynonyms(Set<String> synonyms) {
+		this.synonyms = synonyms;
 	}
 
 	@Override
@@ -98,8 +100,8 @@ public class TermSuggestion implements Suggestion, IsSerializable
 		if (description != null) {
 			sb.append("<td><b>Description</b></td>");
 		}
-		if (externalLink != null) {
-			sb.append("<td><b>External Link</b></td>");
+		if (synonyms != null & !synonyms.isEmpty()) {
+			sb.append("<td><b>Synonyms</b></td>");
 		}
 		sb.append("</tr>");
 		sb.append("<tr>");
@@ -108,8 +110,19 @@ public class TermSuggestion implements Suggestion, IsSerializable
 		if (description != null) {
 			sb.append("<td>").append(description).append("</td>");
 		}
-		if (externalLink != null) {
-			sb.append("<td><a href=\"").append(externalLink).append("\">link</a></td>");
+		if (synonyms != null && !synonyms.isEmpty()) {
+			sb.append("<td><a href=\"");
+			boolean first = true;
+			for(String synonym : synonyms) {
+				if (first) {
+					first = false;
+				}
+				else {
+					sb.append(", ");
+				}
+				sb.append(synonym);
+			}
+			sb.append("\">link</a></td>");
 		}
 		sb.append("</tr>");
 		sb.append("</table>");
