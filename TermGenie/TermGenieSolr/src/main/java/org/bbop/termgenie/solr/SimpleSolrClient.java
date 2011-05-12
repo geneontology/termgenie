@@ -1,6 +1,8 @@
 package org.bbop.termgenie.solr;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,16 +17,15 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 
-public class SimpleSolrClient implements OntologyTermSuggestor
-{
+public class SimpleSolrClient implements OntologyTermSuggestor {
 	private static final Logger logger = Logger.getLogger(SimpleSolrClient.class);
 	private final String baseUrl;
-	
+
 	public SimpleSolrClient() {
 		// default server
 		this("http://accordion.lbl.gov:8080/solr/select");
 	}
-	
+
 	/**
 	 * @param baseUrl
 	 */
@@ -39,54 +40,100 @@ public class SimpleSolrClient implements OntologyTermSuggestor
 		}
 		return null;
 	}
-	
+
 	private List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
 		// escape query string of solr/lucene query syntax
 		query = ClientUtils.escapeQueryChars(query);
 		try {
+			// simple query
 			SolrDocumentList results = query(query, branch, server, 0, maxCount);
-//			Float maxScore = results.getMaxScore();
-			List<OntologyTerm> terms = new ArrayList<OntologyTerm>(results.size());
-			for (SolrDocument solrDocument : results) {
-//				Float score = (Float) solrDocument.getFieldValue("score");
+
+			// deal with strange sorting for short queries and many hits with
+			// the same maximum score
+			Float maxScore = results.getMaxScore();
+			List<SolrDocument> solrDocuments = getDocumentsWithMaxScore(results, maxScore);
+			if (maxCount < 100 && solrDocuments.size() == maxCount
+					&& results.getNumFound() > maxCount) {
+				// assume there are even more hits with max score.
+				// need to fetch all (max 100), to re-rank the top hits
+				SolrDocumentList result2 = query(query, branch, server, maxCount, 100 - maxCount);
+				solrDocuments.addAll(getDocumentsWithMaxScore(result2, maxScore));
+				
+				// sort results by ascending label length
+				Collections.sort(solrDocuments, new Comparator<SolrDocument>() {
+
+					@Override
+					public int compare(SolrDocument o1, SolrDocument o2) {
+						final String label1 = o1.getFieldValue("label").toString();
+						final String label2 = o2.getFieldValue("label").toString();
+						int l1 = label1.length();
+						int l2 = label2.length();
+						return (l1 < l2 ? -1 : (l1 == l2 ? 0 : 1));
+					}
+				});
+				if (solrDocuments.size() > maxCount) {
+					solrDocuments = solrDocuments.subList(0, maxCount);
+				}
+			}
+			List<OntologyTerm> terms = new ArrayList<OntologyTerm>(solrDocuments.size());
+			for (SolrDocument solrDocument : solrDocuments) {
 				OntologyTerm term = getOntologyTerm(solrDocument);
 				if (term != null) {
 					terms.add(term);
 				}
 			}
 			return terms;
-			
+
 		} catch (SolrServerException exception) {
-			logger.warn("Problem quering solr server at: "+baseUrl, exception);
+			logger.warn("Problem quering solr server at: " + baseUrl, exception);
 			return null;
 		}
 	}
-	
-	private SolrDocumentList query(String query, String branch, CommonsHttpSolrServer server, int start, int chunkSize) throws SolrServerException {
-		SolrQuery solrQuery = new  SolrQuery().
-        setQuery("label:("+query+" "+query+"*)"). // search for query as literal string and as prefix
-        setRows(chunkSize). // length
-        setStart(start). // offset
-        setParam("version", "2.2").
-//        setParam("sort","score desc, label asc").
-        setParam("fl", "*,score"). // include score in results
-		addFilterQuery("document_category:ontology_class"); // search for ontology terms
+
+	private List<SolrDocument> getDocumentsWithMaxScore(SolrDocumentList results, Float maxScore) {
+		if (maxScore == null) {
+			return Collections.emptyList();
+		}
+		List<SolrDocument> documents = new ArrayList<SolrDocument>();
+		for (SolrDocument solrDocument : results) {
+			Float score = (Float) solrDocument.getFieldValue("score");
+			if (score != null && Math.abs(maxScore.floatValue() - score.floatValue()) <= 0.0001f) {
+				documents.add(solrDocument);
+			} else {
+				break;
+			}
+		}
+		return documents;
+	}
+
+	private SolrDocumentList query(String query, String branch, CommonsHttpSolrServer server,
+			int start, int chunkSize) throws SolrServerException {
+		SolrQuery solrQuery = new SolrQuery().
+		// search for query  as literal string and as prefix
+		setQuery("label:(" + query + " " + query + "*)"). 
+		setRows(chunkSize). // length
+		setStart(start). // offset
+		setParam("version", "2.2").
+		// include score in results
+		setParam("fl", "*,score"). 
+		// search for ontology terms
+		addFilterQuery("document_category:ontology_class"); 
 		if (branch != null) {
-			// search only for one branch 
-			// (biological_process,molecular_function,cellular_component)
+			// search only for one branch
+			// (i.e. biological_process, molecular_function, cellular_component)
 			solrQuery.addFilterQuery("source:" + branch);
 		}
 		QueryResponse rsp = server.query(solrQuery);
 		SolrDocumentList results = rsp.getResults();
 		return results;
 	}
-	
+
 	private static OntologyTerm getOntologyTerm(SolrDocument solrDocument) {
 		final String id = solrDocument.getFieldValue("id").toString();
 		final String label = solrDocument.getFieldValue("label").toString();
 		final String desc = solrDocument.getFieldValue("description").toString();
-		return new OntologyTerm(){
+		return new OntologyTerm() {
 
 			@Override
 			public String getId() {
@@ -112,7 +159,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor
 
 	/**
 	 * @param args
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		SimpleSolrClient client = new SimpleSolrClient();
@@ -121,14 +168,16 @@ public class SimpleSolrClient implements OntologyTermSuggestor
 			System.out.println(term);
 		}
 		// tried to reproduce the timeout or connection closed exceptions
-//		List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm", "biological_process", 10);
-//		for (OntologyTerm term : terms2) {
-//			System.out.println(term);
-//		}
-//		Thread.sleep(60*1000L);
-//		List<OntologyTerm> terms3 = client.searchGeneOntologyTerms("pigment", "biological_process", 10);
-//		for (OntologyTerm term : terms3) {
-//			System.out.println(term);
-//		}
+		// List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm",
+		// "biological_process", 10);
+		// for (OntologyTerm term : terms2) {
+		// System.out.println(term);
+		// }
+		// Thread.sleep(60*1000L);
+		// List<OntologyTerm> terms3 = client.searchGeneOntologyTerms("pigment",
+		// "biological_process", 10);
+		// for (OntologyTerm term : terms3) {
+		// System.out.println(term);
+		// }
 	}
 }
