@@ -11,19 +11,15 @@ import org.bbop.termgenie.services.TermSuggestion;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTOntologyTerm;
 import org.bbop.termgenie.solr.SimpleSolrClient;
 
-import owltools.graph.OWLGraphWrapper;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class OntologyServiceImpl extends RemoteServiceServlet implements OntologyService {
 
-	private static final String GENE_ONTOLOGY_NAME = "GeneOntology";
-
 	@Override
 	public List<String> getAvailableOntologies() {
 		// TODO Where do you get the list of available ontologies from?
-		return Arrays.asList(GENE_ONTOLOGY_NAME, "Test1","Test2");
+		return Arrays.asList(OntologyTools.GENE_ONTOLOGY_NAME, "Test1","Test2");
 	}
 
 	@Override
@@ -37,7 +33,7 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 		}
 		
 		//  get ontology
-		Ontology ontology = getOntology(ontologyName);
+		Ontology ontology = OntologyTools.instance.getOntology(ontologyName);
 		if (ontology == null) {
 			// unknown ontology, do nothing
 			return null;
@@ -61,63 +57,9 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 		return suggestions;
 	}
 
-	private Ontology getOntology(String ontology) {
-		// TODO remove hard-coded mapping and support more ontologies
-		if (ontology.startsWith(GENE_ONTOLOGY_NAME)) {
-			String branch = null;
-			int length = GENE_ONTOLOGY_NAME.length();
-			if (ontology.length() > length + 1 && ontology.charAt(length) == '|') {
-				branch = ontology.substring(length + 1);
-			} 
-			return new SimpleOntology(GENE_ONTOLOGY_NAME, branch);
-		}
-		return null;
-	}
-	
-	private final class SimpleOntology extends Ontology {
-		
-		private final String name;
-		private final String branch;
-	
-		/**
-		 * @param name
-		 * @param branch
-		 */
-		private SimpleOntology(String name, String branch) {
-			super();
-			this.name = name;
-			this.branch = branch;
-		}
-	
-		@Override
-		public OWLGraphWrapper getRealInstance() {
-			return null;
-		}
-	
-		@Override
-		public String getUniqueName() {
-			return name;
-		}
-	
-		@Override
-		public String getBranch() {
-			return branch;
-		}
-	}
-
-	private String getOntologyName(Ontology ontology) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(ontology.getUniqueName());
-		String branch = ontology.getBranch();
-		if (branch != null) {
-			sb.append('|');
-			sb.append(branch);
-		}
-		return sb.toString();
-	}
-	
 	private TermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
-		GWTOntologyTerm identifier = new GWTOntologyTerm(getOntologyName(ontology), term.getId());
+		String ontologyName = OntologyTools.instance.getOntologyName(ontology);
+		GWTOntologyTerm identifier = new GWTOntologyTerm(ontologyName, term.getId());
 		return new TermSuggestion(term.getLabel(), identifier , term.getDescription(), term.getReferenceLink());
 	}
 	

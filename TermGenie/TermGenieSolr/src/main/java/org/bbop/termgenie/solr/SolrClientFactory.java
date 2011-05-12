@@ -7,11 +7,12 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
 
 /**
- * Use static httpClient to minimize connection manager and hanging threads. See
- * https://issues.apache.org/jira/browse/SOLR-861 for more details.
+ * Use static httpClient to minimize the number of connection managers and
+ * hanging threads. See https://issues.apache.org/jira/browse/SOLR-861 for more
+ * details.
  */
 public class SolrClientFactory {
-	
+
 	private static HttpClient httpClient = new HttpClient();
 
 	public static synchronized CommonsHttpSolrServer getServer(String url) {

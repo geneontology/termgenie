@@ -14,9 +14,23 @@
 
 	<properties>
 		<gwt.version>2.3.0</gwt.version>
+		<outputDirectoryVar>${basedir}/target/classes</outputDirectoryVar>
+		<testOutputDirectoryVar>${basedir}/target/test-classes</testOutputDirectoryVar>
 	</properties>
 
+	<profiles>
+		<profile>
+      		<id>m2eclipse-gwt-settings</id>
+			<properties>
+				<outputDirectoryVar>${basedir}/src/main/webapp/WEB-INF/classes</outputDirectoryVar>
+				<testOutputDirectoryVar>${basedir}/src/main/webapp/WEB-INF/classes</testOutputDirectoryVar>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
+		<outputDirectory>${outputDirectoryVar}</outputDirectory>
+    	<testOutputDirectory>${testOutputDirectoryVar}</testOutputDirectory>
 	  	<plugins>
 	  		<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -74,11 +88,18 @@
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieSolr</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
 </project>

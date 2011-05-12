@@ -11,10 +11,81 @@ import org.bbop.termgenie.core.TermTemplate;
 
 public interface TermGenerationEngine {
 
-	public List<OntologyTerm> generateTerms(TermTemplate templateName, TermGenerationParameters parameters);
-	
+	public List<OntologyTerm> generateTerms(TermTemplate templateName,
+			TermGenerationParameters parameters);
+
+	public final class TermGenerationInput {
+
+		private final TermTemplate termTemplate;
+		private final TermGenerationParameters parameters;
+
+		/**
+		 * @param termTemplate
+		 * @param parameters
+		 */
+		private TermGenerationInput(TermTemplate termTemplate, TermGenerationParameters parameters) {
+			super();
+			this.termTemplate = termTemplate;
+			this.parameters = parameters;
+		}
+
+		/**
+		 * @return the termTemplate
+		 */
+		public TermTemplate getTermTemplate() {
+			return termTemplate;
+		}
+
+		/**
+		 * @return the parameters
+		 */
+		public TermGenerationParameters getParameters() {
+			return parameters;
+		}
+	}
+
+	public final class TermGenerationOutput {
+
+		private final TermGenerationInput input;
+		private final boolean success;
+		private final String message;
+
+		/**
+		 * @param input
+		 * @param success
+		 * @param message
+		 */
+		private TermGenerationOutput(TermGenerationInput input, boolean success, String message) {
+			super();
+			this.input = input;
+			this.success = success;
+			this.message = message;
+		}
+
+		/**
+		 * @return the input
+		 */
+		public TermGenerationInput getInput() {
+			return input;
+		}
+
+		/**
+		 * @return the success
+		 */
+		public boolean isSuccess() {
+			return success;
+		}
+
+		/**
+		 * @return the message
+		 */
+		public String getMessage() {
+			return message;
+		}
+	}
+
 	public final class TermGenerationParameters {
-		
+
 		private final MultiValueMap<OntologyTerm> terms;
 		private final MultiValueMap<String> strings;
 		private final MultiValueMap<List<String>> prefixes;
@@ -46,11 +117,11 @@ public interface TermGenerationEngine {
 			return prefixes;
 		}
 	}
-	
-	public static class MultiValueMap<V>{
-		
+
+	public static class MultiValueMap<V> {
+
 		private Map<String, List<V>> values = new HashMap<String, List<V>>();
-		
+
 		public V getValue(TemplateField key, int pos) {
 			List<V> list = values.get(calculateInteralKey(key));
 			if (list != null && list.size() > pos) {
@@ -66,7 +137,7 @@ public interface TermGenerationEngine {
 			}
 			return 0;
 		}
-		
+
 		public void addValue(V value, TemplateField key, int pos) {
 			final String internalKey = calculateInteralKey(key);
 			List<V> list = values.get(internalKey);
@@ -84,7 +155,7 @@ public interface TermGenerationEngine {
 				list.add(value);
 			}
 		}
-		
+
 		public String calculateInteralKey(TemplateField key) {
 			return key.getName();
 		}
@@ -97,7 +168,8 @@ public interface TermGenerationEngine {
 		}
 
 		/**
-		 * @param values the values to set
+		 * @param values
+		 *            the values to set
 		 */
 		void setValues(Map<String, List<V>> values) {
 			this.values = values;
