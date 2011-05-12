@@ -16,7 +16,14 @@ public class TermGenerationTool implements TermGenerationEngine {
 
 	private TermGenerationTool() {
 		super();
-		this.engine = null;
+		this.engine = new TermGenerationEngine() {
+			
+			@Override
+			public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 	}
 
 	public static synchronized TermGenerationTool getInstance() {
