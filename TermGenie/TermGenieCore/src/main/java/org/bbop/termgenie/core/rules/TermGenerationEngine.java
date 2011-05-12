@@ -5,14 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 
 public interface TermGenerationEngine {
 
-	public List<OntologyTerm> generateTerms(TermTemplate templateName,
-			TermGenerationParameters parameters);
+	/**
+	 * Generate term candidates for the given ontology, the corresponding
+	 * templates and the parameters.
+	 * 
+	 * @param ontology
+	 * @param generationTasks
+	 * @return candidates
+	 */
+	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks);
 
 	public final class TermGenerationInput {
 
@@ -46,20 +54,30 @@ public interface TermGenerationEngine {
 
 	public final class TermGenerationOutput {
 
+		private final OntologyTerm term;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
 
 		/**
+		 * @param term
 		 * @param input
 		 * @param success
 		 * @param message
 		 */
-		private TermGenerationOutput(TermGenerationInput input, boolean success, String message) {
+		private TermGenerationOutput(OntologyTerm term, TermGenerationInput input, boolean success, String message) {
 			super();
+			this.term = term;
 			this.input = input;
 			this.success = success;
 			this.message = message;
+		}
+
+		/**
+		 * @return the term
+		 */
+		public OntologyTerm getTerm() {
+			return term;
 		}
 
 		/**

@@ -1,5 +1,6 @@
 package org.bbop.termgenie.server;
 
+import static org.bbop.termgenie.server.TermGenerationMessageTool.*;
 import static org.bbop.termgenie.shared.ErrorMessages.*;
 
 import java.util.ArrayList;
@@ -85,12 +86,12 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 		List<GWTValidationHint> allErrors = new ArrayList<GWTFieldValidator.GWTValidationHint>();
 		for (GWTPair<GWTTermTemplate, GWTTermGenerationParameter> pair : allParameters) {
 			if (pair == null) {
-				return new GWTGenerationResponse("Unexpected null value.", null, null);
+				return new GWTGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
 			}
 			GWTTermTemplate one = pair.getOne();
 			GWTTermGenerationParameter parameter = pair.getTwo();
 			if (one == null || parameter == null) {
-				return new GWTGenerationResponse("Unexpected null value.", null, null);
+				return new GWTGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
 			}
 			// retrieve the template from the server, do not trust the submitted one.
 			TermTemplate template = getTermTemplate(ontologyName, one.getName());
@@ -126,17 +127,20 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			return new GWTGenerationResponse(NO_TERMS_GENERATED, null, null);
 		}
 		
-		GWTGenerationResponse generationResponse;
+		List<String> messages = new ArrayList<String>(candidates.size());
+		
 		// commit if required
 		if (commit) {
-			executeCommit(ontology, candidates);
-			// generate result for a proper commit
-			generationResponse = new GWTGenerationResponse(null, null, Collections.singletonList("Dummy Response."));
+			boolean success = executeCommit(ontology, candidates);
+			throw new RuntimeException("Not implemented");
+			// TODO generate result for a commit (success or error)? status?
 		}
 		else {
-			List<String> messages = new ArrayList<String>(candidates.size());
-			generationResponse = new GWTGenerationResponse(null, null, messages);
+			for(TermGenerationOutput candidate : candidates) {
+				messages.add(generateTermValidationMessage(candidate));
+			}
 		}
+		GWTGenerationResponse generationResponse = new GWTGenerationResponse(null, null, messages);
 		// return response
 		return generationResponse;
 	}
@@ -189,11 +193,11 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 	}
 
 	protected List<TermGenerationOutput> generateTermsInternal(Ontology ontology, List<TermGenerationInput> generationTasks) {
-		return Collections.emptyList(); 
+		return TermGenerationTool.getInstance().generateTerms(ontology, generationTasks); 
 	}
 
-	protected void executeCommit(Ontology ontology, List<TermGenerationOutput> candidates) {
-		throw new RuntimeException("Commit is currently not supported");
+	protected boolean executeCommit(Ontology ontology, List<TermGenerationOutput> candidates) {
+		return OntologyCommitTool.getInstance().commitCandidates(ontology, candidates);
 	}
 
 	/**
