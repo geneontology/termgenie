@@ -41,7 +41,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return null;
 	}
 
-	private List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
+	List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
 		// escape query string of solr/lucene query syntax
 		query = ClientUtils.escapeQueryChars(query);
@@ -61,17 +61,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 				solrDocuments.addAll(getDocumentsWithMaxScore(result2, maxScore));
 				
 				// sort results by ascending label length
-				Collections.sort(solrDocuments, new Comparator<SolrDocument>() {
-
-					@Override
-					public int compare(SolrDocument o1, SolrDocument o2) {
-						final String label1 = o1.getFieldValue("label").toString();
-						final String label2 = o2.getFieldValue("label").toString();
-						int l1 = label1.length();
-						int l2 = label2.length();
-						return (l1 < l2 ? -1 : (l1 == l2 ? 0 : 1));
-					}
-				});
+				sortbyLabelLength(solrDocuments);
 				if (solrDocuments.size() > maxCount) {
 					solrDocuments = solrDocuments.subList(0, maxCount);
 				}
@@ -91,7 +81,21 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		}
 	}
 
-	private List<SolrDocument> getDocumentsWithMaxScore(SolrDocumentList results, Float maxScore) {
+	void sortbyLabelLength(List<SolrDocument> solrDocuments) {
+		Collections.sort(solrDocuments, new Comparator<SolrDocument>() {
+
+			@Override
+			public int compare(SolrDocument o1, SolrDocument o2) {
+				final String label1 = o1.getFieldValue("label").toString();
+				final String label2 = o2.getFieldValue("label").toString();
+				int l1 = label1.length();
+				int l2 = label2.length();
+				return (l1 < l2 ? -1 : (l1 == l2 ? 0 : 1));
+			}
+		});
+	}
+
+	List<SolrDocument> getDocumentsWithMaxScore(SolrDocumentList results, Float maxScore) {
 		if (maxScore == null) {
 			return Collections.emptyList();
 		}
@@ -107,7 +111,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return documents;
 	}
 
-	private SolrDocumentList query(String query, String branch, CommonsHttpSolrServer server,
+	SolrDocumentList query(String query, String branch, CommonsHttpSolrServer server,
 			int start, int chunkSize) throws SolrServerException {
 		SolrQuery solrQuery = new SolrQuery().
 		// search for query  as literal string and as prefix
@@ -129,7 +133,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return results;
 	}
 
-	private static OntologyTerm getOntologyTerm(SolrDocument solrDocument) {
+	static OntologyTerm getOntologyTerm(SolrDocument solrDocument) {
 		final String id = solrDocument.getFieldValue("id").toString();
 		final String label = solrDocument.getFieldValue("label").toString();
 		final String desc = solrDocument.getFieldValue("description").toString();
