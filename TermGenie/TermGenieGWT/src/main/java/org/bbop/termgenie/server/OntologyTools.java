@@ -1,60 +1,49 @@
 package org.bbop.termgenie.server;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 
-import owltools.graph.OWLGraphWrapper;
-
+/**
+ * Stub for providing some basic ontology and pattern input.
+ * TODO replace this with calls to the proper load methods: to be implemented 
+ */
 public class OntologyTools {
-	
-	static final String GENE_ONTOLOGY_NAME = "GeneOntology";
 	
 	static final OntologyTools instance = new OntologyTools();
 	
-	Ontology getOntology(String ontology) {
-		// TODO remove hard-coded mapping and support more ontologies
-		if (ontology.startsWith(GENE_ONTOLOGY_NAME)) {
-			String branch = null;
-			int length = GENE_ONTOLOGY_NAME.length();
-			if (ontology.length() > length + 1 && ontology.charAt(length) == '|') {
-				branch = ontology.substring(length + 1);
-			} 
-			return new SimpleOntology(GENE_ONTOLOGY_NAME, branch);
-		}
-		return null;
-	}
+	private final Map<String, Ontology> ontologyInstances;
+	private final Map<Ontology, String> reverseOntologyInstances;
+	private final Map<String, List<TermTemplate>> templates;
 	
-	private final class SimpleOntology extends Ontology {
+	public OntologyTools() {
+		ontologyInstances = new HashMap<String, Ontology>();
+		reverseOntologyInstances = new HashMap<Ontology, String>();
+		templates = new HashMap<String, List<TermTemplate>>();
 		
-		private final String name;
-		private final String branch;
-	
-		/**
-		 * @param name
-		 * @param branch
-		 */
-		private SimpleOntology(String name, String branch) {
-			super();
-			this.name = name;
-			this.branch = branch;
+		for(Ontology ontology : DefaultTermTemplates.defaultOntologies) {
+			addOntology(ontology);
 		}
-	
-		@Override
-		public OWLGraphWrapper getRealInstance() {
-			return null;
-		}
-	
-		@Override
-		public String getUniqueName() {
-			return name;
-		}
-	
-		@Override
-		public String getBranch() {
-			return branch;
+		for (TermTemplate template : DefaultTermTemplates.defaultTemplates) {
+			List<Ontology> ontologies = template.getCorrespondingOntologies();
+			for (Ontology ontology : ontologies) {
+				String name = getOntologyName(ontology);
+				List<TermTemplate> list = templates.get(name);
+				if (list == null) {
+					list = new ArrayList<TermTemplate>();
+					templates.put(name, list);
+				}
+				list.add(template);
+			}
 		}
 	}
-
-	String getOntologyName(Ontology ontology) {
+	
+	private void addOntology(Ontology ontology) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ontology.getUniqueName());
 		String branch = ontology.getBranch();
@@ -62,6 +51,24 @@ public class OntologyTools {
 			sb.append('|');
 			sb.append(branch);
 		}
-		return sb.toString();
+		String name = sb.toString();
+		ontologyInstances.put(name, ontology);
+		reverseOntologyInstances.put(ontology, name);
+	}
+	
+	Ontology getOntology(String ontology) {
+		return ontologyInstances.get(ontology);
+	}
+
+	String getOntologyName(Ontology ontology) {
+		return reverseOntologyInstances.get(ontology);
+	}
+	
+	List<String> getAvailableOntologyNames() {
+		return new ArrayList<String>(templates.keySet());
+	}
+	
+	List<TermTemplate> getTermTemplates(String ontologyName) {
+		return templates.get(ontologyName);
 	}
 }

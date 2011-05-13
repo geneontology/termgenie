@@ -21,9 +21,9 @@ public class GenerateTermsServiceImplTest {
 
 		@Override
 		protected Collection<TermTemplate> requestTemplates(String ontology) {
-			if (OntologyTools.GENE_ONTOLOGY_NAME.equals(ontology)) {
+			if ("test".equals(ontology)) {
 				return DefaultTermTemplates.defaultTemplates;
-			} 
+			}
 			return Collections.emptySet();
 		}
 		
@@ -31,7 +31,7 @@ public class GenerateTermsServiceImplTest {
 	
 	@Test
 	public void testGetAvailableGWTTermTemplates() {
-		GWTTermTemplate[] termTemplates = instance.getAvailableGWTTermTemplates(OntologyTools.GENE_ONTOLOGY_NAME);
+		GWTTermTemplate[] termTemplates = instance.getAvailableGWTTermTemplates("test");
 		assertNotNull(termTemplates);
 		assertTrue(termTemplates.length > 0);
 	}
@@ -50,7 +50,7 @@ public class GenerateTermsServiceImplTest {
 		assertNotNull(response.getGeneralError());
 		
 //		instance.generateTerms(OntologyTools.GENE_ONTOLOGY_NAME, allParameters, commit, username, password);
-//		fail("Not yet implemented");
+		fail("Not yet implemented");
 	}
 
 }

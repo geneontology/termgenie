@@ -1,7 +1,6 @@
 package org.bbop.termgenie.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
@@ -18,8 +17,7 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 
 	@Override
 	public List<String> getAvailableOntologies() {
-		// TODO Where do you get the list of available ontologies from?
-		return Arrays.asList(OntologyTools.GENE_ONTOLOGY_NAME, "Test1","Test2");
+		return OntologyTools.instance.getAvailableOntologyNames();
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.server.ValidateUserCredentialServiceImpl.UserCredentialValidator;
@@ -181,11 +180,11 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 	 */
 	protected Collection<TermTemplate> requestTemplates(String ontology) {
 		// TODO add call to rule engine for retrieval of available templates
-		if ("GeneOntology".equals(ontology)) {
-			return DefaultTermTemplates.defaultTemplates;
-		} else {
-			return Collections.emptySet();
+		List<TermTemplate> templates = OntologyTools.instance.getTermTemplates(ontology);
+		if (templates == null) {
+			templates = Collections.emptyList();
 		}
+		return templates;
 	}
 
 	protected boolean validateCredentials(String username, String password) {
