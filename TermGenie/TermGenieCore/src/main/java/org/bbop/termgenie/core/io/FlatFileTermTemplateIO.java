@@ -100,14 +100,21 @@ public class FlatFileTermTemplateIO {
 			writer.newLine();
 			
 			// boolean required
-			writer.append(FLAT_FILE_TAG_REQUIRED).append(SEPARATOR_CHAR).append(Boolean.toString(templateField.isRequired()));
-			writer.newLine();
+			if (templateField.isRequired()) {
+				// assume not required as default.
+				writer.append(FLAT_FILE_TAG_REQUIRED).append(SEPARATOR_CHAR).append(Boolean.toString(templateField.isRequired()));
+				writer.newLine();
+			}
 			
 			// Cardinality cardinality;
 			Cardinality cardinality = templateField.getCardinality();
 			if (cardinality != null) {
-				writer.append(FLAT_FILE_TAG_CARDINALITY).append(SEPARATOR_CHAR).append(CardinalityHelper.serializeCardinality(cardinality));
-				writer.newLine();
+				String serializedCardinality = CardinalityHelper.serializeCardinality(cardinality);
+				if (serializedCardinality != null) {
+					writer.append(FLAT_FILE_TAG_CARDINALITY).append(SEPARATOR_CHAR);
+					writer.append(serializedCardinality);
+					writer.newLine();
+				}
 			}
 			
 			// List<String> functionalPrefixes;
@@ -183,13 +190,22 @@ public class FlatFileTermTemplateIO {
 			for (Map<String, String> map : this.fields) {
 				TemplateField templateField = new TemplateField(
 						map.get(FLAT_FILE_TAG_NAME), 
-						Boolean.parseBoolean(map.get(FLAT_FILE_TAG_REQUIRED)), 
+						parseRequired(map), 
 						CardinalityHelper.parseCardinality(map.get(FLAT_FILE_TAG_CARDINALITY)), 
 						ListHelper.parseString(map.get(FLAT_FILE_TAG_PREFIXES), SEPARATOR_CHAR), 
 						OntologyHelper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
 				fields.add(templateField);
 			}
 			return fields;
+		}
+
+		protected boolean parseRequired(Map<String, String> map) {
+			String requiredString = map.get(FLAT_FILE_TAG_REQUIRED);
+			if (requiredString != null) {
+				return Boolean.parseBoolean(requiredString);
+			}
+			// assume a field as not required, if not specified
+			return false;
 		}
 		
 	}

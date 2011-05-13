@@ -6,14 +6,11 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 prefixes	regulation	negative_regulation	positive_regulation
 ontology	GeneOntology	biological_process
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -31,14 +28,11 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 prefixes	regulation	negative_regulation	positive_regulation
 ontology	GeneOntology	molecular_function
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -55,34 +49,24 @@ ontology	GeneOntology
 FIELD
 name	part
 required	true
-cardinality	1
 ontology	GeneOntology	biological_process
 #
 FIELD
 name	whole
 required	true
-cardinality	1
 ontology	GeneOntology	biological_process
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -99,34 +83,24 @@ ontology	GeneOntology
 FIELD
 name	process
 required	true
-cardinality	1
 ontology	GeneOntology	biological_process
 #
 FIELD
 name	location
 required	true
-cardinality	1
 ontology	GeneOntology	cellular_component
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -143,34 +117,24 @@ ontology	GeneOntology
 FIELD
 name	part
 required	true
-cardinality	1
 ontology	GeneOntology	cellular_component
 #
 FIELD
 name	whole
 required	true
-cardinality	1
 ontology	GeneOntology	cellular_component
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -187,28 +151,19 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	ProteinOntology
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -225,28 +180,19 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	Uberon	Metazoan
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -263,28 +209,19 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	Uberon	Metazoan
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -301,28 +238,19 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	Uberon	Plant
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -336,28 +264,19 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	Uberon	Plant
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -368,6 +287,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	structural_protein_complex
+description	protein complex defined structurally
 ontology	GeneOntology
 #
 FIELD
@@ -378,23 +298,15 @@ ontology	ProteinOntology
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -412,28 +324,19 @@ ontology	HumanPhenotype
 FIELD
 name	target
 required	true
-cardinality	1
 ontology	FMA
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -450,34 +353,24 @@ ontology	HumanPhenotype
 FIELD
 name	entity
 required	true
-cardinality	1
 ontology	FMA
 #
 FIELD
 name	quality
 required	true
-cardinality	1
 ontology	PATO
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -494,34 +387,24 @@ ontology	OMP
 FIELD
 name	entity
 required	true
-cardinality	1
 ontology	GeneOntology
 #
 FIELD
 name	quality
 required	true
-cardinality	1
 ontology	PATO
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -538,34 +421,24 @@ ontology	CL
 FIELD
 name	cell
 required	true
-cardinality	1
 ontology	CL
 #
 FIELD
 name	location
 required	true
-cardinality	1
 ontology	Uberon	Metazoan
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
 #
 RULE	TermRule
 Dummy Rule
@@ -582,34 +455,59 @@ ontology	CL
 FIELD
 name	cell
 required	true
-cardinality	1
 ontology	CL
 #
 FIELD
 name	membrane_part
 required	true
-cardinality	1
+cardinality	1..N
 ontology	ProteinOntology|GeneOntology	cellular_component
 #
 FIELD
 name	Name
-required	false
-cardinality	1
 #
 FIELD
 name	Definition
-required	false
-cardinality	1
 #
 FIELD
 name	DefX_Ref
-required	false
-cardinality	1
 #
 FIELD
 name	Comment
-required	false
-cardinality	1
+#
+RULE	TermRule
+Dummy Rule
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	metazoan_location_specific_anatomical_structure
+description	location-specific anatomical structure
+ontology	Uberon
+#
+FIELD
+name	part
+required	true
+ontology	Uberon	Metazoan
+#
+FIELD
+name	whole
+required	true
+ontology	Uberon	Metazoan
+#
+FIELD
+name	Name
+#
+FIELD
+name	Definition
+#
+FIELD
+name	DefX_Ref
+#
+FIELD
+name	Comment
 #
 RULE	TermRule
 Dummy Rule

@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.io.FlatFileTermTemplateIO;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateRule;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.io.FlatFileTermTemplateIO;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -33,6 +33,7 @@ public class DefaultTermTemplates {
 	protected final static Ontology GENE_ONTOLOGY_MF = create("GeneOntology", "molecular_function");
 	protected final static Ontology GENE_ONTOLOGY_CC = create("GeneOntology", "cellular_component");
 	protected final static Ontology PROTEIN_ONTOLOGY = create("ProteinOntology", null);
+	protected final static Ontology UBERON_ONTOLOGY = create("Uberon", null);
 	protected final static Ontology UBERON_ONTOLOGY_METAZOAN = create("Uberon", "Metazoan");
 	protected final static Ontology UBERON_ONTOLOGY_PLANT = create("Uberon", "Plant");
 	protected final static Ontology HP_ONTOLOGY = create("HumanPhenotype", null);
@@ -130,7 +131,7 @@ public class DefaultTermTemplates {
 			new TemplateField("Comment"));
 	
 	protected final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
-			null,
+			"protein complex defined structurally",
 			createRules("Dummy Rule\n2nd line","Dummy Name Rule\n2nd line"),
 			new TemplateField("protein units", true, TemplateField.TWO_TO_N_CARDINALITY, null, PROTEIN_ONTOLOGY),
 			new TemplateField("Name"),
@@ -181,7 +182,17 @@ public class DefaultTermTemplates {
 			"A cell type differentiated by proteins or complexes on the plasma membrane",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("cell", CELL_ONTOLOGY),
-			new TemplateField("membrane_part", Arrays.asList(PROTEIN_ONTOLOGY, GENE_ONTOLOGY_CC)),
+			new TemplateField("membrane_part", true, TemplateField.ONE_TO_N_CARDINALITY, Arrays.asList(PROTEIN_ONTOLOGY, GENE_ONTOLOGY_CC)),
+			new TemplateField("Name"),
+			new TemplateField("Definition"),
+			new TemplateField("DefX_Ref"),
+			new TemplateField("Comment"));
+	
+	protected final static TermTemplate metazoan_location_specific_anatomical_structure = create(UBERON_ONTOLOGY, "metazoan_location_specific_anatomical_structure",
+			"location-specific anatomical structure",
+			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
+			new TemplateField("part", UBERON_ONTOLOGY_METAZOAN),
+			new TemplateField("whole", UBERON_ONTOLOGY_METAZOAN),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),

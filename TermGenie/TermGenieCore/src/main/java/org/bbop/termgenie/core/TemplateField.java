@@ -31,13 +31,29 @@ public class TemplateField implements OntologyAware {
 	};
 	
 	/**
-	 * Constant: Fields, which require at least two inputs of of the same type. 
+	 * Constant: Fields, which require at least two inputs of the same type. 
 	 */
 	public static final Cardinality TWO_TO_N_CARDINALITY = new Cardinality() {
 		
 		@Override
 		public int getMinimum() {
 			return 2;
+		}
+		
+		@Override
+		public int getMaximum() {
+			return Integer.MAX_VALUE;
+		}
+	};
+	
+	/**
+	 * Constant: Fields, which require at least one input. 
+	 */
+	public static final Cardinality ONE_TO_N_CARDINALITY = new Cardinality() {
+		
+		@Override
+		public int getMinimum() {
+			return 1;
 		}
 		
 		@Override
