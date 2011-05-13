@@ -8,8 +8,9 @@ import java.util.List;
  */
 public class TermTemplate implements OntologyAware {
 
-	private final Ontology correspondingOntology;
+	private final List<Ontology> correspondingOntologies;
 	private final String name;
+	private final String description;
 	private final List<TemplateField> fields;
 	private final List<TemplateRule> rules;
 	
@@ -17,17 +18,16 @@ public class TermTemplate implements OntologyAware {
 	// what is the actual template?, How to handle automatic name generation?
 	// who is allowed to use this rule?
 	
-	
 	/**
 	 * @param correspondingOntology
 	 * @param name
 	 * @param fields
 	 * @param rules
 	 */
-	public TermTemplate(Ontology correspondingOntology, String name,
+	public TermTemplate(Ontology correspondingOntology, String name, String description,
 			List<TemplateField> fields, List<TemplateRule> rules) {
 		super();
-		this.correspondingOntology = correspondingOntology;
+		this.correspondingOntologies = Collections.singletonList(correspondingOntology);
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("The name, must never be empty");
 		}
@@ -37,11 +37,12 @@ public class TermTemplate implements OntologyAware {
 		}
 		this.fields = Collections.unmodifiableList(fields);
 		this.rules = rules;
+		this.description = description;
 	}
 
 	@Override
-	public Ontology getCorrespondingOntology() {
-		return correspondingOntology;
+	public List<Ontology> getCorrespondingOntologies() {
+		return correspondingOntologies;
 	}
 
 	/**
@@ -65,6 +66,13 @@ public class TermTemplate implements OntologyAware {
 		return rules;
 	}
 	
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
 	/**
 	 * Retrieve the field for a given name.
 	 * 

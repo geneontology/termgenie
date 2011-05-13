@@ -1,5 +1,6 @@
 TEMPLATE
 name	all_regulation
+description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
 #
 FIELD
@@ -24,6 +25,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	all_regulation_mf
+description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for molecular functions). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
 #
 FIELD
@@ -47,6 +49,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	involved_in
+description	processes involved in other processes
 ontology	GeneOntology
 #
 FIELD
@@ -90,6 +93,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	takes_place_in
+description	processes occurring in parts of the cell
 ontology	GeneOntology
 #
 FIELD
@@ -133,6 +137,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	part_of_cell_component
+description	cell components part of other cell components
 ontology	GeneOntology
 #
 FIELD
@@ -176,6 +181,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	protein_binding
+description	binding to a protein
 ontology	GeneOntology
 #
 FIELD
@@ -213,6 +219,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	metazoan_development
+description	development of an animal anatomical structure
 ontology	GeneOntology
 #
 FIELD
@@ -250,6 +257,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	metazoan_morphogenesis
+description	morphogenesis of an animal anatomical structure'
 ontology	GeneOntology
 #
 FIELD
@@ -287,6 +295,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	plant_development
+description	development of a plant anatomical structure
 ontology	GeneOntology
 #
 FIELD
@@ -321,6 +330,7 @@ Dummy Rule
 
 TEMPLATE
 name	plant_morphogenesis
+description	morphogenesis of a plant animal anatomical structure
 ontology	GeneOntology
 #
 FIELD
@@ -389,6 +399,220 @@ cardinality	1
 RULE	TermRule
 Dummy Rule
 2nd line
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	abnormal_morphology
+description	Abnormal X morphology
+ontology	HumanPhenotype
+#
+FIELD
+name	target
+required	true
+cardinality	1
+ontology	FMA
+#
+FIELD
+name	Name
+required	false
+cardinality	1
+#
+FIELD
+name	Definition
+required	false
+cardinality	1
+#
+FIELD
+name	DefX_Ref
+required	false
+cardinality	1
+#
+FIELD
+name	Comment
+required	false
+cardinality	1
+#
+RULE	TermRule
+Dummy Rule
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	hpo_entity_quality
+description	basic EQ template
+ontology	HumanPhenotype
+#
+FIELD
+name	entity
+required	true
+cardinality	1
+ontology	FMA
+#
+FIELD
+name	quality
+required	true
+cardinality	1
+ontology	PATO
+#
+FIELD
+name	Name
+required	false
+cardinality	1
+#
+FIELD
+name	Definition
+required	false
+cardinality	1
+#
+FIELD
+name	DefX_Ref
+required	false
+cardinality	1
+#
+FIELD
+name	Comment
+required	false
+cardinality	1
+#
+RULE	TermRule
+Dummy Rule
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	omp_entity_quality
+description	basic EQ template
+ontology	OMP
+#
+FIELD
+name	entity
+required	true
+cardinality	1
+ontology	GeneOntology
+#
+FIELD
+name	quality
+required	true
+cardinality	1
+ontology	PATO
+#
+FIELD
+name	Name
+required	false
+cardinality	1
+#
+FIELD
+name	Definition
+required	false
+cardinality	1
+#
+FIELD
+name	DefX_Ref
+required	false
+cardinality	1
+#
+FIELD
+name	Comment
+required	false
+cardinality	1
+#
+RULE	TermRule
+Dummy Rule
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	metazoan_location_specific_cell
+description	A cell type differentiated by its anatomical location (animals)
+ontology	CL
+#
+FIELD
+name	cell
+required	true
+cardinality	1
+ontology	CL
+#
+FIELD
+name	location
+required	true
+cardinality	1
+ontology	Uberon	Metazoan
+#
+FIELD
+name	Name
+required	false
+cardinality	1
+#
+FIELD
+name	Definition
+required	false
+cardinality	1
+#
+FIELD
+name	DefX_Ref
+required	false
+cardinality	1
+#
+FIELD
+name	Comment
+required	false
+cardinality	1
+#
+RULE	TermRule
+Dummy Rule
+RULE	NameRule
+Dummy Name Rule
+2nd line
+
+
+TEMPLATE
+name	cell_by_surface_marker
+description	A cell type differentiated by proteins or complexes on the plasma membrane
+ontology	CL
+#
+FIELD
+name	cell
+required	true
+cardinality	1
+ontology	CL
+#
+FIELD
+name	membrane_part
+required	true
+cardinality	1
+ontology	ProteinOntology|GeneOntology	cellular_component
+#
+FIELD
+name	Name
+required	false
+cardinality	1
+#
+FIELD
+name	Definition
+required	false
+cardinality	1
+#
+FIELD
+name	DefX_Ref
+required	false
+cardinality	1
+#
+FIELD
+name	Comment
+required	false
+cardinality	1
+#
+RULE	TermRule
+Dummy Rule
 RULE	NameRule
 Dummy Name Rule
 2nd line

@@ -1,5 +1,6 @@
 package org.bbop.termgenie.core;
 
+import java.util.List;
 import java.util.Set;
 
 import owltools.graph.OWLGraphWrapper;
@@ -13,9 +14,9 @@ public interface OntologyAware {
 	/**
 	 * Retrieve the corresponding ontology, connected to this object.
 	 * 
-	 * @return ontology or null if not available
+	 * @return List of ontologies or null if not available
 	 */
-	public Ontology getCorrespondingOntology();
+	public List<Ontology> getCorrespondingOntologies();
 	
 	/**
 	 * Wrapper of an ontology, provides additional methods for identifying the ontology.

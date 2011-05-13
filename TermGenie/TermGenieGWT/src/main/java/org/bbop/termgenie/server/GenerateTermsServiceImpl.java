@@ -232,9 +232,14 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			Cardinality c = field.getCardinality();
 			gwtField.setCardinality(new GWTCardinality(c.getMinimum(), c.getMaximum()));
 			gwtField.setFunctionalPrefixes(field.getFunctionalPrefixes().toArray(new String[0]));
-			Ontology ontology = field.getCorrespondingOntology();
-			if (ontology != null) {
-				gwtField.setOntology(ontology.getUniqueName());
+			if (field.hasCorrespondingOntologies()) {
+				List<Ontology> ontologies = field.getCorrespondingOntologies();
+				String[] ontologyNames = new String[ontologies.size()];
+				for (int i = 0; i < ontologyNames.length; i++) {
+					Ontology ontology = ontologies.get(i);
+					ontologyNames[i] = OntologyTools.instance.getOntologyName(ontology);
+				}
+				gwtField.setOntologies(ontologyNames);
 			}
 			return gwtField;
 		}

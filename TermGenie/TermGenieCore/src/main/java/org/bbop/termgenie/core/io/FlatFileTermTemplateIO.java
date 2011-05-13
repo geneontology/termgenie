@@ -31,6 +31,7 @@ public class FlatFileTermTemplateIO {
 	private static final String FLAT_FILE_TAG_PREFIXES = "prefixes";
 	private static final String FLAT_FILE_TAG_CARDINALITY = "cardinality";
 	private static final String FLAT_FILE_TAG_REQUIRED = "required";
+	private static final String FLAT_FILE_TAG_DESCRIPTION = "description";
 	private static final String FLAT_FILE_TAG_NAME = "name";
 	private static final String FLAT_FILE_TAG_TEMPLATE = "TEMPLATE";
 	private static final String FLAT_FILE_TAG_FIELD = "FIELD";
@@ -77,8 +78,14 @@ public class FlatFileTermTemplateIO {
 		writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(template.getName());
 		writer.newLine();
 		
-		// ontology
-		addOntology(template.getCorrespondingOntology(), writer);
+		// description
+		String description = template.getDescription();
+		if (description != null) {
+			writer.append(FLAT_FILE_TAG_DESCRIPTION).append(SEPARATOR_CHAR).append(description);
+			writer.newLine();
+		}
+		// ontologies
+		addOntologies(template.getCorrespondingOntologies(), writer);
 		
 		// template fields
 		for (TemplateField templateField : template.getFields()) {
@@ -111,7 +118,7 @@ public class FlatFileTermTemplateIO {
 			}
 			
 			// Ontology correspondingOntology;
-			addOntology(templateField.getCorrespondingOntology(), writer);
+			addOntologies(templateField.getCorrespondingOntologies(), writer);
 		}
 		// rule
 		List<TemplateRule> rules = template.getRules();
@@ -127,9 +134,9 @@ public class FlatFileTermTemplateIO {
 		}
 	}
 	
-	private void addOntology(Ontology ontology, BufferedWriter writer) throws IOException {
-		if (ontology != null) {
-			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(OntologyHelper.serializeOntology(ontology));
+	private void addOntologies(List<Ontology> ontologies, BufferedWriter writer) throws IOException {
+		if (ontologies != null && !ontologies.isEmpty()) {
+			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(OntologyHelper.serializeOntologies(ontologies));
 			writer.newLine();
 		}
 	}
@@ -137,6 +144,7 @@ public class FlatFileTermTemplateIO {
 	private class ReadData {
 		String ontology = null;
 		String name = null;
+		String description = null;
 		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
 		Map<String, String> currentField = null;
 		Map<String, StringBuilder> rules = new LinkedHashMap<String, StringBuilder>();
@@ -153,7 +161,8 @@ public class FlatFileTermTemplateIO {
 		}
 		
 		TermTemplate createTermTemplate() {
-			TermTemplate termTermplate = new TermTemplate(getOntology(ontology), name, createFields(), createRule(rules));
+			List<Ontology> ontologies = getOntologies(ontology);
+			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, description, createFields(), createRule(rules));
 			return termTermplate;
 		}
 		
@@ -165,8 +174,8 @@ public class FlatFileTermTemplateIO {
 			return list;
 		}
 		
-		private Ontology getOntology(String ontology) {
-			return OntologyHelper.readOntology(ontology);
+		private List<Ontology> getOntologies(String ontologiesString) {
+			return OntologyHelper.readOntologies(ontologiesString);
 		}
 
 		private List<TemplateField> createFields() {
@@ -177,7 +186,7 @@ public class FlatFileTermTemplateIO {
 						Boolean.parseBoolean(map.get(FLAT_FILE_TAG_REQUIRED)), 
 						CardinalityHelper.parseCardinality(map.get(FLAT_FILE_TAG_CARDINALITY)), 
 						ListHelper.parseString(map.get(FLAT_FILE_TAG_PREFIXES), SEPARATOR_CHAR), 
-						OntologyHelper.readOntology(map.get(FLAT_FILE_TAG_ONTOLOGY)));
+						OntologyHelper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
 				fields.add(templateField);
 			}
 			return fields;
@@ -213,6 +222,8 @@ public class FlatFileTermTemplateIO {
 				} else {
 					data.currentField.put(FLAT_FILE_TAG_NAME, value);
 				}
+			} else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
+				data.description = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {
 				if (data.currentField == null) {
 					data.ontology = value;

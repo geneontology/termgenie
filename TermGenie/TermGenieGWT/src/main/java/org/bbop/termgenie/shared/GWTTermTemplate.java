@@ -60,7 +60,7 @@ public class GWTTermTemplate implements IsSerializable {
 		private boolean required;
 		private GWTCardinality cardinality;
 		private String[] functionalPrefixes;
-		private String ontology;
+		private String[] ontologies;
 
 		public GWTTemplateField() {
 			super();
@@ -74,13 +74,13 @@ public class GWTTermTemplate implements IsSerializable {
 		 * @param ontology
 		 */
 		public GWTTemplateField(String name, boolean required, GWTCardinality cardinality,
-				String[] functionalPrefixes, String ontology) {
+				String[] functionalPrefixes, String[] ontologies) {
 			super();
 			this.name = name;
 			this.required = required;
 			this.cardinality = cardinality;
 			this.functionalPrefixes = functionalPrefixes;
-			this.ontology = ontology;
+			this.ontologies = ontologies;
 		}
 
 		/**
@@ -144,18 +144,21 @@ public class GWTTermTemplate implements IsSerializable {
 		}
 
 		/**
-		 * @return the ontology
+		 * @return the ontologies
 		 */
-		public String getOntology() {
-			return ontology;
+		public String[] getOntologies() {
+			return ontologies;
 		}
 
 		/**
-		 * @param ontology
-		 *            the ontology to set
+		 * @param ontologies the ontologies to set
 		 */
-		public void setOntology(String ontology) {
-			this.ontology = ontology;
+		public void setOntologies(String[] ontologies) {
+			this.ontologies = ontologies;
+		}
+		
+		public boolean hasOntologies() {
+			return ontologies != null && ontologies.length > 0; 
 		}
 	}
 

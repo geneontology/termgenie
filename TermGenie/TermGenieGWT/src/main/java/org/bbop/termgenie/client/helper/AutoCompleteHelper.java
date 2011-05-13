@@ -24,12 +24,13 @@ public class AutoCompleteHelper {
 	/**
 	 * Retrieve or create (if it not exists) an oracle for the given ontology.
 	 * 
-	 * @param ontology
+	 * @param strings
 	 * @return oracle
 	 */
-	public static GenericSuggestOracle<TermSuggestion> getSuggestOracle(final String ontology) {
+	public static GenericSuggestOracle<TermSuggestion> getSuggestOracle(final String[] strings) {
 		synchronized (oracles) {
-			GenericSuggestOracle<TermSuggestion> suggestOracle = oracles.get(ontology);
+			String key = calculateKey(strings);
+			GenericSuggestOracle<TermSuggestion> suggestOracle = oracles.get(key);
 			if (suggestOracle == null) {
 				suggestOracle = new GenericSuggestOracle<TermSuggestion>() {
 
@@ -43,7 +44,7 @@ public class AutoCompleteHelper {
 								callback.onSuggestionsReady(request, new GenericResponse<TermSuggestion>(result));
 							}
 						};
-						OntologyServiceAsync.Util.getInstance().autocompleteQuery(query, ontology, MAX_SUGGESTIONS, t);
+						OntologyServiceAsync.Util.getInstance().autocompleteQuery(query, strings, MAX_SUGGESTIONS, t);
 						
 					}
 
@@ -52,9 +53,21 @@ public class AutoCompleteHelper {
 						return true;
 					}
 				};
-				oracles.put(ontology, suggestOracle);
+				oracles.put(key, suggestOracle);
 			}
 			return suggestOracle;
 		}
+	}
+
+	private static String calculateKey(String[] strings) {
+		if (strings.length == 1) {
+			return strings[0];
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String string : strings) {
+			sb.append("||");
+			sb.append(string);
+		}
+		return sb.toString();
 	}
 }

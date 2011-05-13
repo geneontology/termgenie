@@ -114,10 +114,9 @@ public class TermTemplateWidget extends FlowPanel {
 	}
 
 	private DataInputField createDataInputField(GWTTemplateField field) {
-		String ontology = field.getOntology();
 		DataInputField dataField;
-		if (ontology != null) {
-			GenericSuggestOracle<TermSuggestion> oracle = AutoCompleteHelper.getSuggestOracle(ontology);
+		if (field.hasOntologies()) {
+			GenericSuggestOracle<TermSuggestion> oracle = AutoCompleteHelper.getSuggestOracle(field.getOntologies());
 			GWTCardinality cardinality = field.getCardinality();
 			if (cardinality.getMin() == 1 && cardinality.getMax() == 1) {
 				String[] functionalPrefixes = field.getFunctionalPrefixes();

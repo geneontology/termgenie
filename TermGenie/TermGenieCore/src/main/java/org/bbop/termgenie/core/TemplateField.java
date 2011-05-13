@@ -12,7 +12,7 @@ public class TemplateField implements OntologyAware {
 	private final boolean required;
 	private final Cardinality cardinality;
 	private final List<String> functionalPrefixes;
-	private final Ontology correspondingOntology;
+	private final List<Ontology> correspondingOntologies;
 
 	/**
 	 * Constant: Fields, which require exactly one input.
@@ -64,16 +64,23 @@ public class TemplateField implements OntologyAware {
 		}
 	}
 	
+	public TemplateField(String name, Ontology ontology) {
+		this(name, true, ontology == null ? null : Collections.singletonList(ontology));
+	}
+	
+	public TemplateField(String name, List<Ontology> ontologies) {
+		this(name, true, ontologies);
+	}
+
 	/**
 	 * Convenience constructor, for fields without prefixes, single cardinality, 
 	 * and no corresponding ontology.
 	 * 
 	 * @param name
-	 * @param required
 	 * @param correspondingOntology
 	 */
-	public TemplateField(String name, boolean required) {
-		this(name, required, SINGLE_FIELD_CARDINALITY, null);
+	public TemplateField(String name) {
+		this(name, false, SINGLE_FIELD_CARDINALITY, null);
 	}
 	
 	/**
@@ -81,10 +88,10 @@ public class TemplateField implements OntologyAware {
 	 * 
 	 * @param name
 	 * @param required
-	 * @param correspondingOntology
+	 * @param correspondingOntologies
 	 */
-	public TemplateField(String name, boolean required, Ontology correspondingOntology) {
-		this(name, required, SINGLE_FIELD_CARDINALITY, correspondingOntology);
+	public TemplateField(String name, boolean required, List<Ontology> correspondingOntologies) {
+		this(name, required, SINGLE_FIELD_CARDINALITY, correspondingOntologies);
 	}
 	
 	
@@ -94,11 +101,25 @@ public class TemplateField implements OntologyAware {
 	 * @param name
 	 * @param required
 	 * @param cardinality
+	 * @param correspondingOntologies
+	 */
+	public TemplateField(String name, boolean required, Cardinality cardinality, List<Ontology> correspondingOntologies) {
+		this(name, required, cardinality, null, correspondingOntologies);
+	}
+
+	/**
+	 * Standard constructor for specifying all parameters of a field.
+	 * 
+	 * @param name
+	 * @param required
+	 * @param cardinality
+	 * @param functionalPrefixes
 	 * @param correspondingOntology
 	 */
-	public TemplateField(String name, boolean required, Cardinality cardinality, Ontology correspondingOntology) {
-		this(name, required, cardinality, null, correspondingOntology);
+	public TemplateField(String name, boolean required, Cardinality cardinality, List<String> functionalPrefixes, Ontology correspondingOntology) {
+		this(name, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology));
 	}
+	
 	
 	/**
 	 * Standard constructor for specifying all parameters of a field.
@@ -107,9 +128,9 @@ public class TemplateField implements OntologyAware {
 	 * @param required
 	 * @param cardinality
 	 * @param functionalPrefixes
-	 * @param correspondingOntology 
+	 * @param correspondingOntologies 
 	 */
-	public TemplateField(String name, boolean required, Cardinality cardinality, List<String> functionalPrefixes, Ontology correspondingOntology) {
+	public TemplateField(String name, boolean required, Cardinality cardinality, List<String> functionalPrefixes, List<Ontology> correspondingOntologies) {
 		super();
 		this.name = name;
 		this.required = required;
@@ -120,7 +141,7 @@ public class TemplateField implements OntologyAware {
 		else {
 			this.functionalPrefixes = Collections.unmodifiableList(functionalPrefixes);
 		}
-		this.correspondingOntology = correspondingOntology;
+		this.correspondingOntologies = correspondingOntologies;
 	}
 
 	/**
@@ -152,8 +173,11 @@ public class TemplateField implements OntologyAware {
 	}
 
 
-	@Override
-	public Ontology getCorrespondingOntology() {
-		return correspondingOntology;
+	public List<Ontology> getCorrespondingOntologies() {
+		return correspondingOntologies;
+	}
+	
+	public boolean hasCorrespondingOntologies() {
+		return correspondingOntologies != null && !correspondingOntologies.isEmpty();
 	}
 }

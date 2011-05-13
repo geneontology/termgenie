@@ -2,10 +2,10 @@ package org.bbop.termgenie.server;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.TemplateField;
-import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
+import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
@@ -68,7 +68,7 @@ public class TermGenerationMessageTool {
 			Cardinality cardinality = field.getCardinality();
 			if (cardinality.getMaximum() == 1) {
 				// single value
-				if (field.getCorrespondingOntology() != null) {
+				if (field.hasCorrespondingOntologies()) {
 					// term
 					OntologyTerm ontologyTerm = parameters.getTerms().getValue(field, 0);
 					if (ontologyTerm != null) {

@@ -19,7 +19,7 @@ public interface OntologyServiceAsync
      * GWT-RPC service  asynchronous (client-side) interface
      * @see org.bbop.termgenie.services.OntologyService
      */
-    void autocompleteQuery(String query, String ontology, int max, AsyncCallback<List<TermSuggestion>> callback);
+    void autocompleteQuery(String query, String[] ontologies, int max, AsyncCallback<List<TermSuggestion>> callback);
 
 
 	/**

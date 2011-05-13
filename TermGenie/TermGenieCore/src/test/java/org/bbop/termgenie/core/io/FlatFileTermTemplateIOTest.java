@@ -55,7 +55,8 @@ public class FlatFileTermTemplateIOTest {
 			TermTemplate t1 = l1.get(i);
 			TermTemplate t2 = l2.get(i);
 			assertEquals(t1.getName(), t2.getName());
-			compare(t1.getCorrespondingOntology(), t2.getCorrespondingOntology());
+			assertEquals(t1.getDescription(), t2.getDescription());
+			compareList(t1.getCorrespondingOntologies(), t2.getCorrespondingOntologies());
 			List<TemplateRule> rl1 = t1.getRules();
 			List<TemplateRule> rl2 = t2.getRules();
 			assertEquals(rl1.size(), rl2.size());
@@ -71,7 +72,7 @@ public class FlatFileTermTemplateIOTest {
 			for (int j = 0; j < fl1.size(); j++) {
 				TemplateField f1 = fl1.get(j);
 				TemplateField f2 = fl2.get(j);
-				compare(f1.getCorrespondingOntology(), f2.getCorrespondingOntology());
+				compareList(f1.getCorrespondingOntologies(), f2.getCorrespondingOntologies());
 				assertEquals(f1.getName(), f2.getName());
 				assertEquals(f1.isRequired(), f2.isRequired());
 				assertEquals(f1.getFunctionalPrefixes(), f1.getFunctionalPrefixes());
@@ -80,18 +81,31 @@ public class FlatFileTermTemplateIOTest {
 		}
 	}
 	
+	private void compareList(List<Ontology> l1, List<Ontology> l2) {
+		if (l1 == null) {
+			assertNull(l2);
+			return;
+		}
+		assertNotNull(l2);
+		assertEquals(l1.size(), l2.size());
+		for (int i = 0; i < l1.size(); i++) {
+			Ontology o1 = l1.get(i);
+			Ontology o2 = l2.get(i);
+			compare(o1, o2);
+		}
+	}
+	
 	private void compare(Ontology o1, Ontology o2) {
 		if (o1 == null) {
 			assertNull(o2);
+			return;
 		}
-		else {
-			assertEquals(o1.getUniqueName(), o2.getUniqueName());
-			if (o1.getBranch() == null) {
-				assertNull(o2.getBranch());
-			}
-			else {
-				assertEquals(o1.getBranch(), o2.getBranch());
-			}
+		assertNotNull(o2);
+		assertEquals(o1.getUniqueName(), o2.getUniqueName());
+		if (o1.getBranch() == null) {
+			assertNull(o2.getBranch());
+		} else {
+			assertEquals(o1.getBranch(), o2.getBranch());
 		}
 	}
 	

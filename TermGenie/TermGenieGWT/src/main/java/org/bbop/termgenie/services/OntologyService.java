@@ -10,5 +10,5 @@ public interface OntologyService extends RemoteService  {
 
 	public List<String> getAvailableOntologies();
 	
-	public List<TermSuggestion> autocompleteQuery(String query, String ontology, int max);
+	public List<TermSuggestion> autocompleteQuery(String query, String[] ontologies, int max);
 }

@@ -22,7 +22,8 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	protected final OWLObject GO0003674; // molecular function
 	protected final OWLObject GO0005575; // cellular_component
 	protected final OWLObject GO0005488; 
-	protected final OWLObject PR000000001; // Protein   
+	protected final OWLObject PR000000001; // Protein
+	protected final OWLObject UBERON0001062; // http://berkeleybop.org/obo/UBERON:0001062?
 	
 	protected static List<TermGenerationOutput> error(String message, TermGenerationInput input) {
 		TermGenerationOutput output = new TermGenerationOutput(null, input, false, "Cannot create 'regulation of non biological process X' term");
@@ -38,12 +39,21 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 */
 	protected GeneOntologyComplexPatterns(OWLGraphWrapper ontology) {
 		super(ontology);
-		GO0008150 = ontology.getOWLObjectByIdentifier("GO:0008150");
-		GO0065007 = ontology.getOWLObjectByIdentifier("GO:0065007");
-		GO0003674 = ontology.getOWLObjectByIdentifier("GO:0003674");
-		GO0005575 = ontology.getOWLObjectByIdentifier("GO:0005575");
-		GO0005488 = ontology.getOWLObjectByIdentifier("GO:0005488");
-		PR000000001 = ontology.getOWLObjectByIdentifier("PR:000000001");
+		GO0008150 = getTerm("GO:0008150");
+		GO0065007 = getTerm("GO:0065007");
+		GO0003674 = getTerm("GO:0003674");
+		GO0005575 = getTerm("GO:0005575");
+		GO0005488 = getTerm("GO:0005488");
+		PR000000001 = getTerm("PR:000000001");
+		UBERON0001062 = getTerm("UBERON:0001062");
+	}
+	
+	private OWLObject getTerm(String id) {
+		OWLObject term = ontology.getOWLObjectByIdentifier("UBERON:0001062");
+		if (term == null) {
+			throw new RuntimeException("No term found for id: "+id);
+		}
+		return term;
 	}
 	
 	public List<TermGenerationOutput> all_regulation(TermGenerationInput input, Map<String, OntologyTerm> pending) {
