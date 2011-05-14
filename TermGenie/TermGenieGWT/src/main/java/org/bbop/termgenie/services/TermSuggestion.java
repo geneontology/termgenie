@@ -100,7 +100,7 @@ public class TermSuggestion implements Suggestion, IsSerializable
 		if (description != null) {
 			sb.append("<td><b>Description</b></td>");
 		}
-		if (synonyms != null & !synonyms.isEmpty()) {
+		if (synonyms != null && !synonyms.isEmpty()) {
 			sb.append("<td><b>Synonyms</b></td>");
 		}
 		sb.append("</tr>");
