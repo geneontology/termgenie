@@ -39,7 +39,7 @@ public interface OntologyAware {
 	{
 		public abstract String getId();
 		public abstract String getLabel();
-		public abstract String getDescription();
+		public abstract String getDefinition();
 		public abstract Set<String> getSynonyms();
 		public abstract String getLogicalDefinition();
 
@@ -51,8 +51,8 @@ public interface OntologyAware {
 				builder.append("getId()=").append(getId()).append(", ");
 			if (getLabel() != null)
 				builder.append("getLabel()=").append(getLabel()).append(", ");
-			if (getDescription() != null)
-				builder.append("getDescription()=").append(getDescription()).append(", ");
+			if (getDefinition() != null)
+				builder.append("getDefinition()=").append(getDefinition()).append(", ");
 			if (getSynonyms() != null)
 				builder.append("getSynonyms()=").append(getSynonyms());
 			builder.append("]");
@@ -63,22 +63,22 @@ public interface OntologyAware {
 			
 			private final String id;
 			private final String label;
-			private final String description;
+			private final String definition;
 			private final Set<String> synonyms;
 			private final String logicalDefinition;
 			/**
 			 * @param id
 			 * @param label
-			 * @param description
+			 * @param definition
 			 * @param synonyms
 			 * @param logicalDefinition
 			 */
-			public DefaultOntologyTerm(String id, String label, String description,
+			public DefaultOntologyTerm(String id, String label, String definition,
 					Set<String> synonyms, String logicalDefinition) {
 				super();
 				this.id = id;
 				this.label = label;
-				this.description = description;
+				this.definition = definition;
 				this.synonyms = synonyms;
 				this.logicalDefinition = logicalDefinition;
 			}
@@ -95,10 +95,10 @@ public interface OntologyAware {
 				return label;
 			}
 			/**
-			 * @return the description
+			 * @return the definition
 			 */
-			public String getDescription() {
-				return description;
+			public String getDefinition() {
+				return definition;
 			}
 			/**
 			 * @return the synonyms

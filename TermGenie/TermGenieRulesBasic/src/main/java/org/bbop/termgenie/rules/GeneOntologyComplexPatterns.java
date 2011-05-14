@@ -154,10 +154,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(p) + " involved in " + name(w);
-		String description = "Any "+name(p)+" that is involved in "+name(w)+".";
+		String definition = "Any "+name(p)+" that is involved in "+name(w)+".";
 		Set<String> synonyms = synonyms(null, p, " of ", w, null);
 		String logicalDefinition = "cdef("+id(p)+",[part_of="+id(w)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 	
@@ -173,10 +173,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(p) + " in " + name(c);
-		String description = "Any "+name(p)+" that takes place in "+name(c)+".";
+		String definition = "Any "+name(p)+" that takes place in "+name(c)+".";
 		Set<String> synonyms = synonyms(null, p, " in ", c, null);
 		String logicalDefinition = "cdef("+id(p)+",['OBO_REL:occurs_in'="+id(c)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
@@ -189,10 +189,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(p) + " " + name(w);
-		String description = "Any "+name(p)+" that is part of a "+name(w)+".";
+		String definition = "Any "+name(p)+" that is part of a "+name(w)+".";
 		Set<String> synonyms = synonyms(null, p, " of ", w, null);
 		String logicalDefinition = "cdef("+id(p)+",[part_of="+id(w)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
@@ -207,10 +207,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(x) + " binding";
-		String description = "Interacting selectively and non-covalently with  "+name(x)+".";
+		String definition = "Interacting selectively and non-covalently with  "+name(x)+".";
 		Set<String> synonyms = synonyms(null, x, " binding");
 		String logicalDefinition = "cdef('GO:0005488',['OBO_REL:results_in_binding_of'="+id(x)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
@@ -225,10 +225,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(x) + " development";
-		String description = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
+		String definition = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
 		Set<String> synonyms = synonyms(null, x, " development");
 		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
@@ -243,10 +243,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(x) + " morphogenesis";
-		String description = "The developmental process by which "+refname(x)+" is generated and organized.";
+		String definition = "The developmental process by which "+refname(x)+" is generated and organized.";
 		Set<String> synonyms = synonyms(null, x, " morphogenesis");
 		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
@@ -261,10 +261,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(x) + " development";
-		String description = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
+		String definition = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
 		Set<String> synonyms = synonyms(null, x, " development");
 		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 	
@@ -279,10 +279,10 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		}
 		String id = createNewId();
 		String label = name(x) + " morphogenesis";
-		String description = "The developmental process by which "+refname(x)+" is generated and organized.";
+		String definition = "The developmental process by which "+refname(x)+" is generated and organized.";
 		Set<String> synonyms = synonyms(null, x, " morphogenesis");
 		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x)+"]),";
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 	

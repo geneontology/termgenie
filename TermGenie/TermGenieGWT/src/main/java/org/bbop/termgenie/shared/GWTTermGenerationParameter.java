@@ -155,7 +155,7 @@ public class GWTTermGenerationParameter implements IsSerializable {
 		public String calculateInteralKey(GWTTemplateField key) {
 			return key.getName();
 		}
-
+		
 		/**
 		 * @return the values
 		 */

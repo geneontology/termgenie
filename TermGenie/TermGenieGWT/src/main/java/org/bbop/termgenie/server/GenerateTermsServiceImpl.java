@@ -9,13 +9,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.TermGenerationEngine.MultiValueMap;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.server.ValidateUserCredentialServiceImpl.UserCredentialValidator;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.shared.GWTFieldValidator;
@@ -23,9 +27,14 @@ import org.bbop.termgenie.shared.GWTFieldValidator.GWTValidationHint;
 import org.bbop.termgenie.shared.GWTGenerationResponse;
 import org.bbop.termgenie.shared.GWTPair;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTMultiValueMap;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTOntologyTerm;
 import org.bbop.termgenie.shared.GWTTermTemplate;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
+import org.semanticweb.owlapi.model.OWLObject;
+
+import owltools.graph.OWLGraphWrapper;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -118,7 +127,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			}
 		}
 		// generate term candidates
-		List<TermGenerationInput> generationTasks = null;
+		List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
 		List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
 
 		// validate candidates (or is this done during the generation?)
@@ -142,6 +151,18 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 		GWTGenerationResponse generationResponse = new GWTGenerationResponse(null, null, messages);
 		// return response
 		return generationResponse;
+	}
+
+	private List<TermGenerationInput> createGenerationTasks(String ontologyName, GWTPair<GWTTermTemplate, GWTTermGenerationParameter>[] allParameters) {
+		List<TermGenerationInput> result = new ArrayList<TermGenerationInput>();
+		for (GWTPair<GWTTermTemplate, GWTTermGenerationParameter> gwtPair : allParameters) {
+			GWTTermTemplate gwtTemplate = gwtPair.getOne();
+			TermTemplate template = getTermTemplate(ontologyName, gwtTemplate.getName());
+			TermGenerationParameters parameters = GWTTemplateTools.createTermGenerationParameters(gwtPair.getTwo(), gwtTemplate, template);
+			TermGenerationInput input = new TermGenerationInput(template, parameters);
+			result.add(input);
+		}
+		return result;
 	}
 
 	private Collection<TermTemplate> getTermTemplates(String ontology) {
@@ -241,6 +262,66 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				gwtField.setOntologies(ontologyNames);
 			}
 			return gwtField;
+		}
+		
+		static TermGenerationParameters createTermGenerationParameters(GWTTermGenerationParameter gwt, GWTTermTemplate gwtTemplate, TermTemplate template) {
+			TermGenerationParameters result = new TermGenerationParameters();
+			GWTTemplateField[] gwtFields = gwtTemplate.getFields();
+			for (GWTTemplateField gwtField : gwtFields) {
+				TemplateField field = template.getField(gwtField.getName());
+				copyAll(gwt, result, gwtField, field);
+			}
+			return result;
+		}
+		
+		private static void copyAll(GWTTermGenerationParameter gwt, TermGenerationParameters target, GWTTemplateField gwtKey, TemplateField key) {
+			copy(gwt.getPrefixes(), target.getPrefixes(), gwtKey, key);
+			copy(gwt.getStrings(), target.getStrings(), gwtKey, key);
+			copyConvert(gwt.getTerms(), target.getTerms(), gwtKey, key);
+		}
+		
+		private static void copyConvert(GWTMultiValueMap<GWTOntologyTerm> gwt, MultiValueMap<OntologyTerm> target, GWTTemplateField gwtKey, TemplateField key) {
+			int count = gwt.getCount(gwtKey);
+			if (count > 0) {
+				for (int i = 0; i < count; i++) {
+					GWTOntologyTerm gwtOntologyTerm = gwt.getValue(gwtKey, i);
+					OntologyTerm value = getOntologyTerm(gwtOntologyTerm);
+					target.addValue(value, key, i);
+				}
+			}
+		}
+
+		private static OntologyTerm getOntologyTerm(GWTOntologyTerm gwtOntologyTerm) {
+			String ontologyName = gwtOntologyTerm.getOntology();
+			Ontology ontology = OntologyTools.instance.getOntology(ontologyName);
+			
+			String id = gwtOntologyTerm.getTermId();
+			String label = null;
+			String definition = null;
+			Set<String> synonyms = null;
+			String cdef = null;
+			
+			OWLGraphWrapper realInstance = ontology.getRealInstance();
+			if (realInstance != null) {
+				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
+				if (owlObject != null) {
+					label = realInstance.getLabel(owlObject);
+					definition = realInstance.getDef(owlObject);
+//					synonyms = realInstance.getSynonymStrings(owlObject);
+					// TODO replace this with a proper implementation
+				}
+			}
+			
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef); 
+		}
+
+		private static <T> void copy(GWTMultiValueMap<T> gwt, MultiValueMap<T> target, GWTTemplateField gwtKey, TemplateField key) {
+			int count = gwt.getCount(gwtKey);
+			if (count > 0) {
+				for (int i = 0; i < count; i++) {
+					target.addValue(gwt.getValue(gwtKey, i), key, i);
+				}
+			}
 		}
 	}
 
