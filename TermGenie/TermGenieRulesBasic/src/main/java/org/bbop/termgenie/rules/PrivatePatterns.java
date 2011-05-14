@@ -7,7 +7,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-class PrivatePatterns extends Patterns {
+abstract class PrivatePatterns extends Patterns {
 
 	/**
 	 * @param ontology
@@ -20,7 +20,7 @@ class PrivatePatterns extends Patterns {
 		String id = createNewId();
 		String label = "regulation of "+ name(x);
 		String description = "Any process that modulates the frequency, rate or extent of "+name(x)+".";
-		Set<String> synonyms = synonyms(x, "regulation of ", null);
+		Set<String> synonyms = synonyms("regulation of ", x, null);
 		String logicalDefinition = "cdef('GO:0065007',[regulates="+id(x)+"])";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
 		return term;
@@ -30,7 +30,7 @@ class PrivatePatterns extends Patterns {
 		String id = createNewId();
 		String label = "negative regulation of "+ name(x);
 		String description = "Any process that modulates the frequency, rate or extent of "+name(x)+".";
-		Set<String> synonyms = synonyms(x, "negative regulation of ", null);
+		Set<String> synonyms = synonyms("negative regulation of ", x, null);
 		String logicalDefinition = "cdef('GO:0065007',[negatively_regulates="+id(x)+"])";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
 		return term;
@@ -40,7 +40,7 @@ class PrivatePatterns extends Patterns {
 		String id = createNewId();
 		String label = "positive regulation of "+ name(x);
 		String description = "Any process that activates or increases the frequency, rate or extent of "+name(x)+".";
-		Set<String> synonyms = synonyms(x, "positive regulation of ", null);
+		Set<String> synonyms = synonyms("positive regulation of ", x, null);
 		String logicalDefinition = "cdef('GO:0065007',[positively_regulates="+id(x)+"])";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, description, synonyms, logicalDefinition);
 		return term;

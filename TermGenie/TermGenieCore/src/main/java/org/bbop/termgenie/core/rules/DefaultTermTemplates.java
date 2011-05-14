@@ -34,13 +34,12 @@ public class DefaultTermTemplates {
 	protected final static Ontology GENE_ONTOLOGY_CC = create("GeneOntology", "cellular_component");
 	protected final static Ontology PROTEIN_ONTOLOGY = create("ProteinOntology", null);
 	protected final static Ontology UBERON_ONTOLOGY = create("Uberon", null);
-	protected final static Ontology UBERON_ONTOLOGY_METAZOAN = create("Uberon", "Metazoan");
-	protected final static Ontology UBERON_ONTOLOGY_PLANT = create("Uberon", "Plant");
 	protected final static Ontology HP_ONTOLOGY = create("HumanPhenotype", null);
 	protected final static Ontology FMA_ONTOLOGY = create("FMA", null);
 	protected final static Ontology PATO = create("PATO", null);
 	protected final static Ontology OMP = create("OMP", null);
 	protected final static Ontology CELL_ONTOLOGY = create("CL", null);
+	protected final static Ontology PLANT_ONTOLOGY = create("PO", null);
 	
 	protected final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically",
@@ -97,7 +96,7 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate metazoan_development = create(GENE_ONTOLOGY, "metazoan_development",
 			"development of an animal anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
-			new TemplateField("target", UBERON_ONTOLOGY_METAZOAN),
+			new TemplateField("target", UBERON_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -106,7 +105,7 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis",
 			"morphogenesis of an animal anatomical structure'",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
-			new TemplateField("target", UBERON_ONTOLOGY_METAZOAN),
+			new TemplateField("target", UBERON_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -115,7 +114,7 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate plant_development = create(GENE_ONTOLOGY, "plant_development",
 			"development of a plant anatomical structure",
 			"Dummy Rule",
-			new TemplateField("target", UBERON_ONTOLOGY_PLANT),
+			new TemplateField("target", PLANT_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -124,7 +123,7 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate plant_morphogenesis = create(GENE_ONTOLOGY, "plant_morphogenesis",
 			"morphogenesis of a plant animal anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
-			new TemplateField("target", UBERON_ONTOLOGY_PLANT),
+			new TemplateField("target", PLANT_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -133,7 +132,7 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
 			"protein complex defined structurally",
 			createRules("Dummy Rule\n2nd line","Dummy Name Rule\n2nd line"),
-			new TemplateField("protein units", true, TemplateField.TWO_TO_N_CARDINALITY, null, PROTEIN_ONTOLOGY),
+			new TemplateField("unit", true, TemplateField.TWO_TO_N_CARDINALITY, null, PROTEIN_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -172,7 +171,7 @@ public class DefaultTermTemplates {
 			"A cell type differentiated by its anatomical location (animals)",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("cell", CELL_ONTOLOGY),
-			new TemplateField("location", UBERON_ONTOLOGY_METAZOAN),
+			new TemplateField("location", UBERON_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -191,8 +190,8 @@ public class DefaultTermTemplates {
 	protected final static TermTemplate metazoan_location_specific_anatomical_structure = create(UBERON_ONTOLOGY, "metazoan_location_specific_anatomical_structure",
 			"location-specific anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
-			new TemplateField("part", UBERON_ONTOLOGY_METAZOAN),
-			new TemplateField("whole", UBERON_ONTOLOGY_METAZOAN),
+			new TemplateField("part", UBERON_ONTOLOGY),
+			new TemplateField("whole", UBERON_ONTOLOGY),
 			new TemplateField("Name"),
 			new TemplateField("Definition"),
 			new TemplateField("DefX_Ref"),
@@ -250,5 +249,6 @@ public class DefaultTermTemplates {
 		writer.writeTemplates(defaultTemplates, outputFile);
 	}
 }
+
 
 
