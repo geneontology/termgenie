@@ -21,39 +21,39 @@ public class DefaultTermTemplates {
 	/**
 	 *  A list of all default ontologies.
 	 */
-	public final static List<Ontology> defaultOntologies = new ArrayList<Ontology>();
+	public final static List<DefaultOntology> defaultOntologies = new ArrayList<DefaultOntology>();
 	
 	/**
 	 * A list of all default templates.
 	 */
 	public final static List<TermTemplate> defaultTemplates = new ArrayList<TermTemplate>();
 	
-	protected final static Ontology GENE_ONTOLOGY = create("GeneOntology", null);
-	protected final static Ontology GENE_ONTOLOGY_BP = create("GeneOntology", "biological_process");
-	protected final static Ontology GENE_ONTOLOGY_MF = create("GeneOntology", "molecular_function");
-	protected final static Ontology GENE_ONTOLOGY_CC = create("GeneOntology", "cellular_component");
-	protected final static Ontology PROTEIN_ONTOLOGY = create("ProteinOntology", null);
-	protected final static Ontology UBERON_ONTOLOGY = create("Uberon", null);
-	protected final static Ontology HP_ONTOLOGY = create("HumanPhenotype", null);
-	protected final static Ontology FMA_ONTOLOGY = create("FMA", null);
-	protected final static Ontology PATO = create("PATO", null);
-	protected final static Ontology OMP = create("OMP", null);
-	protected final static Ontology CELL_ONTOLOGY = create("CL", null);
-	protected final static Ontology PLANT_ONTOLOGY = create("PO", null);
+	public final static Ontology GENE_ONTOLOGY = create("GeneOntology");
+	public final static Ontology GENE_ONTOLOGY_BP = create("GeneOntology", "biological_process", "GO:0008150");
+	public final static Ontology GENE_ONTOLOGY_MF = create("GeneOntology", "molecular_function", "GO:0003674");
+	public final static Ontology GENE_ONTOLOGY_CC = create("GeneOntology", "cellular_component", "GO:0005575");
+	public final static Ontology PROTEIN_ONTOLOGY = create("ProteinOntology");
+	public final static Ontology UBERON_ONTOLOGY = create("Uberon");
+	public final static Ontology HP_ONTOLOGY = create("HumanPhenotype");
+	public final static Ontology FMA_ONTOLOGY = create("FMA");
+	public final static Ontology PATO = create("PATO");
+	public final static Ontology OMP = create("OMP");
+	public final static Ontology CELL_ONTOLOGY = create("CL");
+	public final static Ontology PLANT_ONTOLOGY = create("PO");
 	
-	protected final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
+	public final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically",
 			createRules("Dummy Rule\n     2nd line","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_BP),
 			new TemplateField("DefX_Ref"));
 	
-	protected final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf",
+	public final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for molecular functions). Names, synonyms and definitions are all generated automatically",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_MF),
 			new TemplateField("DefX_Ref"));
 	
-	protected final static TermTemplate involved_in = create(GENE_ONTOLOGY, "involved_in",
+	public final static TermTemplate involved_in = create(GENE_ONTOLOGY, "involved_in",
 			"processes involved in other processes",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("part", GENE_ONTOLOGY_BP),
@@ -63,7 +63,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate takes_place_in = create(GENE_ONTOLOGY, "takes_place_in",
+	public final static TermTemplate takes_place_in = create(GENE_ONTOLOGY, "takes_place_in",
 			"processes occurring in parts of the cell",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("process", GENE_ONTOLOGY_BP),
@@ -73,7 +73,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate part_of_cell_component = create(GENE_ONTOLOGY, "part_of_cell_component",
+	public final static TermTemplate part_of_cell_component = create(GENE_ONTOLOGY, "part_of_cell_component",
 			"cell components part of other cell components",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("part", GENE_ONTOLOGY_CC),
@@ -84,7 +84,7 @@ public class DefaultTermTemplates {
 			new TemplateField("Comment"));
 	
 	
-	protected final static TermTemplate protein_binding = create(GENE_ONTOLOGY, "protein_binding",
+	public final static TermTemplate protein_binding = create(GENE_ONTOLOGY, "protein_binding",
 			"binding to a protein",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", PROTEIN_ONTOLOGY),
@@ -93,7 +93,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate metazoan_development = create(GENE_ONTOLOGY, "metazoan_development",
+	public final static TermTemplate metazoan_development = create(GENE_ONTOLOGY, "metazoan_development",
 			"development of an animal anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", UBERON_ONTOLOGY),
@@ -102,7 +102,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis",
+	public final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis",
 			"morphogenesis of an animal anatomical structure'",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", UBERON_ONTOLOGY),
@@ -111,7 +111,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate plant_development = create(GENE_ONTOLOGY, "plant_development",
+	public final static TermTemplate plant_development = create(GENE_ONTOLOGY, "plant_development",
 			"development of a plant anatomical structure",
 			"Dummy Rule",
 			new TemplateField("target", PLANT_ONTOLOGY),
@@ -120,7 +120,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate plant_morphogenesis = create(GENE_ONTOLOGY, "plant_morphogenesis",
+	public final static TermTemplate plant_morphogenesis = create(GENE_ONTOLOGY, "plant_morphogenesis",
 			"morphogenesis of a plant animal anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", PLANT_ONTOLOGY),
@@ -129,7 +129,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
+	public final static TermTemplate structural_protein_complex = create(GENE_ONTOLOGY, "structural_protein_complex",
 			"protein complex defined structurally",
 			createRules("Dummy Rule\n2nd line","Dummy Name Rule\n2nd line"),
 			new TemplateField("unit", true, TemplateField.TWO_TO_N_CARDINALITY, null, PROTEIN_ONTOLOGY),
@@ -138,7 +138,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 
-	protected final static TermTemplate abnormal_morphology = create(HP_ONTOLOGY, "abnormal_morphology",
+	public final static TermTemplate abnormal_morphology = create(HP_ONTOLOGY, "abnormal_morphology",
 			"Abnormal X morphology",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("target", FMA_ONTOLOGY),
@@ -147,7 +147,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate hpo_entity_quality = create(HP_ONTOLOGY, "hpo_entity_quality",
+	public final static TermTemplate hpo_entity_quality = create(HP_ONTOLOGY, "hpo_entity_quality",
 			"basic EQ template",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("entity", FMA_ONTOLOGY),
@@ -157,7 +157,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate omp_entity_quality = create(OMP, "omp_entity_quality",
+	public final static TermTemplate omp_entity_quality = create(OMP, "omp_entity_quality",
 			"basic EQ template",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("entity", GENE_ONTOLOGY),
@@ -167,7 +167,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate metazoan_location_specific_cell = create(CELL_ONTOLOGY, "metazoan_location_specific_cell",
+	public final static TermTemplate metazoan_location_specific_cell = create(CELL_ONTOLOGY, "metazoan_location_specific_cell",
 			"A cell type differentiated by its anatomical location (animals)",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("cell", CELL_ONTOLOGY),
@@ -177,7 +177,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate cell_by_surface_marker = create(CELL_ONTOLOGY, "cell_by_surface_marker",
+	public final static TermTemplate cell_by_surface_marker = create(CELL_ONTOLOGY, "cell_by_surface_marker",
 			"A cell type differentiated by proteins or complexes on the plasma membrane",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("cell", CELL_ONTOLOGY),
@@ -187,7 +187,7 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
-	protected final static TermTemplate metazoan_location_specific_anatomical_structure = create(UBERON_ONTOLOGY, "metazoan_location_specific_anatomical_structure",
+	public final static TermTemplate metazoan_location_specific_anatomical_structure = create(UBERON_ONTOLOGY, "metazoan_location_specific_anatomical_structure",
 			"location-specific anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			new TemplateField("part", UBERON_ONTOLOGY),
@@ -197,27 +197,38 @@ public class DefaultTermTemplates {
 			new TemplateField("DefX_Ref"),
 			new TemplateField("Comment"));
 	
+	private static Ontology create(String name) {
+		return create(name, null, null);
+	}
 	
-	private static Ontology create(final String name, final String branch) {
-		Ontology ontology = new Ontology() {
-			
-			@Override
-			public String getUniqueName() {
-				return name;
-			}
-			
-			@Override
-			public OWLGraphWrapper getRealInstance() {
-				return null;
-			}
-			
-			@Override
-			public String getBranch() {
-				return branch;
-			}
-		};
+	private static Ontology create(String name, String branch, String branchId) {
+		DefaultOntology ontology = new DefaultOntology(name, branch, branchId);
 		defaultOntologies.add(ontology);
 		return ontology;
+	}
+	
+	public static class DefaultOntology extends Ontology {
+		
+		protected DefaultOntology(OWLGraphWrapper realInstance, String name,
+				String subOntologyName, String subOntologyParentId) {
+			super(realInstance, name, subOntologyName, subOntologyParentId);
+		}
+		
+		protected DefaultOntology(String name, String subOntologyName, String subOntologyParentId) {
+			this(null, name, subOntologyName, subOntologyParentId);
+		}
+
+		@Override
+		public void setRealInstance(OWLGraphWrapper realInstance) {
+			super.setRealInstance(realInstance);
+		}
+
+		@Override
+		public void setBranch(String subOntologyName, String subOntologyParentId) {
+			super.setBranch(subOntologyName, subOntologyParentId);
+		}
+		
+		
 	}
 	
 	private static TermTemplate create(Ontology correspondingOntology, String name, String description, String rule,

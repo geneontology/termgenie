@@ -1,5 +1,7 @@
 package org.bbop.termgenie.rules;
 
+import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -8,9 +8,8 @@ import java.util.List;
 import org.apache.solr.common.SolrDocument;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.junit.Test;
-
-import owltools.graph.OWLGraphWrapper;
 
 /**
  * Tests for {@link SimpleSolrClient}.
@@ -18,41 +17,9 @@ import owltools.graph.OWLGraphWrapper;
 public class SimpleSolrClientTest {
 
 	private static SimpleSolrClient client = new SimpleSolrClient();
-	private static Ontology ontology = new Ontology() {
-		
-		@Override
-		public String getUniqueName() {
-			return "GeneOntology";
-		}
-		
-		@Override
-		public OWLGraphWrapper getRealInstance() {
-			return null;
-		}
-		
-		@Override
-		public String getBranch() {
-			return null;
-		}
-	};
+	private static Ontology ontology = DefaultTermTemplates.GENE_ONTOLOGY;
 	
-	private static Ontology otherOntology = new Ontology() {
-		
-		@Override
-		public String getUniqueName() {
-			return "Unknow";
-		}
-		
-		@Override
-		public OWLGraphWrapper getRealInstance() {
-			return null;
-		}
-		
-		@Override
-		public String getBranch() {
-			return null;
-		}
-	};
+	private static Ontology otherOntology = DefaultTermTemplates.CELL_ONTOLOGY;
 	
 	/**
 	 *  Tests for {@link SimpleSolrClient#suggestTerms(String, Ontology, int)}.

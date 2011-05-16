@@ -5,16 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-class BasicRules extends DefaultTermTemplates {
+class BasicRules {
 	
 	protected final OWLGraphWrapper ontology;
 	

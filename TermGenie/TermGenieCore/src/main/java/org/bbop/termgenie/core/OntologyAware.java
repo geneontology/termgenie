@@ -21,13 +21,52 @@ public interface OntologyAware {
 	/**
 	 * Wrapper of an ontology, provides additional methods for identifying the ontology.
 	 */
-	public abstract static class Ontology
+	public static class Ontology
 	{
-		public abstract OWLGraphWrapper getRealInstance();
+		protected OWLGraphWrapper realInstance;
+		protected String name;
+		protected String subOntologyName;
+		protected String subOntologyParentId;
 		
-		public abstract String getUniqueName();
+		/**
+		 * @param realInstance
+		 * @param name
+		 * @param subOntologyName
+		 * @param subOntologyParentId
+		 */
+		protected Ontology(OWLGraphWrapper realInstance, String name, String subOntologyName,
+				String subOntologyParentId) {
+			super();
+			this.realInstance = realInstance;
+			this.name = name;
+			this.subOntologyName = subOntologyName;
+			this.subOntologyParentId = subOntologyParentId;
+		}
+
+		protected void setRealInstance(OWLGraphWrapper realInstance) {
+			this.realInstance = realInstance;
+		}
 		
-		public abstract String getBranch();
+		public OWLGraphWrapper getRealInstance() {
+			return realInstance;
+		}
+		
+		public String getUniqueName() {
+			return name;
+		}
+		
+		public String getBranch() {
+			return subOntologyName;
+		}
+		
+		public String getBranchId() {
+			return subOntologyParentId;
+		}
+		
+		protected void setBranch(String subOntologyName, String subOntologyParentId) {
+			this.subOntologyName = subOntologyName;
+			this.subOntologyParentId= subOntologyParentId;
+		} 
 	}
 
 	/**
