@@ -137,7 +137,8 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 	static OntologyTerm getOntologyTerm(SolrDocument solrDocument) {
 		final String id = solrDocument.getFieldValue("id").toString();
 		final String label = solrDocument.getFieldValue("label").toString();
-		final String def = solrDocument.getFieldValue("description").toString();
+		Object descObj = solrDocument.getFieldValue("description");
+		final String def = descObj != null ? descObj.toString() : null;
 		return new OntologyTerm() {
 
 			@Override
