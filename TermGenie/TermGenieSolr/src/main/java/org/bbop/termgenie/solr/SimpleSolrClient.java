@@ -129,6 +129,10 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			// (i.e. biological_process, molecular_function, cellular_component)
 			solrQuery.addFilterQuery("source:" + branch);
 		}
+		else {
+			// TODO hack the server contains also cell terms without a source info
+			solrQuery.addFilterQuery("source:(biological_process OR molecular_function OR cellular_component)");
+		}
 		QueryResponse rsp = server.query(solrQuery);
 		SolrDocumentList results = rsp.getResults();
 		return results;
@@ -178,17 +182,10 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		for (OntologyTerm term : terms) {
 			System.out.println(term);
 		}
-		// tried to reproduce the timeout or connection closed exceptions
-		// List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm",
-		// "biological_process", 10);
-		// for (OntologyTerm term : terms2) {
-		// System.out.println(term);
-		// }
-		// Thread.sleep(60*1000L);
-		// List<OntologyTerm> terms3 = client.searchGeneOntologyTerms("pigment",
-		// "biological_process", 10);
-		// for (OntologyTerm term : terms3) {
-		// System.out.println(term);
-		// }
+		System.out.println("-----------------------------");
+		 List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm",null, 10);
+		 for (OntologyTerm term : terms2) {
+			 System.out.println(term);
+		 }
 	}
 }
