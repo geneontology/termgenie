@@ -11,8 +11,14 @@ import owltools.graph.OWLGraphWrapper;
 
 public class MicrobialPhenotypePatterns extends Patterns {
 
-	protected MicrobialPhenotypePatterns(OWLGraphWrapper ontology) {
-		super(ontology);
+	private final OWLGraphWrapper go;
+	private final OWLGraphWrapper pato;
+	private final OWLGraphWrapper omp;
+
+	protected MicrobialPhenotypePatterns(OWLGraphWrapper omp, OWLGraphWrapper go, OWLGraphWrapper pato) {
+		this.omp = omp;
+		this.go = go;
+		this.pato = pato;
 	}
 
 	@Override

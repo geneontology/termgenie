@@ -11,8 +11,10 @@ import owltools.graph.OWLGraphWrapper;
 
 public class UberonPatterns extends Patterns {
 
-	protected UberonPatterns(OWLGraphWrapper ontology) {
-		super(ontology);
+	private final OWLGraphWrapper uberon;
+
+	protected UberonPatterns(OWLGraphWrapper uberon) {
+		this.uberon = uberon;
 	}
 
 	@Override

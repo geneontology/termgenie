@@ -16,12 +16,55 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 	private final CellOntologyPatterns clPatterns;
 	private final UberonPatterns uberonPatterns;
 	
-	public HardCodedTermGenerationEngine(final OWLGraphWrapper ontology) {
-		goPatterns = new GeneOntologyComplexPatterns(ontology);
-		hpPatterns = new HumanPhenotypePatterns(ontology);
-		ompPatterns = new MicrobialPhenotypePatterns(ontology);
-		clPatterns = new CellOntologyPatterns(ontology);
-		uberonPatterns = new UberonPatterns(ontology);
+	public HardCodedTermGenerationEngine(List<Ontology> ontologies) {
+		OWLGraphWrapper go = null;
+		OWLGraphWrapper pro = null;
+		OWLGraphWrapper uberon = null;
+		OWLGraphWrapper plant = null;
+		OWLGraphWrapper hpo = null;
+		OWLGraphWrapper fma = null;
+		OWLGraphWrapper pato = null;
+		OWLGraphWrapper cell = null;
+		OWLGraphWrapper omp = null;
+		
+		for (Ontology ontology : ontologies) {
+			OWLGraphWrapper instance = ontology.getRealInstance();
+			if (instance != null) {
+				if (equals(GENE_ONTOLOGY, ontology)) {
+					go = instance;
+				}
+				else if (equals(PROTEIN_ONTOLOGY, ontology)) {
+					pro = instance;
+				}
+				else if (equals(UBERON_ONTOLOGY, ontology)) {
+					uberon = instance;
+				}
+				else if (equals(PLANT_ONTOLOGY, ontology)) {
+					plant = instance;
+				}
+				else if (equals(HP_ONTOLOGY, ontology)) {
+					hpo = instance;
+				}
+				else if (equals(FMA_ONTOLOGY, ontology)) {
+					fma = instance;
+				}
+				else if (equals(PATO, ontology)) {
+					pato = instance;
+				}
+				else if (equals(CELL_ONTOLOGY, ontology)) {
+					cell = instance;
+				}
+				else if (equals(OMP, ontology)) {
+					omp = instance;
+				}
+			}
+		}
+		
+		goPatterns = new GeneOntologyComplexPatterns(go, pro, uberon, plant);
+		hpPatterns = new HumanPhenotypePatterns(hpo, fma, pato);
+		ompPatterns = new MicrobialPhenotypePatterns(omp, go, pato);
+		clPatterns = new CellOntologyPatterns(cell, uberon, pro, go);
+		uberonPatterns = new UberonPatterns(uberon);
 	}
 	
 	@Override

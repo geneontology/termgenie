@@ -11,8 +11,16 @@ import owltools.graph.OWLGraphWrapper;
 
 public class CellOntologyPatterns extends Patterns {
 
-	protected CellOntologyPatterns(OWLGraphWrapper ontology) {
-		super(ontology);
+	private final OWLGraphWrapper cell;
+	private final OWLGraphWrapper uberon;
+	private final OWLGraphWrapper pro;
+	private final OWLGraphWrapper go;
+
+	protected CellOntologyPatterns(OWLGraphWrapper cell, OWLGraphWrapper uberon, OWLGraphWrapper pro, OWLGraphWrapper go) {
+		this.cell = cell;
+		this.uberon = uberon;
+		this.pro = pro;
+		this.go = go;
 	}
 	
 	@Override

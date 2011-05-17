@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
@@ -19,13 +18,6 @@ import owltools.graph.OWLGraphWrapper;
 
 abstract class Patterns extends BasicRules {
 
-	/**
-	 * @param ontology
-	 */
-	protected Patterns(OWLGraphWrapper ontology) {
-		super(ontology);
-	}
-	
 	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks) {
 		List<TermGenerationOutput> result = new ArrayList<TermGenerationOutput>();
 		Map<String, OntologyTerm> pending = new HashMap<String, OntologyTerm>();
@@ -40,19 +32,19 @@ abstract class Patterns extends BasicRules {
 	
 	protected abstract List<TermGenerationOutput> generate(TermGenerationInput input, Map<String, OntologyTerm> pending);
 	
-	protected OWLObject getSingleTerm(TermGenerationParameters parameters, TemplateField targetField) {
+	protected OWLObject getSingleTerm(TermGenerationParameters parameters, TemplateField targetField, OWLGraphWrapper ontology) {
 		String id = parameters.getTerms().getValue(targetField, 0).getId();
-		OWLObject x = ontology.getOWLObjectByIdentifier(id);
+		OWLObject x = getTerm(id, ontology);
 		return x ;
 	}
 	
-	protected OWLObject getSingleTerm(TermGenerationInput input, String name) {
+	protected OWLObject getSingleTerm(TermGenerationInput input, String name, OWLGraphWrapper ontology) {
 		TemplateField targetField = input.getTermTemplate().getField(name);
 		TermGenerationParameters parameters = input.getParameters();
-		return getSingleTerm(parameters, targetField);
+		return getSingleTerm(parameters, targetField, ontology);
 	}
 	
-	protected List<OWLObject> getListTerm(TermGenerationInput input, String name) {
+	protected List<OWLObject> getListTerm(TermGenerationInput input, String name, OWLGraphWrapper ontology) {
 		TemplateField targetField = input.getTermTemplate().getField(name);
 		TermGenerationParameters parameters = input.getParameters();
 		
@@ -64,16 +56,11 @@ abstract class Patterns extends BasicRules {
 		List<OWLObject> result = new ArrayList<OWLObject>();
 		for (int i = 0; i < count; i++) {
 			String id = parameters.getTerms().getValue(targetField, i).getId();
-			OWLObject x = ontology.getOWLObjectByIdentifier(id);
+			OWLObject x = getTerm(id, ontology);
 			if (x != null) {
 				result.add(x);
 			}
 		}
 		return result;
-	}
-	
-	protected boolean genus(OWLObject x, OWLObject parent) {
-		Set<OWLObject> descendants = ontology.getDescendantsReflexive(parent);
-		return descendants.contains(x);
 	}
 }

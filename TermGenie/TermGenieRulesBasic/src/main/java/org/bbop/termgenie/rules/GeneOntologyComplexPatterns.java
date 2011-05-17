@@ -29,25 +29,36 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	protected final OWLObject PR000000001; // Protein
 	protected final OWLObject UBERON0001062; // http://berkeleybop.org/obo/UBERON:0001062?
 	protected final OWLObject PO0025131; // plant structure (An anatomical entity (CARO:0000000) that is or was part of a plant.)
+	private final OWLGraphWrapper go;
+	private final OWLGraphWrapper pro;
+	private final OWLGraphWrapper uberon;
+	private final OWLGraphWrapper plant;
 	
 	/**
-	 * @param ontology
+	 * @param go
+	 * @param pro
+	 * @param uberon
+	 * @param plant
 	 */
-	protected GeneOntologyComplexPatterns(OWLGraphWrapper ontology) {
-		super(ontology);
-		GO0008150 = getTerm("GO:0008150");
-		GO0065007 = getTerm("GO:0065007");
-		GO0003674 = getTerm("GO:0003674");
-		GO0005575 = getTerm("GO:0005575");
-		GO0005488 = getTerm("GO:0005488");
-		GO0032991 = getTerm("GO:0032991");
-		PR000000001 = getTerm("PR:000000001");
-		UBERON0001062 = getTerm("UBERON:0001062");
-	    PO0025131 = getTerm("PO:0025131");
+	protected GeneOntologyComplexPatterns(OWLGraphWrapper go, OWLGraphWrapper pro, OWLGraphWrapper uberon, OWLGraphWrapper plant) {
+		this.go = go;
+		this.pro = pro;
+		this.uberon = uberon;
+		this.plant = plant;
+		GO0008150 = getTerm("GO:0008150", go);
+		GO0065007 = getTerm("GO:0065007", go);
+		GO0003674 = getTerm("GO:0003674", go);
+		GO0005575 = getTerm("GO:0005575", go);
+		GO0005488 = getTerm("GO:0005488", go);
+		GO0032991 = getTerm("GO:0032991", go);
+		PR000000001 = getTerm("PR:000000001", pro);
+		UBERON0001062 = getTerm("UBERON:0001062", uberon);
+	    PO0025131 = getTerm("PO:0025131", plant);
 	}
 	
-	protected OWLObject getTerm(String id) {
-		OWLObject term = super.getTerm(id);
+	@Override
+	protected OWLObject getTerm(String id, OWLGraphWrapper ontology) {
+		OWLObject term = super.getTerm(id, ontology);
 		if (term == null) {
 			throw new RuntimeException("No term found for id: "+id);
 		}
@@ -105,12 +116,12 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	protected List<TermGenerationOutput> allRegulationTemplate(TermGenerationInput input, Map<String, OntologyTerm> pending, OWLObject branch) {
 		TemplateField targetField = input.getTermTemplate().getField("target");
 		TermGenerationParameters parameters = input.getParameters();
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, branch)) {
+		OWLObject x = getSingleTerm(input, "target", go);
+		if (!genus(x, branch, go)) {
 			// check branch
 			return error("The specified term does not correspond to the patterns", input);
 		}
-		if (genus(x, GO0065007)) {
+		if (genus(x, GO0065007, go)) {
 			// 	biological regulation
 			return error("Cannot create 'regulation of regulation of X' terms", input);
 		}
@@ -121,19 +132,19 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 		
 		List<TermGenerationOutput> generatedTerms = new ArrayList<TermGenerationOutput>(prefixes.size());
 		if (prefixes.contains("regulation")) {
-			OntologyTerm term = regulation(x);
+			OntologyTerm term = regulation(x, go);
 			if (term != null) {
 				generatedTerms.add(success(term, input));
 			}
 		}
 		if (prefixes.contains("negative_regulation")) {
-			OntologyTerm term = negative_regulation(x);
+			OntologyTerm term = negative_regulation(x, go);
 			if (term != null) {
 				generatedTerms.add(success(term, input));
 			}
 		}
 		if (prefixes.contains("positive_regulation")) {
-			OntologyTerm term = positive_regulation(x);
+			OntologyTerm term = positive_regulation(x, go);
 			if (term != null) {
 				generatedTerms.add(success(term, input));
 			}
@@ -148,17 +159,17 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo
 	 */
 	protected List<TermGenerationOutput> involved_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject p = getSingleTerm(input, "part");
-		OWLObject w = getSingleTerm(input, "whole");
-		if (!genus(p, GO0008150) || !genus(w, GO0008150)) {
+		OWLObject p = getSingleTerm(input, "part", go);
+		OWLObject w = getSingleTerm(input, "whole", go);
+		if (!genus(p, GO0008150, go) || !genus(w, GO0008150, go)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(p) + " involved in " + name(w);
-		String definition = "Any "+name(p)+" that is involved in "+name(w)+".";
-		Set<String> synonyms = synonyms(null, p, " of ", w, null);
-		String logicalDefinition = "cdef("+id(p)+",[part_of="+id(w)+"]),";
+		String label = name(p, go) + " involved in " + name(w, go);
+		String definition = "Any "+name(p, go)+" that is involved in "+name(w, go)+".";
+		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
+		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -167,33 +178,33 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo
 	 */
 	protected List<TermGenerationOutput> takes_place_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject p = getSingleTerm(input, "process");
-		OWLObject c = getSingleTerm(input, "whole");
-		if (!genus(p, GO0008150) || !genus(c, GO0005575)) {
+		OWLObject p = getSingleTerm(input, "process", go);
+		OWLObject c = getSingleTerm(input, "whole", go);
+		if (!genus(p, GO0008150, go) || !genus(c, GO0005575, go)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(p) + " in " + name(c);
-		String definition = "Any "+name(p)+" that takes place in "+name(c)+".";
-		Set<String> synonyms = synonyms(null, p, " in ", c, null);
-		String logicalDefinition = "cdef("+id(p)+",['OBO_REL:occurs_in'="+id(c)+"]),";
+		String label = name(p, go) + " in " + name(c, go);
+		String definition = "Any "+name(p, go)+" that takes place in "+name(c, go)+".";
+		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null);
+		String logicalDefinition = "cdef("+id(p, go)+",['OBO_REL:occurs_in'="+id(c, go)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
 
 	protected List<TermGenerationOutput> part_of_cell_component(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject p = getSingleTerm(input, "part");
-		OWLObject w = getSingleTerm(input, "whole");
-		if (!genus(p, GO0005575) || !genus(w, GO0005575)) {
+		OWLObject p = getSingleTerm(input, "part", go);
+		OWLObject w = getSingleTerm(input, "whole", go);
+		if (!genus(p, GO0005575, go) || !genus(w, GO0005575, go)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(p) + " " + name(w);
-		String definition = "Any "+name(p)+" that is part of a "+name(w)+".";
-		Set<String> synonyms = synonyms(null, p, " of ", w, null);
-		String logicalDefinition = "cdef("+id(p)+",[part_of="+id(w)+"]),";
+		String label = name(p, go) + " " + name(w, go);
+		String definition = "Any "+name(p, go)+" that is part of a "+name(w, go)+".";
+		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
+		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -202,16 +213,16 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo
 	 */
 	protected List<TermGenerationOutput> protein_binding(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, PR000000001)) {
+		OWLObject x = getSingleTerm(input, "target", pro);
+		if (!genus(x, PR000000001, pro)) {
 			// check if protein ontology [PRO]
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(x) + " binding";
-		String definition = "Interacting selectively and non-covalently with  "+name(x)+".";
-		Set<String> synonyms = synonyms(null, x, " binding");
-		String logicalDefinition = "cdef('GO:0005488',['OBO_REL:results_in_binding_of'="+id(x)+"]),";
+		String label = name(x, pro) + " binding";
+		String definition = "Interacting selectively and non-covalently with  "+name(x, pro)+".";
+		Set<String> synonyms = synonyms(null, x, pro, " binding");
+		String logicalDefinition = "cdef('GO:0005488',['OBO_REL:results_in_binding_of'="+id(x, pro)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -220,16 +231,16 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo'],
 	 */
 	protected List<TermGenerationOutput> metazoan_development(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, UBERON0001062)) {
+		OWLObject x = getSingleTerm(input, "target", uberon);
+		if (!genus(x, UBERON0001062, uberon)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(x) + " development";
-		String definition = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
-		Set<String> synonyms = synonyms(null, x, " development");
-		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x)+"]),";
+		String label = name(x, uberon) + " development";
+		String definition = "The process whose specific outcome is the progression of "+refname(x, uberon)+" over time, from its formation to the mature structure.";
+		Set<String> synonyms = synonyms(null, x, uberon, " development");
+		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, uberon)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -238,16 +249,16 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo
 	 */
 	protected List<TermGenerationOutput> metazoan_morphogenesis(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, UBERON0001062)) {
+		OWLObject x = getSingleTerm(input, "target", uberon);
+		if (!genus(x, UBERON0001062, uberon)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(x) + " morphogenesis";
-		String definition = "The developmental process by which "+refname(x)+" is generated and organized.";
-		Set<String> synonyms = synonyms(null, x, " morphogenesis");
-		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x)+"]),";
+		String label = name(x, uberon) + " morphogenesis";
+		String definition = "The developmental process by which "+refname(x, uberon)+" is generated and organized.";
+		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis");
+		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, uberon)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -256,16 +267,16 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo
 	 */
 	protected List<TermGenerationOutput> plant_development(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, PO0025131)) {
+		OWLObject x = getSingleTerm(input, "target", plant);
+		if (!genus(x, PO0025131, plant)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(x) + " development";
-		String definition = "The process whose specific outcome is the progression of "+refname(x)+" over time, from its formation to the mature structure.";
-		Set<String> synonyms = synonyms(null, x, " development");
-		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x)+"]),";
+		String label = name(x, plant) + " development";
+		String definition = "The process whose specific outcome is the progression of "+refname(x, plant)+" over time, from its formation to the mature structure.";
+		Set<String> synonyms = synonyms(null, x, plant, " development");
+		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, plant)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -274,16 +285,16 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo
 	 */
 	protected List<TermGenerationOutput> plant_morphogenesis(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		OWLObject x = getSingleTerm(input, "target");
-		if (!genus(x, PO0025131)) {
+		OWLObject x = getSingleTerm(input, "target", plant);
+		if (!genus(x, PO0025131, plant)) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String id = createNewId();
-		String label = name(x) + " morphogenesis";
-		String definition = "The developmental process by which "+refname(x)+" is generated and organized.";
-		Set<String> synonyms = synonyms(null, x, " morphogenesis");
-		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x)+"]),";
+		String label = name(x, plant) + " morphogenesis";
+		String definition = "The developmental process by which "+refname(x, plant)+" is generated and organized.";
+		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis");
+		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, plant)+"]),";
 		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition);
 		return Collections.singletonList(success(term, input));
 	}
@@ -299,9 +310,9 @@ class GeneOntologyComplexPatterns extends PrivatePatterns {
          ]).
 	 */
 	protected List<TermGenerationOutput> structural_protein_complex(TermGenerationInput input, Map<String, OntologyTerm> pending) {
-		List<OWLObject> list = getListTerm(input, "unit");
+		List<OWLObject> list = getListTerm(input, "unit", pro);
 		for (OWLObject x : list) {
-			if (!genus(x, PR000000001)) {
+			if (!genus(x, PR000000001, pro)) {
 				// check branch
 				return error("The specified terms do not correspond to the pattern", input);
 			}

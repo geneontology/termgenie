@@ -15,26 +15,22 @@ import owltools.graph.OWLGraphWrapper;
 
 class BasicRules {
 	
-	protected final OWLGraphWrapper ontology;
-	
-	/**
-	 * @param ontology
-	 */
-	protected BasicRules(OWLGraphWrapper ontology) {
-		super();
-		this.ontology = ontology;
-	}
-
-	protected OWLObject getTerm(String id) {
-		return ontology.getOWLObjectByIdentifier(id);
+	protected OWLObject getTerm(String id, OWLGraphWrapper ontology) {
+		if (ontology != null) {
+			return ontology.getOWLObjectByIdentifier(id);
+		}
+		return null;
 	}
 	
-	protected String name(OWLObject x) {
-		return ontology.getLabel(x);
+	protected String name(OWLObject x, OWLGraphWrapper ontology) {
+		if (ontology != null) {
+			return ontology.getLabel(x);
+		}
+		return null;
 	}
 	
-	protected String refname(OWLObject x) {
-		String name = name(x);
+	protected String refname(OWLObject x, OWLGraphWrapper ontology) {
+		String name = name(x, ontology);
 		return starts_with_vowl(name) ? "an "+name : "a "+name;
 	}
 	
@@ -51,12 +47,12 @@ class BasicRules {
 		return false;
 	}
 	
-	protected String id(OWLObject x) {
+	protected String id(OWLObject x, OWLGraphWrapper ontology) {
 		return ontology.getIdentifier(x);
 	}
 	
-	protected Set<String> synonyms(String prefix, OWLObject x, String suffix) {
-		String[] synonymStrings = ontology.getSynonymStrings(x);
+	protected Set<String> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix) {
+		String[] synonymStrings = getSynonyms(x, ontology);
 		if (synonymStrings == null || synonymStrings.length == 0) {
 			return null;
 		}
@@ -77,12 +73,12 @@ class BasicRules {
 		return "GO:Random";
 	}
 	
-	protected Set<String> synonyms(String prefix, OWLObject x1, String middle, OWLObject x2, String suffix) {
-		String[] synonymStrings1 = ontology.getSynonymStrings(x1);
+	protected Set<String> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1, String middle, OWLObject x2, OWLGraphWrapper ontology2, String suffix) {
+		String[] synonymStrings1 = getSynonyms(x1, ontology1);
 		if (synonymStrings1 == null || synonymStrings1.length == 0) {
 			return null;
 		}
-		String[] synonymStrings2 = ontology.getSynonymStrings(x2);
+		String[] synonymStrings2 = getSynonyms(x2, ontology2);
 		if (synonymStrings2 == null || synonymStrings2.length == 0) {
 			return null;
 		}
@@ -105,6 +101,34 @@ class BasicRules {
 			}
 		}
 		return synonyms;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private String[] getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
+		if (ontology != null) {
+			return ontology.getSynonymStrings(id);
+		}
+		return null;
+	}
+	
+	protected boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology) {
+		if (x.equals(parent)) {
+			return true;
+		}
+		if (ontology != null) {
+			Set<OWLObject> descendants = ontology.getDescendants(parent);
+			if (descendants != null) {
+				return descendants.contains(x);
+			}
+		}
+		return false;
+	}
+	
+	protected Set<OWLObject> getDescendants(OWLObject parent, OWLGraphWrapper ontology) {
+		if (ontology != null) {
+			return ontology.getDescendants(parent);
+		}
+		return null;
 	}
 	
 	protected static List<TermGenerationOutput> error(String message, TermGenerationInput input) {

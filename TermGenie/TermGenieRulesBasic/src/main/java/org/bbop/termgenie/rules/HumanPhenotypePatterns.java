@@ -11,8 +11,14 @@ import owltools.graph.OWLGraphWrapper;
 
 public class HumanPhenotypePatterns extends Patterns {
 
-	protected HumanPhenotypePatterns(OWLGraphWrapper ontology) {
-		super(ontology);
+	private final OWLGraphWrapper hpo;
+	private final OWLGraphWrapper fma;
+	private final OWLGraphWrapper pato;
+
+	protected HumanPhenotypePatterns(OWLGraphWrapper hpo, OWLGraphWrapper fma, OWLGraphWrapper pato) {
+		this.hpo = hpo;
+		this.fma = fma;
+		this.pato = pato;
 	}
 
 	@Override
