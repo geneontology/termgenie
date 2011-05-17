@@ -7,19 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
-public class LocalFileIRIMapper implements OWLOntologyIRIMapper {
+public class LocalFileIRIMapper {
 
 	private final static Logger logger = Logger.getLogger(LocalFileIRIMapper.class);
 	
-	private final Map<IRI, IRI> iriMappings = new HashMap<IRI, IRI>();
+	private final Map<String, URL> mappings = new HashMap<String, URL>();
 
 	public LocalFileIRIMapper() {
 		try {
@@ -40,18 +39,20 @@ public class LocalFileIRIMapper implements OWLOntologyIRIMapper {
 		}
 	}
 	
-	@Override
-	public IRI getDocumentIRI(IRI ontologyIRI) {
-		IRI documentIRI = iriMappings.get(ontologyIRI);
+	public URL getUrl(String url) {
+		URL documentIRI = mappings.get(url);
 		if (documentIRI == null) {
-			logger.info("Unknow IRI: "+ontologyIRI);
-			documentIRI = ontologyIRI;
+			logger.info("Unknow IRI: "+url);
+			try {
+				documentIRI = new URL(url);
+			} catch (MalformedURLException exception) {
+				throw new RuntimeException(exception);
+			}
 		}
 		return documentIRI;
 	}
 	
 	private void addMapping(String url, String local, String temp) throws IOException {
-		IRI urlIRI = IRI.create(url);
 		File tempFile = new File(System.getProperty("java.io.tmpdir"), temp);
 		File file = tempFile;
 		if (!file.exists()) {
@@ -76,7 +77,7 @@ public class LocalFileIRIMapper implements OWLOntologyIRIMapper {
 				file = tempFile;
 			}
 		}
-		iriMappings.put(urlIRI, IRI.create(file));
+		mappings.put(url, file.toURI().toURL());
 	}
 	
 	private InputStream loadResource(String name) {
@@ -100,6 +101,6 @@ public class LocalFileIRIMapper implements OWLOntologyIRIMapper {
 	
 	public static void main(String[] args) {
 		LocalFileIRIMapper mapper = new LocalFileIRIMapper();
-		System.out.println(mapper.iriMappings.size());
+		System.out.println(mapper.mappings.size());
 	}
 }

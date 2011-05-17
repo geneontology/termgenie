@@ -1,4 +1,3 @@
-
 [Term]
 id: GO:0009555 ! pollen development
 intersection_of: GO:0048646 ! anatomical structure formation

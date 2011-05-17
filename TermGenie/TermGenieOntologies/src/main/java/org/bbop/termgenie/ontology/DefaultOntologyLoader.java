@@ -2,6 +2,8 @@ package org.bbop.termgenie.ontology;
 
 import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,25 +11,24 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates.DefaultOntology;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.IRIDocumentSource;
-import org.semanticweb.owlapi.model.IRI;
+import org.obolibrary.obo2owl.Obo2Owl;
+import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
 public class DefaultOntologyLoader {
 	
-	private final OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
+	private final LocalFileIRIMapper localFileIRIMapper;
 
 	public DefaultOntologyLoader() {
 		super();
-		manager.addIRIMapper(new LocalFileIRIMapper());
+		localFileIRIMapper = new LocalFileIRIMapper();
 	}
 
 	public List<Ontology> getOntologies() {
@@ -53,11 +54,13 @@ public class DefaultOntologyLoader {
 			throw new RuntimeException(exception);
 		} catch (OWLOntologyCreationException exception) {
 			throw new RuntimeException(exception);
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
 
-	protected OWLGraphWrapper getResource(DefaultOntology ontology) throws OWLOntologyCreationException {
+	protected OWLGraphWrapper getResource(DefaultOntology ontology) throws OWLOntologyCreationException, IOException {
 		if (equals(ontology, GENE_ONTOLOGY)) {
 			OWLGraphWrapper w = load("http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo");
 			if (w == null) {
@@ -67,7 +70,7 @@ public class DefaultOntologyLoader {
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo"));
-//			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo"));
+			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo"));
 			return w;
@@ -98,12 +101,12 @@ public class DefaultOntologyLoader {
 			
 		}
 		else if (equals(ontology, PLANT_ONTOLOGY)) {
-			
+			return load("http://palea.cgrb.oregonstate.edu/viewsvn/Poc/trunk/ontology/OBO_format/po_anatomy.obo?view=co");
 		}
 		return null;
 	}
 	
-	OWLGraphWrapper load(String url) throws OWLOntologyCreationException {
+	OWLGraphWrapper load(String url) throws OWLOntologyCreationException, IOException {
 		OWLOntology owlOntology = loadOWL(url);
 		if (owlOntology == null) {
 			return null;
@@ -111,8 +114,21 @@ public class DefaultOntologyLoader {
 		return new OWLGraphWrapper(owlOntology);
 	}
 
-	protected OWLOntology loadOWL(String url) throws OWLOntologyCreationException {
-		OWLOntology owlOntology = manager.loadOntology(IRI.create(url));
+	protected OWLOntology loadOWL(String url) throws OWLOntologyCreationException, IOException {
+		URL realUrl = localFileIRIMapper.getUrl(url);
+		OBOFormatParser p = new OBOFormatParser();
+		OBODoc obodoc;
+		try {
+			obodoc = p.parse(realUrl);
+			if (obodoc == null) {
+				throw new RuntimeException("Could not load: "+realUrl);
+			}
+		} catch (StringIndexOutOfBoundsException exception) {
+			System.err.println(realUrl);
+			throw exception;
+		}
+		Obo2Owl obo2Owl = new Obo2Owl();
+		OWLOntology owlOntology = obo2Owl.convert(obodoc);
 		return owlOntology;
 	}
 	
