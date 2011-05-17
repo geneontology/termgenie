@@ -67,7 +67,7 @@ public class DefaultOntologyLoader {
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo"));
-			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo"));
+//			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo"));
 			w.addSupportOntology(loadOWL("http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo"));
 			return w;
@@ -81,7 +81,7 @@ public class DefaultOntologyLoader {
 		else if (equals(ontology, HP_ONTOLOGY)) {
 			OWLGraphWrapper w = load("http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology.obo");
 			if (w != null) {
-				w.addSupportOntology(loadOWL("http://compbio.charite.de/svn/hpo/trunk/human-phenotype-ontology_xp.obo"));
+				w.addSupportOntology(loadOWL("http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo"));
 			}
 			return w;
 		}
@@ -112,12 +112,9 @@ public class DefaultOntologyLoader {
 	}
 
 	protected OWLOntology loadOWL(String url) throws OWLOntologyCreationException {
-		IRIDocumentSource source = new IRIDocumentSource(IRI.create(url));
-		OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(source);
+		OWLOntology owlOntology = manager.loadOntology(IRI.create(url));
 		return owlOntology;
 	}
-	
-	
 	
 	private boolean equals(Ontology o1, Ontology o2) {
 		if (o1 == null) {
