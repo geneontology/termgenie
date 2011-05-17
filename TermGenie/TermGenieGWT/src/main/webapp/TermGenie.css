@@ -19,3 +19,53 @@ h2 {
 	border-width: 2px;
 	border-color: red;
 }
+
+.select-template-header {
+	margin: 10px;
+}
+
+.select-template-combobox {
+	padding-left: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.select-ontology-header {
+	margin: 10px;
+}
+
+.select-ontology-combobox {
+	padding-left: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.term-template-widget {
+	margin: 5px;	
+}
+
+.term-template-grid {
+	margin: 5px;
+}
+
+.modify-buttons-widget {
+	margin: 5px;
+}
+
+.template-header-title {
+	font-size: 1.3em;
+  	font-weight: bold;
+  	color: #777777;
+  	margin-bottom: 5px;
+}
+
+.template-header-category {
+	font-size: 1.0em;
+	font-weight: bold;
+}
+
+.template-header-field-name {
+	font-weight: bold;
+}
+
+

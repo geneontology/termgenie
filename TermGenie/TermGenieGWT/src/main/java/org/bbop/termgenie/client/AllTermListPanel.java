@@ -1,7 +1,9 @@
 package org.bbop.termgenie.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -90,14 +92,24 @@ public class AllTermListPanel extends VerticalPanel {
 
 		TemplateSelector(final GWTTermTemplate[] templates) {
 			super();
+			addStyleName("select-template-header");
 			this.templates = templates;
 
 			// create internal widgets
 			final Label lblSelectTemplate = new InlineLabel("Select Template");
 			comboBox = new ListBox();
+			comboBox.addStyleName("select-template-combobox");
 			templateAddButton = new Button("Add template");
 
 			// configure internal widgets
+			// sort templates according to alphabet
+			Arrays.sort(templates, new Comparator<GWTTermTemplate>() {
+
+				@Override
+				public int compare(GWTTermTemplate o1, GWTTermTemplate o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
 			for (GWTTermTemplate termTemplate : templates) {
 				comboBox.addItem(termTemplate.getName());
 			}

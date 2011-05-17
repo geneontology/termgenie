@@ -49,7 +49,7 @@ public class GenerateTermsServiceImplTest {
 		response = instance.generateTerms("x", allParameters , true, null, null);
 		assertNotNull(response.getGeneralError());
 		
-//		instance.generateTerms(OntologyTools.GENE_ONTOLOGY_NAME, allParameters, commit, username, password);
+//		instance.generateTerms(OntologyLoadTests.GENE_ONTOLOGY_NAME, allParameters, commit, username, password);
 		fail("Not yet implemented");
 	}
 

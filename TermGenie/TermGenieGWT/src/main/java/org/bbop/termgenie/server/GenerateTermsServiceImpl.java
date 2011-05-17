@@ -42,7 +42,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GenerateTermsServiceImpl extends RemoteServiceServlet implements GenerateTermsService {
 
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
-
+	private static final UserCredentialValidator validator = UserCredentialValidator.getInstance();
+	private static final TermGenerationTool termGeneration = TermGenerationTool.getInstance();
+	private static final OntologyCommitTool committer = OntologyCommitTool.getInstance();
+	
 	@Override
 	public GWTTermTemplate[] getAvailableGWTTermTemplates(String ontologyName) {
 		// sanity check
@@ -209,15 +212,15 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 	}
 
 	protected boolean validateCredentials(String username, String password) {
-		return UserCredentialValidator.getInstance().validate(username, password);
+		return validator.validate(username, password);
 	}
 
 	protected List<TermGenerationOutput> generateTermsInternal(Ontology ontology, List<TermGenerationInput> generationTasks) {
-		return TermGenerationTool.getInstance().generateTerms(ontology, generationTasks); 
+		return termGeneration.generateTerms(ontology, generationTasks); 
 	}
 
 	protected boolean executeCommit(Ontology ontology, List<TermGenerationOutput> candidates) {
-		return OntologyCommitTool.getInstance().commitCandidates(ontology, candidates);
+		return committer.commitCandidates(ontology, candidates);
 	}
 
 	/**

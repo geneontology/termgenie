@@ -17,11 +17,13 @@ public class OntologySelectionPanel extends FlowPanel{
 
 	public OntologySelectionPanel(List<String> ontologies) {
 		super();
+		addStyleName("select-ontology-header");
 		this.ontologies = ontologies;
 		setWidth("100%");
 		
 		// create internal widgets
 		ontologySelectionBox = new ListBox();
+		ontologySelectionBox.addStyleName("select-ontology-combobox");
 		Label lblSelectOntology = new InlineLabel("Select Ontology");
 		selectOntologyButton = new Button("Select");
 		

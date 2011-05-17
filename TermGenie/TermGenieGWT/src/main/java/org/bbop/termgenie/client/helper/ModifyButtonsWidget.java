@@ -11,6 +11,7 @@ public class ModifyButtonsWidget extends FlowPanel {
 
 	public ModifyButtonsWidget() {
 		super();
+		addStyleName("modify-buttons-widget");
 		addButton = new Button("add");
 		removeButton = new Button("remove");
 		add(addButton);

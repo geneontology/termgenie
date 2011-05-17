@@ -166,6 +166,7 @@ public interface DataInputField {
 			this.prefixes = new ArrayList<CheckBox>(functionalPrefixes.length);
 			for (String prefix : functionalPrefixes) {
 				CheckBox checkBox = new CheckBox(prefix);
+				checkBox.setValue(true); // set default as selected
 				this.prefixes.add(checkBox);
 				add(checkBox);
 			}

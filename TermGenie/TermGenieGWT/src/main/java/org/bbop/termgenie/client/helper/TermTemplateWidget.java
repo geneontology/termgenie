@@ -43,9 +43,11 @@ public class TermTemplateWidget extends FlowPanel {
 
 	public TermTemplateWidget(final GWTTermTemplate template, final AllTermListPanel parent) {
 		super();
+		this.addStyleName("term-template-widget");
 		this.template = template;
 		// initial size of the Grid: two header rows plus footer row with add button
 		grid = new Grid(3,template.getFields().length);
+		grid.addStyleName("term-template-grid");
 		
 		// format footer like the normal data areas, as it will be used latter as such.
 		grid.getRowFormatter().setVerticalAlign(2, HasVerticalAlignment.ALIGN_TOP);
@@ -71,7 +73,9 @@ public class TermTemplateWidget extends FlowPanel {
 		});
 		
 		// add to parent
-		add(new Label(template.getName()));
+		Label templateLabel = new Label("Template: "+template.getName());
+		templateLabel.addStyleName("template-header-title");
+		add(templateLabel);
 		add(grid);
 		
 		// configure internal widgets
@@ -79,6 +83,9 @@ public class TermTemplateWidget extends FlowPanel {
 		grid.setCellPadding(2);
 		
 		GWTTemplateField[] fields = template.getFields();
+		
+		lblRequired.addStyleName("template-header-category");
+		lblOptional.addStyleName("template-header-category");
 		// set labels
 		grid.setWidget(0, 0, lblRequired);
 		boolean first = true;
@@ -88,7 +95,9 @@ public class TermTemplateWidget extends FlowPanel {
 				grid.setWidget(0, i, lblOptional);
 				first = false;
 			}
-			grid.setWidget(1, i, new Label(field.getName()));
+			Label nameLabel = new Label(field.getName());
+			nameLabel.addStyleName("template-header-field-name");
+			grid.setWidget(1, i, nameLabel);
 		}
 		
 		// add the first data row

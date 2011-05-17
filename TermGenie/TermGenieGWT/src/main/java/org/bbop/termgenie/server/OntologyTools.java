@@ -1,6 +1,8 @@
 package org.bbop.termgenie.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +10,10 @@ import java.util.Map;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 
 /**
  * Stub for providing some basic ontology and pattern input.
- * TODO replace this with calls to the proper load methods: to be implemented 
  */
 public class OntologyTools {
 	
@@ -21,14 +23,18 @@ public class OntologyTools {
 	private final Map<Ontology, String> reverseOntologyInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
-	public OntologyTools() {
+	private OntologyTools() {
 		ontologyInstances = new HashMap<String, Ontology>();
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
-		for(Ontology ontology : DefaultTermTemplates.defaultOntologies) {
+		System.err.println("Start loading ontologies");
+		DefaultOntologyLoader loader = new DefaultOntologyLoader();
+		for(Ontology ontology : loader.getOntologies()) {
 			addOntology(ontology);
 		}
+		System.err.println("Finished loading ontologies");
+		
 		for (TermTemplate template : DefaultTermTemplates.defaultTemplates) {
 			List<Ontology> ontologies = template.getCorrespondingOntologies();
 			for (Ontology ontology : ontologies) {
@@ -65,7 +71,26 @@ public class OntologyTools {
 	}
 	
 	List<String> getAvailableOntologyNames() {
-		return new ArrayList<String>(templates.keySet());
+		ArrayList<String> names = new ArrayList<String>(templates.keySet());
+		//  sort names: prefer ontologies that have more templates
+		// if two ontologies have the same number, use alphabetical sort
+		Collections.sort(names, new Comparator<String>() {
+
+			@Override
+			public int compare(String s1, String s2) {
+				int l1 = templates.get(s1).size();
+				int l2 = templates.get(s2).size();
+				if (l1 == l2) {
+					return s1.compareTo(s2);
+				}
+				return l2 - l1;
+			}
+		});
+		return names;
+	}
+	
+	List<Ontology> getAvailableOntologies() {
+		return new ArrayList<Ontology>(reverseOntologyInstances.keySet());
 	}
 	
 	List<TermTemplate> getTermTemplates(String ontologyName) {
