@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bbop.termgenie.client.LoggingCallback.ErrorPanel;
 import org.bbop.termgenie.services.TermSuggestion;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter;
 import org.bbop.termgenie.shared.GWTTermTemplate.GWTCardinality;
@@ -91,12 +90,6 @@ public interface DataInputField {
 	public static class AutoCompleteInputField extends GenericSuggestBox<TermSuggestion> implements
 			DataInputField {
 		
-		private final static Logger logger = Logger.getLogger(DataInputField.class.getName());
-		static  {
-			// register this logger at the logging panel
-			logger.addHandler(new HasWidgetsLogHandler(ErrorPanel.getInstance()));
-		}
-
 		public AutoCompleteInputField(GenericSuggestOracle<TermSuggestion> oracle) {
 			super(oracle);
 		}

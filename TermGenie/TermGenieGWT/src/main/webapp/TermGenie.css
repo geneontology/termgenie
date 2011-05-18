@@ -68,4 +68,9 @@ h2 {
 	font-weight: bold;
 }
 
-
+.message-popup-title-style {
+	font-size: 1.3em;
+  	font-weight: bold;
+  	color: #777777;
+  	margin-bottom: 5px;
+}

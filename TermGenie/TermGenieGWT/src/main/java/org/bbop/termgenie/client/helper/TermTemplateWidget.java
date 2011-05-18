@@ -2,11 +2,9 @@ package org.bbop.termgenie.client.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bbop.termgenie.client.AllTermListPanel;
-import org.bbop.termgenie.client.LoggingCallback.ErrorPanel;
-import org.bbop.termgenie.client.SubmitFeedbackPanel;
+import org.bbop.termgenie.client.MessagePanel;
 import org.bbop.termgenie.client.helper.DataInputField.AutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.ListAutoCompleteInputField;
 import org.bbop.termgenie.client.helper.DataInputField.PrefixAutoCompleteInputField;
@@ -18,7 +16,6 @@ import org.bbop.termgenie.shared.GWTTermTemplate.GWTTemplateField;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.logging.client.HasWidgetsLogHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.GenericSuggestOracle;
 import com.google.gwt.user.client.ui.Grid;
@@ -30,10 +27,6 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class TermTemplateWidget extends FlowPanel {
 	
-	private static final Logger logger = Logger.getLogger(TermTemplateWidget.class.getName()); 
-	static {
-		logger.addHandler(new HasWidgetsLogHandler(ErrorPanel.getInstance()));
-	}
 	private final GWTTermTemplate template;
 	private ArrayList<ArrayList<DataInputField>> table = new ArrayList<ArrayList<DataInputField>>();
 	private final Label lblRequired = new Label("Required");
@@ -219,7 +212,7 @@ public class TermTemplateWidget extends FlowPanel {
 					sb.append("), the input field \"");
 					sb.append(field.getName());
 					sb.append("\" has errors.");
-					SubmitFeedbackPanel.addMessage(new Label(sb.toString()));
+					MessagePanel.addErrorMessage(new Label(sb.toString()));
 					hasErrors = true;
 				}
 			}

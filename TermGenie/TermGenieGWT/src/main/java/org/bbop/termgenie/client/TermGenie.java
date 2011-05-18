@@ -11,18 +11,20 @@ import org.bbop.termgenie.services.OntologyServiceAsync;
 import org.bbop.termgenie.services.ValidateUserCredentialServiceAsync;
 import org.bbop.termgenie.shared.GWTFieldValidator;
 import org.bbop.termgenie.shared.GWTFieldValidator.GWTValidationHint;
-import org.bbop.termgenie.shared.GWTTermGenerationParameter;
-import org.bbop.termgenie.shared.GWTTermTemplate;
 import org.bbop.termgenie.shared.GWTGenerationResponse;
 import org.bbop.termgenie.shared.GWTPair;
+import org.bbop.termgenie.shared.GWTTermGenerationParameter;
+import org.bbop.termgenie.shared.GWTTermTemplate;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -118,11 +120,11 @@ public class TermGenie implements EntryPoint {
 		// gather input data from fields
 		final String ontology = getOntologySelectionPanel().getSelectedOntology();
 		
-		SubmitFeedbackPanel.clearMessages();
+		MessagePanel.clearMessages();
 		AllExtractionResults allExtractionResults = getAllTermListPanel().getAllParameters();
 		// check if there were already some obvious errors.
 		if (!allExtractionResults.success) {
-			SubmitFeedbackPanel.popup("Error");
+			MessagePanel.popupError();
 			return;
 		}
 		final GWTPair<GWTTermTemplate,GWTTermGenerationParameter>[] allParameters = allExtractionResults.getAllParameters();
@@ -138,9 +140,9 @@ public class TermGenie implements EntryPoint {
 	
 		if (!allErrors.isEmpty()) {
 			for (GWTValidationHint error : allErrors) {
-				SubmitFeedbackPanel.addMessage(new Label(error.getHint()));
+				MessagePanel.addErrorMessage(createMessageWidget(error.getHint()));
 			}
-			SubmitFeedbackPanel.popup("Error");
+			MessagePanel.popupError();
 			return;
 		}
 		
@@ -151,8 +153,8 @@ public class TermGenie implements EntryPoint {
 			// user credentials
 			final String username = getUserPanel().getUserName();
 			if (username == null || username.isEmpty()) {
-				SubmitFeedbackPanel.addMessage(new Label(MISSING_USERNAME));
-				SubmitFeedbackPanel.popup("Error");
+				MessagePanel.addErrorMessage(new Label(MISSING_USERNAME));
+				MessagePanel.popupError();
 			}
 			final String password = getUserPanel().getPassword();
 			
@@ -163,8 +165,8 @@ public class TermGenie implements EntryPoint {
 				public void onSuccess(Boolean result) {
 					// success?
 					if (result.booleanValue() == false) {
-						SubmitFeedbackPanel.addMessage(new Label(UNKOWN_USERNAME_PASSWORD));
-						SubmitFeedbackPanel.popup("Error");
+						MessagePanel.addErrorMessage(new Label(UNKOWN_USERNAME_PASSWORD));
+						MessagePanel.popupError();
 						return;
 					}
 					// submit request to server
@@ -188,28 +190,28 @@ public class TermGenie implements EntryPoint {
 			@Override
 			public void onSuccess(GWTGenerationResponse result) {
 				if (result == null) {
-					SubmitFeedbackPanel.addMessage(new Label("No response was generated from the server."));
-					SubmitFeedbackPanel.popup("Error");
+					MessagePanel.addErrorMessage(new Label("No response was generated from the server."));
+					MessagePanel.popupError();
 					return;
 				}
 				GWTValidationHint[] errors = result.getErrors();
 				if (errors != null && errors.length > 0) {
 					for (GWTValidationHint error : errors) {
-						SubmitFeedbackPanel.addMessage(new Label(error.getHint()));
+						MessagePanel.addErrorMessage(createMessageWidget(error.getHint()));
 					}
-					SubmitFeedbackPanel.popup("Error");
+					MessagePanel.popupError();
 					return;
 				}
 				String[] generatedTerms = result.getGeneratedTerms();
 				if (generatedTerms == null || generatedTerms.length == 0) {
-					SubmitFeedbackPanel.addMessage(new Label("No terms could be generated from your input."));
-					SubmitFeedbackPanel.popup("Error");
+					MessagePanel.addErrorMessage(new Label("No terms could be generated from your input."));
+					MessagePanel.popupError();
 					return;
 				}
 				for (String generatedTerm : generatedTerms) {
-					SubmitFeedbackPanel.addMessage(new Label(generatedTerm));
+					MessagePanel.addSuccessMessage(createMessageWidget(generatedTerm));
 				}
-				SubmitFeedbackPanel.popup("Success");
+				MessagePanel.popupSuccess();
 				
 				// if commit was true, clear the templates, 
 				// so that the user cannot generate them a second time
@@ -220,5 +222,9 @@ public class TermGenie implements EntryPoint {
 			}
 		};
 		GenerateTermsServiceAsync.Util.getInstance().generateTerms(ontology, allParameters, false, null, null, callback);
+	}
+	
+	private static Widget createMessageWidget(String message) {
+		return new HTML("<pre>"+message+"</pre>");
 	}
 }

@@ -33,13 +33,6 @@ public class TermGenerationMessageTool {
 		sb.append("and the parameters: ");
 		appendParameters(sb, input, template);
 		sb.append('\n');
-		sb.append("The validation result is:");
-		if (candidate.isSuccess()) {
-			sb.append("Success");
-		} else {
-			sb.append("Error");
-		}
-		sb.append('\n');
 		String message = candidate.getMessage();
 		if (message != null) {
 			sb.append("Details: ");
@@ -53,18 +46,24 @@ public class TermGenerationMessageTool {
 		return sb.toString();
 	}
 
-	static void appendTermDetails(StringBuilder sb, OntologyTerm term) {
-		// use existing to sting for now.
-		// Think about using obo format here, for later copy and paste by the
+	static void appendTermDetails(StringBuilder builder, OntologyTerm term) {
+		// TODO: Think about using obo format here, for later copy and paste by the
 		// user.
-		sb.append(term);
+		builder.append("Term: ").append('\n');
+		if (term.getId() != null)
+			builder.append("  Id:       ").append(term.getId()).append('\n');
+		if (term.getLabel() != null)
+			builder.append("  Label:    ").append(term.getLabel()).append('\n');
+		if (term.getDefinition() != null)
+			builder.append("  Def:      ").append(term.getDefinition()).append('\n');
+		if (term.getSynonyms() != null)
+			builder.append("  Synonyms: ").append(term.getSynonyms()).append('\n');
 	}
 
 	static void appendParameters(StringBuilder sb, TermGenerationInput input, TermTemplate template) {
 		TermGenerationParameters parameters = input.getParameters();
 		List<TemplateField> fields = template.getFields();
 		for (TemplateField field : fields) {
-			sb.append(field.getName());
 			Cardinality cardinality = field.getCardinality();
 			if (cardinality.getMaximum() == 1) {
 				// single value
