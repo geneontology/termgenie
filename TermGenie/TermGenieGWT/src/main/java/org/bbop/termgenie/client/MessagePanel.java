@@ -115,11 +115,11 @@ public class MessagePanel extends PopupPanel {
 	}
 	
 	public static synchronized void addSuccessMessage(Widget widget) {
-		instance.successPanel.add(widget);
+		instance.successPanel.messages.add(widget);
 	}
 	
 	public static synchronized void addErrorMessage(Widget widget) {
-		instance.errorPanel.add(widget);
+		instance.errorPanel.messages.add(widget);
 		instance.hasErrors = true;
 	}
 	
