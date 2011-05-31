@@ -1,0 +1,2995 @@
+remark: internal cross-products between BP and CC, fully vetted by mah (following original vetting by cjm)
+
+[Term]
+id: GO:0000054 ! ribosome export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: OBO_REL:results_in_transport_of GO:0005840 ! ribosome
+
+[Term]
+id: GO:0000055 ! ribosomal large subunit export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: OBO_REL:results_in_transport_of GO:0015934 ! large ribosomal subunit
+
+[Term]
+id: GO:0000056 ! ribosomal small subunit export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: OBO_REL:results_in_transport_of GO:0015935 ! small ribosomal subunit
+
+[Term]
+id: GO:0000066 ! mitochondrial ornithine transport
+intersection_of: GO:0015822 ! ornithine transport
+intersection_of: OBO_REL:results_in_transport_involving GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0000147 ! actin cortical patch assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030479 ! actin cortical patch
+
+[Term]
+id: GO:0000226 ! microtubule cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0015630 ! microtubule cytoskeleton
+
+[Term]
+id: GO:0000245 ! spliceosome assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0005681 ! spliceosome
+
+[Term]
+id: GO:0000266 ! mitochondrial fission
+intersection_of: GO:0048285 ! organelle fission
+intersection_of: OBO_REL:results_in_division_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0000280 ! nuclear division
+intersection_of: GO:0048285 ! organelle fission
+intersection_of: OBO_REL:results_in_division_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0000390 ! spliceosome disassembly
+intersection_of: GO:0032988 ! ribonucleoprotein complex disassembly
+intersection_of: OBO_REL:has_input GO:0005681 ! spliceosome
+
+[Term]
+id: GO:0000913 ! preprophase band formation
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0009574 ! preprophase band
+
+[Term]
+id: GO:0000921 ! septin ring assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005940 ! septin ring
+
+[Term]
+id: GO:0001765 ! membrane raft formation
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0001927 ! exocyst assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0000145 ! exocyst
+
+[Term]
+id: GO:0001941 ! postsynaptic membrane organization
+intersection_of: GO:0016044 ! membrane organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045211 ! postsynaptic membrane
+
+[Term]
+id: GO:0002396 ! MHC protein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0042611 ! MHC protein complex
+
+[Term]
+id: GO:0002397 ! MHC class I protein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0042612 ! MHC class I protein complex
+
+[Term]
+id: GO:0002398 ! MHC class Ib protein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0032398 ! MHC class Ib protein complex
+
+[Term]
+id: GO:0002399 ! MHC class II protein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0042613 ! MHC class II protein complex
+
+[Term]
+id: GO:0002499 ! proteolysis within endosome associated with antigen processing and presentation
+intersection_of: GO:0002496 ! proteolysis associated with antigen processing and presentation
+intersection_of: OBO_REL:occurs_in GO:0005768 ! endosome
+
+[Term]
+id: GO:0002500 ! proteolysis within lysosome associated with antigen processing and presentation
+intersection_of: GO:0002496 ! proteolysis associated with antigen processing and presentation
+intersection_of: OBO_REL:occurs_in GO:0005764 ! lysosome
+
+[Term]
+id: GO:0006264 ! mitochondrial DNA replication
+intersection_of: GO:0006260 ! DNA replication
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0006267 ! pre-replicative complex assembly
+intersection_of: GO:0065004 ! protein-DNA complex assembly
+intersection_of: OBO_REL:has_output GO:0005656 ! pre-replicative complex
+
+[Term]
+id: GO:0006334 ! nucleosome assembly
+intersection_of: GO:0065004 ! protein-DNA complex assembly
+intersection_of: OBO_REL:has_output GO:0000786 ! nucleosome
+
+[Term]
+id: GO:0006337 ! nucleosome disassembly
+intersection_of: GO:0032986 ! protein-DNA complex disassembly
+intersection_of: OBO_REL:has_input GO:0000786 ! nucleosome
+
+[Term]
+id: GO:0006461 ! protein complex assembly
+intersection_of: GO:0065003 ! macromolecular complex assembly
+intersection_of: OBO_REL:has_output GO:0043234 ! protein complex
+
+[Term]
+id: GO:0006608 ! snRNP protein import into nucleus
+intersection_of: GO:0006606 ! protein import into nucleus
+intersection_of: OBO_REL:results_in_transport_of GO:0030532 ! small nuclear ribonucleoprotein complex
+
+[Term]
+id: GO:0006614 ! SRP-dependent cotranslational protein targeting to membrane
+intersection_of: GO:0006613 ! cotranslational protein targeting to membrane
+intersection_of: OBO_REL:dependent_on GO:0005786 ! signal recognition particle, endoplasmic reticulum targeting
+
+[Term]
+id: GO:0006626 ! protein targeting to mitochondrion
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_towards GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0000042 ! protein targeting to Golgi
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_towards GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0006858 ! extracellular transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:occurs_in GO:0005576 ! extracellular region
+
+[Term]
+id: GO:0006859 ! extracellular carbohydrate transport
+intersection_of: GO:0008643 ! carbohydrate transport
+intersection_of: OBO_REL:occurs_in GO:0005576 ! extracellular region
+
+[Term]
+id: GO:0006860 ! extracellular amino acid transport
+intersection_of: GO:0006865 ! amino acid transport
+intersection_of: OBO_REL:occurs_in GO:0005576 ! extracellular region
+
+[Term]
+id: GO:0006886 ! intracellular protein transport
+intersection_of: GO:0015031 ! protein transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0006888 ! ER to Golgi vesicle-mediated transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005783 ! endoplasmic reticulum
+intersection_of: OBO_REL:results_in_transport_to GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0006893 ! Golgi to plasma membrane transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0006895 ! Golgi to endosome transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0005768 ! endosome
+
+[Term]
+id: GO:0006896 ! Golgi to vacuole transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0005773 ! vacuole
+
+[Term]
+id: GO:0006996 ! organelle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0006997 ! nucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0006998 ! nuclear envelope organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005635 ! nuclear envelope 
+
+[Term]
+id: GO:0006999 ! nuclear pore organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0007000 ! nucleolus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005730 ! nucleolus
+
+[Term]
+id: GO:0007005 ! mitochondrion organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0007006 ! mitochondrial membrane organization
+intersection_of: GO:0016044 ! membrane organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031966 ! mitochondrial membrane
+
+[Term]
+id: GO:0007009 ! plasma membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0007010 ! cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005856 ! cytoskeleton
+
+[Term]
+id: GO:0007015 ! actin filament organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005884 ! actin filament
+
+[Term]
+id: GO:0007019 ! microtubule depolymerization
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005874 ! microtubule
+
+[Term]
+id: GO:0007028 ! cytoplasm organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005737 ! cytoplasm
+
+[Term]
+id: GO:0007029 ! endoplasmic reticulum organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0007030 ! Golgi organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0007031 ! peroxisome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0007032 ! endosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005768 ! endosome
+
+[Term]
+id: GO:0007033 ! vacuole organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005773 ! vacuole
+
+[Term]
+id: GO:0007039 ! vacuolar protein catabolic process
+intersection_of: GO:0030163 ! protein catabolic process
+intersection_of: OBO_REL:occurs_in GO:0005773 ! vacuole
+
+[Term]
+id: GO:0007040 ! lysosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005764 ! lysosome
+
+[Term]
+id: GO:0007043 ! cell-cell junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005911 ! cell-cell junction
+
+[Term]
+id: GO:0007047 ! cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005618 ! cell wall
+
+[Term]
+id: GO:0007051 ! spindle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0007103 ! spindle pole body duplication in nuclear envelope
+intersection_of: GO:0030474 ! spindle pole body duplication
+intersection_of: OBO_REL:occurs_in GO:0005635 ! nuclear envelope
+
+[Term]
+id: GO:0007130 ! synaptonemal complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0007315 ! pole plasm assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0007416 ! synaptogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0045202 ! synapse
+
+[Term]
+id: GO:0008053 ! mitochondrial fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0008333 ! endosome to lysosome transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005768 ! endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0005764 ! lysosome
+
+[Term]
+id: GO:0008535 ! respiratory chain complex IV assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0045277 ! respiratory chain complex IV
+
+[Term]
+id: GO:0009657 ! plastid organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0009658 ! chloroplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009507 ! chloroplast
+
+[Term]
+id: GO:0009659 ! leucoplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009516 ! leucoplast
+
+[Term]
+id: GO:0009660 ! amyloplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009501 ! amyloplast
+
+[Term]
+id: GO:0009661 ! chromoplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009509 ! chromoplast
+
+[Term]
+id: GO:0009662 ! etioplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009513 ! etioplast
+
+[Term]
+id: GO:0009663 ! plasmodesma organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009506 ! plasmodesma
+
+[Term]
+id: GO:0009664 ! plant-type cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009505 ! plant-type cell wall
+
+[Term]
+id: GO:0009666 ! plastid outer membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009527 ! plastid outer membrane
+
+[Term]
+id: GO:0009667 ! plastid inner membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009528 ! plastid inner membrane
+
+[Term]
+id: GO:0009668 ! plastid membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042170 ! plastid membrane
+
+[Term]
+id: GO:0009827 ! plant-type cell wall modification
+intersection_of: GO:0042545 ! cell wall modification
+intersection_of: OBO_REL:has_participant GO:0009505 ! plant-type cell wall
+
+[Term]
+id: GO:0009932 ! cell tip growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:occurs_in GO:0051286 ! cell tip
+
+[Term]
+id: GO:0010027 ! thylakoid membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042651 ! thylakoid membrane
+
+[Term]
+id: GO:0010111 ! glyoxysome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009514 ! glyoxysome
+
+[Term]
+id: GO:0010190 ! cytochrome b6f complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0009512 ! cytochrome b6f complex
+
+[Term]
+id: GO:0010197 ! polar nucleus fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0043078 ! polar nucleus
+
+[Term]
+id: GO:0010207 ! photosystem II assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0009523 ! photosystem II
+
+[Term]
+id: GO:0010265 ! SCF complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0019005 ! SCF ubiquitin ligase complex
+
+[Term]
+id: GO:0010387 ! signalosome assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0008180 ! signalosome
+
+[Term]
+id: GO:0015680 ! intracellular copper ion transport
+intersection_of: GO:0006825 ! copper ion transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0015859 ! intracellular nucleoside transport
+intersection_of: GO:0015858 ! nucleoside transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0030473 ! nuclear migration along microtubule
+intersection_of: GO:0040023 ! establishment of nucleus localization
+intersection_of: OBO_REL:results_in_transport_along GO:0015630 ! microtubule cytoskeleton
+
+[Term]
+id: GO:0016044 ! membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016020 ! membrane
+
+[Term]
+id: GO:0016050 ! vesicle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0016080 ! synaptic vesicle targeting
+intersection_of: GO:0006903 ! vesicle targeting
+intersection_of: OBO_REL:results_in_transport_of GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0016189 ! synaptic vesicle to endosome fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0008021 ! synaptic vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0005768 ! endosome
+
+[Term]
+id: GO:0016192 ! vesicle-mediated transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:mediated_by GO:0031982 ! vesicle
+
+[Term]
+id: GO:0016264 ! gap junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005921 ! gap junction
+
+[Term]
+id: GO:0016557 ! peroxisome membrane biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0005778 ! peroxisomal membrane
+
+
+[Term]
+id: GO:0017062 ! respiratory chain complex III assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0045275 ! respiratory chain complex III
+! fixed diff; also renamed BP terms to matche recent merge in CC; now ok
+
+[Term]
+id: GO:0017126 ! nucleologenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0005730 ! nucleolus
+
+[Term]
+id: GO:0019069 ! viral capsid assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0019028 ! viral capsid
+
+[Term]
+id: GO:0019093 ! mitochondrial RNA localization
+intersection_of: GO:0006403 ! RNA localization
+intersection_of: OBO_REL:results_in_localization_to GO:0005739 ! mitochondrion
+! changed diff rel; now ok
+
+[Term]
+id: GO:0019749 ! cytoskeleton-dependent cytoplasmic transport, nurse cell to oocyte
+intersection_of: GO:0007303 ! cytoplasmic transport, nurse cell to oocyte
+intersection_of: OBO_REL:dependent_on GO:0005856 ! cytoskeleton
+
+[Term]
+id: GO:0019991 ! septate junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005918 ! septate junction
+
+[Term]
+id: GO:0022617 ! extracellular matrix disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0031012 ! extracellular matrix
+
+[Term]
+id: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030529 ! ribonucleoprotein complex
+
+[Term]
+id: GO:0030030 ! cell projection organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042995 ! cell projection
+
+[Term]
+id: GO:0030031 ! cell projection assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0042995 ! cell projection
+
+[Term]
+id: GO:0030032 ! lamellipodium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030027 ! lamellipodium
+
+[Term]
+id: GO:0030033 ! microvillus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005902 ! microvillus
+
+[Term]
+id: GO:0030035 ! microspike assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030175 ! filopodium
+
+[Term]
+id: GO:0030036 ! actin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0015629 ! actin cytoskeleton
+
+[Term]
+id: GO:0030150 ! protein import into mitochondrial matrix
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005759 ! mitochondrial matrix
+
+[Term]
+id: GO:0030198 ! extracellular matrix organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031012 ! extracellular matrix
+
+[Term]
+id: GO:0030239 ! myofibril assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030016 ! myofibril
+
+[Term]
+id: GO:0030397 ! membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0016020 ! membrane
+
+[Term]
+id: GO:0030472 ! mitotic spindle organization in nucleus
+intersection_of: GO:0007052 ! mitotic spindle organization
+intersection_of: OBO_REL:occurs_in GO:0005634 ! nucleus
+
+[Term]
+id: GO:0030581 ! intracellular protein transport in host
+intersection_of: GO:0015031 ! protein transport
+intersection_of: OBO_REL:occurs_in GO:0043657 ! host cell
+
+[Term]
+id: GO:0030705 ! cytoskeleton-dependent intracellular transport
+intersection_of: GO:0046907 ! intracellular transport
+intersection_of: OBO_REL:dependent_on GO:0005856 ! cytoskeleton
+
+[Term]
+id: GO:0030865 ! cortical cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030863 ! cortical cytoskeleton
+
+[Term]
+id: GO:0030866 ! cortical actin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030864 ! cortical actin cytoskeleton
+
+[Term]
+id: GO:0030913 ! paranodal junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0033010 ! paranodal junction
+
+[Term]
+id: GO:0030953 ! spindle astral microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000235 ! astral microtubule
+
+[Term]
+id: GO:0030994 ! primary cell septum disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0000936 ! primary cell septum
+
+[Term]
+id: GO:0031023 ! microtubule organizing center organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005815 ! microtubule organizing center
+
+[Term]
+id: GO:0031024 ! interphase microtubule organizing center formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0031021 ! interphase microtubule organizing center
+
+[Term]
+id: GO:0031025 ! equatorial microtubule organizing center disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0000923 ! equatorial microtubule organizing center
+
+[Term]
+id: GO:0031034 ! myosin filament assembly
+intersection_of: GO:0006461 ! protein complex assembly
+! intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0032982 ! myosin filament
+
+[Term]
+id: GO:0031035 ! myosin filament disassembly
+intersection_of: GO:0043241 ! protein complex disassembly
+! intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0032982 ! myosin filament
+
+[Term]
+id: GO:0031046 ! spindle pole body duplication in cytoplasm
+intersection_of: GO:0030474 ! spindle pole body duplication
+intersection_of: OBO_REL:occurs_in GO:0005737 ! cytoplasm
+
+[Term]
+id: GO:0031106 ! septin ring organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005940 ! septin ring
+
+[Term]
+id: GO:0031107 ! septin ring disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005940 ! septin ring
+
+[Term]
+id: GO:0031122 ! cytoplasmic microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005881 ! cytoplasmic microtubule
+
+[Term]
+id: GO:0031145 ! anaphase-promoting complex-dependent proteasomal ubiquitin-dependent protein catabolic process
+intersection_of: GO:0043161 ! proteasomal ubiquitin-dependent protein catabolic process
+intersection_of: OBO_REL:dependent_on GO:0005680 ! anaphase-promoting complex
+
+[Term]
+id: GO:0031268 ! pseudopodium organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031143 ! pseudopodium
+
+[Term]
+id: GO:0031382 ! mating projection assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005937 ! mating projection
+
+[Term]
+id: GO:0031497 ! chromatin assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000785 ! chromatin
+
+[Term]
+id: GO:0031498 ! chromatin disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0000785 ! chromatin
+
+[Term]
+id: GO:0031503 ! protein complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0043234 ! protein complex
+
+[Term]
+id: GO:0031504 ! peptidoglycan-based cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009274 ! peptidoglycan-based cell wall
+
+[Term]
+id: GO:0031505 ! fungal-type cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009277 ! fungal-type cell wall
+
+[Term]
+id: GO:0031507 ! heterochromatin formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000792 ! heterochromatin
+
+[Term]
+id: GO:0031508 ! centromeric heterochromatin formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005721 ! centromeric heterochromatin
+
+[Term]
+id: GO:0031509 ! telomeric heterochromatin formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0031933 ! telomeric heterochromatin
+
+[Term]
+id: GO:0031529 ! ruffle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0001726 ! ruffle
+
+[Term]
+id: GO:0031579 ! membrane raft organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0031581 ! hemidesmosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030056 ! hemidesmosome
+
+[Term]
+id: GO:0031671 ! primary cell septum biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0000936 ! primary cell septum
+
+[Term]
+id: GO:0032042 ! mitochondrial DNA metabolic process
+intersection_of: GO:0006259 ! DNA metabolic process
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0032043 ! mitochondrial DNA catabolic process
+intersection_of: GO:0006308 ! DNA catabolic process
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0032053 ! microtubule basal body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005932 ! microtubule basal body
+
+[Term]
+id: GO:0032066 ! nucleolus to nucleoplasm transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005730 ! nucleolus
+intersection_of: OBO_REL:results_in_transport_to GO:0005654 ! nucleoplasm
+
+[Term]
+id: GO:0032122 ! oral apparatus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031912 ! oral apparatus
+
+[Term]
+id: GO:0032185 ! septin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0032156 ! septin cytoskeleton
+
+[Term]
+id: GO:0032186 ! cellular bud neck septin ring organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000144 ! cellular bud neck septin ring
+
+[Term]
+id: GO:0032187 ! contractile ring localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005826 ! contractile ring
+
+[Term]
+id: GO:0032252 ! secretory granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0030141 ! secretory granule
+
+[Term]
+id: GO:0032253 ! dense core granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0031045 ! dense core granule
+
+[Term]
+id: GO:0032365 ! intracellular lipid transport
+intersection_of: GO:0006869 ! lipid transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0032366 ! intracellular sterol transport
+intersection_of: GO:0015918 ! sterol transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0032367 ! intracellular cholesterol transport
+intersection_of: GO:0030301 ! cholesterol transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0032400 ! melanosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032402 ! melanosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032418 ! lysosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005764 ! lysosome
+
+[Term]
+id: GO:0032438 ! melanosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032439 ! endosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005768 ! endosome
+
+[Term]
+id: GO:0032790 ! ribosome disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005840 ! ribosome
+
+[Term]
+id: GO:0032796 ! uropod organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0001931 ! uropod
+
+[Term]
+id: GO:0032964 ! collagen biosynthetic process
+intersection_of: GO:0009059 ! macromolecule biosynthetic process
+intersection_of: OBO_REL:has_output GO:0005581 ! collagen
+
+[Term]
+id: GO:0032981 ! mitochondrial respiratory chain complex I assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0005747 ! mitochondrial respiratory chain complex I
+
+[Term]
+id: GO:0032984 ! macromolecular complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0032991 ! macromolecular complex
+
+[Term]
+id: GO:0032985 ! protein-carbohydrate complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0032992 ! protein-carbohydrate complex
+
+[Term]
+id: GO:0032986 ! protein-DNA complex disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: OBO_REL:has_input GO:0032993 ! protein-DNA complex
+
+[Term]
+id: GO:0032987 ! protein-lipid complex disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: OBO_REL:has_input GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0032988 ! protein-RNA complex disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: OBO_REL:has_input GO:0030529 ! ribonucleoprotein complex
+
+[Term]
+id: GO:0033108 ! mitochondrial respiratory chain complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005746 ! mitochondrial respiratory chain
+
+[Term]
+id: GO:0033292 ! T-tubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030315 ! T-tubule
+
+[Term]
+id: GO:0033298 ! contractile vacuole organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000331 ! contractile vacuole
+
+[Term]
+id: GO:0033363 ! secretory granule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030141 ! secretory granule
+
+[Term]
+id: GO:0033566 ! gamma-tubulin complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0000930 ! gamma-tubulin complex
+
+[Term]
+id: GO:0035063 ! nuclear speck organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016607 ! nuclear speck
+
+[Term]
+id: GO:0035082 ! axoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005930 ! axoneme
+
+[Term]
+id: GO:0035083 ! cilium axoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0035085 ! cilium axoneme
+
+[Term]
+id: GO:0035084 ! flagellar axoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0035086 ! flagellar axoneme
+
+[Term]
+id: GO:0035231 ! cytoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0035230 ! cytoneme
+
+[Term]
+id: GO:0042255 ! ribosome assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0005840 ! ribosome
+
+[Term]
+id: GO:0042257 ! ribosomal subunit assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0033279 ! ribosomal subunit
+
+[Term]
+id: GO:0042384 ! cilium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005929 ! cilium
+
+[Term]
+id: GO:0042244 ! spore wall assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0031160 ! spore wall
+
+[Term]
+id: GO:0042546 ! cell wall biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0005618 ! cell wall
+
+[Term]
+id: GO:0043001 ! Golgi to plasma membrane protein transport
+intersection_of: GO:0015031 ! protein transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0043063 ! intercellular bridge organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045171 ! intercellular bridge
+
+[Term]
+id: GO:0043064 ! flagellum organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0019861 ! flagellum
+
+[Term]
+id: GO:0043163 ! cell envelope organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030313 ! cell envelope
+
+[Term]
+id: GO:0043164 ! Gram-negative-bacterium-type cell wall biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0009276 ! Gram-negative-bacterium-type cell wall
+
+[Term]
+id: GO:0043206 ! fibril organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0043205 ! fibril
+
+[Term]
+id: GO:0043241 ! protein complex disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: OBO_REL:has_input GO:0043234 ! protein complex
+
+[Term]
+id: GO:0043485 ! endosome to pigment granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005768 ! endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0043504 ! mitochondrial DNA repair
+intersection_of: GO:0006281 ! DNA repair
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0043578 ! nuclear matrix organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016363 ! nuclear matrix
+
+[Term]
+id: GO:0043579 ! elaioplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0009545 ! elaioplast
+
+[Term]
+id: GO:0043580 ! periplasmic space organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042597 ! periplasmic space
+
+[Term]
+id: GO:0043622 ! cortical microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0055028 ! cortical microtubule
+
+[Term]
+id: GO:0045022 ! early endosome to late endosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005769 ! early endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0005770 ! late endosome
+
+[Term]
+id: GO:0045026 ! plasma membrane fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0045037 ! protein import into chloroplast stroma
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0009570 ! chloroplast stroma
+
+[Term]
+id: GO:0045038 ! protein import into chloroplast thylakoid membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0009535 ! chloroplast thylakoid membrane
+
+[Term]
+id: GO:0045039 ! protein import into mitochondrial inner membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005743 ! mitochondrial inner membrane
+
+[Term]
+id: GO:0045040 ! protein import into mitochondrial outer membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005741 ! mitochondrial outer membrane
+
+[Term]
+id: GO:0045041 ! protein import into mitochondrial intermembrane space
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005758 ! mitochondrial intermembrane space
+
+[Term]
+id: GO:0045046 ! protein import into peroxisome membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005778 ! peroxisomal membrane
+
+[Term]
+id: GO:0045104 ! intermediate filament cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045111 ! intermediate filament cytoskeleton
+
+[Term]
+id: GO:0045109 ! intermediate filament organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005882 ! intermediate filament
+
+[Term]
+id: GO:0045186 ! zonula adherens assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005915 ! zonula adherens
+
+[Term]
+id: GO:0045214 ! sarcomere organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030017 ! sarcomere
+
+[Term]
+id: GO:0045229 ! external encapsulating structure organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030312 ! external encapsulating structure
+
+[Term]
+id: GO:0045230 ! capsule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042603 ! capsule
+
+[Term]
+id: GO:0045231 ! slime layer organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030114 ! slime layer
+
+[Term]
+id: GO:0045232 ! S-layer organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030115 ! S-layer
+
+[Term]
+id: GO:0045313 ! rhabdomere membrane biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: OBO_REL:has_output GO:0033583 ! rhabdomere membrane
+
+[Term]
+id: GO:0045324 ! late endosome to vacuole transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005770 ! late endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0005773 ! vacuole
+
+[Term]
+id: GO:0045478 ! fusome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045169 ! fusome
+
+[Term]
+id: GO:0046794 ! virion transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0019012 ! virion
+
+[Term]
+id: GO:0046795 ! intracellular virion transport
+intersection_of: GO:0046794 ! virion transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0046907 ! intracellular transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+
+[Term]
+id: GO:0046967 ! cytosol to ER transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005829 ! cytosol
+intersection_of: OBO_REL:results_in_transport_to GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0048227 ! plasma membrane to endosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005886 ! plasma membrane
+intersection_of: OBO_REL:results_in_transport_to GO:0005768 ! endosome
+
+[Term]
+id: GO:0048268 ! clathrin coat assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030118 ! clathrin coat
+
+[Term]
+id: GO:0048278 ! vesicle docking
+intersection_of: GO:0022406 ! membrane docking
+intersection_of: OBO_REL:results_in_connection_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_connection_of GO:0016020 ! membrane
+
+[Term]
+id: GO:0048284 ! organelle fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0048285 ! organelle fission
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_division_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0048312 ! intracellular distribution of mitochondria
+intersection_of: GO:0048311 ! mitochondrion distribution
+intersection_of: OBO_REL:occurs_in GO:0005622 ! intracellular
+! correted diff; now ok
+
+[Term]
+id: GO:0048499 ! synaptic vesicle membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030672 ! synaptic vesicle membrane
+
+[Term]
+id: GO:0048564 ! photosystem I assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0009522 ! photosystem I
+
+[Term]
+id: GO:0048753 ! pigment granule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0050000 ! chromosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005694 ! chromosome
+
+[Term]
+id: GO:0050808 ! synapse organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045202 ! synapse
+
+[Term]
+id: GO:0051081 ! nuclear envelope disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005635 ! nuclear envelope
+
+[Term]
+id: GO:0051168 ! nuclear export
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051170 ! nuclear import
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_to GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051225 ! spindle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005819 ! spindle
+
+[Term]
+id: GO:0051230 ! spindle disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005819 ! spindle
+
+[Term]
+id: GO:0051255 ! spindle midzone assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0051233 ! spindle midzone
+
+[Term]
+id: GO:0051276 ! chromosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005694 ! chromosome
+
+[Term]
+id: GO:0051292 ! nuclear pore complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0051297 ! centrosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005813 ! centrosome
+
+[Term]
+id: GO:0051300 ! spindle pole body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005816 ! spindle pole body
+
+[Term]
+id: GO:0051382 ! kinetochore assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000776 ! kinetochore
+
+[Term]
+id: GO:0051383 ! kinetochore organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000776 ! kinetochore
+
+[Term]
+id: GO:0051417 ! microtubule nucleation by spindle pole body
+intersection_of: GO:0007020 ! microtubule nucleation
+intersection_of: OBO_REL:mediated_by GO:0005816 ! spindle pole body
+
+[Term]
+id: GO:0051418 ! microtubule nucleation by microtubule organizing center
+intersection_of: GO:0007020 ! microtubule nucleation
+intersection_of: OBO_REL:mediated_by GO:0005815 ! microtubule organizing center
+
+[Term]
+id: GO:0051457 ! maintenance of protein location in nucleus
+intersection_of: GO:0045185 ! maintenance of protein location
+intersection_of: OBO_REL:occurs_in GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051601 ! exocyst localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0000145 ! exocyst
+
+[Term]
+id: GO:0051640 ! organelle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0051642 ! centrosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005813 ! centrosome
+
+[Term]
+id: GO:0051644 ! plastid localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0051645 ! Golgi localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0051646 ! mitochondrion localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0051647 ! nucleus localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051648 ! vesicle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0051653 ! spindle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0051664 ! nuclear pore localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0051665 ! membrane raft localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0051666 ! actin cortical patch localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0030479 ! actin cortical patch
+
+[Term]
+id: GO:0051875 ! pigment granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0051878 ! lateral element assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000800 ! lateral element
+
+[Term]
+id: GO:0051904 ! pigment granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0052543 ! callose deposition in cell wall
+intersection_of: GO:0052545 ! callose localization
+intersection_of: OBO_REL:results_in_transport_to GO:0005618 ! cell wall
+! actually fits this diff better; now ok
+
+[Term]
+id: GO:0060052 ! neurofilament cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0060053 ! neurofilament cytoskeleton
+
+[Term]
+id: GO:0060074 ! synapse maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: OBO_REL:results_in_organization_of GO:0045202 ! synapse
+
+[Term]
+id: GO:0060151 ! peroxisome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0065003 ! macromolecular complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0032991 ! macromolecular complex
+
+[Term]
+id: GO:0065004 ! protein-DNA complex assembly
+intersection_of: GO:0065003 ! macromolecular complex assembly
+intersection_of: OBO_REL:has_output GO:0032993 ! protein-DNA complex
+
+[Term]
+id: GO:0065005 ! protein-lipid complex assembly
+intersection_of: GO:0065003 ! macromolecular complex assembly
+intersection_of: OBO_REL:has_output GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0065006 ! protein-carbohydrate complex assembly
+intersection_of: GO:0065003 ! macromolecular complex assembly
+intersection_of: OBO_REL:has_output GO:0032992 ! protein-carbohydrate complex
+
+[Term]
+id: GO:0030476 ! ascospore wall assembly
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:has_output GO:0005619 ! ascospore wall
+
+[Term]
+id: GO:0006624 ! vacuolar protein processing
+intersection_of: GO:0016485 ! protein processing
+intersection_of: OBO_REL:occurs_in GO:0005773 ! vacuole
+
+[Term]
+id: GO:0000902 ! cell morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:has_output GO:0005623 ! cell
+
+[Term]
+id: GO:0001678 ! cellular glucose homeostasis
+intersection_of: GO:0042593 ! glucose homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006873 ! cellular ion homeostasis
+intersection_of: GO:0050801 ! ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006874 ! cellular calcium ion homeostasis
+intersection_of: GO:0055074 ! calcium ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006875 ! cellular metal ion homeostasis
+intersection_of: GO:0055065 ! metal ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006876 ! cellular cadmium ion homeostasis
+intersection_of: GO:0055073 ! cadmium ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006877 ! cellular cobalt ion homeostasis
+intersection_of: GO:0055068 ! cobalt ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006878 ! cellular copper ion homeostasis
+intersection_of: GO:0055070 ! copper ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006879 ! cellular iron ion homeostasis
+intersection_of: GO:0055072 ! iron ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006882 ! cellular zinc ion homeostasis
+intersection_of: GO:0055069 ! zinc ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006883 ! cellular sodium ion homeostasis
+intersection_of: GO:0055078 ! sodium ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0006906 ! vesicle fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0012506 ! vesicle membrane
+
+[Term]
+id: GO:0007155 ! cell adhesion
+intersection_of: GO:0022610 ! biological adhesion
+intersection_of: OBO_REL:results_in_connection_of GO:0005623 ! cell
+
+[Term]
+id: GO:0009267 ! cellular response to starvation
+intersection_of: GO:0042594 ! response to starvation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0009987 ! cellular process
+intersection_of: GO:0008150 ! biological_process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0009992 ! cellular water homeostasis
+intersection_of: GO:0030104 ! water homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0010217 ! cellular aluminum ion homeostasis
+intersection_of: GO:0055079 ! aluminum ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030002 ! cellular anion homeostasis
+intersection_of: GO:0055081 ! anion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030003 ! cellular cation homeostasis
+intersection_of: GO:0055080 ! cation homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030004 ! cellular monovalent inorganic cation homeostasis
+intersection_of: GO:0055067 ! monovalent inorganic cation homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030005 ! cellular di-, tri-valent inorganic cation homeostasis
+intersection_of: GO:0055066 ! di-, tri-valent inorganic cation homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030007 ! cellular potassium ion homeostasis
+intersection_of: GO:0055075 ! potassium ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030026 ! cellular manganese ion homeostasis
+intersection_of: GO:0055071 ! manganese ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030319 ! cellular di-, tri-valent inorganic anion homeostasis
+intersection_of: GO:0055061 ! di-, tri-valent inorganic anion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030320 ! cellular monovalent inorganic anion homeostasis
+intersection_of: GO:0055083 ! monovalent inorganic anion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030641 ! regulation of cellular pH
+intersection_of: GO:0006885 ! regulation of pH
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030642 ! cellular sulfate ion homeostasis
+intersection_of: GO:0055063 ! sulfate ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030643 ! cellular phosphate ion homeostasis
+intersection_of: GO:0055062 ! phosphate ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0030644 ! cellular chloride ion homeostasis
+intersection_of: GO:0055064 ! chloride ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0031668 ! cellular response to extracellular stimulus
+intersection_of: GO:0009991 ! response to extracellular stimulus
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0031669 ! cellular response to nutrient levels
+intersection_of: GO:0031667 ! response to nutrient levels
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0031670 ! cellular response to nutrient
+intersection_of: GO:0007584 ! response to nutrient
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0032869 ! cellular response to insulin stimulus
+intersection_of: GO:0032868 ! response to insulin stimulus
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0032870 ! cellular response to hormone stimulus
+intersection_of: GO:0009725 ! response to hormone stimulus
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0033059 ! cellular pigmentation
+intersection_of: GO:0043473 ! pigmentation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0033259 ! plastid DNA replication
+intersection_of: GO:0006261 ! DNA-dependent DNA replication
+intersection_of: OBO_REL:occurs_in GO:0009536 ! plastid
+
+[Term]
+id: GO:0033502 ! cellular galactose homeostasis
+intersection_of: GO:0033501 ! galactose homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0033554 ! cellular response to stress
+intersection_of: GO:0006950 ! response to stress
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0042631 ! cellular response to water deprivation
+intersection_of: GO:0009414 ! response to water deprivation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0043482 ! cellular pigment accumulation
+intersection_of: GO:0043476 ! pigment accumulation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0043623 ! cellular protein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0043624 ! cellular protein complex disassembly
+intersection_of: GO:0043241 ! protein complex disassembly
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044237 ! cellular metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044242 ! cellular lipid catabolic process
+intersection_of: GO:0016042 ! lipid catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044247 ! cellular polysaccharide catabolic process
+intersection_of: GO:0000272 ! polysaccharide catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044248 ! cellular catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044249 ! cellular biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044255 ! cellular lipid metabolic process
+intersection_of: GO:0006629 ! lipid metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044257 ! cellular protein catabolic process
+intersection_of: GO:0030163 ! protein catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044260 ! cellular macromolecule metabolic process
+intersection_of: GO:0043170 ! macromolecule metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044262 ! cellular carbohydrate metabolic process
+intersection_of: GO:0005975 ! carbohydrate metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044264 ! cellular polysaccharide metabolic process
+intersection_of: GO:0005976 ! polysaccharide metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044265 ! cellular macromolecule catabolic process
+intersection_of: GO:0009057 ! macromolecule catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044267 ! cellular protein metabolic process
+intersection_of: GO:0019538 ! protein metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0044275 ! cellular carbohydrate catabolic process
+intersection_of: GO:0016052 ! carbohydrate catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0046916 ! cellular transition metal ion homeostasis
+intersection_of: GO:0055076 ! transition metal ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0000001 ! mitochondrion inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0000011 ! vacuole inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005773 ! vacuole
+
+[Term]
+id: GO:0048313 ! Golgi inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0009665 ! plastid inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0045033 ! peroxisome inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0048309 ! endoplasmic reticulum inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0048310 ! nucleus inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: OBO_REL:results_in_distribution_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051220 ! cytoplasmic sequestering of protein
+intersection_of: GO:0045185 ! maintenance of protein location
+intersection_of: OBO_REL:occurs_in GO:0005737 ! cytoplasm
+
+[Term]
+id: GO:0051452 ! intracellular pH reduction
+intersection_of: GO:0045851 ! pH reduction
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051454 ! intracellular pH elevation
+intersection_of: GO:0045852 ! pH elevation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051641 ! cellular localization
+intersection_of: GO:0051179 ! localization
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051651 ! maintenance of location in cell
+intersection_of: GO:0051235 ! maintenance of location
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051674 ! localization of cell
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005623 ! cell
+
+[Term]
+id: GO:0051691 ! cellular oligosaccharide metabolic process
+intersection_of: GO:0009311 ! oligosaccharide metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051692 ! cellular oligosaccharide catabolic process
+intersection_of: GO:0009313 ! oligosaccharide catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0051716 ! cellular response to stimulus
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0055082 ! cellular chemical homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0001507 ! acetylcholine catabolic process in synaptic cleft
+intersection_of: GO:0006581 ! acetylcholine catabolic process
+intersection_of: OBO_REL:occurs_in GO:0043083 ! synaptic cleft
+
+[Term]
+id: GO:0006390 ! transcription from mitochondrial promoter
+intersection_of: GO:0006350 ! transcription
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0006393 ! termination of mitochondrial transcription
+intersection_of: GO:0006353 ! transcription termination
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0006612 ! protein targeting to membrane
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0016020 ! membrane
+
+[Term]
+id: GO:0006622 ! protein targeting to lysosome
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0005764 ! lysosome
+
+[Term]
+id: GO:0006623 ! protein targeting to vacuole
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0005773 ! vacuole
+
+[Term]
+id: GO:0006625 ! protein targeting to peroxisome
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0007021 ! tubulin complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0045298 ! tubulin complex
+
+[Term]
+id: GO:0007044 ! cell-substrate junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030055 ! cell-substrate junction
+
+[Term]
+id: GO:0010257 ! NADH dehydrogenase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030964 ! NADH dehydrogenase complex
+
+[Term]
+id: GO:0010547 ! thylakoid membrane disassembly
+intersection_of: GO:0030397 ! membrane disassembly
+intersection_of: OBO_REL:has_input GO:0042651 ! thylakoid membrane
+
+[Term]
+id: GO:0000491 ! snoRNP assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005732 ! small nucleolar ribonucleoprotein complex
+
+[Term]
+id: GO:0007316 ! pole plasm RNA localization
+intersection_of: GO:0006403 ! RNA localization
+intersection_of: OBO_REL:results_in_localization_to GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0007318 ! pole plasm protein localization
+intersection_of: GO:0008104 ! protein localization
+intersection_of: OBO_REL:results_in_localization_to GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0033576 ! protein amino acid glycosylation in cytosol
+intersection_of: GO:0006486 ! protein amino acid glycosylation
+intersection_of: OBO_REL:occurs_in GO:0005829 ! cytosol
+
+[Term]
+id: GO:0033577 ! protein amino acid glycosylation in endoplasmic reticulum
+intersection_of: GO:0006486 ! protein amino acid glycosylation
+intersection_of: OBO_REL:occurs_in GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0033579 ! protein amino acid galactosylation in endoplasmic reticulum
+intersection_of: GO:0042125 ! protein amino acid galactosylation
+intersection_of: OBO_REL:occurs_in GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0033582 ! protein amino acid galactosylation in cytosol
+intersection_of: GO:0042125 ! protein amino acid galactosylation
+intersection_of: OBO_REL:occurs_in GO:0005829 ! cytosol
+
+[Term]
+id: GO:0033627 ! cell adhesion mediated by integrin
+intersection_of: GO:0007155 ! cell adhesion
+intersection_of: OBO_REL:mediated_by GO:0008305 ! integrin complex
+
+[Term]
+id: GO:0033631 ! cell-cell adhesion mediated by integrin
+intersection_of: GO:0016337 ! cell-cell adhesion
+intersection_of: OBO_REL:mediated_by GO:0008305 ! integrin complex
+
+[Term]
+id: GO:0033750 ! ribosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0005840 ! ribosome
+
+[Term]
+id: GO:0034219 ! transmembrane carbohydrate transport
+intersection_of: GO:0008643 ! carbohydrate transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0034220 ! transmembrane ion transport
+intersection_of: GO:0006811 ! ion transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0055085 ! transmembrane transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0034333 ! adherens junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:results_in_organization_of GO:0005912 ! adherens junction
+
+[Term]
+id: GO:0045036 ! protein targeting to chloroplast
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0009507 ! chloroplast
+
+[Term]
+id: GO:0045047 ! protein targeting to ER
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: OBO_REL:results_in_transport_to GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0051649 ! establishment of localization in cell
+intersection_of: GO:0051234 ! establishment of localization
+intersection_of: OBO_REL:occurs_in GO:0005623 ! cell
+
+[Term]
+id: GO:0051668 ! localization within membrane
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:occurs_in GO:0016020 ! membrane
+
+[Term]
+id: GO:0034498 ! early endosome to Golgi transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005769 ! early endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0001325 ! formation of extrachromosomal circular DNA
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0005727 ! extrachromosomal circular DNA
+
+[Term]
+id: GO:0031297 ! replication fork processing
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: OBO_REL:has_participant GO:0005657 ! replication fork
+
+[Term]
+id: GO:0032065 ! cortical protein anchoring
+intersection_of: GO:0045185 ! maintenance of protein location
+intersection_of: OBO_REL:occurs_in GO:0005938 ! cell cortex
+
+[Term]
+id: GO:0032543 ! mitochondrial translation
+intersection_of: GO:0006412 ! translation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0032544 ! plastid translation
+intersection_of: GO:0006412 ! translation
+intersection_of: OBO_REL:occurs_in GO:0009536 ! plastid
+
+[Term]
+id: GO:0032974 ! amino acid export from vacuole
+intersection_of: GO:0032973 ! amino acid export
+intersection_of: OBO_REL:results_in_transport_from GO:0005773 ! vacuole
+
+[Term]
+id: GO:0032975 ! amino acid import into vacuole
+intersection_of: GO:0043090 ! amino acid import
+intersection_of: OBO_REL:results_in_transport_to GO:0005773 ! vacuole
+
+[Term]
+id: GO:0033578 ! protein amino acid glycosylation in Golgi
+intersection_of: GO:0006486 ! protein amino acid glycosylation
+intersection_of: OBO_REL:occurs_in GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0033581 ! protein amino acid galactosylation in Golgi
+intersection_of: GO:0042125 ! protein amino acid galactosylation
+intersection_of: OBO_REL:occurs_in GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0033614 ! chloroplast proton-transporting ATP synthase complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0045320 ! chloroplast proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0033615 ! mitochondrial proton-transporting ATP synthase complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0005753 ! mitochondrial proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0033616 ! plasma membrane proton-transporting ATP synthase complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0045260 ! plasma membrane proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0033617 ! mitochondrial respiratory chain complex IV assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0005751 ! mitochondrial respiratory chain complex IV
+
+[Term]
+id: GO:0033618 ! plasma membrane respiratory chain complex IV assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0045278 ! plasma membrane respiratory chain complex IV
+
+[Term]
+id: GO:0033962 ! cytoplasmic mRNA processing body assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0000932 ! cytoplasmic mRNA processing body
+
+[Term]
+id: GO:0034063 ! stress granule assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0010494 ! stress granule
+
+[Term]
+id: GO:0034329 ! cell junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0030054 ! cell junction
+
+[Term]
+id: GO:0034368 ! protein-lipid complex remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0034369 ! plasma lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034358 ! plasma lipoprotein particle
+
+[Term]
+id: GO:0034370 ! triglyceride-rich lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034385 ! triglyceride-rich lipoprotein particle
+
+[Term]
+id: GO:0034371 ! chylomicron remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0042627 ! chylomicron
+
+[Term]
+id: GO:0034372 ! very-low-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034361 ! very-low-density lipoprotein particle
+
+[Term]
+id: GO:0034373 ! intermediate-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034363 ! intermediate-density lipoprotein particle
+
+[Term]
+id: GO:0034374 ! low-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034362 ! low-density lipoprotein particle
+
+[Term]
+id: GO:0034375 ! high-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: OBO_REL:results_in_remodeling_of GO:0034364 ! high-density lipoprotein particle
+
+[Term]
+id: GO:0034377 ! plasma lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0034358 ! plasma lipoprotein particle
+
+[Term]
+id: GO:0034378 ! chylomicron assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0042627 ! chylomicron
+
+[Term]
+id: GO:0034379 ! very-low-density lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0034361 ! very-low-density lipoprotein particle
+
+[Term]
+id: GO:0034380 ! high-density lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0034364 ! high-density lipoprotein particle
+
+[Term]
+id: GO:0034462 ! small-subunit processome assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0032040 ! small-subunit processome
+
+[Term]
+id: GO:0034463 ! 90S preribosome assembly
+intersection_of: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: OBO_REL:has_output GO:0030686 ! 90S preribosome
+
+[Term]
+id: GO:0034486 ! vacuolar transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: OBO_REL:results_in_transport_across GO:0005774 ! vacuolar membrane
+
+[Term]
+id: GO:0034487 ! vacuolar amino acid transport
+intersection_of: GO:0006865 ! amino acid transport
+intersection_of: OBO_REL:results_in_transport_across GO:0005774 ! vacuolar membrane
+
+[Term]
+id: GO:0034496 ! multivesicular body membrane disassembly
+intersection_of: GO:0030397 ! membrane disassembly
+intersection_of: OBO_REL:has_input GO:0032585 ! multivesicular body membrane
+
+[Term]
+id: GO:0034499 ! late endosome to Golgi transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005770 ! late endosome
+intersection_of: OBO_REL:results_in_transport_to GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0034552 ! respiratory chain complex II assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0045273 ! respiratory chain complex II
+
+[Term]
+id: GO:0034630 ! RITS complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: OBO_REL:results_in_localization_of GO:0030958 ! RITS complex
+
+[Term]
+id: GO:0034755 ! transmembrane iron ion transport
+intersection_of: GO:0006826 ! iron ion transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0034769 ! basement membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0005604 ! basement membrane
+
+[Term]
+id: GO:0034775 ! transmembrane glutathione transport
+intersection_of: GO:0034635 ! glutathione transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0043248 ! proteasome assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0000502 ! proteasome complex
+
+[Term]
+id: GO:0043461 ! proton-transporting ATP synthase complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0045259 ! proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0055107 ! Golgi to secretory granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0030141 ! secretory granule
+
+[Term]
+id: GO:0055108 ! Golgi to transport vesicle transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005794 ! Golgi apparatus
+intersection_of: OBO_REL:results_in_transport_to GO:0030133 ! transport vesicle
+
+[Term]
+id: GO:0060286 ! flagellar cell motility
+intersection_of: GO:0048870 ! cell motility
+intersection_of: OBO_REL:mediated_by GO:0019861 ! flagellum
+
+[Term]
+id: GO:0033692 ! cellular polysaccharide biosynthetic process
+intersection_of: GO:0000271 ! polysaccharide biosynthetic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034599 ! cellular response to oxidative stress
+intersection_of: GO:0006979 ! response to oxidative stress
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034605 ! cellular response to heat
+intersection_of: GO:0009408 ! response to heat
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034613 ! cellular protein localization
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034614 ! cellular response to reactive oxygen species
+intersection_of: GO:0000302 ! response to reactive oxygen species
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034619 ! cellular chaperone-mediated protein complex assembly
+intersection_of: GO:0051131 ! chaperone-mediated protein complex assembly
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034620 ! cellular response to unfolded protein
+intersection_of: GO:0006986 ! response to unfolded protein
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034621 ! cellular macromolecular complex subunit organization
+intersection_of: GO:0043933 ! macromolecular complex subunit organization
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034622 ! cellular macromolecular complex assembly
+intersection_of: GO:0065003 ! macromolecular complex assembly
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034623 ! cellular macromolecular complex disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034629 ! cellular protein complex localization
+intersection_of: GO:0031503 ! protein complex localization
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034637 ! cellular carbohydrate biosynthetic process
+intersection_of: GO:0016051 ! carbohydrate biosynthetic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034641 ! cellular nitrogen compound metabolic process
+intersection_of: GO:0006807 ! nitrogen compound metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034644 ! cellular response to UV
+intersection_of: GO:0009411 ! response to UV
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034645 ! cellular macromolecule biosynthetic process
+intersection_of: GO:0009059 ! macromolecule biosynthetic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034754 ! cellular hormone metabolic process
+intersection_of: GO:0042445 ! hormone metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034960 ! cellular biopolymer metabolic process
+intersection_of: GO:0043283 ! biopolymer metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034961 ! cellular biopolymer biosynthetic process
+intersection_of: GO:0043284 ! biopolymer biosynthetic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0034962 ! cellular biopolymer catabolic process
+intersection_of: GO:0043285 ! biopolymer catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0048469 ! cell maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: OBO_REL:results_in_maturation_of GO:0005623 ! cell
+
+[Term]
+id: GO:0065002 ! intracellular protein transmembrane transport
+intersection_of: GO:0006886 ! intracellular protein transport
+intersection_of: OBO_REL:results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0032527 ! protein exit from endoplasmic reticulum
+intersection_of: GO:0006886 ! intracellular protein transport
+intersection_of: OBO_REL:results_in_transport_from GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0032507 ! maintenance of protein location in cell
+intersection_of: GO:0045185 ! maintenance of protein location
+intersection_of: OBO_REL:occurs_in GO:0005623 ! cell
+
+[Term]
+id: GO:0032124 ! macronucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031039 ! macronucleus
+
+[Term]
+id: GO:0032125 ! micronucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031040 ! micronucleus
+
+[Term]
+id: GO:0034330 ! cell junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030054 ! cell junction
+
+[Term]
+id: GO:0034332 ! adherens junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005912 ! adherens junction
+
+[Term]
+id: GO:0034389 ! lipid particle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005811 ! lipid particle
+
+[Term]
+id: GO:0034728 ! nucleosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000786 ! nucleosome
+
+[Term]
+id: GO:0034994 ! microtubule organizing center attachment site organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0034992 ! microtubule organizing center attachment site
+
+[Term]
+id: GO:0043933 ! macromolecular complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0032991 ! macromolecular complex
+
+[Term]
+id: GO:0045216 ! cell-cell junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005911 ! cell-cell junction
+
+[Term]
+id: GO:0031412 ! gas vesicle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:has_output GO:0031411 ! gas vesicle
+
+[Term]
+id: GO:0007086 ! vesicle fusion with nuclear membrane
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0031965 ! nuclear membrane
+
+[Term]
+id: GO:0007181 ! transforming growth factor beta receptor complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0070022 ! transforming growth factor beta receptor complex
+
+[Term]
+id: GO:0019064 ! viral envelope fusion with host membrane
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0019031 ! viral envelope
+intersection_of: OBO_REL:results_in_fusion_of GO:0033644 ! host cell membrane
+
+[Term]
+id: GO:0019817 ! vesicle fusion with peroxisome
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0048279 ! vesicle fusion with endoplasmic reticulum
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0048280 ! vesicle fusion with Golgi apparatus
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0051469 ! vesicle fusion with vacuole
+intersection_of: GO:0009987 ! cellular process
+intersection_of: OBO_REL:results_in_fusion_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_fusion_of GO:0005773 ! vacuole
+
+[Term]
+id: GO:0007007 ! inner mitochondrial membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005743 ! mitochondrial inner membrane
+
+[Term]
+id: GO:0007008 ! outer mitochondrial membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005741 ! mitochondrial outer membrane
+
+[Term]
+id: GO:0010256 ! endomembrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0012505 ! endomembrane system
+
+[Term]
+id: GO:0017004 ! cytochrome complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0070069 ! cytochrome complex
+
+[Term]
+id: GO:0070286 ! axonemal dynein complex assembly
+intersection_of: GO:0006461 ! protein complex assembly
+intersection_of: OBO_REL:has_output GO:0005858 ! axonemal dynein complex
+
+[Term]
+id: GO:0000045 ! autophagic vacuole formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005776 ! autophagic vacuole
+
+[Term]
+id: GO:0000740 ! nuclear membrane fusion
+intersection_of: GO:0006944 ! membrane fusion
+intersection_of: OBO_REL:results_in_fusion_of GO:0031965 ! nuclear membrane
+
+[Term]
+id: GO:0000741 ! karyogamy
+intersection_of: GO:0048284 ! organelle fusion
+intersection_of: OBO_REL:results_in_fusion_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0000914 ! phragmoplast formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0009524 ! phragmoplast
+
+[Term]
+id: GO:0000917 ! barrier septum formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000935 ! barrier septum
+
+[Term]
+id: GO:0000919 ! cell plate formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0009504 ! cell plate
+
+[Term]
+id: GO:0001845 ! phagolysosome formation
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0032010 ! phagolysosome
+
+[Term]
+id: GO:0016185 ! synaptic vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: OBO_REL:has_output GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0048194 ! Golgi vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: OBO_REL:has_output GO:0005798 ! Golgi-associated vesicle
+
+[Term]
+id: GO:0007287 ! Nebenkern formation
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:has_output GO:0016006 ! Nebenkern
+
+[Term]
+id: GO:0010208 ! pollen wall formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0043667 ! pollen wall
+
+[Term]
+id: GO:0016188 ! synaptic vesicle maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: OBO_REL:results_in_organization_of GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0016320 ! endoplasmic reticulum membrane fusion
+intersection_of: GO:0006944 ! membrane fusion
+intersection_of: OBO_REL:results_in_fusion_of GO:0005789 ! endoplasmic reticulum membrane
+
+[Term]
+id: GO:0030474 ! spindle pole body duplication
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005816 ! spindle pole body
+
+[Term]
+id: GO:0030575 ! nuclear body organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016604 ! nuclear body
+
+[Term]
+id: GO:0030576 ! Cajal body organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0015030 ! Cajal body
+
+[Term]
+id: GO:0030577 ! Lands organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016606 ! Lands
+
+[Term]
+id: GO:0030578 ! PML body organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0016605 ! PML body
+
+[Term]
+id: GO:0030719 ! P granule organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0043186 ! P granule
+
+[Term]
+id: GO:0030721 ! spectrosome organization
+intersection_of: GO:0006996 ! organelle organization
+intersection_of: OBO_REL:results_in_organization_of GO:0045170 ! spectrosome
+
+[Term]
+id: GO:0031247 ! actin rod formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0031002 ! actin rod
+
+[Term]
+id: GO:0031269 ! pseudopodium formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0031143 ! pseudopodium
+
+[Term]
+id: GO:0031321 ! ascospore-type prospore formation
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0042764 ! ascospore-type prospore
+
+[Term]
+id: GO:0032060 ! bleb formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0032059 ! bleb
+
+[Term]
+id: GO:0032120 ! ascospore-type prospore membrane formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005628 ! prospore membrane
+
+[Term]
+id: GO:0032130 ! medial membrane band formation
+intersection_of: GO:0010926 ! anatomical structure formation
+intersection_of: OBO_REL:has_output GO:0032178 ! medial membrane band
+
+[Term]
+id: GO:0032990 ! cell part morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:has_output GO:0044464 ! cell part
+
+[Term]
+id: GO:0035038 ! female pronucleus formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0001939 ! female pronucleus
+
+[Term]
+id: GO:0035039 ! male pronucleus formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0001940 ! male pronucleus
+
+[Term]
+id: GO:0043149 ! stress fiber formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0001725 ! stress fiber
+
+![Term]
+!id: GO:0046847 ! filopodium formation
+!intersection_of: GO:0022607 ! cellular component assembly
+!intersection_of: OBO_REL:has_output GO:0030175 ! filopodium
+
+[Term]
+id: GO:0048041 ! focal adhesion formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005925 ! focal adhesion
+
+[Term]
+id: GO:0048813 ! dendrite morphogenesis
+intersection_of: GO:0032989 ! cellular component morphogenesis
+intersection_of: OBO_REL:has_output GO:0030425 ! dendrite
+
+[Term]
+id: GO:0048858 ! cell projection morphogenesis
+intersection_of: GO:0032989 ! cellular component morphogenesis
+intersection_of: OBO_REL:has_output GO:0042995 ! cell projection
+
+[Term]
+id: GO:0051017 ! actin filament bundle formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0032432 ! actin filament bundle
+
+[Term]
+id: GO:0051026 ! chiasma formation
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:has_output GO:0005712 ! chiasma
+
+[Term]
+id: GO:0051882 ! mitochondrial depolarization
+intersection_of: GO:0051899 ! membrane depolarization
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0060152 ! microtubule-based peroxisome localization
+intersection_of: GO:0060151 ! peroxisome localization
+intersection_of: OBO_REL:has_participant GO:0005874 ! microtubule
+
+[Term]
+id: GO:0060271 ! cilium morphogenesis
+intersection_of: GO:0032989 ! cellular component morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of GO:0005929 ! cilium
+
+[Term]
+id: GO:0032940 ! secretion by cell
+intersection_of: GO:0046903 ! secretion
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0007411 ! axon guidance
+intersection_of: GO:0006928 ! cell motion
+intersection_of: OBO_REL:results_in_transport_of GO:0030426 ! growth cone
+
+
+[Term]
+id: GO:0000045 ! autophagic vacuole formation
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005776 ! autophagic vacuole
+
+[Term]
+id: GO:0001675 ! acrosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0001669 ! acrosome
+! could also have an xp with
+!  intersection_of: GO:0033363 ! secretory granule organization
+!  or add a child to GO:0033363 for s. g. assembly
+
+[Term]
+id: GO:0009297 ! pilus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0009289 ! pilus
+
+[Term]
+id: GO:0000027 ! ribosomal large subunit assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0015934 ! large ribosomal subunit
+
+[Term]
+id: GO:0000028 ! ribosomal small subunit assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0015935 ! small ribosomal subunit
+
+[Term]
+id: GO:0006606 ! protein import into nucleus
+intersection_of: GO:0017038 ! protein import
+intersection_of: OBO_REL:results_in_transport_to GO:0005634 ! nucleus
+
+[Term]
+id: GO:0010382 ! cellular cell wall metabolic process
+intersection_of: GO:0044036 ! cell wall metabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0010880 ! regulation of release of sequestered calcium ion into cytosol by sarcoplasmic reticulum
+intersection_of: GO:0051279 ! regulation of release of sequestered calcium ion into cytosol
+intersection_of: OBO_REL:mediated_by GO:0016529 ! sarcoplasmic reticulum
+
+[Term]
+id: GO:0010938 ! cytoplasmic microtubule depolymerization
+intersection_of: GO:0007019 ! microtubule depolymerization
+intersection_of: OBO_REL:occurs_in GO:0005737 ! cytoplasm
+
+[Term]
+id: GO:0030050 ! vesicle transport along actin filament
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_transport_along GO:0005884 ! actin filament
+
+[Term]
+id: GO:0030199 ! collagen fibril organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005583 ! fibrillar collagen
+
+[Term]
+id: GO:0031032 ! actomyosin structure organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042641 ! actomyosin
+
+[Term]
+id: GO:0031887 ! lipid particle transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0005811 ! lipid particle
+intersection_of: OBO_REL:results_in_transport_along GO:0005874 ! microtubule
+
+[Term]
+id: GO:0032528 ! microvillus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0005902 ! microvillus
+
+[Term]
+id: GO:0032596 ! protein transport into membrane raft
+intersection_of: GO:0015031 ! protein transport
+intersection_of: OBO_REL:results_in_transport_to GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0032989 ! cellular component morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_maturation_of GO:0005575 ! cellular_component
+
+[Term]
+id: GO:0034642 ! mitochondrial migration along actin filament
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0005739 ! mitochondrion
+intersection_of: OBO_REL:results_in_transport_along GO:0005884 ! actin filament
+
+[Term]
+id: GO:0034982 ! mitochondrial protein processing
+intersection_of: GO:0016485 ! protein processing
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0034984 ! cellular response to DNA damage stimulus
+intersection_of: GO:0006974 ! response to DNA damage stimulus
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0042775 ! mitochondrial ATP synthesis coupled electron transport
+intersection_of: GO:0042773 ! ATP synthesis coupled electron transport
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0043297 ! apical junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0043296 ! apical junction complex
+! mah: maybe don't need 'complex' in GO:0043296 name
+
+[Term]
+id: GO:0044039 ! cellular cell wall catabolic process
+intersection_of: GO:0016998 ! cell wall catabolic process
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0047496 ! vesicle transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0031982 ! vesicle
+intersection_of: OBO_REL:results_in_transport_along GO:0005874 ! microtubule
+
+[Term]
+id: GO:0047497 ! mitochondrion transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_of GO:0005739 ! mitochondrion
+intersection_of: OBO_REL:results_in_transport_along GO:0005874 ! microtubule
+
+[Term]
+id: GO:0060402 ! calcium ion transport into cytosol
+intersection_of: GO:0006816 ! calcium ion transport
+intersection_of: OBO_REL:results_in_transport_to GO:0005829 ! cytosol
+
+[Term]
+id: GO:0060404 ! axonemal microtubule depolymerization
+intersection_of: GO:0007019 ! microtubule depolymerization
+intersection_of: OBO_REL:occurs_in GO:0005930 ! axoneme
+
+[Term]
+id: GO:0070070 ! proton-transporting V-type ATPase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0033176 ! proton-transporting V-type ATPase complex
+
+[Term]
+id: GO:0070071 ! proton-transporting two-sector ATPase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0016469 ! proton-transporting two-sector ATPase complex
+
+[Term]
+id: GO:0070096 ! mitochondrial outer membrane translocase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005742 ! mitochondrial outer membrane translocase complex
+
+[Term]
+id: GO:0070124 ! mitochondrial translational initiation
+intersection_of: GO:0006413 ! translational initiation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070125 ! mitochondrial translational elongation
+intersection_of: GO:0006414 ! translational elongation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070126 ! mitochondrial translational termination
+intersection_of: GO:0006415 ! translational termination
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070128 ! conversion of mitochondrial met-tRNAf to fmet-tRNA
+intersection_of: GO:0001718 ! conversion of met-tRNAf to fmet-tRNA
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070143 ! mitochondrial alanyl-tRNA aminoacylation
+intersection_of: GO:0006419 ! alanyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070144 ! mitochondrial arginyl-tRNA aminoacylation
+intersection_of: GO:0006420 ! arginyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070145 ! mitochondrial asparaginyl-tRNA aminoacylation
+intersection_of: GO:0006421 ! asparaginyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070146 ! mitochondrial aspartyl-tRNA aminoacylation
+intersection_of: GO:0006422 ! aspartyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070147 ! mitochondrial cysteinyl-tRNA aminoacylation
+intersection_of: GO:0006423 ! cysteinyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070148 ! mitochondrial glutaminyl-tRNA aminoacylation
+intersection_of: GO:0006425 ! glutaminyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070149 ! mitochondrial glutamyl-tRNA aminoacylation
+intersection_of: GO:0006424 ! glutamyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070150 ! mitochondrial glycyl-tRNA aminoacylation
+intersection_of: GO:0006426 ! glycyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070151 ! mitochondrial histidyl-tRNA aminoacylation
+intersection_of: GO:0006427 ! histidyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070152 ! mitochondrial isoleucyl-tRNA aminoacylation
+intersection_of: GO:0006428 ! isoleucyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070153 ! mitochondrial leucyl-tRNA aminoacylation
+intersection_of: GO:0006429 ! leucyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070154 ! mitochondrial lysyl-tRNA aminoacylation
+intersection_of: GO:0006430 ! lysyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070155 ! mitochondrial methionyl-tRNA aminoacylation
+intersection_of: GO:0006431 ! methionyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070156 ! mitochondrial phenylalanyl-tRNA aminoacylation
+intersection_of: GO:0006432 ! phenylalanyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070157 ! mitochondrial prolyl-tRNA aminoacylation
+intersection_of: GO:0006433 ! prolyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070158 ! mitochondrial seryl-tRNA aminoacylation
+intersection_of: GO:0006434 ! seryl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070159 ! mitochondrial threonyl-tRNA aminoacylation
+intersection_of: GO:0006435 ! threonyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070183 ! mitochondrial tryptophanyl-tRNA aminoacylation
+intersection_of: GO:0006436 ! tryptophanyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070184 ! mitochondrial tyrosyl-tRNA aminoacylation
+intersection_of: GO:0006437 ! tyrosyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070185 ! mitochondrial valyl-tRNA aminoacylation
+intersection_of: GO:0006438 ! valyl-tRNA aminoacylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070193 ! synaptonemal complex organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0070194 ! synaptonemal complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: OBO_REL:has_input GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0070196 ! eukaryotic translation initiation factor 3 complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0005852 ! eukaryotic translation initiation factor 3 complex
+
+[Term]
+id: GO:0070217 ! transcription factor TFIIIB complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0000126 ! transcription factor TFIIIB complex
+
+[Term]
+id: GO:0070219 ! cellular sulfide ion homeostasis
+intersection_of: GO:0070218 ! sulfide ion homeostasis
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0070296 ! sarcoplasmic reticulum calcium ion transport
+intersection_of: GO:0006816 ! calcium ion transport
+intersection_of: OBO_REL:results_in_transport_involving GO:0016529 ! sarcoplasmic reticulum
+
+[Term]
+id: GO:0070301 ! cellular response to hydrogen peroxide
+intersection_of: GO:0042542 ! response to hydrogen peroxide
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0070370 ! cellular heat acclimation
+intersection_of: GO:0010286 ! heat acclimation
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0070417 ! cellular response to cold
+intersection_of: GO:0009409 ! response to cold
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0070458 ! cellular detoxification of nitrogen compound
+intersection_of: GO:0051410 ! detoxification of nitrogen compound
+intersection_of: has_level GO:0005623 ! cell
+
+[Term]
+id: GO:0070499 ! exosporium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0043592 ! exosporium
+
+[Term]
+id: GO:0070649 ! formin-nucleated actin cable
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: OBO_REL:has_output GO:0070648 ! formin-nucleated actin cable assembly
+
+[Term]
+id: GO:0070899 ! mitochondrial tRNA wobble uridine modification
+intersection_of: GO:0002098 ! wobble uridine modification
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070900 ! mitochondrial tRNA modification
+intersection_of: GO:0006400 ! tRNA modification
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070901 ! mitochondrial tRNA methylation
+intersection_of: GO:0030488 ! tRNA methylation
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070902 ! mitochondrial tRNA pseudouridine synthesis
+intersection_of: GO:0031119 ! tRNA pseudouridine synthesis
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0070903 ! mitochondrial tRNA thio-modification
+intersection_of: GO:0034227 ! tRNA thio-modification
+intersection_of: OBO_REL:occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0042348 ! NF-kappaB import into nucleus
+intersection_of: GO:0006606 ! protein import into nucleus
+intersection_of: OBO_REL:results_in_transport_of GO:0071159 ! NF-kappaB complex
+
+! moved from unvetted and change relation - CJM -2009-12-21
+[Term]
+id: GO:0006839 ! mitochondrial transport
+intersection_of: GO:0006810 ! transport
+intersection_of: OBO_REL:results_in_transport_to_from_or_in GO:0005739 ! mitochondrion
+
+!!! TODO - check development vs organization
+[Term]
+id: GO:0007528 ! neuromuscular junction development
+intersection_of: GO:0043062 ! extracellular structure organization
+intersection_of: OBO_REL:results_in_organization_of GO:0031594 ! neuromuscular junction
+
+[Term]
+id: GO:0071827 ! plasma lipoprotein particle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0034358 ! plasma lipoprotein particle
+
+
+[Term]
+id: GO:0071822 ! protein complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0042324
+
+[Term]
+id: GO:0071823 ! protein-carbohydrate complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0032992
+
+[Term]
+id: GO:0071824 ! protein-DNA complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0032993
+
+[Term]
+id: GO:0071825 ! protein-lipid complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0032994
+
+[Term]
+id: GO:0071826 ! ribonucleoprotein complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: OBO_REL:results_in_organization_of GO:0030529
+
+[Term]
+id: GO:0071829 ! plasma lipoprotein particle disassembly
+intersection_of: GO:0032984 ! macromolecular complex disassembly
+intersection_of: OBO_REL:has_input GO:0034358 ! plasma lipoprotein particle

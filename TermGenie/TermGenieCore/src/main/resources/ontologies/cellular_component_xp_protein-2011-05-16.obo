@@ -1,0 +1,18 @@
+![Term]
+!id: GO:0043234 ! protein complex
+!intersection_of: GO:0032991 ! macromolecular complex 
+!intersection_of: has_part PRO:000000001 {minCardinality=2} ! protein 
+
+ 
+! GO:0071122 ! alpha9-beta1 integrin-VEGF-A complex
+! GO:0071123 ! alpha9-beta1 integrin-VEGF-C complex
+
+[Term]
+id: GO:0071121 ! alpha9-beta1 integrin-VEGF-D complex
+intersection_of: GO:0043234 ! protein complex
+intersection_of: has_part PRO:000009134 ! integrin alpha-9
+intersection_of: has_part PRO:000002040 ! integrin beta-1
+intersection_of: has_part PRO:000007520 ! vascular endothelial growth factor D
+
+
+

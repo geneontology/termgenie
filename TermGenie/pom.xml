@@ -45,7 +45,6 @@
 		<module>TermGenieProva</module>
 		<module>TermGenieSolr</module>
 		<module>TermGenieGWT</module>
-		<module>TermGenieOntologies</module>
 		<module>TermGenieRulesBasic</module>
 	</modules>
 </project>

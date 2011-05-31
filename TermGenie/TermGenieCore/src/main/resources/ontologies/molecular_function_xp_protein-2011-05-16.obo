@@ -1,0 +1,2091 @@
+[Term]
+id: GO:0001532 ! interleukin-21 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001382 ! interleukin-21
+
+[Term]
+id: GO:0002039 ! p53 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003035 ! cellular tumor antigen p53
+
+[Term]
+id: GO:0002113 ! interleukin-33 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001389 ! interleukin-33
+
+[Term]
+id: GO:0002114 ! interleukin-33 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001389 ! interleukin-33
+
+[Term]
+id: GO:0004687 ! myosin light chain kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000003220 ! myosin light chain
+
+[Term]
+id: GO:0004708 ! MAP kinase kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000000019 ! mitogen-activated protein kinase
+
+[Term]
+id: GO:0004908 ! interleukin-1 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0004911 ! interleukin-2 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001379 ! interleukin-2
+
+[Term]
+id: GO:0004912 ! interleukin-3 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001387 ! interleukin-3
+
+[Term]
+id: GO:0004913 ! interleukin-4 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001391 ! interleukin-4
+
+[Term]
+id: GO:0004914 ! interleukin-5 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001392 ! interleukin-5
+
+[Term]
+id: GO:0004915 ! interleukin-6 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001393 ! interleukin-6
+
+[Term]
+id: GO:0004917 ! interleukin-7 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001317 ! interleukin-7
+
+[Term]
+id: GO:0004918 ! interleukin-8 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001395 ! interleukin-8
+
+[Term]
+id: GO:0004919 ! interleukin-9 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001396 ! interleukin-9
+
+[Term]
+id: GO:0004920 ! interleukin-10 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001471 ! interleukin-10
+
+[Term]
+id: GO:0004921 ! interleukin-11 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001366 ! interleukin-11
+
+[Term]
+id: GO:0004998 ! transferrin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001887 ! melanotransferrin
+
+[Term]
+id: GO:0005024 ! transforming growth factor beta receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000000046 ! TGF-beta
+
+[Term]
+id: GO:0005031 ! tumor necrosis factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000000134 ! tumor necrosis factor alpha
+
+[Term]
+id: GO:0005104 ! fibroblast growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001349 ! fibroblast growth factor receptor
+
+[Term]
+id: GO:0005111 ! type 2 fibroblast growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001449 ! fibroblast growth factor receptor 2
+
+[Term]
+id: GO:0005130 ! granulocyte colony-stimulating factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001353 ! granulocyte colony-stimulating factor receptor
+
+[Term]
+id: GO:0005140 ! interleukin-9 receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001397 ! interleukin-9 receptor
+
+[Term]
+id: GO:0005146 ! leukemia inhibitory factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001876 ! leukemia inhibitory factor receptor
+
+[Term]
+id: GO:0005152 ! interleukin-1 receptor antagonist activity
+intersection_of: GO:0048019 ! receptor antagonist activity
+intersection_of: OBO_REL:has_input PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0005163 ! nerve growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001405 ! tumor necrosis factor receptor superfamily member 16
+
+[Term]
+id: GO:0005172 ! vascular endothelial growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001971 ! vascular endothelial growth factor receptor
+
+[Term]
+id: GO:0005173 ! stem cell factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002065 ! mast/stem cell growth factor receptor
+
+[Term]
+id: GO:0008134 ! transcription factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000001^capable_of(GO:0003700)
+
+[Term]
+id: GO:0016515 ! interleukin-13 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001370 ! interleukin-13
+
+[Term]
+id: GO:0017154 ! semaphorin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001926 ! semaphorin
+
+[Term]
+id: GO:0019959 ! interleukin-8 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001395 ! interleukin-8
+
+[Term]
+id: GO:0019966 ! interleukin-1 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0019969 ! interleukin-10 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001471 ! interleukin-10
+
+[Term]
+id: GO:0019970 ! interleukin-11 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001366 ! interleukin-11
+
+[Term]
+id: GO:0019973 ! interleukin-13 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001370 ! interleukin-13
+
+[Term]
+id: GO:0019975 ! interleukin-17 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001092 ! interleukin-17
+
+[Term]
+id: GO:0019976 ! interleukin-2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001379 ! interleukin-2
+
+[Term]
+id: GO:0019977 ! interleukin-21 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001382 ! interleukin-21
+
+[Term]
+id: GO:0019978 ! interleukin-3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001387 ! interleukin-3
+
+[Term]
+id: GO:0019979 ! interleukin-4 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001391 ! interleukin-4
+
+[Term]
+id: GO:0019980 ! interleukin-5 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001392 ! interleukin-5
+
+[Term]
+id: GO:0019981 ! interleukin-6 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001393 ! interleukin-6
+
+[Term]
+id: GO:0019982 ! interleukin-7 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001317 ! interleukin-7
+
+[Term]
+id: GO:0019983 ! interleukin-9 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001396 ! interleukin-9
+
+[Term]
+id: GO:0030350 ! iron-responsive element binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002995 ! natural resistance-associated macrophage protein 2 isoform 1
+
+[Term]
+id: GO:0030368 ! interleukin-17 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001092 ! interleukin-17
+
+[Term]
+id: GO:0030369 ! ICAM-3 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001468 ! intercellular adhesion molecule 3
+
+[Term]
+id: GO:0031267 ! small GTPase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000028 ! small GTPase
+
+[Term]
+id: GO:0031434 ! mitogen-activated protein kinase kinase binding
+intersection_of: GO:0019900 ! kinase binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000019 ! mitogen-activated protein kinase
+
+[Term]
+id: GO:0031530 ! gonadotropin-releasing hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001464 ! gonadotropin-releasing hormone receptor
+
+[Term]
+id: GO:0031531 ! thyrotropin-releasing hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001557 ! thyrotropin-releasing hormone receptor
+
+[Term]
+id: GO:0031628 ! opioid receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001497 ! opioid receptor
+
+[Term]
+id: GO:0031691 ! alpha-1A adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001183 ! alpha-1A adrenergic receptor
+
+[Term]
+id: GO:0031692 ! alpha-1B adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001184 ! alpha-1B adrenergic receptor
+
+[Term]
+id: GO:0031693 ! alpha-1D adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001185 ! alpha-1D adrenergic receptor
+
+[Term]
+id: GO:0031694 ! alpha-2A adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001186 ! alpha-2A adrenergic receptor
+
+[Term]
+id: GO:0031695 ! alpha-2B adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001187 ! alpha-2B adrenergic receptor
+
+[Term]
+id: GO:0031696 ! alpha-2C adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001188 ! alpha-2C adrenergic receptor
+
+[Term]
+id: GO:0031697 ! beta-1 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001192 ! beta-1 adrenergic receptor
+
+[Term]
+id: GO:0031698 ! beta-2 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001193 ! beta-2 adrenergic receptor
+
+[Term]
+id: GO:0031699 ! beta-3 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001194 ! beta-3 adrenergic receptor
+
+[Term]
+id: GO:0031704 ! apelin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001120 ! apelin receptor
+
+[Term]
+id: GO:0031705 ! bombesin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001122 ! bombesin receptor
+
+[Term]
+id: GO:0031709 ! gastrin-releasing peptide receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001223 ! gastrin-releasing peptide receptor
+
+[Term]
+id: GO:0031711 ! bradykinin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001123 ! bradykinin receptor
+
+[Term]
+id: GO:0031714 ! C5a anaphylatoxin chemotactic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001173 ! C5a anaphylatoxin chemotactic receptor C5AR1
+
+[Term]
+id: GO:0031731 ! CCR6 chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001202 ! chemokine receptor CCR6
+
+[Term]
+id: GO:0031732 ! CCR7 chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001203 ! chemokine receptor CCR7
+
+[Term]
+id: GO:0031739 ! cholecystokinin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001130 ! cholecystokinin receptor
+
+[Term]
+id: GO:0031745 ! cysteinyl leukotriene receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001131 ! cysteinyl leukotriene receptor
+
+[Term]
+id: GO:0031761 ! fMet-Leu-Phe receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001580 ! fMet-Leu-Phe receptor
+
+[Term]
+id: GO:0031763 ! galanin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001457 ! galanin receptor
+
+[Term]
+id: GO:0031773 ! kisspeptin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001426 ! KiSS-1 receptor
+
+[Term]
+id: GO:0031779 ! melanocortin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001146 ! melanocortin receptor
+
+[Term]
+id: GO:0031780 ! adrenocorticotropin hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001182 ! adrenocorticotropic hormone receptor
+
+[Term]
+id: GO:0031787 ! H9 melatonin receptor binding
+intersection_of: GO:0031784 ! melatonin receptor binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001611 ! melatonin-related receptor
+
+[Term]
+id: GO:0031788 ! motilin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001240 ! motilin receptor
+
+[Term]
+id: GO:0031789 ! muscarinic acetylcholine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001488 ! muscarinic acetylcholine receptor
+
+[Term]
+id: GO:0031807 ! H1 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001422 ! H1 histamine receptor
+
+[Term]
+id: GO:0031808 ! H2 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001423 ! H2 histamine receptor
+
+[Term]
+id: GO:0031809 ! H3 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001564 ! H3 histamine receptor
+
+[Term]
+id: GO:0031810 ! H4 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001565 ! H4 histamine receptor
+
+[Term]
+id: GO:0031853 ! nociceptin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001631 ! nociceptin receptor
+
+[Term]
+id: GO:0031854 ! orexigenic neuropeptide QRFP receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001498 ! orexigenic neuropeptide QRFP receptor
+
+[Term]
+id: GO:0031861 ! prolactin-releasing peptide receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001546 ! prolactin-releasing peptide receptor
+
+[Term]
+id: GO:0031868 ! prostaglandin F2-alpha receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001660 ! prostaglandin F2-alpha receptor
+
+[Term]
+id: GO:0031869 ! prostacyclin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001655 ! prostacyclin receptor
+
+[Term]
+id: GO:0031877 ! somatostatin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001555 ! somatostatin receptor
+
+[Term]
+id: GO:0032027 ! myosin light chain binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003220 ! myosin light chain
+
+[Term]
+id: GO:0033570 ! transferrin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: OBO_REL:has_input PRO:000001887 ! melanotransferrin
+
+[Term]
+id: GO:0042007 ! interleukin-18 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001376 ! interleukin-18
+
+[Term]
+id: GO:0042008 ! interleukin-18 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001376 ! interleukin-18
+
+[Term]
+id: GO:0042009 ! interleukin-15 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001373 ! interleukin-15
+
+[Term]
+id: GO:0042010 ! interleukin-15 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001373 ! interleukin-15
+
+[Term]
+id: GO:0042011 ! interleukin-16 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001374 ! interleukin-16
+
+[Term]
+id: GO:0042012 ! interleukin-16 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001374 ! interleukin-16
+
+[Term]
+id: GO:0042013 ! interleukin-19 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001472 ! interleukin-19
+
+[Term]
+id: GO:0042014 ! interleukin-19 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001472 ! interleukin-19
+
+[Term]
+id: GO:0042015 ! interleukin-20 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001473 ! interleukin-20
+
+[Term]
+id: GO:0042016 ! interleukin-20 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001473 ! interleukin-20
+
+[Term]
+id: GO:0042017 ! interleukin-22 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001383 ! interleukin-22
+
+[Term]
+id: GO:0042018 ! interleukin-22 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001383 ! interleukin-22
+
+[Term]
+id: GO:0042164 ! interleukin-12 alpha subunit binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001368 ! interleukin-12 subunit alpha
+
+[Term]
+id: GO:0042324 ! hypocretin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001499 ! orexin receptor
+
+[Term]
+id: GO:0042379 ! chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001128 ! chemokine receptor
+
+[Term]
+id: GO:0042922 ! neuromedin U receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001489 ! neuromedin U receptor
+
+[Term]
+id: GO:0042980 ! cystic fibrosis transmembrane conductance regulator binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001044 ! cystic fibrosis transmembrane conductance regulator (cftr)
+
+[Term]
+id: GO:0043184 ! vascular endothelial growth factor receptor 2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002112 ! vascular endothelial growth factor receptor 2
+
+[Term]
+id: GO:0043422 ! protein kinase B binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002190 ! RAC-alpha serine/threonine-protein kinase
+
+[Term]
+id: GO:0045296 ! cadherin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001327 ! cadherin
+
+[Term]
+id: GO:0045503 ! dynein light chain binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002201 ! dynein light chain
+
+[Term]
+id: GO:0045506 ! interleukin-24 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001474 ! interleukin-24
+
+[Term]
+id: GO:0045507 ! interleukin-25 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001113 ! interleukin-17E
+
+[Term]
+id: GO:0045508 ! interleukin-26 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001475 ! interleukin-26
+
+[Term]
+id: GO:0045509 ! interleukin-27 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001141 ! interleukin-17D
+
+[Term]
+id: GO:0045510 ! interleukin-24 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001474 ! interleukin-24
+
+[Term]
+id: GO:0045511 ! interleukin-25 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001113 ! interleukin-17E
+
+[Term]
+id: GO:0045512 ! interleukin-26 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001475 ! interleukin-26
+
+[Term]
+id: GO:0045513 ! interleukin-27 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001141 ! interleukin-17D
+
+[Term]
+id: GO:0045569 ! TRAIL binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002106 ! tumor necrosis factor ligand superfamily member 10
+
+[Term]
+id: GO:0046977 ! TAP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002979 ! lymphocyte antigen 6A-2/6E-1
+
+[Term]
+id: GO:0047852 ! diferric-transferrin reductase activity
+intersection_of: GO:0003674 ! molecular_function
+intersection_of: reduces PRO:000001887 ! melanotransferrin
+
+[Term]
+id: GO:0048184 ! follistatin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000015 ! follistatin
+
+[Term]
+id: GO:0050254 ! rhodopsin kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000001245 ! rhodopsin
+
+[Term]
+id: GO:0050431 ! transforming growth factor beta binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000046 ! TGF-beta
+
+[Term]
+id: GO:0051019 ! mitogen-activated protein kinase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000019 ! mitogen-activated protein kinase
+
+[Term]
+id: GO:0051525 ! NFAT protein binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003112 ! NFAT protein
+
+[Term]
+id: GO:0001531 ! interleukin-21 receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000008998 ! interleukin-21 receptor
+
+[Term]
+id: GO:0001532 ! interleukin-21 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001382 ! interleukin-21
+
+[Term]
+id: GO:0001601 ! peptide YY receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000013526 ! peptide YY
+
+[Term]
+id: GO:0001602 ! pancreatic polypeptide receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000013164 ! pancreatic prohormone
+
+[Term]
+id: GO:0001616 ! growth hormone secretagogue receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007973 ! appetite-regulating hormone
+
+[Term]
+id: GO:0001634 ! pituitary adenylate cyclase-activating polypeptide receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000003761 ! pituitary adenylate cyclase-activating polypeptide
+
+[Term]
+id: GO:0001968 ! fibronectin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007581 ! fibronectin
+
+[Term]
+id: GO:0002039 ! p53 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003035 ! cellular tumor antigen p53
+
+[Term]
+id: GO:0002113 ! interleukin-33 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001389 ! interleukin-33
+
+[Term]
+id: GO:0002114 ! interleukin-33 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001389 ! interleukin-33
+
+[Term]
+id: GO:0003680 ! AT DNA binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016450 ! transmembrane protease, serine 11D
+
+[Term]
+id: GO:0003817
+intersection_of: GO:0016788 ! hydrolase activity, acting on ester bonds
+intersection_of: OBO_REL:has_input PRO:000005376 ! complement factor D
+
+[Term]
+id: GO:0004221 ! ubiquitin thiolesterase activity
+intersection_of: GO:0016790 ! thiolester hydrolase activity
+intersection_of: OBO_REL:has_input PRO:000016963 ! ubiquitin
+
+[Term]
+id: GO:0004284
+intersection_of: GO:0004040 ! amidase activity
+intersection_of: OBO_REL:has_input PRO:000003652 ! acrosin
+
+[Term]
+id: GO:0004295
+intersection_of: GO:0016787 ! hydrolase activity
+intersection_of: OBO_REL:has_input PRO:000018212 ! zona pellucida sperm-binding protein 3
+
+[Term]
+id: GO:0004313 ! [acyl-carrier-protein] S-acetyltransferase activity
+intersection_of: GO:0016418 ! S-acetyltransferase activity
+intersection_of: OBO_REL:has_input PRO:000011081 ! acyl carrier protein, mitochondrial
+
+[Term]
+id: GO:0004314 ! [acyl-carrier-protein] S-malonyltransferase activity
+intersection_of: GO:0016419 ! S-malonyltransferase activity
+intersection_of: OBO_REL:has_input PRO:000011081 ! acyl carrier protein, mitochondrial
+
+[Term]
+id: GO:0004452 ! isopentenyl-diphosphate delta-isomerase activity
+intersection_of: GO:0016853 ! isomerase activity
+intersection_of: OBO_REL:has_input PRO:000009044 ! inositol polyphosphate 1-phosphatase
+
+[Term]
+id: GO:0004640 ! phosphoribosylanthranilate isomerase activity
+intersection_of: GO:0016853 ! isomerase activity
+intersection_of: OBO_REL:has_input PRO:000014413 ! protein S100-A6
+
+[Term]
+id: GO:0004683 ! calmodulin-dependent protein kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000004978 ! calmodulin
+
+[Term]
+id: GO:0004686 ! elongation factor-2 kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000006909 ! elongation factor 2
+
+[Term]
+id: GO:0004687 ! myosin light chain kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000003220 ! myosin light chain
+
+[Term]
+id: GO:0004708 ! MAP kinase kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000000019 ! mitogen-activated protein kinase
+
+!! TODO: check this
+[Term]
+id: GO:0004842 ! ubiquitin-protein ligase activity
+intersection_of: GO:0016874 ! ligase activity
+intersection_of: OBO_REL:has_input PRO:000016963 ! ubiquitin
+
+[Term]
+id: GO:0004843 ! ubiquitin-specific protease activity
+intersection_of: GO:0016787 ! hydrolase activity
+intersection_of: OBO_REL:has_input PRO:000016963 ! ubiquitin
+
+[Term]
+id: GO:0004897 ! ciliary neurotrophic factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000005663 ! ciliary neurotrophic factor
+
+[Term]
+id: GO:0004900 ! erythropoietin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007141 ! erythropoietin
+
+[Term]
+id: GO:0004901 ! granulocyte macrophage colony-stimulating factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000005931 ! granulocyte-macrophage colony-stimulating factor
+
+[Term]
+id: GO:0004902 ! granulocyte colony-stimulating factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000005932 ! granulocyte colony-stimulating factor
+
+[Term]
+id: GO:0004908 ! interleukin-1 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0004911 ! interleukin-2 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001379 ! interleukin-2
+
+[Term]
+id: GO:0004912 ! interleukin-3 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001387 ! interleukin-3
+
+[Term]
+id: GO:0004913 ! interleukin-4 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001391 ! interleukin-4
+
+[Term]
+id: GO:0004914 ! interleukin-5 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001392 ! interleukin-5
+
+[Term]
+id: GO:0004915 ! interleukin-6 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001393 ! interleukin-6
+
+[Term]
+id: GO:0004917 ! interleukin-7 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001317 ! interleukin-7
+
+[Term]
+id: GO:0004918 ! interleukin-8 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001395 ! interleukin-8
+
+[Term]
+id: GO:0004919 ! interleukin-9 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001396 ! interleukin-9
+
+[Term]
+id: GO:0004920 ! interleukin-10 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001471 ! interleukin-10
+
+[Term]
+id: GO:0004921 ! interleukin-11 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001366 ! interleukin-11
+
+[Term]
+id: GO:0004923 ! leukemia inhibitory factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000009799 ! leukemia inhibitory factor
+
+[Term]
+id: GO:0004924 ! oncostatin-M receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000012059 ! oncostatin-M
+
+[Term]
+id: GO:0004925 ! prolactin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000013246 ! prolactin
+
+[Term]
+id: GO:0004951 ! cholecystokinin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000005110 ! cholecystokinin
+
+[Term]
+id: GO:0004966 ! galanin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007806 ! galanin
+
+[Term]
+id: GO:0004967 ! glucagon receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007891 ! glucagon
+
+[Term]
+id: GO:0004983 ! neuropeptide Y receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000011387 ! neuropeptide Y
+
+[Term]
+id: GO:0004991 ! parathyroid hormone receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000013429 ! parathyroid hormone
+
+[Term]
+id: GO:0004994 ! somatostatin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000015665 ! somatostatin
+
+[Term]
+id: GO:0004998 ! transferrin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000016261 ! serotransferrin
+
+[Term]
+id: GO:0005006 ! epidermal growth factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000006928 ! pro-epidermal growth factor
+
+[Term]
+id: GO:0005008 ! hepatocyte growth factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000008534 ! hepatocyte growth factor
+
+[Term]
+id: GO:0005020 ! stem cell factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000009345 ! kit ligand
+
+[Term]
+id: GO:0005024 ! transforming growth factor beta receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000000046 ! TGF-beta
+
+[Term]
+id: GO:0005031 ! tumor necrosis factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000000134 ! tumor necrosis factor alpha
+
+[Term]
+id: GO:0005104 ! fibroblast growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001349 ! fibroblast growth factor receptor
+
+[Term]
+id: GO:0005109 ! frizzled binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001315 ! G protein-coupled receptor frizzled
+
+[Term]
+id: GO:0005110 ! frizzled-2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007719 ! frizzled-2
+
+[Term]
+id: GO:0005111 ! type 2 fibroblast growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001449 ! fibroblast growth factor receptor 2
+
+[Term]
+id: GO:0005119 ! smoothened binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015288 ! smoothened
+
+[Term]
+id: GO:0005128 ! erythropoietin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007142 ! erythropoietin receptor
+
+[Term]
+id: GO:0005130 ! granulocyte colony-stimulating factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001353 ! granulocyte colony-stimulating factor receptor
+
+[Term]
+id: GO:0005140 ! interleukin-9 receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001397 ! interleukin-9 receptor
+
+[Term]
+id: GO:0005146 ! leukemia inhibitory factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001876 ! leukemia inhibitory factor receptor
+
+[Term]
+id: GO:0005148 ! prolactin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000013248 ! prolactin receptor
+
+[Term]
+id: GO:0005152 ! interleukin-1 receptor antagonist activity
+intersection_of: GO:0048019 ! receptor antagonist activity
+intersection_of: OBO_REL:has_input PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0005154 ! epidermal growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000006933 ! epidermal growth factor receptor
+
+!! looks odd, but I think is correct:
+!! PRO:000001405 ! tumor necrosis factor receptor superfamily member 16 ***  [SYNONYM: "CD271" (exact)] [SYNONYM: "Gp80-LNGFR" (exact)] [SYNONYM: "Low affinity neurotrophin receptor p75NTR" (exact)] [SYNONYM: "Low-affinity nerve growth factor receptor" (exact)] [SYNONYM: "NGF receptor" (exact)] [SYNONYM: "NGFR" (related)] [SYNONYM: "p75 ICD" (exact)] [SYNONYM: "TNFRSF16" (related)]
+!!
+[Term]
+id: GO:0005163 ! nerve growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001405 ! tumor necrosis factor receptor superfamily member 16
+
+[Term]
+id: GO:0005171 ! hepatocyte growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010335 ! hepatocyte growth factor receptor
+
+[Term]
+id: GO:0005172 ! vascular endothelial growth factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001971 ! vascular endothelial growth factor receptor
+
+[Term]
+id: GO:0005173 ! stem cell factor receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002065 ! mast/stem cell growth factor receptor
+
+[Term]
+id: GO:0005516 ! calmodulin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004978 ! calmodulin
+
+[Term]
+id: GO:0008134 ! transcription factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001940 ! tissue factor
+
+[Term]
+id: GO:0008190 ! eukaryotic initiation factor 4E binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000006990 ! eukaryotic translation initiation factor 4E
+
+[Term]
+id: GO:0008772 ! [isocitrate dehydrogenase (NADP+)] kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000008888 ! isocitrate dehydrogenase [NADP], mitochondrial
+
+[Term]
+id: GO:0015054 ! gastrin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007856 ! gastrin
+
+[Term]
+id: GO:0015055 ! secretin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000014543 ! secretin
+
+[Term]
+id: GO:0016167 ! glial cell line-derived neurotrophic factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007928 ! glial cell line-derived neurotrophic factor
+
+[Term]
+id: GO:0016286 ! small conductance calcium-activated potassium channel activity
+intersection_of: GO:0015269 ! calcium-activated potassium channel activity
+intersection_of: OBO_REL:has_input PRO:000006499 ! dickkopf-related protein 1
+
+[Term]
+id: GO:0016499 ! orexin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000008476 ! orexin
+
+[Term]
+id: GO:0016515 ! interleukin-13 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001370 ! interleukin-13
+
+[Term]
+id: GO:0016520 ! growth hormone-releasing hormone receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000007971 ! somatoliberin
+
+[Term]
+id: GO:0016905 ! myosin heavy chain kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000010855 ! myosin-Ia
+
+[Term]
+id: GO:0016909 ! SAP kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000004126 ! serum amyloid P-component
+
+[Term]
+id: GO:0017033 ! DNA topoisomerase I binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016542 ! DNA topoisomerase 1
+
+[Term]
+id: GO:0017154 ! semaphorin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001926 ! semaphorin
+
+[Term]
+id: GO:0017162 ! aryl hydrocarbon receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003858 ! aryl hydrocarbon receptor
+
+[Term]
+id: GO:0017166 ! vinculin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000017272 ! vinculin
+
+[Term]
+id: GO:0019788 ! NEDD8 ligase activity
+intersection_of: GO:0016874 ! ligase activity
+intersection_of: OBO_REL:has_input PRO:000011116 ! NEDD8
+
+[Term]
+id: GO:0019775 ! FAT10 ligase activity
+intersection_of: GO:0016874 ! ligase activity
+intersection_of: OBO_REL:has_input PRO:000016964 ! ubiquitin D
+
+[Term]
+id: GO:0019959 ! interleukin-8 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001395 ! interleukin-8
+
+[Term]
+id: GO:0019966 ! interleukin-1 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001091 ! interleukin-1
+
+[Term]
+id: GO:0019969 ! interleukin-10 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001471 ! interleukin-10
+
+[Term]
+id: GO:0019970 ! interleukin-11 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001366 ! interleukin-11
+
+[Term]
+id: GO:0019973 ! interleukin-13 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001370 ! interleukin-13
+
+[Term]
+id: GO:0019975 ! interleukin-17 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001092 ! interleukin-17
+
+[Term]
+id: GO:0019976 ! interleukin-2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001379 ! interleukin-2
+
+[Term]
+id: GO:0019977 ! interleukin-21 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001382 ! interleukin-21
+
+[Term]
+id: GO:0019978 ! interleukin-3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001387 ! interleukin-3
+
+[Term]
+id: GO:0019979 ! interleukin-4 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001391 ! interleukin-4
+
+[Term]
+id: GO:0019980 ! interleukin-5 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001392 ! interleukin-5
+
+[Term]
+id: GO:0019981 ! interleukin-6 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001393 ! interleukin-6
+
+[Term]
+id: GO:0019982 ! interleukin-7 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001317 ! interleukin-7
+
+[Term]
+id: GO:0019983 ! interleukin-9 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001396 ! interleukin-9
+
+[Term]
+id: GO:0030271
+intersection_of: GO:0008233 ! peptidase activity
+intersection_of: OBO_REL:has_input PRO:000006499 ! dickkopf-related protein 1
+
+[Term]
+id: GO:0030332 ! cyclin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000012421 ! proliferating cell nuclear antigen
+
+[Term]
+id: GO:0030347 ! syntaxin-2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015794 ! syntaxin-2
+
+[Term]
+id: GO:0030348 ! syntaxin-3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015795 ! syntaxin-3
+
+[Term]
+id: GO:0030350 ! iron-responsive element binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002995 ! natural resistance-associated macrophage protein 2 isoform 1
+
+[Term]
+id: GO:0030368 ! interleukin-17 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001092 ! interleukin-17
+
+[Term]
+id: GO:0030369 ! ICAM-3 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001468 ! intercellular adhesion molecule 3
+
+[Term]
+id: GO:0030377 ! U-plasminogen activator receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000012826 ! urokinase-type plasminogen activator
+
+[Term]
+id: GO:0030586 ! [methionine synthase] reductase activity
+intersection_of: GO:0003674 ! molecular_function
+intersection_of: reduces PRO:000010747 ! methionine synthase
+
+[Term]
+id: GO:0030881 ! beta-2-microglobulin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004580 ! beta-2-microglobulin
+
+[Term]
+id: GO:0030985 ! high molecular weight kininogen binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000009430 ! kininogen-1
+
+[Term]
+id: GO:0031006 ! filamin-A binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007555 ! filamin-A
+
+[Term]
+id: GO:0031007 ! filamin-B binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007556 ! filamin-B
+
+[Term]
+id: GO:0031008 ! filamin-C binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007557 ! filamin-C
+
+[Term]
+id: GO:0031267 ! small GTPase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000028 ! small GTPase
+
+[Term]
+id: GO:0031432 ! titin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016798 ! titin
+
+[Term]
+id: GO:0031433 ! telethonin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016156 ! telethonin
+
+[Term]
+id: GO:0031434 ! mitogen-activated protein kinase kinase binding
+intersection_of: GO:0019900 ! kinase binding
+intersection_of: OBO_REL:has_input PRO:000000019 ! mitogen-activated protein kinase
+
+[Term]
+id: GO:0031435 ! mitogen-activated protein kinase kinase kinase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010444 ! mitogen-activated protein kinase kinase kinase
+
+[Term]
+id: GO:0031530 ! gonadotropin-releasing hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001464 ! gonadotropin-releasing hormone receptor
+
+[Term]
+id: GO:0031531 ! thyrotropin-releasing hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001557 ! thyrotropin-releasing hormone receptor
+
+[Term]
+id: GO:0031628 ! opioid receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001497 ! opioid receptor
+
+[Term]
+id: GO:0031691 ! alpha-1A adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001183 ! alpha-1A adrenergic receptor
+
+[Term]
+id: GO:0031692 ! alpha-1B adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001184 ! alpha-1B adrenergic receptor
+
+[Term]
+id: GO:0031693 ! alpha-1D adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001185 ! alpha-1D adrenergic receptor
+
+[Term]
+id: GO:0031694 ! alpha-2A adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001186 ! alpha-2A adrenergic receptor
+
+[Term]
+id: GO:0031695 ! alpha-2B adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001187 ! alpha-2B adrenergic receptor
+
+[Term]
+id: GO:0031696 ! alpha-2C adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001188 ! alpha-2C adrenergic receptor
+
+[Term]
+id: GO:0031697 ! beta-1 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001192 ! beta-1 adrenergic receptor
+
+[Term]
+id: GO:0031698 ! beta-2 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001193 ! beta-2 adrenergic receptor
+
+[Term]
+id: GO:0031699 ! beta-3 adrenergic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001194 ! beta-3 adrenergic receptor
+
+[Term]
+id: GO:0031704 ! apelin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001120 ! apelin receptor
+
+[Term]
+id: GO:0031705 ! bombesin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001122 ! bombesin receptor
+
+[Term]
+id: GO:0031711 ! bradykinin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001123 ! bradykinin receptor
+
+[Term]
+id: GO:0031712 ! B1 bradykinin receptor binding
+intersection_of: GO:0031711 ! bradykinin receptor binding
+intersection_of: OBO_REL:has_input PRO:000001289 ! B-cell surface antigen CD20
+
+[Term]
+id: GO:0031714 ! C5a anaphylatoxin chemotactic receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001173 ! C5a anaphylatoxin chemotactic receptor C5AR1
+
+[Term]
+id: GO:0031716 ! calcitonin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004972 ! calcitonin receptor
+
+[Term]
+id: GO:0031720 ! haptoglobin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000008725 ! haptoglobin
+
+[Term]
+id: GO:0031731 ! CCR6 chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001202 ! chemokine receptor CCR6
+
+[Term]
+id: GO:0031732 ! CCR7 chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001203 ! chemokine receptor CCR7
+
+[Term]
+id: GO:0031739 ! cholecystokinin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001130 ! cholecystokinin receptor
+
+[Term]
+id: GO:0031745 ! cysteinyl leukotriene receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001131 ! cysteinyl leukotriene receptor
+
+[Term]
+id: GO:0031751 ! D4 dopamine receptor binding
+intersection_of: GO:0050780 ! dopamine receptor binding
+intersection_of: OBO_REL:has_input PRO:000004243 ! rho GDP-dissociation inhibitor 2
+
+[Term]
+id: GO:0031761 ! fMet-Leu-Phe receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001580 ! fMet-Leu-Phe receptor
+
+[Term]
+id: GO:0031763 ! galanin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001457 ! galanin receptor
+
+[Term]
+id: GO:0031767 ! gastric inhibitory polypeptide receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007988 ! gastric inhibitory polypeptide receptor
+
+[Term]
+id: GO:0031769 ! glucagon receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007892 ! glucagon receptor
+
+[Term]
+id: GO:0031770 ! growth hormone-releasing hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007972 ! growth hormone-releasing hormone receptor
+
+[Term]
+id: GO:0031773 ! kisspeptin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001426 ! KiSS-1 receptor
+
+[Term]
+id: GO:0031779 ! melanocortin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001146 ! melanocortin receptor
+
+[Term]
+id: GO:0031780 ! adrenocorticotropin hormone receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001182 ! adrenocorticotropic hormone receptor
+
+[Term]
+id: GO:0031787 ! H9 melatonin receptor binding
+intersection_of: GO:0031784 ! melatonin receptor binding
+intersection_of: OBO_REL:has_input PRO:000013978 ! rho-related GTP-binding protein RhoC
+
+[Term]
+id: GO:0031788 ! motilin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001240 ! motilin receptor
+
+[Term]
+id: GO:0031789 ! muscarinic acetylcholine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001488 ! muscarinic acetylcholine receptor
+
+[Term]
+id: GO:0031807 ! H1 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001422 ! H1 histamine receptor
+
+[Term]
+id: GO:0031808 ! H2 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001423 ! H2 histamine receptor
+
+[Term]
+id: GO:0031809 ! H3 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001564 ! H3 histamine receptor
+
+[Term]
+id: GO:0031810 ! H4 histamine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001565 ! H4 histamine receptor
+
+[Term]
+id: GO:0031853 ! nociceptin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001631 ! nociceptin receptor
+
+[Term]
+id: GO:0031854 ! orexigenic neuropeptide QRFP receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001498 ! orexigenic neuropeptide QRFP receptor
+
+[Term]
+id: GO:0031861 ! prolactin-releasing peptide receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001546 ! prolactin-releasing peptide receptor
+
+[Term]
+id: GO:0031868 ! prostaglandin F2-alpha receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001660 ! prostaglandin F2-alpha receptor
+
+[Term]
+id: GO:0031869 ! prostacyclin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001655 ! prostacyclin receptor
+
+[Term]
+id: GO:0031876 ! secretin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000014544 ! secretin receptor
+
+[Term]
+id: GO:0031877 ! somatostatin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001555 ! somatostatin receptor
+
+[Term]
+id: GO:0031994 ! insulin-like growth factor I binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000009182 ! insulin-like growth factor I
+
+[Term]
+id: GO:0031995 ! insulin-like growth factor II binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000008942 ! insulin-like growth factor II
+
+[Term]
+id: GO:0032027 ! myosin light chain binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003220 ! myosin light chain
+
+[Term]
+id: GO:0032037 ! myosin I heavy chain binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010855 ! myosin-Ia
+
+[Term]
+id: GO:0032190 ! acrosin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003652 ! acrosin
+
+[Term]
+id: GO:0032794 ! GTPase activating protein binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000013743 ! ras GTPase-activating protein 1
+
+[Term]
+id: GO:0033161 ! mitogen-activated protein kinase kinase kinase kinase binding
+intersection_of: GO:0019900 ! kinase binding
+intersection_of: OBO_REL:has_input PRO:000010444 ! mitogen-activated protein kinase kinase kinase
+
+[Term]
+id: GO:0033568 ! lactoferrin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000009978 ! lactotransferrin
+
+[Term]
+id: GO:0033569 ! lactoferrin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: OBO_REL:has_input PRO:000009978 ! lactotransferrin
+
+[Term]
+id: GO:0033570 ! transferrin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: OBO_REL:has_input PRO:000016261 ! serotransferrin
+
+[Term]
+id: GO:0033868 ! Goodpasture-antigen-binding protein kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000005716 ! collagen type IV alpha-3-binding protein
+
+[Term]
+id: GO:0034186 ! apolipoprotein A-I binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004140 ! apolipoprotein A-I
+
+[Term]
+id: GO:0034187 ! apolipoprotein E binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004155 ! apolipoprotein E
+
+[Term]
+id: GO:0034188 ! apolipoprotein A-I receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000004140 ! apolipoprotein A-I
+
+[Term]
+id: GO:0042007 ! interleukin-18 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001376 ! interleukin-18
+
+[Term]
+id: GO:0042008 ! interleukin-18 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001376 ! interleukin-18
+
+[Term]
+id: GO:0042009 ! interleukin-15 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001373 ! interleukin-15
+
+[Term]
+id: GO:0042010 ! interleukin-15 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001373 ! interleukin-15
+
+[Term]
+id: GO:0042011 ! interleukin-16 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001374 ! interleukin-16
+
+[Term]
+id: GO:0042012 ! interleukin-16 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001374 ! interleukin-16
+
+[Term]
+id: GO:0042013 ! interleukin-19 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001472 ! interleukin-19
+
+[Term]
+id: GO:0042014 ! interleukin-19 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001472 ! interleukin-19
+
+[Term]
+id: GO:0042015 ! interleukin-20 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001473 ! interleukin-20
+
+[Term]
+id: GO:0042016 ! interleukin-20 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001473 ! interleukin-20
+
+[Term]
+id: GO:0042017 ! interleukin-22 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001383 ! interleukin-22
+
+[Term]
+id: GO:0042018 ! interleukin-22 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001383 ! interleukin-22
+
+[Term]
+id: GO:0042164 ! interleukin-12 alpha subunit binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001368 ! interleukin-12 subunit alpha
+
+[Term]
+id: GO:0042324 ! hypocretin receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001499 ! orexin receptor
+
+[Term]
+id: GO:0042379 ! chemokine receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001128 ! chemokine receptor
+
+[Term]
+id: GO:0042922 ! neuromedin U receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001489 ! neuromedin U receptor
+
+[Term]
+id: GO:0042980 ! cystic fibrosis transmembrane conductance regulator binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001044 ! cystic fibrosis transmembrane conductance regulator (cftr)
+
+[Term]
+id: GO:0043106 ! GTP cyclohydrolase I binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007893 ! GTP cyclohydrolase 1
+
+[Term]
+id: GO:0043130 ! ubiquitin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016963 ! ubiquitin
+
+[Term]
+id: GO:0043183 ! vascular endothelial growth factor receptor 1 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007563 ! vascular endothelial growth factor receptor 1
+
+[Term]
+id: GO:0043184 ! vascular endothelial growth factor receptor 2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002112 ! vascular endothelial growth factor receptor 2
+
+[Term]
+id: GO:0043185 ! vascular endothelial growth factor receptor 3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007565 ! vascular endothelial growth factor receptor 3
+
+[Term]
+id: GO:0043404 ! corticotropin-releasing hormone receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000005867 ! corticoliberin
+
+[Term]
+id: GO:0043411 ! myopalladin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010885 ! myopalladin
+
+[Term]
+id: GO:0043422 ! protein kinase B binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002190 ! RAC-alpha serine/threonine-protein kinase
+
+[Term]
+id: GO:0043560 ! insulin receptor substrate binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000008876 ! isoleucyl-tRNA synthetase, cytoplasmic
+
+[Term]
+id: GO:0043894 ! acetyl-CoA synthetase acetyltransferase activity
+intersection_of: GO:0016407 ! acetyltransferase activity
+intersection_of: OBO_REL:has_input PRO:000003672 ! acetyl-coenzyme A synthetase, cytoplasmic
+
+[Term]
+id: GO:0045296 ! cadherin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001327 ! cadherin
+
+[Term]
+id: GO:0045503 ! dynein light chain binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002201 ! dynein light chain
+
+[Term]
+id: GO:0045506 ! interleukin-24 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001474 ! interleukin-24
+
+[Term]
+id: GO:0045507 ! interleukin-25 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001113 ! interleukin-17E
+
+[Term]
+id: GO:0045508 ! interleukin-26 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001475 ! interleukin-26
+
+[Term]
+id: GO:0045509 ! interleukin-27 receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000001141 ! interleukin-17D
+
+[Term]
+id: GO:0045510 ! interleukin-24 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001474 ! interleukin-24
+
+[Term]
+id: GO:0045511 ! interleukin-25 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001113 ! interleukin-17E
+
+[Term]
+id: GO:0045512 ! interleukin-26 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001475 ! interleukin-26
+
+[Term]
+id: GO:0045513 ! interleukin-27 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001141 ! interleukin-17D
+
+[Term]
+id: GO:0045519 ! interleukin-23 receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000009001 ! interleukin-23 receptor
+
+[Term]
+id: GO:0045569 ! TRAIL binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002106 ! tumor necrosis factor ligand superfamily member 10
+
+[Term]
+id: GO:0046977 ! TAP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000017144 ! general vesicular transport factor p115
+
+[Term]
+id: GO:0046980 ! tapasin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016053 ! tapasin
+
+[Term]
+id: GO:0047322 ! [hydroxymethylglutaryl-CoA reductase (NADPH)] kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000008636 ! 3-hydroxy-3-methylglutaryl-coenzyme A reductase
+
+[Term]
+id: GO:0047764 ! caldesmon kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000004974 ! caldesmon
+
+[Term]
+id: GO:0047852 ! diferric-transferrin reductase activity
+intersection_of: GO:0003674 ! molecular_function
+intersection_of: reduces PRO:000016261 ! serotransferrin
+
+[Term]
+id: GO:0048184 ! follistatin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000015 ! follistatin
+
+[Term]
+id: GO:0048403 ! brain-derived neurotrophic factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004716 ! brain-derived neurotrophic factor
+
+[Term]
+id: GO:0048404 ! neurotrophin-3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011459 ! neurotrophin-3
+
+[Term]
+id: GO:0048408 ! epidermal growth factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000006928 ! pro-epidermal growth factor
+
+[Term]
+id: GO:0048604 ! fibroblast growth factor 3 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007494 ! INT-2 proto-oncogene protein
+
+[Term]
+id: GO:0048605 ! fibroblast growth factor 4 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007495 ! fibroblast growth factor 4
+
+[Term]
+id: GO:0048606 ! fibroblast growth factor 5 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007496 ! fibroblast growth factor 5
+
+[Term]
+id: GO:0048607 ! fibroblast growth factor 6 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000007497 ! fibroblast growth factor 6
+
+[Term]
+id: GO:0050063 ! low-density-lipoprotein-receptor kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000009744 ! low-density lipoprotein receptor
+
+[Term]
+id: GO:0050254 ! rhodopsin kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000001245 ! rhodopsin
+
+[Term]
+id: GO:0050369 ! [tyrosine 3-monooxygenase] kinase activity
+intersection_of: GO:0016301 ! kinase activity
+intersection_of: OBO_REL:has_input PRO:000016301 ! tyrosine 3-monooxygenase
+
+[Term]
+id: GO:0050430 ! syntaxin-6 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015798 ! syntaxin-6
+
+[Term]
+id: GO:0050431 ! transforming growth factor beta binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000046 ! TGF-beta
+
+[Term]
+id: GO:0051019 ! mitogen-activated protein kinase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000000019 ! mitogen-activated protein kinase
+
+[Term]
+id: GO:0051064 ! TTP reductase activity
+intersection_of: GO:0003674 ! molecular_function
+intersection_of: reduces PRO:000017639 ! tristetraproline
+
+[Term]
+id: GO:0051370 ! ZASP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000009738 ! LIM domain-binding protein 3
+
+[Term]
+id: GO:0051411 ! ALP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015248 ! antileukoproteinase
+
+[Term]
+id: GO:0051416 ! myotilin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010881 ! myotilin
+
+[Term]
+id: GO:0051419 ! nebulin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011107 ! nebulin
+
+[Term]
+id: GO:0051420 ! nebulette binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011108 ! nebulette
+
+[Term]
+id: GO:0051424 ! corticotropin-releasing hormone binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005867 ! corticoliberin
+
+[Term]
+id: GO:0051430 ! corticotropin-releasing hormone receptor 1 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005869 ! corticotropin-releasing factor receptor 1
+
+[Term]
+id: GO:0051431 ! corticotropin-releasing hormone receptor 2 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005870 ! corticotropin-releasing factor receptor 2
+
+[Term]
+id: GO:0051525 ! NFAT protein binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003112 ! NFAT protein
+
+[Term]
+id: GO:0051528 ! NFAT3 protein binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011167 ! nuclear factor of activated T-cells, cytoplasmic 4
+
+[Term]
+id: GO:0051529 ! NFAT4 protein binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011166 ! nuclear factor of activated T-cells, cytoplasmic 3
+
+[Term]
+id: GO:0051535 ! syntaxin-5 binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000015797 ! syntaxin-5
+
+[Term]
+id: GO:0051579 ! myogenin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010877 ! myogenin
+
+[Term]
+id: GO:0051916 ! granulocyte colony-stimulating factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005932 ! granulocyte colony-stimulating factor
+
+[Term]
+id: GO:0055100 ! adiponectin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003777 ! adiponectin
+
+[Term]
+id: GO:0060175 ! brain-derived neurotrophic factor receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000004716 ! brain-derived neurotrophic factor
+
+[Term]
+id: GO:0060182 ! apelin receptor activity
+intersection_of: GO:0004872 ! receptor activity
+intersection_of: OBO_REL:has_input PRO:000004135 ! apelin
+
+[Term]
+id: GO:0070097 ! delta-catenin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000006013 ! catenin delta-2
+
+[Term]
+id: GO:0070119 ! ciliary neurotrophic factor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005663 ! ciliary neurotrophic factor
+
+
+[Term]
+id: GO:0002162 ! dystroglycan binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000006267 ! dystroglycan
+
+[Term]
+id: GO:0010997 ! anaphase-promoting complex binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000004122 ! adenomatous polyposis coli
+
+[Term]
+id: GO:0016275 ! [cytochrome c]-arginine N-methyltransferase activity
+intersection_of: GO:0016274 ! protein-arginine N-methyltransferase activity
+intersection_of: OBO_REL:results_in_binding_of PRO:000002199 ! cytochrome c
+
+[Term]
+id: GO:0016277 ! [myelin basic protein]-arginine N-methyltransferase activity
+intersection_of: GO:0016274 ! protein-arginine N-methyltransferase activity
+intersection_of: OBO_REL:results_in_binding_of PRO:000010228 ! myelin basic
+
+[Term]
+id: GO:0018025 ! calmodulin-lysine N-methyltransferase activity
+intersection_of: GO:0016279 ! protein-lysine N-methyltransferase activity
+intersection_of: OBO_REL:results_in_binding_of PRO:000004978 ! calmodulin
+
+[Term]
+id: GO:0022857 ! transmembrane transporter activity
+intersection_of: GO:0008565 ! protein transporter activity
+intersection_of: OBO_REL:results_in_binding_of PRO:000003230 ! envelope glycogp160 isoform 1 cleaved and glycosylated 3
+
+[Term]
+id: GO:0031750 ! D3 dopamine receptor binding
+intersection_of: GO:0050780 ! dopamine receptor binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000009176 ! interferon-activable 205-B
+
+[Term]
+id: GO:0042021 ! granulocyte macrophage colony-stimulating factor complex binding
+intersection_of: GO:0032403 ! protein complex binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000005931 ! granulocyte-macrophage colony-stimulating factor
+
+!!TODO: check 
+[Term]
+id: GO:0046978 ! TAP1 binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000016694 ! Trpc4-associated
+
+[Term]
+id: GO:0051373 ! FATZ binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000010882 ! myozenin-1
+
+[Term]
+id: GO:0070696 ! transmembrane receptor protein serine/threonine kinase binding
+intersection_of: GO:0033612 ! receptor serine/threonine kinase binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003230 ! envelope glycogp160 isoform 1 cleaved and glycosylated 3
+
+[Term]
+id: GO:0070984 ! SET domain binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000014717 ! SET
+
+! this is an RNA:
+![Term]
+!id: GO:0002153 ! steroid receptor RNA activator RNA binding
+!intersection_of: GO:0005488 ! binding
+!intersection_of: OBO_REL:results_in_binding_of PRO:000023982 ! stationary-phase-induced ribosome-associated protein
+
+[Term]
+id: GO:0005048 ! signal sequence binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000021936 ! signal peptide
+
+[Term]
+id: GO:0005123 ! death receptor binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000021999 ! death receptor
+
+[Term]
+id: GO:0008179 ! adenylate cyclase binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000022358 ! adenylate cyclase
+
+[Term]
+id: GO:0043121 ! neurotrophin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000021998 ! neurotrophin
+
+[Term]
+id: GO:0008013 ! beta-catenin binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000002198 ! catenin beta-1
+
+[Term]
+id: GO:0031768 ! ghrelin receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001225 ! growth hormone secretagogue receptor
+
+[Term]
+id: GO:0031864 ! EP1 subtype prostaglandin E2 receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001657 ! prostaglandin E2 receptor EP1
+
+[Term]
+id: GO:0031865 ! EP2 subtype prostaglandin E2 receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001658 ! prostaglandin E2 receptor EP2
+
+[Term]
+id: GO:0031866 ! EP3 subtype prostaglandin E2 receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001659 ! prostaglandin E2 receptor EP3
+
+[Term]
+id: GO:0031867 ! EP4 subtype prostaglandin E2 receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001548 ! prostaglandin E2 receptor EP4
+
+[Term]
+id: GO:0031872 ! type 1 proteinase activated receptor binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001661 ! ase-activated receptor 1
+
+[Term]
+id: GO:0042163 ! interleukin-12 beta subunit binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000001369 ! interleukin-12 subunit beta
+
+[Term]
+id: GO:0051526 ! NFAT1 protein binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000011164 ! nuclear factor of activated T-cells, cytoplasmic 2
+
+[Term]
+id: GO:0051527 ! NFAT2 protein binding
+intersection_of: GO:0005515 ! protein binding
+intersection_of: OBO_REL:results_in_binding_of PRO:000003113 ! nuclear factor of activated T-cells, cytoplasmic 1

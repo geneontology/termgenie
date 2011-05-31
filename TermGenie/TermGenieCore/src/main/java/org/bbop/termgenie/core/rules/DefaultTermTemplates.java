@@ -4,25 +4,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateRule;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.io.FlatFileTermTemplateIO;
-
-import owltools.graph.OWLGraphWrapper;
+import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
+import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 
 /**
  * Hard coded templates, may be written to a file as example for new rules.
  */
 public class DefaultTermTemplates {
 
-	/**
-	 *  A list of all default ontologies.
-	 */
-	public final static List<DefaultOntology> defaultOntologies = new ArrayList<DefaultOntology>();
-	
 	/**
 	 * A list of all default templates.
 	 */
@@ -202,33 +198,18 @@ public class DefaultTermTemplates {
 	}
 	
 	private static Ontology create(String name, String branch, String branchId) {
-		DefaultOntology ontology = new DefaultOntology(name, branch, branchId);
-		defaultOntologies.add(ontology);
+		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
+		Ontology ontology;
+		if (branch != null) {
+			ontology = ontologies.get(branch);
+		}
+		else {
+			ontology = ontologies.get(name);
+		}
+		if (ontology == null) {
+			throw new RuntimeException("Unkown ontology: "+name+" "+branch);
+		}
 		return ontology;
-	}
-	
-	public static class DefaultOntology extends Ontology {
-		
-		protected DefaultOntology(OWLGraphWrapper realInstance, String name,
-				String subOntologyName, String subOntologyParentId) {
-			super(realInstance, name, subOntologyName, subOntologyParentId);
-		}
-		
-		protected DefaultOntology(String name, String subOntologyName, String subOntologyParentId) {
-			this(null, name, subOntologyName, subOntologyParentId);
-		}
-
-		@Override
-		public void setRealInstance(OWLGraphWrapper realInstance) {
-			super.setRealInstance(realInstance);
-		}
-
-		@Override
-		public void setBranch(String subOntologyName, String subOntologyParentId) {
-			super.setBranch(subOntologyName, subOntologyParentId);
-		}
-		
-		
 	}
 	
 	private static TermTemplate create(Ontology correspondingOntology, String name, String description, String rule,

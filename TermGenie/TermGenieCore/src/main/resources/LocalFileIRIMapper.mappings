@@ -1,0 +1,33 @@
+# GeneOntology
+http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo	ontologies/gene_ontology_ext-2011-05-16.obo	termgenie-ontologies/gene_ontology.obo
+http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo	ontologies/biological_process_xp_self-2011-05-16.obo	termgenie-ontologies/biological_process_xp_self.obo
+http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo	ontologies/biological_process_xp_cellular_component-2011-05-16.obo	termgenie-ontologies/biological_process_xp_cellular_component.obo
+http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo	ontologies/biological_process_xp_uber_anatomy-2011-05-16.obo	termgenie-ontologies/biological_process_xp_uber_anatomy.obo
+http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo	ontologies/biological_process_xp_plant_anatomy-2011-05-16.obo	termgenie-ontologies/biological_process_xp_plant_anatomy.obo
+http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo	ontologies/cellular_component_xp_protein-2011-05-16.obo	termgenie-ontologies/cellular_component_xp_protein.obo
+http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo	ontologies/molecular_function_xp_protein-2011-05-16.obo	termgenie-ontologies/molecular_function_xp_protein.obo
+
+# Protein Ontology
+ftp://ftp.pir.georgetown.edu/databases/ontology/pro_obo/pro.obo	ontologies/pro-2011-05-16.obo	termgenie-ontologies/pro.obo
+
+# UBERON
+http://github.com/cmungall/uberon/raw/master/uberon.obo	ontologies/uberon-2011-05-16.obo	termgenie-ontologies/uberon.obo
+
+# HPO
+http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology.obo	ontologies/human-phenotype-ontology-2011-05-16.obo	termgenie-ontologies/human-phenotype-ontology.obo
+http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo	human-phenotype-ontology_xp-2011-05-16.obo	termgenie-ontologies/human-phenotype-ontology_xp.obo
+
+# FMA
+http://obo.svn.sourceforge.net/viewvc/*checkout*/obo/fma-conversion/trunk/fma2_obo.obo	ontologies/fma2_obo-2011-05-16.obo	termgenie-ontologies/fma2_obo.obo
+
+# PATO
+http://pato.googlecode.com/svn/trunk/quality.obo	ontologies/quality-2011-05-16.obo	termgenie-ontologies/quality.obo
+
+# OMP
+http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/mammalian_phenotype.obo	mammalian_phenotype-2011-05-16.obo	termgenie-ontologies/mammalian_phenotype.obo
+
+# CELL
+http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo	ontologies/cell-2011-05-16.obo	termgenie-ontologies/cell.obo
+
+# PLANT
+http://palea.cgrb.oregonstate.edu/viewsvn/Poc/trunk/ontology/OBO_format/po_anatomy.obo?view=co	ontologies/po_anatomy-2011-05-16.obo	termgenie-ontologies/po_anatomy.obo

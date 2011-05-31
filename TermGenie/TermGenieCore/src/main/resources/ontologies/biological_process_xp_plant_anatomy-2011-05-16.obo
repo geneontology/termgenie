@@ -1,0 +1,686 @@
+[Term]
+id: GO:0009555 ! pollen development
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0020091 ! male gametophyte
+
+[Term]
+id: GO:0009558 ! cellularization of the embryo sac
+intersection_of: GO:0007349 ! cellularization
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0009562 ! embryo sac nuclear migration
+intersection_of: GO:0007097 ! nuclear migration
+intersection_of: OBO_REL:unfolds_in PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0009860 ! pollen tube growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0006345 ! pollen tube
+
+[Term]
+id: GO:0009865 ! pollen tube adhesion
+intersection_of: GO:0022610 ! biological adhesion
+intersection_of: OBO_REL:results_in_connection_of PO:0006345 ! pollen tube
+
+[Term]
+id: GO:0009901 ! anther dehiscence
+intersection_of: GO:0009900 ! dehiscence
+intersection_of: OBO_REL:unfolds_in PO:0009066 ! anther
+
+[Term]
+id: GO:0009908 ! flower development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009046 ! flower
+
+[Term]
+id: GO:0009933 ! meristem organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009013 ! meristem
+
+[Term]
+id: GO:0009960 ! endosperm development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009089 ! endosperm
+
+[Term]
+id: GO:0009965 ! leaf morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009025 ! leaf
+
+[Term]
+id: GO:0010015 ! root morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009005 ! root
+
+[Term]
+id: GO:0010016 ! shoot morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009006 ! shoot
+
+[Term]
+id: GO:0010053 ! root epidermal cell differentiation
+intersection_of: GO:0009913 ! epidermal cell differentiation
+intersection_of: OBO_REL:unfolds_in PO:0009005 ! root
+
+[Term]
+id: GO:0010067 ! procambium histogenesis
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_complete_development_of PO:0006074 ! procambium
+
+[Term]
+id: GO:0010068 ! protoderm histogenesis
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_formation_of PO:0006210 ! protoderm
+
+[Term]
+id: GO:0010071 ! root meristem specification
+intersection_of: GO:0007389 ! pattern specification process
+intersection_of: OBO_REL:results_in_specification_of PO:0006085 ! root meristem
+
+[Term]
+id: GO:0010088 ! phloem histogenesis
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_complete_development_of PO:0005417 ! phloem
+
+[Term]
+id: GO:0010089 ! xylem histogenesis
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_complete_development_of PO:0005352 ! xylem
+
+[Term]
+id: GO:0010098 ! suspensor development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020108 ! suspensor
+
+[Term]
+id: GO:0010103 ! stomatal complex morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0002000 ! stomatal complex
+
+[Term]
+id: GO:0010150 ! leaf senescence
+intersection_of: GO:0010149 ! senescence
+intersection_of: OBO_REL:unfolds_in PO:0009025 ! leaf
+
+[Term]
+id: GO:0010154 ! fruit development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009001 ! fruit
+
+[Term]
+id: GO:0010214 ! seed coat development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009088 ! seed coat
+
+[Term]
+id: GO:0010223 ! secondary shoot formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0006343 ! axillary shoot
+
+[Term]
+id: GO:0010229 ! inflorescence development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009049 ! inflorescence
+
+[Term]
+id: GO:0010254 ! nectary development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009035 ! nectary
+
+[Term]
+id: GO:0010311 ! lateral root formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0020121 ! lateral root
+
+[Term]
+id: GO:0010338 ! leaf formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009025 ! leaf
+
+[Term]
+id: GO:0010342 ! cellularization of endosperm
+intersection_of: GO:0007349 ! cellularization
+intersection_of: OBO_REL:unfolds_in PO:0009089 ! endosperm
+
+[Term]
+id: GO:0010346 ! shoot formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009006 ! shoot
+
+[Term]
+id: GO:0010374 ! stomatal complex development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0002000 ! stomatal complex
+
+[Term]
+id: GO:0010375 ! stomatal complex patterning
+intersection_of: GO:0007389 ! pattern specification process
+intersection_of: OBO_REL:results_in_specification_of PO:0002000 ! stomatal complex
+
+[Term]
+id: GO:0010376 ! stomatal complex formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0002000 ! stomatal complex
+
+[Term]
+id: GO:0010386 ! lateral root primordium development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0000016 ! lateral root primordium
+
+[Term]
+id: GO:0010431 ! seed maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: OBO_REL:results_in_developmental_progression_of PO:0009010 ! seed
+
+[Term]
+id: GO:0010432 ! bract development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009055 ! bract
+
+[Term]
+id: GO:0010433 ! bract morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009055 ! bract
+
+[Term]
+id: GO:0010434 ! bract formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009055 ! bract
+
+[Term]
+id: GO:0010449 ! root meristem growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0006085 ! root meristem
+
+[Term]
+id: GO:0010450 ! inflorescence meristem growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0000230 ! inflorescence meristem
+
+[Term]
+id: GO:0010451 ! floral meristem growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0000229 ! floral meristem
+
+[Term]
+id: GO:0010500 ! transmitting tissue development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020102 ! transmitting tissue
+
+[Term]
+id: GO:0010582 ! floral meristem determinacy
+intersection_of: GO:0010022 ! meristem determinacy
+intersection_of: OBO_REL:unfolds_in PO:0009046 ! flower
+
+[Term]
+id: GO:0010589 ! leaf proximal/distal pattern formation
+intersection_of: GO:0009954 ! proximal/distal pattern formation
+intersection_of: OBO_REL:unfolds_in PO:0009025 ! leaf
+
+[Term]
+id: GO:0010618 ! aerenchyma formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0005702 ! aerenchyma
+
+[Term]
+id: GO:0022022 ! septal cell proliferation
+intersection_of: GO:0008283 ! cell proliferation
+intersection_of: OBO_REL:unfolds_in PO:0000030 ! septum
+
+[Term]
+id: GO:0022621 ! shoot system development
+intersection_of: GO:0048731 ! system development
+intersection_of: OBO_REL:unfolds_in PO:0009006 ! shoot
+
+[Term]
+id: GO:0022622 ! root system development
+intersection_of: GO:0048731 ! system development
+intersection_of: OBO_REL:unfolds_in PO:0009005 ! root
+
+[Term]
+id: GO:0035266 ! meristem growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0009013 ! meristem
+
+[Term]
+id: GO:0046844 ! micropyle formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0020025 ! micropyle
+
+[Term]
+id: GO:0048229 ! gametophyte development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009004 ! gametophyte
+
+[Term]
+id: GO:0048281 ! inflorescence morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009049 ! inflorescence
+
+[Term]
+id: GO:0048314 ! embryo sac morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0048316 ! seed development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009010 ! seed
+
+[Term]
+id: GO:0048317 ! seed morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009010 ! seed
+
+[Term]
+id: GO:0048364 ! root development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009005 ! root
+
+[Term]
+id: GO:0048366 ! leaf development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009025 ! leaf
+
+[Term]
+id: GO:0048367 ! shoot development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009006 ! shoot
+
+[Term]
+id: GO:0048437 ! floral organ development
+intersection_of: GO:0048513 ! organ development
+intersection_of: OBO_REL:unfolds_in PO:0009046 ! flower
+
+[Term]
+id: GO:0048439 ! flower morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009046 ! flower
+
+[Term]
+id: GO:0048440 ! carpel development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009030 ! carpel
+
+[Term]
+id: GO:0048441 ! petal development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009032 ! petal
+
+[Term]
+id: GO:0048442 ! sepal development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009031 ! sepal
+
+[Term]
+id: GO:0048443 ! stamen development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009029 ! stamen
+
+[Term]
+id: GO:0048444 ! floral organ morphogenesis
+intersection_of: GO:0009887 ! organ morphogenesis
+intersection_of: OBO_REL:unfolds_in PO:0009046 ! flower
+
+[Term]
+id: GO:0048445 ! carpel morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009030 ! carpel
+
+[Term]
+id: GO:0048446 ! petal morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009032 ! petal
+
+[Term]
+id: GO:0048447 ! sepal morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009031 ! sepal
+
+[Term]
+id: GO:0048448 ! stamen morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009029 ! stamen
+
+[Term]
+id: GO:0048449 ! floral organ formation
+intersection_of: GO:0048645 ! organ formation
+intersection_of: OBO_REL:unfolds_in PO:0009046 ! flower
+
+[Term]
+id: GO:0048451 ! petal formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009032 ! petal
+
+[Term]
+id: GO:0048452 ! petal structural organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009032 ! petal
+
+[Term]
+id: GO:0048453 ! sepal formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009031 ! sepal
+
+[Term]
+id: GO:0048454 ! sepal structural organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009031 ! sepal
+
+[Term]
+id: GO:0048455 ! stamen formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009029 ! stamen
+
+[Term]
+id: GO:0048456 ! stamen structural organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009029 ! stamen
+
+[Term]
+id: GO:0048460 ! flower formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009046 ! flower
+
+[Term]
+id: GO:0048461 ! flower structural organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009046 ! flower
+
+[Term]
+id: GO:0048462 ! carpel formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009030 ! carpel
+
+[Term]
+id: GO:0048463 ! carpel structural organization
+intersection_of: GO:0048532 ! anatomical structure organization
+intersection_of: OBO_REL:unfolds_in PO:0009030 ! carpel
+
+[Term]
+id: GO:0048464 ! calyx development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009060 ! calyx
+
+[Term]
+id: GO:0048465 ! corolla development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009059 ! corolla
+
+[Term]
+id: GO:0048466 ! androecium development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009061 ! androecium
+
+[Term]
+id: GO:0048467 ! gynoecium development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009062 ! gynoecium
+
+[Term]
+id: GO:0048479 ! style development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009074 ! style
+
+[Term]
+id: GO:0048480 ! stigma development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009073 ! stigma
+
+[Term]
+id: GO:0048481 ! ovule development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020003 ! ovule
+
+[Term]
+id: GO:0048482 ! ovule morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020003 ! ovule
+
+[Term]
+id: GO:0048507 ! meristem development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009013 ! meristem
+
+[Term]
+id: GO:0048530 ! fruit morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009001 ! fruit
+
+[Term]
+id: GO:0048533 ! sporocyte differentiation
+intersection_of: GO:0030154 ! cell differentiation
+intersection_of: OBO_REL:unfolds_in PO:0006204 ! sporocyte
+
+[Term]
+id: GO:0048653 ! anther development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009066 ! anther
+
+[Term]
+id: GO:0048654 ! anther morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009066 ! anther
+
+[Term]
+id: GO:0048655 ! tapetal layer morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0009071 ! tapetum
+
+[Term]
+id: GO:0048656 ! tapetal layer formation
+intersection_of: GO:0048646 ! anatomical structure formation
+intersection_of: OBO_REL:results_in_formation_of PO:0009071 ! tapetum
+
+[Term]
+id: GO:0048658 ! tapetal layer development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0009071 ! tapetum
+
+[Term]
+id: GO:0048759 ! vessel member cell differentiation
+intersection_of: GO:0030154 ! cell differentiation
+intersection_of: OBO_REL:unfolds_in PO:0002003 ! vessel member
+
+[Term]
+id: GO:0048761 ! collenchyma cell differentiation
+intersection_of: GO:0030154 ! cell differentiation
+intersection_of: OBO_REL:unfolds_in PO:0005423 ! collenchyma
+
+[Term]
+id: GO:0048765 ! root hair cell differentiation
+intersection_of: GO:0035315 ! hair cell differentiation
+intersection_of: OBO_REL:unfolds_in PO:0009005 ! root
+
+[Term]
+id: GO:0048767 ! root hair elongation
+intersection_of: GO:0048589 ! developmental growth
+intersection_of: OBO_REL:occurs_in PO:0000256 ! root hair
+
+[Term]
+id: GO:0048768 ! root hair cell tip growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:unfolds_in PO:0000029 ! root hair tip
+
+[Term]
+id: GO:0048825 ! cotyledon development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020030 ! cotyledon
+
+[Term]
+id: GO:0048826 ! cotyledon morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020030 ! cotyledon
+
+[Term]
+id: GO:0048827 ! phyllome development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0006001 ! phyllome
+
+[Term]
+id: GO:0048829 ! root cap development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020123 ! root cap
+
+[Term]
+id: GO:0048868 ! pollen tube development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0006345 ! pollen tube
+
+[Term]
+id: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: GO:0007389 ! pattern specification process
+intersection_of: OBO_REL:occurs_in PO:0009015 ! vascular tissue
+
+[Term]
+id: GO:0010087 ! phloem or xylem histogenesis
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_maturation_of PO:0009015 ! vascular tissue
+
+[Term]
+id: GO:0010222 ! stem vascular tissue pattern formation
+intersection_of: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: OBO_REL:occurs_in PO:0009047 ! stem
+
+[Term]
+id: GO:0010305 ! leaf vascular tissue pattern formation
+intersection_of: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: OBO_REL:occurs_in PO:0009025 ! leaf
+
+[Term]
+id: GO:0010358 ! leaf shaping
+intersection_of: GO:0048532 ! anatomical structure arrangement
+intersection_of: OBO_REL:results_in_maturation_of PO:0009025 ! leaf
+
+[Term]
+id: GO:0010588 ! cotyledon vascular tissue pattern formation
+intersection_of: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: OBO_REL:occurs_in PO:0020030 ! cotyledon
+
+[Term]
+id: GO:0010865 ! stipule development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_maturation_of PO:0020041 ! stipule
+
+[Term]
+id: GO:0060777 ! compound leaf morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020043 ! compound leaf
+
+[Term]
+id: GO:0060794 ! leaflet morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020049 ! leaflet
+
+[Term]
+id: GO:0080056 ! petal vascular tissue pattern formation
+intersection_of: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: OBO_REL:occurs_in PO:0009032 ! petal
+
+[Term]
+id: GO:0080057 ! sepal vascular tissue pattern formation
+intersection_of: GO:0010051 ! xylem and phloem pattern formation
+intersection_of: OBO_REL:occurs_in PO:0009031 ! sepal
+
+[Term]
+id: GO:0080086 ! stamen filament development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_maturation_of PO:0009067 ! filament
+
+[Term]
+id: GO:0080112 ! seed growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:occurs_in PO:0009010 ! seed
+
+[Term]
+id: GO:0080127 ! fruit septum development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_maturation_of PO:0005008 ! fruit septum
+
+[Term]
+id: GO:0090014 ! leaflet formation
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: OBO_REL:results_in_formation_of PO:0020049 ! leaflet
+
+[Term]
+id: GO:0090058 ! metaxylem development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_maturation_of PO:0000372 ! metaxylem
+
+[Term]
+id: GO:0090059 ! protoxylem development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_maturation_of PO:0000272 ! protoxylem
+
+
+[Term]
+id: GO:0009553 ! embryo sac development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0009558 ! cellularization of the embryo sac
+intersection_of: GO:0007349 ! cellularization
+intersection_of: OBO_REL:results_in_morphogenesis_of PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0010065 ! primary meristem tissue development
+intersection_of: GO:0009888 ! tissue development
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020144 ! apical meristem
+
+[Term]
+id: GO:0010069 ! zygote asymmetric cytokinesis in the embryo sac
+intersection_of: GO:0010070 ! zygote asymmetric cell division
+intersection_of: OBO_REL:occurs_in PO:0020092 ! female gametophyte
+
+[Term]
+id: GO:0010152 ! pollen maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: OBO_REL:results_in_developmental_progression_of PO:0020091 ! male gametophyte
+
+[Term]
+id: GO:0010448 ! vegetative meristem growth
+intersection_of: GO:0040007 ! growth
+intersection_of: OBO_REL:occurs_in PO:0008016 ! vegetative shoot apical meristem
+
+[Term]
+id: GO:0048830 ! adventitious root development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0000042 ! shoot borne root
+
+[Term]
+id: GO:0060772 ! leaf phyllotactic patterning
+intersection_of: GO:0060771 ! phyllotactic patterning
+intersection_of: OBO_REL:occurs_in PO:0009025 ! leaf
+
+[Term]
+id: GO:0060773 ! flower phyllotactic patterning
+intersection_of: GO:0060771 ! phyllotactic patterning
+intersection_of: OBO_REL:occurs_in PO:0009046 ! flower
+
+[Term]
+id: GO:0060866 ! leaf abscission
+intersection_of: GO:0009838 ! abscission
+intersection_of: OBO_REL:results_in_maturation_of PO:0009025 ! leaf
+
+[Term]
+id: GO:0060867 ! fruit abscission
+intersection_of: GO:0009838 ! abscission
+intersection_of: OBO_REL:results_in_maturation_of PO:0009001 ! fruit
+
+[Term]
+id: GO:0080022 ! primary root development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0020127 ! primary root
+
+[Term]
+id: GO:0080128 ! anther septum development
+intersection_of: GO:0032502 ! developmental process
+intersection_of: OBO_REL:results_in_complete_development_of PO:0005010 ! anther septum
+
+[Term]
+id: GO:0090057 ! root radial pattern formation
+intersection_of: GO:0009956 ! radial pattern formation
+intersection_of: OBO_REL:occurs_in PO:0009005 ! root
+

@@ -2,7 +2,6 @@ package org.bbop.termgenie.solr;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,10 +16,25 @@ import org.apache.solr.common.SolrDocumentList;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
+import org.bbop.termgenie.index.AutoCompletionTools;
 
 public class SimpleSolrClient implements OntologyTermSuggestor {
 	private static final Logger logger = Logger.getLogger(SimpleSolrClient.class);
 	private final String baseUrl;
+	
+	// package private for testing purposes
+	static final AutoCompletionTools<SolrDocument> solrTools = new AutoCompletionTools<SolrDocument>() {
+		
+		@Override
+		protected String getLabel(SolrDocument t) {
+			return t.getFieldValue("label").toString();
+		}
+		
+		@Override
+		protected String escape(String string) {
+			return ClientUtils.escapeQueryChars(string);
+		}
+	}; 
 
 	public SimpleSolrClient() {
 		// default server
@@ -42,10 +56,10 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return null;
 	}
 
-	List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
+	protected List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
-		// escape query string of solr/lucene query syntax
-		query = ClientUtils.escapeQueryChars(query);
+		// escape query string of solr/lucene query syntax and create query
+		query = solrTools.preprocessQuery(query);
 		try {
 			// simple query
 			SolrDocumentList results = query(query, branch, server, 0, maxCount);
@@ -62,7 +76,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 				solrDocuments.addAll(getDocumentsWithMaxScore(result2, maxScore));
 				
 				// sort results by ascending label length
-				sortbyLabelLength(solrDocuments);
+				solrTools.sortbyLabelLength(solrDocuments);
 				if (solrDocuments.size() > maxCount) {
 					solrDocuments = solrDocuments.subList(0, maxCount);
 				}
@@ -80,20 +94,6 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			logger.warn("Problem quering solr server at: " + baseUrl, exception);
 			return null;
 		}
-	}
-
-	void sortbyLabelLength(List<SolrDocument> solrDocuments) {
-		Collections.sort(solrDocuments, new Comparator<SolrDocument>() {
-
-			@Override
-			public int compare(SolrDocument o1, SolrDocument o2) {
-				final String label1 = o1.getFieldValue("label").toString();
-				final String label2 = o2.getFieldValue("label").toString();
-				int l1 = label1.length();
-				int l2 = label2.length();
-				return (l1 < l2 ? -1 : (l1 == l2 ? 0 : 1));
-			}
-		});
 	}
 
 	List<SolrDocument> getDocumentsWithMaxScore(SolrDocumentList results, Float maxScore) {
@@ -116,7 +116,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			int start, int chunkSize) throws SolrServerException {
 		SolrQuery solrQuery = new SolrQuery().
 		// search for query  as literal string and as prefix
-		setQuery("label:(" + query + " " + query + "*)"). 
+		setQuery(query). 
 		setRows(chunkSize). // length
 		setStart(start). // offset
 		setParam("version", "2.2").

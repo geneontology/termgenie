@@ -29,6 +29,7 @@ public class SimpleSolrClientTest {
 		String query = "pig";
 		int maxCount = 10;
 		List<OntologyTerm> terms = client.suggestTerms(query, ontology, maxCount);
+		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
 		assertNull(client.suggestTerms(query, otherOntology, maxCount));
@@ -56,7 +57,7 @@ public class SimpleSolrClientTest {
 		solrDocuments.add(createDoc("longer"));
 		solrDocuments.add(createDoc("longest"));
 		solrDocuments.add(createDoc("short"));
-		client.sortbyLabelLength(solrDocuments);
+		SimpleSolrClient.solrTools.sortbyLabelLength(solrDocuments);
 		assertEqualsLabel("short", solrDocuments.get(0));
 		assertEqualsLabel("longer", solrDocuments.get(1));
 		assertEqualsLabel("longest", solrDocuments.get(2));
