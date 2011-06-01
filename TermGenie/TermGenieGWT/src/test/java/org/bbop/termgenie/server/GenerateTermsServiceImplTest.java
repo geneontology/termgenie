@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
@@ -22,12 +23,18 @@ public class GenerateTermsServiceImplTest {
 		@Override
 		protected Collection<TermTemplate> requestTemplates(String ontology) {
 			if ("test".equals(ontology)) {
-				return DefaultTermTemplates.defaultTemplates;
+				return TestTermTemplates.getTestTemplates();
 			}
 			return Collections.emptySet();
 		}
 		
 	};
+	
+	private static class TestTermTemplates extends DefaultTermTemplates {
+		static List<TermTemplate> getTestTemplates() {
+			return defaultTemplates;
+		}
+	}
 	
 	@Test
 	public void testGetAvailableGWTTermTemplates() {

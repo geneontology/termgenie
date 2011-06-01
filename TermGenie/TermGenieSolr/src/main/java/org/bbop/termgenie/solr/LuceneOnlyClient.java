@@ -5,18 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 
 public class LuceneOnlyClient implements OntologyTermSuggestor {
 	
 	private final Map<String, BasicLuceneClient> luceneIndices;
-	
-	public LuceneOnlyClient() {
+
+	public LuceneOnlyClient(Collection<? extends Ontology> ontologies) {
 		super();
-		luceneIndices = createIndices(DefaultOntologyConfiguration.getOntologies().values());
+		luceneIndices = createIndices(ontologies);
+	}
+	
+	LuceneOnlyClient() {
+		this(DefaultOntologyConfiguration.getOntologies().values());
 	}
 
 	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies) {

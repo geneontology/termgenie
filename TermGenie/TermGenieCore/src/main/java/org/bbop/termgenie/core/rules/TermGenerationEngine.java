@@ -22,6 +22,14 @@ public interface TermGenerationEngine {
 	 */
 	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks);
 
+	/**
+	 * Retrieve all patterns available for this term generation engine. 
+	 * 
+	 * @return templates
+	 */
+	public List<TermTemplate> getAvailableTemplates();
+	
+	
 	public final class TermGenerationInput {
 
 		private final TermTemplate termTemplate;

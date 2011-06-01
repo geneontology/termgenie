@@ -5,19 +5,22 @@ import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.TermSuggestion;
 import org.bbop.termgenie.shared.GWTTermGenerationParameter.GWTOntologyTerm;
-import org.bbop.termgenie.solr.SimpleSolrClient;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class OntologyServiceImpl extends RemoteServiceServlet implements OntologyService {
 
+	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
+	private static final OntologyTermSuggestor suggestor = ImplementationFactory.getOntologyTermSuggestor();
+	
 	@Override
 	public List<String> getAvailableOntologies() {
-		return OntologyTools.instance.getAvailableOntologyNames();
+		return ontologyTools.getAvailableOntologyNames();
 	}
 
 	@Override
@@ -34,13 +37,13 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 		
 		for (int i = 0; i < ontologyNames.length; i++) {
 			//  get ontology
-			Ontology ontology = OntologyTools.instance.getOntology(ontologyNames[i]);
+			Ontology ontology = ontologyTools.getOntology(ontologyNames[i]);
 			if (ontology == null) {
 				// unknown ontology, do nothing
 				continue;
 			}
 			// query for terms
-			List<OntologyTerm> autocompleteList = autocomplete(query, ontology, max);
+			List<OntologyTerm> autocompleteList = suggestor.suggestTerms(query, ontology, max);
 			if (autocompleteList == null || autocompleteList.isEmpty()) {
 				// no terms found, do nothing
 				continue;
@@ -60,32 +63,12 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 		}
 		return suggestions;
 	}
-
+	
 	private TermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
-		String ontologyName = OntologyTools.instance.getOntologyName(ontology);
+		String ontologyName = ontologyTools.getOntologyName(ontology);
 		GWTOntologyTerm identifier = new GWTOntologyTerm(ontologyName, term.getId());
 		return new TermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms());
 	}
-	
-	protected List<OntologyTerm> autocomplete(String query, Ontology ontology, int max) {
-		return SolrClient.autocomplete(query, ontology, max);
-	}
-
-	private static class SolrClient {
-		
-		private static final SimpleSolrClient client = new SimpleSolrClient();
-		
-		/**
-		 * @param query
-		 * @param ontology
-		 * @param maxCount
-		 * @return list of terms
-		 */
-		public static List<OntologyTerm> autocomplete(String query, Ontology ontology, int maxCount) {
-			return client.suggestTerms(query, ontology, maxCount);
-		}
-	}
-	
 	
 	/**
 	 * Merge two list by inserting it after the corresponding element in the

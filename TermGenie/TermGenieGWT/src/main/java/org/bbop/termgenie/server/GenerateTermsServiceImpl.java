@@ -16,6 +16,7 @@ import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.MultiValueMap;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -42,9 +43,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GenerateTermsServiceImpl extends RemoteServiceServlet implements GenerateTermsService {
 
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
-	private static final UserCredentialValidator validator = UserCredentialValidator.getInstance();
-	private static final TermGenerationTool termGeneration = TermGenerationTool.getInstance();
-	private static final OntologyCommitTool committer = OntologyCommitTool.getInstance();
+	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
+	private static final UserCredentialValidator validator = ImplementationFactory.getUserCredentialValidator();
+	private static final TermGenerationEngine termGeneration = ImplementationFactory.getTermGenerationEngine();
+	private static final OntologyCommitTool committer = ImplementationFactory.getOntologyCommitTool();
 	
 	@Override
 	public GWTTermTemplate[] getAvailableGWTTermTemplates(String ontologyName) {
@@ -88,7 +90,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			}
 		}
 		// retrieve target ontology
-		Ontology ontology = OntologyTools.instance.getOntology(ontologyName);
+		Ontology ontology = ontologyTools.getOntology(ontologyName);
 		if (ontology == null) {
 			return new GWTGenerationResponse(NO_ONTOLOGY, null, null);
 		}
@@ -203,8 +205,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 	 * @return templates, never null
 	 */
 	protected Collection<TermTemplate> requestTemplates(String ontology) {
-		// TODO add call to rule engine for retrieval of available templates
-		List<TermTemplate> templates = OntologyTools.instance.getTermTemplates(ontology);
+		List<TermTemplate> templates = ontologyTools.getTermTemplates(ontology);
 		if (templates == null) {
 			templates = Collections.emptyList();
 		}
@@ -260,7 +261,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				String[] ontologyNames = new String[ontologies.size()];
 				for (int i = 0; i < ontologyNames.length; i++) {
 					Ontology ontology = ontologies.get(i);
-					ontologyNames[i] = OntologyTools.instance.getOntologyName(ontology);
+					ontologyNames[i] = ontologyTools.getOntologyName(ontology);
 				}
 				gwtField.setOntologies(ontologyNames);
 			}
@@ -296,7 +297,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 
 		private static OntologyTerm getOntologyTerm(GWTOntologyTerm gwtOntologyTerm) {
 			String ontologyName = gwtOntologyTerm.getOntology();
-			Ontology ontology = OntologyTools.instance.getOntology(ontologyName);
+			Ontology ontology = ontologyTools.getOntology(ontologyName);
 			
 			String id = gwtOntologyTerm.getTermId();
 			String label = null;

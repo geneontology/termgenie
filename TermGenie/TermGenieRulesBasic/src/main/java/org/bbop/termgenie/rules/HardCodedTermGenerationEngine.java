@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 
@@ -16,7 +17,7 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 	private final CellOntologyPatterns clPatterns;
 	private final UberonPatterns uberonPatterns;
 	
-	public HardCodedTermGenerationEngine(List<Ontology> ontologies) {
+	public HardCodedTermGenerationEngine(List<? extends Ontology> ontologies) {
 		OWLGraphWrapper go = null;
 		OWLGraphWrapper pro = null;
 		OWLGraphWrapper uberon = null;
@@ -67,6 +68,11 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 		uberonPatterns = new UberonPatterns(uberon);
 	}
 	
+	@Override
+	public List<TermTemplate> getAvailableTemplates() {
+		return defaultTemplates;
+	}
+
 	@Override
 	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks) {
 		if (ontology == null || generationTasks == null || generationTasks.isEmpty()) {

@@ -22,7 +22,7 @@ public class DefaultTermTemplates {
 	/**
 	 * A list of all default templates.
 	 */
-	public final static List<TermTemplate> defaultTemplates = new ArrayList<TermTemplate>();
+	protected final static List<TermTemplate> defaultTemplates = new ArrayList<TermTemplate>();
 	
 	public final static Ontology GENE_ONTOLOGY = create("GeneOntology");
 	public final static Ontology GENE_ONTOLOGY_BP = create("GeneOntology", "biological_process", "GO:0008150");

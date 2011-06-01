@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 
 /**
@@ -17,13 +17,11 @@ import org.bbop.termgenie.ontology.DefaultOntologyLoader;
  */
 public class OntologyTools {
 	
-	static final OntologyTools instance = new OntologyTools();
-	
 	private final Map<String, Ontology> ontologyInstances;
 	private final Map<Ontology, String> reverseOntologyInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
-	private OntologyTools() {
+	OntologyTools(TermGenerationEngine engine) {
 		ontologyInstances = new HashMap<String, Ontology>();
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
@@ -35,7 +33,7 @@ public class OntologyTools {
 		}
 		System.err.println("Finished loading ontologies");
 		
-		for (TermTemplate template : DefaultTermTemplates.defaultTemplates) {
+		for (TermTemplate template : engine.getAvailableTemplates()) {
 			List<Ontology> ontologies = template.getCorrespondingOntologies();
 			for (Ontology ontology : ontologies) {
 				String name = getOntologyName(ontology);

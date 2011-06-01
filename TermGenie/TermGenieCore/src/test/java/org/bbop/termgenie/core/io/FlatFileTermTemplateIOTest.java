@@ -32,7 +32,7 @@ public class FlatFileTermTemplateIOTest {
 	@Test
 	public void testReadWriteTemplates() throws IOException {
 		
-		List<TermTemplate> read0 = DefaultTermTemplates.defaultTemplates;
+		List<TermTemplate> read0 = TestTermTemplates.getTestTemplates();
 		
 		String write1 = write(read0);
 		List<TermTemplate> read1 = read(write1);
@@ -47,6 +47,12 @@ public class FlatFileTermTemplateIOTest {
 		
 		String write3 = write(read2);
 		assertEquals(write1, write3);
+	}
+	
+	private static class TestTermTemplates extends DefaultTermTemplates {
+		static List<TermTemplate> getTestTemplates() {
+			return defaultTemplates;
+		}
 	}
 	
 	private void compare(List<TermTemplate> l1, List<TermTemplate> l2) {
