@@ -7,23 +7,26 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 
 public class HybridLuceneSolrClient extends SimpleSolrClient {
 
 	private final Map<String, BasicLuceneClient> luceneIndices;
 	
-	public HybridLuceneSolrClient() {
+	/**
+	 * @param ontologies
+	 */
+	public HybridLuceneSolrClient(Collection<? extends Ontology> ontologies) {
 		super();
-		luceneIndices = createIndices(DefaultOntologyConfiguration.getOntologies().values());
+		luceneIndices = createIndices(ontologies);
 	}
 
 	/**
-	 * @param baseUrl for solr index
+	 * @param baseUrl  for solr index
+	 * @param ontologies
 	 */
-	public HybridLuceneSolrClient(String baseUrl) {
+	public HybridLuceneSolrClient(String baseUrl, Collection<? extends Ontology> ontologies) {
 		super(baseUrl);
-		luceneIndices = createIndices(DefaultOntologyConfiguration.getOntologies().values());
+		luceneIndices = createIndices(ontologies);
 	}
 	
 	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies) {
