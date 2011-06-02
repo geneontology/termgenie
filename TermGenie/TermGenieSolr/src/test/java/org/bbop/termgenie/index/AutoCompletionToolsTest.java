@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.lucene.queryParser.QueryParser;
 import org.junit.Test;
 
 /**
@@ -19,6 +20,7 @@ public class AutoCompletionToolsTest {
 		cmp("");
 		cmp(" ");
 		cmp("  ");
+		cmp("a ","a");
 		cmp(" a ","a");
 		cmp(" ab ","ab");
 		cmp(" ab","ab");
@@ -26,6 +28,33 @@ public class AutoCompletionToolsTest {
 		cmp("ab cd","ab","cd");
 		cmp("ab   \t cd","ab","cd");
 		cmp("   ab   \t cd   ","ab","cd");
+	}
+
+	private static class MyAutoCompletionTools extends AutoCompletionTools<String> {
+
+		@Override
+		protected String escape(String string) {
+			return QueryParser.escape(string);
+		}
+
+		@Override
+		protected String getLabel(String t) {
+			return t;
+		}
+		
+	}
+	
+	@Test
+	public void ttt() {
+		MyAutoCompletionTools instance = new MyAutoCompletionTools();
+		
+		assertEquals(null, instance.preprocessQuery(""));
+		assertEquals(null, instance.preprocessQuery(" "));
+		assertEquals(null, instance.preprocessQuery(" a "));
+		assertEquals("(ab*) OR (\"ab\"^2)", instance.preprocessQuery(" ab "));
+		assertEquals("(a* AND b*) OR (\"a b\"^2)", instance.preprocessQuery(" a  b "));
+		assertEquals("(a\\:b*) OR (\"a\\:b\"^2)", instance.preprocessQuery(" a:b "));
+		assertEquals("(me* AND a\\:b*) OR (\"me a\\:b\"^2)", instance.preprocessQuery(" me  a:b "));
 	}
 	
 	private void cmp(String s, String...strings) {

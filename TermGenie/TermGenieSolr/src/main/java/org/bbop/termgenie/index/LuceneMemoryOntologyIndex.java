@@ -123,6 +123,10 @@ public class LuceneMemoryOntologyIndex {
 				return Collections.emptyList();
 			}
 			queryString = tools.preprocessQuery(queryString);
+			if (queryString == null) {
+				// do not search for strings with no tokens
+				return Collections.emptyList();
+			}
 			
 			QueryParser p = new QueryParser(version, DEFAULT_FIELD, analyzer);
 			Query query = p.parse(queryString);
@@ -187,11 +191,8 @@ public class LuceneMemoryOntologyIndex {
 
 	public static void main(String[] args) throws CorruptIndexException, LockObtainFailedException, IOException, ParseException {
 		
-		
-		DefaultOntologyLoader loader = new DefaultOntologyLoader();
 		ConfiguredOntology go = DefaultOntologyConfiguration.getOntologies().get("GeneOntology");
-		
-		OWLGraphWrapper ontology = loader.getOntology(go);
+		OWLGraphWrapper ontology = DefaultOntologyLoader.getOntology(go);
 
 		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology);
 		Collection<SearchResult> results = index.search(" me  pigmentation ", 5);

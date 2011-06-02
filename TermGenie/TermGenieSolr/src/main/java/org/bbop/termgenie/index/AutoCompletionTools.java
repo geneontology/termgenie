@@ -52,12 +52,23 @@ public abstract class AutoCompletionTools<T> {
 		return tokens;
 	}
 	
+	/**
+	 * Pre-process the query String, return null, if no valid tokens are identified 
+	 * 
+	 * @param queryString
+	 * @return string or null
+	 */
 	public String preprocessQuery(String queryString) {
-		queryString = escape(queryString);
 		StringBuilder subquery1 = new StringBuilder();
 		StringBuilder subquery2 = new StringBuilder();
 		List<String> list = AutoCompletionTools.split(queryString);
+		if (list.isEmpty()) {
+			return null;
+		}
+		int charCount = 0;
 		for (String string : list) {
+			charCount += string.length();
+			string = escape(string);
 			if (subquery1.length() == 0) {
 				subquery1.append('(');
 				subquery2.append("(\"");
@@ -72,6 +83,11 @@ public abstract class AutoCompletionTools<T> {
 		}
 		subquery1.append(')');
 		subquery2.append("\"^2)");
+		
+		if (charCount < 2) {
+			// at least two non-whitespace characters are required
+			return null;
+		}
 		
 		StringBuilder sb = new StringBuilder(subquery1);
 		sb.append(" OR ");
