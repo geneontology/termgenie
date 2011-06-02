@@ -26,12 +26,9 @@ public class OntologyTools {
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
-		System.err.println("Start loading ontologies");
-		DefaultOntologyLoader loader = new DefaultOntologyLoader();
-		for(Ontology ontology : loader.getOntologies()) {
+		for(Ontology ontology : DefaultOntologyLoader.getOntologies()) {
 			addOntology(ontology);
 		}
-		System.err.println("Finished loading ontologies");
 		
 		for (TermTemplate template : engine.getAvailableTemplates()) {
 			List<Ontology> ontologies = template.getCorrespondingOntologies();

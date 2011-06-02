@@ -24,20 +24,27 @@ public class DefaultOntologyLoader {
 	
 	private final static Logger LOGGER = Logger.getLogger(DefaultOntologyLoader.class);
 	
+	private static final DefaultOntologyLoader instance = new DefaultOntologyLoader();
+	
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
 	private final LocalFileIRIMapper localFileIRIMapper;
 
-	public DefaultOntologyLoader() {
+	private DefaultOntologyLoader() {
 		super();
 		localFileIRIMapper = new LocalFileIRIMapper();
 	}
 
-	public List<Ontology> getOntologies() {
+	/**
+	 * Load all configured ontologies.
+	 * 
+	 * @return ontologies
+	 */
+	public synchronized static List<Ontology> getOntologies() {
 		Map<String, ConfiguredOntology> configuration = DefaultOntologyConfiguration.getOntologies();
 		List<Ontology> result = new ArrayList<Ontology>();
 		for (String name : configuration.keySet()) {
 			ConfiguredOntology configuredOntology = configuration.get(name);
-			OWLGraphWrapper realInstance = loadOntology(configuredOntology);
+			OWLGraphWrapper realInstance = instance.loadOntology(configuredOntology);
 			if (realInstance != null) {
 				result.add(configuredOntology.createOntology(realInstance));
 			}
@@ -45,8 +52,14 @@ public class DefaultOntologyLoader {
 		return result;
 	}
 	
-	public OWLGraphWrapper getOntology(ConfiguredOntology ontology) {
-		OWLGraphWrapper realInstance = loadOntology(ontology);
+	/**
+	 * Load a selected ontology configuration, useful for testing.
+	 * 
+	 * @param ontology parameter
+	 * @return ontology
+	 */
+	public synchronized static OWLGraphWrapper getOntology(ConfiguredOntology ontology) {
+		OWLGraphWrapper realInstance = instance.loadOntology(ontology);
 		return realInstance;
 	}
 	
