@@ -1,18 +1,13 @@
 package org.bbop.termgenie.server;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.rules.HardCodedTermGenerationEngine;
 import org.bbop.termgenie.server.ValidateUserCredentialServiceImpl.UserCredentialValidator;
-import org.bbop.termgenie.solr.LuceneOnlyClient;
 import org.bbop.termgenie.solr.SimpleSolrClient;
 
 public class ImplementationFactory {

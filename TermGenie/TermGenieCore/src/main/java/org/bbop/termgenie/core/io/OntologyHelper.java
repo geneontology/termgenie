@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 
 /**
  * Tool for the association of Ontologies to a string.
@@ -18,7 +18,7 @@ public class OntologyHelper {
 
 	private static Map<String, Ontology> ontologyMap = new HashMap<String, Ontology>();
 	static {
-		for(Ontology ontology : DefaultOntologyLoader.getOntologies()) {
+		for(Ontology ontology : DefaultOntologyConfiguration.getOntologies().values()) {
 			ontologyMap.put(serializeOntology(ontology), ontology);
 		}
 	}

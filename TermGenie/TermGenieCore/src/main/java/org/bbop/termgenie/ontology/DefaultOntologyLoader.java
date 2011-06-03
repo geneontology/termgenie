@@ -3,9 +3,12 @@ package org.bbop.termgenie.ontology;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
@@ -105,7 +108,13 @@ public class DefaultOntologyLoader {
 		return new OWLGraphWrapper(owlOntology);
 	}
 
+	private static Set<String> skipOntologies = new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
+	
 	protected OWLOntology loadOWL(String ontology, String url) throws OWLOntologyCreationException, IOException {
+		if (skipOntologies.contains(ontology)) {
+			LOGGER.info("Skipping ontology: "+ontology);
+			return null;
+		}
 		LOGGER.info("Loading ontology: "+ontology+"  baseURL: "+url);
 		URL realUrl = localFileIRIMapper.getUrl(url);
 		OBOFormatParser p = new OBOFormatParser();
@@ -128,8 +137,7 @@ public class DefaultOntologyLoader {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		DefaultOntologyLoader instance = new DefaultOntologyLoader();
-		List<Ontology> ontologies = instance.getOntologies();
+		List<Ontology> ontologies = getOntologies();
 		
 		OWLGraphWrapper ontology = ontologies.get(0).getRealInstance();
 		OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");

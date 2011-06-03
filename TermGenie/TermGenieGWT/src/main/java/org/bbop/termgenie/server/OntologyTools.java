@@ -10,7 +10,7 @@ import java.util.Map;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 
 /**
  * Stub for providing some basic ontology and pattern input.
@@ -26,7 +26,7 @@ public class OntologyTools {
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
-		for(Ontology ontology : DefaultOntologyLoader.getOntologies()) {
+		for(Ontology ontology : DefaultOntologyConfiguration.getOntologies().values()) {
 			addOntology(ontology);
 		}
 		

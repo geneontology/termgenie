@@ -24,6 +24,9 @@ public class ResourceLoader {
 		if (inputStream == null) {
 			inputStream = ClassLoader.getSystemResourceAsStream(name);
 		}
+		if (inputStream == null) {
+			inputStream = ResourceLoader.class.getResourceAsStream(name);
+		}
 		return inputStream;
 	}
 
