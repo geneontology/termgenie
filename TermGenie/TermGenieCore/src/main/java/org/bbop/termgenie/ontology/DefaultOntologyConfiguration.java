@@ -89,7 +89,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 			return branch;
 		}
 		
-		Ontology createOntology(OWLGraphWrapper realOntology) {
+		public Ontology createOntology(OWLGraphWrapper realOntology) {
 			realInstance = realOntology;
 			return this;
 		}

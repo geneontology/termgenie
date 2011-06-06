@@ -38,7 +38,7 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 			String name = ontology.getUniqueName();
 			BasicLuceneClient luceneClient = indices.get(name);
 			if (luceneClient == null) {
-				luceneClient = new BasicLuceneClient(ontology);
+				luceneClient = BasicLuceneClient.create(ontology);
 				indices.put(name, luceneClient);
 			}
 		}

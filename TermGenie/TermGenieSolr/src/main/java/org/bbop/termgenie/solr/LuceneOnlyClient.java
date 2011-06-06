@@ -1,5 +1,6 @@
 package org.bbop.termgenie.solr;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +20,21 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 	}
 	
 	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies) {
-		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
+		
+		Map<String, List<Ontology>> groups = new HashMap<String, List<Ontology>>();
 		for (Ontology ontology : ontologies) {
 			String name = ontology.getUniqueName();
-			BasicLuceneClient luceneClient = indices.get(name);
-			if (luceneClient == null) {
-				luceneClient = new BasicLuceneClient(ontology);
-				indices.put(name, luceneClient);
+			List<Ontology> group = groups.get(name);
+			if (group == null) {
+				group = new ArrayList<Ontology>();
+				groups.put(name, group);
 			}
+			group.add(ontology);
+		}
+
+		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
+		for (String name : groups.keySet()) {
+			indices.put(name, BasicLuceneClient.create(groups.get(name)));
 		}
 		return indices;
 	}
