@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+ id="termgenie"
+>
+
+ <session-config>  <!--  10 minutes -->
+   <!-- 
+   <session-timeout>10</session-timeout> -->
+ </session-config>
+
+ <servlet>
+   <servlet-name>GenerateTermsServlet</servlet-name>
+   <servlet-class>org.bbop.termgenie.servlets.GenerateTermsServlet</servlet-class>
+ </servlet>
+ <servlet>
+   <servlet-name>OntologyServlet</servlet-name>
+   <servlet-class>org.bbop.termgenie.servlets.OntologyServlet</servlet-class>
+ </servlet>
+ <servlet>
+   <servlet-name>ValidateUserCredentialServlet</servlet-name>
+   <servlet-class>org.bbop.termgenie.servlets.ValidateUserCredentialServlet</servlet-class>
+ </servlet>
+
+ <servlet-mapping>
+   <servlet-name>GenerateTermsServlet</servlet-name>
+   <url-pattern>/generate</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+   <servlet-name>OntologyServlet</servlet-name>
+   <url-pattern>/ontology</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+   <servlet-name>ValidateUserCredentialServlet</servlet-name>
+   <url-pattern>/user</url-pattern>
+ </servlet-mapping>
+
+ <welcome-file-list>
+   <welcome-file>TermGenie.html</welcome-file>
+ </welcome-file-list>
+
+</web-app>

@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<link type="text/css" rel="stylesheet" href="css/TermGenie.css">
+
+<title>TermGenie Web Application</title>
+
+<script type="text/javascript" language="javascript" src="js/jquery-1.5.1.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery-ui-1.8.13.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="termgenie.js"></script>
+</head>
+
+<body>
+	<noscript>
+		<div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+			Your web browser must have JavaScript enabled in order for this
+			application to work correctly.</div>
+	</noscript>
+	<div class="mainbody">
+		<h1>TermGenie</h1>
+		<span class="tooldescription">TermGenie is a tool ... </span>
+		<h2>Step 1: Target Ontology</h2>
+		<span class="instructions">The first step is to select the
+			ontology for which the terms shall be generated.</span>
+		<div id="selectOntology"></div>
+		<h2>Step 2: Templates</h2>
+		<div id="selectTemplatesAndCreateTerms">
+			<span class="instructions">Once you have selected the
+				ontology, the available term generation patterns can be selected
+				from a menu.</span>
+		</div>
+		<h2>Step 3: Submit</h2>
+		<div>
+			<span class="instructions">The submit executes a verification
+				of the given input for the selected term generation patterns.</span>
+		</div>
+		<div>
+			<span class="textHint">Note:</span> <span class="instructions">To
+				commit the terms to the ontology a valid user name and password are
+				required.</span>
+		</div>
+		<div id="submitAndCredentials"></div>
+	</div>
+</body>
+</html>
