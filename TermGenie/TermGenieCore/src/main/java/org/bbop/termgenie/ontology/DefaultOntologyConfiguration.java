@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.tools.ResourceLoader;
 
 import owltools.graph.OWLGraphWrapper;
 

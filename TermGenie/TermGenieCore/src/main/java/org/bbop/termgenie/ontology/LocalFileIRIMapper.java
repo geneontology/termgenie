@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.tools.ResourceLoader;
 
 public class LocalFileIRIMapper extends ResourceLoader {
 

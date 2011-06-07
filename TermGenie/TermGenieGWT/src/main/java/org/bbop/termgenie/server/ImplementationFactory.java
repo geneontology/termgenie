@@ -8,6 +8,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.rules.HardCodedTermGenerationEngine;
 import org.bbop.termgenie.server.ValidateUserCredentialServiceImpl.UserCredentialValidator;
+import org.bbop.termgenie.solr.LuceneOnlyClient;
 import org.bbop.termgenie.solr.SimpleSolrClient;
 
 public class ImplementationFactory {
@@ -22,8 +23,8 @@ public class ImplementationFactory {
 		List<Ontology> ontologies = DefaultOntologyLoader.getOntologies();
 		engine = new HardCodedTermGenerationEngine(ontologies);
 		ontologyTools = new OntologyTools(engine);
-		//suggestor = new LuceneOnlyClient(ontologies);
-		suggestor = new SimpleSolrClient();
+		suggestor = new LuceneOnlyClient(ontologies);
+//		suggestor = new SimpleSolrClient();
 	}
 	
 	public static TermGenerationEngine getTermGenerationEngine() {
