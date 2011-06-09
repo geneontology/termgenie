@@ -1,6 +1,8 @@
 package org.bbop.termgenie.rules;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
@@ -11,12 +13,8 @@ import owltools.graph.OWLGraphWrapper;
 
 public class HardCodedTermGenerationEngine extends DefaultTermTemplates implements TermGenerationEngine {
 
-	private final GeneOntologyComplexPatterns goPatterns;
-	private final HumanPhenotypePatterns hpPatterns;
-	private final MicrobialPhenotypePatterns ompPatterns;
-	private final CellOntologyPatterns clPatterns;
-	private final UberonPatterns uberonPatterns;
-	
+	private final Map<String, Patterns> patterns;
+
 	public HardCodedTermGenerationEngine(List<? extends Ontology> ontologies) {
 		OWLGraphWrapper go = null;
 		OWLGraphWrapper pro = null;
@@ -60,12 +58,12 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 				}
 			}
 		}
-		
-		goPatterns = new GeneOntologyComplexPatterns(go, pro, uberon, plant);
-		hpPatterns = new HumanPhenotypePatterns(hpo, fma, pato);
-		ompPatterns = new MicrobialPhenotypePatterns(omp, go, pato);
-		clPatterns = new CellOntologyPatterns(cell, uberon, pro, go);
-		uberonPatterns = new UberonPatterns(uberon);
+		patterns = new HashMap<String, Patterns>();
+		patterns.put(GENE_ONTOLOGY.getUniqueName(), new GeneOntologyComplexPatterns(go, pro, uberon, plant));
+		patterns.put(HP_ONTOLOGY.getUniqueName(), new HumanPhenotypePatterns(hpo, fma, pato));
+		patterns.put(OMP.getUniqueName(), new MicrobialPhenotypePatterns(omp, go, pato));
+		patterns.put(CELL_ONTOLOGY.getUniqueName(), new CellOntologyPatterns(cell, uberon, pro, go));
+		patterns.put(UBERON_ONTOLOGY.getUniqueName(), new UberonPatterns(uberon));
 	}
 	
 	@Override
@@ -79,20 +77,9 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 			// do nothing
 			return null;
 		}
-		if (equals(GENE_ONTOLOGY, ontology)) {
-			return goPatterns.generateTerms(ontology, generationTasks);
-		}
-		else if (equals(HP_ONTOLOGY, ontology)) {
-			return hpPatterns.generateTerms(ontology, generationTasks);
-		}
-		else if (equals(OMP, ontology)) {
-			return ompPatterns.generateTerms(ontology, generationTasks);
-		}
-		else if (equals(CELL_ONTOLOGY, ontology)) {
-			return clPatterns.generateTerms(ontology, generationTasks);
-		}
-		else if (equals(UBERON_ONTOLOGY, ontology)) {
-			return uberonPatterns.generateTerms(ontology, generationTasks);
+		Patterns patterns = this.patterns.get(ontology.getUniqueName());
+		if (patterns != null) {
+			patterns.generateTerms(ontology, generationTasks);
 		}
 		// TODO decide if to set error message for unknown ontology
 		return null;	

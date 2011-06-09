@@ -9,11 +9,11 @@ public class ModifyButtonsWidget extends FlowPanel {
 	private final Button addButton;
 	private final Button removeButton;
 
-	public ModifyButtonsWidget() {
+	public ModifyButtonsWidget(String addText, String removeText) {
 		super();
 		addStyleName("modify-buttons-widget");
-		addButton = new Button("add");
-		removeButton = new Button("remove");
+		addButton = new Button(addText);
+		removeButton = new Button(removeText);
 		add(addButton);
 		add(removeButton);
 	}

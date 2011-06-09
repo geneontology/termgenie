@@ -45,7 +45,7 @@ public class TermTemplateWidget extends FlowPanel {
 		// format footer like the normal data areas, as it will be used latter as such.
 		grid.getRowFormatter().setVerticalAlign(2, HasVerticalAlignment.ALIGN_TOP);
 		
-		modifyButtons = new ModifyButtonsWidget();
+		modifyButtons = new ModifyButtonsWidget("add template line", "remove template line");
 		modifyButtons.addAddHandler(new ClickHandler() {
 			
 			@Override
@@ -117,32 +117,33 @@ public class TermTemplateWidget extends FlowPanel {
 
 	private DataInputField createDataInputField(GWTTemplateField field) {
 		DataInputField dataField;
+		GWTCardinality cardinality = field.getCardinality();
 		if (field.hasOntologies()) {
 			GenericSuggestOracle<TermSuggestion> oracle = AutoCompleteHelper.getSuggestOracle(field.getOntologies());
-			GWTCardinality cardinality = field.getCardinality();
 			if (cardinality.getMin() == 1 && cardinality.getMax() == 1) {
 				String[] functionalPrefixes = field.getFunctionalPrefixes();
 				if (functionalPrefixes != null && functionalPrefixes.length > 0) {
 					//  simple, auto complete, prefixes
-					PrefixAutoCompleteInputField instance = new PrefixAutoCompleteInputField(oracle, functionalPrefixes);
-					dataField = instance;
+					dataField = new PrefixAutoCompleteInputField(oracle, functionalPrefixes);
 				}
 				else {
 					// simple, auto complete
-					AutoCompleteInputField instance = new AutoCompleteInputField(oracle);
-					dataField = instance;
+					dataField = new AutoCompleteInputField(oracle);
 				}
 			}
 			else {
 				// lists, auto complete
-				ListAutoCompleteInputField instance = new ListAutoCompleteInputField(oracle, cardinality);
-				dataField = instance;
+				dataField = new ListAutoCompleteInputField(oracle, cardinality, field.getName());
 			}
 		}
 		else {
-			// simple, no auto complete
-			DataInputField.TextFieldInput textBox = new DataInputField.TextFieldInput();
-			dataField = textBox;
+			if (cardinality.getMin() == 1 && cardinality.getMax() == 1) {
+				// simple, no auto complete
+				dataField = new DataInputField.TextFieldInput();
+			}
+			else {
+				dataField = new DataInputField.ListInputField(cardinality, field.getName());
+			}
 		}
 		return dataField;
 	}

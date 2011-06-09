@@ -304,6 +304,9 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			String definition = null;
 			Set<String> synonyms = null;
 			String cdef = null;
+			List<String> defxref = null;
+			String comment = null;
+
 			
 			OWLGraphWrapper realInstance = ontology.getRealInstance();
 			if (realInstance != null) {
@@ -313,10 +316,12 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 					definition = realInstance.getDef(owlObject);
 //					synonyms = realInstance.getSynonymStrings(owlObject);
 					// TODO replace this with a proper implementation
+					defxref = realInstance.getDefXref(owlObject);
+					comment = realInstance.getComment(owlObject);
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment); 
 		}
 
 		private static <T> void copy(GWTMultiValueMap<T> gwt, MultiValueMap<T> target, GWTTemplateField gwtKey, TemplateField key) {

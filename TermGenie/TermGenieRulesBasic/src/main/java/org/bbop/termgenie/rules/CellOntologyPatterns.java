@@ -2,10 +2,13 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -14,46 +17,58 @@ public class CellOntologyPatterns extends Patterns {
 	private final OWLGraphWrapper cell;
 	private final OWLGraphWrapper uberon;
 	private final OWLGraphWrapper pro;
-	private final OWLGraphWrapper go;
+	private final OWLGraphWrapper go1;
+	
+	private final OWLObject GO0032991;
 
 	protected CellOntologyPatterns(OWLGraphWrapper cell, OWLGraphWrapper uberon, OWLGraphWrapper pro, OWLGraphWrapper go) {
+		super(DefaultTermTemplates.metazoan_location_specific_cell, DefaultTermTemplates.cell_by_surface_marker);
 		this.cell = cell;
 		this.uberon = uberon;
 		this.pro = pro;
-		this.go = go;
+		this.go1 = go;
+		GO0032991 = getTerm("GO:0032991", go);
 	}
 	
-	@Override
-	protected List<TermGenerationOutput> generate(TermGenerationInput input,
-			Map<String, OntologyTerm> pending) {
-		// TODO Auto-generated method stub
-		return null;
+	protected OWLObject getTerm(String id, OWLGraphWrapper ontology) {
+		OWLObject term = getTermSimple(id, ontology);
+		if (term == null) {
+			throw new RuntimeException("No term found for id: "+id);
+		}
+		return term;
 	}
+	
+	@ToMatch
+	protected List<TermGenerationOutput> metazoan_location_specific_cell(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+		OWLObject c = getSingleTerm(input, "cell", cell);
+		OWLObject a = getSingleTerm(input, "location", uberon);
+		if (c == null || a == null) {
+			// check branch
+			return error("The specified terms do not correspond to the pattern", input);
+		}
+		String label = createName(name(a, uberon) + " " + name(c, cell), input);
+		String definition = createDefinition("Any "+name(c, cell)+" that is part of a "+name(a, uberon)+".", input);
+		Set<String> synonyms = null;
+		String logicalDefinition = "cdef("+id(c, cell)+",[part_of="+id(a, uberon)+"]),";
+		return createTermList(label, definition, synonyms, logicalDefinition, input, cell);
+	}
+	
 	/*
-	template(metazoan_location_specific_cell(C,A),
-	         [
-	          ontology= 'CL',
-	          obo_namespace= cell,
-	          description= 'A cell type differentiated by its anatomical location (animals)',
-	          externals= ['UBERON'],
-	          arguments= [cell='CL',location='UBERON'],
-	          cdef= cdef(C,[part_of=A]),
-	          name= [name(A),' ',name(C)],
-	          def= ['Any ',name(C),' that is part of a ',name(A),'.']
-	         ]).
-
-	template(cell_by_surface_marker(C,P),
-	         [
-	          ontology= 'CL',
-	          obo_namespace= cell,
-	          description= 'A cell type differentiated by proteins or complexes on the plasma membrane',
-	          externals= ['PRO','GO'],
-	          arguments= [cell='CL',membrane_part=['PRO','GO:0032991']],
-	          cdef= cdef(C,[has_plasma_membrane_part=P]),
-	          properties = [multivalued(has_plasma_membrane_part),
-	                        any_cardinality(has_plasma_membrane_part)],
-	          name= [names(P),' ',name(C)],
-	          def= ['Any ',name(C),' that has ',names(P),' on the plasma membrane']
-	         ]).
-	         */
+	  properties = [multivalued(has_plasma_membrane_part),
+	                any_cardinality(has_plasma_membrane_part)],
+	  */
+	@ToMatch
+	protected List<TermGenerationOutput> cell_by_surface_marker(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+		OWLObject c = getSingleTerm(input, "cell", cell);
+		OWLObject p = getSingleTerm(input, "membrane_part", pro, go1);
+		if (c == null || p == null || !(genus(p, GO0032991, go1) || genus(p, null, pro))) {
+			// check branch
+			return error("The specified terms do not correspond to the pattern", input);
+		}
+		String label = createName(name(p, pro, go1) + " " + name(c, cell), input);
+		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
+		Set<String> synonyms = null;
+		String logicalDefinition = "cdef("+id(c, cell)+",[has_plasma_membrane_part="+id(p, pro, go1)+"]),";
+		return createTermList(label, definition, synonyms, logicalDefinition, input, cell);
+	}
 }

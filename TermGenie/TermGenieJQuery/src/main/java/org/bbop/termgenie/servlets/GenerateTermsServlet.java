@@ -306,6 +306,8 @@ public class GenerateTermsServlet extends JsonRpcServlet {
 			String definition = null;
 			Set<String> synonyms = null;
 			String cdef = null;
+			List<String> defxref = null;
+			String comment = null;
 			
 			OWLGraphWrapper realInstance = ontology.getRealInstance();
 			if (realInstance != null) {
@@ -315,10 +317,12 @@ public class GenerateTermsServlet extends JsonRpcServlet {
 					definition = realInstance.getDef(owlObject);
 //					synonyms = realInstance.getSynonymStrings(owlObject);
 					// TODO replace this with a proper implementation
+					defxref = realInstance.getDefXref(owlObject);
+					comment = realInstance.getComment(owlObject);
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment); 
 		}
 
 		private static <T> void copy(JsonMultiValueMap<T> json, MultiValueMap<T> target, JsonTemplateField jsonKey, TemplateField key) {

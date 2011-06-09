@@ -169,6 +169,16 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			public String getLogicalDefinition() {
 				return null;
 			}
+
+			@Override
+			public List<String> getDefXRef() {
+				return null;
+			}
+
+			@Override
+			public String getComment() {
+				return null;
+			}
 		};
 	}
 

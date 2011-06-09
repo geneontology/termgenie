@@ -146,7 +146,7 @@ public interface TermGenerationEngine {
 
 	public static class MultiValueMap<V> {
 
-		private Map<String, List<V>> values = new HashMap<String, List<V>>();
+		private Map<String, ArrayList<V>> values = new HashMap<String, ArrayList<V>>();
 
 		public V getValue(TemplateField key, int pos) {
 			List<V> list = values.get(calculateInteralKey(key));
@@ -154,6 +154,23 @@ public interface TermGenerationEngine {
 				return list.get(pos);
 			}
 			return null;
+		}
+		
+		public V getValue(String field, int pos) {
+			List<V> list = values.get(field);
+			if (list != null && list.size() > pos) {
+				return list.get(pos);
+			}
+			return null;
+		}
+		
+		public List<V> getValues(String field) {
+			return values.get(field);
+		}
+		
+		public List<V> getValues(TemplateField key) {
+			List<V> list = values.get(calculateInteralKey(key));
+			return list;
 		}
 
 		public int getCount(TemplateField key) {
@@ -163,22 +180,29 @@ public interface TermGenerationEngine {
 			}
 			return 0;
 		}
+		
+		public int getCount(String field) {
+			List<V> list = values.get(field);
+			if (list != null) {
+				return list.size();
+			}
+			return 0;
+		}
 
 		public void addValue(V value, TemplateField key, int pos) {
 			final String internalKey = calculateInteralKey(key);
-			List<V> list = values.get(internalKey);
+			ArrayList<V> list = values.get(internalKey);
 			if (list == null) {
 				list = new ArrayList<V>(pos + 1);
-				for (int i = 0; i < pos; i++) {
-					list.add(null);
-				}
-				list.add(value);
 				values.put(internalKey, list);
-			} else {
-				for (int i = (list.size()) - 1; i < pos; i++) {
-					list.add(null);
-				}
-				list.add(value);
+			}
+			assertSize(list, pos + 1);
+			list.set(pos, value);
+		}
+		
+		private void assertSize(ArrayList<V> list, int size) {
+			while (list.size() < size) {
+				list.add(null);
 			}
 		}
 
@@ -189,7 +213,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the values
 		 */
-		Map<String, List<V>> getValues() {
+		Map<String, ArrayList<V>> getValues() {
 			return values;
 		}
 
@@ -197,7 +221,7 @@ public interface TermGenerationEngine {
 		 * @param values
 		 *            the values to set
 		 */
-		void setValues(Map<String, List<V>> values) {
+		void setValues(Map<String, ArrayList<V>> values) {
 			this.values = values;
 		}
 	}

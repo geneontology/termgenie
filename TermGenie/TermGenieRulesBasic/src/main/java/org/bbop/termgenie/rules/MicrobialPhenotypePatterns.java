@@ -2,10 +2,13 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -16,28 +19,24 @@ public class MicrobialPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper omp;
 
 	protected MicrobialPhenotypePatterns(OWLGraphWrapper omp, OWLGraphWrapper go, OWLGraphWrapper pato) {
+		super(DefaultTermTemplates.omp_entity_quality);
 		this.omp = omp;
 		this.go = go;
 		this.pato = pato;
 	}
 
-	@Override
-	protected List<TermGenerationOutput> generate(TermGenerationInput input,
-			Map<String, OntologyTerm> pending) {
-		// TODO Auto-generated method stub
-		return null;
+	@ToMatch
+	protected List<TermGenerationOutput> omp_entity_quality(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+		OWLObject e = getSingleTerm(input, "entity", go);
+		OWLObject q = getSingleTerm(input, "quality", pato);
+		if (e == null ||  q == null) {
+			// check branch
+			return error("The specified terms do not correspond to the pattern", input);
+		}
+		String label = createName(name(q, pato) + " of " + name(e, go), input);
+		String definition = createDefinition("Any "+name(q, pato)+" of "+name(e, go)+".", input);
+		Set<String> synonyms = null;
+		String logicalDefinition = "cdef("+id(q, pato)+",['OBO_REL:inheres_in'="+id(e, go)+"]),";
+		return createTermList(label, definition, synonyms, logicalDefinition, input, omp);
 	}
-	/*
-	template(omp_entity_quality(E,Q),
-	         [
-	          ontology= 'OMP',
-	          obo_namespace= omp,
-	          description= 'basic EQ template',
-	          externals= ['GO','PATO'],
-	          arguments= [entity='GO', quality='PATO'],
-	          cdef= cdef(Q,['OBO_REL:inheres_in'=E]),
-	          name= [name(Q),' of ',name(E)],
-	          def= ['Any ',name(Q),' of ',name(E)]
-	         ]).
-	         */
 }

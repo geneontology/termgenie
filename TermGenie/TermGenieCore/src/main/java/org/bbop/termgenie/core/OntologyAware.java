@@ -81,6 +81,8 @@ public interface OntologyAware {
 		public abstract String getDefinition();
 		public abstract Set<String> getSynonyms();
 		public abstract String getLogicalDefinition();
+		public abstract List<String> getDefXRef();
+		public abstract String getComment();
 
 		@Override
 		public String toString() {
@@ -94,6 +96,10 @@ public interface OntologyAware {
 				builder.append("getDefinition()=").append(getDefinition()).append(", ");
 			if (getSynonyms() != null)
 				builder.append("getSynonyms()=").append(getSynonyms());
+			if (getDefXRef() != null)
+				builder.append("getSynonyms()=").append(getDefXRef());
+			if (getComment() != null)
+				builder.append("getSynonyms()=").append(getComment());
 			builder.append("]");
 			return builder.toString();
 		}
@@ -105,6 +111,8 @@ public interface OntologyAware {
 			private final String definition;
 			private final Set<String> synonyms;
 			private final String logicalDefinition;
+			private final List<String> defXRef;
+			private final String comment;
 			/**
 			 * @param id
 			 * @param label
@@ -113,43 +121,69 @@ public interface OntologyAware {
 			 * @param logicalDefinition
 			 */
 			public DefaultOntologyTerm(String id, String label, String definition,
-					Set<String> synonyms, String logicalDefinition) {
+					Set<String> synonyms, String logicalDefinition, List<String> defXRef, String comment) {
 				super();
 				this.id = id;
 				this.label = label;
 				this.definition = definition;
 				this.synonyms = synonyms;
 				this.logicalDefinition = logicalDefinition;
+				this.defXRef = defXRef;
+				this.comment = comment;
 			}
 			/**
 			 * @return the id
 			 */
+			@Override
 			public String getId() {
 				return id;
 			}
+			
 			/**
 			 * @return the label
 			 */
+			@Override
 			public String getLabel() {
 				return label;
 			}
+			
 			/**
 			 * @return the definition
 			 */
+			@Override
 			public String getDefinition() {
 				return definition;
 			}
+			
 			/**
 			 * @return the synonyms
 			 */
+			@Override
 			public Set<String> getSynonyms() {
 				return synonyms;
 			}
+			
 			/**
 			 * @return the logicalDescription
 			 */
+			@Override
 			public String getLogicalDefinition() {
 				return logicalDefinition;
+			}
+			
+			/**
+			 * @return the defXRef
+			 */
+			@Override
+			public List<String> getDefXRef() {
+				return defXRef;
+			}
+			/**
+			 * @return the comment
+			 */
+			@Override
+			public String getComment() {
+				return comment;
 			}
 		}
 	}

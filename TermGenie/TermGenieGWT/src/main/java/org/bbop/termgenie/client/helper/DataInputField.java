@@ -53,10 +53,22 @@ public interface DataInputField {
 
 		@Override
 		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			return extractParameter(parameter, field, 0);
+		}
+		
+		/**
+		 * extract the parameter value from this text field, add this value to the given position.
+		 * 
+		 * @param parameter
+		 * @param field
+		 * @param pos
+		 * @return success
+		 */
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field, int pos) {
 			resetErrorMark();
 			String text = getText().trim();
 			if (text != null && !text.isEmpty()) {
-				parameter.getStrings().addValue(text, field, 0);
+				parameter.getStrings().addValue(text, field, pos);
 				return true;
 			}
 			// only report this field as error if it is required.
@@ -206,10 +218,10 @@ public interface DataInputField {
 		private final ModifyButtonsWidget buttonsWidget;
 
 		public ListAutoCompleteInputField(final GenericSuggestOracle<TermSuggestion> oracle,
-				final GWTCardinality cardinality) {
+				final GWTCardinality cardinality, String name) {
 			super();
 			fields = new ArrayList<AutoCompleteInputField>();
-			buttonsWidget = new ModifyButtonsWidget();
+			buttonsWidget = new ModifyButtonsWidget("add "+name, "remove "+name);
 			buttonsWidget.addAddHandler(new ClickHandler() {
 
 				@Override
@@ -258,6 +270,70 @@ public interface DataInputField {
 				}
 			}
 			return pos > 0;
+		}
+
+		@Override
+		public Widget getWidget() {
+			return this;
+		}
+	}
+	
+	/**
+	 * An input field for a list of ontology terms, provides auto-complete functionality.
+	 */
+	public static class ListInputField extends VerticalPanel implements DataInputField {
+
+		private final List<TextFieldInput> fields;
+		private final ModifyButtonsWidget buttonsWidget;
+
+		public ListInputField(final GWTCardinality cardinality, String name) {
+			super();
+			fields = new ArrayList<TextFieldInput>();
+			buttonsWidget = new ModifyButtonsWidget("add "+name,"remove "+name);
+			buttonsWidget.addAddHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					remove(buttonsWidget);
+					if (fields.size() < cardinality.getMax()) {
+						TextFieldInput widget = new TextFieldInput();
+						fields.add(widget);
+						add(widget);
+					}
+					add(buttonsWidget);
+				}
+			});
+			buttonsWidget.addRemoveHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					int size = fields.size();
+					if (size > 0 && size > cardinality.getMin()) {
+						TextFieldInput field = fields.remove(size - 1);
+						remove(field);
+					}
+				}
+			});
+
+			int startCount = Math.min(cardinality.getMax(), Math.max(1, cardinality.getMin()));
+			for (int i = 0; i < startCount; i++) {
+				TextFieldInput widget = new TextFieldInput();
+				fields.add(widget);
+				add(widget);
+			}
+			add(buttonsWidget);
+		}
+
+		@Override
+		public boolean extractParameter(GWTTermGenerationParameter parameter, GWTTemplateField field) {
+			int pos = 0;
+			boolean success = true;
+			for (TextFieldInput inputField : fields) {
+				boolean csuccess = inputField.extractParameter(parameter, field, pos);
+				success = success && csuccess;
+				pos++;
+			}
+			return pos > 0 && success;
 		}
 
 		@Override
