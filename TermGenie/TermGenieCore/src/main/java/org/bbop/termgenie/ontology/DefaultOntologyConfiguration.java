@@ -94,6 +94,52 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 			realInstance = realOntology;
 			return this;
 		}
+
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("ConfiguredOntology [");
+			if (name != null) {
+				builder.append("name=");
+				builder.append(name);
+				builder.append(", ");
+			}
+			if (subOntologyName != null) {
+				builder.append("subOntologyName=");
+				builder.append(subOntologyName);
+				builder.append(", ");
+			}
+			if (subOntologyParentId != null) {
+				builder.append("subOntologyParentId=");
+				builder.append(subOntologyParentId);
+				builder.append(", ");
+			}
+			if (realInstance != null) {
+				builder.append("realInstance=");
+				builder.append(realInstance);
+				builder.append(", ");
+			}
+			if (source != null) {
+				builder.append("source=");
+				builder.append(source);
+				builder.append(", ");
+			}
+			if (supports != null) {
+				builder.append("supports=");
+				builder.append(supports);
+				builder.append(", ");
+			}
+			if (requires != null) {
+				builder.append("requires=");
+				builder.append(requires);
+			}
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 	
 	Map<String, ConfiguredOntology> loadOntologyConfiguration() {

@@ -188,12 +188,45 @@ public class TemplateField implements OntologyAware {
 		return functionalPrefixes;
 	}
 
-
+	@Override
 	public List<Ontology> getCorrespondingOntologies() {
 		return correspondingOntologies;
 	}
 	
 	public boolean hasCorrespondingOntologies() {
 		return correspondingOntologies != null && !correspondingOntologies.isEmpty();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TemplateField [");
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		builder.append("required=");
+		builder.append(required);
+		builder.append(", ");
+		if (cardinality != null) {
+			builder.append("cardinality=");
+			builder.append(cardinality);
+			builder.append(", ");
+		}
+		if (functionalPrefixes != null) {
+			builder.append("functionalPrefixes=");
+			builder.append(functionalPrefixes);
+			builder.append(", ");
+		}
+		if (correspondingOntologies != null) {
+			builder.append("correspondingOntologies=");
+			builder.append(correspondingOntologies);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

@@ -31,4 +31,24 @@ public class TemplateRule {
 	public String getValue() {
 		return value;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TemplateRule [");
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		if (value != null) {
+			builder.append("value=");
+			builder.append(value);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

@@ -90,4 +90,39 @@ public class TermTemplate implements OntologyAware {
 		}
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TermTemplate [");
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		if (correspondingOntologies != null) {
+			builder.append("correspondingOntologies=");
+			builder.append(correspondingOntologies);
+			builder.append(", ");
+		}
+		if (description != null) {
+			builder.append("description=");
+			builder.append(description);
+			builder.append(", ");
+		}
+		if (fields != null) {
+			builder.append("fields=");
+			builder.append(fields);
+			builder.append(", ");
+		}
+		if (rules != null) {
+			builder.append("rules=");
+			builder.append(rules);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }
