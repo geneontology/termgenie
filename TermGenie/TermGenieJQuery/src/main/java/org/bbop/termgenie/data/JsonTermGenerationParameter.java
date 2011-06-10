@@ -1,16 +1,27 @@
 package org.bbop.termgenie.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import lib.jsonrpc.JSONObj;
+import lib.jsonrpc.JSONProperty;
+
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 
+@JSONObj
 public class JsonTermGenerationParameter {
 
+	@JSONProperty
 	private JsonMultiValueMap<JsonOntologyTerm> terms;
+	
+	@JSONProperty
 	private JsonMultiValueMap<String> strings;
+	
+	@JSONProperty
 	private JsonMultiValueMap<List<String>> prefixes;
 
 	public JsonTermGenerationParameter() {
@@ -61,10 +72,41 @@ public class JsonTermGenerationParameter {
 		this.prefixes = prefixes;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonTermGenerationParameter:{");
+		if (terms != null) {
+			builder.append("terms: ");
+			builder.append(terms);
+			builder.append(", ");
+		}
+		if (strings != null) {
+			builder.append("strings: ");
+			builder.append(strings);
+			builder.append(", ");
+		}
+		if (prefixes != null) {
+			builder.append("prefixes: ");
+			builder.append(prefixes);
+		}
+		builder.append("}");
+		return builder.toString();
+	}
 
 
+
+
+	@JSONObj
 	public static final class JsonOntologyTerm {
+		
+		@JSONProperty
 		private String ontology;
+		
+		@JSONProperty
 		private String termId;
 
 		public JsonOntologyTerm() {
@@ -110,10 +152,32 @@ public class JsonTermGenerationParameter {
 		public void setTermId(String termId) {
 			this.termId = termId;
 		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonOntologyTerm:{");
+			if (ontology != null) {
+				builder.append("ontology:");
+				builder.append(ontology);
+				builder.append(", ");
+			}
+			if (termId != null) {
+				builder.append("termId:");
+				builder.append(termId);
+			}
+			builder.append("}");
+			return builder.toString();
+		}
 	}
 	
+	@JSONObj
 	public static class JsonMultiValueMap<V> {
 		
+		@JSONProperty
 		private Map<String, List<V>> values = new HashMap<String, List<V>>();
 		
 		public V getValue(JsonTemplateField key, int pos) {
@@ -166,6 +230,35 @@ public class JsonTermGenerationParameter {
 		 */
 		void setValues(Map<String, List<V>> values) {
 			this.values = values;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			final int maxLen = 10;
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonMultiValueMap {");
+			if (values != null) {
+				builder.append("values=");
+				builder.append(toString(values.entrySet(), maxLen));
+			}
+			builder.append("}");
+			return builder.toString();
+		}
+
+		private String toString(Collection<?> collection, int maxLen) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("{");
+			int i = 0;
+			for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+				if (i > 0)
+					builder.append(", ");
+				builder.append(iterator.next());
+			}
+			builder.append("}");
+			return builder.toString();
 		}
 	}
 }

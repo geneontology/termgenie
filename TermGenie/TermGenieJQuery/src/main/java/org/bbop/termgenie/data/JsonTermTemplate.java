@@ -1,13 +1,22 @@
 package org.bbop.termgenie.data;
 
+import java.util.Arrays;
+
+import lib.jsonrpc.JSONObj;
+import lib.jsonrpc.JSONProperty;
+
 
 /**
  * This class is required to map the internal representation of fields to an object which
  * can be serialized into JSON.
  */
+@JSONObj
 public class JsonTermTemplate {
 
+	@JSONProperty
 	private String name;
+	
+	@JSONProperty
 	private JsonTemplateField[] fields;
 
 	public JsonTermTemplate() {
@@ -54,11 +63,42 @@ public class JsonTermTemplate {
 		this.fields = fields;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonTermTemplate:{");
+		if (name != null) {
+			builder.append("name:");
+			builder.append(name);
+			builder.append(", ");
+		}
+		if (fields != null) {
+			builder.append("fields:");
+			builder.append(Arrays.toString(fields));
+		}
+		builder.append("}");
+		return builder.toString();
+	}
+
+	@JSONObj
 	public static class JsonTemplateField {
+		
+		@JSONProperty
 		private String name;
+		
+		@JSONProperty
 		private boolean required;
+		
+		@JSONProperty
 		private JsonCardinality cardinality;
+		
+		@JSONProperty
 		private String[] functionalPrefixes;
+		
+		@JSONProperty
 		private String[] ontologies;
 
 		public JsonTemplateField() {
@@ -159,10 +199,48 @@ public class JsonTermTemplate {
 		public boolean hasOntologies() {
 			return ontologies != null && ontologies.length > 0; 
 		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonTemplateField:{");
+			if (name != null) {
+				builder.append("name:");
+				builder.append(name);
+				builder.append(", ");
+			}
+			builder.append("required:");
+			builder.append(required);
+			builder.append(", ");
+			if (cardinality != null) {
+				builder.append("cardinality:");
+				builder.append(cardinality);
+				builder.append(", ");
+			}
+			if (functionalPrefixes != null) {
+				builder.append("functionalPrefixes:");
+				builder.append(Arrays.toString(functionalPrefixes));
+				builder.append(", ");
+			}
+			if (ontologies != null) {
+				builder.append("ontologies:");
+				builder.append(Arrays.toString(ontologies));
+			}
+			builder.append("}");
+			return builder.toString();
+		}
 	}
 
+	@JSONObj
 	public static class JsonCardinality {
+		
+		@JSONProperty
 		private int min;
+		
+		@JSONProperty
 		private int max;
 
 		public JsonCardinality() {
@@ -211,6 +289,20 @@ public class JsonTermTemplate {
 		
 		public boolean isUnique() {
 			return min == 1 && max == 1;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonCardinality:{min:");
+			builder.append(min);
+			builder.append(", max:");
+			builder.append(max);
+			builder.append("}");
+			return builder.toString();
 		}
 	}
 }

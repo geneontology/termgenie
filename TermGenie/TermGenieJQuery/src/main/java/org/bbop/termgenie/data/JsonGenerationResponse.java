@@ -1,12 +1,21 @@
 package org.bbop.termgenie.data;
 
+import java.util.Arrays;
 import java.util.Collection;
 
+import lib.jsonrpc.JSONObj;
+import lib.jsonrpc.JSONProperty;
 
+@JSONObj
 public class JsonGenerationResponse {
 
+	@JSONProperty
 	private String generalError;
+	
+	@JSONProperty
 	private JsonValidationHint[] errors;
+	
+	@JSONProperty
 	private String[] generatedTerms;
 	
 	/**
@@ -68,4 +77,31 @@ public class JsonGenerationResponse {
 	public void setGeneralError(String generalError) {
 		this.generalError = generalError;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonGenerationResponse:{");
+		if (generalError != null) {
+			builder.append("generalError:");
+			builder.append(generalError);
+			builder.append(", ");
+		}
+		if (errors != null) {
+			builder.append("errors:");
+			builder.append(Arrays.toString(errors));
+			builder.append(", ");
+		}
+		if (generatedTerms != null) {
+			builder.append("generatedTerms:");
+			builder.append(Arrays.toString(generatedTerms));
+		}
+		builder.append("}");
+		return builder.toString();
+	}
+	
+	
 }

@@ -1,38 +1,23 @@
 package org.bbop.termgenie.servlets;
 
-import org.bbop.termgenie.rpc.JSONMethod;
-import org.bbop.termgenie.rpc.JsonRpcServlet;
+import org.apache.log4j.Logger;
+import org.bbop.termgenie.services.ValidateUserCredentialServiceImpl;
 
-@SuppressWarnings("serial")
-public class ValidateUserCredentialServlet extends JsonRpcServlet {
+import lib.jsonrpc.RPCService;
 
-	@JSONMethod
-	public boolean isValidUser(String username, String password) {
-		return UserCredentialValidator.getInstance().validate(username, password);
+public class ValidateUserCredentialServlet extends AbstractJsonRPCServlet {
+
+	private static final long serialVersionUID = 8193554577728526317L;
+	private static final Logger logger = Logger.getLogger(ValidateUserCredentialServlet.class);
+
+	@Override
+	protected RPCService createService() {
+		return new ValidateUserCredentialServiceImpl();
 	}
 
-	/**
-	 * Actual implementation of the validation.
-	 */
-	public static class UserCredentialValidator {
-		
-		private static volatile UserCredentialValidator instance = null;
-		
-		public static synchronized UserCredentialValidator getInstance() {
-			if (instance == null) {
-				instance = new UserCredentialValidator();
-			}
-			return instance;
-		}
-		
-		private UserCredentialValidator() {
-			super();
-		}
-		
-		
-		public boolean validate(String username, String password) {
-			// TODO add real implementation: web service call?
-			return false;
-		}
+	@Override
+	protected Logger getLogger() {
+		return logger;
 	}
+
 }

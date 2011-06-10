@@ -2,13 +2,24 @@ package org.bbop.termgenie.data;
 
 import java.util.Set;
 
+import lib.jsonrpc.JSONObj;
+import lib.jsonrpc.JSONProperty;
+
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
 
+@JSONObj
 public class JsonTermSuggestion
 {
+	@JSONProperty
 	private String label;
+	
+	@JSONProperty
 	private JsonOntologyTerm identifier;
+	
+	@JSONProperty
 	private String description;
+	
+	@JSONProperty
 	private Set<String> synonyms;
 	
 	public JsonTermSuggestion() {
@@ -85,47 +96,77 @@ public class JsonTermSuggestion
 	public void setSynonyms(Set<String> synonyms) {
 		this.synonyms = synonyms;
 	}
-
-	public String getDisplayString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<table cellspacing=\"4\">");
-		sb.append("<tr>");
-		sb.append("<td><b>Name</b></td>");
-		sb.append("<td><b>Identifier</b></td>");
-		if (description != null) {
-			sb.append("<td><b>Description</b></td>");
-		}
-		if (synonyms != null && !synonyms.isEmpty()) {
-			sb.append("<td><b>Synonyms</b></td>");
-		}
-		sb.append("</tr>");
-		sb.append("<tr>");
-		sb.append("<td>").append(label).append("</td>");
-		sb.append("<td>").append(identifier.getTermId()).append("</td>");
-		if (description != null) {
-			sb.append("<td>").append(description).append("</td>");
-		}
-		if (synonyms != null && !synonyms.isEmpty()) {
-			sb.append("<td><a href=\"");
-			boolean first = true;
-			for(String synonym : synonyms) {
-				if (first) {
-					first = false;
-				}
-				else {
-					sb.append(", ");
-				}
-				sb.append(synonym);
-			}
-			sb.append("\">link</a></td>");
-		}
-		sb.append("</tr>");
-		sb.append("</table>");
-		return sb.toString();
-	}
 	
-	public String getReplacementString() {
-		return label;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonTermSuggestion:{");
+		if (label != null) {
+			builder.append("label:");
+			builder.append(label);
+			builder.append(", ");
+		}
+		if (identifier != null) {
+			builder.append("identifier:");
+			builder.append(identifier);
+			builder.append(", ");
+		}
+		if (description != null) {
+			builder.append("description:");
+			builder.append(description);
+			builder.append(", ");
+		}
+		if (synonyms != null) {
+			builder.append("synonyms:");
+			builder.append(synonyms);
+		}
+		builder.append("}");
+		return builder.toString();
 	}
+
+//	public String getDisplayString() {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		sb.append("<table cellspacing=\"4\">");
+//		sb.append("<tr>");
+//		sb.append("<td><b>Name</b></td>");
+//		sb.append("<td><b>Identifier</b></td>");
+//		if (description != null) {
+//			sb.append("<td><b>Description</b></td>");
+//		}
+//		if (synonyms != null && !synonyms.isEmpty()) {
+//			sb.append("<td><b>Synonyms</b></td>");
+//		}
+//		sb.append("</tr>");
+//		sb.append("<tr>");
+//		sb.append("<td>").append(label).append("</td>");
+//		sb.append("<td>").append(identifier.getTermId()).append("</td>");
+//		if (description != null) {
+//			sb.append("<td>").append(description).append("</td>");
+//		}
+//		if (synonyms != null && !synonyms.isEmpty()) {
+//			sb.append("<td><a href=\"");
+//			boolean first = true;
+//			for(String synonym : synonyms) {
+//				if (first) {
+//					first = false;
+//				}
+//				else {
+//					sb.append(", ");
+//				}
+//				sb.append(synonym);
+//			}
+//			sb.append("\">link</a></td>");
+//		}
+//		sb.append("</tr>");
+//		sb.append("</table>");
+//		return sb.toString();
+//	}
+//	
+//	public String getReplacementString() {
+//		return label;
+//	}
 }

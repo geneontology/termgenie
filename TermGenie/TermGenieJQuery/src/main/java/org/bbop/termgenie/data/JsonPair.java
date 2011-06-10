@@ -1,9 +1,15 @@
 package org.bbop.termgenie.data;
 
+import lib.jsonrpc.JSONObj;
+import lib.jsonrpc.JSONProperty;
 
+@JSONObj
 public class JsonPair<A, B> {
 
+	@JSONProperty
 	private A one;
+	
+	@JSONProperty
 	private B two;
 	
 	private JsonPair() {

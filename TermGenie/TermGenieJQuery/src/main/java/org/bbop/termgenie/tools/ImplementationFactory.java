@@ -7,7 +7,6 @@ import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.rules.HardCodedTermGenerationEngine;
-import org.bbop.termgenie.servlets.ValidateUserCredentialServlet.UserCredentialValidator;
 import org.bbop.termgenie.solr.SimpleSolrClient;
 
 public class ImplementationFactory {
@@ -38,8 +37,8 @@ public class ImplementationFactory {
 		return instance.ontologyTools;
 	}
 	
-	public static UserCredentialValidator getUserCredentialValidator() {
-		return UserCredentialValidator.getInstance();
+	public static UserCredentialValidatorTools getUserCredentialValidator() {
+		return UserCredentialValidatorTools.getInstance();
 	}
 	
 	public static OntologyTermSuggestor getOntologyTermSuggestor() {

@@ -27,19 +27,23 @@ public class OntologyTools {
 		templates = new HashMap<String, List<TermTemplate>>();
 		
 		for(Ontology ontology : DefaultOntologyLoader.getOntologies()) {
-			addOntology(ontology);
+			if (ontology != null) {
+				addOntology(ontology);
+			}
 		}
 		
 		for (TermTemplate template : engine.getAvailableTemplates()) {
 			List<Ontology> ontologies = template.getCorrespondingOntologies();
 			for (Ontology ontology : ontologies) {
 				String name = getOntologyName(ontology);
-				List<TermTemplate> list = templates.get(name);
-				if (list == null) {
-					list = new ArrayList<TermTemplate>();
-					templates.put(name, list);
+				if (name != null) {
+					List<TermTemplate> list = templates.get(name);
+					if (list == null) {
+						list = new ArrayList<TermTemplate>();
+						templates.put(name, list);
+					}
+					list.add(template);
 				}
-				list.add(template);
 			}
 		}
 	}
