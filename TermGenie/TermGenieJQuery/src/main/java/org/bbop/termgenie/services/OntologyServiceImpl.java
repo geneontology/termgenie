@@ -3,8 +3,6 @@ package org.bbop.termgenie.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.jsonrpc.BasicRPCService;
-
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
@@ -13,20 +11,20 @@ import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
 
-public class OntologyServiceImpl extends BasicRPCService implements OntologyService {
+public class OntologyServiceImpl implements OntologyService {
 
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
 	private static final OntologyTermSuggestor suggestor = ImplementationFactory.getOntologyTermSuggestor();
 	
 	@Override
-	public List<String> getAvailableOntologies() {
+	public String[] getAvailableOntologies() {
 		return ontologyTools.getAvailableOntologyNames();
 	}
 
 	@Override
-	public List<JsonTermSuggestion> autocompleteQuery(String query, List<String> ontologyNames, int max) {
+	public JsonTermSuggestion[] autocompleteQuery(String query, String[] ontologyNames, int max) {
 		// sanity checks
-		if (query == null || query.length() <= 2  || ontologyNames == null || ontologyNames.isEmpty()) {
+		if (query == null || query.length() <= 2  || ontologyNames == null || ontologyNames.length == 0) {
 			return null;
 		}
 		if (max < 0 || max > 10) {
@@ -61,13 +59,13 @@ public class OntologyServiceImpl extends BasicRPCService implements OntologyServ
 		if (suggestions.size() > max) {
 			suggestions = suggestions.subList(0, max);
 		}
-		return suggestions;
+		return suggestions.toArray(new JsonTermSuggestion[suggestions.size()]);
 	}
 	
 	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
 		JsonOntologyTerm identifier = new JsonOntologyTerm(ontologyName, term.getId());
-		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms());
+		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms().toArray(new String[0]));
 	}
 	
 	/**

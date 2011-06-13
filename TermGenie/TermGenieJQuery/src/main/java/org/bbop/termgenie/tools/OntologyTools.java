@@ -69,7 +69,7 @@ public class OntologyTools {
 		return reverseOntologyInstances.get(ontology);
 	}
 	
-	public List<String> getAvailableOntologyNames() {
+	public String[] getAvailableOntologyNames() {
 		ArrayList<String> names = new ArrayList<String>(templates.keySet());
 		//  sort names: prefer ontologies that have more templates
 		// if two ontologies have the same number, use alphabetical sort
@@ -85,7 +85,7 @@ public class OntologyTools {
 				return l2 - l1;
 			}
 		});
-		return names;
+		return names.toArray(new String[names.size()]);
 	}
 	
 	List<Ontology> getAvailableOntologies() {

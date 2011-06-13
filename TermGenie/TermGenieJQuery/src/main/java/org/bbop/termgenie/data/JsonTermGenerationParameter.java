@@ -7,68 +7,59 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import lib.jsonrpc.JSONObj;
-import lib.jsonrpc.JSONProperty;
-
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 
-@JSONObj
 public class JsonTermGenerationParameter {
 
-	@JSONProperty
-	private JsonMultiValueMap<JsonOntologyTerm> terms;
-	
-	@JSONProperty
-	private JsonMultiValueMap<String> strings;
-	
-	@JSONProperty
-	private JsonMultiValueMap<List<String>> prefixes;
+	private JsonMultiValueMapJsonOntologyTerm terms;
+	private JsonMultiValueMapString strings;
+	private JsonMultiValueMapListString prefixes;
 
 	public JsonTermGenerationParameter() {
-		terms = new JsonMultiValueMap<JsonOntologyTerm>();
-		strings = new JsonMultiValueMap<String>();
-		prefixes = new JsonMultiValueMap<List<String>>();
+		terms = new JsonMultiValueMapJsonOntologyTerm();
+		strings = new JsonMultiValueMapString();
+		prefixes = new JsonMultiValueMapListString();
 	}
 
 	/**
 	 * @return the terms
 	 */
-	public JsonMultiValueMap<JsonOntologyTerm> getTerms() {
+	public JsonMultiValueMapJsonOntologyTerm getTerms() {
 		return terms;
 	}
 
 	/**
 	 * @param terms the terms to set
 	 */
-	void setTerms(JsonMultiValueMap<JsonOntologyTerm> terms) {
+	void setTerms(JsonMultiValueMapJsonOntologyTerm terms) {
 		this.terms = terms;
 	}
 
 	/**
 	 * @return the strings
 	 */
-	public JsonMultiValueMap<String> getStrings() {
+	public JsonMultiValueMapString getStrings() {
 		return strings;
 	}
 
 	/**
 	 * @param strings the strings to set
 	 */
-	void setStrings(JsonMultiValueMap<String> strings) {
+	void setStrings(JsonMultiValueMapString strings) {
 		this.strings = strings;
 	}
 	
 	/**
 	 * @return the prefixes
 	 */
-	public JsonMultiValueMap<List<String>> getPrefixes() {
+	public JsonMultiValueMapListString getPrefixes() {
 		return prefixes;
 	}
 
 	/**
 	 * @param prefixes the prefixes to set
 	 */
-	void setPrefixes(JsonMultiValueMap<List<String>> prefixes) {
+	void setPrefixes(JsonMultiValueMapListString prefixes) {
 		this.prefixes = prefixes;
 	}
 
@@ -98,15 +89,9 @@ public class JsonTermGenerationParameter {
 	}
 
 
-
-
-	@JSONObj
 	public static final class JsonOntologyTerm {
 		
-		@JSONProperty
 		private String ontology;
-		
-		@JSONProperty
 		private String termId;
 
 		public JsonOntologyTerm() {
@@ -174,11 +159,18 @@ public class JsonTermGenerationParameter {
 		}
 	}
 	
-	@JSONObj
-	public static class JsonMultiValueMap<V> {
+	public static class JsonMultiValueMapJsonOntologyTerm extends JsonMultiValueMap<JsonOntologyTerm> {
+	}
+	
+	public static class JsonMultiValueMapString extends JsonMultiValueMap<String> {
+	}
+	
+	public static class JsonMultiValueMapListString extends JsonMultiValueMap<List<String>> {
+	}
+	
+	public abstract static class JsonMultiValueMap<V> {
 		
-		@JSONProperty
-		private Map<String, List<V>> values = new HashMap<String, List<V>>();
+		protected Map<String, List<V>> values = new HashMap<String, List<V>>();
 		
 		public V getValue(JsonTemplateField key, int pos) {
 			List<V> list = values.get(calculateInteralKey(key));

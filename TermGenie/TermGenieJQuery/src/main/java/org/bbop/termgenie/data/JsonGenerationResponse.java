@@ -3,26 +3,16 @@ package org.bbop.termgenie.data;
 import java.util.Arrays;
 import java.util.Collection;
 
-import lib.jsonrpc.JSONObj;
-import lib.jsonrpc.JSONProperty;
-
-@JSONObj
 public class JsonGenerationResponse {
 
-	@JSONProperty
 	private String generalError;
-	
-	@JSONProperty
 	private JsonValidationHint[] errors;
-	
-	@JSONProperty
 	private String[] generatedTerms;
 	
 	/**
 	 * Default constructor.
 	 */
-	@SuppressWarnings("unused")
-	private JsonGenerationResponse() {
+	public JsonGenerationResponse() {
 		super();
 	}
 	

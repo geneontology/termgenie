@@ -1,8 +1,7 @@
 package org.bbop.termgenie.services;
 
 import org.bbop.termgenie.data.JsonGenerationResponse;
-import org.bbop.termgenie.data.JsonPair;
-import org.bbop.termgenie.data.JsonTermGenerationParameter;
+import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermTemplate;
 
 public interface GenerateTermsService {
@@ -27,6 +26,6 @@ public interface GenerateTermsService {
 	 * @return if the operation succeeded
 	 */
 	public JsonGenerationResponse generateTerms(String ontology,
-			JsonPair<JsonTermTemplate,JsonTermGenerationParameter>[] allParameters,
+			JsonTermGenerationInput[] allParameters,
 			boolean commit, String username, String password);
 }

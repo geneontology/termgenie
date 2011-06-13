@@ -2,21 +2,13 @@ package org.bbop.termgenie.data;
 
 import java.util.Arrays;
 
-import lib.jsonrpc.JSONObj;
-import lib.jsonrpc.JSONProperty;
-
-
 /**
  * This class is required to map the internal representation of fields to an object which
  * can be serialized into JSON.
  */
-@JSONObj
 public class JsonTermTemplate {
 
-	@JSONProperty
 	private String name;
-	
-	@JSONProperty
 	private JsonTemplateField[] fields;
 
 	public JsonTermTemplate() {
@@ -83,22 +75,12 @@ public class JsonTermTemplate {
 		return builder.toString();
 	}
 
-	@JSONObj
 	public static class JsonTemplateField {
 		
-		@JSONProperty
 		private String name;
-		
-		@JSONProperty
 		private boolean required;
-		
-		@JSONProperty
 		private JsonCardinality cardinality;
-		
-		@JSONProperty
 		private String[] functionalPrefixes;
-		
-		@JSONProperty
 		private String[] ontologies;
 
 		public JsonTemplateField() {
@@ -234,13 +216,9 @@ public class JsonTermTemplate {
 		}
 	}
 
-	@JSONObj
 	public static class JsonCardinality {
 		
-		@JSONProperty
 		private int min;
-		
-		@JSONProperty
 		private int max;
 
 		public JsonCardinality() {

@@ -1,30 +1,21 @@
 package org.bbop.termgenie.data;
 
-import lib.jsonrpc.JSONObj;
-import lib.jsonrpc.JSONProperty;
-
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 
-@JSONObj
 public class JsonValidationHint {
 
 	public static final int FATAL = 15;
 	public static final int ERROR = 5;
 	public static final int WARN = 5;
 
-	@JSONProperty
 	private JsonTemplateField field;
-	
-	@JSONProperty
 	private int level;
-	
-	@JSONProperty
 	private String hint;
 
 	/**
 	 * Default constructor required for serialization.
 	 */
-	private JsonValidationHint() {
+	public JsonValidationHint() {
 		super();
 	}
 

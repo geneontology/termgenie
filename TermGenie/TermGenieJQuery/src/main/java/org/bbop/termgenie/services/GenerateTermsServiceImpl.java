@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lib.jsonrpc.BasicRPCService;
-
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.TemplateField;
@@ -24,7 +22,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.data.JsonGenerationResponse;
-import org.bbop.termgenie.data.JsonPair;
+import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonMultiValueMap;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
@@ -41,7 +39,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-public class GenerateTermsServiceImpl extends BasicRPCService implements GenerateTermsService {
+public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
@@ -76,7 +74,7 @@ public class GenerateTermsServiceImpl extends BasicRPCService implements Generat
 	 */
 	@Override
 	public JsonGenerationResponse generateTerms(String ontologyName,
-			JsonPair<JsonTermTemplate, JsonTermGenerationParameter>[] allParameters, 
+			JsonTermGenerationInput[] allParameters, 
 			boolean commit, String username, String password) {
 		// sanity checks
 		if (ontologyName == null || ontologyName.isEmpty()) {
@@ -98,12 +96,12 @@ public class GenerateTermsServiceImpl extends BasicRPCService implements Generat
 
 		// term generation parameter validation
 		List<JsonValidationHint> allErrors = new ArrayList<JsonValidationHint>();
-		for (JsonPair<JsonTermTemplate, JsonTermGenerationParameter> pair : allParameters) {
-			if (pair == null) {
+		for (JsonTermGenerationInput input : allParameters) {
+			if (input == null) {
 				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
 			}
-			JsonTermTemplate one = pair.getOne();
-			JsonTermGenerationParameter parameter = pair.getTwo();
+			JsonTermTemplate one = input.getTermTemplate();
+			JsonTermGenerationParameter parameter = input.getTermGenerationParameter();
 			if (one == null || parameter == null) {
 				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
 			}
@@ -159,12 +157,12 @@ public class GenerateTermsServiceImpl extends BasicRPCService implements Generat
 		return generationResponse;
 	}
 
-	private List<TermGenerationInput> createGenerationTasks(String ontologyName, JsonPair<JsonTermTemplate, JsonTermGenerationParameter>[] allParameters) {
+	private List<TermGenerationInput> createGenerationTasks(String ontologyName, JsonTermGenerationInput[] allParameters) {
 		List<TermGenerationInput> result = new ArrayList<TermGenerationInput>();
-		for (JsonPair<JsonTermTemplate, JsonTermGenerationParameter> jsonPair : allParameters) {
-			JsonTermTemplate jsonTemplate = jsonPair.getOne();
+		for (JsonTermGenerationInput jsonInput : allParameters) {
+			JsonTermTemplate jsonTemplate = jsonInput.getTermTemplate();
 			TermTemplate template = getTermTemplate(ontologyName, jsonTemplate.getName());
-			TermGenerationParameters parameters = JsonTemplateTools.createTermGenerationParameters(jsonPair.getTwo(), jsonTemplate, template);
+			TermGenerationParameters parameters = JsonTemplateTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(), jsonTemplate, template);
 			TermGenerationInput input = new TermGenerationInput(template, parameters);
 			result.add(input);
 		}

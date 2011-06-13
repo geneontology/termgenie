@@ -12,6 +12,13 @@
 
 	<name>TermGenieJQuery</name>
 
+	<repositories>
+		<repository>
+			<id>json-rpc</id>
+			<url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -50,12 +57,10 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 
 		<dependency>
-			<groupId>lib.jsonrpc</groupId>
+			<groupId>org.json.rpc</groupId>
 			<artifactId>jsonrpc</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		 -->
+			<version>1.0</version>
+   		</dependency>
 	</dependencies>
 </project>

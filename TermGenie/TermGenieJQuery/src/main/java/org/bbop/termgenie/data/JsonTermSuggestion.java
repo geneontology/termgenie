@@ -1,26 +1,15 @@
 package org.bbop.termgenie.data;
 
-import java.util.Set;
-
-import lib.jsonrpc.JSONObj;
-import lib.jsonrpc.JSONProperty;
+import java.util.Arrays;
 
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
 
-@JSONObj
 public class JsonTermSuggestion
 {
-	@JSONProperty
 	private String label;
-	
-	@JSONProperty
 	private JsonOntologyTerm identifier;
-	
-	@JSONProperty
 	private String description;
-	
-	@JSONProperty
-	private Set<String> synonyms;
+	private String[] synonyms;
 	
 	public JsonTermSuggestion() {
 		super();
@@ -33,7 +22,7 @@ public class JsonTermSuggestion
 	 * @param synonyms
 	 */
 	public JsonTermSuggestion(String label, JsonOntologyTerm identifier, String description,
-			Set<String> synonyms) {
+			String[] synonyms) {
 		super();
 		this.label = label;
 		this.identifier = identifier;
@@ -86,14 +75,14 @@ public class JsonTermSuggestion
 	/**
 	 * @return the synonyms
 	 */
-	public Set<String> getSynonyms() {
+	public String[] getSynonyms() {
 		return synonyms;
 	}
 
 	/**
 	 * @param synonyms the synonyms to set
 	 */
-	public void setSynonyms(Set<String> synonyms) {
+	public void setSynonyms(String[] synonyms) {
 		this.synonyms = synonyms;
 	}
 	
@@ -115,13 +104,13 @@ public class JsonTermSuggestion
 			builder.append(", ");
 		}
 		if (description != null) {
-			builder.append("description:");
+			builder.append("description:\"");
 			builder.append(description);
-			builder.append(", ");
+			builder.append("\", ");
 		}
 		if (synonyms != null) {
 			builder.append("synonyms:");
-			builder.append(synonyms);
+			builder.append(Arrays.toString(synonyms));
 		}
 		builder.append("}");
 		return builder.toString();
