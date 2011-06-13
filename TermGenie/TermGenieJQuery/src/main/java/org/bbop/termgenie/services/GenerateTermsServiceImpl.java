@@ -6,6 +6,7 @@ import static org.bbop.termgenie.tools.TermGenerationMessageTool.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private static final OntologyCommitTool committer = ImplementationFactory.getOntologyCommitTool();
 	
 	@Override
-	public JsonTermTemplate[] getAvailableTermTemplates(String ontologyName) {
+	public JsonTermTemplate[] availableTermTemplates(String ontologyName) {
 		// sanity check
 		if (ontologyName == null) {
 			// silently ignore this
@@ -65,6 +66,13 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		for (TermTemplate template : templates) {
 			jsonTemplates.add(JsonTemplateTools.createJsonTermTemplate(template));
 		}
+		Collections.sort(jsonTemplates, new Comparator<JsonTermTemplate>() {
+
+			@Override
+			public int compare(JsonTermTemplate o1, JsonTermTemplate o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 		return jsonTemplates.toArray(new JsonTermTemplate[jsonTemplates.size()]);
 	}
 

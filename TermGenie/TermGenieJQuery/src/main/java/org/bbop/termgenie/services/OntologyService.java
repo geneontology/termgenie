@@ -4,7 +4,7 @@ import org.bbop.termgenie.data.JsonTermSuggestion;
 
 public interface OntologyService  {
 
-	public String[] getAvailableOntologies();
+	public String[] availableOntologies();
 	
-	public JsonTermSuggestion[] autocompleteQuery(String query, String[] ontologies, int max);
+	public JsonTermSuggestion[] autocomplete(String query, String[] ontologies, int max);
 }

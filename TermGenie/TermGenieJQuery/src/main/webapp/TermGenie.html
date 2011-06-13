@@ -6,9 +6,9 @@
 
 <title>TermGenie Web Application</title>
 
-<script type="text/javascript" language="javascript" src="js/jquery/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" language="javascript" src="js/json/json.js"></script>
-<script type="text/javascript" language="javascript" src="js/json/rpc.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery/jquery-1.5.1.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery/jquery-ui-1.8.13.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/jsonrpc.js"></script>
 <script type="text/javascript" language="javascript" src="js/termgenie.js"></script>
 </head>
 
@@ -21,15 +21,17 @@
 	<div class="mainbody">
 		<h1>TermGenie</h1>
 		<span class="tooldescription">TermGenie is a tool ... </span>
+		
 		<h2>Step 1: Target Ontology</h2>
 		<span class="instructions">The first step is to select the
 			ontology for which the terms shall be generated.</span>
-		<div id="selectOntology"></div>
+		<div id="div-select-ontology">
+		</div>
 		<h2>Step 2: Templates</h2>
-		<div id="selectTemplatesAndCreateTerms">
-			<span class="instructions">Once you have selected the
+		<span class="instructions">Once you have selected the
 				ontology, the available term generation patterns can be selected
 				from a menu.</span>
+		<div id="div-select-templates-and-parameters">
 		</div>
 		<h2>Step 3: Submit</h2>
 		<div>
@@ -41,7 +43,7 @@
 				commit the terms to the ontology a valid user name and password are
 				required.</span>
 		</div>
-		<div id="submitAndCredentials"></div>
+		<div id="div-submit-and-credentials"></div>
 	</div>
 </body>
 </html>

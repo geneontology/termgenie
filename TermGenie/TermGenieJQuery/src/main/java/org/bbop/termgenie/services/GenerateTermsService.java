@@ -12,7 +12,7 @@ public interface GenerateTermsService {
 	 * @param ontology
 	 * @return gwtTermTemplates
 	 */
-	public JsonTermTemplate[] getAvailableTermTemplates(String ontology);
+	public JsonTermTemplate[] availableTermTemplates(String ontology);
 	
 	/**
 	 * Generate terms, and commit it to the ontology

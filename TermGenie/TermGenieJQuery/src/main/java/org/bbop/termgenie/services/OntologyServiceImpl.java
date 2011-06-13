@@ -17,12 +17,12 @@ public class OntologyServiceImpl implements OntologyService {
 	private static final OntologyTermSuggestor suggestor = ImplementationFactory.getOntologyTermSuggestor();
 	
 	@Override
-	public String[] getAvailableOntologies() {
+	public String[] availableOntologies() {
 		return ontologyTools.getAvailableOntologyNames();
 	}
 
 	@Override
-	public JsonTermSuggestion[] autocompleteQuery(String query, String[] ontologyNames, int max) {
+	public JsonTermSuggestion[] autocomplete(String query, String[] ontologyNames, int max) {
 		// sanity checks
 		if (query == null || query.length() <= 2  || ontologyNames == null || ontologyNames.length == 0) {
 			return null;
