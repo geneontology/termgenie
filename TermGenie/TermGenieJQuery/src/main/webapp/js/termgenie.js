@@ -1,4 +1,9 @@
+$(function() {
+	$( "#accordion" ).accordion({ clearStyle: true, autoHeight: false });
+});
+
 $(document).ready(function() {
+	
 	// create proxy for json rpc
 	var jsonService = new JsonRpc.ServiceProxy("jsonrpc", {
         asynchronous: true,
@@ -25,21 +30,42 @@ $(document).ready(function() {
 	
 	function createOntologySelector(ontologies) {
 		// create selector for given ontologies
-		var ontselect = c_span('select-ontology-header','Select Ontology') +
-		'<select id="select-ontology-select">';
-		$.each(ontologies, function(intIndex, objValue){
-			ontselect += '<option value="'+objValue+'">'+objValue+'</option>' 
-		});
-		ontselect += '</select>'+ c_button('select-ontology-button', 'Submit');
-		
-		// add to div
-		$('#div-select-ontology').append(ontselect);
-		
-		// register click handler
-		$('#select-ontology-button').click(function() {
-			var selectedValue = $('#select-ontology-select').val();
+		if (ontologies.length == 1) {
+			var selectedValue = ontologies[0];
+			setStep1Header(selectedValue);
 			createTemplateSelector(selectedValue);
-		});
+			setStep2Active(false);
+		} else {
+			var ontselect = c_span('select-ontology-header','Available Ontologies') +
+			'<select id="select-ontology-select">';
+			$.each(ontologies, function(intIndex, objValue){
+				ontselect += '<option value="'+objValue+'">'+objValue+'</option>' 
+			});
+			ontselect += '</select>'+ c_button('select-ontology-button', 'Submit');
+			
+			// add to div
+			var elem = $('#div-select-ontology');
+			elem.empty();
+			elem.append(ontselect);
+			
+			// register click handler
+			$('#select-ontology-button').click(function() {
+				var selectedValue = $('#select-ontology-select').val();
+				setStep1Header(selectedValue);
+				createTemplateSelector(selectedValue);
+				setStep2Active(true);
+			});
+		}
+	}
+	
+	function setStep1Header(ontology) {
+		var elem = $('#span-step1-ontology-name');
+		elem.empty();
+		elem.append('<span class="step1-ontology-name">'+ontology+'</span>')
+	}
+	
+	function setStep2Active(step1Available) {
+		$( "#accordion" ).accordion( "activate" , 1 )
 	}
 	
 	function createTemplateSelector(ontology) {
@@ -47,7 +73,9 @@ $(document).ready(function() {
 				c_span('select-template-header','Select Template'))+
 				c_div('div-all-template-parameters','');
 		
-		$('#div-select-templates-and-parameters').append(termselect);
+		var elem = $('#div-select-templates-and-parameters');
+		elem.empty();
+		elem.append(termselect);
 		
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
@@ -125,5 +153,5 @@ $(document).ready(function() {
 	function c_button(id, text) {
 		return '<button type="button" id="'+id+'">'+text+'</button>';
 	}
-	
+
 });

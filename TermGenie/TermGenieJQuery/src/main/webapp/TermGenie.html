@@ -6,8 +6,11 @@
 
 <title>TermGenie Web Application</title>
 
+<link rel="stylesheet" href="css/base/jquery.ui.all.css">
 <script type="text/javascript" language="javascript" src="js/jquery/jquery-1.5.1.js"></script>
-<script type="text/javascript" language="javascript" src="js/jquery/jquery-ui-1.8.13.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" language="javascript" src="js/jquery/ui/jquery.ui.accordion.js"></script>
 <script type="text/javascript" language="javascript" src="js/jsonrpc.js"></script>
 <script type="text/javascript" language="javascript" src="js/termgenie.js"></script>
 </head>
@@ -22,28 +25,34 @@
 		<h1>TermGenie</h1>
 		<span class="tooldescription">TermGenie is a tool ... </span>
 		
-		<h2>Step 1: Target Ontology</h2>
-		<span class="instructions">The first step is to select the
-			ontology for which the terms shall be generated.</span>
-		<div id="div-select-ontology">
+		<div id="accordion">
+			<h3><a href="#"><b>Step 1:</b> Target Ontology <span id="span-step1-ontology-name"></span></a></h3>
+			<div>
+				<span class="instructions">The first step is to select the
+					ontology for which the terms shall be generated.</span>
+				<div id="div-select-ontology"></div>
+			</div>
+			
+			<h3><a href="#"><b>Step 2:</b> Templates</a></h3>
+			<div>
+				<span class="instructions">Once you have selected the
+						ontology, the available term generation patterns can be selected
+						from a menu.</span>
+				<div id="div-select-templates-and-parameters"></div>
+			</div>
+			
+			<h3><a href="#"><b>Step 3:</b> Review and Submit</a></h3>
+			<div>
+				<span class="instructions">The submit executes a verification
+						of the given input for the selected term generation patterns.</span>
+				<div>
+					<span class="textHint">Note:</span> <span class="instructions">To
+						commit the terms to the ontology a valid user name and password are
+						required.</span>
+				</div>
+				<div id="div-submit-and-credentials"></div>
+			</div>
 		</div>
-		<h2>Step 2: Templates</h2>
-		<span class="instructions">Once you have selected the
-				ontology, the available term generation patterns can be selected
-				from a menu.</span>
-		<div id="div-select-templates-and-parameters">
-		</div>
-		<h2>Step 3: Submit</h2>
-		<div>
-			<span class="instructions">The submit executes a verification
-				of the given input for the selected term generation patterns.</span>
-		</div>
-		<div>
-			<span class="textHint">Note:</span> <span class="instructions">To
-				commit the terms to the ontology a valid user name and password are
-				required.</span>
-		</div>
-		<div id="div-submit-and-credentials"></div>
 	</div>
 </body>
 </html>
