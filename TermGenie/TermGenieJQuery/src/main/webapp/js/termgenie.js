@@ -1,5 +1,12 @@
 $(function() {
+// execute when document-ready
 	
+	/**
+	 * Provide an Accordion with the additional functionality to 
+	 * enable/disable individual panes for click events.
+	 * 
+	 * @param id html-id for the accordian div tag
+	 */
 	function MyAccordion(id) {
 		// private variables;
 		var selections = {};
@@ -21,19 +28,39 @@ $(function() {
 		});
 		
 		return {
-			// public methods
+			/**
+			 * Active the specified panel.
+			 * 
+			 * @param pos postion to activate (zero-based)
+			 */
 			activatePane : function(pos) {
 				$(id).accordion("activate", pos);
 			},
 			
+			/**
+			 * Set the status of a pane.
+			 * 
+			 * @param pos postion to activate (zero-based)
+			 * @param state boolean
+			 */
 			setPaneState : function(pos, state) {
 				selections["Pane_" + pos] = state;
 			},
 		
+			/**
+			 * Enable a pane for click events.
+			 * 
+			 * @param pos postion to enable (zero-based)
+			 */
 			enablePane : function(pos) {
 				selections["Pane_" + pos] = true;
 			},
 			
+			/**
+			 * Disable a pane for click events.
+			 * 
+			 * @param pos postion to disable (zero-based)
+			 */
 			disablePane : function(pos) {
 				selections["Pane_" + pos] = false;
 			}
@@ -57,6 +84,11 @@ $(function() {
 	// use json-rpc to retrieve available ontologies
 	jsonService.ontology.availableOntologies({
 		onSuccess: function(result) {
+			/*
+			 * Actual start code for the page.
+			 * 
+			 * Retrieve and create the content for the step 1. 
+			 */
 			createOntologySelector(result);
 			createUserPanel();
 		},
@@ -66,6 +98,15 @@ $(function() {
 		}
 	});
 	
+	/**
+	 * Create a selector for the given list of ontologies.
+	 * 
+	 * Side conditions: 
+	 *   - assumes the list to be non-empty, 
+	 *   - if ontologies.length === 1, skip selection menu and go to next step 
+	 * 
+	 * @param ontologies list of ontology names
+	 */
 	function createOntologySelector(ontologies) {
 		var selectedValue;
 		var ontselect;
@@ -101,29 +142,53 @@ $(function() {
 		}
 	}
 	
+	/**
+	 * Set the selected ontology name in the header.
+	 * 
+	 * @param ontology selected ontology name
+	 */
 	function setStep1Header(ontology) {
 		var elem = $('#span-step1-additional-header');
 		elem.empty();
 		elem.append('<span class="step1-additional-header">'+ontology+'</span>');
 	}
 	
+	/**
+	 * Active the second step. Depending on the parameter, the pane 
+	 * for step 1 can be revisited.
+	 * 
+	 * @param step1Available boolean
+	 */
 	function setStep2Active(step1Available) {
 		myAccordion.setPaneState(0, step1Available);
 		myAccordion.enablePane(1);
 		myAccordion.activatePane(1);
 	}
 	
+	/**
+	 * Variable for keeping the template widgets 
+	 */
 	var temTemplateWidgetList = TemTemplateWidgetList();
 	
+	/**
+	 * Create the menu for selecting term generation templates. 
+	 * 
+	 * @param ontology selected ontology name
+	 */
 	function createTemplateSelector(ontology) {
+		// create general layout
 		var termselect = c_div('div-template-selector', 
 				c_span('select-template-header','Select Template'))+
 				c_div('div-all-template-parameters','');
 		
+		// get intented dom element
 		var elem = $('#div-select-templates-and-parameters');
+		// clear, from possible previous templates
 		elem.empty();
+		// append layout
 		elem.append(termselect);
 		
+		// register click handler for submit button
 		var submitButton = $('#button-termgeneration-start');
 		submitButton.click(function(){
 			// TODO verification using Javascript
@@ -133,6 +198,7 @@ $(function() {
 			myAccordion.activatePane(2);
 		});
 		
+		// start async rpc to retrieve available templates
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
 			onSuccess: function(result) {
@@ -145,12 +211,22 @@ $(function() {
 		});
 	}
 	
+	/**
+	 * Create the selection menu for the list of templates
+	 * 
+	 * @param ontology ontology name
+	 * @param templates list of term templates
+	 */
 	function createTemplateSelectorMenu(ontology, templates) {
+		// create layout
 		$('#div-template-selector')
 			.append('<select id="select-add-template-select"></select>'+
 				c_button('button-add-template-select', 'Add template'));
 		
+		// select dom element
 		var domElement = $('#select-add-template-select');
+
+		// foreach template create a menu entry, use index for retrieval
 		$.each(templates, function(intIndex, objValue) {
 			var templateName = objValue.name;
 			var option = $('<option />');
@@ -159,12 +235,17 @@ $(function() {
 			domElement.append(option);
 		});
 		
+		// click handler for adding a selected template
 		$('#button-add-template-select').click(function (){
 			var intIndex = $('#select-add-template-select').val();
 			temTemplateWidgetList.addTemplate(templates[intIndex]);
 		});
 	}
 	
+	/**
+	 * Holder of all template widgets. Provides methods for adding 
+	 * and removing of widgets.
+	 */
 	function TemTemplateWidgetList(){
 		// private members
 		var templateMap = {};
@@ -182,74 +263,151 @@ $(function() {
 			 c_button(removeButtonId, 'Remove line')+
 			 '</div>';
 			wrapperElem.append(buttons);
+			
+			// click listener for add button
+			$('#'+addButtonId).click(function(){
+				privateAddTemplate(template);
+			});
+			
+			// click listener for remove button
+			$('#'+removeButtonId).click(function(){
+				privateRemoveTemplate(template);
+			});
+		}
+		
+		function privateAddTemplate(template) {
+			var templateListContainer = templateMap[template.name];
+			if (!templateListContainer) {
+				templateListContainer = {
+					count : 0,
+					list : new Array(),
+					id : 'div-all-template-parameters-'+template.name,
+					wrapperId : 'div-all-template-parameters-wrapper'+template.name
+				}
+				createTemplateSubList(template, templateListContainer.id, templateListContainer.wrapperId);
+				templateMap[template.name] = templateListContainer;
+			}
+			var templateWidget = TemTemplateWidget(template,templateListContainer.count);
+			templateListContainer.list[templateListContainer.count] = templateWidget;
+			
+			var listElem = $('#'+templateListContainer.id);
+			
+			// if the list was empty create the layout 
+			if (templateListContainer.count === 0) {
+				templateWidget.createLayout(listElem);
+			}
+			// append a new line to the list
+			var domId = templateListContainer.id+'-'+templateListContainer.count;
+			templateWidget.appendLine(listElem, domId);
+			
+			templateListContainer.count += 1;
+		}
+		
+		function privateRemoveTemplate(template) {
+			var templateListContainer = templateMap[template.name];
+			if (templateListContainer) {
+				if (templateListContainer.count > 1) {
+					var pos = templateListContainer.count - 1;
+					var domId = templateListContainer.id+'-'+pos;
+					$('#'+domId).remove();
+					templateListContainer.list[pos] = undefined;
+					templateListContainer.count = pos;
+				}
+				else {
+					$('#'+templateListContainer.wrapperId).remove();
+					templateMap[template.name] = undefined;
+				}
+			}
 		}
 		
 		return {
 			//public methods
+			
+			/**
+			 * add a template to the widget list. Group the templates by 
+			 * template name. Order the list by creation of the groups, 
+			 * not by name.
+			 */
 			addTemplate : function (template) {
-				var templateListContainer = templateMap[template.name];
-				if (!templateListContainer) {
-					templateListContainer = {
-						count : 0,
-						list : new Array(),
-						id : 'div-all-template-parameters-'+template.name,
-						wrapperId : 'div-all-template-parameters-wrapper'+template.name
-					}
-					createTemplateSubList(template, templateListContainer.id, templateListContainer.wrapperId);
-					templateMap[template.name] = templateListContainer;
-				}
-				var templateWidget = TemTemplateWidget(template,templateListContainer.count);
-				templateListContainer.list[templateListContainer.count] = templateWidget;
-				
-				var listElem = $('#'+templateListContainer.id);
-				listElem.append(templateWidget.getLine());
-				if (templateListContainer.count === 0) {
-					listElem.append(templateWidget.getFooter());
-					listElem.prepend(templateWidget.getHeader());
-				}
-				templateListContainer.count += 1;
+				privateAddTemplate(template);
 			},
 			
+			/**
+			 * remove a template. When the last template of a group is 
+			 * removed, the empty group is also removed.
+			 */
 			removeTemplate : function(template) {
-				var templateList = templateMap[template.name];
-				if (templateList) {
-					if (condition) {
-						
-					}
-					else {
-						
-					}
-				}
+				privateRemoveTemplate(template);
 			},
-			
-			clear : function() {
-				
-			}
 		};
 	};
 	
+	/**
+	 * TODO
+	 * 
+	 * @param template termgeneration template
+	 * @param id internal id number
+	 */
 	function TemTemplateWidget(template, id) {
 		
 		return {
+			/**
+			 * get internal id, used to distinguish 
+			 * between templates with the same name.
+			 * 
+			 * return id
+			 */
 			getId : function() {
 				return id;
 			},
-			getHeader : function() {
-				return '<div>Header</div>';
+			
+			/**
+			 * create layout for this template, including header and footer
+			 * 
+			 * @param elem parent dom element
+			 */
+			createLayout : function(elem) {
+				var header = '<table>'+ 
+					'<thead>'+
+					'<tr><td>header</td></tr>'+
+					'<tr><td>id</td><td>name</td><td>field count</td></tr>'+
+					'</thead>'+
+					'<tbody></tbody>'+
+					'</table>';
+				elem.append(header);
 			},
-			getFooter : function() {
-				return '<div>Footer</div>';;
+			
+			/**
+			 * Append the term template in layout format, including all functionality.
+			 * 
+			 * @param elem parent dom element 
+			 * @param domId the unique id for this line
+			 */
+			appendLine : function(elem, domId) {
+				var line = '<tr id="'+domId+'"><td>'+id+'</td><td>'+template.name + '</td><td>'+template.fields.length+'</td></tr>';
+				elem.find('tbody').first().append(line);
+				
+				// register handlers
 			},
-			getLine : function() {
-				return '<div> id:'+id+' Name:'+template.name + ' Field count: '+template.fields.length+'</div>';
-			},
+			
+			/**
+			 * 
+			 */
 			getTermGenerationInput : function() {
 				
 			}
 		};
 	}
 	
+	/**
+	 * Create the dynamic part of the user panel
+	 */
 	function createUserPanel() {
+		/* 
+		 * add functionality to the commit checkbox:
+		 * only enable username and password fields, 
+		 * if the checkbox is enabled.
+		 */ 
 		var checkBoxElem = $('#checkbox-try-commit');
 		checkBoxElem.click(function(){
 			if (checkBoxElem.is(':checked')) {
@@ -260,12 +418,21 @@ $(function() {
 				$('#input-user-password').attr("disabled", true);
 			}
 		});
+		
+		/*
+		 * add functionality to the submit button:
+		 * only try to commit, if the check box is enabled,
+		 * otherwise prepare for export.
+		 */
 		$('#button-submit-for-commit-or-export').click(function(){
 			// select mode
 			if (checkBoxElem.is(':checked')) {
 				// try to commit
+				// TODO fill with method call
 				alert('Commit');
 			} else {
+				//  just generate the info for the export a obo/owl
+				// TODO fill with method call
 				alert('Prepare for export');
 			}
 			myAccordion.enablePane(3);
@@ -275,14 +442,32 @@ $(function() {
 
 	// HTML wrapper functions
 	
+	/**
+	 * Helper for creating a div tag with an id and specified content.
+	 * 
+	 * @param id div id
+	 * @param content html
+	 */
 	function c_div(id, content) {
 		return '<div id="'+id+'">'+content+'</div>';
 	}
 	
+	/**
+	 * Helper for creating a span tag with an style class and specified content.
+	 * 
+	 * @param css css style class
+	 * @param content html
+	 */
 	function c_span(css, content) {
 		return '<span class="'+css+'">'+content+'</span>';
 	}
 	
+	/**
+	 * Helper for creating a button with an id and specified text.
+	 * 
+	 * @param id button id
+	 * @param text text
+	 */
 	function c_button(id, text) {
 		return '<button type="button" id="'+id+'">'+text+'</button>';
 	}
