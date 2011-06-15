@@ -2,11 +2,12 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-<link type="text/css" rel="stylesheet" href="css/TermGenie.css">
+
 
 <title>TermGenie Web Application</title>
 
 <link rel="stylesheet" href="css/base/jquery.ui.all.css">
+<link type="text/css" rel="stylesheet" href="css/TermGenie.css">
 <script type="text/javascript" language="javascript" src="js/jquery/jquery-1.5.1.js"></script>
 <script type="text/javascript" language="javascript" src="js/jquery/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" language="javascript" src="js/jquery/ui/jquery.ui.widget.js"></script>
@@ -23,34 +24,64 @@
 	</noscript>
 	<div class="mainbody">
 		<h1>TermGenie</h1>
-		<span class="tooldescription">TermGenie is a tool ... </span>
-		
+		<div class="tooldescription">TermGenie is a tool ... 
+		</div>
 		<div id="accordion">
-			<h3><a href="#"><b>Step 1:</b> Target Ontology <span id="span-step1-ontology-name"></span></a></h3>
+			<h3><a href="#"><b>Step 1:</b> Target Ontology <span id="span-step1-additional-header"></span></a></h3>
 			<div>
 				<span class="instructions">The first step is to select the
 					ontology for which the terms shall be generated.</span>
 				<div id="div-select-ontology"></div>
 			</div>
 			
-			<h3><a href="#"><b>Step 2:</b> Templates</a></h3>
+			<h3><a href="#"><b>Step 2:</b> Templates <span id="span-step2-additional-header"></span></a></h3>
 			<div>
 				<span class="instructions">Once you have selected the
 						ontology, the available term generation patterns can be selected
 						from a menu.</span>
 				<div id="div-select-templates-and-parameters"></div>
+				<div class="div-submit-button">
+					<span>After selecting and filling templates, click on 
+					the 'Verify Input'-Button below to start the next step.</span>
+					<div style="margin-top:5px;"> 
+						<button type="button" id="button-termgeneration-start">Verify Input</button>
+					</div>
+				</div>
 			</div>
 			
-			<h3><a href="#"><b>Step 3:</b> Review and Submit</a></h3>
+			<h3><a href="#"><b>Step 3:</b> Review and Submit <span id="span-step3-additional-header"></span></a></h3>
 			<div>
-				<span class="instructions">The submit executes a verification
-						of the given input for the selected term generation patterns.</span>
-				<div>
-					<span class="textHint">Note:</span> <span class="instructions">To
-						commit the terms to the ontology a valid user name and password are
-						required.</span>
+				<span class="instructions">The results of the verification and
+					prelimary results are specified below:</span>
+				<div id="div-verification-and-review" style="margin-top: 10px"></div>
+				<div style="margin-top: 10px">
+					<span class="textHint">Note:</span>
+					<span class="instructions">To commit the terms to the ontology 
+						a valid user name and password are required.<br/>
+						If commit is disabled the generated terms are not commited and formated for export in the following step.</span>
+					<table>
+						<tr>
+							<td><button type="button" id="button-submit-for-commit-or-export">Submit</button></td>
+							<td><input type="checkbox" id="checkbox-try-commit" /> commit</td>
+						</tr>
+						<tr>
+							<td>Username:</td>
+							<td><input type="text" id="input-user-name" disabled=true/></td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td><input type="password" id="input-user-password" disabled=true/></td>
+						</tr>
+					</table>
 				</div>
-				<div id="div-submit-and-credentials"></div>
+			</div>
+			
+			<h3><a href="#"><b>Step 4:</b> Final matters <span id="span-step4-additional-header"></span></a></h3>
+			<div>
+				<ul>
+					<li>Option 1: Either export the term in obo or owl format. How to show removed relations?</li>
+					<li>Option 2: Show results (success or error) for commit operation. Display terms and ids, which are now available for annotation.</li>
+				</ul>
 			</div>
 		</div>
 	</div>

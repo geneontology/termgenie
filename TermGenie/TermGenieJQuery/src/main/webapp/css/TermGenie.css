@@ -10,10 +10,35 @@ h1 {
   text-align: left;
 }
 
-.step1-ontology-name {
-	font-style:italic;
-	font-weight: bold;
-	margin-left: 10px;
+.step1-additional-header {
+  font-style:italic;
+  font-weight: bold;
+  margin-left: 10px;
 }
+
+.tooldescription {
+  margin-bottom: 10px;
+}
+
+.ui-state-active {
+  background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
+}
+
+.templatelistwrapper {
+  margin-top: 10px;
+}
+
+.label-template-name {
+  font-style:italic;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.div-submit-button {
+  margin-top: 40px;
+}
+
+
+
 
 
