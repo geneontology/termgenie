@@ -349,6 +349,8 @@ $(function() {
 	 * @param id internal id number
 	 */
 	function TemTemplateWidget(template, id) {
+		var templateFields = template.fields;
+		var inputFields = [];
 		
 		return {
 			/**
@@ -367,14 +369,35 @@ $(function() {
 			 * @param elem parent dom element
 			 */
 			createLayout : function(elem) {
-				var header = '<table>'+ 
-					'<thead>'+
-					'<tr><td>header</td></tr>'+
-					'<tr><td>id</td><td>name</td><td>field count</td></tr>'+
-					'</thead>'+
-					'<tbody></tbody>'+
-					'</table>';
-				elem.append(header);
+				var i; 		// define here as there is only function scope
+				var field;	// define here as there is only function scope
+				
+				var layout = '<table><thead><tr><td>Required</td>';
+				
+				// write top level requirements
+				var first = true;
+				for (i = 1; i < templateFields.length; i+=1) {
+					field = templateFields[i];
+					if (first && field.required === false) {
+						first = false;
+						layout += '<td>Optional</td>';
+					}
+					else {
+						layout += '<td></td>';
+					}
+				}
+				layout += '</tr><tr>';
+				
+				// write field names
+				for (i = 0; i < templateFields.length; i+=1) {
+					field = templateFields[i];
+					layout += '<td>'+field.name+'</td>';
+				}
+				
+				// write empty body and footer
+				layout += '</tr></thead><tbody></tbody></table>';
+				
+				elem.append(layout);
 			},
 			
 			/**
@@ -384,10 +407,27 @@ $(function() {
 			 * @param domId the unique id for this line
 			 */
 			appendLine : function(elem, domId) {
-				var line = '<tr id="'+domId+'"><td>'+id+'</td><td>'+template.name + '</td><td>'+template.fields.length+'</td></tr>';
-				elem.find('tbody').first().append(line);
+				// define variable here as there is only function scope
+				var i;
+				var field;
+				var tdElement;
 				
-				// register handlers
+				var layout = '<tr id="'+domId+'"></tr>';
+				elem.find('tbody').first().append(layout);
+				var trElement = $('#'+domId);
+				
+				for (i = 0; i < templateFields.length; i+=1) {
+					field = templateFields[i];
+					trElement.append('<td></td>');
+					tdElement = trElement.children().last();
+					
+					if (field.ontologies && field.ontologies.length > 0) {
+						inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);
+					}
+					else {
+						inputFields[i] = TextFieldInput(tdElement);
+					}
+				}
 			},
 			
 			/**
@@ -397,6 +437,80 @@ $(function() {
 				
 			}
 		};
+	}
+	
+	
+	function TextFieldInput(elem) {
+		elem.append('<input type="text"/>');
+		var inputElement = elem.children().last(); 
+
+		return {
+			extractParameter : function(parameter, field, pos) {
+				var text = elem.val();
+				if (text !== null && text.length > 0) {
+					var list = parameter.strings.values[field.name];
+					if (!list) {
+						list = [];
+						parameter.strings.values[field.name] = list;
+					}
+					list[pos] = text;
+					return true;
+				}
+				var success = (field.required === false);
+				return success;
+			}
+		}
+	}
+	
+	function AutoCompleteOntologyInput(elem, ontologies) {
+		
+		var term = undefined;
+		elem.append('<input/>');
+		var inputElement = elem.children().last(); 
+		inputElement.autocomplete({
+			minLength: 2,
+			source: function( request, response ) {
+				var term = request.term;
+
+				jsonService.ontology.autocomplete({
+					params:[term, ontologies, 5],
+					onSuccess: function(data) {
+						response( $.map(data), function (item) {
+							return {
+								label: item.label,
+								value: item
+							}
+						})
+					},
+					onException: function(e) {
+						alert("Unable to compute because: " + e);
+						return true;
+					}
+				});
+			},
+			select : function(event, ui) {
+				term = ui.item;
+			}
+		});
+		
+		return {
+			extractParameter : function(parameter, field, pos) {
+				if (term) {
+					var text = inputElement.val();
+					if (term.label == text) {
+						var identifier = term.identifier;
+						var list = parameter.terms.values[field.name];
+						if (!list) {
+							list = [];
+							parameter.terms.values[field.name] = list;
+						}
+						list[pos] = identifier;
+						return true;
+					}
+				}
+				return false;
+			}
+		}
 	}
 	
 	/**
