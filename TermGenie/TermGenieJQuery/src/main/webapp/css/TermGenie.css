@@ -38,7 +38,16 @@ h1 {
   margin-top: 40px;
 }
 
+.termgenie-autocomplete-menu-item {
+  font-size: 0.9em;
+}
 
+.termgenie-autocomplete-menu-item-label {
+	text-align: left;
+}
 
+.termgenie-autocomplete-menu-item-additional {
+	text-align: right;
+}
 
 

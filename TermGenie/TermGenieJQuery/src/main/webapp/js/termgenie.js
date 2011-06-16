@@ -462,36 +462,58 @@ $(function() {
 		}
 	}
 	
+	var jsonSyncService = new JsonRpc.ServiceProxy("jsonrpc", {
+	    asynchronous: false,
+	    methods: ['generate.availableTermTemplates', 
+	              'generate.generateTerms', 
+	              'ontology.availableOntologies', 
+	              'ontology.autocomplete', 
+	              'user.isValidUser']
+	});
+	// asynchronous
+	JsonRpc.setAsynchronous(jsonSyncService, false);
+	
 	function AutoCompleteOntologyInput(elem, ontologies) {
 		
 		var term = undefined;
 		elem.append('<input/>');
 		var inputElement = elem.children().last(); 
 		inputElement.autocomplete({
-			minLength: 2,
+			minLength: 3,
 			source: function( request, response ) {
 				var term = request.term;
-
-				jsonService.ontology.autocomplete({
-					params:[term, ontologies, 5],
-					onSuccess: function(data) {
-						response( $.map(data), function (item) {
-							return {
-								label: item.label,
-								value: item
-							}
-						})
-					},
-					onException: function(e) {
-						alert("Unable to compute because: " + e);
-						return true;
+				try {
+					var data = jsonSyncService.ontology.autocomplete(term, ontologies, 5);
+					if (data !== null || data.length > 0) {
+						response(data);	
 					}
-				});
+				} catch (e) {
+				    alert("Unable to compute because: " + e);
+				}
 			},
 			select : function(event, ui) {
+				inputElement.val(ui.item.label);
 				term = ui.item;
+				alert(term.label+' '+term.identifier.termId);
+				return false;
+			},
+			focus : function(event, ui) {
+				inputElement.val(ui.item.label);
+				return false;
 			}
-		});
+		})
+		.data( 'autocomplete' )._renderItem = function( ul, item ) {
+			return $( '<li class="termgenie-autocomplete-menu-item"></li>' )
+				.data( 'item.autocomplete', item )
+				.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
+						item.label + 
+						'</span> <span class="termgenie-autocomplete-menu-item-additional">(' +
+						item.identifier.termId +
+						')</span></a>' )
+				.appendTo( ul );
+		};
+
+		
 		
 		return {
 			extractParameter : function(parameter, field, pos) {
