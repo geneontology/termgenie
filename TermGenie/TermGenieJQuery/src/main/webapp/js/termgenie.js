@@ -252,27 +252,20 @@ $(function() {
 		
 		// private methods
 		function createTemplateSubList(template, id, wrapperId) {
-			$('#div-all-template-parameters').append(c_div(wrapperId,c_div(id, '')));
-			var wrapperElem = $('#'+wrapperId);
-			wrapperElem.addClass('templatelistwrapper');
-			wrapperElem.prepend('<div>Template: <span class="label-template-name">'+template.name+'</span></div>')
-			var addButtonId = wrapperId+'-button-add';
-			var removeButtonId = wrapperId+'-button-remove';
-			var buttons = '<div>'+
-			 c_button(addButtonId, 'Add line')+
-			 c_button(removeButtonId, 'Remove line')+
-			 '</div>';
-			wrapperElem.append(buttons);
+			var templateContainer = $('<div id="'+wrapperId+'" class="template-list-wrapper"></div>');
+			templateContainer.appendTo($('#div-all-template-parameters'));
+			var templateTitle = $('<div class="termgenie-template-header">Template: <span class="label-template-name">'+template.name+'</span></div>');
+			createAddRemoveWidget(templateTitle, 
+					function(){
+						privateAddTemplate(template);
+					}, 
+					function(){
+						privateRemoveTemplate(template);
+					});
 			
-			// click listener for add button
-			$('#'+addButtonId).click(function(){
-				privateAddTemplate(template);
-			});
+			templateContainer.append(templateTitle);
+			templateContainer.append('<div id="'+id+'"></div>')
 			
-			// click listener for remove button
-			$('#'+removeButtonId).click(function(){
-				privateRemoveTemplate(template);
-			});
 		}
 		
 		function privateAddTemplate(template) {
@@ -282,7 +275,7 @@ $(function() {
 					count : 0,
 					list : new Array(),
 					id : 'div-all-template-parameters-'+template.name,
-					wrapperId : 'div-all-template-parameters-wrapper'+template.name
+					wrapperId : 'div-all-template-parameters-wrapper-'+template.name
 				}
 				createTemplateSubList(template, templateListContainer.id, templateListContainer.wrapperId);
 				templateMap[template.name] = templateListContainer;
@@ -372,7 +365,7 @@ $(function() {
 				var i; 		// define here as there is only function scope
 				var field;	// define here as there is only function scope
 				
-				var layout = '<table class="termgenie-layout-table"><thead><tr><td>Required</td>';
+				var layout = createLayoutTableOpenTag()+'<thead><tr><td>Required</td>';
 				
 				// write top level requirements
 				var first = true;
@@ -486,25 +479,12 @@ $(function() {
 		
 		var count = 0;
 		var list = [];
-		var listParent = $('<table class="termgenie-layout-table"></table>');
+		var listParent = createLayoutTable();
 		listParent.appendTo(container);
 		for ( var i = 0; i < min; i++) {
 			appendInput(count);
 		}
-		var addButton = $('<button type="button">More</button>');
-		var delButton = $('<button type="button">Less</button>');
-		var buttons = $('<div></div>');
-		buttons.append(addButton);
-		buttons.append(delButton);
-		container.append(buttons);
-		
-		addButton.click(function(){
-			appendInput();
-		});
-		
-		delButton.click(function(){
-			removeInput();
-		});
+		createAddRemoveWidget(container, appendInput, removeInput);
 		
 		function appendInput() {
 			if (count <  max) {
@@ -598,7 +578,7 @@ $(function() {
 		function setContentDescriptionDiv(item) {
 			var content = descriptionDiv.children().first();
 			content.empty();
-			var layout = '<table class="termgenie-layout-table">';
+			var layout = createLayoutTableOpenTag();
 			layout += '<tr><td>Ontology</td><td>'+item.identifier.ontology+'</td></tr>';
 			layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
 			layout += '<tr><td>Identfier</td><td>'+item.identifier.termId+'</td></tr>';
@@ -689,25 +669,12 @@ $(function() {
 		
 		var count = 0;
 		var list = [];
-		var listParent = $('<table class="termgenie-layout-table"></table>');
+		var listParent = createLayoutTable();
 		listParent.appendTo(container);
 		for ( var i = 0; i < min; i++) {
 			appendInput(count);
 		}
-		var addButton = $('<button type="button">More</button>');
-		var delButton = $('<button type="button">Less</button>');
-		var buttons = $('<div></div>');
-		buttons.append(addButton);
-		buttons.append(delButton);
-		container.append(buttons);
-		
-		addButton.click(function(){
-			appendInput();
-		});
-		
-		delButton.click(function(){
-			removeInput();
-		});
+		createAddRemoveWidget(container, appendInput, removeInput);
 		
 		function appendInput() {
 			if (count <  max) {
@@ -744,7 +711,7 @@ $(function() {
 	function AutoCompleteOntologyInputPrefix (elem, ontologies, prefixes) {
 		var checkbox, i, j;
 		
-		var container = $('<table class="termgenie-layout-table"></table>');
+		var container = createLayoutTable();
 		container.appendTo(elem);
 		var inputContainer = $('<tr><td></td></tr>');
 		inputContainer.appendTo(container);
@@ -831,6 +798,32 @@ $(function() {
 	}
 
 	// HTML wrapper functions
+	
+	function createAddRemoveWidget(parent, addfunction, removeFunction) {
+		var addButton = $('<a href="#">More</a>'); 
+		var delButton = $('<a href="#">Less</a>');
+		var buttons = $('<span class="more-less-buttons"></span>');
+		buttons.append(" (");
+		buttons.append(addButton);
+		buttons.append(", ");
+		buttons.append(delButton);
+		buttons.append(")");
+		buttons.appendTo(parent);
+		
+		// click listener for add button
+		addButton.click(addfunction);
+		
+		// click listener for remove button
+		delButton.click(removeFunction);
+	}
+	
+	function createLayoutTable() {
+		return $(createLayoutTableOpenTag()+'</table>');
+	}
+	
+	function createLayoutTableOpenTag() {
+		return '<table class="termgenie-layout-table" cellSpacing="0" cellPadding="0">';
+	}
 	
 	/**
 	 * Helper for creating a div tag with an id and specified content.

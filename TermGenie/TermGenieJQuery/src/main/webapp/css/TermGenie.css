@@ -1,4 +1,4 @@
-.mainbody {
+body {
 	font-family: Verdana,Arial,sans-serif;
 }
 
@@ -10,25 +10,33 @@ h1 {
   text-align: left;
 }
 
+.tooldescription {
+  margin-bottom: 10px;
+}
+
 .step1-additional-header {
   font-style:italic;
   font-weight: bold;
   margin-left: 10px;
 }
 
-.tooldescription {
-  margin-bottom: 10px;
-}
-
 .ui-state-active {
   background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
 }
 
-.templatelistwrapper {
-  margin-top: 10px;
+.template-list-wrapper {
+  margin-top: 20px;
 }
 
-.label-template-name {
+.termgenie-template-header {
+  font-size: 1.2em;
+  padding-bottom: 10px;
+}
+.termgenie-template-header .more-less-buttons{
+  vertical-align: middle;
+  padding-left: 10px;
+}
+.termgenie-template-header .label-template-name {
   font-style:italic;
   font-weight: bold;
   margin-left: 10px;
@@ -42,8 +50,19 @@ h1 {
   font-size: 0.9em;
 }
 
+.termgenie-layout-table {
+  border: 0px;
+  padding: 0;
+  margin: 0;
+}
+
 .termgenie-layout-table td {
+  margin: 0;
+  padding: 0;
   text-align: left;
   vertical-align: top;
 }
 
+.more-less-buttons{
+  font-size: 12px;
+}
