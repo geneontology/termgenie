@@ -412,9 +412,8 @@ $(function() {
 				var field;
 				var tdElement;
 				
-				var layout = '<tr id="'+domId+'"></tr>';
-				elem.find('tbody').first().append(layout);
-				var trElement = $('#'+domId);
+				var trElement = $('<tr id="'+domId+'"></tr>');
+				elem.find('tbody').first().append(trElement);
 				
 				for (i = 0; i < templateFields.length; i+=1) {
 					field = templateFields[i];
@@ -477,7 +476,53 @@ $(function() {
 		
 		var term = undefined;
 		elem.append('<input/>');
-		var inputElement = elem.children().last(); 
+		var inputElement = elem.children().last();
+		var descriptionDiv = null;
+		
+		function createDescriptionDiv(ofElement) {
+			var w = ofElement.outerWidth();
+			var h = ofElement.outerHeight();
+			if (descriptionDiv === null) {
+				descriptionDiv = $('<div><div class="term-description-content"></div></div>')
+					.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
+					.css({
+						'width': w,
+						'height': h,
+						'padding': '5px'
+					})
+					.appendTo('body');
+				descriptionDiv.resizable({
+					minHeight: h,
+					minWidth: w
+				});
+				descriptionDiv.draggable();
+			}
+			else {
+				descriptionDiv.resizable( "option", "minHeight", h );
+				descriptionDiv.resizable( "option", "minWidth", w );
+			}
+			descriptionDiv.position({
+				my: 'left top',
+				at: 'right top',
+				of: inputElement.autocomplete('widget'),
+				collision: 'none none'
+			});
+		}
+		
+		function removeDescriptionDiv() {
+			if (descriptionDiv !== null) {
+				descriptionDiv.removeClass('ui-autocomplete-input');
+				descriptionDiv.remove();
+				descriptionDiv = null;
+			}
+		}
+		
+		function setContentDescriptionDiv(item) {
+			var content = descriptionDiv.children().first();
+			content.empty();
+			content.append('Label: '+item.label+'<br/>Identifier: '+item.identifier.termId);
+		}
+		
 		inputElement.autocomplete({
 			minLength: 3,
 			source: function( request, response ) {
@@ -494,22 +539,24 @@ $(function() {
 			select : function(event, ui) {
 				inputElement.val(ui.item.label);
 				term = ui.item;
-				alert(term.label+' '+term.identifier.termId);
+				removeDescriptionDiv();
 				return false;
 			},
 			focus : function(event, ui) {
 				inputElement.val(ui.item.label);
+				createDescriptionDiv(inputElement.autocomplete('widget'));
+				setContentDescriptionDiv(ui.item);
 				return false;
-			}
+			},
+			close : function(event, ui) {
+				removeDescriptionDiv();
+			} 
 		})
 		.data( 'autocomplete' )._renderItem = function( ul, item ) {
 			return $( '<li class="termgenie-autocomplete-menu-item"></li>' )
 				.data( 'item.autocomplete', item )
 				.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
-						item.label + 
-						'</span> <span class="termgenie-autocomplete-menu-item-additional">(' +
-						item.identifier.termId +
-						')</span></a>' )
+						item.label + '</span></a>' )
 				.appendTo( ul );
 		};
 
