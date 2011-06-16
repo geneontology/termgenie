@@ -800,8 +800,8 @@ $(function() {
 	// HTML wrapper functions
 	
 	function createAddRemoveWidget(parent, addfunction, removeFunction) {
-		var addButton = $('<a href="#">More</a>'); 
-		var delButton = $('<a href="#">Less</a>');
+		var addButton = $('<a class="myClickable">More</a>'); 
+		var delButton = $('<a class="myClickable">Less</a>');
 		var buttons = $('<span class="more-less-buttons"></span>');
 		buttons.append(" (");
 		buttons.append(addButton);

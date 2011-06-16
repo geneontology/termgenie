@@ -42,6 +42,12 @@ h1 {
   margin-left: 10px;
 }
 
+.myClickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
 .div-submit-button {
   margin-top: 40px;
 }
