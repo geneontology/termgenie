@@ -436,7 +436,13 @@ $(function() {
 						}
 					}
 					else {
-						inputFields[i] = TextFieldInput(tdElement);
+						var cardinality = field.cardinality;
+						if (cardinality.min === 1 && cardinality.max === 1) {
+							inputFields[i] = TextFieldInput(tdElement);
+						}
+						else {
+							inputFields[i] = TextFieldInputList(tdElement, cardinality.min, cardinality.max);
+						}
 					}
 				}
 			},
@@ -471,6 +477,62 @@ $(function() {
 					return true;
 				}
 				var success = (field.required === false);
+				return success;
+			}
+		};
+	}
+	
+	function TextFieldInputList(container, min, max) {
+		
+		var count = 0;
+		var list = [];
+		var listParent = $('<table class="termgenie-layout-table"></table>');
+		listParent.appendTo(container);
+		for ( var i = 0; i < min; i++) {
+			appendInput(count);
+		}
+		var addButton = $('<button type="button">More</button>');
+		var delButton = $('<button type="button">Less</button>');
+		var buttons = $('<div></div>');
+		buttons.append(addButton);
+		buttons.append(delButton);
+		container.append(buttons);
+		
+		addButton.click(function(){
+			appendInput();
+		});
+		
+		delButton.click(function(){
+			removeInput();
+		});
+		
+		function appendInput() {
+			if (count <  max) {
+				var listElem = $('<tr><td></td></tr>');
+				listElem.appendTo(listParent);
+				list[count] = TextFieldInput(listElem.children().first());
+				count += 1;
+			}
+		}
+		
+		function removeInput() {
+			if (count > min) {
+				count -= 1;
+				listParent.find('tr').last().remove();
+				list[count] = undefined;
+			}
+		}
+		
+		return {
+			extractParameter : function(parameter, field, pos) {
+				var success = true;
+				for ( var i = 0; i < count; i++) {
+					var inputElem = list[i];
+					if (inputElem) {
+						var csuccess = input.extractParameter(parameter, field, i);
+						success = success && csuccess;
+					}
+				}
 				return success;
 			}
 		};
@@ -623,12 +685,10 @@ $(function() {
 		};
 	}
 	
-	function AutoCompleteOntologyInputList(elem, ontologies, min, max) {
+	function AutoCompleteOntologyInputList(container, ontologies, min, max) {
 		
 		var count = 0;
 		var list = [];
-		var container = $('<div></div>');
-		container.appendTo(elem);
 		var listParent = $('<table class="termgenie-layout-table"></table>');
 		listParent.appendTo(container);
 		for ( var i = 0; i < min; i++) {
@@ -653,7 +713,7 @@ $(function() {
 			if (count <  max) {
 				var listElem = $('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
-				list[count] = AutoCompleteOntologyInput(listElem, ontologies);
+				list[count] = AutoCompleteOntologyInput(listElem.children().first(), ontologies);
 				count += 1;
 			}
 		}
