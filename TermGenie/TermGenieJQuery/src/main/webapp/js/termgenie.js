@@ -423,7 +423,13 @@ $(function() {
 					if (field.ontologies && field.ontologies.length > 0) {
 						var cardinality = field.cardinality;
 						if (cardinality.min === 1 && cardinality.max === 1) {
-							inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);
+							var prefixes = field.functionalPrefixes;
+							if (prefixes && prefixes.length > 0) {
+								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, field.ontologies, prefixes);
+							}
+							else {
+								inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);	
+							}
 						}
 						else {
 							inputFields[i] = AutoCompleteOntologyInputList(tdElement, field.ontologies, cardinality.min, cardinality.max);
@@ -451,6 +457,9 @@ $(function() {
 		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				if (!pos) {
+					pos = 0;
+				}
 				var text = elem.val();
 				if (text !== null && text.length > 0) {
 					var list = parameter.strings.values[field.name];
@@ -593,6 +602,9 @@ $(function() {
 		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				if (!pos) {
+					pos = 0;
+				}
 				if (term) {
 					var text = inputElement.val();
 					if (term.label == text) {
@@ -665,6 +677,54 @@ $(function() {
 					}
 				}
 				return success;
+			}
+		};
+	}
+	
+	function AutoCompleteOntologyInputPrefix (elem, ontologies, prefixes) {
+		var checkbox, i, j;
+		
+		var container = $('<table class="termgenie-layout-table"></table>');
+		container.appendTo(elem);
+		var inputContainer = $('<tr><td></td></tr>');
+		inputContainer.appendTo(container);
+		
+		var inputField = AutoCompleteOntologyInput(inputContainer, ontologies);
+		
+		var checkboxes = [];
+		for ( i = 0; i < prefixes.length; i++) {
+			checkbox = $('<input type="checkbox" checked="true"/>');
+			checkboxes[i] = checkbox;
+			inputContainer = $('<tr><td></td></tr>');
+			inputContainer.append(checkbox);
+			inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
+			inputContainer.appendTo(container);
+		}
+		
+		return {
+			extractParameter : function(parameter, field, pos) {
+				if (!pos) {
+					pos = 0;
+				}
+				var success = inputField.extractParameter(parameter, field, pos);
+				
+				var count = 0;
+				var cPrefixes = [];
+				
+				for ( j = 0; j < checkboxes.length; j++) {
+					checkbox = checkboxes[j];
+					if(checkbox.is(':checked')) {
+						cPrefixes[count] = prefixes[j];
+						count += 1;
+					}
+				}
+				
+				var list = parameter.prefixes.values[field.name];
+				if (!list) {
+					list = [];
+					parameter.prefixes.values[field.name] = list;
+				}
+				list[pos] = cPrefixes;
 			}
 		};
 	}
