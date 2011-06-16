@@ -42,12 +42,8 @@ h1 {
   font-size: 0.9em;
 }
 
-.termgenie-autocomplete-menu-item-label {
-	text-align: left;
+.termgenie-layout-table td {
+  text-align: left;
+  vertical-align: top;
 }
-
-.termgenie-autocomplete-menu-item-additional {
-	text-align: right;
-}
-
 

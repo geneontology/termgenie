@@ -372,7 +372,7 @@ $(function() {
 				var i; 		// define here as there is only function scope
 				var field;	// define here as there is only function scope
 				
-				var layout = '<table><thead><tr><td>Required</td>';
+				var layout = '<table class="termgenie-layout-table"><thead><tr><td>Required</td>';
 				
 				// write top level requirements
 				var first = true;
@@ -421,7 +421,13 @@ $(function() {
 					tdElement = trElement.children().last();
 					
 					if (field.ontologies && field.ontologies.length > 0) {
-						inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);
+						var cardinality = field.cardinality;
+						if (cardinality.min === 1 && cardinality.max === 1) {
+							inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);
+						}
+						else {
+							inputFields[i] = AutoCompleteOntologyInputList(tdElement, field.ontologies, cardinality.min, cardinality.max);
+						}
 					}
 					else {
 						inputFields[i] = TextFieldInput(tdElement);
@@ -458,7 +464,7 @@ $(function() {
 				var success = (field.required === false);
 				return success;
 			}
-		}
+		};
 	}
 	
 	var jsonSyncService = new JsonRpc.ServiceProxy("jsonrpc", {
@@ -488,7 +494,8 @@ $(function() {
 					.css({
 						'width': w,
 						'height': h,
-						'padding': '5px'
+						'padding': '5px',
+						'overflow': 'auto' 
 					})
 					.appendTo('body');
 				descriptionDiv.resizable({
@@ -520,12 +527,34 @@ $(function() {
 		function setContentDescriptionDiv(item) {
 			var content = descriptionDiv.children().first();
 			content.empty();
-			content.append('Label: '+item.label+'<br/>Identifier: '+item.identifier.termId);
+			var layout = '<table class="termgenie-layout-table">';
+			layout += '<tr><td>Ontology</td><td>'+item.identifier.ontology+'</td></tr>';
+			layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
+			layout += '<tr><td>Identfier</td><td>'+item.identifier.termId+'</td></tr>';
+			if (item.description && item.description.length > 0) {
+				layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
+			}
+			if (item.synonyms && item.synonyms.length > 0) {
+				layout += '<tr><td>Synonyms</td><td>';
+				for ( var i = 0; i < item.synonyms.length; i++) {
+					var synonym = item.synonyms[i];
+					if (synonym && synonym.length > 0) {
+						if (i > 0) {
+							layout += '<br/>';
+						}
+						layout += synonym;
+					}
+				}
+				layout += '</td></tr>';
+			}
+			layout += '</table>'; 
+			content.append(layout);
 		}
 		
 		inputElement.autocomplete({
 			minLength: 3,
 			source: function( request, response ) {
+				removeDescriptionDiv();
 				var term = request.term;
 				try {
 					var data = jsonSyncService.ontology.autocomplete(term, ontologies, 5);
@@ -579,7 +608,65 @@ $(function() {
 				}
 				return false;
 			}
+		};
+	}
+	
+	function AutoCompleteOntologyInputList(elem, ontologies, min, max) {
+		
+		var count = 0;
+		var list = [];
+		var container = $('<div></div>');
+		container.appendTo(elem);
+		var listParent = $('<table class="termgenie-layout-table"></table>');
+		listParent.appendTo(container);
+		for ( var i = 0; i < min; i++) {
+			appendInput(count);
 		}
+		var addButton = $('<button type="button">More</button>');
+		var delButton = $('<button type="button">Less</button>');
+		var buttons = $('<div></div>');
+		buttons.append(addButton);
+		buttons.append(delButton);
+		container.append(buttons);
+		
+		addButton.click(function(){
+			appendInput();
+		});
+		
+		delButton.click(function(){
+			removeInput();
+		});
+		
+		function appendInput() {
+			if (count <  max) {
+				var listElem = $('<tr><td></td></tr>');
+				listElem.appendTo(listParent);
+				list[count] = AutoCompleteOntologyInput(listElem, ontologies);
+				count += 1;
+			}
+		}
+		
+		function removeInput() {
+			if (count > min) {
+				count -= 1;
+				listParent.find('tr').last().remove();
+				list[count] = undefined;
+			}
+		}
+		
+		return {
+			extractParameter : function(parameter, field, pos) {
+				var success = true;
+				for ( var i = 0; i < count; i++) {
+					var inputElem = list[i];
+					if (inputElem) {
+						var csuccess = input.extractParameter(parameter, field, i);
+						success = success && csuccess;
+					}
+				}
+				return success;
+			}
+		};
 	}
 	
 	/**
