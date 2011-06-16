@@ -440,9 +440,9 @@ $(function() {
 	
 	
 	function TextFieldInput(elem) {
-		elem.append('<input type="text"/>');
-		var inputElement = elem.children().last(); 
-
+		var inputElement = $('<input type="text"/>'); 
+		elem.append(inputElement);
+		
 		return {
 			extractParameter : function(parameter, field, pos) {
 				var text = elem.val();
@@ -475,11 +475,11 @@ $(function() {
 	function AutoCompleteOntologyInput(elem, ontologies) {
 		
 		var term = undefined;
-		elem.append('<input/>');
-		var inputElement = elem.children().last();
+		var inputElement = $('<input/>');
+		elem.append(inputElement);
 		var descriptionDiv = null;
 		
-		function createDescriptionDiv(ofElement) {
+		function updateDescriptionDiv(ofElement) {
 			var w = ofElement.outerWidth();
 			var h = ofElement.outerHeight();
 			if (descriptionDiv === null) {
@@ -544,7 +544,7 @@ $(function() {
 			},
 			focus : function(event, ui) {
 				inputElement.val(ui.item.label);
-				createDescriptionDiv(inputElement.autocomplete('widget'));
+				updateDescriptionDiv(inputElement.autocomplete('widget'));
 				setContentDescriptionDiv(ui.item);
 				return false;
 			},
