@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
@@ -140,6 +141,11 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 
 			@Override
 			public String getComment() {
+				return null;
+			}
+
+			@Override
+			public List<Relation> getRelations() {
 				return null;
 			}
 			

@@ -89,12 +89,12 @@ public class JsonTermGenerationParameter {
 	}
 
 
-	public static final class JsonOntologyTerm {
+	public static final class JsonOntologyTermIdentifier {
 		
 		private String ontology;
 		private String termId;
 
-		public JsonOntologyTerm() {
+		public JsonOntologyTermIdentifier() {
 			super();
 		}
 
@@ -102,7 +102,7 @@ public class JsonTermGenerationParameter {
 		 * @param ontology
 		 * @param termId
 		 */
-		public JsonOntologyTerm(String ontology, String termId) {
+		public JsonOntologyTermIdentifier(String ontology, String termId) {
 			super();
 			this.ontology = ontology;
 			this.termId = termId;
@@ -144,7 +144,7 @@ public class JsonTermGenerationParameter {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("JsonOntologyTerm:{");
+			builder.append("JsonOntologyTermIdentifier:{");
 			if (ontology != null) {
 				builder.append("ontology:");
 				builder.append(ontology);
@@ -159,7 +159,7 @@ public class JsonTermGenerationParameter {
 		}
 	}
 	
-	public static class JsonMultiValueMapJsonOntologyTerm extends JsonMultiValueMap<JsonOntologyTerm> {
+	public static class JsonMultiValueMapJsonOntologyTerm extends JsonMultiValueMap<JsonOntologyTermIdentifier> {
 	}
 	
 	public static class JsonMultiValueMapString extends JsonMultiValueMap<String> {

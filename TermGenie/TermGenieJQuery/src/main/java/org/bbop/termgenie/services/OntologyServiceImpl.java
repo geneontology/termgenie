@@ -6,7 +6,7 @@ import java.util.List;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
-import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
@@ -64,7 +64,7 @@ public class OntologyServiceImpl implements OntologyService {
 	
 	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
-		JsonOntologyTerm identifier = new JsonOntologyTerm(ontologyName, term.getId());
+		JsonOntologyTermIdentifier identifier = new JsonOntologyTermIdentifier(ontologyName, term.getId());
 		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms().toArray(new String[0]));
 	}
 	

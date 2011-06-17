@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -306,7 +307,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			String cdef = null;
 			List<String> defxref = null;
 			String comment = null;
-
+			List<Relation> relations = null;
 			
 			OWLGraphWrapper realInstance = ontology.getRealInstance();
 			if (realInstance != null) {
@@ -321,7 +322,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment, relations); 
 		}
 
 		private static <T> void copy(GWTMultiValueMap<T> gwt, MultiValueMap<T> target, GWTTemplateField gwtKey, TemplateField key) {

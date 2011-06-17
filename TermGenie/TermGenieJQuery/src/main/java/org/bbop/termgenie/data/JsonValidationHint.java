@@ -8,6 +8,7 @@ public class JsonValidationHint {
 	public static final int ERROR = 10;
 	public static final int WARN = 5;
 
+	private JsonTermTemplate template;
 	private JsonTemplateField field;
 	private int level;
 	private String hint;
@@ -20,23 +21,26 @@ public class JsonValidationHint {
 	}
 
 	/**
+	 * @param template
 	 * @param field
 	 * @param level
 	 * @param hint
 	 */
-	public JsonValidationHint(JsonTemplateField field, int level, String hint) {
+	public JsonValidationHint(JsonTermTemplate template, JsonTemplateField field, int level, String hint) {
 		this();
+		this.template = template;
 		this.field = field;
 		this.level = level;
 		this.hint = hint;
 	}
 
 	/**
+	 * @param template
 	 * @param field
 	 * @param hint
 	 */
-	public JsonValidationHint(JsonTemplateField field, String hint) {
-		this(field, ERROR, hint);
+	public JsonValidationHint(JsonTermTemplate template, JsonTemplateField field, String hint) {
+		this(template, field, ERROR, hint);
 	}
 
 	/**
@@ -82,5 +86,19 @@ public class JsonValidationHint {
 	 */
 	public void setHint(String hint) {
 		this.hint = hint;
+	}
+
+	/**
+	 * @return the template
+	 */
+	public JsonTermTemplate getTemplate() {
+		return template;
+	}
+
+	/**
+	 * @param template the template to set
+	 */
+	public void setTemplate(JsonTermTemplate template) {
+		this.template = template;
 	}
 }

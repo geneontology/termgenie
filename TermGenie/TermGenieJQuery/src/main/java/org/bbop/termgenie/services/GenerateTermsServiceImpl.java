@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -26,7 +27,7 @@ import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonMultiValueMap;
-import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermTemplate;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
@@ -37,7 +38,9 @@ import org.bbop.termgenie.tools.OntologyCommitTool;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.semanticweb.owlapi.model.OWLObject;
 
+import owltools.graph.OWLGraphEdge;
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLQuantifiedProperty;
 
 public class GenerateTermsServiceImpl implements GenerateTermsService {
 
@@ -289,18 +292,18 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			copyConvert(json.getTerms(), target.getTerms(), jsonKey, key);
 		}
 		
-		private static void copyConvert(JsonMultiValueMap<JsonOntologyTerm> json, MultiValueMap<OntologyTerm> target, JsonTemplateField jsonKey, TemplateField key) {
+		private static void copyConvert(JsonMultiValueMap<JsonOntologyTermIdentifier> json, MultiValueMap<OntologyTerm> target, JsonTemplateField jsonKey, TemplateField key) {
 			int count = json.getCount(jsonKey);
 			if (count > 0) {
 				for (int i = 0; i < count; i++) {
-					JsonOntologyTerm jsonOntologyTerm = json.getValue(jsonKey, i);
+					JsonOntologyTermIdentifier jsonOntologyTerm = json.getValue(jsonKey, i);
 					OntologyTerm value = getOntologyTerm(jsonOntologyTerm);
 					target.addValue(value, key, i);
 				}
 			}
 		}
 
-		private static OntologyTerm getOntologyTerm(JsonOntologyTerm jsonOntologyTerm) {
+		private static OntologyTerm getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
 			String ontologyName = jsonOntologyTerm.getOntology();
 			Ontology ontology = ontologyTools.getOntology(ontologyName);
 			
@@ -311,6 +314,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			String cdef = null;
 			List<String> defxref = null;
 			String comment = null;
+			List<Relation> relations = null;
 			
 			OWLGraphWrapper realInstance = ontology.getRealInstance();
 			if (realInstance != null) {
@@ -322,10 +326,24 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					// TODO replace this with a proper implementation
 					defxref = realInstance.getDefXref(owlObject);
 					comment = realInstance.getComment(owlObject);
+					Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
+					if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
+						relations = new ArrayList<Relation>(outgoingEdges.size());
+						for (OWLGraphEdge edge : outgoingEdges) {
+							String source = realInstance.getIdentifier(edge.getSource());
+							String target = realInstance.getIdentifier(edge.getTarget());
+							List<String> properties = new ArrayList<String>();
+							for(OWLQuantifiedProperty property : edge.getQuantifiedPropertyList()) {
+								properties.add(property.getPropertyId()+" "+property.getQuantifier().toString());
+							}
+							Relation r = new Relation(source, target, properties);
+							relations.add(r);
+						}
+					}
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment, relations); 
 		}
 
 		private static <T> void copy(JsonMultiValueMap<T> json, MultiValueMap<T> target, JsonTemplateField jsonKey, TemplateField key) {

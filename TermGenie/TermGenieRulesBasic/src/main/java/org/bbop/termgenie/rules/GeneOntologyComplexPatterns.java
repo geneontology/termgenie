@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -101,21 +102,24 @@ class GeneOntologyComplexPatterns extends Patterns {
 			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("regulation of ", x, go, null);
 			String logicalDefinition = "cdef('GO:0065007',[regulates="+id(x, go)+"])";
-			createTermList(label, definition, synonyms, logicalDefinition, input, go, generatedTerms);
+			List<Relation> relations = null; // TODO create code
+			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
 		if (prefixes.contains("negative_regulation")) {
 			String label = createName("negative regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("negative regulation of ", x, go, null);
 			String logicalDefinition = "cdef('GO:0065007',[negatively_regulates="+id(x, go)+"])";
-			createTermList(label, definition, synonyms, logicalDefinition, input, go, generatedTerms);
+			List<Relation> relations = null; // TODO create code
+			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
 		if (prefixes.contains("positive_regulation")) {
 			String label = createName("positive regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that activates or increases the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("positive regulation of ", x, go, null);
 			String logicalDefinition = "cdef('GO:0065007',[positively_regulates="+id(x, go)+"])";
-			createTermList(label, definition, synonyms, logicalDefinition, input, go, generatedTerms);
+			List<Relation> relations = null; // TODO create code
+			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
 		if (generatedTerms.isEmpty()) {
 			return error("Could not create a term for X, as no known prefix was selected", input);
@@ -138,7 +142,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(p, go)+" that is involved in "+name(w, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
 		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 	
 	/*
@@ -156,7 +161,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(p, go)+" that takes place in "+name(c, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null);
 		String logicalDefinition = "cdef("+id(p, go)+",['OBO_REL:occurs_in'="+id(c, go)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 
 	@ToMatch
@@ -171,7 +177,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(p, go)+" that is part of a "+name(w, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
 		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 
 	/*
@@ -188,7 +195,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("Interacting selectively and non-covalently with  "+name(x, pro)+".", input);
 		Set<String> synonyms = synonyms(null, x, pro, " binding");
 		String logicalDefinition = "cdef('GO:0005488',['OBO_REL:results_in_binding_of'="+id(x, pro)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 
 	/*
@@ -205,7 +213,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, uberon)+" over time, from its formation to the mature structure.", input);
 		Set<String> synonyms = synonyms(null, x, uberon, " development");
 		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, uberon)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 
 	/*
@@ -222,7 +231,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("The developmental process by which "+refname(x, uberon)+" is generated and organized.", input);
 		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis");
 		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, uberon)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 
 	/*
@@ -239,7 +249,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, plant)+" over time, from its formation to the mature structure.", input);
 		Set<String> synonyms = synonyms(null, x, plant, " development");
 		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, plant)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 	
 	/*
@@ -256,7 +267,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String definition = createDefinition("The developmental process by which "+refname(x, plant)+" is generated and organized.", input);
 		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis");
 		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, plant)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, go);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 	
 	/*

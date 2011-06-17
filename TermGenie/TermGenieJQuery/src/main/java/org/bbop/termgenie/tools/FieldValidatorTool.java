@@ -29,7 +29,7 @@ public class FieldValidatorTool {
 			JsonMultiValueMap<?> values = parameter.getTerms();
 
 			if (count > 0 && stringCount > 0) {
-				errors.add(new JsonValidationHint(field, "Conflicting values (string and ontology term) for field"));
+				errors.add(new JsonValidationHint(template, field, "Conflicting values (string and ontology term) for field"));
 			}
 			if (stringCount > count) {
 				count = stringCount;
@@ -39,19 +39,19 @@ public class FieldValidatorTool {
 			if (field.isRequired()) {
 				// assert minimum
 				if (count < cardinality.getMin()) {
-					errors.add(new JsonValidationHint(field, "Minimum Cardinality not met."));
+					errors.add(new JsonValidationHint(template, field, "Minimum Cardinality not met."));
 				}
 
 				// assert maximum
 				if (count > cardinality.getMax()) {
-					errors.add(new JsonValidationHint(field, "Maximum Cardinality exceeded."));
+					errors.add(new JsonValidationHint(template, field, "Maximum Cardinality exceeded."));
 				}
 
 				// check fields for missing content
 				for (int i = 0; i < count; i++) {
 					Object value = values.getValue(field, i);
 					if (value == null) {
-						errors.add(new JsonValidationHint(field, "Required value missing."));
+						errors.add(new JsonValidationHint(template, field, "Required value missing."));
 					}
 				}
 
@@ -62,23 +62,23 @@ public class FieldValidatorTool {
 			int prefixCount = parameter.getPrefixes().getCount(field);
 			if (defPrefixes == null || defPrefixes.length == 0) {
 				if (prefixCount > 0) {
-					errors.add(new JsonValidationHint(field, "No prefixes expected."));
+					errors.add(new JsonValidationHint(template, field, "No prefixes expected."));
 				}
 			} else {
 				if (prefixCount > 1) {
-					errors.add(new JsonValidationHint(field, "Expected only one list of prefixes."));
+					errors.add(new JsonValidationHint(template, field, "Expected only one list of prefixes."));
 				}
 				List<String> prefixes = parameter.getPrefixes().getValue(field, 0);
 				if (prefixes != null) {
 					if (prefixes.size() > defPrefixes.length) {
-						errors.add(new JsonValidationHint(field,
+						errors.add(new JsonValidationHint(template, field,
 								"Expected only a list of prefixes of max length: "
 										+ defPrefixes.length));
 					}
 					Set<String> defSetPrefixes = new HashSet<String>(Arrays.asList(defPrefixes));
 					for (String prefix : prefixes) {
 						if (!defSetPrefixes.contains(prefix)) {
-							errors.add(new JsonValidationHint(field, "Unknow prefix: " + prefix));
+							errors.add(new JsonValidationHint(template, field, "Unknow prefix: " + prefix));
 						}
 					}
 				}

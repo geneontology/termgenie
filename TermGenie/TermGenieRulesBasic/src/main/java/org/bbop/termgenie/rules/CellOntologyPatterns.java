@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -50,7 +51,8 @@ public class CellOntologyPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(c, cell)+" that is part of a "+name(a, uberon)+".", input);
 		Set<String> synonyms = null;
 		String logicalDefinition = "cdef("+id(c, cell)+",[part_of="+id(a, uberon)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, cell);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
 	}
 	
 	/*
@@ -69,6 +71,7 @@ public class CellOntologyPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
 		Set<String> synonyms = null;
 		String logicalDefinition = "cdef("+id(c, cell)+",[has_plasma_membrane_part="+id(p, pro, go1)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, cell);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
 	}
 }

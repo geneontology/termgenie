@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -37,6 +38,7 @@ public class MicrobialPhenotypePatterns extends Patterns {
 		String definition = createDefinition("Any "+name(q, pato)+" of "+name(e, go)+".", input);
 		Set<String> synonyms = null;
 		String logicalDefinition = "cdef("+id(q, pato)+",['OBO_REL:inheres_in'="+id(e, go)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, omp);
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, omp);
 	}
 }

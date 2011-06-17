@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -33,6 +34,7 @@ public class UberonPatterns extends Patterns {
 		String definition = createDefinition("Any "+name(p, uberon)+" that is part of a "+name(w, uberon)+".", input);
 		Set<String> synonyms = synonyms(null, p, uberon, " of ", w, uberon, null);
 		String logicalDefinition = "cdef("+id(p, uberon)+",[part_of="+id(w, uberon)+"]),";
-		return createTermList(label, definition, synonyms, logicalDefinition, input, uberon);
+		List<Relation> relations = null; // TODO create code for relations ships
+		return createTermList(label, definition, synonyms, logicalDefinition, relations , input, uberon);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -197,13 +198,13 @@ class BasicRules {
 		return name;
 	}
 	
-	protected List<TermGenerationOutput> createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology) {
+	protected List<TermGenerationOutput> createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology) {
 		List<TermGenerationOutput> output = new ArrayList<TermGenerationOutput>(1);
-		createTermList(label, definition, synonyms, logicalDefinition, input, ontology, output);
+		createTermList(label, definition, synonyms, logicalDefinition, relations, input, ontology, output);
 		return output;
 	}
 	
-	protected void createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
+	protected void createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
 		List<String> defxrefs = getDefXref(input);
 		String comment = getComment(input);
 		// Fact Checking
@@ -220,6 +221,6 @@ class BasicRules {
 
 		// try to create new id
 		String id = createNewId(input, ontology);
-		output.add(success(new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition, defxrefs, comment), input));
+		output.add(success(new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
 	}
 }

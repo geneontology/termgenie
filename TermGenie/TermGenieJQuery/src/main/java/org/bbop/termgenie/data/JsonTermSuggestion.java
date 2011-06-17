@@ -2,12 +2,12 @@ package org.bbop.termgenie.data;
 
 import java.util.Arrays;
 
-import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 
 public class JsonTermSuggestion
 {
 	private String label;
-	private JsonOntologyTerm identifier;
+	private JsonOntologyTermIdentifier identifier;
 	private String description;
 	private String[] synonyms;
 	
@@ -21,7 +21,7 @@ public class JsonTermSuggestion
 	 * @param description
 	 * @param synonyms
 	 */
-	public JsonTermSuggestion(String label, JsonOntologyTerm identifier, String description,
+	public JsonTermSuggestion(String label, JsonOntologyTermIdentifier identifier, String description,
 			String[] synonyms) {
 		super();
 		this.label = label;
@@ -47,14 +47,14 @@ public class JsonTermSuggestion
 	/**
 	 * @return the identifier
 	 */
-	public JsonOntologyTerm getIdentifier() {
+	public JsonOntologyTermIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * @param identifier the identifier to set
 	 */
-	public void setIdentifier(JsonOntologyTerm identifier) {
+	public void setIdentifier(JsonOntologyTermIdentifier identifier) {
 		this.identifier = identifier;
 	}
 

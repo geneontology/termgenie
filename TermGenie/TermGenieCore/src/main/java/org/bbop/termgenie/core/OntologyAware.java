@@ -83,27 +83,55 @@ public interface OntologyAware {
 		public abstract String getLogicalDefinition();
 		public abstract List<String> getDefXRef();
 		public abstract String getComment();
+		public abstract List<Relation> getRelations();
 
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("OntologyTerm [");
-			if (getId() != null)
-				builder.append("getId()=").append(getId()).append(", ");
-			if (getLabel() != null)
-				builder.append("getLabel()=").append(getLabel()).append(", ");
-			if (getDefinition() != null)
-				builder.append("getDefinition()=").append(getDefinition()).append(", ");
-			if (getSynonyms() != null)
-				builder.append("getSynonyms()=").append(getSynonyms());
-			if (getDefXRef() != null)
-				builder.append("getSynonyms()=").append(getDefXRef());
-			if (getComment() != null)
-				builder.append("getSynonyms()=").append(getComment());
+			if (getId() != null) {
+				builder.append("getId()=");
+				builder.append(getId());
+				builder.append(", ");
+			}
+			if (getLabel() != null) {
+				builder.append("getLabel()=");
+				builder.append(getLabel());
+				builder.append(", ");
+			}
+			if (getDefinition() != null) {
+				builder.append("getDefinition()=");
+				builder.append(getDefinition());
+				builder.append(", ");
+			}
+			if (getSynonyms() != null) {
+				builder.append("getSynonyms()=");
+				builder.append(getSynonyms());
+				builder.append(", ");
+			}
+			if (getLogicalDefinition() != null) {
+				builder.append("getLogicalDefinition()=");
+				builder.append(getLogicalDefinition());
+				builder.append(", ");
+			}
+			if (getDefXRef() != null) {
+				builder.append("getDefXRef()=");
+				builder.append(getDefXRef());
+				builder.append(", ");
+			}
+			if (getComment() != null) {
+				builder.append("getComment()=");
+				builder.append(getComment());
+				builder.append(", ");
+			}
+			if (getRelations() != null) {
+				builder.append("getRelations()=");
+				builder.append(getRelations());
+			}
 			builder.append("]");
 			return builder.toString();
 		}
-		
+
 		public static class DefaultOntologyTerm extends OntologyTerm {
 			
 			private final String id;
@@ -113,15 +141,11 @@ public interface OntologyAware {
 			private final String logicalDefinition;
 			private final List<String> defXRef;
 			private final String comment;
-			/**
-			 * @param id
-			 * @param label
-			 * @param definition
-			 * @param synonyms
-			 * @param logicalDefinition
-			 */
+			private final List<Relation> relations;
+
 			public DefaultOntologyTerm(String id, String label, String definition,
-					Set<String> synonyms, String logicalDefinition, List<String> defXRef, String comment) {
+					Set<String> synonyms, String logicalDefinition, List<String> defXRef, 
+					String comment,List<Relation> relations) {
 				super();
 				this.id = id;
 				this.label = label;
@@ -130,6 +154,7 @@ public interface OntologyAware {
 				this.logicalDefinition = logicalDefinition;
 				this.defXRef = defXRef;
 				this.comment = comment;
+				this.relations = relations;
 			}
 			/**
 			 * @return the id
@@ -185,6 +210,53 @@ public interface OntologyAware {
 			public String getComment() {
 				return comment;
 			}
+			/**
+			 * @return the relations
+			 */
+			@Override
+			public List<Relation> getRelations() {
+				return relations;
+			}
+		}
+	}
+	
+	public class Relation 
+	{
+		private final String source;
+		private final String target;
+		private final List<String> properties;
+		
+		/**
+		 * @param source
+		 * @param target
+		 * @param properties
+		 */
+		public Relation(String source, String target, List<String> properties) {
+			super();
+			this.source = source;
+			this.target = target;
+			this.properties = properties;
+		}
+
+		/**
+		 * @return the source
+		 */
+		public String getSource() {
+			return source;
+		}
+
+		/**
+		 * @return the target
+		 */
+		public String getTarget() {
+			return target;
+		}
+
+		/**
+		 * @return the properties
+		 */
+		public List<String> getProperties() {
+			return properties;
 		}
 	}
 }

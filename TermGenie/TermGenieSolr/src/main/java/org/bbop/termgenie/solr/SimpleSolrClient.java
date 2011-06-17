@@ -15,6 +15,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.AutoCompletionTools;
 
@@ -49,6 +50,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		this.baseUrl = baseUrl;
 	}
 
+	@Override
 	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if ("GeneOntology".equals(ontology.getUniqueName())) {
 			return searchGeneOntologyTerms(query, ontology.getBranch(), maxCount);
@@ -177,6 +179,11 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 
 			@Override
 			public String getComment() {
+				return null;
+			}
+
+			@Override
+			public List<Relation> getRelations() {
 				return null;
 			}
 		};
