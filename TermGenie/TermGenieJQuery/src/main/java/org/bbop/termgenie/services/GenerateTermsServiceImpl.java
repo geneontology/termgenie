@@ -35,7 +35,6 @@ import org.bbop.termgenie.tools.FieldValidatorTool;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyCommitTool;
 import org.bbop.termgenie.tools.OntologyTools;
-import org.bbop.termgenie.tools.UserCredentialValidatorTools;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -44,7 +43,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
-	private static final UserCredentialValidatorTools validator = ImplementationFactory.getUserCredentialValidator();
+//	private static final UserCredentialValidatorTools validator = ImplementationFactory.getUserCredentialValidator();
 	private static final TermGenerationEngine termGeneration = ImplementationFactory.getTermGenerationEngine();
 	private static final OntologyCommitTool committer = ImplementationFactory.getOntologyCommitTool();
 	
@@ -82,8 +81,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	 */
 	@Override
 	public JsonGenerationResponse generateTerms(String ontologyName,
-			JsonTermGenerationInput[] allParameters, 
-			boolean commit, String username, String password) {
+			JsonTermGenerationInput[] allParameters) {
 		// sanity checks
 		if (ontologyName == null || ontologyName.isEmpty()) {
 			return new JsonGenerationResponse(NO_ONTOLOGY, null, null);
@@ -91,11 +89,11 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (allParameters == null) {
 			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null);
 		}
-		if (commit) {
-			if (username == null || username.isEmpty()) {
-				return new JsonGenerationResponse(MISSING_USERNAME, null, null);
-			}
-		}
+//		if (commit) {
+//			if (username == null || username.isEmpty()) {
+//				return new JsonGenerationResponse(MISSING_USERNAME, null, null);
+//			}
+//		}
 		// retrieve target ontology
 		Ontology ontology = ontologyTools.getOntology(ontologyName);
 		if (ontology == null) {
@@ -130,14 +128,14 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (!allErrors.isEmpty()) {
 			return new JsonGenerationResponse(null, allErrors, null);
 		}
-		if (commit) {
-			// check user name and password
-			// use java instance, do not do additional round trip via servlet.
-			boolean valid = validateCredentials(username, password);
-			if (!valid) {
-				return new JsonGenerationResponse(UNKOWN_USERNAME_PASSWORD, null, null);
-			}
-		}
+//		if (commit) {
+//			// check user name and password
+//			// use java instance, do not do additional round trip via servlet.
+//			boolean valid = validateCredentials(username, password);
+//			if (!valid) {
+//				return new JsonGenerationResponse(UNKOWN_USERNAME_PASSWORD, null, null);
+//			}
+//		}
 		// generate term candidates
 		List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
 		List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
@@ -149,17 +147,17 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		
 		List<String> messages = new ArrayList<String>(candidates.size());
 		
-		// commit if required
-		if (commit) {
-			boolean success = executeCommit(ontology, candidates);
-			throw new RuntimeException("Not implemented");
-			// TODO generate result for a commit (success or error)? status?
-		}
-		else {
+//		// commit if required
+//		if (commit) {
+//			boolean success = executeCommit(ontology, candidates);
+//			throw new RuntimeException("Not implemented");
+//			// TODO generate result for a commit (success or error)? status?
+//		}
+//		else {
 			for(TermGenerationOutput candidate : candidates) {
 				messages.add(generateTermValidationMessage(candidate));
 			}
-		}
+//		}
 		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, null, messages);
 		// return response
 		return generationResponse;
@@ -219,9 +217,9 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		return templates;
 	}
 
-	protected boolean validateCredentials(String username, String password) {
-		return validator.validate(username, password);
-	}
+//	protected boolean validateCredentials(String username, String password) {
+//		return validator.validate(username, password);
+//	}
 
 	protected List<TermGenerationOutput> generateTermsInternal(Ontology ontology, List<TermGenerationInput> generationTasks) {
 		return termGeneration.generateTerms(ontology, generationTasks); 

@@ -15,17 +15,13 @@ public interface GenerateTermsService {
 	public JsonTermTemplate[] availableTermTemplates(String ontology);
 	
 	/**
-	 * Generate terms, and commit it to the ontology
+	 * Generate terms and return the proposed terms for review.
 	 * 
 	 * @param ontology
 	 * @param allParameters
-	 * @param commit
-	 * @param username
-	 * @param password
 	 * 
-	 * @return if the operation succeeded
+	 * @return JsonGenerationResponse, detailing errors and possible terms.  
 	 */
 	public JsonGenerationResponse generateTerms(String ontology,
-			JsonTermGenerationInput[] allParameters,
-			boolean commit, String username, String password);
+			JsonTermGenerationInput[] allParameters);
 }
