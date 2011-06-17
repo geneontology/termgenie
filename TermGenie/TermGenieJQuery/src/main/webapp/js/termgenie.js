@@ -140,35 +140,35 @@ $(function() {
 				setStep2Active(true);
 			});
 		}
-	}
-	
-	/**
-	 * Set the selected ontology name in the header.
-	 * 
-	 * @param ontology selected ontology name
-	 */
-	function setStep1Header(ontology) {
-		var elem = $('#span-step1-additional-header');
-		elem.empty();
-		elem.append('<span class="step1-additional-header">'+ontology+'</span>');
-	}
-	
-	/**
-	 * Active the second step. Depending on the parameter, the pane 
-	 * for step 1 can be revisited.
-	 * 
-	 * @param step1Available boolean
-	 */
-	function setStep2Active(step1Available) {
-		myAccordion.setPaneState(0, step1Available);
-		myAccordion.enablePane(1);
-		myAccordion.activatePane(1);
+		
+		/**
+		 * Set the selected ontology name in the header.
+		 * 
+		 * @param ontology selected ontology name
+		 */
+		function setStep1Header(ontology) {
+			var elem = $('#span-step1-additional-header');
+			elem.empty();
+			elem.append('<span class="step1-additional-header">'+ontology+'</span>');
+		}
+		
+		/**
+		 * Active the second step. Depending on the parameter, the pane 
+		 * for step 1 can be revisited.
+		 * 
+		 * @param step1Available boolean
+		 */
+		function setStep2Active(step1Available) {
+			myAccordion.setPaneState(0, step1Available);
+			myAccordion.enablePane(1);
+			myAccordion.activatePane(1);
+		}
 	}
 	
 	/**
 	 * Variable for keeping the template widgets 
 	 */
-	var temTemplateWidgetList = TemTemplateWidgetList();
+	var temTemplateWidgetList = null;
 	
 	/**
 	 * Create the menu for selecting term generation templates. 
@@ -185,30 +185,86 @@ $(function() {
 		var elem = $('#div-select-templates-and-parameters');
 		// clear, from possible previous templates
 		elem.empty();
+		
+		// clear header from previous templates
+		$('#span-step2-additional-header').empty();
+		
 		// append layout
 		elem.append(termselect);
-		
-		// register click handler for submit button
-		var submitButton = $('#button-termgeneration-start');
-		submitButton.click(function(){
-			// TODO verification using Javascript
-			// TODO submit to server
-			alert("Verification and Generation");
-			myAccordion.enablePane(2);
-			myAccordion.activatePane(2);
-		});
 		
 		// start async rpc to retrieve available templates
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
 			onSuccess: function(result) {
+				temTemplateWidgetList = TemTemplateWidgetList(result);
 				createTemplateSelectorMenu(ontology, result);
+				registerTermGenerationButton();
 			},
 			onException: function(e) {
 				alert("Unable to compute because: " + e);
 				return true;
 			}
 		});
+		
+		function registerTermGenerationButton() {
+			// register click handler for term generation button
+			var submitButton = $('#button-termgeneration-start');
+			submitButton.click(function(){
+				var status = temTemplateWidgetList.getAllTemplateParameters();
+				if (status.success !== true) {
+					alert('Verification failed, please check marked fields.');
+					return;
+				}
+				if (status.parameters.length === 0) {
+					alert('Please select a template from the menu, and click on add template. '+
+						'Provide details for the required fields and click on the "'+
+						submitButton.text()+
+						'"-Button again, to proceed to the next step.');
+					return;
+				}
+				setStep2HeaderInfo(status.parameters);
+				jsonService.generate.generateTerms({
+					params:[ontology, status.parameters],
+					onSuccess: function(result) {
+						renderStep3(result);
+					},
+					onException: function(e) {
+						alert("Unable to compute because: " + e);
+						return true;
+					}
+				});
+			});
+		}
+		
+		function setStep2HeaderInfo(parameters) {
+			var header = $('#span-step2-additional-header');
+			header.empty();
+			var map = {};
+			for ( var i = 0; i < parameters.length; i++) {
+				var name = parameters[i].termTemplate.name;
+				if(!map[name]) {
+					map[name] = 1;
+				}
+				else{
+					map[name] = 1 + map[name];
+				}
+			}
+			var headerInfo = '';
+			$.each(map, function(key, value) {
+				if (headerInfo.length > 0) {
+					headerInfo += ', ';
+				}
+				headerInfo += key + ' (' + value + ')';
+			});
+			header.append(headerInfo);
+		}
+		
+		function renderStep3(generationResponse) {
+			alert("Verification successful");
+			// TODO render results for step 3 
+			myAccordion.enablePane(2);
+			myAccordion.activatePane(2);	
+		}
 	}
 	
 	/**
@@ -245,8 +301,10 @@ $(function() {
 	/**
 	 * Holder of all template widgets. Provides methods for adding 
 	 * and removing of widgets.
+	 * 
+	 * @param templates list of all templates for this widget
 	 */
-	function TemTemplateWidgetList(){
+	function TemTemplateWidgetList(templates){
 		// private members
 		var templateMap = {};
 		
@@ -332,6 +390,28 @@ $(function() {
 			removeTemplate : function(template) {
 				privateRemoveTemplate(template);
 			},
+			
+			/**
+			 * extract and validate all input fields for the requested 
+			 * templates.
+			 * 
+			 * return object {
+			 *    success: boolean
+			 *    parameters: JsonTermGenerationInput{
+			 *       termTemplate: JsonTermTemplate,
+			 *       termGenerationParameter: JsonTermGenerationParameter
+			 *    }[]
+			 * }
+			 */
+			getAllTemplateParameters : function() {
+				
+				// TODO fill with code.
+				// default
+				return {
+					success : true,
+					parameters: []
+				}
+			}
 		};
 	};
 	
