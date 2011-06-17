@@ -1,7 +1,5 @@
 package org.bbop.termgenie.data;
 
-import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
-
 public class JsonValidationHint {
 
 	public static final int FATAL = 15;
@@ -9,7 +7,7 @@ public class JsonValidationHint {
 	public static final int WARN = 5;
 
 	private JsonTermTemplate template;
-	private JsonTemplateField field;
+	private int field;
 	private int level;
 	private String hint;
 
@@ -26,7 +24,7 @@ public class JsonValidationHint {
 	 * @param level
 	 * @param hint
 	 */
-	public JsonValidationHint(JsonTermTemplate template, JsonTemplateField field, int level, String hint) {
+	public JsonValidationHint(JsonTermTemplate template, int field, int level, String hint) {
 		this();
 		this.template = template;
 		this.field = field;
@@ -39,53 +37,8 @@ public class JsonValidationHint {
 	 * @param field
 	 * @param hint
 	 */
-	public JsonValidationHint(JsonTermTemplate template, JsonTemplateField field, String hint) {
+	public JsonValidationHint(JsonTermTemplate template, int field, String hint) {
 		this(template, field, ERROR, hint);
-	}
-
-	/**
-	 * @return the field
-	 */
-	public JsonTemplateField getField() {
-		return field;
-	}
-
-	/**
-	 * @param field
-	 *            the field to set
-	 */
-	public void setField(JsonTemplateField field) {
-		this.field = field;
-	}
-
-	/**
-	 * @return the level
-	 */
-	public int getLevel() {
-		return level;
-	}
-
-	/**
-	 * @param level
-	 *            the level to set
-	 */
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	/**
-	 * @return the hint
-	 */
-	public String getHint() {
-		return hint;
-	}
-
-	/**
-	 * @param hint
-	 *            the hint to set
-	 */
-	public void setHint(String hint) {
-		this.hint = hint;
 	}
 
 	/**
@@ -100,5 +53,47 @@ public class JsonValidationHint {
 	 */
 	public void setTemplate(JsonTermTemplate template) {
 		this.template = template;
+	}
+
+	/**
+	 * @return the field
+	 */
+	public int getField() {
+		return field;
+	}
+
+	/**
+	 * @param field the field to set
+	 */
+	public void setField(int field) {
+		this.field = field;
+	}
+
+	/**
+	 * @return the level
+	 */
+	public int getLevel() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	/**
+	 * @return the hint
+	 */
+	public String getHint() {
+		return hint;
+	}
+
+	/**
+	 * @param hint the hint to set
+	 */
+	public void setHint(String hint) {
+		this.hint = hint;
 	}
 }

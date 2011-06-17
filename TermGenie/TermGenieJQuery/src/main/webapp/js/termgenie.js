@@ -974,7 +974,8 @@ $(function() {
 	 * JsonGenerationResponse {
 	 *     generalError: String,
 	 *     errors: JsonValidationHint{
-	 *         field: JsonTemplateField,
+	 *         template: JsonTermTemplate,
+	 *         field: int,
 	 *         level: int,
 	 *         hint: String;
 	 *     }[],
@@ -1027,11 +1028,13 @@ $(function() {
 			detailedErrorContainer.append(layout);
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
 			
-			layout.append('<thead><tr><td>TemplateField</td><td>Level</td><td>Message</td></tr></thead>');
+			layout.append('<thead><tr><td>Template</td><td>Field</td><td>Level</td><td>Message</td></tr></thead>');
 			
 			$.each(generationResponse.errors, function(index, validationHint){
 				layout.append('<tr><td>' +
-						validationHint.field.name +
+						validationHint.template.name +
+						'</td><td>' +
+						validationHint.template.fields[validationHint.field].name +
 						'</td><td>' +
 						renderWarningLevel(validationHint.level) +
 						'</td><td>' +
