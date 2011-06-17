@@ -168,7 +168,7 @@ $(function() {
 	/**
 	 * Variable for keeping the template widgets 
 	 */
-	var temTemplateWidgetList = null;
+	var termTemplateWidgetList = null;
 	
 	/**
 	 * Create the menu for selecting term generation templates. 
@@ -196,7 +196,7 @@ $(function() {
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
 			onSuccess: function(result) {
-				temTemplateWidgetList = TemTemplateWidgetList(result);
+				termTemplateWidgetList = TermTemplateWidgetList(result);
 				createTemplateSelectorMenu(ontology, result);
 				registerTermGenerationButton();
 			},
@@ -210,7 +210,7 @@ $(function() {
 			// register click handler for term generation button
 			var submitButton = $('#button-termgeneration-start');
 			submitButton.click(function(){
-				var status = temTemplateWidgetList.getAllTemplateParameters();
+				var status = termTemplateWidgetList.getAllTemplateParameters();
 				if (status.success !== true) {
 					alert('Verification failed, please check marked fields.');
 					return;
@@ -294,7 +294,7 @@ $(function() {
 		// click handler for adding a selected template
 		$('#button-add-template-select').click(function (){
 			var intIndex = $('#select-add-template-select').val();
-			temTemplateWidgetList.addTemplate(templates[intIndex]);
+			termTemplateWidgetList.addTemplate(templates[intIndex]);
 		});
 	}
 	
@@ -304,7 +304,7 @@ $(function() {
 	 * 
 	 * @param templates list of all templates for this widget
 	 */
-	function TemTemplateWidgetList(templates){
+	function TermTemplateWidgetList(templates){
 		// private members
 		var templateMap = {};
 		
@@ -338,7 +338,7 @@ $(function() {
 				createTemplateSubList(template, templateListContainer.id, templateListContainer.wrapperId);
 				templateMap[template.name] = templateListContainer;
 			}
-			var templateWidget = TemTemplateWidget(template,templateListContainer.count);
+			var templateWidget = TermTemplateWidget(template,templateListContainer.count);
 			templateListContainer.list[templateListContainer.count] = templateWidget;
 			
 			var listElem = $('#'+templateListContainer.id);
@@ -404,12 +404,27 @@ $(function() {
 			 * }
 			 */
 			getAllTemplateParameters : function() {
-				
-				// TODO fill with code.
-				// default
+				var success = true;
+				var count = 0;
+				var parameters = [];
+				$.each(templateMap, function(name, listcontainer){
+					if (listcontainer && listcontainer.list) {
+						var list = listcontainer.list;
+						$.each(list, function(index, templateWidget){
+							var extracted = templateWidget.extractTermGenerationInput();
+							if(extracted) {
+								success = success && extracted.success;
+								if (extracted.success === true) {
+									parameters[count] = extracted.input;
+									count += 1;
+								}
+							}
+						});
+					}
+				});
 				return {
-					success : true,
-					parameters: []
+					success : success,
+					parameters: parameters
 				}
 			}
 		};
@@ -421,7 +436,7 @@ $(function() {
 	 * @param template termgeneration template
 	 * @param id internal id number
 	 */
-	function TemTemplateWidget(template, id) {
+	function TermTemplateWidget(template, id) {
 		var templateFields = template.fields;
 		var inputFields = [];
 		
@@ -521,10 +536,34 @@ $(function() {
 			},
 			
 			/**
+			 * extract and validate all input fields for this template.
 			 * 
+			 * return object {
+			 *    success: boolean
+			 *    input: JsonTermGenerationInput{
+			 *       termTemplate: JsonTermTemplate,
+			 *       termGenerationParameter: JsonTermGenerationParameter
+			 *    }
+			 * }
 			 */
-			getTermGenerationInput : function() {
+			extractTermGenerationInput : function() {
+				var success = true;
+				var parameter = {
+						terms:    { values:{} },
+						strings:  { values:{} },
+						prefixes: { values:{} }
+					};
 				
+				for ( var i = 0; i < templateFields.length; i++) {
+					var templatefield = templateFields[i];
+					var inputField =  inputFields[i];
+					var csuccess = inputField.extractParameter(parameter, templatefield);
+					success = success && csuccess;
+				}
+				return {
+					success: success,
+					input: parameter
+				};
 			}
 		};
 	}
@@ -589,7 +628,7 @@ $(function() {
 				for ( var i = 0; i < count; i++) {
 					var inputElem = list[i];
 					if (inputElem) {
-						var csuccess = input.extractParameter(parameter, field, i);
+						var csuccess = inputElem.extractParameter(parameter, field, i);
 						success = success && csuccess;
 					}
 				}
@@ -727,7 +766,7 @@ $(function() {
 				if (!pos) {
 					pos = 0;
 				}
-				if (term) {
+				if (term && term !== null) {
 					var text = inputElement.val();
 					if (term.label == text) {
 						var identifier = term.identifier;
