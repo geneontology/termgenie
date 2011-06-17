@@ -5,7 +5,7 @@ import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 public class JsonValidationHint {
 
 	public static final int FATAL = 15;
-	public static final int ERROR = 5;
+	public static final int ERROR = 10;
 	public static final int WARN = 5;
 
 	private JsonTemplateField field;

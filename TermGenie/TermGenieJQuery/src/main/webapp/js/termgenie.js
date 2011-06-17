@@ -223,15 +223,20 @@ $(function() {
 					return;
 				}
 				setStep2HeaderInfo(status.parameters);
-				jsonService.generate.generateTerms({
-					params:[ontology, status.parameters],
-					onSuccess: function(result) {
-						renderStep3(result);
-					},
-					onException: function(e) {
-						alert("Unable to compute because: " + e);
-						return true;
-					}
+//				jsonService.generate.generateTerms({
+//					params:[ontology, status.parameters],
+//					onSuccess: function(result) {
+//						renderStep3(result);
+//					},
+//					onException: function(e) {
+//						alert("Unable to compute because: " + e);
+//						return true;
+//					}
+//				});
+				
+				// dummy call for debugging
+				renderStep3({
+					generatedTerms: ['Term 1','Term 2']
 				});
 			});
 		}
@@ -261,7 +266,7 @@ $(function() {
 		
 		function renderStep3(generationResponse) {
 			alert("Verification successful");
-			// TODO render results for step 3 
+			createResultReviewPanel(generationResponse);
 			myAccordion.enablePane(2);
 			myAccordion.activatePane(2);	
 		}
@@ -562,7 +567,10 @@ $(function() {
 				}
 				return {
 					success: success,
-					input: parameter
+					input: {
+						termTemplate: template,
+						termGenerationParameter: parameter
+					}
 				};
 			}
 		};
@@ -573,8 +581,21 @@ $(function() {
 		var inputElement = $('<input type="text"/>'); 
 		elem.append(inputElement);
 		
+		inputElement.change(function(){
+			clearErrorState();
+		});
+		
+		function clearErrorState(){
+			inputElement.removeClass('termgenie-input-field-error');	
+		}
+		
+		function setErrorState() {
+			inputElement.addClass('termgenie-input-field-error');
+		}
+		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				clearErrorState();
 				if (!pos) {
 					pos = 0;
 				}
@@ -589,6 +610,9 @@ $(function() {
 					return true;
 				}
 				var success = (field.required === false);
+				if (success === false) {
+					setErrorState();
+				}
 				return success;
 			}
 		};
@@ -654,6 +678,14 @@ $(function() {
 		var inputElement = $('<input/>');
 		elem.append(inputElement);
 		var descriptionDiv = null;
+		
+		function clearErrorState() {
+			inputElement.removeClass('termgenie-input-field-error');	
+		}
+		
+		function setErrorState() {
+			inputElement.addClass('termgenie-input-field-error');
+		}
 		
 		function updateDescriptionDiv(ofElement) {
 			var w = ofElement.outerWidth();
@@ -736,6 +768,7 @@ $(function() {
 				}
 			},
 			select : function(event, ui) {
+				clearErrorState();
 				inputElement.val(ui.item.label);
 				term = ui.item;
 				removeDescriptionDiv();
@@ -763,6 +796,7 @@ $(function() {
 		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				clearErrorState();
 				if (!pos) {
 					pos = 0;
 				}
@@ -779,6 +813,7 @@ $(function() {
 						return true;
 					}
 				}
+				setErrorState();
 				return false;
 			}
 		};
@@ -841,14 +876,23 @@ $(function() {
 		for ( i = 0; i < prefixes.length; i++) {
 			checkbox = $('<input type="checkbox" checked="true"/>');
 			checkboxes[i] = checkbox;
-			inputContainer = $('<tr><td></td></tr>');
+			inputContainer = $('<tr><td class="prefixCheckbox"></td></tr>');
 			inputContainer.append(checkbox);
 			inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
 			inputContainer.appendTo(container);
 		}
 		
+		function clearErrorState() {
+			container.removeClass('termgenie-input-field-error');	
+		}
+		
+		function setErrorState() {
+			container.addClass('termgenie-input-field-error');
+		}
+		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				clearErrorState();
 				if (!pos) {
 					pos = 0;
 				}
@@ -864,6 +908,10 @@ $(function() {
 						count += 1;
 					}
 				}
+				if (count === 0) {
+					setErrorState();
+					return false;
+				}
 				
 				var list = parameter.prefixes.values[field.name];
 				if (!list) {
@@ -871,6 +919,8 @@ $(function() {
 					parameter.prefixes.values[field.name] = list;
 				}
 				list[pos] = cPrefixes;
+				
+				return success;
 			}
 		};
 	}
@@ -914,6 +964,107 @@ $(function() {
 			myAccordion.enablePane(3);
 			myAccordion.activatePane(3);
 		});
+	}
+	
+	/**
+	 * Display the results for the term generation.
+	 * 
+	 * @param generationResponse 
+	 * Type: 
+	 * JsonGenerationResponse {
+	 *     generalError: String,
+	 *     errors: JsonValidationHint{
+	 *         field: JsonTemplateField,
+	 *         level: int,
+	 *         hint: String;
+	 *     }[],
+	 *     generatedTerms: String[]
+	 * }
+	 */
+	function createResultReviewPanel(generationResponse){
+		var container = $('#div-verification-and-review');
+		
+		// clear from previous results
+		container.empty();
+		// hide the submiy panel, till it is clear 
+		// that there are results for the next step
+		$('#div-step3-submit-panel').hide();
+		
+		if (!generationResponse) {
+			return;
+		}
+		
+		if (generationResponse.generalError && 
+				generationResponse.generalError.length > 0) {
+			var generalErrorContainer = $('<div class="term-generation-general-error"></div>');
+			generalErrorContainer.appendTo(container);
+			generalErrorContainer.append('<div class="term-generation-general-error-heading">Error Message</div>');
+			generalErrorContainer.append('<div class="term-generation-general-error-description">Your request produced the following error:</div>');
+			generalErrorContainer.append('<div class="term-generation-general-error-details">'+generationResponse.generalError+'</div>');
+			generalErrorContainer.append('<div class="term-generation-general-error-description">Please check your input and retry. If the problem persits, please contact the TermGenie team.</div>');
+			
+			return;
+		}
+		
+		function renderWarningLevel(level) {
+			if (level < 10) {
+				return '<span class="warn-level-warn">Warning</span>';
+			}
+			if (level > 10) {
+				return '<span class="warn-level-fatal">Fatal</span>';
+			}
+			return '<span class="warn-level-error">Error</span>';
+		}
+		
+		
+		if(generationResponse.errors &&
+				generationResponse.errors.length > 0) {
+			var detailedErrorContainer = $('<div class="term-generation-detailed-errors"></div>');
+			detailedErrorContainer.appendTo(container);
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-heading">Error Messages</div>');
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of errors.</div>');
+			var layout = $('<table cellpadding="5"></table>');
+			detailedErrorContainer.append(layout);
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
+			
+			layout.append('<thead><tr><td>TemplateField</td><td>Level</td><td>Message</td></tr></thead>');
+			
+			$.each(generationResponse.errors, function(index, validationHint){
+				layout.append('<tr><td>' +
+						validationHint.field.name +
+						'</td><td>' +
+						renderWarningLevel(validationHint.level) +
+						'</td><td>' +
+						validationHint.hint +
+						'</td></tr>');
+			});
+		}
+		
+		if(generationResponse.generatedTerms &&
+				generationResponse.generatedTerms.length > 0) {
+			var generatedTermContainer = $('<div class="term-generation-details"></div>');
+			generatedTermContainer.appendTo(container);
+			
+			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>')
+			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates. Please select the terms for the final step.</div>')
+			var layout = $('<table cellpadding="5"></table>');
+			generatedTermContainer.append(layout);
+			
+			layout.append('<thead><tr><td></td><td>Label</td><td>Identifier</td><td>Description</td><td>Logical Definition</td><td>MetaData</td><td>Relations</td></tr></thead>');
+			
+			$.each(generationResponse.generatedTerms, function(index, term){
+				
+				layout.append('<tr><td>' +
+						'<input type="checkbox"/>' +
+						'</td><td>' +
+						term +
+						'</td></tr>');
+			});
+			generatedTermContainer.append('<div class="term-generation-details-description">Please select the terms for the final step.</div>')
+			
+			// show hidden panel
+			$('#div-step3-submit-panel').show();
+		}
 	}
 
 	// HTML wrapper functions

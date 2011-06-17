@@ -3,72 +3,145 @@ body {
 }
 
 h1 {
-  font-size: 2.5em;
-  font-weight: bold;
-  color: #777777;
-  margin: 10px 5px 10px;
-  text-align: left;
+	font-size: 2.5em;
+	font-weight: bold;
+	color: #777777;
+	margin: 10px 5px 10px;
+	text-align: left;
 }
 
 .tooldescription {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .step1-additional-header {
-  font-style:italic;
-  font-weight: bold;
-  margin-left: 10px;
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
 }
 
+#span-step2-additional-header {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}	
+
 .ui-state-active {
-  background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
+	background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
 }
 
 .template-list-wrapper {
-  margin-top: 20px;
+	margin-top: 20px;
 }
 
 .termgenie-template-header {
-  font-size: 1.2em;
-  padding-bottom: 10px;
+	font-size: 1.2em;
+	padding-bottom: 10px;
 }
 .termgenie-template-header .more-less-buttons{
-  vertical-align: middle;
-  padding-left: 10px;
+	vertical-align: middle;
+	padding-left: 10px;
 }
 .termgenie-template-header .label-template-name {
-  font-style:italic;
-  font-weight: bold;
-  margin-left: 10px;
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
 }
 
 .myClickable {
-  cursor: pointer;
-  text-decoration: underline;
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 
 .div-submit-button {
-  margin-top: 40px;
+	margin-top: 40px;
 }
 
 .termgenie-autocomplete-menu-item {
-  font-size: 0.9em;
+	font-size: 0.9em;
 }
 
 .termgenie-layout-table {
-  border: 0px;
-  padding: 0;
-  margin: 0;
+	border: 0px;
+	padding: 0;
+	margin: 0;
 }
 
 .termgenie-layout-table td {
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  vertical-align: top;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	vertical-align: top;
 }
 
 .more-less-buttons{
-  font-size: 12px;
+	font-size: 12px;
 }
+
+.termgenie-input-field-error {
+	border-style: solid;
+	border-width: 2px;
+	border-color: red;
+}
+
+.term-generation-general-error {
+	padding: 10px;
+}
+
+.term-generation-general-error-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-general-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}
+
+.term-generation-detailed-errors {
+	padding: 10px;
+}
+
+.term-generation-detailed-errors-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-detailed-errors table {
+	padding: 10px;
+	border: 1px solid;
+	margin: 10px;
+}
+
+.warn-level-warn {
+	color: #FF8000;	
+}
+
+.warn-level-error {
+	color: #FF4000;
+}
+
+.warn-level-fatal {
+	color: #FF0040;
+}
+
+.term-generation-details {
+	padding: 10px;
+}
+
+.term-generation-details-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-details table {
+	padding: 10px;
+	border: 1px solid;
+	margin: 10px;
+}
+
