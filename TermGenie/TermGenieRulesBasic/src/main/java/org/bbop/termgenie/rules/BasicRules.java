@@ -280,11 +280,12 @@ class BasicRules {
 			output.add(singleError("The term "+ontology.getIdentifier(sameName)+" with the same label already exists", input));
 			return;
 		}
-		// check xref conformity  
-		for (String defxref : defxrefs) {
-			// TODO add pattern check here for xrefs
+		if (defxrefs != null) {
+			// check xref conformity  
+			for (String defxref : defxrefs) {
+				// TODO add pattern check here for xrefs
+			}
 		}
-
 		// try to create new id
 		String id = createNewId(input, ontology);
 		output.add(success(new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
