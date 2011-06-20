@@ -223,21 +223,21 @@ $(function() {
 					return;
 				}
 				setStep2HeaderInfo(status.parameters);
-//				jsonService.generate.generateTerms({
-//					params:[ontology, status.parameters],
-//					onSuccess: function(result) {
-//						renderStep3(result);
-//					},
-//					onException: function(e) {
-//						alert("Unable to compute because: " + e);
-//						return true;
-//					}
-//				});
+				jsonService.generate.generateTerms({
+					params:[ontology, status.parameters],
+					onSuccess: function(result) {
+						renderStep3(result);
+					},
+					onException: function(e) {
+						alert("Unable to compute because: " + e);
+						return true;
+					}
+				});
 				
 				// dummy call for debugging
-				renderStep3({
-					generatedTerms: ['Term 1','Term 2']
-				});
+//				renderStep3({
+//					generatedTerms: ['Term 1','Term 2']
+//				});
 			});
 		}
 		
@@ -518,23 +518,23 @@ $(function() {
 						if (cardinality.min === 1 && cardinality.max === 1) {
 							var prefixes = field.functionalPrefixes;
 							if (prefixes && prefixes.length > 0) {
-								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, field.ontologies, prefixes);
+								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontologies, prefixes);
 							}
 							else {
-								inputFields[i] = AutoCompleteOntologyInput(tdElement, field.ontologies);	
+								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontologies);	
 							}
 						}
 						else {
-							inputFields[i] = AutoCompleteOntologyInputList(tdElement, field.ontologies, cardinality.min, cardinality.max);
+							inputFields[i] = AutoCompleteOntologyInputList(tdElement, i, field.ontologies, cardinality.min, cardinality.max);
 						}
 					}
 					else {
 						var cardinality = field.cardinality;
 						if (cardinality.min === 1 && cardinality.max === 1) {
-							inputFields[i] = TextFieldInput(tdElement);
+							inputFields[i] = TextFieldInput(tdElement, i);
 						}
 						else {
-							inputFields[i] = TextFieldInputList(tdElement, cardinality.min, cardinality.max);
+							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max);
 						}
 					}
 				}
@@ -554,9 +554,9 @@ $(function() {
 			extractTermGenerationInput : function() {
 				var success = true;
 				var parameter = {
-						terms:    { values:{} },
-						strings:  { values:{} },
-						prefixes: { values:{} }
+						terms:    [],
+						strings:  [],
+						prefixes: []
 					};
 				
 				for ( var i = 0; i < templateFields.length; i++) {
@@ -577,7 +577,7 @@ $(function() {
 	}
 	
 	
-	function TextFieldInput(elem) {
+	function TextFieldInput(elem, templatePos) {
 		var inputElement = $('<input type="text"/>'); 
 		elem.append(inputElement);
 		
@@ -601,10 +601,10 @@ $(function() {
 				}
 				var text = elem.val();
 				if (text !== null && text.length > 0) {
-					var list = parameter.strings.values[field.name];
+					var list = parameter.strings[templatePos];
 					if (!list) {
 						list = [];
-						parameter.strings.values[field.name] = list;
+						parameter.strings[templatePos] = list;
 					}
 					list[pos] = text;
 					return true;
@@ -618,7 +618,7 @@ $(function() {
 		};
 	}
 	
-	function TextFieldInputList(container, min, max) {
+	function TextFieldInputList(container, templatePos, min, max) {
 		
 		var count = 0;
 		var list = [];
@@ -633,7 +633,7 @@ $(function() {
 			if (count <  max) {
 				var listElem = $('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
-				list[count] = TextFieldInput(listElem.children().first());
+				list[count] = TextFieldInput(listElem.children().first(), templatePos);
 				count += 1;
 			}
 		}
@@ -672,7 +672,7 @@ $(function() {
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonSyncService, false);
 	
-	function AutoCompleteOntologyInput(elem, ontologies) {
+	function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
 		
 		var term = undefined;
 		var inputElement = $('<input/>');
@@ -804,10 +804,10 @@ $(function() {
 					var text = inputElement.val();
 					if (term.label == text) {
 						var identifier = term.identifier;
-						var list = parameter.terms.values[field.name];
+						var list = parameter.terms[templatePos];
 						if (!list) {
 							list = [];
-							parameter.terms.values[field.name] = list;
+							parameter.terms[templatePos] = list;
 						}
 						list[pos] = identifier;
 						return true;
@@ -819,7 +819,7 @@ $(function() {
 		};
 	}
 	
-	function AutoCompleteOntologyInputList(container, ontologies, min, max) {
+	function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
 		
 		var count = 0;
 		var list = [];
@@ -834,7 +834,7 @@ $(function() {
 			if (count <  max) {
 				var listElem = $('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
-				list[count] = AutoCompleteOntologyInput(listElem.children().first(), ontologies);
+				list[count] = AutoCompleteOntologyInput(listElem.children().first(), templatePos, ontologies);
 				count += 1;
 			}
 		}
@@ -862,7 +862,7 @@ $(function() {
 		};
 	}
 	
-	function AutoCompleteOntologyInputPrefix (elem, ontologies, prefixes) {
+	function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes) {
 		var checkbox, i, j;
 		
 		var container = createLayoutTable();
@@ -870,7 +870,7 @@ $(function() {
 		var inputContainer = $('<tr><td></td></tr>');
 		inputContainer.appendTo(container);
 		
-		var inputField = AutoCompleteOntologyInput(inputContainer, ontologies);
+		var inputField = AutoCompleteOntologyInput(inputContainer, templatePos, ontologies);
 		
 		var checkboxes = [];
 		for ( i = 0; i < prefixes.length; i++) {
@@ -912,14 +912,7 @@ $(function() {
 					setErrorState();
 					return false;
 				}
-				
-				var list = parameter.prefixes.values[field.name];
-				if (!list) {
-					list = [];
-					parameter.prefixes.values[field.name] = list;
-				}
-				list[pos] = cPrefixes;
-				
+				parameter.strings[templatePos] = cPrefixes;
 				return success;
 			}
 		};
@@ -1004,7 +997,7 @@ $(function() {
 			generalErrorContainer.append('<div class="term-generation-general-error-details">'+generationResponse.generalError+'</div>');
 			generalErrorContainer.append('<div class="term-generation-general-error-description">Please check your input and retry. If the problem persits, please contact the TermGenie team.</div>');
 			
-			return;
+//			return;
 		}
 		
 		function renderWarningLevel(level) {

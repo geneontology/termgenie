@@ -27,8 +27,8 @@ public class FieldValidatorTool {
 			TemplateField field = fields.get(i);
 			Cardinality cardinality = field.getCardinality();
 
-			JsonOntologyTermIdentifier[] terms = parameter.getTermLists()[i];
-			String[] strings = parameter.getStringLists()[i];
+			JsonOntologyTermIdentifier[] terms = getList(parameter.getTerms(), i);
+			String[] strings = getList(parameter.getStrings(), i);
 			
 			int termCount = terms == null ? 0 : terms.length;
 			int stringCount = strings == null ? 0 : strings.length;
@@ -50,7 +50,9 @@ public class FieldValidatorTool {
 						}
 					}
 				}
-				errors.add(new JsonValidationHint(jsonTemplate, i, "Conflicting values (string and ontology term) for field"));
+				else {
+					errors.add(new JsonValidationHint(jsonTemplate, i, "Conflicting values (string and ontology term) for field"));
+				}
 			}
 			
 			int count = hasOntologies ? termCount : stringCount;
@@ -61,23 +63,40 @@ public class FieldValidatorTool {
 			}
 
 			// assert maximum
-			if (termCount > cardinality.getMaximum()) {
+			if (count > cardinality.getMaximum()) {
 				errors.add(new JsonValidationHint(jsonTemplate, i, "Maximum Cardinality exceeded."));
 			}
 
 			// check fields for missing content
 			if (isRequired) {
 				Object[] values = hasOntologies ? terms : strings;
+				int realObjects = 0;
 				for (Object value : values) {
 					if (value == null) {
 						errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
 					}
+					else {
+						realObjects++;
+					}
+				}
+				if (realObjects == 0) {
+					errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
 				}
 			}
 		}
 		return errors;
 	}
 
+	private static <T> T[] getList(T[][] matrix, int pos) {
+		if (matrix.length > pos) {
+			T[] list = matrix[pos];
+			if (list.length > 0) {
+				return list;
+			}
+		}
+		return null;
+	}
+	
 	private static boolean hasOntologies(TemplateField field) {
 		List<Ontology> ontologies = field.getCorrespondingOntologies();
 		return ontologies != null && !ontologies.isEmpty();

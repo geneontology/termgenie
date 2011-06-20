@@ -47,4 +47,24 @@ public class JsonTermGenerationInput {
 	public void setTermGenerationParameter(JsonTermGenerationParameter termGenerationParameter) {
 		this.termGenerationParameter = termGenerationParameter;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonTermGenerationInput [");
+		if (termTemplate != null) {
+			builder.append("termTemplate=");
+			builder.append(termTemplate);
+			builder.append(", ");
+		}
+		if (termGenerationParameter != null) {
+			builder.append("termGenerationParameter=");
+			builder.append(termGenerationParameter);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

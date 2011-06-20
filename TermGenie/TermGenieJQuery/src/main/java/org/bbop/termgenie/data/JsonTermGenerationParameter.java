@@ -1,58 +1,73 @@
 package org.bbop.termgenie.data;
 
+import java.util.Arrays;
+
 public class JsonTermGenerationParameter {
 
-	private JsonOntologyTermIdentifier[][] termLists;
-	private String[][] stringLists;
+	private JsonOntologyTermIdentifier[][] terms;
+	private String[][] strings;
 
 	public JsonTermGenerationParameter() {
 		super();
 	}
 
 	/**
-	 * @return the termLists
+	 * @return the terms
 	 */
-	public JsonOntologyTermIdentifier[][] getTermLists() {
-		return termLists;
+	public JsonOntologyTermIdentifier[][] getTerms() {
+		return terms;
 	}
 
 	/**
-	 * @param termLists the termLists to set
+	 * @param terms the terms to set
 	 */
-	public void setTermLists(JsonOntologyTermIdentifier[][] termLists) {
-		this.termLists = termLists;
+	public void setTerms(JsonOntologyTermIdentifier[][] terms) {
+		this.terms = terms;
 	}
 
 	/**
-	 * @return the stringLists
+	 * @return the strings
 	 */
-	public String[][] getStringLists() {
-		return stringLists;
+	public String[][] getStrings() {
+		return strings;
 	}
 
 	/**
-	 * @param stringLists the stringLists to set
+	 * @param strings the strings to set
 	 */
-	public void setStringLists(String[][] stringLists) {
-		this.stringLists = stringLists;
+	public void setStrings(String[][] strings) {
+		this.strings = strings;
 	}
 
-//	public static <V> V getValue(HashMap<String, V[]> values, JsonTemplateField key, int pos) {
-//		V[] list = values.get(key.getName());
-//		if (list != null && list.length > pos) {
-//			return list[pos];
-//		}
-//		return null;
-//	}
-//	
-//	public static <V> int getCount(HashMap<String, V[]> values, JsonTemplateField key) {
-//		V[] list = values.get(key.getName());
-//		if (list != null) {
-//			return list.length;
-//		}
-//		return 0;
-//	}
-	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JsonTermGenerationParameter {");
+		toString(terms, "terms", builder);
+		toString(strings, "strings", builder);
+		builder.append("}");
+		return builder.toString();
+	}
+
+	private static void toString(Object[][] matrix, String name, StringBuilder builder) {
+		if (matrix != null) {
+			builder.append(name);
+			builder.append(":{");
+			for(int i = 0; i< matrix.length; i++) {
+				if (i > 0) {
+					builder.append(", ");
+				}
+				Object[] termList = matrix[i];
+				if (termList == null) {
+					builder.append("null");
+				}
+				else {
+					builder.append(Arrays.toString(termList));
+				}
+			}			
+			builder.append("}, ");
+		}
+	}
 
 	public static final class JsonOntologyTermIdentifier {
 		
