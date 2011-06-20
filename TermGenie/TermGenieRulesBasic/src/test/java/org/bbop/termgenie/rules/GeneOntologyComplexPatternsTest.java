@@ -3,13 +3,13 @@ package org.bbop.termgenie.rules;
 import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
@@ -63,8 +63,7 @@ public class GeneOntologyComplexPatternsTest {
 	@Test
 	public void testGetDefXref() {
 		TermGenerationInput input = createRegulationBPExample1();
-		input.getParameters().getStrings().addValue("test input xref0", Field_DefX_Ref, 0);
-		input.getParameters().getStrings().addValue("test input xref1", Field_DefX_Ref, 1);
+		input.getParameters().getStrings()[all_regulation.getFieldPos("DefX_Ref")] = new String[]{"test input xref0", "test input xref1"};
 		List<String> defXref = instance.getDefXref(input);
 		assertArrayEquals(new String[]{"test input xref0", "test input xref1"}, defXref.toArray());
 	}
@@ -72,7 +71,7 @@ public class GeneOntologyComplexPatternsTest {
 	@Test
 	public void testGetComment() {
 		TermGenerationInput input = createInvoledInExample1();
-		input.getParameters().getStrings().addValue("test input comment", Field_Comment, 0);
+		input.getParameters().getStrings()[involved_in.getFieldPos("Comment")] = new String[]{"test input comment"};
 		String comment = instance.getComment(input);
 		assertEquals("test input comment", comment);
 	}
@@ -83,7 +82,7 @@ public class GeneOntologyComplexPatternsTest {
 		
 		assertEquals("test gen def", instance.createDefinition("test gen def", input));
 		
-		input.getParameters().getStrings().addValue("test input def", Field_Definition, 0);
+		input.getParameters().getStrings()[involved_in.getFieldPos("Definition")] = new String[]{"test input def"};
 		
 		assertEquals("test input def", instance.createDefinition("test gen def", input));
 	}
@@ -94,7 +93,7 @@ public class GeneOntologyComplexPatternsTest {
 		
 		assertEquals("test gen name", instance.createName("test gen name", input));
 		
-		input.getParameters().getStrings().addValue("test input name", Field_Name, 0);
+		input.getParameters().setStringValues(involved_in, "Name", "test input name");
 		
 		assertEquals("test input name", instance.createName("test gen name", input));
 	}
@@ -103,21 +102,27 @@ public class GeneOntologyComplexPatternsTest {
 	// --------------- Helper methods ---------------
 	
 	private TermGenerationInput createRegulationBPExample1() {
-		TermGenerationParameters parameters = new TermGenerationParameters();
-		OntologyTerm term = create("GO:0048069", go); // eye pigmentation
-		parameters.getTerms().addValue(term, Field_Target_Regulation_BP, 0);
-		parameters.getPrefixes().addValue(Arrays.asList("regulation","negative_regulation","positive_regulation"), Field_Target_Regulation_BP, 0);
-		TermGenerationInput input = new TermGenerationInput(all_regulation, parameters);
+		TermTemplate template = all_regulation;
+		TermGenerationParameters parameters = new TermGenerationParameters(template.getFieldCount());
+		
+		OntologyTerm term = create("GO:0048069", go); // eye pigmentation;
+		parameters.setTermValues(template, "target", term);
+		parameters.setStringValues(template, "target", "regulation","negative_regulation","positive_regulation");
+		
+		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		return input;
 	}
 
 	private TermGenerationInput createInvoledInExample1() {
-		TermGenerationParameters parameters = new TermGenerationParameters();
+		TermTemplate template = involved_in;
+		TermGenerationParameters parameters = new TermGenerationParameters(template.getFieldCount());
 		OntologyTerm part = create("GO:0042440", go); // pigment metabolic process
 		OntologyTerm whole = create("GO:0043473", go); // pigmentation
-		parameters.getTerms().addValue(part, Field_Part_BP, 0);
-		parameters.getTerms().addValue(whole, Field_Whole_BP, 0);
-		TermGenerationInput input = new TermGenerationInput(involved_in, parameters);
+		
+		parameters.setTermValues(template, "part", part);
+		parameters.setTermValues(template, "whole", whole);
+		
+		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		return input;
 	}
 

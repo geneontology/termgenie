@@ -37,15 +37,15 @@ public class DefaultTermTemplates {
 	public final static Ontology CELL_ONTOLOGY = create("CL");
 	public final static Ontology PLANT_ONTOLOGY = create("PO");
 
-	public static final TemplateField Field_Name = new TemplateField("Name");
-	public static final TemplateField Field_Definition = new TemplateField("Definition");
-	public static final TemplateField Field_DefX_Ref = new TemplateField("DefX_Ref",false, TemplateField.ONE_TO_N_CARDINALITY, null);
-	public static final TemplateField Field_Comment = new TemplateField("Comment");
+	private static final TemplateField Field_Name = new TemplateField("Name");
+	private static final TemplateField Field_Definition = new TemplateField("Definition");
+	private static final TemplateField Field_DefX_Ref = new TemplateField("DefX_Ref",false, TemplateField.ONE_TO_N_CARDINALITY, null);
+	private static final TemplateField Field_Comment = new TemplateField("Comment");
 	
-	public static final TemplateField Field_Target_Regulation_BP = new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_BP);
-	public static final TemplateField Field_Target_Regulation_MF = new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_MF);
-	public static final TemplateField Field_Part_BP = new TemplateField("part", GENE_ONTOLOGY_BP);
-	public static final TemplateField Field_Whole_BP = new TemplateField("whole", GENE_ONTOLOGY_BP);
+	private static final TemplateField Field_Target_Regulation_BP = new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_BP);
+	private static final TemplateField Field_Target_Regulation_MF = new TemplateField("target", true, TemplateField.SINGLE_FIELD_CARDINALITY, Arrays.asList("regulation","negative_regulation","positive_regulation"), GENE_ONTOLOGY_MF);
+	private static final TemplateField Field_Part_BP = new TemplateField("part", GENE_ONTOLOGY_BP);
+	private static final TemplateField Field_Whole_BP = new TemplateField("whole", GENE_ONTOLOGY_BP);
 	
 	public final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically",

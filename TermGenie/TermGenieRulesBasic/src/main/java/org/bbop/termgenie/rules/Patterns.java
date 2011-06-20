@@ -14,11 +14,9 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
-import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -84,8 +82,8 @@ class Patterns extends BasicRules {
 		return null;
 	}
 	
-	protected OWLObject getSingleTerm(TermGenerationParameters parameters, TemplateField targetField, OWLGraphWrapper...ontologies) {
-		String id = parameters.getTerms().getValue(targetField, 0).getId();
+	protected OWLObject getSingleTerm(TermGenerationInput input, String name, OWLGraphWrapper...ontologies) {
+		String id = getFieldSingleTerm(input, name).getId(); 
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
 				OWLObject x = getTermSimple(id, ontology);
@@ -97,27 +95,18 @@ class Patterns extends BasicRules {
 		return null ;
 	}
 	
-	protected OWLObject getSingleTerm(TermGenerationInput input, String name, OWLGraphWrapper...ontologies) {
-		TemplateField targetField = input.getTermTemplate().getField(name);
-		TermGenerationParameters parameters = input.getParameters();
-		return getSingleTerm(parameters, targetField, ontologies);
-	}
-	
 	protected List<OWLObject> getListTerm(TermGenerationInput input, String name, OWLGraphWrapper ontology) {
-		TemplateField targetField = input.getTermTemplate().getField(name);
-		TermGenerationParameters parameters = input.getParameters();
-		
-		int count = parameters.getTerms().getCount(targetField);
-		if (count == 0) {
+		List<OntologyTerm> terms = getFieldTermList(input, name);
+		if (terms == null || terms.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
 		List<OWLObject> result = new ArrayList<OWLObject>();
-		for (int i = 0; i < count; i++) {
-			String id = parameters.getTerms().getValue(targetField, i).getId();
-			OWLObject x = getTermSimple(id, ontology);
-			if (x != null) {
-				result.add(x);
+		for (OntologyTerm term : terms) {
+			if (term != null) {
+				OWLObject x = getTermSimple(term.getId(), ontology);
+				if (x != null) {
+					result.add(x);
+				}
 			}
 		}
 		return result;

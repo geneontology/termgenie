@@ -9,10 +9,8 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
-import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -80,8 +78,6 @@ class GeneOntologyComplexPatterns extends Patterns {
 	}
 	
 	protected List<TermGenerationOutput> allRegulationTemplate(TermGenerationInput input, Map<String, OntologyTerm> pending, OWLObject branch) {
-		TemplateField targetField = input.getTermTemplate().getField("target");
-		TermGenerationParameters parameters = input.getParameters();
 		OWLObject x = getSingleTerm(input, "target", go);
 		if (!genus(x, branch, go)) {
 			// check branch
@@ -91,7 +87,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 			// 	biological regulation
 			return error("Cannot create 'regulation of regulation of X' terms", input);
 		}
-		List<String> prefixes = parameters.getPrefixes().getValue(targetField, 0);
+		List<String> prefixes = getFieldStringList(input, "target");
 		if (prefixes == null || prefixes.isEmpty()) {
 			return error("Could not create a term for X, as no prefix was selected", input);
 		}

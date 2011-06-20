@@ -1,6 +1,7 @@
 package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -164,11 +165,76 @@ class BasicRules {
 	}
 	
 	protected List<String> getDefXref(TermGenerationInput input) {
-		return input.getParameters().getStrings().getValues("DefX_Ref");
+		String[] strings =  getFieldStrings(input, "DefX_Ref");
+		if (strings == null || strings.length == 0) {
+			return null;
+		}
+		return Arrays.asList(strings);
+	}
+
+	private int getFieldPos(TermGenerationInput input, String name) {
+		return input.getTermTemplate().getFieldPos(name);
 	}
 	
+	private String[] getFieldStrings(TermGenerationInput input, String name) {
+		int pos = getFieldPos(input, name);
+		if (pos < 0) {
+			return null;
+		}
+		String[][] matrix = input.getParameters().getStrings();
+		if (matrix.length <= pos) {
+			return null;
+		}
+		return matrix[pos];
+	}
+	
+	private OntologyTerm[] getFieldTerms(TermGenerationInput input, String name) {
+		int pos = getFieldPos(input, name);
+		if (pos < 0) {
+			return null;
+		}
+		OntologyTerm[][] matrix = input.getParameters().getTerms();
+		if (matrix.length <= pos) {
+			return null;
+		}
+		return matrix[pos];
+	}
+	
+	protected String getFieldSingleString(TermGenerationInput input, String name) {
+		String[] strings = getFieldStrings(input, name);
+		if (strings == null || strings.length < 1) {
+			return null;
+		}
+		return strings[0];
+	}
+	
+	protected List<String> getFieldStringList(TermGenerationInput input, String name) {
+		String[] strings = getFieldStrings(input, name);
+		if (strings == null || strings.length < 1) {
+			return null;
+		}
+		return Arrays.asList(strings);
+	}
+	
+	protected OntologyTerm getFieldSingleTerm(TermGenerationInput input, String name) {
+		OntologyTerm[] terms = getFieldTerms(input, name);
+		if (terms == null || terms.length < 1) {
+			return null;
+		}
+		return terms[0];
+	}
+	
+	protected List<OntologyTerm> getFieldTermList(TermGenerationInput input, String name) {
+		OntologyTerm[] terms = getFieldTerms(input, name);
+		if (terms == null || terms.length < 1) {
+			return null;
+		}
+		return Arrays.asList(terms);
+	}
+	
+	
 	protected String getComment(TermGenerationInput input) {
-		return input.getParameters().getStrings().getValue("Comment", 0);
+		return getFieldSingleString(input, "Comment");
 	}
 
 	private String createNewId(TermGenerationInput input, OWLGraphWrapper ontology) {
@@ -177,7 +243,7 @@ class BasicRules {
 	}
 	
 	protected String createDefinition(String definition, TermGenerationInput input) {
-		String inputDefinition = input.getParameters().getStrings().getValue("Definition", 0);
+		String inputDefinition = getFieldSingleString(input, "Definition");
 		if (inputDefinition != null) {
 			inputDefinition = inputDefinition.trim(); 
 			if (inputDefinition.length() > 1) {
@@ -188,7 +254,7 @@ class BasicRules {
 	}
 	
 	protected String createName(String name, TermGenerationInput input) {
-		String inputName = input.getParameters().getStrings().getValue("Name", 0);
+		String inputName = getFieldSingleString(input, "Name");
 		if (inputName != null) {
 			inputName = inputName.trim(); 
 			if (inputName.length() > 1) {

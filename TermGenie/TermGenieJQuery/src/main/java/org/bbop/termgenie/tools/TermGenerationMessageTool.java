@@ -1,5 +1,6 @@
 package org.bbop.termgenie.tools;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
@@ -12,7 +13,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParamete
 
 /**
  * Helper class for generating informative responses for a given list of
- * generation results.
+ * generation results. TODO this is only used for mockups during development.
  */
 public class TermGenerationMessageTool {
 
@@ -63,27 +64,28 @@ public class TermGenerationMessageTool {
 	static void appendParameters(StringBuilder sb, TermGenerationInput input, TermTemplate template) {
 		TermGenerationParameters parameters = input.getParameters();
 		List<TemplateField> fields = template.getFields();
-		for (TemplateField field : fields) {
+		for (int i = 0; i < fields.size(); i++) {
+			TemplateField field = fields.get(i);
 			Cardinality cardinality = field.getCardinality();
 			if (cardinality.getMaximum() == 1) {
 				// single value
 				if (field.hasCorrespondingOntologies()) {
 					// term
-					OntologyTerm ontologyTerm = parameters.getTerms().getValue(field, 0);
+					OntologyTerm ontologyTerm = parameters.getTerms()[i][0];
 					if (ontologyTerm != null) {
 						sb.append(field.getName());
 						sb.append(" : ");
 						sb.append(ontologyTerm.getLabel());
 						sb.append(' ');
-						List<String> prefixes = parameters.getPrefixes().getValue(field, 0);
+						String[] prefixes = parameters.getStrings()[i];
 						if (prefixes != null) {
-							sb.append(prefixes);
+							sb.append(Arrays.toString(prefixes));
 							sb.append(' ');
 						}
 					}
 				} else {
 					// string
-					String value = parameters.getStrings().getValue(field, 0);
+					String value = parameters.getStrings()[i][0];
 					if (value != null) {
 						sb.append(field.getName());
 						sb.append(" : ");
@@ -93,18 +95,24 @@ public class TermGenerationMessageTool {
 				}
 			} else {
 				// list value
-				int count = parameters.getTerms().getCount(field);
+				int count = parameters.getTerms()[i].length;
 				if (count > 0) {
 					sb.append(field.getName());
 					sb.append(" : [");
-					for (int i = 0; i < count; i++) {
-						OntologyTerm ontologyTerm = parameters.getTerms().getValue(field, i);
-						if (i > 0) {
+					for (int j = 0; j < count; j++) {
+						OntologyTerm ontologyTerm = parameters.getTerms()[i][j];
+						if (j > 0) {
 							sb.append(',');
 						}
 						sb.append(ontologyTerm.getLabel());
 					}
 					sb.append("] ");
+				}
+				count = parameters.getStrings()[i].length;
+				if (count > 0) {
+					sb.append(field.getName());
+					sb.append(" : ");
+					sb.append(Arrays.toString(parameters.getStrings()[i]));
 				}
 			}
 		}

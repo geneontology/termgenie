@@ -54,7 +54,7 @@ public class JsonTermTemplate {
 	public void setFields(JsonTemplateField[] fields) {
 		this.fields = fields;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -178,10 +178,6 @@ public class JsonTermTemplate {
 			this.ontologies = ontologies;
 		}
 		
-		public boolean hasOntologies() {
-			return ontologies != null && ontologies.length > 0; 
-		}
-
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */

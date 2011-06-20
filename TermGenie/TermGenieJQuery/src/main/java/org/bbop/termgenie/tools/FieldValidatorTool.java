@@ -1,86 +1,76 @@
 package org.bbop.termgenie.tools;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.TemplateField;
+import org.bbop.termgenie.core.TemplateField.Cardinality;
+import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
+import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermTemplate;
 import org.bbop.termgenie.data.JsonValidationHint;
-import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonMultiValueMap;
-import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
-import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 
 public class FieldValidatorTool {
 
-	public static List<JsonValidationHint> validateParameters(JsonTermTemplate template,
+	public static List<JsonValidationHint> validateParameters(TermTemplate template,
+			JsonTermTemplate jsonTemplate,
 			JsonTermGenerationParameter parameter) {
 
-		JsonTemplateField[] fields = template.getFields();
+		List<TemplateField> fields = template.getFields();
 		List<JsonValidationHint> errors = new ArrayList<JsonValidationHint>();
 
-		for (int i = 0; i < fields.length; i++) {
-			JsonTemplateField field = fields[i];
-			JsonCardinality cardinality = field.getCardinality();
+		for (int i = 0; i < fields.size(); i++) {
+			TemplateField field = fields.get(i);
+			Cardinality cardinality = field.getCardinality();
 
-			int count = parameter.getTerms().getCount(field);
-			int stringCount = parameter.getStrings().getCount(field);
-			JsonMultiValueMap<?> values = parameter.getTerms();
+			JsonOntologyTermIdentifier[] terms = parameter.getTermLists()[i];
+			String[] strings = parameter.getStringLists()[i];
+			
+			int termCount = terms == null ? 0 : terms.length;
+			int stringCount = strings == null ? 0 : strings.length;
 
-			if (count > 0 && stringCount > 0) {
-				errors.add(new JsonValidationHint(template, i, "Conflicting values (string and ontology term) for field"));
+			final boolean isRequired = field.isRequired();
+			if (isRequired && termCount == 0 && stringCount == 0) {
+				errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
+				continue;
 			}
-			if (stringCount > count) {
-				count = stringCount;
-				values = parameter.getStrings();
-			}
-
-			if (field.isRequired()) {
-				// assert minimum
-				if (count < cardinality.getMin()) {
-					errors.add(new JsonValidationHint(template, i, "Minimum Cardinality not met."));
-				}
-
-				// assert maximum
-				if (count > cardinality.getMax()) {
-					errors.add(new JsonValidationHint(template, i, "Maximum Cardinality exceeded."));
-				}
-
-				// check fields for missing content
-				for (int j = 0; j < count; j++) {
-					Object value = values.getValue(field, j);
-					if (value == null) {
-						errors.add(new JsonValidationHint(template, i, "Required value missing."));
-					}
-				}
-
-			}
-
-			// check prefixes
-			String[] defPrefixes = field.getFunctionalPrefixes();
-			int prefixCount = parameter.getPrefixes().getCount(field);
-			if (defPrefixes == null || defPrefixes.length == 0) {
-				if (prefixCount > 0) {
-					errors.add(new JsonValidationHint(template, i, "No prefixes expected."));
-				}
-			} else {
-				if (prefixCount > 1) {
-					errors.add(new JsonValidationHint(template, i, "Expected only one list of prefixes."));
-				}
-				List<String> prefixes = parameter.getPrefixes().getValue(field, 0);
-				if (prefixes != null) {
-					if (prefixes.size() > defPrefixes.length) {
-						errors.add(new JsonValidationHint(template, i,
-								"Expected only a list of prefixes of max length: "
-										+ defPrefixes.length));
-					}
-					Set<String> defSetPrefixes = new HashSet<String>(Arrays.asList(defPrefixes));
-					for (String prefix : prefixes) {
-						if (!defSetPrefixes.contains(prefix)) {
-							errors.add(new JsonValidationHint(template, i, "Unknow prefix: " + prefix));
+			
+			final boolean hasOntologies = hasOntologies(field);
+			if (hasOntologies && stringCount > 0) {
+				if (hasPrefixes(field)) {
+					// check if strings correspond to the given prefixes in the template
+					Set<String> prefixes = new HashSet<String>(field.getFunctionalPrefixes());
+					for(String string : strings) {
+						if (!prefixes.contains(string)) {
+							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix: "+string));
 						}
+					}
+				}
+				errors.add(new JsonValidationHint(jsonTemplate, i, "Conflicting values (string and ontology term) for field"));
+			}
+			
+			int count = hasOntologies ? termCount : stringCount;
+
+			// assert minimum
+			if (isRequired && count < cardinality.getMinimum()) {
+				errors.add(new JsonValidationHint(jsonTemplate, i, "Minimum Cardinality not met."));
+			}
+
+			// assert maximum
+			if (termCount > cardinality.getMaximum()) {
+				errors.add(new JsonValidationHint(jsonTemplate, i, "Maximum Cardinality exceeded."));
+			}
+
+			// check fields for missing content
+			if (isRequired) {
+				Object[] values = hasOntologies ? terms : strings;
+				for (Object value : values) {
+					if (value == null) {
+						errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
 					}
 				}
 			}
@@ -88,4 +78,14 @@ public class FieldValidatorTool {
 		return errors;
 	}
 
+	private static boolean hasOntologies(TemplateField field) {
+		List<Ontology> ontologies = field.getCorrespondingOntologies();
+		return ontologies != null && !ontologies.isEmpty();
+	}
+	
+	private static boolean hasPrefixes(TemplateField field) {
+		List<String> prefixes = field.getFunctionalPrefixes();
+		return prefixes != null && !prefixes.isEmpty();
+	}
+	
 }
