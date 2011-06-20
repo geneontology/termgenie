@@ -8,6 +8,7 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
+import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -79,7 +80,8 @@ public class HardCodedTermGenerationEngine extends DefaultTermTemplates implemen
 		}
 		Patterns patterns = this.patterns.get(ontology.getUniqueName());
 		if (patterns != null) {
-			patterns.generateTerms(ontology, generationTasks);
+			List<TermGenerationOutput> terms = patterns.generateTerms(ontology, generationTasks);
+			return terms;
 		}
 		// TODO decide if to set error message for unknown ontology
 		return null;	
