@@ -18,7 +18,6 @@ import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
-import org.bbop.termgenie.core.rules.TermGenerationEngine.MultiValueMap;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
@@ -270,29 +269,30 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 		}
 		
 		static TermGenerationParameters createTermGenerationParameters(GWTTermGenerationParameter gwt, GWTTermTemplate gwtTemplate, TermTemplate template) {
-			TermGenerationParameters result = new TermGenerationParameters();
+			TermGenerationParameters result = new TermGenerationParameters(template.getFieldCount());
 			GWTTemplateField[] gwtFields = gwtTemplate.getFields();
 			for (GWTTemplateField gwtField : gwtFields) {
 				TemplateField field = template.getField(gwtField.getName());
-				copyAll(gwt, result, gwtField, field);
+				copyAll(gwt, result, gwtField, template.getFieldPos(field.getName()));
 			}
 			return result;
 		}
 		
-		private static void copyAll(GWTTermGenerationParameter gwt, TermGenerationParameters target, GWTTemplateField gwtKey, TemplateField key) {
-			copy(gwt.getPrefixes(), target.getPrefixes(), gwtKey, key);
-			copy(gwt.getStrings(), target.getStrings(), gwtKey, key);
-			copyConvert(gwt.getTerms(), target.getTerms(), gwtKey, key);
+		private static void copyAll(GWTTermGenerationParameter gwt, TermGenerationParameters target, GWTTemplateField gwtKey, int pos) {
+			copy(gwt.getStrings(), target.getStrings(), gwtKey, pos);
+			copyConvert(gwt.getTerms(), target.getTerms(), gwtKey, pos);
 		}
 		
-		private static void copyConvert(GWTMultiValueMap<GWTOntologyTerm> gwt, MultiValueMap<OntologyTerm> target, GWTTemplateField gwtKey, TemplateField key) {
+		private static void copyConvert(GWTMultiValueMap<GWTOntologyTerm> gwt, OntologyTerm[][] target, GWTTemplateField gwtKey, int pos) {
 			int count = gwt.getCount(gwtKey);
 			if (count > 0) {
+				List<OntologyTerm> terms = new ArrayList<OntologyTerm>(count);
 				for (int i = 0; i < count; i++) {
 					GWTOntologyTerm gwtOntologyTerm = gwt.getValue(gwtKey, i);
 					OntologyTerm value = getOntologyTerm(gwtOntologyTerm);
-					target.addValue(value, key, i);
+					terms.add(value);
 				}
+				target[pos] = terms.toArray(new OntologyTerm[terms.size()]);
 			}
 		}
 
@@ -325,12 +325,15 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment, relations); 
 		}
 
-		private static <T> void copy(GWTMultiValueMap<T> gwt, MultiValueMap<T> target, GWTTemplateField gwtKey, TemplateField key) {
+		@SuppressWarnings("unchecked")
+		private static <T> void copy(GWTMultiValueMap<T> gwt, T[][] target, GWTTemplateField gwtKey, int pos) {
 			int count = gwt.getCount(gwtKey);
 			if (count > 0) {
+				T[] list = (T[]) new Object[count];
 				for (int i = 0; i < count; i++) {
-					target.addValue(gwt.getValue(gwtKey, i), key, i);
+					list[i] = gwt.getValue(gwtKey, i);
 				}
+				target[pos] = list;
 			}
 		}
 	}

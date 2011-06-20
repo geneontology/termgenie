@@ -13,12 +13,10 @@ public class GWTTermGenerationParameter implements IsSerializable {
 
 	private GWTMultiValueMap<GWTOntologyTerm> terms;
 	private GWTMultiValueMap<String> strings;
-	private GWTMultiValueMap<List<String>> prefixes;
 
 	public GWTTermGenerationParameter() {
 		terms = new GWTMultiValueMap<GWTOntologyTerm>();
 		strings = new GWTMultiValueMap<String>();
-		prefixes = new GWTMultiValueMap<List<String>>();
 	}
 
 	/**
@@ -49,22 +47,6 @@ public class GWTTermGenerationParameter implements IsSerializable {
 		this.strings = strings;
 	}
 	
-	/**
-	 * @return the prefixes
-	 */
-	public GWTMultiValueMap<List<String>> getPrefixes() {
-		return prefixes;
-	}
-
-	/**
-	 * @param prefixes the prefixes to set
-	 */
-	void setPrefixes(GWTMultiValueMap<List<String>> prefixes) {
-		this.prefixes = prefixes;
-	}
-
-
-
 	public static final class GWTOntologyTerm implements IsSerializable {
 		private String ontology;
 		private String termId;
@@ -150,6 +132,11 @@ public class GWTTermGenerationParameter implements IsSerializable {
 				}
 				list.add(value);
 			}
+		}
+		
+		public void setValues(List<V> values, GWTTemplateField key) {
+			final String internalKey = calculateInteralKey(key);
+			this.values.put(internalKey, new ArrayList<V>(values));
 		}
 		
 		public String calculateInteralKey(GWTTemplateField key) {

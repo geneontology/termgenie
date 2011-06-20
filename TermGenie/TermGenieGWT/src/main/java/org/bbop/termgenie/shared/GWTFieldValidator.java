@@ -106,62 +106,46 @@ public class GWTFieldValidator {
 		for (GWTTemplateField field : fields) {
 			GWTCardinality cardinality = field.getCardinality();
 
-			int count = parameter.getTerms().getCount(field);
+			int termcount = parameter.getTerms().getCount(field);
 			int stringCount = parameter.getStrings().getCount(field);
-			GWTMultiValueMap<?> values = parameter.getTerms();
+			
+			boolean isRequired = field.isRequired();
+			boolean hasOntology = field.hasOntologies();
 
-			if (count > 0 && stringCount > 0) {
-				errors.add(new GWTValidationHint(field, "Conflicting values (string and ontology term) for field"));
+			if (isRequired && termcount == 0 && stringCount == 0) {
+				errors.add(new GWTValidationHint(field, "Required value missing."));
+				continue;
 			}
-			if (stringCount > count) {
-				count = stringCount;
-				values = parameter.getStrings();
+			if (hasOntology && stringCount > 0) {
+				if (hasPrefixes(field)) {
+					Set<String> allPrefixes = new HashSet<String>(Arrays.asList(field.getFunctionalPrefixes()));
+					for(int i = 0; i < stringCount; i++) {
+						String prefix = parameter.getStrings().getValue(field, i);
+						if (!allPrefixes.contains(prefix)) {
+							errors.add(new GWTValidationHint(field, "Unknow prefix: " + prefix));
+						}
+					}
+				}
+			}
+			int count = hasOntology ? termcount : stringCount;
+
+			// assert minimum
+			if (isRequired && count < cardinality.getMin()) {
+				errors.add(new GWTValidationHint(field, "Minimum Cardinality not met."));
 			}
 
-			if (field.isRequired()) {
-				// assert minimum
-				if (count < cardinality.getMin()) {
-					errors.add(new GWTValidationHint(field, "Minimum Cardinality not met."));
-				}
-
-				// assert maximum
-				if (count > cardinality.getMax()) {
-					errors.add(new GWTValidationHint(field, "Maximum Cardinality exceeded."));
-				}
-
+			// assert maximum
+			if (count > cardinality.getMax()) {
+				errors.add(new GWTValidationHint(field, "Maximum Cardinality exceeded."));
+			}
+			
+			if (isRequired) {
 				// check fields for missing content
-				for (int i = 0; i < count; i++) {
+				GWTMultiValueMap<?> values = hasOntology ? parameter.getTerms() : parameter.getStrings();
+				for (int i = 0; i < termcount; i++) {
 					Object value = values.getValue(field, i);
 					if (value == null) {
 						errors.add(new GWTValidationHint(field, "Required value missing."));
-					}
-				}
-
-			}
-
-			// check prefixes
-			String[] defPrefixes = field.getFunctionalPrefixes();
-			int prefixCount = parameter.getPrefixes().getCount(field);
-			if (defPrefixes == null || defPrefixes.length == 0) {
-				if (prefixCount > 0) {
-					errors.add(new GWTValidationHint(field, "No prefixes expected."));
-				}
-			} else {
-				if (prefixCount > 1) {
-					errors.add(new GWTValidationHint(field, "Expected only one list of prefixes."));
-				}
-				List<String> prefixes = parameter.getPrefixes().getValue(field, 0);
-				if (prefixes != null) {
-					if (prefixes.size() > defPrefixes.length) {
-						errors.add(new GWTValidationHint(field,
-								"Expected only a list of prefixes of max length: "
-										+ defPrefixes.length));
-					}
-					Set<String> defSetPrefixes = new HashSet<String>(Arrays.asList(defPrefixes));
-					for (String prefix : prefixes) {
-						if (!defSetPrefixes.contains(prefix)) {
-							errors.add(new GWTValidationHint(field, "Unknow prefix: " + prefix));
-						}
 					}
 				}
 			}
@@ -169,4 +153,12 @@ public class GWTFieldValidator {
 		return errors;
 	}
 
+	private static boolean hasPrefixes(GWTTemplateField field) {
+		String[] prefixes = field.getFunctionalPrefixes();
+		if (prefixes != null) {
+			return prefixes.length > 0;
+		}
+		return false;
+	}
+	
 }

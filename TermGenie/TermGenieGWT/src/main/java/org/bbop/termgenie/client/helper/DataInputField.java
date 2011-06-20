@@ -187,7 +187,7 @@ public interface DataInputField {
 						selectedPrefixes.add(box.getText());
 					}
 				}
-				parameter.getPrefixes().addValue(selectedPrefixes, field, 0);
+				parameter.getStrings().setValues(selectedPrefixes, field);
 				return true;
 			}
 			setErrorMark();
