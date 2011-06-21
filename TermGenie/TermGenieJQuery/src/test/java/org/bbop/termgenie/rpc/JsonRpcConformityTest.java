@@ -11,19 +11,19 @@ public class JsonRpcConformityTest {
 	public static void main(String[] args) {
 		TypeChecker checker = new GsonTypeChecker();
 		
-		boolean validInterface = checker.isValidInterface(GenerateTermsService.class);
+		boolean validInterface = checker.isValidInterface(GenerateTermsService.class, true);
 		if (!validInterface) {
-			System.err.println("invalid");
+			System.err.println("invalid generateTerms");
 		}
 		
-		validInterface = checker.isValidInterface(OntologyService.class);
+		validInterface = checker.isValidInterface(OntologyService.class, true);
 		if (!validInterface) {
-			System.err.println("invalid");
+			System.err.println("invalid ontology");
 		}
 		
-		validInterface = checker.isValidInterface(ValidateUserCredentialService.class);
+		validInterface = checker.isValidInterface(ValidateUserCredentialService.class, true);
 		if (!validInterface) {
-			System.err.println("invalid");
+			System.err.println("invalid user service");
 		}
 	}
 }
