@@ -75,8 +75,7 @@ $(function() {
 	    methods: ['generate.availableTermTemplates', 
 	              'generate.generateTerms', 
 	              'ontology.availableOntologies', 
-	              'ontology.autocomplete', 
-	              'user.isValidUser']
+	              'commit.isValidUser']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -660,13 +659,11 @@ $(function() {
 		};
 	}
 	
+	// the autocomplete seems to rely on synchronus responses
+	// it does not work with a function call back (so far)
 	var jsonSyncService = new JsonRpc.ServiceProxy("jsonrpc", {
 	    asynchronous: false,
-	    methods: ['generate.availableTermTemplates', 
-	              'generate.generateTerms', 
-	              'ontology.availableOntologies', 
-	              'ontology.autocomplete', 
-	              'user.isValidUser']
+	    methods: ['ontology.autocomplete']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonSyncService, false);
@@ -941,7 +938,29 @@ $(function() {
 		return {
 			submit : function (terms) {
 				// select mode
-				if (checkBoxElem.is(':checked')) {
+				var isCommit = checkBoxElem.is(':checked');
+				
+				var step3AdditionalHeader = $('#span-step3-additional-header');
+				step3AdditionalHeader.empty();
+				
+				var headerMessage = 'Selected ';
+				headerMessage += terms.length;
+				headerMessage += '  Term';
+				if (terms.length > 1) {
+					headerMessage += 's';
+				}
+				headerMessage += ' for ';
+				
+				if (isCommit) {
+					headerMessage += 'Commit';
+				} else {
+					headerMessage += 'Export';
+				}
+				step3AdditionalHeader.append(headerMessage);
+				myAccordion.enablePane(3);
+				myAccordion.activatePane(3);
+				
+				if (isCommit) {
 					// try to commit
 					// TODO fill with method call
 					alert('Commit');
@@ -950,8 +969,6 @@ $(function() {
 					// TODO fill with method call
 					alert('Prepare for export');
 				}
-				myAccordion.enablePane(3);
-				myAccordion.activatePane(3);
 			}
 		};
 	}
@@ -1017,6 +1034,8 @@ $(function() {
 			// show hidden panel
 			$('#div-step3-submit-panel').show();
 		}
+		
+		// Helper functions, to improve readability of the code
 		
 		function isValid(field) {
 			return field && field.length > 0;

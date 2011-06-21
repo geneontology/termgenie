@@ -24,7 +24,13 @@ h1 {
 	font-style:italic;
 	font-weight: bold;
 	margin-left: 10px;
-}	
+}
+
+#span-step3-additional-header {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}
 
 .ui-state-active {
 	background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
