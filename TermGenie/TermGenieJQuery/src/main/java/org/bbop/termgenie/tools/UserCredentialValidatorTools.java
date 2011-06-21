@@ -19,7 +19,7 @@ public class UserCredentialValidatorTools {
 	}
 	
 	
-	public boolean validate(String username, String password) {
+	public boolean validate(String username, String password, String ontology) {
 		// TODO add real implementation: web service call?
 		return false;
 	}

@@ -2,7 +2,7 @@ package org.bbop.termgenie.rpc;
 
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
-import org.bbop.termgenie.services.ValidateUserCredentialService;
+import org.bbop.termgenie.services.TermCommitService;
 import org.json.rpc.commons.GsonTypeChecker;
 import org.json.rpc.commons.TypeChecker;
 
@@ -21,9 +21,9 @@ public class JsonRpcConformityTest {
 			System.err.println("invalid ontology");
 		}
 		
-		validInterface = checker.isValidInterface(ValidateUserCredentialService.class, true);
+		validInterface = checker.isValidInterface(TermCommitService.class, true);
 		if (!validInterface) {
-			System.err.println("invalid user service");
+			System.err.println("invalid term commit service");
 		}
 	}
 }

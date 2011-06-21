@@ -4,8 +4,8 @@ import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.GenerateTermsServiceImpl;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.OntologyServiceImpl;
-import org.bbop.termgenie.services.ValidateUserCredentialService;
-import org.bbop.termgenie.services.ValidateUserCredentialServiceImpl;
+import org.bbop.termgenie.services.TermCommitService;
+import org.bbop.termgenie.services.TermCommitServiceImpl;
 import org.json.rpc.server.JsonRpcExecutor;
 import org.json.rpc.server.JsonRpcServerTransport;
 
@@ -27,8 +27,8 @@ public class ServiceExecutor {
 		OntologyService ontology = new OntologyServiceImpl();
 		executor.addHandler("ontology", ontology, OntologyService.class);
 
-		ValidateUserCredentialService user = new ValidateUserCredentialServiceImpl();
-		executor.addHandler("user", user, ValidateUserCredentialService.class);
+		TermCommitService user = new TermCommitServiceImpl();
+		executor.addHandler("commit", user, TermCommitService.class);
         return executor;
     }
 
