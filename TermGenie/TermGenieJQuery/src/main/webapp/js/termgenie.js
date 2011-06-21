@@ -75,7 +75,9 @@ $(function() {
 	    methods: ['generate.availableTermTemplates', 
 	              'generate.generateTerms', 
 	              'ontology.availableOntologies', 
-	              'commit.isValidUser']
+	              'commit.isValidUser',
+	              'commit.exportTerms',
+	              'commit.commitTerms']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -229,7 +231,7 @@ $(function() {
 				jsonService.generate.generateTerms({
 					params:[ontology, status.parameters],
 					onSuccess: function(result) {
-						renderStep3(result);
+						renderStep3(result, ontology);
 					},
 					onException: function(e) {
 						// TODO decide on logging for this
@@ -263,8 +265,8 @@ $(function() {
 			header.append(headerInfo);
 		}
 		
-		function renderStep3(generationResponse) {
-			createResultReviewPanel(generationResponse);
+		function renderStep3(generationResponse, ontology) {
+			createResultReviewPanel(generationResponse, ontology);
 			myAccordion.enablePane(2);
 			myAccordion.activatePane(2);	
 		}
@@ -936,7 +938,7 @@ $(function() {
 		});
 		
 		return {
-			submit : function (terms) {
+			submit : function (terms, ontology) {
 				// select mode
 				var isCommit = checkBoxElem.is(':checked');
 				
@@ -957,17 +959,42 @@ $(function() {
 					headerMessage += 'Export';
 				}
 				step3AdditionalHeader.append(headerMessage);
+				var step4Container = $('#termgenie-step4-content-container');
+				step4Container.empty();
 				myAccordion.enablePane(3);
 				myAccordion.activatePane(3);
 				
 				if (isCommit) {
+					var username = $('#input-user-name').val();
+					var password = $('#input-user-password').val();
+					// TODO verify username and password
+					
 					// try to commit
-					// TODO fill with method call
-					alert('Commit');
+					jsonService.commit.commitTerms({
+						params: [terms, ontology, username, password],
+						onSuccess: function(result) {
+							renderCommitResult(result, step4Container);
+						},
+						onException: function(e) {
+							// TODO decide on logging for this
+							alert("Unable to compute because: " + e);
+							return true;
+						}
+					});
+					
 				} else {
-					//  just generate the info for the export a obo/owl
-					// TODO fill with method call
-					alert('Prepare for export');
+					// just generate the info for the export a obo/owl
+					jsonService.commit.exportTerms({
+						params: [terms, ontology],
+						onSuccess: function(result) {
+							renderExportResult(result, step4Container);
+						},
+						onException: function(e) {
+							// TODO decide on logging for this
+							alert("Unable to compute because: " + e);
+							return true;
+						}
+					});
 				}
 			}
 		};
@@ -976,6 +1003,7 @@ $(function() {
 	/**
 	 * Display the results for the term generation.
 	 * 
+	 * @param ontology
 	 * @param generationResponse 
 	 * Type: 
 	 * JsonGenerationResponse {
@@ -1000,7 +1028,7 @@ $(function() {
 	 *         }[]
 	 * 	   }[]
 	 */
-	function createResultReviewPanel(generationResponse){
+	function createResultReviewPanel(generationResponse, ontology){
 		var container = $('#div-verification-and-review');
 
 		// clear from previous results
@@ -1029,7 +1057,7 @@ $(function() {
 		if(isValid(generationResponse.generatedTerms)) {
 			checkBoxes = renderGeneratedTerms(parent, generationResponse.generatedTerms);
 
-			setSubmitHandler(checkBoxes, generationResponse.generatedTerms);
+			setSubmitHandler(checkBoxes, generationResponse.generatedTerms, ontology);
 
 			// show hidden panel
 			$('#div-step3-submit-panel').show();
@@ -1128,7 +1156,7 @@ $(function() {
 			$('#button-submit-for-commit-or-export').unbind('click');
 		}
 		
-		function setSubmitHandler(checkBoxes, generatedTerms) {
+		function setSubmitHandler(checkBoxes, generatedTerms, ontology) {
 			/*
 			 * add functionality to the submit button:
 			 * only try to commit, if at least one check box is enabled,
@@ -1150,9 +1178,37 @@ $(function() {
 					return;
 				}
 				
-				myUserPanel.submit(terms);
+				myUserPanel.submit(terms, ontology);
 			});
 		}
+	}
+	
+	/**
+	 * @param commitResults JsonCommitResult {
+	 * 		success: boolean,
+	 * 		message: String,
+	 * 		terms: JsonOntologyTerm[]
+	 * 
+	 * }
+	 * @param container target DOM element
+	 */
+	function renderCommitResult(commitResults, container) {
+		container.append('<div>Commit<div>')
+		// TODO
+	}
+	
+	/**
+	 * @param commitResults JsonExportResult {
+	 * 		success: boolean,
+	 * 		message: String,
+	 * 		formats: String[],
+	 * 		contents: String[]
+	 * }
+	 * @param container target DOM element
+	 */
+	function renderExportResult(exportResults, container) {
+		container.append('<div>Export<div>')
+		// TODO
 	}
 
 	// HTML wrapper functions
