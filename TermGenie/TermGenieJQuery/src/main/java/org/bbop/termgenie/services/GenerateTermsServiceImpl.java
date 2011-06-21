@@ -1,7 +1,6 @@
 package org.bbop.termgenie.services;
 
 import static org.bbop.termgenie.tools.ErrorMessages.*;
-import static org.bbop.termgenie.tools.TermGenerationMessageTool.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.data.JsonGenerationResponse;
+import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
@@ -45,7 +45,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
-//	private static final UserCredentialValidatorTools validator = ImplementationFactory.getUserCredentialValidator();
 	private static final TermGenerationEngine termGeneration = ImplementationFactory.getTermGenerationEngine();
 	private static final OntologyCommitTool committer = ImplementationFactory.getOntologyCommitTool();
 	
@@ -91,11 +90,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (allParameters == null) {
 			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null);
 		}
-//		if (commit) {
-//			if (username == null || username.isEmpty()) {
-//				return new JsonGenerationResponse(MISSING_USERNAME, null, null);
-//			}
-//		}
 		
 		System.out.println(Arrays.toString(allParameters));
 		
@@ -133,39 +127,40 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (!allErrors.isEmpty()) {
 			return new JsonGenerationResponse(null, allErrors, null);
 		}
-//		if (commit) {
-//			// check user name and password
-//			// use java instance, do not do additional round trip via servlet.
-//			boolean valid = validateCredentials(username, password);
-//			if (!valid) {
-//				return new JsonGenerationResponse(UNKOWN_USERNAME_PASSWORD, null, null);
-//			}
-//		}
+		
 		// generate term candidates
 		List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
 		List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
 
-		// validate candidates (or is this done during the generation?)
+		// validate candidates
 		if (candidates == null || candidates.isEmpty()) {
 			return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null);
 		}
+
+		List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
+		for(TermGenerationOutput candidate : candidates) {
+			JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate); 
+			jsonCandidates.add(jsonCandidate);
+		}
+		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, null, jsonCandidates );
 		
-		List<String> messages = new ArrayList<String>(candidates.size());
-		
-//		// commit if required
-//		if (commit) {
-//			boolean success = executeCommit(ontology, candidates);
-//			throw new RuntimeException("Not implemented");
-//			// TODO generate result for a commit (success or error)? status?
-//		}
-//		else {
-			for(TermGenerationOutput candidate : candidates) {
-				messages.add(generateTermValidationMessage(candidate));
-			}
-//		}
-		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, null, messages);
 		// return response
 		return generationResponse;
+	}
+
+	private JsonOntologyTerm createJsonCandidate(TermGenerationOutput candidate) {
+		
+		JsonOntologyTerm term = new JsonOntologyTerm();
+		term.setComment(candidate.getTerm().getComment());
+		term.setDefinition(candidate.getTerm().getDefinition());
+		List<String> defXRef = candidate.getTerm().getDefXRef();
+		if (defXRef != null && !defXRef.isEmpty()) {
+			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
+		}
+		term.setId(candidate.getTerm().getId());
+		term.setLabel(candidate.getTerm().getLabel());
+		term.setLogDef(candidate.getTerm().getLogicalDefinition());
+		return term;
 	}
 
 	private List<TermGenerationInput> createGenerationTasks(String ontologyName, JsonTermGenerationInput[] allParameters) {
@@ -222,10 +217,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		return templates;
 	}
 
-//	protected boolean validateCredentials(String username, String password) {
-//		return validator.validate(username, password);
-//	}
-
 	protected List<TermGenerationOutput> generateTermsInternal(Ontology ontology, List<TermGenerationInput> generationTasks) {
 		return termGeneration.generateTerms(ontology, generationTasks); 
 	}
@@ -235,8 +226,8 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	}
 
 	/**
-	 * Tools for converting a term generation details into the JSON specific
-	 * (transfer) formats.
+	 * Tools for converting term generation details into the JSON enabled
+	 * (transfer) objects.
 	 */
 	static class JsonTemplateTools {
 

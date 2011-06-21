@@ -7,7 +7,7 @@ public class JsonGenerationResponse {
 
 	private String generalError;
 	private JsonValidationHint[] errors;
-	private String[] generatedTerms;
+	private JsonOntologyTerm[] generatedTerms;
 	
 	/**
 	 * Default constructor.
@@ -16,12 +16,12 @@ public class JsonGenerationResponse {
 		super();
 	}
 	
-	public JsonGenerationResponse(String generalError, Collection<JsonValidationHint> errors, Collection<String> terms) {
+	public JsonGenerationResponse(String generalError, Collection<JsonValidationHint> errors, Collection<JsonOntologyTerm> terms) {
 		if (errors != null) {
 			this.errors = errors.toArray(new JsonValidationHint[errors.size()]);
 		}
 		if (terms != null) {
-			this.generatedTerms = terms.toArray(new String[terms.size()]);
+			this.generatedTerms = terms.toArray(new JsonOntologyTerm[terms.size()]);
 		}
 		this.generalError = generalError;
 	}
@@ -43,14 +43,14 @@ public class JsonGenerationResponse {
 	/**
 	 * @return the generatedTerms
 	 */
-	public String[] getGeneratedTerms() {
+	public JsonOntologyTerm[] getGeneratedTerms() {
 		return generatedTerms;
 	}
 
 	/**
 	 * @param generatedTerms the generatedTerms to set
 	 */
-	public void setGeneratedTerms(String[] generatedTerms) {
+	public void setGeneratedTerms(JsonOntologyTerm[] generatedTerms) {
 		this.generatedTerms = generatedTerms;
 	}
 

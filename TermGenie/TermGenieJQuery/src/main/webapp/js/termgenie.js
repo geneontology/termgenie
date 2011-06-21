@@ -972,8 +972,19 @@ $(function() {
 	 *         level: int,
 	 *         hint: String;
 	 *     }[],
-	 *     generatedTerms: String[]
-	 * }
+	 *     generatedTerms: JsonOntologyTerm {
+	 *     	   id: String,
+	 *     	   label: String,
+	 *     	   definition: String,
+	 *     	   logDef: String,
+	 *     	   comment: String,
+	 *     	   defxRef: String[],
+	 *     	   relations: JsonTermRelation {
+	 *     			source: String,
+	 *     			target: String,
+	 *     			properties: String[]
+	 *         }[]
+	 * 	   }[]
 	 */
 	function createResultReviewPanel(generationResponse){
 		var container = $('#div-verification-and-review');
@@ -996,8 +1007,7 @@ $(function() {
 			generalErrorContainer.append('<div class="term-generation-general-error-description">Your request produced the following error:</div>');
 			generalErrorContainer.append('<div class="term-generation-general-error-details">'+generationResponse.generalError+'</div>');
 			generalErrorContainer.append('<div class="term-generation-general-error-description">Please check your input and retry. If the problem persits, please contact the TermGenie team.</div>');
-			
-//			return;
+			return;
 		}
 		
 		function renderWarningLevel(level) {
@@ -1036,6 +1046,22 @@ $(function() {
 			});
 		}
 		
+		
+		/**
+		 * generatedTerms: JsonOntologyTerm {
+	 *     	   id: String,
+	 *     	   label: String,
+	 *     	   definition: String,
+	 *     	   logDef: String,
+	 *     	   comment: String,
+	 *     	   defxRef: String[],
+	 *     	   relations: JsonTermRelation {
+	 *     			source: String,
+	 *     			target: String,
+	 *     			properties: String[]
+	 *         }[]
+	 * 	   }[]
+		 */
 		if(generationResponse.generatedTerms &&
 				generationResponse.generatedTerms.length > 0) {
 			var generatedTermContainer = $('<div class="term-generation-details"></div>');
@@ -1046,14 +1072,21 @@ $(function() {
 			var layout = $('<table cellpadding="5"></table>');
 			generatedTermContainer.append(layout);
 			
-			layout.append('<thead><tr><td></td><td>Label</td><td>Identifier</td><td>Description</td><td>Logical Definition</td><td>MetaData</td><td>Relations</td></tr></thead>');
+			layout.append('<thead><tr><td></td><td>Label</td><td>Identifier</td><td>Definition</td><td>Logical Definition</td><td>MetaData</td><td>Relations</td></tr></thead>');
 			
 			$.each(generationResponse.generatedTerms, function(index, term){
 				
 				layout.append('<tr><td>' +
-						'<input type="checkbox"/>' +
+						'<input type="checkbox" value="'+index+'"/>' +
 						'</td><td>' +
-						term +
+						term.label +
+						'</td><td>' +
+						term.id +
+						'</td><td>' +
+						term.definition +
+						'</td><td>' +
+						term.logDef +
+						'</td><td>' +
 						'</td></tr>');
 			});
 			generatedTermContainer.append('<div class="term-generation-details-description">Please select the terms for the final step.</div>')
