@@ -155,3 +155,27 @@ h1 {
 	text-align: left;
 	vertical-align: top;
 }
+
+.term-generation-export-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-export-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}
+
+.term-generation-commit-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-commit-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}

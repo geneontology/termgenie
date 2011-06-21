@@ -1193,12 +1193,18 @@ $(function() {
 	 * @param container target DOM element
 	 */
 	function renderCommitResult(commitResults, container) {
-		container.append('<div>Commit<div>')
-		// TODO
+		container.append('<div class="term-generation-commit-heading">Commit<div>');
+		if (commitResults.success === true) {
+			// TODO
+		}
+		else {
+			container.append('<div>The commit of the generated terms did not complete normally with the following reason:</div>');
+			container.append('<div class="term-generation-commit-error-details">'+commitResults.message+'</div>');
+		}
 	}
 	
 	/**
-	 * @param commitResults JsonExportResult {
+	 * @param exportResult JsonExportResult {
 	 * 		success: boolean,
 	 * 		message: String,
 	 * 		formats: String[],
@@ -1206,9 +1212,15 @@ $(function() {
 	 * }
 	 * @param container target DOM element
 	 */
-	function renderExportResult(exportResults, container) {
-		container.append('<div>Export<div>')
-		// TODO
+	function renderExportResult(exportResult, container) {
+		container.append('<div class="term-generation-export-heading">Export<div>');
+		if (exportResult.success === true) {
+			// TODO
+		}
+		else {
+			container.append('<div>The export of the generated terms did not complete normally with the following reason:</div>');
+			container.append('<div class="term-generation-export-error-details">'+exportResult.message+'</div>');
+		}
 	}
 
 	// HTML wrapper functions
