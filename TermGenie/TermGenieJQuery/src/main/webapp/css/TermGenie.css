@@ -145,3 +145,7 @@ h1 {
 	margin: 10px;
 }
 
+.termgenie-proposed-terms-table td {
+	text-align: left;
+	vertical-align: top;
+}

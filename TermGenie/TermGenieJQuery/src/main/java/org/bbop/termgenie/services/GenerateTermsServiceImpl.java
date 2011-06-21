@@ -91,8 +91,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null);
 		}
 		
-		System.out.println(Arrays.toString(allParameters));
-		
 		// retrieve target ontology
 		Ontology ontology = ontologyTools.getOntology(ontologyName);
 		if (ontology == null) {
@@ -138,11 +136,19 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 
 		List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
+		Collection<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
 		for(TermGenerationOutput candidate : candidates) {
-			JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate); 
-			jsonCandidates.add(jsonCandidate);
+			if (candidate.isSuccess()) {
+				JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate); 
+				jsonCandidates.add(jsonCandidate);				
+			}
+			else {
+				JsonTermTemplate template = JsonTemplateTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+				jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
+			}
 		}
-		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, null, jsonCandidates );
+		
+		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates );
 		
 		// return response
 		return generationResponse;
