@@ -103,7 +103,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		}
 		if (prefixes.contains("negative_regulation")) {
 			String label = createName("negative regulation of "+ name(x, go), input);
-			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
+			String definition = createDefinition("Any process that stops, prevents or reduces the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("negative regulation of ", x, go, null);
 			String logicalDefinition = "cdef('GO:0065007',[negatively_regulates="+id(x, go)+"])";
 			List<Relation> relations = null; // TODO create code
