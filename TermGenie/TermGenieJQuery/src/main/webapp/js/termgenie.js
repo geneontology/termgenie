@@ -1261,10 +1261,10 @@ function termgenie(){
 					text: "Clear",
 					click: function() {
 						var selected = popupDiv.tabs('option', 'selected');
-						if (selected === 1) {
+						if (selected === 0) {
 							errorPanel.clear();
 						}
-						if (selected === 2) {
+						if (selected === 1) {
 							messagePanel.clear();
 						}
 					}
