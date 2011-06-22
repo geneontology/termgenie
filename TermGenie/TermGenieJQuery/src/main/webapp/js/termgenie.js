@@ -1264,7 +1264,7 @@ function termgenie(){
 						if (selected === 0) {
 							errorPanel.clear();
 						}
-						if (selected === 1) {
+						else if (selected === 1) {
 							messagePanel.clear();
 						}
 					}
@@ -1276,6 +1276,7 @@ function termgenie(){
 				}]
 			});
 			
+			// create tabs in popup, using a custom prefix for tabId
 			popupDiv.tabs({
 				idPrefix: 'termgenie-logging-tabId-'
 			});
@@ -1298,11 +1299,16 @@ function termgenie(){
 				appendMessage: function(message){
 					messagePanel.append(message);
 					// do not force popup, as this is also reported via the dialog box
-					
 				},
 				appendError: function(message, error, hidden) {
 					errorPanel.append(message +' \n '+error);
 					// force popup, except if hidden is true
+					if (!(hidden === true)) {
+						// select the error tab
+						popupDiv.tabs('select', 0);
+						// show error popup
+						popupDiv.dialog('open');
+					}
 				}
 			};
 		}
