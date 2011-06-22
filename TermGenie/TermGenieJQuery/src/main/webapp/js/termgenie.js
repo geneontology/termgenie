@@ -81,6 +81,9 @@ function termgenie(){
 	JsonRpc.setAsynchronous(jsonService, true);
 
 	
+	// create buy icon and message to show during wait
+	$('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
+	
 	// use json-rpc to retrieve available ontologies
 	jsonService.ontology.availableOntologies({
 		onSuccess: function(result) {
@@ -92,6 +95,7 @@ function termgenie(){
 			createOntologySelector(result);
 		},
 		onException: function(e) {
+			$('#div-select-ontology').empty();
 			loggingSystem.logSystemError('AvailableOntologies service call failed',e)
 			return true;
 		}
@@ -182,24 +186,30 @@ function termgenie(){
 		
 		// get intented dom element
 		var elem = $('#div-select-templates-and-parameters');
-		// clear, from possible previous templates
+		// clear, from previous templates
 		elem.empty();
 		
 		// clear header from previous templates
 		$('#span-step2-additional-header').empty();
 		
-		// append layout
-		elem.append(termselect);
+		// set busy message
+		elem.append(createBusyMessage('Quering for available termplates at the server.'));
 		
 		// start async rpc to retrieve available templates
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
 			onSuccess: function(result) {
+				// clear from busy message
+				elem.empty();
+				// append layout
+				elem.append(termselect);
+				
 				termTemplateWidgetList = TermTemplateWidgetList(result);
 				createTemplateSelectorMenu(ontology, result);
 				registerTermGenerationButton();
 			},
 			onException: function(e) {
+				elem.empty();
 				loggingSystem.logSystemError('AvailableTermTemplates service call failed',e);
 				return true;
 			}
@@ -208,7 +218,9 @@ function termgenie(){
 		function registerTermGenerationButton() {
 			// register click handler for term generation button
 			var submitButton = $('#button-termgeneration-start');
+			var busyElement= $('#button-termgeneration-start-progress');
 			submitButton.click(function(){
+				busyElement.empty();
 				var status = termTemplateWidgetList.getAllTemplateParameters();
 				if (status.success !== true) {
 					loggingSystem.logUserMessage('Verification failed, please check marked fields.');
@@ -221,13 +233,16 @@ function termgenie(){
 						'"-Button again, to proceed to the next step.');
 					return;
 				}
+				busyElement.append(createBusyMessage('Verifing your request and generating terms on the server.'));
 				setStep2HeaderInfo(status.parameters);
 				jsonService.generate.generateTerms({
 					params:[ontology, status.parameters],
 					onSuccess: function(result) {
+						busyElement.empty();
 						renderStep3(result, ontology);
 					},
 					onException: function(e) {
+						busyElement.empty();
 						loggingSystem.logSystemError("GenerateTerms service call failed", e);
 						return true;
 					}
@@ -961,25 +976,31 @@ function termgenie(){
 					var password = $('#input-user-password').val();
 					// TODO verify username and password
 					
+					step4Container.append(createBusyMessage('Executing commit request on the server.'));
 					// try to commit
 					jsonService.commit.commitTerms({
 						params: [terms, ontology, username, password],
 						onSuccess: function(result) {
+							step4Container.empty();
 							renderCommitResult(result, step4Container);
 						},
 						onException: function(e) {
+							step4Container.empty();
 							loggingSystem.logSystemError("CommitTerms service call failed", e);
 							return true;
 						}
 					});
 				} else {
+					step4Container.append(createBusyMessage('Preparing terms for export on the server.'));
 					// just generate the info for the export a obo/owl
 					jsonService.commit.exportTerms({
 						params: [terms, ontology],
 						onSuccess: function(result) {
+							step4Container.empty();
 							renderExportResult(result, step4Container);
 						},
 						onException: function(e) {
+							step4Container.empty();
 							loggingSystem.logSystemError("ExportTerms service call failed", error);
 							return true;
 						}
@@ -1423,6 +1444,13 @@ function termgenie(){
 	
 	function createLayoutTableOpenTag() {
 		return '<table class="termgenie-layout-table" cellSpacing="0" cellPadding="0">';
+	}
+	
+	function createBusyMessage(additionalText) {
+		return '<div class="termgenie-busy-message">'+
+			'<img src="icon/wait26trans.gif" alt="Busy Icon"/>'+
+			'<span class="termgenie-busy-message-text">Please wait.</span>'+
+			'<div class="termgenie-busy-additional-text">'+additionalText+'</div><div>';
 	}
 	
 	/**
