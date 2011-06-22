@@ -1,4 +1,4 @@
-$(function() {
+function termgenie(){
 // execute when document-ready
 	
 	/**
@@ -94,8 +94,7 @@ $(function() {
 			createOntologySelector(result);
 		},
 		onException: function(e) {
-			// TODO decide on logging for this
-			alert("Unable to compute because: " + e);
+			loggingSystem.logSystemError('AvailableOntologies service call failed',e)
 			return true;
 		}
 	});
@@ -203,8 +202,7 @@ $(function() {
 				registerTermGenerationButton();
 			},
 			onException: function(e) {
-				// TODO decide on logging for this
-				alert("Unable to compute because: " + e);
+				loggingSystem.logSystemError('AvailableTermTemplates service call failed',e);
 				return true;
 			}
 		});
@@ -215,13 +213,11 @@ $(function() {
 			submitButton.click(function(){
 				var status = termTemplateWidgetList.getAllTemplateParameters();
 				if (status.success !== true) {
-					// TODO use nice message dialog for this
-					alert('Verification failed, please check marked fields.');
+					loggingSystem.logUserMessage('Verification failed, please check marked fields.');
 					return;
 				}
 				if (status.parameters.length === 0) {
-					// TODO use nice message dialog for this
-					alert('Please select a template from the menu, and click on add template. '+
+					loggingSystem.logUserMessage('Please select a template from the menu, and click on add template. '+
 						'Provide details for the required fields and click on the "'+
 						submitButton.text()+
 						'"-Button again, to proceed to the next step.');
@@ -234,8 +230,7 @@ $(function() {
 						renderStep3(result, ontology);
 					},
 					onException: function(e) {
-						// TODO decide on logging for this
-						alert("Unable to compute because: " + e);
+						loggingSystem.logSystemError("GenerateTerms service call failed", e);
 						return true;
 					}
 				});
@@ -762,8 +757,7 @@ $(function() {
 						response(data);	
 					}
 				} catch (e) {
-					// TODO decide on logging for this
-				    alert("Unable to compute because: " + e);
+					loggingSystem.logSystemError('Autocomplete service call failed', e, true);
 				}
 			},
 			select : function(event, ui) {
@@ -976,12 +970,10 @@ $(function() {
 							renderCommitResult(result, step4Container);
 						},
 						onException: function(e) {
-							// TODO decide on logging for this
-							alert("Unable to compute because: " + e);
+							loggingSystem.logSystemError("CommitTerms service call failed", e);
 							return true;
 						}
 					});
-					
 				} else {
 					// just generate the info for the export a obo/owl
 					jsonService.commit.exportTerms({
@@ -990,8 +982,7 @@ $(function() {
 							renderExportResult(result, step4Container);
 						},
 						onException: function(e) {
-							// TODO decide on logging for this
-							alert("Unable to compute because: " + e);
+							loggingSystem.logSystemError("ExportTerms service call failed", error);
 							return true;
 						}
 					});
@@ -1174,7 +1165,7 @@ $(function() {
 					});
 				}
 				if (count == 0) {
-					alert('Please select at least one term to proceed.');
+					loggingSystem.logUserMessage('Please select at least one term to proceed.');
 					return;
 				}
 				
@@ -1213,16 +1204,195 @@ $(function() {
 	 * @param container target DOM element
 	 */
 	function renderExportResult(exportResult, container) {
+		var i;
+		var name;
+		var content;
 		container.append('<div class="term-generation-export-heading">Export<div>');
+		var exportsContainer = $('<div class="term-generation-exports"></div>');
+		exportsContainer.appendTo(container);
 		if (exportResult.success === true) {
-			// TODO
+			for( i = 0; i < formats.length; i += 1) {
+				name = exportResult.formats[i];
+				if (name && name.length > 0 && exportResult.contents.length > i) {
+					content = exportResult.contents[i];
+					if (content && content.length > 0) {
+						renderExport(name, content, exportsContainer);
+					}
+				}
+			}
 		}
 		else {
 			container.append('<div>The export of the generated terms did not complete normally with the following reason:</div>');
 			container.append('<div class="term-generation-export-error-details">'+exportResult.message+'</div>');
 		}
+		
+		
+		function renderExport(name, content, exportsContainer) {
+			exportsContainer.append('<div>'+name+'</div>');
+			exportsContainer.append('<pre>'+content+'</pre>');
+		}
 	}
-
+	
+	// Logging and user messages
+	var loggingSystem = LoggingSystem ();
+	
+	function LoggingSystem () {
+		
+		var popupLoggingPanel = PopupLoggingPanel();
+		var dialogBox = DialogBox();
+		
+		function PopupLoggingPanel() {
+			var popupDiv = $('<div></div>');
+			popupDiv.appendTo('body');
+			var tabTitles = $('<ul></ul>');
+			tabTitles.appendTo(popupDiv);
+			var errorPanel = createPanel("Error Messages", 300, 'termgenie-logging-tabId-1');
+			var messagePanel = createPanel("User Messages", 300, 'termgenie-logging-tabId-2');
+			
+			popupDiv.dialog({
+				autoOpen: false,
+				modal: true,
+				draggable: true,
+				resizable: true,
+				minHeight: 450,
+				minWidth: 500,
+				title: 'Error Logging Console',
+				buttons: [{
+					text: "Clear",
+					click: function() {
+						var selected = popupDiv.tabs('option', 'selected');
+						if (selected === 1) {
+							errorPanel.clear();
+						}
+						if (selected === 2) {
+							messagePanel.clear();
+						}
+					}
+				},{
+					text: "Close Panel",
+					click: function() {
+						popupDiv.dialog('close');
+					}
+				}]
+			});
+			
+			popupDiv.tabs({
+				idPrefix: 'termgenie-logging-tabId-'
+			});
+			
+			// register handler for link to show this panel
+			$('#termgenie-error-console-link').click(function(){
+				popupDiv.dialog('open');
+			});
+			
+			function createPanel(name, maxCount, tabId) {
+				tabTitles.append('<li><a href="'+tabId+'">'+name+'</a></li>');
+				var container = $('<div id="'+tabId+'"></div>');
+				container.appendTo(popupDiv);
+				var contentContainer = $('<div style="overflow: scroll;position:absolute;height:75%;width:90%"></div>');
+				container.append(contentContainer);
+				return LoggingPanel(contentContainer, maxCount);
+			}
+			
+			return {
+				appendMessage: function(message){
+					messagePanel.append(message);
+					// do not force popup, as this is also reported via the dialog box
+					
+				},
+				appendError: function(message, error, hidden) {
+					errorPanel.append(message +' \n '+error);
+					// force popup, except if hidden is true
+				}
+			};
+		}
+		
+		function LoggingPanel(parent, maxCount) {
+			var count = 0;
+			var loggingDiv = $('<div></div>');
+			loggingDiv.appendTo(parent);
+			
+			function getCurrentTime(){
+				var date = new Date();
+				var timeString = date.getFullYear(); // four digit year
+				timeString += '-';
+				timeString = leadingZero(timeString, (1 + date.getMonth())); // month (0-11)
+				timeString += '-';
+				timeString = leadingZero(timeString, date.getDate()); // day in month 1-31
+				timeString += ' ';
+				timeString = leadingZero(timeString, date.getHours()); // 0-23
+				timeString += ':';
+				timeString = leadingZero(timeString, date.getMinutes()); // 0-59
+				timeString += ':';
+				timeString = leadingZero(timeString, date.getSeconds()); // 0-59
+				return timeString;
+				
+				function leadingZero(string, value) {
+					if (value < 10) {
+						string += '0';
+					}
+					string += value;
+					return string;
+				}
+			}
+			
+			return {
+				append : function (message) {
+					count += 1;
+					loggingDiv.append('<div><span class="termgenie-logging-date-time">'+getCurrentTime()+'</span> '+message+'</div>');
+					if (count > maxCount) {
+						loggingDiv.children().first().remove();
+					}
+				},
+				clear : function() {
+					count = 0;
+					loggingDiv.empty();
+				}
+			};
+		}
+		
+		function DialogBox () {
+			var dialogDiv = $('<div></div>');
+			dialogDiv.appendTo('body');
+			var dialogContent = $('<div></div>');
+			dialogContent.appendTo(dialogDiv);
+			dialogDiv.dialog({
+				autoOpen: false,
+				modal: true,
+				draggable: true,
+				resizable: true,
+				title: 'Information',
+				buttons: [{
+					text: "Ok",
+					click: function() {
+						dialogDiv.dialog('close');
+					}
+				}]
+			});
+			
+			return {
+				show : function(message) {
+					// write message also to hidden log
+					popupLoggingPanel.appendMessage(message);
+					
+					// write message to dialog
+					dialogContent.empty();
+					dialogContent.append(message);
+					dialogDiv.dialog('open');
+				} 
+			}
+	}
+		
+		return {
+			logSystemError : function(message, error, hidden) {
+				popupLoggingPanel.appendError(message, error, hidden);
+			},
+			logUserMessage : function(message) {
+				dialogBox.show(message);
+			}
+		};
+	}
+	
 	// HTML wrapper functions
 	
 	function createAddRemoveWidget(parent, addfunction, removeFunction) {
@@ -1281,4 +1451,13 @@ $(function() {
 		return '<button type="button" id="'+id+'">'+text+'</button>';
 	}
 
+	
+	return {
+		// empty object to hide any functionality
+	};
+};
+
+// actuall call in jquery to execute the termgenie scripts after the document is ready
+$(function(){
+	termgenie();
 });
