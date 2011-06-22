@@ -1,29 +1,24 @@
 package org.bbop.termgenie.rpc;
 
+import static org.junit.Assert.*;
+
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.TermCommitService;
 import org.json.rpc.commons.GsonTypeChecker;
 import org.json.rpc.commons.TypeChecker;
+import org.junit.Test;
 
 public class JsonRpcConformityTest {
 
-	public static void main(String[] args) {
+	@Test
+	public void testMethodInterfaces() {
 		TypeChecker checker = new GsonTypeChecker();
 		
-		boolean validInterface = checker.isValidInterface(GenerateTermsService.class, true);
-		if (!validInterface) {
-			System.err.println("invalid generateTerms");
-		}
+		assertTrue(checker.isValidInterface(GenerateTermsService.class, true));
 		
-		validInterface = checker.isValidInterface(OntologyService.class, true);
-		if (!validInterface) {
-			System.err.println("invalid ontology");
-		}
+		assertTrue(checker.isValidInterface(OntologyService.class, true));
 		
-		validInterface = checker.isValidInterface(TermCommitService.class, true);
-		if (!validInterface) {
-			System.err.println("invalid term commit service");
-		}
+		assertTrue(checker.isValidInterface(TermCommitService.class, true));
 	}
 }
