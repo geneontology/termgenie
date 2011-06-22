@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.HermiT.Reasoner;
@@ -18,9 +18,12 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
+import owltools.graph.OWLGraphWrapper;
+
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 
-import owltools.graph.OWLGraphWrapper;
+import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
+import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 
 public class ResonerSpeedTest {
 
@@ -45,11 +48,28 @@ public class ResonerSpeedTest {
 		testReasoner(PelletReasonerFactory.getInstance(), "Pellet");
 	}
 	
+	@Test
+	public void testJCel() {
+		System.out.println("----------------------");
+		System.out.println("Reasoner:  JCEL");
+		Timer t0 = new Timer();
+		JcelReasoner reasoner = new JcelReasoner(ontology);
+		JcelReasonerProcessor processor = reasoner.getProcessor();
+		processor.precomputeInferences();
+		t0.stop();
+		System.out.println("precomputeInferences:    "+t0.getTimeString());
+
+		testReasoner(reasoner);
+	}
+	
 	private void testReasoner(OWLReasonerFactory reasonerFactory, String name) {
 		System.out.println("----------------------");
 		System.out.println("Reasoner: "+name);
 		OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-		
+		testReasoner(reasoner);
+	}
+	
+	private void testReasoner(OWLReasoner reasoner) {
 		Timer t1 = new Timer();
 		boolean isConsistent = reasoner.isConsistent();
 		t1.stop();
