@@ -1,6 +1,4 @@
 function termgenie(){
-// execute when document-ready
-	
 	/**
 	 * Provide an Accordion with the additional functionality to 
 	 * enable/disable individual panes for click events.
@@ -1465,5 +1463,6 @@ function termgenie(){
 
 // actuall call in jquery to execute the termgenie scripts after the document is ready
 $(function(){
+	// execute when document-ready
 	termgenie();
 });
