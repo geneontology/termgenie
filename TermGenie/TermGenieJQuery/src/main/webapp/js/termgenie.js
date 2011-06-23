@@ -695,15 +695,19 @@ function termgenie(){
 		
 		function updateDescriptionDiv(ofElement) {
 			var w = ofElement.outerWidth();
+			if (w < 400) {
+				w = 400;
+			}
 			var h = ofElement.outerHeight();
+			if (h < 200) {
+				h = 200;
+			}
 			if (descriptionDiv === null) {
 				descriptionDiv = $('<div><div class="term-description-content"></div></div>')
 					.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
 					.css({
 						'width': w,
-						'height': h,
-						'padding': '5px',
-						'overflow': 'auto' 
+						'height': h
 					})
 					.appendTo('body');
 				descriptionDiv.resizable({
@@ -738,7 +742,7 @@ function termgenie(){
 			var layout = createLayoutTableOpenTag();
 			layout += '<tr><td>Ontology</td><td>'+item.identifier.ontology+'</td></tr>';
 			layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
-			layout += '<tr><td>Identfier</td><td>'+item.identifier.termId+'</td></tr>';
+			layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
 			if (item.description && item.description.length > 0) {
 				layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
 			}

@@ -78,6 +78,15 @@ h1 {
 	text-decoration: underline;
 }
 
+.term-description-content {
+	overflow: auto;
+	margin: 5px;
+}
+
+.term-description-content .termgenie-layout-table td{
+	margin: 5px;
+	padding: 5px;
+}
 
 .div-submit-button {
 	margin-top: 40px;
