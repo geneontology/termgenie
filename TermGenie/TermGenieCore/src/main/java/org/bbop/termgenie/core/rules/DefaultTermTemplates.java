@@ -92,7 +92,7 @@ public class DefaultTermTemplates {
 			requiredPlusOptionalFields(new TemplateField("target", UBERON_ONTOLOGY)));
 	
 	public final static TermTemplate metazoan_morphogenesis = create(GENE_ONTOLOGY, "metazoan_morphogenesis",
-			"morphogenesis of an animal anatomical structure'",
+			"morphogenesis of an animal anatomical structure",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			requiredPlusOptionalFields(new TemplateField("target", UBERON_ONTOLOGY)));
 	

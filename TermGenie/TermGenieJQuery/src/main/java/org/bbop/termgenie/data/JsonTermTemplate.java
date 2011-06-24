@@ -10,24 +10,12 @@ public class JsonTermTemplate {
 
 	private String name;
 	private String display;
+	private String description;
 	private String hint;
 	private JsonTemplateField[] fields;
 
 	public JsonTermTemplate() {
 		super();
-	}
-
-	/**
-	 * @param name
-	 * @param display
-	 * @param hint
-	 * @param fields
-	 */
-	public JsonTermTemplate(String name, String display, String hint, JsonTemplateField[] fields) {
-		super();
-		this.name = name;
-		this.hint = hint;
-		this.fields = fields;
 	}
 
 	/**
@@ -88,6 +76,20 @@ public class JsonTermTemplate {
 		this.display = display;
 	}
 
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -103,6 +105,11 @@ public class JsonTermTemplate {
 		if (display != null) {
 			builder.append("display:");
 			builder.append(display);
+			builder.append(", ");
+		}
+		if (description != null) {
+			builder.append("description:");
+			builder.append(description);
 			builder.append(", ");
 		}
 		if (fields != null) {

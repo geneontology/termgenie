@@ -417,6 +417,9 @@ function termgenie(){
 					});
 			
 			templateContainer.append(templateTitle);
+			if (template.description && template.description.length > 0) {
+				templateContainer.append('<div class="termgenie-term-template-description">Description: <span class="description-content">'+template.description+'</span></div>');
+			}
 			if (template.hint && template.hint.length > 0) {
 				templateContainer.append('<div class="termgenie-term-template-hint">Hint: <span class="hint-content">'+template.hint+'</span></div>');
 			}

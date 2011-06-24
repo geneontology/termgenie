@@ -213,7 +213,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	metazoan_morphogenesis
-description	morphogenesis of an animal anatomical structure'
+description	morphogenesis of an animal anatomical structure
 ontology	GeneOntology
 #
 FIELD
