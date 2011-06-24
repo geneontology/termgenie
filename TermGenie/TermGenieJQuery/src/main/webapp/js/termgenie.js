@@ -1007,22 +1007,7 @@ function termgenie(){
 	 * Create the dynamic part of the user panel
 	 */
 	function createUserPanel() {
-		/* 
-		 * add functionality to the commit checkbox:
-		 * only enable username and password fields, 
-		 * if the checkbox is enabled.
-		 */ 
-//		var checkBoxElem = $('#checkbox-try-commit');
-//		checkBoxElem.click(function(){
-//			if (checkBoxElem.is(':checked')) {
-//				$('#input-user-name').removeAttr("disabled");
-//				$('#input-user-password').removeAttr("disabled");
-//			} else {
-//				$('#input-user-name').attr("disabled", true);
-//				$('#input-user-password').attr("disabled", true);
-//			}
-//		});
-		
+		var checkBoxElem = $('#checkbox-try-commit');
 		return {
 			submit : function (terms, ontology) {
 				// select mode
