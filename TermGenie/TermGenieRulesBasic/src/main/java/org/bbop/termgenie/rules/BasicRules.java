@@ -181,9 +181,9 @@ class BasicRules {
 			return true;
 		}
 		if (ontology != null) {
-			Set<OWLObject> descendants = ontology.getDescendants(parent);
-			if (descendants != null) {
-				return descendants.contains(x);
+			Set<OWLObject> ancestors = ontology.getAncestors(x);
+			if (ancestors != null) {
+				return ancestors.contains(parent);
 			}
 		}
 		return false;
@@ -388,7 +388,7 @@ class BasicRules {
 	protected CheckResult checkGenus(OWLObject x, OWLObject branch, OWLGraphWrapper ontology, TermGenerationInput input) {
 		if (!genus(x, branch, ontology)) {
 			// check branch
-			return new CheckResult(error("The specified term does not correspond to the patterns  The term "+getTermShortInfo(x, ontology)+" is not a descendant of "+getTermShortInfo(branch, ontology), input));
+			return new CheckResult(error("The specified term does not correspond to the patterns  The term "+getTermShortInfo(branch, ontology)+" is not a parent of "+getTermShortInfo(x, ontology), input));
 		}
 		return okay;
 	}

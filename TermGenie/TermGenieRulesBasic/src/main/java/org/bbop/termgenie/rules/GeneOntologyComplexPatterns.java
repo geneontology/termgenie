@@ -90,7 +90,8 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		if (genus(x, GO0065007, go)) {
 			// 	biological regulation
-			return error("Cannot create 'regulation of regulation of X' terms. The term "+getTermShortInfo(x, go)+" is a descendant of "+getTermShortInfo(GO0065007, go), input);
+			// TODO restriction should only used asserted links, not implied ones
+			return error("Cannot create 'regulation of regulation of X' terms. The term "+getTermShortInfo(GO0065007, go)+" is a parent of "+getTermShortInfo(x, go), input);
 		}
 		List<String> prefixes = getFieldStringList(input, "target");
 		if (prefixes == null || prefixes.isEmpty()) {
