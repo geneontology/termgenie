@@ -81,6 +81,8 @@ h1 {
 .term-description-content {
 	overflow: auto;
 	margin: 5px;
+	height: 95%;
+	width: 95%;
 }
 
 .term-description-content .termgenie-layout-table td{
