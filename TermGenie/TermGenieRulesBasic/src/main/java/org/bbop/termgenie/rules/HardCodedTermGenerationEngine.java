@@ -8,7 +8,6 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
-import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 
 import owltools.graph.OWLGraphWrapper;
 

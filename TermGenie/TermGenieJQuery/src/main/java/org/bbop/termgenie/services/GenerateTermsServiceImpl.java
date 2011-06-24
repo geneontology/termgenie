@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
@@ -43,6 +44,8 @@ import owltools.graph.OWLQuantifiedProperty;
 
 public class GenerateTermsServiceImpl implements GenerateTermsService {
 
+	private static final Logger logger = Logger.getLogger(GenerateTermsServiceImpl.class);
+	
 	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
 	private static final TermGenerationEngine termGeneration = ImplementationFactory.getTermGenerationEngine();
@@ -91,6 +94,10 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null);
 		}
 		
+//		if (logger.isInfoEnabled()) {
+//			logger.info("Parameters: {ontologyName: " + ontologyName + ", allParameters: "
+//					+ Arrays.toString(allParameters) + "}");
+//		}
 		// retrieve target ontology
 		Ontology ontology = ontologyTools.getOntology(ontologyName);
 		if (ontology == null) {
@@ -126,32 +133,37 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new JsonGenerationResponse(null, allErrors, null);
 		}
 		
-		// generate term candidates
-		List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
-		List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
+		try {
+			// generate term candidates
+			List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
+			List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
 
-		// validate candidates
-		if (candidates == null || candidates.isEmpty()) {
-			return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null);
-		}
+			// validate candidates
+			if (candidates == null || candidates.isEmpty()) {
+				return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null);
+			}
 
-		List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
-		Collection<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
-		for(TermGenerationOutput candidate : candidates) {
-			if (candidate.isSuccess()) {
-				JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate); 
-				jsonCandidates.add(jsonCandidate);				
+			List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
+			Collection<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
+			for(TermGenerationOutput candidate : candidates) {
+				if (candidate.isSuccess()) {
+					JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate); 
+					jsonCandidates.add(jsonCandidate);				
+				}
+				else {
+					JsonTermTemplate template = JsonTemplateTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+					jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
+				}
 			}
-			else {
-				JsonTermTemplate template = JsonTemplateTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
-				jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
-			}
+			
+			JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates );
+			
+			// return response
+			return generationResponse;
+		} catch (Exception exception) {
+			logger.warn("An error occured during the term generation for the parameters: {ontologyName: "+ontologyName+", allParameters: "+Arrays.toString(allParameters)+"}", exception);
+			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persits.", null, null);
 		}
-		
-		JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates );
-		
-		// return response
-		return generationResponse;
 	}
 
 	private JsonOntologyTerm createJsonCandidate(TermGenerationOutput candidate) {
@@ -166,6 +178,12 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		term.setId(candidate.getTerm().getId());
 		term.setLabel(candidate.getTerm().getLabel());
 		term.setLogDef(candidate.getTerm().getLogicalDefinition());
+		String[] synonyms = null;
+		Set<String> set = candidate.getTerm().getSynonyms();
+		if (set != null && !set.isEmpty()) {
+			synonyms = set.toArray(new String[set.size()]);
+		}
+		term.setSynonyms(synonyms);
 		return term;
 	}
 

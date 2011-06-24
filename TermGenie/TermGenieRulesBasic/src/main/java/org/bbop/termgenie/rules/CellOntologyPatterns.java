@@ -49,8 +49,8 @@ public class CellOntologyPatterns extends Patterns {
 		}
 		String label = createName(name(a, uberon) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that is part of a "+name(a, uberon)+".", input);
-		Set<String> synonyms = null;
-		String logicalDefinition = "cdef("+id(c, cell)+",[part_of="+id(a, uberon)+"]),";
+		Set<String> synonyms = null; // TODO
+		String logicalDefinition = "cdef("+id(c, cell)+", [part_of= "+id(a, uberon)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
 	}
@@ -69,8 +69,8 @@ public class CellOntologyPatterns extends Patterns {
 		}
 		String label = createName(name(p, pro, go1) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
-		Set<String> synonyms = null;
-		String logicalDefinition = "cdef("+id(c, cell)+",[has_plasma_membrane_part="+id(p, pro, go1)+"]),";
+		Set<String> synonyms = null; // TODO
+		String logicalDefinition = "cdef("+id(c, cell)+", [has_plasma_membrane_part= "+id(p, pro, go1)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
 	}

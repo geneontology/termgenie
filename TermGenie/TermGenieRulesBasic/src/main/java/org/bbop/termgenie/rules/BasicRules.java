@@ -67,7 +67,7 @@ class BasicRules {
 		return null;
 	}
 	
-	protected Set<String> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix) {
+	protected Set<String> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix, String label) {
 		String[] synonymStrings = getSynonyms(x, ontology);
 		if (synonymStrings == null || synonymStrings.length == 0) {
 			return null;
@@ -82,21 +82,26 @@ class BasicRules {
 			}
 			synonyms.add(synonym);
 		}
+		synonyms.remove(label);
 		return synonyms;
 	}
 	
-	protected Set<String> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1, String middle, OWLObject x2, OWLGraphWrapper ontology2, String suffix) {
+	protected Set<String> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1, String middle, OWLObject x2, OWLGraphWrapper ontology2, String suffix, String label) {
 		String[] synonymStrings1 = getSynonyms(x1, ontology1);
-		if (synonymStrings1 == null || synonymStrings1.length == 0) {
-			return null;
-		}
 		String[] synonymStrings2 = getSynonyms(x2, ontology2);
-		if (synonymStrings2 == null || synonymStrings2.length == 0) {
+		boolean empty1 = synonymStrings1 == null || synonymStrings1.length == 0;
+		boolean empty2 = synonymStrings2 == null || synonymStrings2.length == 0;
+		if (empty1 && empty2) {
+			// both do not have any synonyms
 			return null;
 		}
+		
+		List<String> synonyms1 = createSynList(x1, ontology1, synonymStrings1, empty1);
+		List<String> synonyms2 = createSynList(x2, ontology2, synonymStrings2, empty2);
+		
 		Set<String> synonyms = new HashSet<String>();
-		for (String synonym1 : synonymStrings1) {
-			for (String synonym2 : synonymStrings2) {
+		for (String synonym1 : synonyms1) {
+			for (String synonym2 : synonyms2) {
 				StringBuilder sb = new StringBuilder();
 				if (prefix != null) {
 					sb.append(prefix);
@@ -112,6 +117,25 @@ class BasicRules {
 				synonyms.add(sb.toString());
 			}
 		}
+		synonyms.remove(label);
+		return synonyms;
+	}
+
+	private List<String> createSynList(OWLObject x, OWLGraphWrapper ontology,
+			String[] synonymStrings, boolean empty) {
+		List<String> synonyms;
+		
+		String label = ontology.getLabel(x);
+		
+		if (empty) {
+			// use label for synonym generation
+			synonyms = Collections.singletonList(label);
+		}
+		else {
+			synonyms = new ArrayList<String>(synonymStrings.length + 1);
+			synonyms.addAll(Arrays.asList(synonymStrings));
+			synonyms.add(label);
+		}
 		return synonyms;
 	}
 	
@@ -121,6 +145,31 @@ class BasicRules {
 			return ontology.getSynonymStrings(id);
 		}
 		return null;
+	}
+	
+	protected String createCDef(String prefix, OWLObject x, OWLGraphWrapper ontology, String infix, String suffix) {
+		return createCDef(prefix, Collections.singletonList(x), ontology, infix, null, suffix);
+	}
+	
+	protected String createCDef(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String type, String separator, String suffix) {
+		StringBuilder sb = new StringBuilder();
+		if (prefix != null) {
+			sb.append(prefix);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			OWLObject x = list.get(i);
+			if (i > 0) {
+				sb.append(separator);
+			}
+			if (type != null) {
+				sb.append(type);
+			}
+			sb.append(ontology.getIdentifier(x));
+		}
+		if (suffix != null) {
+			sb.append(suffix);
+		}
+		return sb.toString();
 	}
 	
 	protected boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology) {
@@ -242,6 +291,25 @@ class BasicRules {
 		return "GO:Random";
 	}
 	
+	protected String createDefinition(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
+		StringBuilder sb = new StringBuilder();
+		if (prefix != null) {
+			sb.append(prefix);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			OWLObject x = list.get(i);
+			if (i > 0 && infix != null) {
+				sb.append(infix);
+			}
+			sb.append(refname(x, ontology));
+		}
+		
+		if (suffix != null) {
+			sb.append(suffix);
+		}
+		return createDefinition(sb.toString(), input);
+	}
+	
 	protected String createDefinition(String definition, TermGenerationInput input) {
 		String inputDefinition = getFieldSingleString(input, "Definition");
 		if (inputDefinition != null) {
@@ -289,5 +357,39 @@ class BasicRules {
 		// try to create new id
 		String id = createNewId(input, ontology);
 		output.add(success(new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
+	}
+	
+	protected String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology) {
+		return "\""+ontology.getLabel(x)+"\" ("+ontology.getIdentifier(x)+")";
+	}
+	
+	protected static class CheckResult {
+		protected boolean isGenus;
+		List<TermGenerationOutput> error;
+		
+		/**
+		 * @param error
+		 */
+		protected CheckResult(List<TermGenerationOutput> error) {
+			this.isGenus = false;
+			this.error = error;
+		}
+
+		protected CheckResult() {
+			this.isGenus = true;
+			this.error = null;
+		}
+		
+		
+	}
+	
+	private static CheckResult okay = new CheckResult();
+	
+	protected CheckResult checkGenus(OWLObject x, OWLObject branch, OWLGraphWrapper ontology, TermGenerationInput input) {
+		if (!genus(x, branch, ontology)) {
+			// check branch
+			return new CheckResult(error("The specified term does not correspond to the patterns  The term "+getTermShortInfo(x, ontology)+" is not a descendant of "+getTermShortInfo(branch, ontology), input));
+		}
+		return okay;
 	}
 }

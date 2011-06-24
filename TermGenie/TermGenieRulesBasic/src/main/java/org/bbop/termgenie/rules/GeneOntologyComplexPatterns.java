@@ -3,6 +3,9 @@ package org.bbop.termgenie.rules;
 import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,13 +82,15 @@ class GeneOntologyComplexPatterns extends Patterns {
 	
 	protected List<TermGenerationOutput> allRegulationTemplate(TermGenerationInput input, Map<String, OntologyTerm> pending, OWLObject branch) {
 		OWLObject x = getSingleTerm(input, "target", go);
-		if (!genus(x, branch, go)) {
-			// check branch
-			return error("The specified term does not correspond to the patterns", input);
+		
+		CheckResult check = checkGenus(x, branch, go, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		if (genus(x, GO0065007, go)) {
 			// 	biological regulation
-			return error("Cannot create 'regulation of regulation of X' terms", input);
+			return error("Cannot create 'regulation of regulation of X' terms. The term "+getTermShortInfo(x, go)+" is a descendant of "+getTermShortInfo(GO0065007, go), input);
 		}
 		List<String> prefixes = getFieldStringList(input, "target");
 		if (prefixes == null || prefixes.isEmpty()) {
@@ -96,24 +101,24 @@ class GeneOntologyComplexPatterns extends Patterns {
 		if (prefixes.contains("regulation")) {
 			String label = createName("regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("regulation of ", x, go, null);
-			String logicalDefinition = "cdef('GO:0065007',[regulates="+id(x, go)+"])";
+			Set<String> synonyms = synonyms("regulation of ", x, go, null, label);
+			String logicalDefinition = "cdef('GO:0065007', [regulates= "+id(x, go)+"])";
 			List<Relation> relations = null; // TODO create code
 			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
 		if (prefixes.contains("negative_regulation")) {
 			String label = createName("negative regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that stops, prevents or reduces the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("negative regulation of ", x, go, null);
-			String logicalDefinition = "cdef('GO:0065007',[negatively_regulates="+id(x, go)+"])";
+			Set<String> synonyms = synonyms("negative regulation of ", x, go, null, label);
+			String logicalDefinition = "cdef('GO:0065007', [negatively_regulates= "+id(x, go)+"])";
 			List<Relation> relations = null; // TODO create code
 			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
 		if (prefixes.contains("positive_regulation")) {
 			String label = createName("positive regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that activates or increases the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("positive regulation of ", x, go, null);
-			String logicalDefinition = "cdef('GO:0065007',[positively_regulates="+id(x, go)+"])";
+			Set<String> synonyms = synonyms("positive regulation of ", x, go, null, label);
+			String logicalDefinition = "cdef('GO:0065007', [positively_regulates= "+id(x, go)+"])";
 			List<Relation> relations = null; // TODO create code
 			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
 		}
@@ -130,14 +135,20 @@ class GeneOntologyComplexPatterns extends Patterns {
 	protected List<TermGenerationOutput> involved_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject p = getSingleTerm(input, "part", go);
 		OWLObject w = getSingleTerm(input, "whole", go);
-		if (!genus(p, GO0008150, go) || !genus(w, GO0008150, go)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(p, GO0008150, go, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		check = checkGenus(w, GO0008150, go, input);
+		if (check.isGenus == false) {
+			return check.error;
+		}
+		
 		String label = createName(name(p, go) + " involved in " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is involved in "+name(w, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
-		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
+		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
+		String logicalDefinition = "cdef("+id(p, go)+", [part_of= "+id(w, go)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -149,14 +160,20 @@ class GeneOntologyComplexPatterns extends Patterns {
 	protected List<TermGenerationOutput> takes_place_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject p = getSingleTerm(input, "process", go);
 		OWLObject c = getSingleTerm(input, "whole", go);
-		if (!genus(p, GO0008150, go) || !genus(c, GO0005575, go)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(p, GO0008150, go, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		check = checkGenus(c, GO0005575, go, input);
+		if (check.isGenus == false) {
+			return check.error;
+		}
+		
 		String label = createName(name(p, go) + " in " + name(c, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that takes place in "+name(c, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null);
-		String logicalDefinition = "cdef("+id(p, go)+",['OBO_REL:occurs_in'="+id(c, go)+"]),";
+		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null, label);
+		String logicalDefinition = "cdef("+id(p, go)+", ['OBO_REL:occurs_in'= "+id(c, go)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -165,14 +182,20 @@ class GeneOntologyComplexPatterns extends Patterns {
 	protected List<TermGenerationOutput> part_of_cell_component(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject p = getSingleTerm(input, "part", go);
 		OWLObject w = getSingleTerm(input, "whole", go);
-		if (!genus(p, GO0005575, go) || !genus(w, GO0005575, go)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(p, GO0005575, go, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		check = checkGenus(w, GO0005575, go, input);
+		if (check.isGenus == false) {
+			return check.error;
+		}
+		
 		String label = createName(name(p, go) + " " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is part of a "+name(w, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null);
-		String logicalDefinition = "cdef("+id(p, go)+",[part_of="+id(w, go)+"]),";
+		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
+		String logicalDefinition = "cdef("+id(p, go)+", [part_of= "+id(w, go)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -183,14 +206,16 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> protein_binding(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject x = getSingleTerm(input, "target", pro);
-		if (!genus(x, PR000000001, pro)) {
-			// check if protein ontology [PRO]
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(x, PR000000001, pro, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		String label = createName(name(x, pro) + " binding", input);
 		String definition = createDefinition("Interacting selectively and non-covalently with  "+name(x, pro)+".", input);
-		Set<String> synonyms = synonyms(null, x, pro, " binding");
-		String logicalDefinition = "cdef('GO:0005488',['OBO_REL:results_in_binding_of'="+id(x, pro)+"]),";
+		Set<String> synonyms = synonyms(null, x, pro, " binding", label);
+		String logicalDefinition = "cdef('GO:0005488', ['OBO_REL:results_in_binding_of'= "+id(x, pro)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -201,14 +226,16 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> metazoan_development(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject x = getSingleTerm(input, "target", uberon);
-		if (!genus(x, UBERON0001062, uberon)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(x, UBERON0001062, uberon, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		String label = createName(name(x, uberon) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, uberon)+" over time, from its formation to the mature structure.", input);
-		Set<String> synonyms = synonyms(null, x, uberon, " development");
-		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, uberon)+"]),";
+		Set<String> synonyms = synonyms(null, x, uberon, " development", label);
+		String logicalDefinition = "cdef('GO:0032502', ['OBO_REL:results_in_complete_development_of'= "+id(x, uberon)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -219,14 +246,16 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> metazoan_morphogenesis(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject x = getSingleTerm(input, "target", uberon);
-		if (!genus(x, UBERON0001062, uberon)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(x, UBERON0001062, uberon, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		String label = createName(name(x, uberon) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, uberon)+" is generated and organized.", input);
-		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis");
-		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, uberon)+"]),";
+		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis", label);
+		String logicalDefinition = "cdef('GO:0009653', ['OBO_REL:results_in_morphogenesis_of'= "+id(x, uberon)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -237,14 +266,16 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> plant_development(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject x = getSingleTerm(input, "target", plant);
-		if (!genus(x, PO0025131, plant)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(x, PO0025131, plant, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		String label = createName(name(x, plant) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, plant)+" over time, from its formation to the mature structure.", input);
-		Set<String> synonyms = synonyms(null, x, plant, " development");
-		String logicalDefinition = "cdef('GO:0032502',['OBO_REL:results_in_complete_development_of'"+id(x, plant)+"]),";
+		Set<String> synonyms = synonyms(null, x, plant, " development", label);
+		String logicalDefinition = "cdef('GO:0032502', ['OBO_REL:results_in_complete_development_of'= "+id(x, plant)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
@@ -255,37 +286,111 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> plant_morphogenesis(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject x = getSingleTerm(input, "target", plant);
-		if (!genus(x, PO0025131, plant)) {
-			// check branch
-			return error("The specified terms do not correspond to the pattern", input);
+		
+		CheckResult check = checkGenus(x, PO0025131, plant, input);
+		if (check.isGenus == false) {
+			return check.error;
 		}
+		
 		String label = createName(name(x, plant) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, plant)+" is generated and organized.", input);
-		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis");
-		String logicalDefinition = "cdef('GO:0009653',['OBO_REL:results_in_morphogenesis_of'"+id(x, plant)+"]),";
+		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis", label);
+		String logicalDefinition = "cdef('GO:0009653', ['OBO_REL:results_in_morphogenesis_of'= "+id(x, plant)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
 	}
 	
 	/*
-	template(structural_protein_complex(X,Y),
-         [
-          %requires= ['http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo'],
-          cdef= cdef('GO:0043234',[has_part=X,has_part=Y]),
-          name= [name(X),'-',name(Y),' complex'],
-          synonyms= [[synonym(X),'-',synonym(Y),' complex']],
-          def= ['Any protein complex consisting of a',name(X),' and a ',name(Y),'.']
-         ]).
+	 * requires= http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo
 	 */
 	@ToMatch
 	protected List<TermGenerationOutput> structural_protein_complex(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		List<OWLObject> list = getListTerm(input, "unit", pro);
 		for (OWLObject x : list) {
-			if (!genus(x, PR000000001, pro)) {
-				// check branch
-				return error("The specified terms do not correspond to the pattern", input);
+			CheckResult check = checkGenus(x, PR000000001, pro, input);
+			if (check.isGenus == false) {
+				return check.error;
 			}
 		}
+		
+		String label = createName(null, list, pro, "-"," complex", input);
+		String definition = createDefinition("Any protein complex consisting of ",list, pro, ", ",".", input);
+		Set<String> synonyms = synonyms(null, list, pro, "-", " complex", label);
+		String logicalDefinition = createCDef("cdef('GO:0043234', [",list, pro, "has_part= ", ", ", "])");
+		List<Relation> relations = null; // TODO create code
+		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, pro);
+	}
+	
+	private String createName(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
+		StringBuilder sb = new StringBuilder();
+		if (prefix != null) {
+			sb.append(prefix);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			if (i > 0) {
+				sb.append(infix);
+			}
+			sb.append(name(list.get(i), ontology));
+		}
+		if (suffix != null) {
+			sb.append(suffix);
+		}
+		return createName(sb.toString(), input);
+	}
+	
+	private Set<String> synonyms(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, String label) {
+		final int size = list.size();
+		if (size == 1) {
+			return synonyms(prefix, list.get(0), ontology, suffix, label);
+		}
+		else if (size > 1) {
+			List<String> prefixes = Collections.singletonList(prefix == null ? "" : prefix);
+			for (int i = 0; i < list.size(); i++) {
+				OWLObject x = list.get(i);
+				String middle;
+				if (i == 0 || infix == null) {
+					middle = "";
+				}
+				else {
+					middle = infix;
+				}
+				prefixes = appendSynonyms(prefixes, x, ontology, middle);
+			}
+			
+			Set<String> result;
+			if (suffix == null) {
+				result = new HashSet<String>(prefixes);
+			} else {
+				result = new HashSet<String>();
+				for (String string : prefixes) {
+					result.add(string+suffix);
+				}
+			}
+			result.remove(label);
+			return result;
+		}
 		return null;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private List<String> appendSynonyms(List<String> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix) {
+		String[] synonymStrings = ontology.getSynonymStrings(x);
+		List<String> synonyms;
+		String label = ontology.getLabel(x);
+		if (synonymStrings == null || synonymStrings.length == 0) {
+			synonyms = Collections.singletonList(label);
+		}
+		else {
+			synonyms = new ArrayList<String>(synonymStrings.length + 1);
+			synonyms.addAll(Arrays.asList(synonymStrings));
+			synonyms.add(label);
+		}
+		List<String> results = new ArrayList<String>(synonyms.size() * prefixes.size());
+		for (String prefix : prefixes) {
+			for(String synonym : synonyms) {
+				results.add(prefix + infix + synonym);
+			}
+		}
+		return results;
 	}
 }

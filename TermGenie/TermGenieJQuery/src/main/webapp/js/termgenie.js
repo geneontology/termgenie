@@ -64,7 +64,82 @@ function termgenie(){
 			}
 		};
 	};
+	
+	function LoginPanel() {
+		
+		var panel = createLoginPanel();
+		
+		
+		return {
+			isLoggedIn: function() {
+				return false;
+			},
+			getCredentials: function() {
+				return {
+					username : '',
+					password : ''
+				}
+			}
+		};
+		
+		function createLoginPanel() {
+			var elem = $('<div style="width: 200px"></div>');
+			elem.appendTo('body');
+			elem.css({
+				display:'block',
+				position:'absolute',
+				top:10,
+				right:10,
+				width:'200px',
+				background:'#eee',
+				border:'1px solid #ddd'
+			});
+			var loginClickElem = $('<span class="myClickable">Log in</span>');
+			elem.append(loginClickElem);
+			
+			var logoutClickElem = $('<span class="myClickable">Log out</span>');
+			
+			var loginPanel = $('<div>'+
+					'<div style="padding-bottom:5px">To commit terms a login is required.</div>'+
+					'<table><tr><td>Username:</td>'+
+					'<td><input type="text" id="input-user-name"/></td></tr>'+
+					'<tr><td>Password:</td>'+
+					'<td><input type="password" id="input-user-password"/></td></tr>'+
+					'</table>'+
+					'</div>');
+			loginPanel.appendTo('body');
+			
+			var loginBusyPanel = $('<div></div>');
+			loginBusyPanel.appendTo(loginPanel);
+			
+			loginPanel.dialog({
+				title: 'Login for TermGenie',
+				autoOpen: false,
+				height: 250,
+				width: 350,
+				modal: true,
+				buttons: {
+					"Log In": function() {
+						// TODO execute login
+						// on success replace with username and logout button
+//						elem.detach();
+					},
+					"Cancel": function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+			
+			loginClickElem.click(function(){
+				loginPanel.dialog('open');
+			});
+			
+			return elem;
+		}
+	}
+	
 	var myAccordion = MyAccordion('#accordion');
+	var myLoginPanel = LoginPanel(); 
 	var myUserPanel = createUserPanel();
 	
 	//create proxy for json rpc
@@ -863,7 +938,7 @@ function termgenie(){
 				for ( var i = 0; i < count; i++) {
 					var inputElem = list[i];
 					if (inputElem) {
-						var csuccess = input.extractParameter(parameter, field, i);
+						var csuccess = inputElem.extractParameter(parameter, field, i);
 						success = success && csuccess;
 					}
 				}
@@ -937,16 +1012,16 @@ function termgenie(){
 		 * only enable username and password fields, 
 		 * if the checkbox is enabled.
 		 */ 
-		var checkBoxElem = $('#checkbox-try-commit');
-		checkBoxElem.click(function(){
-			if (checkBoxElem.is(':checked')) {
-				$('#input-user-name').removeAttr("disabled");
-				$('#input-user-password').removeAttr("disabled");
-			} else {
-				$('#input-user-name').attr("disabled", true);
-				$('#input-user-password').attr("disabled", true);
-			}
-		});
+//		var checkBoxElem = $('#checkbox-try-commit');
+//		checkBoxElem.click(function(){
+//			if (checkBoxElem.is(':checked')) {
+//				$('#input-user-name').removeAttr("disabled");
+//				$('#input-user-password').removeAttr("disabled");
+//			} else {
+//				$('#input-user-name').attr("disabled", true);
+//				$('#input-user-password').attr("disabled", true);
+//			}
+//		});
 		
 		return {
 			submit : function (terms, ontology) {
@@ -1137,11 +1212,11 @@ function termgenie(){
 			generatedTermContainer.appendTo(container);
 			
 			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>')
-			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates. Please select the terms for the final step.</div>')
+			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>')
 			var layout = $('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
-			layout.append('<thead><tr><td></td><td>Label</td><td>Identifier</td><td>Definition</td><td>Logical Definition</td><td>MetaData</td><td>Relations</td></tr></thead>');
+			layout.append('<thead><tr><td></td><td>Label</td><td>Definition</td><td>Logical Definition</td><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr></thead>');
 			
 			$.each(generatedTerms, function(index, term){
 				
@@ -1154,14 +1229,24 @@ function termgenie(){
 				checkBoxes[checkBoxCount] = checkBox;
 				checkBoxCount += 1;
 				
-				var fieldnames = ['label','id','definition','logDef']; 
+				var fieldnames = ['label','definition','logDef']; 
 				$.each(fieldnames, function(index, fieldName) {
 					var tdElement = $('<td></td>');
 					tdElement.appendTo(trElement);
 					tdElement.append(term[fieldName]);
 				});
+				
+				var tdElement = $('<td></td>');
+				tdElement.appendTo(trElement);
+				if(term.synonyms && term.synonyms.length > 0) {
+					var subtable = $('<ul></ul>');
+					subtable.appendTo(tdElement);
+					$.each(term.synonyms, function(index, value){
+						subtable.append('<li>'+value+'</li>');
+					});
+				}
 			});
-			generatedTermContainer.append('<div class="term-generation-details-description">Please select the terms for the final step.</div>')
+			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>')
 			
 			return checkBoxes;
 		}

@@ -38,8 +38,8 @@ public class HumanPhenotypePatterns extends Patterns {
 		}
 		String label = createName(name(q, pato) + " " + name(e, fma), input);
 		String definition = createDefinition("Any "+name(e, fma)+" that is  "+name(q, pato)+".", input);
-		Set<String> synonyms = null;
-		String logicalDefinition = "cdef("+id(q, pato)+",['OBO_REL:inheres_in'="+id(e, fma)+"]),";
+		Set<String> synonyms = null; // TODO
+		String logicalDefinition = "cdef("+id(q, pato)+", ['OBO_REL:inheres_in'= "+id(e, fma)+"])";
 		List<Relation> relations = null; // TODO create code
 		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, hpo);
 	}

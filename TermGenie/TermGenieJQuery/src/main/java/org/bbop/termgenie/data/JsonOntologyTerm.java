@@ -9,6 +9,7 @@ public class JsonOntologyTerm {
 	private String definition;
 	private String logDef;
 	private String comment;
+	private String[] synonyms; 
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
 	
@@ -114,6 +115,20 @@ public class JsonOntologyTerm {
 		this.relations = relations;
 	}
 
+	/**
+	 * @return the synonyms
+	 */
+	public String[] getSynonyms() {
+		return synonyms;
+	}
+
+	/**
+	 * @param synonyms the synonyms to set
+	 */
+	public void setSynonyms(String[] synonyms) {
+		this.synonyms = synonyms;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -146,6 +161,11 @@ public class JsonOntologyTerm {
 			builder.append(comment);
 			builder.append(", ");
 		}
+		if (synonyms != null) {
+			builder.append("synonyms=");
+			builder.append(Arrays.toString(synonyms));
+			builder.append(", ");
+		}
 		if (defxRef != null) {
 			builder.append("defxRef=");
 			builder.append(Arrays.toString(defxRef));
@@ -158,7 +178,7 @@ public class JsonOntologyTerm {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 	public static class JsonTermRelation {
 		private String source;
 		private String target;
