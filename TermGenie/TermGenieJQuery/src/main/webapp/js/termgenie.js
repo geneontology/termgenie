@@ -617,7 +617,18 @@ function termgenie(){
 							inputFields[i] = TextFieldInput(tdElement, i);
 						}
 						else {
-							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max);
+							var validator = undefined;
+							if (field.name == 'DefX_Ref') {
+								validator = function(text) {
+									if(!text || text.length < 3) {
+										return false;
+									}
+									var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
+									var matching = pattern.test(text); 
+									return matching;
+								};
+							}
+							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max, validator);
 						}
 					}
 				}
@@ -660,7 +671,7 @@ function termgenie(){
 	}
 	
 	
-	function TextFieldInput(elem, templatePos) {
+	function TextFieldInput(elem, templatePos, validator) {
 		var inputElement = $('<input type="text"/>'); 
 		elem.append(inputElement);
 		
@@ -678,12 +689,20 @@ function termgenie(){
 		
 		return {
 			extractParameter : function(parameter, field, pos) {
+				var success;
 				clearErrorState();
 				if (!pos) {
 					pos = 0;
 				}
-				var text = elem.val();
+				var text = inputElement.val();
 				if (text !== null && text.length > 0) {
+					if (validator) {
+						success = validator(text);
+						if(success === false) {
+							setErrorState();
+							return false;
+						}
+					}
 					var list = parameter.strings[templatePos];
 					if (!list) {
 						list = [];
@@ -692,7 +711,7 @@ function termgenie(){
 					list[pos] = text;
 					return true;
 				}
-				var success = (field.required === false);
+				success = (field.required === false);
 				if (success === false) {
 					setErrorState();
 				}
@@ -701,7 +720,7 @@ function termgenie(){
 		};
 	}
 	
-	function TextFieldInputList(container, templatePos, min, max) {
+	function TextFieldInputList(container, templatePos, min, max, validator) {
 		
 		var count = 0;
 		var list = [];
@@ -716,7 +735,7 @@ function termgenie(){
 			if (count <  max) {
 				var listElem = $('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
-				list[count] = TextFieldInput(listElem.children().first(), templatePos);
+				list[count] = TextFieldInput(listElem.children().first(), templatePos, validator);
 				count += 1;
 			}
 		}
