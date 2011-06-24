@@ -47,14 +47,16 @@ public class DefaultTermTemplates {
 	private static final TemplateField Field_Part_BP = new TemplateField("part", GENE_ONTOLOGY_BP);
 	private static final TemplateField Field_Whole_BP = new TemplateField("whole", GENE_ONTOLOGY_BP);
 	
-	public final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation",
+	public final static TermTemplate all_regulation = create(GENE_ONTOLOGY, "all_regulation", "regulation: biological_process",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically",
+			null,
 			createRules("Dummy Rule\n     2nd line","Dummy Name Rule\n2nd line"),
 			Field_Target_Regulation_BP,
 			Field_DefX_Ref);
 
-	public final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf",
+	public final static TermTemplate all_regulation_mf = create(GENE_ONTOLOGY, "all_regulation_mf", "regulation: molecular_function",
 			"Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for molecular functions). Names, synonyms and definitions are all generated automatically",
+			null,
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			Field_Target_Regulation_MF,
 			Field_DefX_Ref);
@@ -178,10 +180,14 @@ public class DefaultTermTemplates {
 		return create(correspondingOntology, name, description, null, rules, fields);
 	}
 	
-	
 	private static TermTemplate create(Ontology correspondingOntology, String name, String description, String hint, List<TemplateRule> rules,
 			TemplateField...fields) {
-		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, description, Arrays.asList(fields), rules, hint);
+		return create(correspondingOntology, name, null, description, hint, rules, fields);
+	}
+	
+	private static TermTemplate create(Ontology correspondingOntology, String name, String displayName, String description, String hint, List<TemplateRule> rules,
+			TemplateField...fields) {
+		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, displayName, description, Arrays.asList(fields), rules, hint);
 		defaultTemplates.add(termTemplate);
 		return termTemplate;
 	}

@@ -373,6 +373,9 @@ function termgenie(){
 		// foreach template create a menu entry, use index for retrieval
 		$.each(templates, function(intIndex, objValue) {
 			var templateName = objValue.name;
+			if (objValue.display && objValue.display.length > 0) {
+				templateName = objValue.display;
+			}
 			var option = $('<option />');
 			option.text(templateName);
 			option.val(intIndex);
@@ -400,7 +403,11 @@ function termgenie(){
 		function createTemplateSubList(template, id, wrapperId) {
 			var templateContainer = $('<div id="'+wrapperId+'" class="template-list-wrapper"></div>');
 			templateContainer.appendTo($('#div-all-template-parameters'));
-			var templateTitle = $('<div class="termgenie-template-header">Template: <span class="label-template-name">'+template.name+'</span></div>');
+			var templateDisplay = template.name;
+			if (template.display && template.display.length > 0) {
+				templateDisplay = template.display;
+			}
+			var templateTitle = $('<div class="termgenie-template-header">Template: <span class="label-template-name">'+templateDisplay+'</span></div>');
 			createAddRemoveWidget(templateTitle, 
 					function(){
 						privateAddTemplate(template);

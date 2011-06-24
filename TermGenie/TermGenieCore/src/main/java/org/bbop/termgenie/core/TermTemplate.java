@@ -10,6 +10,7 @@ public class TermTemplate implements OntologyAware {
 
 	private final List<Ontology> correspondingOntologies;
 	private final String name;
+	private final String displayName;
 	private final String description;
 	private final List<TemplateField> fields;
 	private final List<TemplateRule> rules;
@@ -25,7 +26,7 @@ public class TermTemplate implements OntologyAware {
 	 * @param fields
 	 * @param rules
 	 */
-	public TermTemplate(Ontology correspondingOntology, String name, String description,
+	public TermTemplate(Ontology correspondingOntology, String name, String displayName, String description,
 			List<TemplateField> fields, List<TemplateRule> rules, String hint) {
 		super();
 		this.correspondingOntologies = Collections.singletonList(correspondingOntology);
@@ -33,6 +34,7 @@ public class TermTemplate implements OntologyAware {
 			throw new IllegalArgumentException("The name, must never be empty");
 		}
 		this.name = name;
+		this.displayName = displayName;
 		if (fields == null || fields.isEmpty()) {
 			throw new IllegalArgumentException("The field list, must never be empty");
 		}
@@ -80,6 +82,13 @@ public class TermTemplate implements OntologyAware {
 	 */
 	public String getHint() {
 		return hint;
+	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**
@@ -138,6 +147,11 @@ public class TermTemplate implements OntologyAware {
 		if (name != null) {
 			builder.append("name=");
 			builder.append(name);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("displayName=");
+			builder.append(displayName);
 			builder.append(", ");
 		}
 		if (correspondingOntologies != null) {

@@ -34,6 +34,7 @@ public class FlatFileTermTemplateIO {
 	private static final String FLAT_FILE_TAG_REQUIRED = "required";
 	private static final String FLAT_FILE_TAG_DESCRIPTION = "description";
 	private static final String FLAT_FILE_TAG_NAME = "name";
+	private static final String FLAT_FILE_TAG_DISPLAY_NAME = "displayname";
 	private static final String FLAT_FILE_TAG_TEMPLATE = "TEMPLATE";
 	private static final String FLAT_FILE_TAG_FIELD = "FIELD";
 
@@ -78,6 +79,13 @@ public class FlatFileTermTemplateIO {
 		// name
 		writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(template.getName());
 		writer.newLine();
+		
+		// display name
+		String displayName = template.getDisplayName();
+		if (displayName != null) {
+			writer.append(FLAT_FILE_TAG_DISPLAY_NAME).append(SEPARATOR_CHAR).append(displayName);
+			writer.newLine();
+		}
 		
 		// description
 		String description = template.getDescription();
@@ -159,6 +167,7 @@ public class FlatFileTermTemplateIO {
 	private class ReadData {
 		String ontology = null;
 		String name = null;
+		String displayname = null;
 		String description = null;
 		String hint = null;
 		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
@@ -178,7 +187,7 @@ public class FlatFileTermTemplateIO {
 		
 		TermTemplate createTermTemplate() {
 			List<Ontology> ontologies = getOntologies(ontology);
-			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, description, createFields(), createRule(rules), hint);
+			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, displayname, description, createFields(), createRule(rules), hint);
 			return termTermplate;
 		}
 		
@@ -249,6 +258,8 @@ public class FlatFileTermTemplateIO {
 				}
 			} else if(line.startsWith(FLAT_FILE_TAG_HINT)) {
 				data.hint = value;
+			} else if(line.startsWith(FLAT_FILE_TAG_DISPLAY_NAME)) {
+				data.displayname = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
 				data.description = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {

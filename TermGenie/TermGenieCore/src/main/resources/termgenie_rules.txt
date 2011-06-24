@@ -1,5 +1,6 @@
 TEMPLATE
 name	all_regulation
+displayname	regulation: biological_process
 description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
 #
@@ -23,6 +24,7 @@ Dummy Name Rule
 
 TEMPLATE
 name	all_regulation_mf
+displayname	regulation: molecular_function
 description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for molecular functions). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
 #
