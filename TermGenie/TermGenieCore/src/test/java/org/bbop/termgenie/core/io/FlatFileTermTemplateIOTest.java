@@ -62,6 +62,7 @@ public class FlatFileTermTemplateIOTest {
 			TermTemplate t2 = l2.get(i);
 			assertEquals(t1.getName(), t2.getName());
 			assertEquals(t1.getDescription(), t2.getDescription());
+			assertEquals(t1.getHint(), t2.getHint());
 			compareList(t1.getCorrespondingOntologies(), t2.getCorrespondingOntologies());
 			List<TemplateRule> rl1 = t1.getRules();
 			List<TemplateRule> rl2 = t2.getRules();

@@ -61,10 +61,11 @@ public class DefaultTermTemplates {
 	
 	public final static TermTemplate involved_in = create(GENE_ONTOLOGY, "involved_in",
 			"processes involved in other processes",
+			"[part] involved in [whole]",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			requiredPlusOptionalFields(Field_Part_BP, Field_Whole_BP));
 	
-	public final static TermTemplate takes_place_in = create(GENE_ONTOLOGY, "takes_place_in",
+	public final static TermTemplate occurs_in = create(GENE_ONTOLOGY, "occurs_in",
 			"processes occurring in parts of the cell",
 			createRules("Dummy Rule","Dummy Name Rule\n2nd line"),
 			requiredPlusOptionalFields(
@@ -174,7 +175,13 @@ public class DefaultTermTemplates {
 	
 	private static TermTemplate create(Ontology correspondingOntology, String name, String description, List<TemplateRule> rules,
 			TemplateField...fields) {
-		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, description, Arrays.asList(fields), rules);
+		return create(correspondingOntology, name, description, null, rules, fields);
+	}
+	
+	
+	private static TermTemplate create(Ontology correspondingOntology, String name, String description, String hint, List<TemplateRule> rules,
+			TemplateField...fields) {
+		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, description, Arrays.asList(fields), rules, hint);
 		defaultTemplates.add(termTemplate);
 		return termTemplate;
 	}

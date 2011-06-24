@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class JsonTermTemplate {
 
 	private String name;
+	private String hint;
 	private JsonTemplateField[] fields;
 
 	public JsonTermTemplate() {
@@ -19,9 +20,10 @@ public class JsonTermTemplate {
 	 * @param name
 	 * @param fields
 	 */
-	public JsonTermTemplate(String name, JsonTemplateField[] fields) {
+	public JsonTermTemplate(String name, String hint, JsonTemplateField[] fields) {
 		super();
 		this.name = name;
+		this.hint = hint;
 		this.fields = fields;
 	}
 
@@ -55,6 +57,20 @@ public class JsonTermTemplate {
 		this.fields = fields;
 	}
 	
+	/**
+	 * @return the hint
+	 */
+	public String getHint() {
+		return hint;
+	}
+
+	/**
+	 * @param hint the hint to set
+	 */
+	public void setHint(String hint) {
+		this.hint = hint;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -70,6 +86,11 @@ public class JsonTermTemplate {
 		if (fields != null) {
 			builder.append("fields:");
 			builder.append(Arrays.toString(fields));
+			builder.append(", ");
+		}
+		if (hint != null) {
+			builder.append("hint:");
+			builder.append(hint);
 		}
 		builder.append("}");
 		return builder.toString();

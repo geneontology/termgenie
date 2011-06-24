@@ -11,6 +11,7 @@ ontology	GeneOntology	biological_process
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 RULE	TermRule
 Dummy Rule
@@ -33,6 +34,7 @@ ontology	GeneOntology	molecular_function
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 RULE	TermRule
 Dummy Rule
@@ -44,6 +46,7 @@ Dummy Name Rule
 TEMPLATE
 name	involved_in
 description	processes involved in other processes
+hint	[part] involved in [whole]
 ontology	GeneOntology
 #
 FIELD
@@ -64,6 +67,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -76,7 +80,7 @@ Dummy Name Rule
 
 
 TEMPLATE
-name	takes_place_in
+name	occurs_in
 description	processes occurring in parts of the cell
 ontology	GeneOntology
 #
@@ -98,6 +102,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -132,6 +137,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -161,6 +167,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -180,7 +187,7 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-ontology	Uberon	Metazoan
+ontology	Uberon
 #
 FIELD
 name	Name
@@ -190,6 +197,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -209,7 +217,7 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-ontology	Uberon	Metazoan
+ontology	Uberon
 #
 FIELD
 name	Name
@@ -219,6 +227,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -238,7 +247,7 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-ontology	Uberon	Plant
+ontology	PO
 #
 FIELD
 name	Name
@@ -248,6 +257,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -264,7 +274,7 @@ ontology	GeneOntology
 FIELD
 name	target
 required	true
-ontology	Uberon	Plant
+ontology	PO
 #
 FIELD
 name	Name
@@ -274,6 +284,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -291,7 +302,7 @@ description	protein complex defined structurally
 ontology	GeneOntology
 #
 FIELD
-name	protein units
+name	unit
 required	true
 cardinality	2..N
 ontology	ProteinOntology
@@ -304,6 +315,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -334,6 +346,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -368,6 +381,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -402,6 +416,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -426,7 +441,7 @@ ontology	CL
 FIELD
 name	location
 required	true
-ontology	Uberon	Metazoan
+ontology	Uberon
 #
 FIELD
 name	Name
@@ -436,6 +451,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -471,6 +487,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment
@@ -490,12 +507,12 @@ ontology	Uberon
 FIELD
 name	part
 required	true
-ontology	Uberon	Metazoan
+ontology	Uberon
 #
 FIELD
 name	whole
 required	true
-ontology	Uberon	Metazoan
+ontology	Uberon
 #
 FIELD
 name	Name
@@ -505,6 +522,7 @@ name	Definition
 #
 FIELD
 name	DefX_Ref
+cardinality	1..N
 #
 FIELD
 name	Comment

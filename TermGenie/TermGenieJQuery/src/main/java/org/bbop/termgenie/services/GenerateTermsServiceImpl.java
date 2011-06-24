@@ -264,6 +264,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		static JsonTermTemplate createJsonTermTemplate(TermTemplate template) {
 			JsonTermTemplate jsonTermTemplate = new JsonTermTemplate();
 			jsonTermTemplate.setName(template.getName());
+			jsonTermTemplate.setHint(template.getHint());
 			List<TemplateField> fields = template.getFields();
 			int size = fields.size();
 			JsonTemplateField[] jsonFields = new JsonTemplateField[size];

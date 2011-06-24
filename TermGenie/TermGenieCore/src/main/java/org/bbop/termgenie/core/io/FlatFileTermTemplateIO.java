@@ -27,6 +27,7 @@ import org.bbop.termgenie.core.TermTemplate;
 public class FlatFileTermTemplateIO {
 	
 	private static final String FLAT_FILE_TAG_RULE = "RULE";
+	private static final String FLAT_FILE_TAG_HINT = "hint";
 	private static final String FLAT_FILE_TAG_ONTOLOGY = "ontology";
 	private static final String FLAT_FILE_TAG_PREFIXES = "prefixes";
 	private static final String FLAT_FILE_TAG_CARDINALITY = "cardinality";
@@ -82,6 +83,13 @@ public class FlatFileTermTemplateIO {
 		String description = template.getDescription();
 		if (description != null) {
 			writer.append(FLAT_FILE_TAG_DESCRIPTION).append(SEPARATOR_CHAR).append(description);
+			writer.newLine();
+		}
+		
+		// hint
+		final String hint = template.getHint();
+		if (hint != null) {
+			writer.append(FLAT_FILE_TAG_HINT).append(SEPARATOR_CHAR).append(hint);
 			writer.newLine();
 		}
 		// ontologies
@@ -152,6 +160,7 @@ public class FlatFileTermTemplateIO {
 		String ontology = null;
 		String name = null;
 		String description = null;
+		String hint = null;
 		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
 		Map<String, String> currentField = null;
 		Map<String, StringBuilder> rules = new LinkedHashMap<String, StringBuilder>();
@@ -169,7 +178,7 @@ public class FlatFileTermTemplateIO {
 		
 		TermTemplate createTermTemplate() {
 			List<Ontology> ontologies = getOntologies(ontology);
-			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, description, createFields(), createRule(rules));
+			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, description, createFields(), createRule(rules), hint);
 			return termTermplate;
 		}
 		
@@ -238,6 +247,8 @@ public class FlatFileTermTemplateIO {
 				} else {
 					data.currentField.put(FLAT_FILE_TAG_NAME, value);
 				}
+			} else if(line.startsWith(FLAT_FILE_TAG_HINT)) {
+				data.hint = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
 				data.description = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {

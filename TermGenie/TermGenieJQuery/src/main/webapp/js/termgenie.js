@@ -410,8 +410,10 @@ function termgenie(){
 					});
 			
 			templateContainer.append(templateTitle);
-			templateContainer.append('<div id="'+id+'"></div>')
-			
+			if (template.hint && template.hint.length > 0) {
+				templateContainer.append('<div class="termgenie-term-template-hint">Hint: <span class="hint-content">'+template.hint+'</span></div>');
+			}
+			templateContainer.append('<div id="'+id+'"></div>');
 		}
 		
 		function privateAddTemplate(template) {

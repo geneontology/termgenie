@@ -13,6 +13,7 @@ public class TermTemplate implements OntologyAware {
 	private final String description;
 	private final List<TemplateField> fields;
 	private final List<TemplateRule> rules;
+	private final String hint;
 	
 	//TODO
 	// what is the actual template?, How to handle automatic name generation?
@@ -25,7 +26,7 @@ public class TermTemplate implements OntologyAware {
 	 * @param rules
 	 */
 	public TermTemplate(Ontology correspondingOntology, String name, String description,
-			List<TemplateField> fields, List<TemplateRule> rules) {
+			List<TemplateField> fields, List<TemplateRule> rules, String hint) {
 		super();
 		this.correspondingOntologies = Collections.singletonList(correspondingOntology);
 		if (name == null || name.isEmpty()) {
@@ -38,6 +39,7 @@ public class TermTemplate implements OntologyAware {
 		this.fields = Collections.unmodifiableList(fields);
 		this.rules = rules;
 		this.description = description;
+		this.hint = hint;
 	}
 
 	@Override
@@ -71,6 +73,13 @@ public class TermTemplate implements OntologyAware {
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * @return the hint
+	 */
+	public String getHint() {
+		return hint;
 	}
 
 	/**
@@ -149,6 +158,11 @@ public class TermTemplate implements OntologyAware {
 		if (rules != null) {
 			builder.append("rules=");
 			builder.append(rules);
+			builder.append(", ");
+		}
+		if (hint != null) {
+			builder.append("hint=");
+			builder.append(hint);
 		}
 		builder.append("]");
 		return builder.toString();

@@ -42,7 +42,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 	 */
 	protected GeneOntologyComplexPatterns(OWLGraphWrapper go, OWLGraphWrapper pro, OWLGraphWrapper uberon, OWLGraphWrapper plant) {
 		super(all_regulation, all_regulation_mf,
-				involved_in, takes_place_in,
+				involved_in, occurs_in,
 				part_of_cell_component, protein_binding,
 				metazoan_development, metazoan_morphogenesis,
 				plant_development, plant_morphogenesis,
@@ -158,7 +158,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 	 * requires http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo
 	 */
 	@ToMatch
-	protected List<TermGenerationOutput> takes_place_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+	protected List<TermGenerationOutput> occurs_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject p = getSingleTerm(input, "process", go);
 		OWLObject c = getSingleTerm(input, "whole", go);
 		
