@@ -321,14 +321,25 @@ function termgenie(){
 				if (success === false) {
 					var details = [];
 					$.each(status.extractionResult.getErrors().list(), function(index, error){
-						/*
-						 * error{
-						 * 	message: String,
-						 * 	template: template,
-						 * 	field: field
-						 * }
-						 */
-						details[index] = error.message;
+						var message = '';
+						if (error.template) {
+							message += 'The template <nobr>\'';
+							if (error.template.display && error.template.display.length > 0) {
+								message += error.template.display;
+							} else {
+								message += error.template.name;
+							}
+							if (error.field) {
+								message += '\'</nobr> and field <nobr>\''+error.field.name;
+								message += '\'</nobr> have';
+							}
+							else {
+								message += '\'</nobr> has';
+							}
+							message += ' the following error:<br/>';
+						}
+						message += error.message;
+						details[index] = message;
 					});
 					var logMessage = 'Verification failed. There ';
 					if (details.length === 1) {
@@ -1623,6 +1634,7 @@ function termgenie(){
 			dialogDiv.dialog({
 				autoOpen: false,
 				modal: true,
+				minWidth: 450,
 				draggable: true,
 				resizable: true,
 				title: 'Information',
