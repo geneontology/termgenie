@@ -4,6 +4,8 @@ function termgenie(){
 	 * enable/disable individual panes for click events.
 	 * 
 	 * @param id html-id for the accordian div tag
+	 * 
+	 * @returns methods for the accordion
 	 */
 	function MyAccordion(id) {
 		// private variables;
@@ -65,15 +67,32 @@ function termgenie(){
 		};
 	};
 	
+	/**
+	 * Handle all elements of the login and user managmenent process.
+	 * 
+	 * @returns methods for the login panel
+	 */
 	function LoginPanel() {
 		
 		var panel = createLoginPanel();
 		
 		
 		return {
+			/**
+			 * Check if the session is logged in. 
+			 * 
+			 * @returns boolean
+			 */
 			isLoggedIn: function() {
 				return false;
 			},
+			
+			/**
+			 * Retrieve the username and password for commiting.
+			 * Only valid, if the user is logged in.
+			 * 
+			 * @returns { username, password }
+			 */
 			getCredentials: function() {
 				return {
 					username : '',
@@ -138,6 +157,7 @@ function termgenie(){
 		}
 	}
 	
+	// global elements for this application
 	var myAccordion = MyAccordion('#accordion');
 	var myLoginPanel = LoginPanel(); 
 	var myUserPanel = createUserPanel();
@@ -171,7 +191,7 @@ function termgenie(){
 		},
 		onException: function(e) {
 			$('#div-select-ontology').empty();
-			loggingSystem.logSystemError('AvailableOntologies service call failed',e)
+			loggingSystem.logSystemError('AvailableOntologies service call failed',e);
 			return true;
 		}
 	});
@@ -274,7 +294,7 @@ function termgenie(){
 		jsonService.generate.availableTermTemplates({
 			params:[ontology],
 			onSuccess: function(result) {
-				// clear from busy message
+				// clear busy message
 				elem.empty();
 				// append layout
 				elem.append(termselect);
@@ -297,8 +317,20 @@ function termgenie(){
 			submitButton.click(function(){
 				busyElement.empty();
 				var status = termTemplateWidgetList.getAllTemplateParameters();
-				if (status.success !== true) {
-					loggingSystem.logUserMessage('Verification failed, please check marked fields.');
+				var success = status.extractionResult.isSuccessful()
+				if (success === false) {
+					var details = [];
+					$.each(status.extractionResult.getErrors().list(), function(index, error){
+						/*
+						 * error{
+						 * 	message: String,
+						 * 	template: template,
+						 * 	field: field
+						 * }
+						 */
+						details[index] = error.message;
+					});
+					loggingSystem.logUserMessage('Verification failed, please check marked fields.', details);
 					return;
 				}
 				if (status.parameters.length === 0) {
@@ -496,7 +528,7 @@ function termgenie(){
 			 * templates.
 			 * 
 			 * return object {
-			 *    success: boolean
+			 *    extractionResult: ExtractionResult
 			 *    parameters: JsonTermGenerationInput{
 			 *       termTemplate: JsonTermTemplate,
 			 *       termGenerationParameter: JsonTermGenerationParameter
@@ -504,26 +536,23 @@ function termgenie(){
 			 * }
 			 */
 			getAllTemplateParameters : function() {
-				var success = true;
+				var extractionResult = ExtractionResult();
 				var count = 0;
 				var parameters = [];
 				$.each(templateMap, function(name, listcontainer){
 					if (listcontainer && listcontainer.list) {
 						var list = listcontainer.list;
 						$.each(list, function(index, templateWidget){
-							var extracted = templateWidget.extractTermGenerationInput();
-							if(extracted) {
-								success = success && extracted.success;
-								if (extracted.success === true) {
-									parameters[count] = extracted.input;
-									count += 1;
-								}
+							var extracted = templateWidget.extractTermGenerationInput(extractionResult);
+							if(extracted && extracted.success === true) {
+								parameters[count] = extracted.input;
+								count += 1;
 							}
 						});
 					}
 				});
 				return {
-					success : success,
+					extractionResult : extractionResult,
 					parameters: parameters
 				}
 			}
@@ -631,12 +660,16 @@ function termgenie(){
 						else {
 							var validator = undefined;
 							if (field.name == 'DefX_Ref') {
-								validator = function(text) {
+								validator = function(text, template, field, extractionResult) {
 									if(!text || text.length < 3) {
+										extractionResult.addError('The field "'+field.name+'" is too short. Def_XRef consists of a prefix and suffix with a colon (:) as separator', template, field);
 										return false;
 									}
 									var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
 									var matching = pattern.test(text); 
+									if (matching === false) {
+										extractionResult.addError('The field "'+field.name+'" does not conform to the expected pattern. Def_XRef consists of a prefix and suffix with a colon (:) as separator and no whitespaces', template, field);
+									}
 									return matching;
 								};
 							}
@@ -657,7 +690,7 @@ function termgenie(){
 			 *    }
 			 * }
 			 */
-			extractTermGenerationInput : function() {
+			extractTermGenerationInput : function(extractionResult) {
 				var success = true;
 				var parameter = {
 						terms:    [],
@@ -668,7 +701,7 @@ function termgenie(){
 				for ( var i = 0; i < templateFields.length; i++) {
 					var templatefield = templateFields[i];
 					var inputField =  inputFields[i];
-					var csuccess = inputField.extractParameter(parameter, templatefield);
+					var csuccess = inputField.extractParameter(parameter, template, templatefield, 0, extractionResult);
 					success = success && csuccess;
 				}
 				return {
@@ -682,6 +715,48 @@ function termgenie(){
 		};
 	}
 	
+	function List() {
+		var count=0;
+		var list=[];
+		
+		return {
+			add: function(elem) {
+				list[count]=elem;
+				count += 1;
+			},
+			get: function(index) {
+				return list[index];
+			},
+			size: function() {
+				return count;
+			},
+			list: function() {
+				return list;
+			}
+		};
+	}
+	
+	function ExtractionResult() {
+		var success = true;
+		var errors = List();
+		
+		return {
+			addError : function(error, template, field) {
+				success = false;
+				errors.add({
+					message: error,
+					template: template,
+					field: field
+				});
+			},
+			isSuccessful: function() {
+				return success;
+			},
+			getErrors: function() {
+				return errors;
+			}
+		};
+	}
 	
 	function TextFieldInput(elem, templatePos, validator) {
 		var inputElement = $('<input type="text"/>'); 
@@ -700,7 +775,7 @@ function termgenie(){
 		}
 		
 		return {
-			extractParameter : function(parameter, field, pos) {
+			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				var success;
 				clearErrorState();
 				if (!pos) {
@@ -709,7 +784,7 @@ function termgenie(){
 				var text = inputElement.val();
 				if (text !== null && text.length > 0) {
 					if (validator) {
-						success = validator(text);
+						success = validator(text, template, field, extractionResult);
 						if(success === false) {
 							setErrorState();
 							return false;
@@ -725,6 +800,7 @@ function termgenie(){
 				}
 				success = (field.required === false);
 				if (success === false) {
+					extractionResult.addError("Required value missing", template, field);
 					setErrorState();
 				}
 				return success;
@@ -761,12 +837,12 @@ function termgenie(){
 		}
 		
 		return {
-			extractParameter : function(parameter, field, pos) {
+			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				var success = true;
 				for ( var i = 0; i < count; i++) {
 					var inputElem = list[i];
 					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, field, i);
+						var csuccess = inputElem.extractParameter(parameter, template, field, i, extractionResult);
 						success = success && csuccess;
 					}
 				}
@@ -820,7 +896,7 @@ function termgenie(){
 					minHeight: h,
 					minWidth: w
 				});
-				descriptionDiv.draggable();
+//				descriptionDiv.draggable();
 			}
 			else {
 				descriptionDiv.resizable( "option", "minHeight", h );
@@ -911,7 +987,7 @@ function termgenie(){
 		
 		
 		return {
-			extractParameter : function(parameter, field, pos) {
+			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				clearErrorState();
 				if (!pos) {
 					pos = 0;
@@ -929,6 +1005,7 @@ function termgenie(){
 						return true;
 					}
 				}
+				extractionResult.addError('Missing term in field '+field.name, template, field);
 				setErrorState();
 				return false;
 			}
@@ -964,12 +1041,12 @@ function termgenie(){
 		}
 		
 		return {
-			extractParameter : function(parameter, field, pos) {
+			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				var success = true;
 				for ( var i = 0; i < count; i++) {
 					var inputElem = list[i];
 					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, field, i);
+						var csuccess = inputElem.extractParameter(parameter, template, field, i, extractionResult);
 						success = success && csuccess;
 					}
 				}
@@ -1007,12 +1084,12 @@ function termgenie(){
 		}
 		
 		return {
-			extractParameter : function(parameter, field, pos) {
+			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				clearErrorState();
 				if (!pos) {
 					pos = 0;
 				}
-				var success = inputField.extractParameter(parameter, field, pos);
+				var success = inputField.extractParameter(parameter, template, field, pos, extractionResult);
 				
 				var count = 0;
 				var cPrefixes = [];
@@ -1026,6 +1103,7 @@ function termgenie(){
 				}
 				if (count === 0) {
 					setErrorState();
+					extractionResult.addError('No prefixes selected for field '+field.name, null, field);
 					return false;
 				}
 				parameter.strings[templatePos] = cPrefixes;
@@ -1360,11 +1438,22 @@ function termgenie(){
 	// Logging and user messages
 	var loggingSystem = LoggingSystem ();
 	
+	/**
+	 * Provide a simple message and error logging system. 
+	 * (Only client side logging, no transfer to server)
+	 * 
+	 * @returns methods for logging
+	 */
 	function LoggingSystem () {
 		
 		var popupLoggingPanel = PopupLoggingPanel();
 		var dialogBox = DialogBox();
 		
+		/**
+		 * Logging panel in a popup with two kinds of logs: errors and messages.
+		 * 
+		 * @returns methods for logging (internal)
+		 */
 		function PopupLoggingPanel() {
 			var popupDiv = $('<div></div>');
 			popupDiv.appendTo('body');
@@ -1420,10 +1509,21 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * @param message String
+				 */
 				appendMessage: function(message){
 					messagePanel.append(message);
 					// do not force popup, as this is also reported via the dialog box
 				},
+				
+				/**
+				 * Append an error to the log. Do not show the panel, if hidden is true.
+				 * 
+				 * @param message String
+				 * @param error Exception
+				 * @param hidden boolean
+				 */
 				appendError: function(message, error, hidden) {
 					errorPanel.append(message +' \n '+error);
 					// force popup, except if hidden is true
@@ -1437,6 +1537,14 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * A panel for displaying log messages. 
+		 * Specifiy a DOM parent and a message limit.
+		 * 
+		 * @param parent DOM element
+		 * @param maxCount int
+		 * @returns methods for logging.
+		 */
 		function LoggingPanel(parent, maxCount) {
 			var count = 0;
 			var loggingDiv = $('<div></div>');
@@ -1467,6 +1575,13 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * Append a message to the panel. Automatically prepend a timestamp.
+				 * If the internal message limit is reached, the oldest message 
+				 * will be deleted.
+				 * 
+				 * @param message String
+				 */
 				append : function (message) {
 					count += 1;
 					loggingDiv.append('<div><span class="termgenie-logging-date-time">'+getCurrentTime()+'</span> '+message+'</div>');
@@ -1474,6 +1589,9 @@ function termgenie(){
 						loggingDiv.children().first().remove();
 					}
 				},
+				/**
+				 * Clear the panel of all log messages so far.
+				 */
 				clear : function() {
 					count = 0;
 					loggingDiv.empty();
@@ -1481,11 +1599,19 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * Create a dialog box which is aware of the internal logging mechanisms.
+		 * 
+		 * @returns methods for the dialog box.
+		 */
 		function DialogBox () {
 			var dialogDiv = $('<div></div>');
 			dialogDiv.appendTo('body');
 			var dialogContent = $('<div></div>');
 			dialogContent.appendTo(dialogDiv);
+			var moreDetailsDiv = $('<div style="margin:10px;"></div>');
+			moreDetailsDiv.appendTo(dialogDiv);
+			
 			dialogDiv.dialog({
 				autoOpen: false,
 				modal: true,
@@ -1496,35 +1622,83 @@ function termgenie(){
 					text: "Ok",
 					click: function() {
 						dialogDiv.dialog('close');
+					},
+					close: function(event, ui) {
+						moreDetailsDiv.empty();
 					}
+
 				}]
 			});
 			
 			return {
-				show : function(message) {
+				/**
+				 * show a dialog with the message and optional details.
+				 * 
+				 * @param message String
+				 * @param details String[]
+				 */
+				show : function(message, details) {
 					// write message also to hidden log
 					popupLoggingPanel.appendMessage(message);
 					
 					// write message to dialog
 					dialogContent.empty();
 					dialogContent.append(message);
+					if (details && details.length > 0) {
+						var allDetailsDiv = $('<div style="display:none;overflow:auto;"></div>');
+						$.each(details, function(index, detail){
+							allDetailsDiv.append('<div style="padding:5px 5px;>'+detail+'</div>');
+						});
+						
+						var moreDetailsButton = $('<span class="myClickable" style="font-size:0.8em;">Show Details</span>');
+						moreDetailsButton.click(function(){
+							if (allDetailsDiv.is(":visible")) {
+								allDetailsDiv.hide();
+								moreDetailsButton.text('Show Details');
+							}
+							else {
+								allDetailsDiv.show();
+								moreDetailsButton.text('Hide Details');
+							}
+						});
+						
+						moreDetailsButton.appendTo(moreDetailsDiv);
+						allDetailsDiv.appendTo(moreDetailsDiv);
+					}
 					dialogDiv.dialog('open');
 				} 
 			}
-	}
+		}
 		
 		return {
+			/**
+			 * Log an error to the error panel.
+			 * 
+			 * @param message String
+			 * @param error Exception
+			 * @param hidden boolean, if hidden is true, do not open logging panel.
+			 */
 			logSystemError : function(message, error, hidden) {
 				popupLoggingPanel.appendError(message, error, hidden);
 			},
-			logUserMessage : function(message) {
-				dialogBox.show(message);
+			/**
+			 * Log and show a message to the user.
+			 * 
+			 * @param message String
+			 * @param details String[] 
+			 */
+			logUserMessage : function(message, details) {
+				dialogBox.show(message, details);
 			}
 		};
 	}
 	
 	// HTML wrapper functions
-	
+	/** 
+	 * @param parent DOM element
+	 * @param addfunction function clickhandler for add
+	 * @param removeFunction function clickhandler for remove
+	 */
 	function createAddRemoveWidget(parent, addfunction, removeFunction) {
 		var addButton = $('<a class="myClickable">More</a>'); 
 		var delButton = $('<a class="myClickable">Less</a>');
@@ -1543,14 +1717,30 @@ function termgenie(){
 		delButton.click(removeFunction);
 	}
 	
+	/**
+	 * Create a styled layout table with no borders, zero spacing and zero padding.
+	 * 
+	 * @returns DOM element
+	 */
 	function createLayoutTable() {
 		return $(createLayoutTableOpenTag()+'</table>');
 	}
 	
+	/**
+	 * Create starting tag for layout table.
+	 * 
+	 * @returns String
+	 */
 	function createLayoutTableOpenTag() {
 		return '<table class="termgenie-layout-table" cellSpacing="0" cellPadding="0">';
 	}
 	
+	/**
+	 * Create a styled busy message div with and additional text for details. 
+	 * 
+	 * @param additionalText
+	 * @returns String
+	 */
 	function createBusyMessage(additionalText) {
 		return '<div class="termgenie-busy-message">'+
 			'<img src="icon/wait26trans.gif" alt="Busy Icon"/>'+
@@ -1590,12 +1780,12 @@ function termgenie(){
 
 	
 	return {
-		// empty object to hide any functionality
+		// empty object to hide internal functionality
 	};
 };
 
 // actuall call in jquery to execute the termgenie scripts after the document is ready
 $(function(){
-	// execute when document-ready
+	// start term genie.
 	termgenie();
 });
