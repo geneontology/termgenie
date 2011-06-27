@@ -323,15 +323,12 @@ function termgenie(){
 					$.each(status.extractionResult.getErrors().list(), function(index, error){
 						var message = '';
 						if (error.template) {
-							message += 'The template <span class="nobr">\'' + getTemplateName(template);
+							message += 'The template <span class="nobr">\'';
+							message += getTemplateName(error.template);
 							if (error.field) {
-								message += '\'</span> and field <span class="nobr">\''+error.field.name;
-								message += '\'</span> have';
+								message += '\'</span> in field <span class="nobr">\''+error.field.name;
 							}
-							else {
-								message += '\'</span> has';
-							}
-							message += ' the following error:<br/>';
+							message += '\'</span> has the following error:<br/>';
 						}
 						message += error.message;
 						details[index] = message;
@@ -597,30 +594,46 @@ function termgenie(){
 				var i; 		// define here as there is only function scope
 				var field;	// define here as there is only function scope
 				
-				var layout = createLayoutTableOpenTag()+'<thead><tr><td>Required</td>';
+				var layout = createLayoutTableOpenTag()+'<thead>';
 				
-				// write top level requirements
+				var firstRow = '<tr><td>Required</td>';
+				var secondRow = '<tr>';
+				var thirdRow = '<tr>';
+				
+				
 				var first = true;
-				for (i = 1; i < templateFields.length; i+=1) {
-					field = templateFields[i];
-					if (first && field.required === false) {
-						first = false;
-						layout += '<td>Optional</td>';
-					}
-					else {
-						layout += '<td></td>';
-					}
-				}
-				layout += '</tr><tr>';
-				
-				// write field names
 				for (i = 0; i < templateFields.length; i+=1) {
 					field = templateFields[i];
-					layout += '<td>'+field.name+'</td>';
+					if (i > 0) {
+						// write top level requirements	
+						if (first && field.required === false) {
+							first = false;
+							firstRow += '<td>Optional</td>';
+						} else {
+							firstRow += '<td></td>';
+						}
+					}
+					// write field names
+					secondRow += '<td><span class="termgenie-term-template-field-name">'+field.name+'</span></td>';
+					thirdRow += '<td><span class="termgenie-term-template-field-ontologies">';
+					if (field.ontologies && field.ontologies.length > 0) {
+						$.each(field.ontologies, function(index, ontology){
+							if (index > 0) {
+								thirdRow += ', ';
+							}
+							thirdRow += getShortOntologyName(ontology);
+						});
+					}
+					thirdRow += '</span></td>';
 				}
+				firstRow += '</tr>';
+				secondRow += '</tr>';
+				thirdRow += '</tr>';
+				
+				
 				
 				// write empty body and footer
-				layout += '</tr></thead><tbody></tbody></table>';
+				layout += firstRow + secondRow + thirdRow + '</thead><tbody></tbody></table>';
 				
 				elem.append(layout);
 			},
@@ -1653,7 +1666,7 @@ function termgenie(){
 					if (details && details.length > 0) {
 						var allDetailsDiv = $('<div style="display:none;overflow:auto;"></div>');
 						$.each(details, function(index, detail){
-							allDetailsDiv.append('<div style="padding:5px 5px;>'+detail+'</div>');
+							allDetailsDiv.append('<div style="padding:5px 5px;">'+detail+'</div>');
 						});
 						
 						var moreDetailsButton = $('<span class="myClickable" style="font-size:0.8em;">Show Details</span>');
@@ -1700,6 +1713,12 @@ function termgenie(){
 	}
 	
 	// Helper functions
+	/**
+	 * Retrieve the display name for this template.
+	 * 
+	 * @param template
+	 * @returns String displayName
+	 */
 	function getTemplateName(template) {
 		if (template.display && template.display.length > 0) {
 			return template.display;
@@ -1707,9 +1726,27 @@ function termgenie(){
 		return template.name;
 	}
 	
+	/**
+	 * Format the internal ontology name into a readable version.
+	 * 
+	 * @param ontologyName
+	 * @returns String better readable ontology name
+	 */
 	function getOntologyName(ontologyName) {
 		// replace the '|' char with a space
 		return ontologyName.replace(/\|/,' ');
+	}
+	
+	/**
+	 * Try to minimze the ontology name.
+	 * 
+	 * @param ontologyName
+	 * @returns String short version of the ontology name
+	 */
+	function getShortOntologyName(ontologyName) {
+		// remove the 'GeneOntology|' prefix
+		var name = ontologyName.replace(/GeneOntology\|/,''); 
+		return getOntologyName(name);
 	}
 	
 	// HTML wrapper functions
