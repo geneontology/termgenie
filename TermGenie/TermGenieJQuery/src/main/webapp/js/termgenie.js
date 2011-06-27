@@ -1026,7 +1026,8 @@ function termgenie(){
 						return true;
 					}
 				}
-				extractionResult.addError('Missing term in field '+field.name, template, field);
+				extractionResult.addError('No valid term. Please specify a term from '+
+						getShortOntologyNameList(field.ontologies), template, field);
 				setErrorState();
 				return false;
 			}
@@ -1124,7 +1125,7 @@ function termgenie(){
 				}
 				if (count === 0) {
 					setErrorState();
-					extractionResult.addError('No prefixes selected for field '+field.name, null, field);
+					extractionResult.addError('No prefixes selected.', template, field);
 					return false;
 				}
 				parameter.strings[templatePos] = cPrefixes;
@@ -1729,12 +1730,29 @@ function termgenie(){
 	/**
 	 * Format the internal ontology name into a readable version.
 	 * 
-	 * @param ontologyName
+	 * @param ontologyName String
 	 * @returns String better readable ontology name
 	 */
 	function getOntologyName(ontologyName) {
 		// replace the '|' char with a space
 		return ontologyName.replace(/\|/,' ');
+	}
+	
+	/**
+	 * Format the internal ontology name list into a short readable version.
+	 * 
+	 * @param ontologyNames String[]
+	 * @returns String better readable ontology name
+	 */
+	function getShortOntologyNameList(ontologyNames) {
+		var result = '';
+		$.each(ontologyNames, function(index, ontologyName){
+			if (index > 0) {
+				result += ', ';
+			}
+			result += getShortOntologyName(ontologyName);
+		});
+		return result;
 	}
 	
 	/**
