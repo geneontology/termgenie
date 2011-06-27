@@ -330,7 +330,15 @@ function termgenie(){
 						 */
 						details[index] = error.message;
 					});
-					loggingSystem.logUserMessage('Verification failed, please check marked fields.', details);
+					var logMessage = 'Verification failed. There ';
+					if (details.length === 1) {
+						logMessage += 'is one error. ';
+					}
+					else {
+						logMessage += 'are ' + details.length + ' errors. ';
+					}
+					logMessage += 'Please check the marked fields.';
+					loggingSystem.logUserMessage(logMessage, details);
 					return;
 				}
 				if (status.parameters.length === 0) {
@@ -1622,11 +1630,7 @@ function termgenie(){
 					text: "Ok",
 					click: function() {
 						dialogDiv.dialog('close');
-					},
-					close: function(event, ui) {
-						moreDetailsDiv.empty();
 					}
-
 				}]
 			});
 			
@@ -1642,6 +1646,7 @@ function termgenie(){
 					popupLoggingPanel.appendMessage(message);
 					
 					// write message to dialog
+					moreDetailsDiv.empty();
 					dialogContent.empty();
 					dialogContent.append(message);
 					if (details && details.length > 0) {
