@@ -99,6 +99,10 @@ h1 {
 	text-decoration: underline;
 }
 
+.nobr {
+	white-space: nowrap;
+}
+
 .term-description-content {
 	overflow: auto;
 	margin: 5px;

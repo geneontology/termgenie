@@ -323,18 +323,18 @@ function termgenie(){
 					$.each(status.extractionResult.getErrors().list(), function(index, error){
 						var message = '';
 						if (error.template) {
-							message += 'The template <nobr>\'';
+							message += 'The template <span class="nobr">\'';
 							if (error.template.display && error.template.display.length > 0) {
 								message += error.template.display;
 							} else {
 								message += error.template.name;
 							}
 							if (error.field) {
-								message += '\'</nobr> and field <nobr>\''+error.field.name;
-								message += '\'</nobr> have';
+								message += '\'</span> and field <span class="nobr">\''+error.field.name;
+								message += '\'</span> have';
 							}
 							else {
-								message += '\'</nobr> has';
+								message += '\'</span> has';
 							}
 							message += ' the following error:<br/>';
 						}
