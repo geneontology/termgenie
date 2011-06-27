@@ -323,12 +323,7 @@ function termgenie(){
 					$.each(status.extractionResult.getErrors().list(), function(index, error){
 						var message = '';
 						if (error.template) {
-							message += 'The template <span class="nobr">\'';
-							if (error.template.display && error.template.display.length > 0) {
-								message += error.template.display;
-							} else {
-								message += error.template.name;
-							}
+							message += 'The template <span class="nobr">\'' + getTemplateName(template);
 							if (error.field) {
 								message += '\'</span> and field <span class="nobr">\''+error.field.name;
 								message += '\'</span> have';
@@ -423,10 +418,7 @@ function termgenie(){
 
 		// foreach template create a menu entry, use index for retrieval
 		$.each(templates, function(intIndex, objValue) {
-			var templateName = objValue.name;
-			if (objValue.display && objValue.display.length > 0) {
-				templateName = objValue.display;
-			}
+			var templateName = getTemplateName(objValue);
 			var option = $('<option />');
 			option.text(templateName);
 			option.val(intIndex);
@@ -454,10 +446,7 @@ function termgenie(){
 		function createTemplateSubList(template, id, wrapperId) {
 			var templateContainer = $('<div id="'+wrapperId+'" class="template-list-wrapper"></div>');
 			templateContainer.appendTo($('#div-all-template-parameters'));
-			var templateDisplay = template.name;
-			if (template.display && template.display.length > 0) {
-				templateDisplay = template.display;
-			}
+			var templateDisplay = getTemplateName(template);
 			var templateTitle = $('<div class="termgenie-template-header">Template: <span class="label-template-name">'+templateDisplay+'</span></div>');
 			createAddRemoveWidget(templateTitle, 
 					function(){
@@ -941,7 +930,7 @@ function termgenie(){
 			var content = descriptionDiv.children().first();
 			content.empty();
 			var layout = createLayoutTableOpenTag();
-			layout += '<tr><td>Ontology</td><td>'+item.identifier.ontology+'</td></tr>';
+			layout += '<tr><td>Ontology</td><td>'+getOntologyName(item.identifier.ontology)+'</td></tr>';
 			layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
 			layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
 			if (item.description && item.description.length > 0) {
@@ -1708,6 +1697,19 @@ function termgenie(){
 				dialogBox.show(message, details);
 			}
 		};
+	}
+	
+	// Helper functions
+	function getTemplateName(template) {
+		if (template.display && template.display.length > 0) {
+			return template.display;
+		}
+		return template.name;
+	}
+	
+	function getOntologyName(ontologyName) {
+		// replace the '|' char with a space
+		return ontologyName.replace(/\|/,' ');
 	}
 	
 	// HTML wrapper functions
