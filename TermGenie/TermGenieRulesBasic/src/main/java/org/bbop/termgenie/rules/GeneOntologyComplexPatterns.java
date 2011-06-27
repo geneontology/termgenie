@@ -160,7 +160,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> occurs_in(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject p = getSingleTerm(input, "process", go);
-		OWLObject c = getSingleTerm(input, "whole", go);
+		OWLObject c = getSingleTerm(input, "location", go);
 		
 		CheckResult check = checkGenus(p, GO0008150, go, input);
 		if (check.isGenus == false) {
