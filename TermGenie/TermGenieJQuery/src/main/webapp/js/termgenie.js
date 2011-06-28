@@ -15,15 +15,15 @@ function termgenie(){
 		selections.Pane_2 = false;
 		selections.Pane_3 = false;
 		
-		$(id).accordion({ clearStyle: true, autoHeight: false, event: "" });
+		jQuery(id).accordion({ clearStyle: true, autoHeight: false, event: "" });
 		
 		// implement a custom click function
 		// allow only to open panes, which are enabled in the selections object
-		$(id+' h3').click(function() {
-			var idx = $(id+' h3').index(this);
+		jQuery(id+' h3').click(function() {
+			var idx = jQuery(id+' h3').index(this);
 			var activate = selections["Pane_" + idx];
 			if (activate) {
-				$(id).accordion("activate", idx);
+				jQuery(id).accordion("activate", idx);
 			}
 		});
 		
@@ -34,7 +34,7 @@ function termgenie(){
 			 * @param pos postion to activate (zero-based)
 			 */
 			activatePane : function(pos) {
-				$(id).accordion("activate", pos);
+				jQuery(id).accordion("activate", pos);
 			},
 			
 			/**
@@ -102,7 +102,7 @@ function termgenie(){
 		};
 		
 		function createLoginPanel() {
-			var elem = $('<div style="width: 200px"></div>');
+			var elem = jQuery('<div style="width: 200px"></div>');
 			elem.appendTo('body');
 			elem.css({
 				display:'block',
@@ -113,12 +113,12 @@ function termgenie(){
 				background:'#eee',
 				border:'1px solid #ddd'
 			});
-			var loginClickElem = $('<span class="myClickable">Log in</span>');
+			var loginClickElem = jQuery('<span class="myClickable">Log in</span>');
 			elem.append(loginClickElem);
 			
-			var logoutClickElem = $('<span class="myClickable">Log out</span>');
+			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			
-			var loginPanel = $('<div>'+
+			var loginPanel = jQuery('<div>'+
 					'<div style="padding-bottom:5px">To commit terms a login is required.</div>'+
 					'<table><tr><td>Username:</td>'+
 					'<td><input type="text" id="input-user-name"/></td></tr>'+
@@ -128,7 +128,7 @@ function termgenie(){
 					'</div>');
 			loginPanel.appendTo('body');
 			
-			var loginBusyPanel = $('<div></div>');
+			var loginBusyPanel = jQuery('<div></div>');
 			loginBusyPanel.appendTo(loginPanel);
 			
 			loginPanel.dialog({
@@ -144,7 +144,7 @@ function termgenie(){
 //						elem.detach();
 					},
 					"Cancel": function() {
-						$( this ).dialog( "close" );
+						jQuery( this ).dialog( "close" );
 					}
 				}
 			});
@@ -177,7 +177,7 @@ function termgenie(){
 
 	
 	// create buy icon and message to show during wait
-	$('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
+	jQuery('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
 	
 	// use json-rpc to retrieve available ontologies
 	jsonService.ontology.availableOntologies({
@@ -190,7 +190,7 @@ function termgenie(){
 			createOntologySelector(result);
 		},
 		onException: function(e) {
-			$('#div-select-ontology').empty();
+			jQuery('#div-select-ontology').empty();
 			loggingSystem.logSystemError('AvailableOntologies service call failed',e);
 			return true;
 		}
@@ -220,19 +220,19 @@ function termgenie(){
 		} else {
 			ontselect = c_span('select-ontology-header','Available Ontologies') +
 			'<select id="select-ontology-select">';
-			$.each(ontologies, function(intIndex, objValue){
+			jQuery.each(ontologies, function(intIndex, objValue){
 				ontselect += '<option value="'+objValue+'">'+objValue+'</option>';
 			});
 			ontselect += '</select>'+ c_button('select-ontology-button', 'Submit');
 			
 			// add to div
-			elem = $('#div-select-ontology');
+			elem = jQuery('#div-select-ontology');
 			elem.empty();
 			elem.append(ontselect);
 			
 			// register click handler
-			$('#select-ontology-button').click(function() {
-				var selectedValue = $('#select-ontology-select').val();
+			jQuery('#select-ontology-button').click(function() {
+				var selectedValue = jQuery('#select-ontology-select').val();
 				setStep1Header(selectedValue);
 				createTemplateSelector(selectedValue);
 				setStep2Active(true);
@@ -245,7 +245,7 @@ function termgenie(){
 		 * @param ontology selected ontology name
 		 */
 		function setStep1Header(ontology) {
-			var elem = $('#span-step1-additional-header');
+			var elem = jQuery('#span-step1-additional-header');
 			elem.empty();
 			elem.append('<span class="step1-additional-header">'+ontology+'</span>');
 		}
@@ -280,12 +280,12 @@ function termgenie(){
 				c_div('div-all-template-parameters','');
 		
 		// get intented dom element
-		var elem = $('#div-select-templates-and-parameters');
+		var elem = jQuery('#div-select-templates-and-parameters');
 		// clear, from previous templates
 		elem.empty();
 		
 		// clear header from previous templates
-		$('#span-step2-additional-header').empty();
+		jQuery('#span-step2-additional-header').empty();
 		
 		// set busy message
 		elem.append(createBusyMessage('Quering for available termplates at the server.'));
@@ -312,15 +312,15 @@ function termgenie(){
 		
 		function registerTermGenerationButton() {
 			// register click handler for term generation button
-			var submitButton = $('#button-termgeneration-start');
-			var busyElement= $('#button-termgeneration-start-progress');
+			var submitButton = jQuery('#button-termgeneration-start');
+			var busyElement= jQuery('#button-termgeneration-start-progress');
 			submitButton.click(function(){
 				busyElement.empty();
 				var status = termTemplateWidgetList.getAllTemplateParameters();
 				var success = status.extractionResult.isSuccessful()
 				if (success === false) {
 					var details = [];
-					$.each(status.extractionResult.getErrors().list(), function(index, error){
+					jQuery.each(status.extractionResult.getErrors().list(), function(index, error){
 						var message = '';
 						if (error.template) {
 							message += 'The template <span class="nobr">\'';
@@ -369,7 +369,7 @@ function termgenie(){
 		}
 		
 		function setStep2HeaderInfo(parameters) {
-			var header = $('#span-step2-additional-header');
+			var header = jQuery('#span-step2-additional-header');
 			header.empty();
 			var map = {};
 			for ( var i = 0; i < parameters.length; i++) {
@@ -382,7 +382,7 @@ function termgenie(){
 				}
 			}
 			var headerInfo = '';
-			$.each(map, function(key, value) {
+			jQuery.each(map, function(key, value) {
 				if (headerInfo.length > 0) {
 					headerInfo += ', ';
 				}
@@ -406,25 +406,25 @@ function termgenie(){
 	 */
 	function createTemplateSelectorMenu(ontology, templates) {
 		// create layout
-		$('#div-template-selector')
+		jQuery('#div-template-selector')
 			.append('<select id="select-add-template-select"></select>'+
 				c_button('button-add-template-select', 'Add template'));
 		
 		// select dom element
-		var domElement = $('#select-add-template-select');
+		var domElement = jQuery('#select-add-template-select');
 
 		// foreach template create a menu entry, use index for retrieval
-		$.each(templates, function(intIndex, objValue) {
+		jQuery.each(templates, function(intIndex, objValue) {
 			var templateName = getTemplateName(objValue);
-			var option = $('<option />');
+			var option = jQuery('<option />');
 			option.text(templateName);
 			option.val(intIndex);
 			domElement.append(option);
 		});
 		
 		// click handler for adding a selected template
-		$('#button-add-template-select').click(function (){
-			var intIndex = $('#select-add-template-select').val();
+		jQuery('#button-add-template-select').click(function (){
+			var intIndex = jQuery('#select-add-template-select').val();
 			termTemplateWidgetList.addTemplate(templates[intIndex]);
 		});
 	}
@@ -441,10 +441,10 @@ function termgenie(){
 		
 		// private methods
 		function createTemplateSubList(template, id, wrapperId) {
-			var templateContainer = $('<div id="'+wrapperId+'" class="template-list-wrapper"></div>');
-			templateContainer.appendTo($('#div-all-template-parameters'));
+			var templateContainer = jQuery('<div id="'+wrapperId+'" class="template-list-wrapper"></div>');
+			templateContainer.appendTo(jQuery('#div-all-template-parameters'));
 			var templateDisplay = getTemplateName(template);
-			var templateTitle = $('<div class="termgenie-template-header">Template: <span class="label-template-name">'+templateDisplay+'</span></div>');
+			var templateTitle = jQuery('<div class="termgenie-template-header">Template: <span class="label-template-name">'+templateDisplay+'</span></div>');
 			createAddRemoveWidget(templateTitle, 
 					function(){
 						privateAddTemplate(template);
@@ -478,7 +478,7 @@ function termgenie(){
 			var templateWidget = TermTemplateWidget(template,templateListContainer.count);
 			templateListContainer.list[templateListContainer.count] = templateWidget;
 			
-			var listElem = $('#'+templateListContainer.id);
+			var listElem = jQuery('#'+templateListContainer.id);
 			
 			// if the list was empty create the layout 
 			if (templateListContainer.count === 0) {
@@ -497,12 +497,12 @@ function termgenie(){
 				if (templateListContainer.count > 1) {
 					var pos = templateListContainer.count - 1;
 					var domId = templateListContainer.id+'-'+pos;
-					$('#'+domId).remove();
+					jQuery('#'+domId).remove();
 					templateListContainer.list[pos] = undefined;
 					templateListContainer.count = pos;
 				}
 				else {
-					$('#'+templateListContainer.wrapperId).remove();
+					jQuery('#'+templateListContainer.wrapperId).remove();
 					templateMap[template.name] = undefined;
 				}
 			}
@@ -544,10 +544,10 @@ function termgenie(){
 				var extractionResult = ExtractionResult();
 				var count = 0;
 				var parameters = [];
-				$.each(templateMap, function(name, listcontainer){
+				jQuery.each(templateMap, function(name, listcontainer){
 					if (listcontainer && listcontainer.list) {
 						var list = listcontainer.list;
-						$.each(list, function(index, templateWidget){
+						jQuery.each(list, function(index, templateWidget){
 							var extracted = templateWidget.extractTermGenerationInput(extractionResult);
 							if(extracted && extracted.success === true) {
 								parameters[count] = extracted.input;
@@ -617,7 +617,7 @@ function termgenie(){
 					secondRow += '<td><span class="termgenie-term-template-field-name">'+field.name+'</span></td>';
 					thirdRow += '<td><span class="termgenie-term-template-field-ontologies">';
 					if (field.ontologies && field.ontologies.length > 0) {
-						$.each(field.ontologies, function(index, ontology){
+						jQuery.each(field.ontologies, function(index, ontology){
 							if (index > 0) {
 								thirdRow += ', ';
 							}
@@ -650,7 +650,7 @@ function termgenie(){
 				var field;
 				var tdElement;
 				
-				var trElement = $('<tr id="'+domId+'"></tr>');
+				var trElement = jQuery('<tr id="'+domId+'"></tr>');
 				elem.find('tbody').first().append(trElement);
 				
 				for (i = 0; i < templateFields.length; i+=1) {
@@ -789,7 +789,7 @@ function termgenie(){
 	}
 	
 	function TextFieldInput(elem, templatePos, validator) {
-		var inputElement = $('<input type="text"/>'); 
+		var inputElement = jQuery('<input type="text"/>'); 
 		elem.append(inputElement);
 		
 		inputElement.change(function(){
@@ -851,7 +851,7 @@ function termgenie(){
 		
 		function appendInput() {
 			if (count <  max) {
-				var listElem = $('<tr><td></td></tr>');
+				var listElem = jQuery('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
 				list[count] = TextFieldInput(listElem.children().first(), templatePos, validator);
 				count += 1;
@@ -893,7 +893,7 @@ function termgenie(){
 	function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
 		
 		var term = undefined;
-		var inputElement = $('<input/>');
+		var inputElement = jQuery('<input/>');
 		elem.append(inputElement);
 		var descriptionDiv = null;
 		
@@ -915,7 +915,7 @@ function termgenie(){
 				h = 200;
 			}
 			if (descriptionDiv === null) {
-				descriptionDiv = $('<div><div class="term-description-content"></div></div>')
+				descriptionDiv = jQuery('<div><div class="term-description-content"></div></div>')
 					.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
 					.css({
 						'width': w,
@@ -1007,7 +1007,7 @@ function termgenie(){
 			} 
 		})
 		.data( 'autocomplete' )._renderItem = function( ul, item ) {
-			return $( '<li class="termgenie-autocomplete-menu-item"></li>' )
+			return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
 				.data( 'item.autocomplete', item )
 				.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
 						item.label + '</span></a>' )
@@ -1056,7 +1056,7 @@ function termgenie(){
 		
 		function appendInput() {
 			if (count <  max) {
-				var listElem = $('<tr><td></td></tr>');
+				var listElem = jQuery('<tr><td></td></tr>');
 				listElem.appendTo(listParent);
 				list[count] = AutoCompleteOntologyInput(listElem.children().first(), templatePos, ontologies);
 				count += 1;
@@ -1091,16 +1091,16 @@ function termgenie(){
 		
 		var container = createLayoutTable();
 		container.appendTo(elem);
-		var inputContainer = $('<tr><td></td></tr>');
+		var inputContainer = jQuery('<tr><td></td></tr>');
 		inputContainer.appendTo(container);
 		
 		var inputField = AutoCompleteOntologyInput(inputContainer, templatePos, ontologies);
 		
 		var checkboxes = [];
 		for ( i = 0; i < prefixes.length; i++) {
-			checkbox = $('<input type="checkbox" checked="true"/>');
+			checkbox = jQuery('<input type="checkbox" checked="true"/>');
 			checkboxes[i] = checkbox;
-			inputContainer = $('<tr><td class="prefixCheckbox"></td></tr>');
+			inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
 			inputContainer.append(checkbox);
 			inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
 			inputContainer.appendTo(container);
@@ -1147,13 +1147,13 @@ function termgenie(){
 	 * Create the dynamic part of the user panel
 	 */
 	function createUserPanel() {
-		var checkBoxElem = $('#checkbox-try-commit');
+		var checkBoxElem = jQuery('#checkbox-try-commit');
 		return {
 			submit : function (terms, ontology) {
 				// select mode
 				var isCommit = checkBoxElem.is(':checked');
 				
-				var step3AdditionalHeader = $('#span-step3-additional-header');
+				var step3AdditionalHeader = jQuery('#span-step3-additional-header');
 				step3AdditionalHeader.empty();
 				
 				var headerMessage = 'Selected ';
@@ -1170,14 +1170,14 @@ function termgenie(){
 					headerMessage += 'Export';
 				}
 				step3AdditionalHeader.append(headerMessage);
-				var step4Container = $('#termgenie-step4-content-container');
+				var step4Container = jQuery('#termgenie-step4-content-container');
 				step4Container.empty();
 				myAccordion.enablePane(3);
 				myAccordion.activatePane(3);
 				
 				if (isCommit) {
-					var username = $('#input-user-name').val();
-					var password = $('#input-user-password').val();
+					var username = jQuery('#input-user-name').val();
+					var password = jQuery('#input-user-password').val();
 					// TODO verify username and password
 					
 					step4Container.append(createBusyMessage('Executing commit request on the server.'));
@@ -1243,13 +1243,13 @@ function termgenie(){
 	 * 	   }[]
 	 */
 	function createResultReviewPanel(generationResponse, ontology){
-		var container = $('#div-verification-and-review');
+		var container = jQuery('#div-verification-and-review');
 
 		// clear from previous results
 		container.empty();
 		// hide the submiy panel, till it is clear 
 		// that there are results for the next step
-		$('#div-step3-submit-panel').hide();
+		jQuery('#div-step3-submit-panel').hide();
 		// remove existing click handler
 		clearSubmitHandler();
 
@@ -1266,15 +1266,15 @@ function termgenie(){
 			renderErrors(container, generationResponse.errors);
 		}
 
-		var checkBoxes = null;
+		var reviewTerms = null;
 
 		if(isValid(generationResponse.generatedTerms)) {
-			checkBoxes = renderGeneratedTerms(parent, generationResponse.generatedTerms);
+			reviewTerms = renderGeneratedTerms(parent, generationResponse.generatedTerms);
 
-			setSubmitHandler(checkBoxes, generationResponse.generatedTerms, ontology);
+			setSubmitHandler(reviewTerms, generationResponse.generatedTerms, ontology);
 
 			// show hidden panel
-			$('#div-step3-submit-panel').show();
+			jQuery('#div-step3-submit-panel').show();
 		}
 		
 		// Helper functions, to improve readability of the code
@@ -1284,7 +1284,7 @@ function termgenie(){
 		}
 		
 		function renderGeneralError(parent, generalError) {
-			var generalErrorContainer = $('<div class="term-generation-general-error"></div>');
+			var generalErrorContainer = jQuery('<div class="term-generation-general-error"></div>');
 			generalErrorContainer.appendTo(parent);
 			generalErrorContainer.append('<div class="term-generation-general-error-heading">Error Message</div>');
 			generalErrorContainer.append('<div class="term-generation-general-error-description">Your request produced the following error:</div>');
@@ -1293,18 +1293,18 @@ function termgenie(){
 		}
 		
 		function renderErrors(parent, errors) {
-			var detailedErrorContainer = $('<div class="term-generation-detailed-errors"></div>');
+			var detailedErrorContainer = jQuery('<div class="term-generation-detailed-errors"></div>');
 			detailedErrorContainer.appendTo(parent);
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-heading">Error Messages</div>');
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of errors.</div>');
-			var layout = $('<table cellpadding="5"></table>');
+			var layout = jQuery('<table cellpadding="5"></table>');
 			detailedErrorContainer.append(layout);
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
 			
 			layout.append('<thead><tr><td>Template</td><td>Field</td><td>Level</td><td>Message</td></tr></thead>');
 			
-			$.each(errors, function(index, validationHint){
-				var trElement = $('<tr></tr>');
+			jQuery.each(errors, function(index, validationHint){
+				var trElement = jQuery('<tr></tr>');
 				trElement.appendTo(layout);
 				trElement.append('<td>' + validationHint.template.name + '</td>');
 				if(validationHint.field >= 0 && validationHint.field < validationHint.template.fields.length) {
@@ -1330,15 +1330,25 @@ function termgenie(){
 			}
 		}
 		
+		/**
+		 * Render the generated terms under the given parent.
+		 * 
+		 * @param parent DOM element
+		 * @param generatedTerms array of generated terms
+		 * @returns {
+		 * 		checkBoxes: CheckBox[],
+		 * 		termPanels: TermReviewPanel[]
+		 * }
+		 */
 		function renderGeneratedTerms(parent, generatedTerms) {
 			var checkBoxes = List();
 			var termPanels = List();
-			var generatedTermContainer = $('<div class="term-generation-details"></div>');
+			var generatedTermContainer = jQuery('<div class="term-generation-details"></div>');
 			generatedTermContainer.appendTo(container);
 			
 			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>');
 			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>');
-			var layout = $('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
+			var layout = jQuery('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
 			var fields = ['label','definition','logDef','synonyms','defxRef','comment'];
@@ -1349,7 +1359,7 @@ function termgenie(){
 			header += '<td>MetaData</td><td>Relations</td></tr></thead>';
 			layout.append(header);
 			
-			$.each(generatedTerms, function(index, term){
+			jQuery.each(generatedTerms, function(index, term){
 				var trElement = jQuery('<tr></tr>');
 				trElement.appendTo(layout);
 				var tdElement = jQuery('<td></td>');
@@ -1363,37 +1373,62 @@ function termgenie(){
 			});
 			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>')
 			
-			return checkBoxes;
+			return {
+				checkBoxes: checkBoxes.list(),
+				termPanels: termPanels.list()
+			}
 		}
 		
+		/**
+		 * Handle the review of one term.
+		 * 
+		 * @param trElement
+		 * @param term
+		 * @param fields
+		 * @returns methods of the panel
+		 */
 		function TermReviewPanel(trElement, term, fields) {
 			// clone term, preserve original term for comparison
 			var newTerm = jQuery.extend(true, {}, term);
 			
 			// render the invidual fields
 			var fieldPanels = [];
-			// determine the type (String or array) $.isArray()
-			$.each(fields, function(index, field) {
+			// determine the type (String or array) jQuery.isArray()
+			jQuery.each(fields, function(index, field) {
 				var tdElement = jQuery('<td></td>');
 				tdElement.appendTo(trElement);
 				var value = term[field];
 				var panel = null;
-				if(jQuery.isArray(value)) {
+				
+				if(jQuery.inArray(field, ['synonyms','defxRef']) >= 0) {
 					if (value && value.length > 0) {
 						panel = StringListFieldReviewPanel(tdElement, term, field);
 					}
+					else {
+						panel = EmptyStringListFieldReviewPanel(tdElement, term, field);
+					}
 				}
-				else if ((typeof value) === "string") {
-					panel = StringFieldReviewPanel(tdElement, term, field);
+				else if (jQuery.inArray(field, ['label','definition','logDef','comment']) >= 0) {
+					if (value && value.length > 0) {
+						panel = StringFieldReviewPanel(tdElement, term, field);
+					}
+					else {
+						panel = EmptyStringFieldReviewPanel(tdElement, term, field);
+					}
 				}
 				fieldPanels[index] = panel;
 			});
 			
 			return {
+				/**
+				 * Retrieve the term from the panel.
+				 * 
+				 * @returns term
+				 */
 				getTerm : function(){
 					jQuery.each(fields, function(index, field) {
 						var panel = fieldPanels[index];
-						if (panel.isChanged()) {
+						if (panel !== null) {
 							newTerm[field] = panel.getValue();
 						}
 					});
@@ -1401,17 +1436,24 @@ function termgenie(){
 				}
 			};
 			
-			
 			function StringFieldReviewPanel(parent, term, field) {
-				var reviewField = jQuery('<textarea>'+term[field]+'</textarea>');
+				var reviewField = createInputField(term[field]);
 				reviewField.appendTo(parent);
 				
 				return {
-					isChanged : function() {
-						return reviewField.val() !== term[field];
-					},
 					getValue : function () {
-						return reviewField.val();
+						return normalizeString(reviewField.val());
+					}
+				};
+			}
+			
+			function EmptyStringFieldReviewPanel(parent, term, field) {
+				var reviewField = createInputField();
+				reviewField.appendTo(parent);
+				
+				return {
+					getValue : function () {
+						return normalizeString(reviewField.val());
 					}
 				};
 			}
@@ -1440,10 +1482,46 @@ function termgenie(){
 //				}
 				
 				return {
-					isChanged : function() {
-						return false;
-					},
 					getValue : function () {
+						return term[field];
+					}
+				};
+			}
+			
+			function EmptyStringListFieldReviewPanel(parent, term, field) {
+				var listParent = createLayoutTable();
+				var rowCount = 0;
+				listParent.appendTo(parent);
+				addLine();
+				createAddRemoveWidget(parent, addLine, removeLine);
+				
+				function addLine() {
+					var tableCell = jQuery('<tr><td></td></tr>');
+					var inputField = createInputField();
+					inputField.appendTo(tableCell);
+					tableCell.appendTo(listParent);
+					rowCount += 1;
+				}
+				
+				function removeLine() {
+					if (rowCount > 1) {
+						rowCount -= 1;
+						listParent.find('tr').last().remove(); 
+					}
+				}
+
+				return {
+					getValue : function () {
+						var strings = List();
+						jQuery.each(table.find('input'), function(index, textarea){
+							var text = normalizeString(textarea.val());
+							if (text !== null) {
+								strings.add(text);
+							}
+						});
+						if (strings.size() > 0) {
+							return strings.list();
+						}
 						return term[field];
 					}
 				};
@@ -1452,33 +1530,51 @@ function termgenie(){
 			function RelationFieldReviewPanel(parent, term) {
 				
 				return {
-					isChanged : function() {
-						return false;
-					},
 					getValue : function () {
 						return term.relations;
 					}
 				};
 			}
+			
+			function createInputField(string) {
+				if (!string) {
+					return jQuery('<input type="text" style="width:250px"/>');
+				}
+				if (string.length < 30) {
+					return jQuery('<input type="text" style="width:250px" value="'+string+'"/>');
+				}
+				return jQuery('<textarea style="width:250px;height:70px">'+string+'</textarea>');
+			}
+			
+			function normalizeString(string) {
+				if (string && string.length > 0) {
+					string = jQuery.trim(string).replace(/\s+/g,' ');
+					if (string.length > 1) {
+						// ignore string with just one char!
+						return string;
+					}
+				}
+				return null;
+			}
 		}
 		
 		function clearSubmitHandler() {
-			$('#button-submit-for-commit-or-export').unbind('click');
+			jQuery('#button-submit-for-commit-or-export').unbind('click');
 		}
 		
-		function setSubmitHandler(checkBoxes, generatedTerms, ontology) {
+		function setSubmitHandler(reviewTerms, generatedTerms, ontology) {
 			/*
 			 * add functionality to the submit button:
 			 * only try to commit, if at least one check box is enabled,
 			 * otherwise prepare for export.
 			 */
-			$('#button-submit-for-commit-or-export').click(function(){
+			jQuery('#button-submit-for-commit-or-export').click(function(){
 				var count = 0;
 				var terms = [];
-				if (checkBoxes !== null) {
-					$.each(checkBoxes, function(index, checkBox){
+				if (reviewTerms !== null) {
+					jQuery.each(reviewTerms.checkBoxes, function(index, checkBox){
 						if (checkBox.is(':checked')) {
-							terms[count] = generatedTerms[index];
+							terms[count] = reviewTerms.termPanels[index].getTerm();
 							count += 1;
 						}
 					});
@@ -1527,7 +1623,7 @@ function termgenie(){
 		var name;
 		var content;
 		container.append('<div class="term-generation-export-heading">Export<div>');
-		var exportsContainer = $('<div class="term-generation-exports"></div>');
+		var exportsContainer = jQuery('<div class="term-generation-exports"></div>');
 		exportsContainer.appendTo(container);
 		if (exportResult.success === true) {
 			for( i = 0; i < formats.length; i += 1) {
@@ -1572,9 +1668,9 @@ function termgenie(){
 		 * @returns methods for logging (internal)
 		 */
 		function PopupLoggingPanel() {
-			var popupDiv = $('<div></div>');
+			var popupDiv = jQuery('<div></div>');
 			popupDiv.appendTo('body');
-			var tabTitles = $('<ul></ul>');
+			var tabTitles = jQuery('<ul></ul>');
 			tabTitles.appendTo(popupDiv);
 			var errorPanel = createPanel("Error Messages", 300, 'termgenie-logging-tabId-1');
 			var messagePanel = createPanel("User Messages", 300, 'termgenie-logging-tabId-2');
@@ -1612,15 +1708,15 @@ function termgenie(){
 			});
 			
 			// register handler for link to show this panel
-			$('#termgenie-error-console-link').click(function(){
+			jQuery('#termgenie-error-console-link').click(function(){
 				popupDiv.dialog('open');
 			});
 			
 			function createPanel(name, maxCount, tabId) {
 				tabTitles.append('<li><a href="'+tabId+'">'+name+'</a></li>');
-				var container = $('<div id="'+tabId+'"></div>');
+				var container = jQuery('<div id="'+tabId+'"></div>');
 				container.appendTo(popupDiv);
-				var contentContainer = $('<div style="overflow: scroll;position:absolute;height:75%;width:90%"></div>');
+				var contentContainer = jQuery('<div style="overflow: scroll;position:absolute;height:75%;width:90%"></div>');
 				container.append(contentContainer);
 				return LoggingPanel(contentContainer, maxCount);
 			}
@@ -1664,7 +1760,7 @@ function termgenie(){
 		 */
 		function LoggingPanel(parent, maxCount) {
 			var count = 0;
-			var loggingDiv = $('<div></div>');
+			var loggingDiv = jQuery('<div></div>');
 			loggingDiv.appendTo(parent);
 			
 			function getCurrentTime(){
@@ -1722,11 +1818,11 @@ function termgenie(){
 		 * @returns methods for the dialog box.
 		 */
 		function DialogBox () {
-			var dialogDiv = $('<div></div>');
+			var dialogDiv = jQuery('<div></div>');
 			dialogDiv.appendTo('body');
-			var dialogContent = $('<div></div>');
+			var dialogContent = jQuery('<div></div>');
 			dialogContent.appendTo(dialogDiv);
-			var moreDetailsDiv = $('<div style="margin:10px;"></div>');
+			var moreDetailsDiv = jQuery('<div style="margin:10px;"></div>');
 			moreDetailsDiv.appendTo(dialogDiv);
 			
 			dialogDiv.dialog({
@@ -1760,12 +1856,12 @@ function termgenie(){
 					dialogContent.empty();
 					dialogContent.append(message);
 					if (details && details.length > 0) {
-						var allDetailsDiv = $('<div style="display:none;overflow:auto;"></div>');
-						$.each(details, function(index, detail){
+						var allDetailsDiv = jQuery('<div style="display:none;overflow:auto;"></div>');
+						jQuery.each(details, function(index, detail){
 							allDetailsDiv.append('<div style="padding:5px 5px;">'+detail+'</div>');
 						});
 						
-						var moreDetailsButton = $('<span class="myClickable" style="font-size:0.8em;">Show Details</span>');
+						var moreDetailsButton = jQuery('<span class="myClickable" style="font-size:0.8em;">Show Details</span>');
 						moreDetailsButton.click(function(){
 							if (allDetailsDiv.is(":visible")) {
 								allDetailsDiv.hide();
@@ -1841,7 +1937,7 @@ function termgenie(){
 	 */
 	function getShortOntologyNameList(ontologyNames) {
 		var result = '';
-		$.each(ontologyNames, function(index, ontologyName){
+		jQuery.each(ontologyNames, function(index, ontologyName){
 			if (index > 0) {
 				result += ', ';
 			}
@@ -1869,9 +1965,9 @@ function termgenie(){
 	 * @param removeFunction function clickhandler for remove
 	 */
 	function createAddRemoveWidget(parent, addfunction, removeFunction) {
-		var addButton = $('<a class="myClickable">More</a>'); 
-		var delButton = $('<a class="myClickable">Less</a>');
-		var buttons = $('<span class="more-less-buttons"></span>');
+		var addButton = jQuery('<a class="myClickable">More</a>'); 
+		var delButton = jQuery('<a class="myClickable">Less</a>');
+		var buttons = jQuery('<span class="more-less-buttons"></span>');
 		buttons.append(" (");
 		buttons.append(addButton);
 		buttons.append(", ");
@@ -1892,7 +1988,7 @@ function termgenie(){
 	 * @returns DOM element
 	 */
 	function createLayoutTable() {
-		return $(createLayoutTableOpenTag()+'</table>');
+		return jQuery(createLayoutTableOpenTag()+'</table>');
 	}
 	
 	/**
@@ -1954,7 +2050,7 @@ function termgenie(){
 };
 
 // actuall call in jquery to execute the termgenie scripts after the document is ready
-$(function(){
+jQuery(document).ready(function(){
 	// start term genie.
 	termgenie();
 });
