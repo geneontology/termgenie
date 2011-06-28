@@ -1352,8 +1352,9 @@ function termgenie(){
 			generatedTermContainer.append(layout);
 			
 			var fields = ['label','definition','logDef','synonyms','defxRef','comment'];
+			var fieldHeaders = ['Label','Definition','Logic Definition','Synonyms','Def_XRef','Comment'];
 			var header = '<thead><tr><td></td>';
-			jQuery.each(fields, function(index, field){
+			jQuery.each(fieldHeaders, function(index, field){
 				header += '<td>'+field+'</td>';
 			});
 			header += '<td>MetaData</td><td>Relations</td></tr></thead>';
