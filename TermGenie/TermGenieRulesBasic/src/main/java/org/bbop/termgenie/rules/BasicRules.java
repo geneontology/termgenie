@@ -286,11 +286,6 @@ class BasicRules {
 		return getFieldSingleString(input, "Comment");
 	}
 
-	private String createNewId(TermGenerationInput input, OWLGraphWrapper ontology) {
-		// TODO use range, may be user specific
-		return "GO:Random";
-	}
-	
 	protected String createDefinition(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
 		StringBuilder sb = new StringBuilder();
 		if (prefix != null) {
@@ -355,8 +350,7 @@ class BasicRules {
 			}
 		}
 		// try to create new id
-		String id = createNewId(input, ontology);
-		output.add(success(new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
+		output.add(success(new OntologyTerm.DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
 	}
 	
 	protected String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology) {
