@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 public class JsonOntologyTerm {
 	
-	private String id;
 	private String label;
 	private String definition;
 	private String logDef;
@@ -15,20 +14,6 @@ public class JsonOntologyTerm {
 	
 	public JsonOntologyTerm() {
 		super();
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -136,11 +121,6 @@ public class JsonOntologyTerm {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JsonOntologyTerm [");
-		if (id != null) {
-			builder.append("id=");
-			builder.append(id);
-			builder.append(", ");
-		}
 		if (label != null) {
 			builder.append("label=");
 			builder.append(label);

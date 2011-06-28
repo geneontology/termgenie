@@ -175,7 +175,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (defXRef != null && !defXRef.isEmpty()) {
 			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
 		}
-		term.setId(candidate.getTerm().getId());
 		term.setLabel(candidate.getTerm().getLabel());
 		term.setLogDef(candidate.getTerm().getLogicalDefinition());
 		String[] synonyms = null;

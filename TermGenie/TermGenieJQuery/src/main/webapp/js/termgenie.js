@@ -718,6 +718,9 @@ function termgenie(){
 						strings:  [],
 						prefixes: []
 					};
+				initSubArrays(parameter.terms, templateFields.length);
+				initSubArrays(parameter.strings, templateFields.length);
+				initSubArrays(parameter.prefixes, templateFields.length);
 				
 				for ( var i = 0; i < templateFields.length; i++) {
 					var templatefield = templateFields[i];
@@ -732,6 +735,12 @@ function termgenie(){
 						termGenerationParameter: parameter
 					}
 				};
+				
+				function initSubArrays(array, count) {
+					for(var j = 0; j < count; j += 1) {
+						array[j] = [];
+					}
+				}
 			}
 		};
 	}
@@ -1322,49 +1331,135 @@ function termgenie(){
 		}
 		
 		function renderGeneratedTerms(parent, generatedTerms) {
-			var checkBoxCount = 0;
-			var checkBoxes = [];
+			var checkBoxes = List();
+			var termPanels = List();
 			var generatedTermContainer = $('<div class="term-generation-details"></div>');
 			generatedTermContainer.appendTo(container);
 			
-			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>')
-			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>')
+			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>');
+			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>');
 			var layout = $('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
-			layout.append('<thead><tr><td></td><td>Label</td><td>Definition</td><td>Logical Definition</td><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr></thead>');
+			var fields = ['label','definition','logDef','synonyms','defxRef','comment'];
+			var header = '<thead><tr><td></td>';
+			jQuery.each(fields, function(index, field){
+				header += '<td>'+field+'</td>';
+			});
+			header += '<td>MetaData</td><td>Relations</td></tr></thead>';
+			layout.append(header);
 			
 			$.each(generatedTerms, function(index, term){
-				
-				var trElement = $('<tr></tr>');
+				var trElement = jQuery('<tr></tr>');
 				trElement.appendTo(layout);
-				var tdElement = $('<td></td>');
+				var tdElement = jQuery('<td></td>');
 				tdElement.appendTo(trElement);
-				var checkBox = $('<input type="checkbox"/>');
+				var checkBox = jQuery('<input type="checkbox"/>');
 				checkBox.appendTo(tdElement);
-				checkBoxes[checkBoxCount] = checkBox;
-				checkBoxCount += 1;
-				
-				var fieldnames = ['label','definition','logDef']; 
-				$.each(fieldnames, function(index, fieldName) {
-					var tdElement = $('<td></td>');
-					tdElement.appendTo(trElement);
-					tdElement.append(term[fieldName]);
-				});
-				
-				var tdElement = $('<td></td>');
-				tdElement.appendTo(trElement);
-				if(term.synonyms && term.synonyms.length > 0) {
-					var subtable = $('<ul></ul>');
-					subtable.appendTo(tdElement);
-					$.each(term.synonyms, function(index, value){
-						subtable.append('<li>'+value+'</li>');
-					});
-				}
+				checkBoxes.add(checkBox);
+
+				var termPanel = TermReviewPanel(trElement, term, fields);
+				termPanels.add(termPanel);
 			});
 			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>')
 			
 			return checkBoxes;
+		}
+		
+		function TermReviewPanel(trElement, term, fields) {
+			// clone term, preserve original term for comparison
+			var newTerm = jQuery.extend(true, {}, term);
+			
+			// render the invidual fields
+			var fieldPanels = [];
+			// determine the type (String or array) $.isArray()
+			$.each(fields, function(index, field) {
+				var tdElement = jQuery('<td></td>');
+				tdElement.appendTo(trElement);
+				var value = term[field];
+				var panel = null;
+				if(jQuery.isArray(value)) {
+					if (value && value.length > 0) {
+						panel = StringListFieldReviewPanel(tdElement, term, field);
+					}
+				}
+				else if ((typeof value) === "string") {
+					panel = StringFieldReviewPanel(tdElement, term, field);
+				}
+				fieldPanels[index] = panel;
+			});
+			
+			return {
+				getTerm : function(){
+					jQuery.each(fields, function(index, field) {
+						var panel = fieldPanels[index];
+						if (panel.isChanged()) {
+							newTerm[field] = panel.getValue();
+						}
+					});
+					return newTerm;
+				}
+			};
+			
+			
+			function StringFieldReviewPanel(parent, term, field) {
+				var reviewField = jQuery('<textarea>'+term[field]+'</textarea>');
+				reviewField.appendTo(parent);
+				
+				return {
+					isChanged : function() {
+						return reviewField.val() !== term[field];
+					},
+					getValue : function () {
+						return reviewField.val();
+					}
+				};
+			}
+			
+			function StringListFieldReviewPanel(parent, term, field) {
+				var table = createLayoutTable();
+				table.appendTo(parent);
+				var checkboxes = List();
+				jQuery.each(term[field], function(index, value){
+					var checkbox = jQuery('<input type="checkbox" checked="true"/>');
+					checkboxes.add(checkbox);
+					var trElem = jQuery('<tr></tr>');
+					table.append(trElem);
+					var tdElem = jQuery('<td></td>');
+					tdElem.appendTo(trElem);
+					tdElem.append(checkbox);
+					trElem.append('<td>'+value+'</td>');
+				});
+				
+//				function addInput() {
+//					
+//				}
+//				
+//				function removeInput() {
+//					
+//				}
+				
+				return {
+					isChanged : function() {
+						return false;
+					},
+					getValue : function () {
+						return term[field];
+					}
+				};
+			}
+			
+			function RelationFieldReviewPanel(parent, term) {
+				
+				return {
+					isChanged : function() {
+						return false;
+					},
+					getValue : function () {
+						return term.relations;
+					}
+				};
+			}
 		}
 		
 		function clearSubmitHandler() {
