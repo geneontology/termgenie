@@ -1205,7 +1205,7 @@ function termgenie(){
 						},
 						onException: function(e) {
 							step4Container.empty();
-							loggingSystem.logSystemError("ExportTerms service call failed", error);
+							loggingSystem.logSystemError("ExportTerms service call failed", e);
 							return true;
 						}
 					});
@@ -1460,30 +1460,57 @@ function termgenie(){
 			}
 			
 			function StringListFieldReviewPanel(parent, term, field) {
+				var listParent = createLayoutTable();
+				var rowCount = 0;
+				listParent.appendTo(parent);
+				
 				var table = createLayoutTable();
 				table.appendTo(parent);
 				var checkboxes = List();
-				jQuery.each(term[field], function(index, value){
-					var checkbox = jQuery('<input type="checkbox" checked="true"/>');
-					checkboxes.add(checkbox);
-					var trElem = jQuery('<tr></tr>');
-					table.append(trElem);
-					var tdElem = jQuery('<td></td>');
-					tdElem.appendTo(trElem);
-					tdElem.append(checkbox);
-					trElem.append('<td>'+value+'</td>');
+				var strings = term[field];
+				jQuery.each(strings, function(index, value){
+					addLine(value);
 				});
 				
-//				function addInput() {
-//					
-//				}
-//				
-//				function removeInput() {
-//					
-//				}
+				createAddRemoveWidget(parent, addLine, removeLine);
+				
+				function addLine(value) {
+					var tableCell = jQuery('<tr></tr>');
+					var tdCell = jQuery('<td></td>');
+					tdCell.appendTo(tableCell);
+					var checkbox = jQuery('<input type="checkbox" checked="true"/>');
+					checkbox.appendTo(tdCell);
+					
+					tdCell = jQuery('<td></td>');
+					tdCell.appendTo(tableCell);
+					var inputField = createInputField(value);
+					inputField.appendTo(tdCell);
+					tableCell.appendTo(listParent);
+					rowCount += 1;
+				}
+				
+				function removeLine() {
+					if (rowCount > strings.length) {
+						rowCount -= 1;
+						listParent.find('tr').last().remove(); 
+					}
+				}
 				
 				return {
 					getValue : function () {
+//						var strings = List();
+//						jQuery.each(table.find('tr'), function(index, tableRow){
+//							var checkbox = tableRow.find(':checkbox').first();
+//							var input = tableRow.find()
+//							
+//							var text = normalizeString(textarea.val());
+//							if (text !== null) {
+//								strings.add(text);
+//							}
+//						});
+//						if (strings.size() > 0) {
+//							return strings.list();
+//						}
 						return term[field];
 					}
 				};
@@ -1513,17 +1540,17 @@ function termgenie(){
 
 				return {
 					getValue : function () {
-						var strings = List();
-						jQuery.each(table.find('input'), function(index, textarea){
-							var text = normalizeString(textarea.val());
-							if (text !== null) {
-								strings.add(text);
-							}
-						});
-						if (strings.size() > 0) {
-							return strings.list();
-						}
-						return term[field];
+//						var strings = List();
+//						jQuery.each(listParent.find('input'), function(index, textarea){
+//							var text = normalizeString(textarea.val());
+//							if (text !== null) {
+//								strings.add(text);
+//							}
+//						});
+//						if (strings.size() > 0) {
+//							return strings.list();
+//						}
+						return null;
 					}
 				};
 			}
@@ -1538,10 +1565,10 @@ function termgenie(){
 			}
 			
 			function createInputField(string) {
-				if (!string) {
+				if (!string || typeof string !== 'string') {
 					return jQuery('<input type="text" style="width:250px"/>');
 				}
-				if (string.length < 30) {
+				if (string.length < 35) {
 					return jQuery('<input type="text" style="width:250px" value="'+string+'"/>');
 				}
 				return jQuery('<textarea style="width:250px;height:70px">'+string+'</textarea>');
