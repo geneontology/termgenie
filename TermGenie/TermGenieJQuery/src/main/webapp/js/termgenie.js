@@ -757,6 +757,15 @@ function termgenie(){
 			get: function(index) {
 				return list[index];
 			},
+			remove : function() {
+				if (count > 0) {
+					count -= 1;
+					var value = list[count];
+					list[count] = undefined;
+					return value;
+				}
+				return undefined;
+			},
 			size: function() {
 				return count;
 			},
@@ -1410,12 +1419,7 @@ function termgenie(){
 					}
 				}
 				else if (jQuery.inArray(field, ['label','definition','logDef','comment']) >= 0) {
-					if (value && value.length > 0) {
-						panel = StringFieldReviewPanel(tdElement, term, field);
-					}
-					else {
-						panel = EmptyStringFieldReviewPanel(tdElement, term, field);
-					}
+					panel = StringFieldReviewPanel(tdElement, term, field);
 				}
 				fieldPanels[index] = panel;
 			});
@@ -1448,20 +1452,9 @@ function termgenie(){
 				};
 			}
 			
-			function EmptyStringFieldReviewPanel(parent, term, field) {
-				var reviewField = createInputField();
-				reviewField.appendTo(parent);
-				
-				return {
-					getValue : function () {
-						return normalizeString(reviewField.val());
-					}
-				};
-			}
-			
 			function StringListFieldReviewPanel(parent, term, field) {
 				var listParent = createLayoutTable();
-				var rowCount = 0;
+				var rows = List();
 				listParent.appendTo(parent);
 				
 				var table = createLayoutTable();
@@ -1486,39 +1479,42 @@ function termgenie(){
 					var inputField = createInputField(value);
 					inputField.appendTo(tdCell);
 					tableCell.appendTo(listParent);
-					rowCount += 1;
+					rows.add({
+						tableCell : tableCell,
+						checkbox : checkbox,
+						inputField : inputField
+					});
 				}
 				
 				function removeLine() {
-					if (rowCount > strings.length) {
-						rowCount -= 1;
-						listParent.find('tr').last().remove(); 
+					if (rows.size() > strings.length) {
+						var element = rows.remove();
+						element.tableCell.remove();
 					}
 				}
 				
 				return {
 					getValue : function () {
-//						var strings = List();
-//						jQuery.each(table.find('tr'), function(index, tableRow){
-//							var checkbox = tableRow.find(':checkbox').first();
-//							var input = tableRow.find()
-//							
-//							var text = normalizeString(textarea.val());
-//							if (text !== null) {
-//								strings.add(text);
-//							}
-//						});
-//						if (strings.size() > 0) {
-//							return strings.list();
-//						}
-						return term[field];
+						var strings = List();
+						jQuery.each(rows.list(), function(index, element){
+							if(element.checkbox.is(':checked')) {
+								var text = normalizeString(element.inputField.val());
+								if (text !== null) {
+									strings.add(text);
+								}
+							}
+						});
+						if (strings.size() > 0) {
+							return strings.list();
+						}
+						return null;
 					}
 				};
 			}
 			
 			function EmptyStringListFieldReviewPanel(parent, term, field) {
 				var listParent = createLayoutTable();
-				var rowCount = 0;
+				var rows = List();
 				listParent.appendTo(parent);
 				addLine();
 				createAddRemoveWidget(parent, addLine, removeLine);
@@ -1528,28 +1524,31 @@ function termgenie(){
 					var inputField = createInputField();
 					inputField.appendTo(tableCell);
 					tableCell.appendTo(listParent);
-					rowCount += 1;
+					rows.add({
+						tableCell : tableCell,
+						inputField : inputField
+					});
 				}
 				
 				function removeLine() {
-					if (rowCount > 1) {
-						rowCount -= 1;
-						listParent.find('tr').last().remove(); 
+					if (rows.size() > 1) {
+						var element = rows.remove();
+						element.tableCell.remove();
 					}
 				}
 
 				return {
 					getValue : function () {
-//						var strings = List();
-//						jQuery.each(listParent.find('input'), function(index, textarea){
-//							var text = normalizeString(textarea.val());
-//							if (text !== null) {
-//								strings.add(text);
-//							}
-//						});
-//						if (strings.size() > 0) {
-//							return strings.list();
-//						}
+						var strings = List();
+						jQuery.each(rows.list(), function(index, element){
+							var text = normalizeString(element.inputField.val());
+							if (text !== null) {
+								strings.add(text);
+							}
+						});
+						if (strings.size() > 0) {
+							return strings.list();
+						}
 						return null;
 					}
 				};
