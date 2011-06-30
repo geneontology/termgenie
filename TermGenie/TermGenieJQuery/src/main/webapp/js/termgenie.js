@@ -1653,7 +1653,7 @@ function termgenie(){
 		var exportsContainer = jQuery('<div class="term-generation-exports"></div>');
 		exportsContainer.appendTo(container);
 		if (exportResult.success === true) {
-			for( i = 0; i < formats.length; i += 1) {
+			for( i = 0; i < exportResult.formats.length; i += 1) {
 				name = exportResult.formats[i];
 				if (name && name.length > 0 && exportResult.contents.length > i) {
 					content = exportResult.contents[i];
