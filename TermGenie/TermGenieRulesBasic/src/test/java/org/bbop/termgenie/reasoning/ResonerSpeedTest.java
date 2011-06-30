@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
@@ -50,62 +51,95 @@ public class ResonerSpeedTest {
 	
 	@Test
 	public void testJCel() {
-		System.out.println("----------------------");
-		System.out.println("Reasoner:  JCEL");
-		Timer t0 = new Timer();
-		JcelReasoner reasoner = new JcelReasoner(ontology);
-		JcelReasonerProcessor processor = reasoner.getProcessor();
-		processor.precomputeInferences();
-		t0.stop();
-		System.out.println("precomputeInferences:    "+t0.getTimeString());
-
-		testReasoner(reasoner);
+		ReasonerTaskManager manager = new ReasonerTaskManager() {
+			
+			@Override
+			protected OWLReasoner updateReasoner(OWLReasoner reasoner) {
+				// Do nothing
+				return reasoner;
+			}
+			
+			@Override
+			protected OWLReasoner createReasoner() {
+				System.out.println("----------------------");
+				System.out.println("Reasoner:  JCEL");
+				Timer t0 = new Timer();
+				JcelReasoner reasoner = new JcelReasoner(ontology);
+				JcelReasonerProcessor processor = reasoner.getProcessor();
+				processor.precomputeInferences();
+				t0.stop();
+				System.out.println("precomputeInferences:    "+t0.getTimeString());
+				return reasoner;
+			}
+		};
+		testReasoner(manager);
 	}
 	
-	private void testReasoner(OWLReasonerFactory reasonerFactory, String name) {
-		System.out.println("----------------------");
-		System.out.println("Reasoner: "+name);
-		OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-		testReasoner(reasoner);
+	private void testReasoner(final OWLReasonerFactory reasonerFactory, final String name) {
+		ReasonerTaskManager manager = new ReasonerTaskManager() {
+			
+			@Override
+			protected OWLReasoner updateReasoner(OWLReasoner reasoner) {
+				// Do nothing
+				return reasoner;
+			}
+			
+			@Override
+			protected OWLReasoner createReasoner() {
+				System.out.println("----------------------");
+				System.out.println("Reasoner: "+name);
+				return reasonerFactory.createNonBufferingReasoner(ontology);
+			}
+		};
+		testReasoner(manager);
 	}
 	
-	private void testReasoner(OWLReasoner reasoner) {
-		Timer t1 = new Timer();
-		boolean isConsistent = reasoner.isConsistent();
-		t1.stop();
-		assertTrue(isConsistent);
+	private void testReasoner(ReasonerTaskManager manager) {
 		
-		OWLClass superDescription = get("GO:0006915"); // apoptosis
-		OWLClass subDescriptionIsa = get("GO:0044346");// fibroblast apoptosis
-		OWLClass subDescriptionPartOf = get("GO:0070782"); // phosphatidylserine exposure on apoptotic cell surface
+		manager.runReasonerTask(new ReasonerTaskManager.ReasonerTask() {
+			
+			@Override
+			public void reason(OWLReasoner reasoner) {
+				Timer t1 = new Timer();
+				boolean isConsistent = reasoner.isConsistent();
+				t1.stop();
+				assertTrue(isConsistent);
+				
+				OWLClass superDescription = get("GO:0006915"); // apoptosis
+				OWLClass subDescriptionIsa = get("GO:0044346");// fibroblast apoptosis
+				OWLClass subDescriptionPartOf = get("GO:0070782"); // phosphatidylserine exposure on apoptotic cell surface
+				
+				Timer t2 = new Timer();
+				NodeSet<OWLClass> subClasses = reasoner.getSubClasses(superDescription, false);
+				t2.stop();
+				
+				Timer t3 = new Timer();
+				boolean containsIsa = subClasses.containsEntity(subDescriptionIsa);
+				boolean containsPartOf = subClasses.containsEntity(subDescriptionPartOf);
+				t3.stop();
+				
+				System.out.println(subClasses);
+				System.out.println("descendant isa: "+containsIsa);
+				System.out.println("descendant part of: "+containsPartOf);
+				
+				Timer t4 = new Timer();
+				Node<OWLClass> topClassNode = reasoner.getTopClassNode();
+				t4.stop();
+				
+				System.out.println("\n Runtime");
+				System.out.println("isConsistent:    "+t1.getTimeString());
+				System.out.println("getSubClasses:   "+t2.getTimeString());
+				System.out.println("containsEntity:  "+t3.getTimeString());
+				System.out.println("getTopClassNode: "+t4.getTimeString());
+				System.out.println("----------------------");
+				
+				assertTrue(containsIsa);
+				assertFalse(containsPartOf);
+				assertTrue(topClassNode.getSize() > 0);
+			}
+		});
 		
-		Timer t2 = new Timer();
-		NodeSet<OWLClass> subClasses = reasoner.getSubClasses(superDescription, false);
-		t2.stop();
 		
-		Timer t3 = new Timer();
-		boolean containsIsa = subClasses.containsEntity(subDescriptionIsa);
-		boolean containsPartOf = subClasses.containsEntity(subDescriptionPartOf);
-		t3.stop();
-		
-		System.out.println(subClasses);
-		System.out.println("descendant isa: "+containsIsa);
-		System.out.println("descendant part of: "+containsPartOf);
-		
-		Timer t4 = new Timer();
-		Node<OWLClass> topClassNode = reasoner.getTopClassNode();
-		t4.stop();
-		
-		System.out.println("\n Runtime");
-		System.out.println("isConsistent:    "+t1.getTimeString());
-		System.out.println("getSubClasses:   "+t2.getTimeString());
-		System.out.println("containsEntity:  "+t3.getTimeString());
-		System.out.println("getTopClassNode: "+t4.getTimeString());
-		System.out.println("----------------------");
-		
-		assertTrue(containsIsa);
-		assertFalse(containsPartOf);
-		assertTrue(topClassNode.getSize() > 0);
 	}
 	
 	private OWLClass get(String id) {
