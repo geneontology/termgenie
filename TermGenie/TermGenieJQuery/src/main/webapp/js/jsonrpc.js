@@ -434,7 +434,12 @@ JsonRpc.isJSON = function(string) { //from Prototype String.isJSON()
 JsonRpc.ServiceProxy.prototype.__evalJSON = function(json, sanitize) { //from Prototype String.evalJSON()
 	if (json.length === 0) {
     	// if the server shuts down (or crashes), only an empty message is returned
-    	return {};
+    	return {
+    		error : {
+    			message: "The server returned only an empty message.", 
+    			code: 500
+    		}
+    	};
     }
 	//Remove security comment delimiters
     json = json.replace(/^\/\*-secure-([\s\S]*)\*\/\s*$/, "$1");
