@@ -54,13 +54,13 @@ public class ResonerSpeedTest {
 		ReasonerTaskManager manager = new ReasonerTaskManager() {
 			
 			@Override
-			protected OWLReasoner updateReasoner(OWLReasoner reasoner) {
+			protected OWLReasoner updateManaged(OWLReasoner reasoner) {
 				// Do nothing
 				return reasoner;
 			}
 			
 			@Override
-			protected OWLReasoner createReasoner() {
+			protected OWLReasoner createManaged() {
 				System.out.println("----------------------");
 				System.out.println("Reasoner:  JCEL");
 				Timer t0 = new Timer();
@@ -79,13 +79,13 @@ public class ResonerSpeedTest {
 		ReasonerTaskManager manager = new ReasonerTaskManager() {
 			
 			@Override
-			protected OWLReasoner updateReasoner(OWLReasoner reasoner) {
+			protected OWLReasoner updateManaged(OWLReasoner reasoner) {
 				// Do nothing
 				return reasoner;
 			}
 			
 			@Override
-			protected OWLReasoner createReasoner() {
+			protected OWLReasoner createManaged() {
 				System.out.println("----------------------");
 				System.out.println("Reasoner: "+name);
 				return reasonerFactory.createNonBufferingReasoner(ontology);
@@ -96,10 +96,10 @@ public class ResonerSpeedTest {
 	
 	private void testReasoner(ReasonerTaskManager manager) {
 		
-		manager.runReasonerTask(new ReasonerTaskManager.ReasonerTask() {
+		manager.runManagedTask(new ReasonerTaskManager.ReasonerTask() {
 			
 			@Override
-			public void reason(OWLReasoner reasoner) {
+			public void run(OWLReasoner reasoner) {
 				Timer t1 = new Timer();
 				boolean isConsistent = reasoner.isConsistent();
 				t1.stop();
