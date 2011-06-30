@@ -32,10 +32,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 		assertEquals("pigmentation", terms.get(0).getLabel());
 		
 		terms = index.suggestTerms("pigmentation", cc, maxCount);
-		// This match is introduced by the cross-product in file:
-		// http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo
-		assertEquals(1, terms.size());
-		assertEquals("cellular pigmentation", terms.get(0).getLabel());
+		assertNull(terms);
 		
 		assertNull(index.suggestTerms("pig", otherOntology, maxCount));
 	}

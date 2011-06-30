@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Set;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -181,7 +184,8 @@ class BasicRules {
 			return true;
 		}
 		if (ontology != null) {
-			Set<OWLObject> ancestors = ontology.getAncestors(x);
+			ReasonerTaskManager manager = ReasonerFactory.getDefaultTaskManager(ontology);
+			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
 			if (ancestors != null) {
 				return ancestors.contains(parent);
 			}
@@ -189,12 +193,12 @@ class BasicRules {
 		return false;
 	}
 	
-	protected Set<OWLObject> getDescendants(OWLObject parent, OWLGraphWrapper ontology) {
-		if (ontology != null) {
-			return ontology.getDescendants(parent);
-		}
-		return null;
-	}
+//	protected Set<OWLObject> getDescendants(OWLObject parent, OWLGraphWrapper ontology) {
+//		if (ontology != null) {
+//			return ontology.getDescendants(parent);
+//		}
+//		return null;
+//	}
 	
 	protected static List<TermGenerationOutput> error(String message, TermGenerationInput input) {
 		TermGenerationOutput output = new TermGenerationOutput(null, input, false, message);

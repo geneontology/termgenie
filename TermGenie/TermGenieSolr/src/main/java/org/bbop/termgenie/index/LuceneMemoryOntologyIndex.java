@@ -35,6 +35,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
@@ -90,6 +92,26 @@ public class LuceneMemoryOntologyIndex {
 	 */
 	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, String root, List<Pair<String, String>> branches) throws IOException {
 		super();
+		if (logger.isInfoEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Start creating lucene memory index for: ");
+			message.append(ontology.getOntologyId());
+			if (root != null) {
+				message.append(" Root: ");
+				message.append(root);
+			}
+			if (branches != null && !branches.isEmpty()) {
+				message.append(" Branches: ");
+				for(Pair<String, String> branch : branches) {
+					message.append(" (");
+					message.append(branch.getOne());
+					message.append(",");
+					message.append(branch.getTwo());
+					message.append(") ");
+				}
+			}
+			logger.info(message.toString());	
+		}
 		this.ontology = ontology;
 		if (branches == null || branches.isEmpty()) {
 			analyzer = new StandardAnalyzer(version);
@@ -103,37 +125,42 @@ public class LuceneMemoryOntologyIndex {
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
 		if (root == null) {
-			allOWLObjects = ontology.getAllOWLObjects();
+			allOWLObjects = this.ontology.getAllOWLObjects();
 		}
 		else {
-			OWLObject x = ontology.getOWLObjectByIdentifier(root);
+			OWLObject x = this.ontology.getOWLObjectByIdentifier(root);
 			if (x == null) {
 				throw new RuntimeException("Error: could not find root term with id: "+root);
 			}
-			allOWLObjects = ontology.getDescendantsReflexive(x);
+			allOWLObjects = this.ontology.getDescendantsReflexive(x);
 		}
 		
 		Map<OWLObject, Set<String>> branchInfo = new HashMap<OWLObject, Set<String>>();
+		ReasonerTaskManager taskManager = ReasonerFactory.getDefaultTaskManager(ontology);
 		for(Pair<String, String> branch : branches) {
 			String name = branch.getOne();
 			String id = branch.getTwo();
-			OWLObject owlObject = ontology.getOWLObjectByIdentifier(id);
+			OWLObject owlObject = this.ontology.getOWLObjectByIdentifier(id);
 			if (owlObject == null) {
 				throw new RuntimeException("Cannot create branch "+branch+" for unknown id: "+id);
 			}
 			add(owlObject, name, branchInfo);
-			Set<OWLObject> descendants = ontology.getDescendants(owlObject);
+			Collection<OWLObject> descendants = taskManager.getDescendants(owlObject, this.ontology);
+			if (logger.isInfoEnabled()) {
+				logger.info("Adding branch (" + name + "," + id + ") with " + descendants.size()
+						+ " descendants");
+			}
 			for (OWLObject descendant : descendants) {
 				add(descendant, name, branchInfo);
 			}
 		}
 		
 		for (OWLObject owlObject : allOWLObjects) {
-			String value = ontology.getLabel(owlObject);
+			String value = this.ontology.getLabel(owlObject);
 			if (value != null) {
 				Document doc  = new Document();
 				doc.add(new Field(DEFAULT_FIELD, value, Store.NO, Index.ANALYZED));
-				doc.add(new Field(ID_FIELD, ontology.getIdentifier(owlObject), Store.YES,
+				doc.add(new Field(ID_FIELD, this.ontology.getIdentifier(owlObject), Store.YES,
 						Index.NOT_ANALYZED));
 				Set<String> branchSet = branchInfo.get(owlObject);
 				if (branchSet != null) {
@@ -150,6 +177,9 @@ public class LuceneMemoryOntologyIndex {
 		writer.close();
 		
 		searcher = new IndexSearcher(directory);
+		if (logger.isInfoEnabled()) {
+			logger.info("Finished creating index for: "+ontology.getOntologyId());
+		}
 	}
 	
 	private void add(OWLObject x, String branch, Map<OWLObject, Set<String>> branchInfo) {
