@@ -746,28 +746,23 @@ function termgenie(){
 	}
 	
 	function List() {
-		var count=0;
 		var list=[];
 		
 		return {
 			add: function(elem) {
-				list[count]=elem;
-				count += 1;
+				list.push(elem);
 			},
 			get: function(index) {
 				return list[index];
 			},
 			remove : function() {
-				if (count > 0) {
-					count -= 1;
-					var value = list[count];
-					list[count] = undefined;
-					return value;
+				if (list.length > 0) {
+					return list.pop();
 				}
 				return undefined;
 			},
 			size: function() {
-				return count;
+				return list.length;
 			},
 			list: function() {
 				return list;
@@ -849,42 +844,41 @@ function termgenie(){
 	
 	function TextFieldInputList(container, templatePos, min, max, validator) {
 		
-		var count = 0;
 		var list = [];
 		var listParent = createLayoutTable();
 		listParent.appendTo(container);
-		for ( var i = 0; i < min; i++) {
-			appendInput(count);
+		for ( var i = 0; i < min; i+= 1) {
+			appendInput();
 		}
 		createAddRemoveWidget(container, appendInput, removeInput);
 		
 		function appendInput() {
-			if (count <  max) {
-				var listElem = jQuery('<tr><td></td></tr>');
+			if (list.length <  max) {
+				var listElem = jQuery('<tr></tr>');
 				listElem.appendTo(listParent);
-				list[count] = TextFieldInput(listElem.children().first(), templatePos, validator);
-				count += 1;
+				var tdElement = jQuery('<td></td>');
+				tdElement.appendTo(listElem);
+				var inputElem = TextFieldInput(tdElement, templatePos, validator);  
+				list.push(inputElem);
 			}
 		}
 		
 		function removeInput() {
-			if (count > min) {
-				count -= 1;
+			if (list.length > min) {
 				listParent.find('tr').last().remove();
-				list[count] = undefined;
+				list.pop();
 			}
 		}
 		
 		return {
 			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				var success = true;
-				for ( var i = 0; i < count; i++) {
-					var inputElem = list[i];
+				jQuery.each(list, function(index, inputElem){
 					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, template, field, i, extractionResult);
+						var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
 						success = success && csuccess;
 					}
-				}
+				});
 				return success;
 			}
 		};
@@ -1360,8 +1354,8 @@ function termgenie(){
 			var layout = jQuery('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
-			var fields = ['label','definition','synonyms','defxRef','comment'];
-			var fieldHeaders = ['Label','Definition','Synonyms','Def_XRef','Comment'];
+			var fields = ['label','definition','defxRef','synonyms'];
+			var fieldHeaders = ['Label','Definition','Def_XRef','Synonyms'];
 			var header = '<thead><tr><td></td>';
 			jQuery.each(fieldHeaders, function(index, field){
 				header += '<td>'+field+'</td>';
@@ -1418,7 +1412,7 @@ function termgenie(){
 						panel = EmptyStringListFieldReviewPanel(tdElement, term, field);
 					}
 				}
-				else if (jQuery.inArray(field, ['label','definition','comment']) >= 0) {
+				else if (jQuery.inArray(field, ['label','definition']) >= 0) {
 					panel = StringFieldReviewPanel(tdElement, term, field);
 				}
 				fieldPanels[index] = panel;

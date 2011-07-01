@@ -84,7 +84,6 @@ public interface OntologyAware {
 		public abstract Set<String> getSynonyms();
 		public abstract String getLogicalDefinition();
 		public abstract List<String> getDefXRef();
-		public abstract String getComment();
 		public abstract List<Relation> getRelations();
 		public abstract Map<String, String> getMetaData();
 
@@ -122,11 +121,6 @@ public interface OntologyAware {
 				builder.append(getDefXRef());
 				builder.append(", ");
 			}
-			if (getComment() != null) {
-				builder.append("getComment()=");
-				builder.append(getComment());
-				builder.append(", ");
-			}
 			if (getRelations() != null) {
 				builder.append("getRelations()=");
 				builder.append(getRelations());
@@ -148,13 +142,12 @@ public interface OntologyAware {
 			private final Set<String> synonyms;
 			private final String logicalDefinition;
 			private final List<String> defXRef;
-			private final String comment;
 			private final List<Relation> relations;
 			private final Map<String, String> metaData;
 
 			public DefaultOntologyTerm(String id, String label, String definition,
 					Set<String> synonyms, String logicalDefinition, List<String> defXRef, 
-					String comment,List<Relation> relations) {
+					Map<String, String> metaData, List<Relation> relations) {
 				super();
 				this.id = id;
 				this.label = label;
@@ -162,9 +155,8 @@ public interface OntologyAware {
 				this.synonyms = synonyms;
 				this.logicalDefinition = logicalDefinition;
 				this.defXRef = defXRef;
-				this.comment = comment;
 				this.relations = relations;
-				this.metaData = new HashMap<String, String>();
+				this.metaData = metaData;
 			}
 			/**
 			 * @return the id
@@ -212,13 +204,6 @@ public interface OntologyAware {
 			@Override
 			public List<String> getDefXRef() {
 				return defXRef;
-			}
-			/**
-			 * @return the comment
-			 */
-			@Override
-			public String getComment() {
-				return comment;
 			}
 			/**
 			 * @return the relations

@@ -322,7 +322,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment, relations); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, Collections.singletonMap("comment", comment), relations); 
 		}
 
 		@SuppressWarnings("unchecked")

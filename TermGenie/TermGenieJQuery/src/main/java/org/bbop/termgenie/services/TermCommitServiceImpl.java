@@ -1,32 +1,61 @@
 package org.bbop.termgenie.services;
 
+import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.tools.ImplementationFactory;
+import org.bbop.termgenie.tools.OntologyTools;
 
 public class TermCommitServiceImpl implements TermCommitService {
 
+	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
+	
 	@Override
 	public boolean isValidUser(String username, String password, String ontology) {
 		return ImplementationFactory.getUserCredentialValidator().validate(username, password, ontology);
 	}
 
 	@Override
-	public JsonExportResult exportTerms(JsonOntologyTerm[] terms, String ontology) {
+	public JsonExportResult exportTerms(JsonOntologyTerm[] terms, String ontologyName) {
 		JsonExportResult result = new JsonExportResult();
+		
+		Ontology ontology = ontologyTools.getOntology(ontologyName);
+		if (ontology == null) {
+			result.setSuccess(false);
+			result.setMessage("Unknown ontology: "+ontologyName);
+			return result;
+		}
+		
 		// TODO use a proper obo export tool here!
 		StringBuilder sb = new StringBuilder();
 		sb.append("Preliminary export results:<br/>");
 		sb.append("<pre>\n");
 		for (JsonOntologyTerm term : terms) {
 			sb.append("[Term]\n");
-			sb.append("id: GO:-------\n");
+			String id = ontology.getRealInstance().getOntologyId();
+			sb.append("id: ");
+			sb.append(id);
+			sb.append(":-------\n");
 			sb.append("name: ");
 			sb.append(term.getLabel());
 			sb.append('\n');
 			sb.append("def: \"");
 			sb.append(term.getDefinition());
-			sb.append("\"\n");
-			final String comment = term.getComment();
+			sb.append("\"");
+			String[] defxRefs = term.getDefxRef();
+			if (defxRefs != null && defxRefs.length > 0) {
+				sb.append(" [");
+				for (int i = 0; i < defxRefs.length; i++) {
+					if (i > 0) {
+						sb.append(", ");
+					}
+					sb.append(defxRefs[i]);
+				}
+				sb.append("]\n");
+			}
+			else {
+				sb.append('\n');
+			}
+			final String comment = term.getMetaData().getComment();
 			if (comment != null && !comment.isEmpty()) {
 				sb.append("comment: \"");
 				sb.append(comment);
@@ -40,17 +69,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 					sb.append("\"\n");
 				}
 			}
-			String[] defxRefs = term.getDefxRef();
-			if (defxRefs != null && defxRefs.length > 0) {
-				sb.append("xref: [");
-				for (int i = 0; i < defxRefs.length; i++) {
-					if (i > 0) {
-						sb.append(", ");
-					}
-					sb.append(defxRefs[i]);
-				}
-				sb.append("]\n");
-			}
+			
 			/*
 	private String logDef;
 	private JsonTermRelation[] relations;

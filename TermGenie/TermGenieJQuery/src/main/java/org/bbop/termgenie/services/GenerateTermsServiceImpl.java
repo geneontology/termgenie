@@ -170,7 +170,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private JsonOntologyTerm createJsonCandidate(TermGenerationOutput candidate) {
 		
 		JsonOntologyTerm term = new JsonOntologyTerm();
-		term.setComment(candidate.getTerm().getComment());
 		term.setDefinition(candidate.getTerm().getDefinition());
 		List<String> defXRef = candidate.getTerm().getDefXRef();
 		if (defXRef != null && !defXRef.isEmpty()) {
@@ -344,7 +343,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			Set<String> synonyms = null;
 			String cdef = null;
 			List<String> defxref = null;
-			String comment = null;
+			Map<String, String> metadata = new HashMap<String, String>();
 			List<Relation> relations = null;
 			
 			OWLGraphWrapper realInstance = ontology.getRealInstance();
@@ -356,7 +355,13 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 //					synonyms = realInstance.getSynonymStrings(owlObject);
 					// TODO replace this with a proper implementation
 					defxref = realInstance.getDefXref(owlObject);
-					comment = realInstance.getComment(owlObject);
+					
+					// meta data
+					put(metadata, "comment", realInstance.getComment(owlObject));
+					put(metadata, "created_by", realInstance.getCreatedBy(owlObject));
+					put(metadata, "resource", realInstance.getNamespace(owlObject));
+					
+					// relations
 					Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
 					if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
 						relations = new ArrayList<Relation>(outgoingEdges.size());
@@ -374,7 +379,13 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, comment, relations); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, metadata, relations); 
+		}
+	}
+	
+	private static void put(Map<String, String> map, String key, String value) {
+		if (value != null) {
+			map.put(key, value);
 		}
 	}
 

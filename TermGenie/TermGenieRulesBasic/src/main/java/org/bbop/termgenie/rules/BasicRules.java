@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -177,8 +178,6 @@ class BasicRules extends BasicTools {
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
 	protected void createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
-		List<String> defxrefs = getDefXref(input);
-		String comment = getComment(input);
 		// Fact Checking
 		// check label
 		OWLObject sameName = ontology.getOWLObjectByLabel(label);
@@ -186,6 +185,9 @@ class BasicRules extends BasicTools {
 			output.add(singleError("The term "+ontology.getIdentifier(sameName)+" with the same label already exists", input));
 			return;
 		}
+		
+		// def xref
+		List<String> defxrefs = getDefXref(input);
 		if (defxrefs != null) {
 			// check xref conformity
 			boolean hasXRef = false;
@@ -204,17 +206,24 @@ class BasicRules extends BasicTools {
 			}
 			if (!hasXRef) {
 				// add the termgenie def_xref
-				defxrefs.add("GOC:TermGenie");
+				ArrayList<String> newlist = new ArrayList<String>(defxrefs.size() + 1);
+				newlist.addAll(defxrefs);
+				newlist.add("GOC:TermGenie");
+				defxrefs = newlist;
 			}
 		}
 		else {
 			defxrefs = Collections.singletonList("GOC:TermGenie");
 		}
-		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations);
-		Map<String, String> metaData = term.getMetaData();
+		
+		Map<String, String> metaData = new HashMap<String, String>();
 		metaData.put("creation_date", getDate());
 		metaData.put("created_by", "TermGenie");
 		metaData.put("resource", ontology.getOntologyId());
+		metaData.put("comment", getComment(input));
+		
+		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, metaData, relations);
+		
 		output.add(success(term, input));
 	}
 	

@@ -8,7 +8,6 @@ public class JsonOntologyTerm {
 	private String label;
 	private String definition;
 	private String logDef;
-	private String comment;
 	private String[] synonyms; 
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
@@ -58,20 +57,6 @@ public class JsonOntologyTerm {
 	 */
 	public void setLogDef(String logDef) {
 		this.logDef = logDef;
-	}
-
-	/**
-	 * @return the comment
-	 */
-	public String getComment() {
-		return comment;
-	}
-
-	/**
-	 * @param comment the comment to set
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
 	}
 
 	/**
@@ -150,11 +135,6 @@ public class JsonOntologyTerm {
 		if (logDef != null) {
 			builder.append("logDef=");
 			builder.append(logDef);
-			builder.append(", ");
-		}
-		if (comment != null) {
-			builder.append("comment=");
-			builder.append(comment);
 			builder.append(", ");
 		}
 		if (synonyms != null) {
@@ -261,6 +241,7 @@ public class JsonOntologyTerm {
 		private String created_by;
 		private String creation_date;
 		private String resource;
+		private String comment;
 		
 		/**
 		 * Default constructor
@@ -273,6 +254,7 @@ public class JsonOntologyTerm {
 			this.created_by = metaData.get("created_by");
 			this.creation_date = metaData.get("creation_date");
 			this.resource = metaData.get("resource");
+			this.comment = metaData.get("comment");
 		}
 		/**
 		 * @return the created_by
@@ -310,6 +292,18 @@ public class JsonOntologyTerm {
 		public void setResource(String resource) {
 			this.resource = resource;
 		}
+		/**
+		 * @return the comment
+		 */
+		public String getComment() {
+			return comment;
+		}
+		/**
+		 * @param comment the comment to set
+		 */
+		public void setComment(String comment) {
+			this.comment = comment;
+		}
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
@@ -325,6 +319,11 @@ public class JsonOntologyTerm {
 			if (creation_date != null) {
 				builder.append("creation_date=");
 				builder.append(creation_date);
+				builder.append(", ");
+			}
+			if (comment != null) {
+				builder.append("comment=");
+				builder.append(comment);
 				builder.append(", ");
 			}
 			if (resource != null) {
