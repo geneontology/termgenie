@@ -1360,8 +1360,8 @@ function termgenie(){
 			var layout = jQuery('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
-			var fields = ['label','definition','logDef','synonyms','defxRef','comment'];
-			var fieldHeaders = ['Label','Definition','Logic Definition','Synonyms','Def_XRef','Comment'];
+			var fields = ['label','definition','synonyms','defxRef','comment'];
+			var fieldHeaders = ['Label','Definition','Synonyms','Def_XRef','Comment'];
 			var header = '<thead><tr><td></td>';
 			jQuery.each(fieldHeaders, function(index, field){
 				header += '<td>'+field+'</td>';
@@ -1418,11 +1418,14 @@ function termgenie(){
 						panel = EmptyStringListFieldReviewPanel(tdElement, term, field);
 					}
 				}
-				else if (jQuery.inArray(field, ['label','definition','logDef','comment']) >= 0) {
+				else if (jQuery.inArray(field, ['label','definition','comment']) >= 0) {
 					panel = StringFieldReviewPanel(tdElement, term, field);
 				}
 				fieldPanels[index] = panel;
 			});
+			// just create the panels for meta data and relations
+			MetaDataFieldReviewPanel(trElement, term);
+			RelationFieldReviewPanel(trElement, term);
 			
 			return {
 				/**
@@ -1437,6 +1440,7 @@ function termgenie(){
 							newTerm[field] = panel.getValue();
 						}
 					});
+					// do not read any changes from meta data or relations
 					return newTerm;
 				}
 			};
@@ -1554,13 +1558,33 @@ function termgenie(){
 				};
 			}
 			
+			/**
+			 * Render the meta data. Currently this is read-only.
+			 * 
+			 * @param parent
+			 * @param term
+			 * @returns empty object: no external methods
+			 */
+			function MetaDataFieldReviewPanel(parent, term) {
+				var metaData = term.metaData;
+				var table = createLayoutTable();
+				table.appendTo(parent);
+				jQuery.each(metaData, function(field, value) {
+					table.append('<tr><td>'+field+'</td><td class="nobr">'+value+'</td></tr>');
+				});
+				return {};
+			}
+			
+			/**
+			 * Render the relations. Currently this is read-only.
+			 * 
+			 * @param parent
+			 * @param term
+			 * @returns empty object: no external methods
+			 */
 			function RelationFieldReviewPanel(parent, term) {
 				
-				return {
-					getValue : function () {
-						return term.relations;
-					}
-				};
+				return {};
 			}
 			
 			function createInputField(string) {

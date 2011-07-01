@@ -1,74 +1,26 @@
 package org.bbop.termgenie.rules;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.bbop.termgenie.core.OntologyAware.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-class BasicRules {
-	
-	protected OWLObject getTermSimple(String id, OWLGraphWrapper ontology) {
-		if (ontology != null) {
-			return ontology.getOWLObjectByIdentifier(id);
-		}
-		return null;
-	}
-	
-	protected String name(OWLObject x, OWLGraphWrapper...ontologies) {
-		for (OWLGraphWrapper ontology : ontologies) {
-			if (ontology != null) {
-				String label = ontology.getLabel(x);
-				if (label != null) {
-					return label;
-				}
-			}	
-		}
-		return null;
-	}
-	
-	protected String refname(OWLObject x, OWLGraphWrapper ontology) {
-		String name = name(x, ontology);
-		return starts_with_vowl(name) ? "an "+name : "a "+name;
-	}
-	
-	private boolean starts_with_vowl(String name) {
-		char c = Character.toLowerCase(name.charAt(0));
-		switch (c) {
-		case 'a':
-		case 'e':
-		case 'i':
-		case 'o':
-		case 'u':
-			return true;
-		}
-		return false;
-	}
-	
-	protected String id(OWLObject x, OWLGraphWrapper...ontologies) {
-		for (OWLGraphWrapper ontology : ontologies) {
-			if (ontology != null) {
-				String identifier = ontology.getIdentifier(x);
-				if (identifier != null) {
-					return identifier;
-				}
-			}
-		}
-		return null;
-	}
+class BasicRules extends BasicTools {
 	
 	protected Set<String> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix, String label) {
 		String[] synonymStrings = getSynonyms(x, ontology);
@@ -175,121 +127,6 @@ class BasicRules {
 		return sb.toString();
 	}
 	
-	protected boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology) {
-		if (parent == null) {
-			// TODO check if the term is in the ontology
-			return true;
-		}
-		if (x.equals(parent)) {
-			return true;
-		}
-		if (ontology != null) {
-			ReasonerTaskManager manager = ReasonerFactory.getDefaultTaskManager(ontology);
-			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
-			if (ancestors != null) {
-				return ancestors.contains(parent);
-			}
-		}
-		return false;
-	}
-	
-//	protected Set<OWLObject> getDescendants(OWLObject parent, OWLGraphWrapper ontology) {
-//		if (ontology != null) {
-//			return ontology.getDescendants(parent);
-//		}
-//		return null;
-//	}
-	
-	protected static List<TermGenerationOutput> error(String message, TermGenerationInput input) {
-		TermGenerationOutput output = new TermGenerationOutput(null, input, false, message);
-		return Collections.singletonList(output);
-	}
-	
-	private static TermGenerationOutput singleError(String message, TermGenerationInput input) {
-		return new TermGenerationOutput(null, input, false, message);
-	}
-
-	protected static TermGenerationOutput success(OntologyTerm term, TermGenerationInput input) {
-		return new TermGenerationOutput(term, input, true, null);
-	}
-	
-	protected boolean equals(TermTemplate t1, TermTemplate t2) {
-		return t1.getName().equals(t2.getName());
-	}
-	
-	protected List<String> getDefXref(TermGenerationInput input) {
-		String[] strings =  getFieldStrings(input, "DefX_Ref");
-		if (strings == null || strings.length == 0) {
-			return null;
-		}
-		return Arrays.asList(strings);
-	}
-
-	private int getFieldPos(TermGenerationInput input, String name) {
-		return input.getTermTemplate().getFieldPos(name);
-	}
-	
-	private String[] getFieldStrings(TermGenerationInput input, String name) {
-		int pos = getFieldPos(input, name);
-		if (pos < 0) {
-			return null;
-		}
-		String[][] matrix = input.getParameters().getStrings();
-		if (matrix.length <= pos) {
-			return null;
-		}
-		return matrix[pos];
-	}
-	
-	private OntologyTerm[] getFieldTerms(TermGenerationInput input, String name) {
-		int pos = getFieldPos(input, name);
-		if (pos < 0) {
-			return null;
-		}
-		OntologyTerm[][] matrix = input.getParameters().getTerms();
-		if (matrix.length <= pos) {
-			return null;
-		}
-		return matrix[pos];
-	}
-	
-	protected String getFieldSingleString(TermGenerationInput input, String name) {
-		String[] strings = getFieldStrings(input, name);
-		if (strings == null || strings.length < 1) {
-			return null;
-		}
-		return strings[0];
-	}
-	
-	protected List<String> getFieldStringList(TermGenerationInput input, String name) {
-		String[] strings = getFieldStrings(input, name);
-		if (strings == null || strings.length < 1) {
-			return null;
-		}
-		return Arrays.asList(strings);
-	}
-	
-	protected OntologyTerm getFieldSingleTerm(TermGenerationInput input, String name) {
-		OntologyTerm[] terms = getFieldTerms(input, name);
-		if (terms == null || terms.length < 1) {
-			return null;
-		}
-		return terms[0];
-	}
-	
-	protected List<OntologyTerm> getFieldTermList(TermGenerationInput input, String name) {
-		OntologyTerm[] terms = getFieldTerms(input, name);
-		if (terms == null || terms.length < 1) {
-			return null;
-		}
-		return Arrays.asList(terms);
-	}
-	
-	
-	protected String getComment(TermGenerationInput input) {
-		return getFieldSingleString(input, "Comment");
-	}
-
 	protected String createDefinition(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
 		StringBuilder sb = new StringBuilder();
 		if (prefix != null) {
@@ -337,6 +174,8 @@ class BasicRules {
 		return output;
 	}
 	
+	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
+	
 	protected void createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
 		List<String> defxrefs = getDefXref(input);
 		String comment = getComment(input);
@@ -348,46 +187,42 @@ class BasicRules {
 			return;
 		}
 		if (defxrefs != null) {
-			// check xref conformity  
+			// check xref conformity
+			boolean hasXRef = false;
 			for (String defxref : defxrefs) {
-				// TODO add pattern check here for xrefs
+				// check if the termgenie def_xref is already in the list
+				hasXRef = hasXRef || defxref.equals("GOC:TermGenie");
+				
+				// simple defxref check, TODO use a centralized qc check.
+				if (defxref.length() < 3) {
+					output.add(singleError("The Def_Xref "+defxref+" is too short. A Def_Xref consists of a prefix and suffix with a colon (:) as separator", input));
+					continue;
+				}
+				if(!def_xref_Pattern.matcher(defxref).matches()) {
+					output.add(singleError("The Def_Xref "+defxref+" does not conform to the expected pattern. A Def_Xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.", input));
+				}
+			}
+			if (!hasXRef) {
+				// add the termgenie def_xref
+				defxrefs.add("GOC:TermGenie");
 			}
 		}
-		// try to create new id
-		output.add(success(new OntologyTerm.DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations), input));
-	}
-	
-	protected String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology) {
-		return "\""+ontology.getLabel(x)+"\" ("+ontology.getIdentifier(x)+")";
-	}
-	
-	protected static class CheckResult {
-		protected boolean isGenus;
-		List<TermGenerationOutput> error;
-		
-		/**
-		 * @param error
-		 */
-		protected CheckResult(List<TermGenerationOutput> error) {
-			this.isGenus = false;
-			this.error = error;
+		else {
+			defxrefs = Collections.singletonList("GOC:TermGenie");
 		}
-
-		protected CheckResult() {
-			this.isGenus = true;
-			this.error = null;
-		}
-		
-		
+		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, comment, relations);
+		Map<String, String> metaData = term.getMetaData();
+		metaData.put("creation_date", getDate());
+		metaData.put("created_by", "TermGenie");
+		metaData.put("resource", ontology.getOntologyId());
+		output.add(success(term, input));
 	}
 	
-	private static CheckResult okay = new CheckResult();
+	// TODO use proper date time format as defined in OBO 1.4 standard
+	private final static DateFormat df = ISO8601DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 	
-	protected CheckResult checkGenus(OWLObject x, OWLObject branch, OWLGraphWrapper ontology, TermGenerationInput input) {
-		if (!genus(x, branch, ontology)) {
-			// check branch
-			return new CheckResult(error("The specified term does not correspond to the patterns  The term "+getTermShortInfo(branch, ontology)+" is not a parent of "+getTermShortInfo(x, ontology), input));
-		}
-		return okay;
+	private String getDate() {
+		return df.format(new Date());
 	}
+	
 }

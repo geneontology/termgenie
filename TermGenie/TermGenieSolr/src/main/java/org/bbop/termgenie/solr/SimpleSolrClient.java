@@ -3,6 +3,7 @@ package org.bbop.termgenie.solr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -185,6 +186,11 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			@Override
 			public List<Relation> getRelations() {
 				return null;
+			}
+			
+			@Override
+			public Map<String, String> getMetaData() {
+				return Collections.emptyMap();
 			}
 		};
 	}

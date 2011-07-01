@@ -1,9 +1,5 @@
 package org.bbop.termgenie.services;
 
-import java.text.DateFormat;
-import java.util.Date;
-
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.tools.ImplementationFactory;
 
@@ -64,11 +60,13 @@ public class TermCommitServiceImpl implements TermCommitService {
 //			union_of
 //			disjoint_from
 //			relationship
-			sb.append("created_by: TermGenie\n");
-			sb.append("creation_date: ");
-			sb.append(df.format(new Date()));
+			sb.append("created_by: ");
+			sb.append(term.getMetaData().getCreated_by());
 			sb.append('\n');
-			
+			sb.append("creation_date: ");
+			sb.append(term.getMetaData().getCreation_date());
+			sb.append('\n');
+			sb.append('\n');
 		}
 		sb.append("\n</pre>");
 		result.setSuccess(true);
@@ -78,9 +76,6 @@ public class TermCommitServiceImpl implements TermCommitService {
 		return result;
 	}
 	
-	// TODO use proper date time format as defined in OBO 1.4 standard
-	private final static DateFormat df = ISO8601DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
-
 	@Override
 	public JsonCommitResult commitTerms(JsonOntologyTerm[] terms, String ontology, String username,
 			String password) {

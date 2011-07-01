@@ -1,6 +1,7 @@
 package org.bbop.termgenie.data;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class JsonOntologyTerm {
 	
@@ -11,6 +12,7 @@ public class JsonOntologyTerm {
 	private String[] synonyms; 
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
+	private JsonTermMetaData metaData;
 	
 	public JsonOntologyTerm() {
 		super();
@@ -114,6 +116,20 @@ public class JsonOntologyTerm {
 		this.synonyms = synonyms;
 	}
 	
+	/**
+	 * @return the metaData
+	 */
+	public JsonTermMetaData getMetaData() {
+		return metaData;
+	}
+
+	/**
+	 * @param metaData the metaData to set
+	 */
+	public void setMetaData(JsonTermMetaData metaData) {
+		this.metaData = metaData;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -154,6 +170,11 @@ public class JsonOntologyTerm {
 		if (relations != null) {
 			builder.append("relations=");
 			builder.append(Arrays.toString(relations));
+			builder.append(", ");
+		}
+		if (metaData != null) {
+			builder.append("metaData=");
+			builder.append(metaData.toString());
 		}
 		builder.append("]");
 		return builder.toString();
@@ -230,6 +251,85 @@ public class JsonOntologyTerm {
 			if (properties != null) {
 				builder.append("properties=");
 				builder.append(Arrays.toString(properties));
+			}
+			builder.append("]");
+			return builder.toString();
+		}
+	}
+	
+	public static class JsonTermMetaData {
+		private String created_by;
+		private String creation_date;
+		private String resource;
+		
+		/**
+		 * Default constructor
+		 */
+		public JsonTermMetaData() {
+			super();
+		}
+		public JsonTermMetaData(Map<String, String> metaData) {
+			this();
+			this.created_by = metaData.get("created_by");
+			this.creation_date = metaData.get("creation_date");
+			this.resource = metaData.get("resource");
+		}
+		/**
+		 * @return the created_by
+		 */
+		public String getCreated_by() {
+			return created_by;
+		}
+		/**
+		 * @param created_by the created_by to set
+		 */
+		public void setCreated_by(String created_by) {
+			this.created_by = created_by;
+		}
+		/**
+		 * @return the creation_date
+		 */
+		public String getCreation_date() {
+			return creation_date;
+		}
+		/**
+		 * @param creation_date the creation_date to set
+		 */
+		public void setCreation_date(String creation_date) {
+			this.creation_date = creation_date;
+		}
+		/**
+		 * @return the resource
+		 */
+		public String getResource() {
+			return resource;
+		}
+		/**
+		 * @param resource the resource to set
+		 */
+		public void setResource(String resource) {
+			this.resource = resource;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonTermMetaData [");
+			if (created_by != null) {
+				builder.append("created_by=");
+				builder.append(created_by);
+				builder.append(", ");
+			}
+			if (creation_date != null) {
+				builder.append("creation_date=");
+				builder.append(creation_date);
+				builder.append(", ");
+			}
+			if (resource != null) {
+				builder.append("resource=");
+				builder.append(resource);
 			}
 			builder.append("]");
 			return builder.toString();

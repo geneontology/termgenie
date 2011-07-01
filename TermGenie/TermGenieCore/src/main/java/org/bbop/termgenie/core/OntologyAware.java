@@ -1,6 +1,8 @@
 package org.bbop.termgenie.core;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import owltools.graph.OWLGraphWrapper;
@@ -84,6 +86,7 @@ public interface OntologyAware {
 		public abstract List<String> getDefXRef();
 		public abstract String getComment();
 		public abstract List<Relation> getRelations();
+		public abstract Map<String, String> getMetaData();
 
 		@Override
 		public String toString() {
@@ -127,6 +130,11 @@ public interface OntologyAware {
 			if (getRelations() != null) {
 				builder.append("getRelations()=");
 				builder.append(getRelations());
+				builder.append(", ");
+			}
+			if (getMetaData() != null) {
+				builder.append("getMetaData()=");
+				builder.append(getMetaData());
 			}
 			builder.append("]");
 			return builder.toString();
@@ -142,6 +150,7 @@ public interface OntologyAware {
 			private final List<String> defXRef;
 			private final String comment;
 			private final List<Relation> relations;
+			private final Map<String, String> metaData;
 
 			public DefaultOntologyTerm(String id, String label, String definition,
 					Set<String> synonyms, String logicalDefinition, List<String> defXRef, 
@@ -155,6 +164,7 @@ public interface OntologyAware {
 				this.defXRef = defXRef;
 				this.comment = comment;
 				this.relations = relations;
+				this.metaData = new HashMap<String, String>();
 			}
 			/**
 			 * @return the id
@@ -216,6 +226,13 @@ public interface OntologyAware {
 			@Override
 			public List<Relation> getRelations() {
 				return relations;
+			}
+			/**
+			 * @return the metaData
+			 */
+			@Override
+			public Map<String, String> getMetaData() {
+				return metaData;
 			}
 		}
 	}

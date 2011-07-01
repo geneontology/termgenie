@@ -25,6 +25,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
@@ -183,6 +184,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			synonyms = set.toArray(new String[set.size()]);
 		}
 		term.setSynonyms(synonyms);
+		term.setMetaData(new JsonTermMetaData(candidate.getTerm().getMetaData()));
 		return term;
 	}
 

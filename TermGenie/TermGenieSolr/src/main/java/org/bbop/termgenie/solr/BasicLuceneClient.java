@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Relation;
@@ -147,6 +148,11 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			@Override
 			public List<Relation> getRelations() {
 				return null;
+			}
+			
+			@Override
+			public Map<String, String> getMetaData() {
+				return Collections.emptyMap();
 			}
 			
 		};
