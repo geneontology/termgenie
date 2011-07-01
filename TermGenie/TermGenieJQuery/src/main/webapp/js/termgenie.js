@@ -743,31 +743,6 @@ function termgenie(){
 		};
 	}
 	
-//	function List() {
-//		var list=[];
-//		
-//		return {
-//			add: function(elem) {
-//				list.push(elem);
-//			},
-//			get: function(index) {
-//				return list[index];
-//			},
-//			remove : function() {
-//				if (list.length > 0) {
-//					return list.pop();
-//				}
-//				return undefined;
-//			},
-//			size: function() {
-//				return list.length;
-//			},
-//			list: function() {
-//				return list;
-//			}
-//		};
-//	}
-	
 	function ExtractionResult() {
 		var success = true;
 		var errors = [];
@@ -1486,17 +1461,17 @@ function termgenie(){
 				
 				return {
 					getValue : function () {
-						var strings = List();
+						var strings = [];
 						jQuery.each(rows, function(index, element){
 							if(element.checkbox.is(':checked')) {
 								var text = normalizeString(element.inputField.val());
 								if (text !== null) {
-									strings.add(text);
+									strings.push(text);
 								}
 							}
 						});
-						if (strings.size() > 0) {
-							return strings.list();
+						if (strings.length > 0) {
+							return strings;
 						}
 						return null;
 					}
@@ -1530,15 +1505,15 @@ function termgenie(){
 
 				return {
 					getValue : function () {
-						var strings = List();
+						var strings = [];
 						jQuery.each(rows, function(index, element){
 							var text = normalizeString(element.inputField.val());
 							if (text !== null) {
-								strings.add(text);
+								strings.push(text);
 							}
 						});
-						if (strings.size() > 0) {
-							return strings.list();
+						if (strings.length > 0) {
+							return strings;
 						}
 						return null;
 					}
