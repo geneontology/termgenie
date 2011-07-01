@@ -179,11 +179,6 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public String getComment() {
-				return null;
-			}
-
-			@Override
 			public List<Relation> getRelations() {
 				return null;
 			}

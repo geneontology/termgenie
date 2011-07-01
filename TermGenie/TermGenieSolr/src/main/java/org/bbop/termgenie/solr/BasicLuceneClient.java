@@ -141,11 +141,6 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public String getComment() {
-				return null;
-			}
-
-			@Override
 			public List<Relation> getRelations() {
 				return null;
 			}
