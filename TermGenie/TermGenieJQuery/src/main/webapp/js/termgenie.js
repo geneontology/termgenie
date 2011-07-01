@@ -320,7 +320,7 @@ function termgenie(){
 				var success = status.extractionResult.isSuccessful()
 				if (success === false) {
 					var details = [];
-					jQuery.each(status.extractionResult.getErrors().list(), function(index, error){
+					jQuery.each(status.extractionResult.getErrors(), function(index, error){
 						var message = '';
 						if (error.template) {
 							message += 'The template <span class="nobr">\'';
@@ -542,7 +542,6 @@ function termgenie(){
 			 */
 			getAllTemplateParameters : function() {
 				var extractionResult = ExtractionResult();
-				var count = 0;
 				var parameters = [];
 				jQuery.each(templateMap, function(name, listcontainer){
 					if (listcontainer && listcontainer.list) {
@@ -550,8 +549,7 @@ function termgenie(){
 						jQuery.each(list, function(index, templateWidget){
 							var extracted = templateWidget.extractTermGenerationInput(extractionResult);
 							if(extracted && extracted.success === true) {
-								parameters[count] = extracted.input;
-								count += 1;
+								parameters.push(extracted.input);
 							}
 						});
 					}
@@ -745,39 +743,39 @@ function termgenie(){
 		};
 	}
 	
-	function List() {
-		var list=[];
-		
-		return {
-			add: function(elem) {
-				list.push(elem);
-			},
-			get: function(index) {
-				return list[index];
-			},
-			remove : function() {
-				if (list.length > 0) {
-					return list.pop();
-				}
-				return undefined;
-			},
-			size: function() {
-				return list.length;
-			},
-			list: function() {
-				return list;
-			}
-		};
-	}
+//	function List() {
+//		var list=[];
+//		
+//		return {
+//			add: function(elem) {
+//				list.push(elem);
+//			},
+//			get: function(index) {
+//				return list[index];
+//			},
+//			remove : function() {
+//				if (list.length > 0) {
+//					return list.pop();
+//				}
+//				return undefined;
+//			},
+//			size: function() {
+//				return list.length;
+//			},
+//			list: function() {
+//				return list;
+//			}
+//		};
+//	}
 	
 	function ExtractionResult() {
 		var success = true;
-		var errors = List();
+		var errors = [];
 		
 		return {
 			addError : function(error, template, field) {
 				success = false;
-				errors.add({
+				errors.push({
 					message: error,
 					template: template,
 					field: field
@@ -1048,42 +1046,40 @@ function termgenie(){
 	
 	function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
 		
-		var count = 0;
 		var list = [];
 		var listParent = createLayoutTable();
 		listParent.appendTo(container);
 		for ( var i = 0; i < min; i++) {
-			appendInput(count);
+			appendInput();
 		}
 		createAddRemoveWidget(container, appendInput, removeInput);
 		
 		function appendInput() {
-			if (count <  max) {
-				var listElem = jQuery('<tr><td></td></tr>');
+			if (list.length <  max) {
+				var listElem = jQuery('<tr></tr>');
 				listElem.appendTo(listParent);
-				list[count] = AutoCompleteOntologyInput(listElem.children().first(), templatePos, ontologies);
-				count += 1;
+				var tdElement = jQuery('<td></td>');
+				tdElement.appendTo(listElem);
+				list.push(AutoCompleteOntologyInput(tdElement, templatePos, ontologies));
 			}
 		}
 		
 		function removeInput() {
-			if (count > min) {
-				count -= 1;
+			if (list.length > min) {
 				listParent.find('tr').last().remove();
-				list[count] = undefined;
+				list.pop();
 			}
 		}
 		
 		return {
 			extractParameter : function(parameter, template, field, pos, extractionResult) {
 				var success = true;
-				for ( var i = 0; i < count; i++) {
-					var inputElem = list[i];
+				jQuery.each(list, function(index, inputElem){
 					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, template, field, i, extractionResult);
+						var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
 						success = success && csuccess;
 					}
-				}
+				});
 				return success;
 			}
 		};
@@ -1125,17 +1121,15 @@ function termgenie(){
 				}
 				var success = inputField.extractParameter(parameter, template, field, pos, extractionResult);
 				
-				var count = 0;
 				var cPrefixes = [];
 				
 				for ( j = 0; j < checkboxes.length; j++) {
 					checkbox = checkboxes[j];
 					if(checkbox.is(':checked')) {
-						cPrefixes[count] = prefixes[j];
-						count += 1;
+						cPrefixes.push(prefixes[j]);
 					}
 				}
-				if (count === 0) {
+				if (cPrefixes.length === 0) {
 					setErrorState();
 					extractionResult.addError('No prefixes selected.', template, field);
 					return false;
@@ -1344,8 +1338,8 @@ function termgenie(){
 		 * }
 		 */
 		function renderGeneratedTerms(parent, generatedTerms) {
-			var checkBoxes = List();
-			var termPanels = List();
+			var checkBoxes = [];
+			var termPanels = [];
 			var generatedTermContainer = jQuery('<div class="term-generation-details"></div>');
 			generatedTermContainer.appendTo(container);
 			
@@ -1370,17 +1364,17 @@ function termgenie(){
 				tdElement.appendTo(trElement);
 				var checkBox = jQuery('<input type="checkbox"/>');
 				checkBox.appendTo(tdElement);
-				checkBoxes.add(checkBox);
+				checkBoxes.push(checkBox);
 
 				var termPanel = TermReviewPanel(trElement, term, fields);
-				termPanels.add(termPanel);
+				termPanels.push(termPanel);
 			});
-			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>')
+			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>');
 			
 			return {
-				checkBoxes: checkBoxes.list(),
-				termPanels: termPanels.list()
-			}
+				checkBoxes: checkBoxes,
+				termPanels: termPanels
+			};
 		}
 		
 		/**
@@ -1452,12 +1446,11 @@ function termgenie(){
 			
 			function StringListFieldReviewPanel(parent, term, field) {
 				var listParent = createLayoutTable();
-				var rows = List();
+				var rows = [];
 				listParent.appendTo(parent);
 				
 				var table = createLayoutTable();
 				table.appendTo(parent);
-				var checkboxes = List();
 				var strings = term[field];
 				jQuery.each(strings, function(index, value){
 					addLine(value);
@@ -1477,7 +1470,7 @@ function termgenie(){
 					var inputField = createInputField(value);
 					inputField.appendTo(tdCell);
 					tableCell.appendTo(listParent);
-					rows.add({
+					rows.push({
 						tableCell : tableCell,
 						checkbox : checkbox,
 						inputField : inputField
@@ -1485,8 +1478,8 @@ function termgenie(){
 				}
 				
 				function removeLine() {
-					if (rows.size() > strings.length) {
-						var element = rows.remove();
+					if (rows.length > strings.length) {
+						var element = rows.pop();
 						element.tableCell.remove();
 					}
 				}
@@ -1494,7 +1487,7 @@ function termgenie(){
 				return {
 					getValue : function () {
 						var strings = List();
-						jQuery.each(rows.list(), function(index, element){
+						jQuery.each(rows, function(index, element){
 							if(element.checkbox.is(':checked')) {
 								var text = normalizeString(element.inputField.val());
 								if (text !== null) {
@@ -1512,7 +1505,7 @@ function termgenie(){
 			
 			function EmptyStringListFieldReviewPanel(parent, term, field) {
 				var listParent = createLayoutTable();
-				var rows = List();
+				var rows = [];
 				listParent.appendTo(parent);
 				addLine();
 				createAddRemoveWidget(parent, addLine, removeLine);
@@ -1522,15 +1515,15 @@ function termgenie(){
 					var inputField = createInputField();
 					inputField.appendTo(tableCell);
 					tableCell.appendTo(listParent);
-					rows.add({
+					rows.push({
 						tableCell : tableCell,
 						inputField : inputField
 					});
 				}
 				
 				function removeLine() {
-					if (rows.size() > 1) {
-						var element = rows.remove();
+					if (rows.length > 1) {
+						var element = rows.pop();
 						element.tableCell.remove();
 					}
 				}
@@ -1538,7 +1531,7 @@ function termgenie(){
 				return {
 					getValue : function () {
 						var strings = List();
-						jQuery.each(rows.list(), function(index, element){
+						jQuery.each(rows, function(index, element){
 							var text = normalizeString(element.inputField.val());
 							if (text !== null) {
 								strings.add(text);
@@ -1614,17 +1607,15 @@ function termgenie(){
 			 * otherwise prepare for export.
 			 */
 			jQuery('#button-submit-for-commit-or-export').click(function(){
-				var count = 0;
 				var terms = [];
 				if (reviewTerms !== null) {
 					jQuery.each(reviewTerms.checkBoxes, function(index, checkBox){
 						if (checkBox.is(':checked')) {
-							terms[count] = reviewTerms.termPanels[index].getTerm();
-							count += 1;
+							terms.push(reviewTerms.termPanels[index].getTerm());
 						}
 					});
 				}
-				if (count == 0) {
+				if (terms.length === 0) {
 					loggingSystem.logUserMessage('Please select at least one term to proceed.');
 					return;
 				}
