@@ -7,7 +7,6 @@ public class JsonOntologyTerm {
 	
 	private String label;
 	private String definition;
-	private String logDef;
 	private String[] synonyms; 
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
@@ -43,20 +42,6 @@ public class JsonOntologyTerm {
 	 */
 	public void setDefinition(String definition) {
 		this.definition = definition;
-	}
-
-	/**
-	 * @return the logDef
-	 */
-	public String getLogDef() {
-		return logDef;
-	}
-
-	/**
-	 * @param logDef the logDef to set
-	 */
-	public void setLogDef(String logDef) {
-		this.logDef = logDef;
 	}
 
 	/**
@@ -130,11 +115,6 @@ public class JsonOntologyTerm {
 		if (definition != null) {
 			builder.append("definition=");
 			builder.append(definition);
-			builder.append(", ");
-		}
-		if (logDef != null) {
-			builder.append("logDef=");
-			builder.append(logDef);
 			builder.append(", ");
 		}
 		if (synonyms != null) {

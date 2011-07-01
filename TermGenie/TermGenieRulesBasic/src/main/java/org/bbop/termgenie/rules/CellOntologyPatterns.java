@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -50,15 +49,11 @@ public class CellOntologyPatterns extends Patterns {
 		String label = createName(name(a, uberon) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that is part of a "+name(a, uberon)+".", input);
 		Set<String> synonyms = null; // TODO
-		String logicalDefinition = "cdef("+id(c, cell)+", [part_of= "+id(a, uberon)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
+		CDef cdef = new CDef(c, cell);
+		cdef.addDifferentium("part_of", a, uberon);
+		return createTermList(label, definition, synonyms, cdef, input, cell);
 	}
 	
-	/*
-	  properties = [multivalued(has_plasma_membrane_part),
-	                any_cardinality(has_plasma_membrane_part)],
-	  */
 	@ToMatch
 	protected List<TermGenerationOutput> cell_by_surface_marker(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject c = getSingleTerm(input, "cell", cell);
@@ -70,8 +65,10 @@ public class CellOntologyPatterns extends Patterns {
 		String label = createName(name(p, pro, go1) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
 		Set<String> synonyms = null; // TODO
-		String logicalDefinition = "cdef("+id(c, cell)+", [has_plasma_membrane_part= "+id(p, pro, go1)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, cell);
+		CDef cdef = new CDef(c, cell);
+		cdef.addDifferentium("has_plasma_membrane_part", p, pro, go1);
+		cdef.addProperty("multivalued(has_plasma_membrane_part)");
+		cdef.addProperty("any_cardinality(has_plasma_membrane_part)");
+		return createTermList(label, definition, synonyms, cdef, input, cell);
 	}
 }

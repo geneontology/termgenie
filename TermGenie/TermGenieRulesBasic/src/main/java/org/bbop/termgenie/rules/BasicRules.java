@@ -169,15 +169,49 @@ class BasicRules extends BasicTools {
 		return name;
 	}
 	
-	protected List<TermGenerationOutput> createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology) {
+	protected static class CDef {
+		final OWLObject genus;
+		final OWLGraphWrapper ontology;
+		
+		final List<String> differentiumRelations = new ArrayList<String>();
+		final List<OWLObject[]> differentiumTerms = new ArrayList<OWLObject[]>();
+		final List<OWLGraphWrapper[]> differentiumOntologies = new ArrayList<OWLGraphWrapper[]>();
+		
+		final List<String> properties = new ArrayList<String>();
+		/**
+		 * @param genus
+		 * @param ontology
+		 */
+		protected CDef(OWLObject genus, OWLGraphWrapper ontology) {
+			super();
+			this.genus = genus;
+			this.ontology = ontology;
+		}
+		
+		protected void addDifferentium(String rel, OWLObject term, OWLGraphWrapper...ontologies) {
+			addDifferentium(rel, Collections.singletonList(term), ontologies);
+		}
+		
+		protected void addDifferentium(String rel, List<OWLObject> terms, OWLGraphWrapper...ontologies) {
+			differentiumRelations.add(rel);
+			differentiumTerms.add(terms.toArray(new OWLObject[terms.size()]));
+			differentiumOntologies.add(ontologies);
+		}
+		
+		protected void addProperty(String property) {
+			properties.add(property);
+		}
+	}
+	
+	protected List<TermGenerationOutput> createTermList(String label, String definition, Set<String> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology) {
 		List<TermGenerationOutput> output = new ArrayList<TermGenerationOutput>(1);
-		createTermList(label, definition, synonyms, logicalDefinition, relations, input, ontology, output);
+		createTermList(label, definition, synonyms, logicalDefinition, input, ontology, output);
 		return output;
 	}
 	
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
-	protected void createTermList(String label, String definition, Set<String> synonyms, String logicalDefinition, List<Relation> relations, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
+	protected void createTermList(String label, String definition, Set<String> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
 		// Fact Checking
 		// check label
 		OWLObject sameName = ontology.getOWLObjectByLabel(label);
@@ -221,14 +255,16 @@ class BasicRules extends BasicTools {
 		metaData.put("created_by", "TermGenie");
 		metaData.put("resource", ontology.getOntologyId());
 		metaData.put("comment", getComment(input));
+
+		// TODO use cdef to create relationships (differentium, intersection, restriction, ...)
+		List<Relation> relations = null;
 		
-		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, logicalDefinition, defxrefs, metaData, relations);
+		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, defxrefs, metaData, relations);
 		
 		output.add(success(term, input));
 	}
 	
-	// TODO use proper date time format as defined in OBO 1.4 standard
-	private final static DateFormat df = ISO8601DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+	private final static DateFormat df = new ISO8601DateFormat();
 	
 	private String getDate() {
 		return df.format(new Date());

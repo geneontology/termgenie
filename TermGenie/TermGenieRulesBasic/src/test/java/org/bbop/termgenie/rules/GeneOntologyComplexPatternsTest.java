@@ -130,7 +130,7 @@ public class GeneOntologyComplexPatternsTest {
 		OWLObject x = ontology.getOWLObjectByIdentifier(id);
 		if (x != null) {
 			String label = ontology.getLabel(x);
-			return new OntologyTerm.DefaultOntologyTerm(id, label , null, null, null, null, null, null);
+			return new OntologyTerm.DefaultOntologyTerm(id, label , null, null, null, null, null);
 		}
 		throw new RuntimeException("Unknown Id: "+id);
 	}

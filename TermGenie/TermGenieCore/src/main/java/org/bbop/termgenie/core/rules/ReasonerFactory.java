@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -19,6 +20,8 @@ import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 import owltools.graph.OWLGraphWrapper;
 
 public final class ReasonerFactory {
+	
+	private static final Logger logger = Logger.getLogger(ReasonerFactory.class);
 	
 	private static final String PELLET = "pellet";
 	private static final String HERMIT = "hermit";
@@ -70,11 +73,16 @@ public final class ReasonerFactory {
 			protected OWLReasoner updateManaged(OWLReasoner managed) {
 				// TODO find out if there is an option to re-use the reasoner
 				// TODO how to do incremental changes?
-				return createManaged();
+				return createReasoner("Updating jcel reasoner");
 			}
 			
 			@Override
 			protected OWLReasoner createManaged() {
+				return createReasoner("Creating jcel reasoner");
+			}
+			
+			private OWLReasoner createReasoner(String logMessage) {
+				logger.info(logMessage);
 				JcelReasoner reasoner = new JcelReasoner(ontology);
 				JcelReasonerProcessor processor = reasoner.getProcessor();
 				processor.precomputeInferences();

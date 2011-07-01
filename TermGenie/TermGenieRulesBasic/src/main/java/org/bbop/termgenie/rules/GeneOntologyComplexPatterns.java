@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -20,15 +19,17 @@ import owltools.graph.OWLGraphWrapper;
 
 class GeneOntologyComplexPatterns extends Patterns {
 
-	protected final OWLObject GO0008150; // biological_process
-	protected final OWLObject GO0065007; // biological regulation
-	protected final OWLObject GO0003674; // molecular function
-	protected final OWLObject GO0005575; // cellular_component
-	protected final OWLObject GO0005488; 
-	protected final OWLObject GO0032991; // macromolecular complex
-	protected final OWLObject PR000000001; // Protein
-	protected final OWLObject UBERON0001062; // http://berkeleybop.org/obo/UBERON:0001062?
-	protected final OWLObject PO0025131; // plant structure (An anatomical entity (CARO:0000000) that is or was part of a plant.)
+	private final OWLObject GO0008150; // biological_process
+	private final OWLObject GO0065007; // biological regulation
+	private final OWLObject GO0003674; // molecular function
+	private final OWLObject GO0005575; // cellular_component
+	private final OWLObject GO0005488;
+	private final OWLObject GO0009653;
+	private final OWLObject GO0032502;
+	private final OWLObject GO0043234;
+	private final OWLObject PR000000001; // Protein
+	private final OWLObject UBERON0001062; // http://berkeleybop.org/obo/UBERON:0001062?
+	private final OWLObject PO0025131; // plant structure (An anatomical entity (CARO:0000000) that is or was part of a plant.)
 	private final OWLGraphWrapper go;
 	private final OWLGraphWrapper pro;
 	private final OWLGraphWrapper uberon;
@@ -56,7 +57,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		GO0003674 = getTerm("GO:0003674", go);
 		GO0005575 = getTerm("GO:0005575", go);
 		GO0005488 = getTerm("GO:0005488", go);
-		GO0032991 = getTerm("GO:0032991", go);
+		GO0009653 = getTerm("GO:0009653", go);
+		GO0032502 = getTerm("GO:0032502", go);
+		GO0043234 = getTerm("GO:0043234", go);
 		PR000000001 = getTerm("PR:000000001", pro);
 		UBERON0001062 = getTerm("UBERON:0001062", uberon);
 	    PO0025131 = getTerm("PO:0025131", plant);
@@ -90,7 +93,6 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		if (genus(x, GO0065007, go)) {
 			// 	biological regulation
-			// TODO restriction should only used asserted links, not implied ones
 			return error("Cannot create 'regulation of regulation of X' terms. The term "+getTermShortInfo(GO0065007, go)+" is a parent of "+getTermShortInfo(x, go), input);
 		}
 		List<String> prefixes = getFieldStringList(input, "target");
@@ -103,25 +105,25 @@ class GeneOntologyComplexPatterns extends Patterns {
 			String label = createName("regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("regulation of ", x, go, null, label);
-			String logicalDefinition = "cdef('GO:0065007', [regulates= "+id(x, go)+"])";
-			List<Relation> relations = null; // TODO create code
-			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
+			CDef cdef = new CDef(GO0065007, go);
+			cdef.addDifferentium("regulates", x, go);
+			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
 		}
 		if (prefixes.contains("negative_regulation")) {
 			String label = createName("negative regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that stops, prevents or reduces the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("negative regulation of ", x, go, null, label);
-			String logicalDefinition = "cdef('GO:0065007', [negatively_regulates= "+id(x, go)+"])";
-			List<Relation> relations = null; // TODO create code
-			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
+			CDef cdef = new CDef(GO0065007, go);
+			cdef.addDifferentium("negatively_regulates", x, go);
+			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
 		}
 		if (prefixes.contains("positive_regulation")) {
 			String label = createName("positive regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that activates or increases the frequency, rate or extent of "+name(x, go)+".", input);
 			Set<String> synonyms = synonyms("positive regulation of ", x, go, null, label);
-			String logicalDefinition = "cdef('GO:0065007', [positively_regulates= "+id(x, go)+"])";
-			List<Relation> relations = null; // TODO create code
-			createTermList(label, definition, synonyms, logicalDefinition, relations, input, go, generatedTerms);
+			CDef cdef = new CDef(GO0065007, go);
+			cdef.addDifferentium("positively_regulates", x, go);
+			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
 		}
 		if (generatedTerms.isEmpty()) {
 			return error("Could not create a term for X, as no known prefix was selected", input);
@@ -149,9 +151,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(p, go) + " involved in " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is involved in "+name(w, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
-		String logicalDefinition = "cdef("+id(p, go)+", [part_of= "+id(w, go)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(p, go);
+		cdef.addDifferentium("part_of", w, go);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 	
 	/*
@@ -174,9 +176,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(p, go) + " in " + name(c, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that takes place in "+name(c, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null, label);
-		String logicalDefinition = "cdef("+id(p, go)+", ['OBO_REL:occurs_in'= "+id(c, go)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(p, go);
+		cdef.addDifferentium("OBO_REL:occurs_in", c, go);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 
 	@ToMatch
@@ -196,9 +198,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(p, go) + " " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is part of a "+name(w, go)+".", input);
 		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
-		String logicalDefinition = "cdef("+id(p, go)+", [part_of= "+id(w, go)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(p, go);
+		cdef.addDifferentium("part_of", w, go);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 
 	/*
@@ -216,9 +218,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(x, pro) + " binding", input);
 		String definition = createDefinition("Interacting selectively and non-covalently with  "+name(x, pro)+".", input);
 		Set<String> synonyms = synonyms(null, x, pro, " binding", label);
-		String logicalDefinition = "cdef('GO:0005488', ['OBO_REL:results_in_binding_of'= "+id(x, pro)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(GO0005488, go);
+		cdef.addDifferentium("OBO_REL:results_in_binding_of", x, pro);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 
 	/*
@@ -236,9 +238,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(x, uberon) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, uberon)+" over time, from its formation to the mature structure.", input);
 		Set<String> synonyms = synonyms(null, x, uberon, " development", label);
-		String logicalDefinition = "cdef('GO:0032502', ['OBO_REL:results_in_complete_development_of'= "+id(x, uberon)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(GO0032502, go);
+		cdef.addDifferentium("OBO_REL:results_in_complete_development_of", x, uberon);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 
 	/*
@@ -256,9 +258,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(x, uberon) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, uberon)+" is generated and organized.", input);
 		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis", label);
-		String logicalDefinition = "cdef('GO:0009653', ['OBO_REL:results_in_morphogenesis_of'= "+id(x, uberon)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(GO0009653, go);
+		cdef.addDifferentium("OBO_REL:results_in_morphogenesis_of", x, uberon);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 
 	/*
@@ -276,9 +278,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(x, plant) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, plant)+" over time, from its formation to the mature structure.", input);
 		Set<String> synonyms = synonyms(null, x, plant, " development", label);
-		String logicalDefinition = "cdef('GO:0032502', ['OBO_REL:results_in_complete_development_of'= "+id(x, plant)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(GO0032502, go);
+		cdef.addDifferentium("OBO_REL:results_in_complete_development_of", x, plant);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 	
 	/*
@@ -296,9 +298,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(name(x, plant) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, plant)+" is generated and organized.", input);
 		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis", label);
-		String logicalDefinition = "cdef('GO:0009653', ['OBO_REL:results_in_morphogenesis_of'= "+id(x, plant)+"])";
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, go);
+		CDef cdef = new CDef(GO0009653, go);
+		cdef.addDifferentium("OBO_REL:results_in_morphogenesis_of", x, plant);
+		return createTermList(label, definition, synonyms, cdef, input, go);
 	}
 	
 	/*
@@ -317,9 +319,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 		String label = createName(null, list, pro, "-"," complex", input);
 		String definition = createDefinition("Any protein complex consisting of ",list, pro, ", ",".", input);
 		Set<String> synonyms = synonyms(null, list, pro, "-", " complex", label);
-		String logicalDefinition = createCDef("cdef('GO:0043234', [",list, pro, "has_part= ", ", ", "])");
-		List<Relation> relations = null; // TODO create code
-		return createTermList(label, definition, synonyms, logicalDefinition, relations, input, pro);
+		CDef cdef = new CDef(GO0043234, go);
+		cdef.addDifferentium("has_part", list, pro);
+		return createTermList(label, definition, synonyms, cdef, input, pro);
 	}
 	
 	private String createName(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
@@ -373,7 +375,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		return null;
 	}
 	
-	@SuppressWarnings("deprecation")
+	// TODO use scope and xref for synonyms
 	private List<String> appendSynonyms(List<String> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix) {
 		String[] synonymStrings = ontology.getSynonymStrings(x);
 		List<String> synonyms;

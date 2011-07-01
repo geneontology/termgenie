@@ -131,11 +131,6 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public String getLogicalDefinition() {
-				return null;
-			}
-
-			@Override
 			public List<String> getDefXRef() {
 				return null;
 			}

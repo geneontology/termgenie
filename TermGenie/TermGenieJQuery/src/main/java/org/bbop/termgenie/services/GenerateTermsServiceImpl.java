@@ -176,7 +176,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
 		}
 		term.setLabel(candidate.getTerm().getLabel());
-		term.setLogDef(candidate.getTerm().getLogicalDefinition());
 		String[] synonyms = null;
 		Set<String> set = candidate.getTerm().getSynonyms();
 		if (set != null && !set.isEmpty()) {
@@ -341,7 +340,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			String label = null;
 			String definition = null;
 			Set<String> synonyms = null;
-			String cdef = null;
 			List<String> defxref = null;
 			Map<String, String> metadata = new HashMap<String, String>();
 			List<Relation> relations = null;
@@ -379,7 +377,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, metadata, relations); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations); 
 		}
 	}
 	

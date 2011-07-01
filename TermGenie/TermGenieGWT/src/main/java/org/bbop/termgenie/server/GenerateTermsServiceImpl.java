@@ -304,7 +304,6 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			String label = null;
 			String definition = null;
 			Set<String> synonyms = null;
-			String cdef = null;
 			List<String> defxref = null;
 			String comment = null;
 			List<Relation> relations = null;
@@ -322,7 +321,7 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, cdef, defxref, Collections.singletonMap("comment", comment), relations); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, Collections.singletonMap("comment", comment), relations); 
 		}
 
 		@SuppressWarnings("unchecked")

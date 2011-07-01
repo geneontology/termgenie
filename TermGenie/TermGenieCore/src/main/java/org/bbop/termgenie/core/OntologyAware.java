@@ -1,6 +1,5 @@
 package org.bbop.termgenie.core;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,7 +81,6 @@ public interface OntologyAware {
 		public abstract String getLabel();
 		public abstract String getDefinition();
 		public abstract Set<String> getSynonyms();
-		public abstract String getLogicalDefinition();
 		public abstract List<String> getDefXRef();
 		public abstract List<Relation> getRelations();
 		public abstract Map<String, String> getMetaData();
@@ -111,11 +109,6 @@ public interface OntologyAware {
 				builder.append(getSynonyms());
 				builder.append(", ");
 			}
-			if (getLogicalDefinition() != null) {
-				builder.append("getLogicalDefinition()=");
-				builder.append(getLogicalDefinition());
-				builder.append(", ");
-			}
 			if (getDefXRef() != null) {
 				builder.append("getDefXRef()=");
 				builder.append(getDefXRef());
@@ -140,20 +133,18 @@ public interface OntologyAware {
 			private final String label;
 			private final String definition;
 			private final Set<String> synonyms;
-			private final String logicalDefinition;
 			private final List<String> defXRef;
 			private final List<Relation> relations;
 			private final Map<String, String> metaData;
 
 			public DefaultOntologyTerm(String id, String label, String definition,
-					Set<String> synonyms, String logicalDefinition, List<String> defXRef, 
+					Set<String> synonyms, List<String> defXRef, 
 					Map<String, String> metaData, List<Relation> relations) {
 				super();
 				this.id = id;
 				this.label = label;
 				this.definition = definition;
 				this.synonyms = synonyms;
-				this.logicalDefinition = logicalDefinition;
 				this.defXRef = defXRef;
 				this.relations = relations;
 				this.metaData = metaData;
@@ -188,14 +179,6 @@ public interface OntologyAware {
 			@Override
 			public Set<String> getSynonyms() {
 				return synonyms;
-			}
-			
-			/**
-			 * @return the logicalDescription
-			 */
-			@Override
-			public String getLogicalDefinition() {
-				return logicalDefinition;
 			}
 			
 			/**
