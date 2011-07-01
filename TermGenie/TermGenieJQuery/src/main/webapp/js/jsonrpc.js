@@ -446,7 +446,7 @@ JsonRpc.ServiceProxy.prototype.__evalJSON = function(json, sanitize) { //from Pr
     var err;
     try {
         if (!sanitize || JsonRpc.isJSON(json))
-            return eval('(' + json + ')');
+            return jQuery.parseJSON(json);
     }
     catch(e) {
         err = e;
