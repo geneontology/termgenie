@@ -2,9 +2,9 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -48,7 +48,7 @@ public class CellOntologyPatterns extends Patterns {
 		}
 		String label = createName(name(a, uberon) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that is part of a "+name(a, uberon)+".", input);
-		Set<String> synonyms = null; // TODO
+		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(c, cell);
 		cdef.addDifferentium("part_of", a, uberon);
 		return createTermList(label, definition, synonyms, cdef, input, cell);
@@ -64,7 +64,7 @@ public class CellOntologyPatterns extends Patterns {
 		}
 		String label = createName(name(p, pro, go1) + " " + name(c, cell), input);
 		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
-		Set<String> synonyms = null; // TODO
+		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(c, cell);
 		cdef.addDifferentium("has_plasma_membrane_part", p, pro, go1);
 		cdef.addProperty("multivalued(has_plasma_membrane_part)");

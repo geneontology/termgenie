@@ -2,9 +2,9 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -37,7 +37,7 @@ public class HumanPhenotypePatterns extends Patterns {
 		}
 		String label = createName(name(q, pato) + " " + name(e, fma), input);
 		String definition = createDefinition("Any "+name(e, fma)+" that is  "+name(q, pato)+".", input);
-		Set<String> synonyms = null; // TODO
+		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(q, pato); // TODO check if this the correct genus
 		cdef.addDifferentium("OBO_REL:inheres_in", e, fma);
 		return createTermList(label, definition, synonyms, cdef, input, hpo);

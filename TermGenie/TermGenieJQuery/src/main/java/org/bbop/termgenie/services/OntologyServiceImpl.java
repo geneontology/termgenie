@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
@@ -65,7 +66,19 @@ public class OntologyServiceImpl implements OntologyService {
 	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
 		JsonOntologyTermIdentifier identifier = new JsonOntologyTermIdentifier(ontologyName, term.getId());
-		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms().toArray(new String[0]));
+		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), getSynonyms(term));
+	}
+
+	private String[] getSynonyms(OntologyTerm term) {
+		List<Synonym> synonyms = term.getSynonyms();
+		if (synonyms != null && !synonyms.isEmpty()) {
+			String[] strings = new String[synonyms.size()];
+			for (int i = 0; i < strings.length; i++) {
+				strings[i] =  synonyms.get(i).getLabel();
+			}
+			return strings;
+		}
+		return null;
 	}
 	
 	/**

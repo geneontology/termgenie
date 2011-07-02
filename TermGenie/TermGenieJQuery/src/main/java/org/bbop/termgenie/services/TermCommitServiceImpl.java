@@ -2,6 +2,7 @@ package org.bbop.termgenie.services;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
 
@@ -61,11 +62,12 @@ public class TermCommitServiceImpl implements TermCommitService {
 				sb.append(comment);
 				sb.append("\"\n");
 			}
-			String[] synonyms = term.getSynonyms();
+			JsonSynonym[] synonyms = term.getSynonyms();
 			if (synonyms != null && synonyms.length > 0) {
-				for (String synonym : synonyms) {
+				for (JsonSynonym synonym : synonyms) {
 					sb.append("synonym: \"");
-					sb.append(synonym);
+					sb.append(synonym.getLabel());
+					// TODO add scope and xrefs
 					sb.append("\"\n");
 				}
 			}

@@ -73,12 +73,12 @@ public final class ReasonerFactory {
 			protected OWLReasoner updateManaged(OWLReasoner managed) {
 				// TODO find out if there is an option to re-use the reasoner
 				// TODO how to do incremental changes?
-				return createReasoner("Updating jcel reasoner");
+				return createReasoner("Updating jcel reasoner: "+ontology.getOntologyID());
 			}
 			
 			@Override
 			protected OWLReasoner createManaged() {
-				return createReasoner("Creating jcel reasoner");
+				return createReasoner("Creating jcel reasoner: "+ontology.getOntologyID());
 			}
 			
 			private OWLReasoner createReasoner(String logMessage) {

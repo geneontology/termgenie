@@ -2,9 +2,9 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -35,7 +35,7 @@ public class MicrobialPhenotypePatterns extends Patterns {
 		}
 		String label = createName(name(q, pato) + " of " + name(e, go), input);
 		String definition = createDefinition("Any "+name(q, pato)+" of "+name(e, go)+".", input);
-		Set<String> synonyms = null; // TODO
+		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(q, pato);
 		cdef.addDifferentium("OBO_REL:inheres_in", e, go);
 		return createTermList(label, definition, synonyms, cdef, input, omp);

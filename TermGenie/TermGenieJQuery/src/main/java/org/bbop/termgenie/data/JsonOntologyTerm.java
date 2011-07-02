@@ -7,7 +7,7 @@ public class JsonOntologyTerm {
 	
 	private String label;
 	private String definition;
-	private String[] synonyms; 
+	private JsonSynonym[] synonyms; 
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
 	private JsonTermMetaData metaData;
@@ -75,14 +75,14 @@ public class JsonOntologyTerm {
 	/**
 	 * @return the synonyms
 	 */
-	public String[] getSynonyms() {
+	public JsonSynonym[] getSynonyms() {
 		return synonyms;
 	}
 
 	/**
 	 * @param synonyms the synonyms to set
 	 */
-	public void setSynonyms(String[] synonyms) {
+	public void setSynonyms(JsonSynonym[] synonyms) {
 		this.synonyms = synonyms;
 	}
 	
@@ -138,6 +138,72 @@ public class JsonOntologyTerm {
 		}
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	public static class JsonSynonym {
+		private String label;
+		private String scope;
+		private String[] xrefs;
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+		/**
+		 * @param label the label to set
+		 */
+		public void setLabel(String label) {
+			this.label = label;
+		}
+		/**
+		 * @return the scope
+		 */
+		public String getScope() {
+			return scope;
+		}
+		/**
+		 * @param scope the scope to set
+		 */
+		public void setScope(String scope) {
+			this.scope = scope;
+		}
+		/**
+		 * @return the xrefs
+		 */
+		public String[] getXrefs() {
+			return xrefs;
+		}
+		/**
+		 * @param xrefs the xrefs to set
+		 */
+		public void setXrefs(String[] xrefs) {
+			this.xrefs = xrefs;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("JsonSynonym [");
+			if (label != null) {
+				builder.append("label=");
+				builder.append(label);
+				builder.append(", ");
+			}
+			if (scope != null) {
+				builder.append("scope=");
+				builder.append(scope);
+				builder.append(", ");
+			}
+			if (xrefs != null) {
+				builder.append("xrefs=");
+				builder.append(Arrays.toString(xrefs));
+			}
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	public static class JsonTermRelation {

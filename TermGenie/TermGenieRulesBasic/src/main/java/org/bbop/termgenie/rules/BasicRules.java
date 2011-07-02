@@ -2,19 +2,17 @@ package org.bbop.termgenie.rules;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -23,82 +21,115 @@ import owltools.graph.OWLGraphWrapper;
 
 class BasicRules extends BasicTools {
 	
-	protected Set<String> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix, String label) {
-		String[] synonymStrings = getSynonyms(x, ontology);
-		if (synonymStrings == null || synonymStrings.length == 0) {
+	protected List<Synonym> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix, String label) {
+		List<Synonym> synonyms = getSynonyms(x, ontology);
+		if (synonyms == null || synonyms.isEmpty()) {
 			return null;
 		}
-		Set<String> synonyms = new HashSet<String>();
-		for (String synonym : synonymStrings) {
+		List<Synonym> results = new ArrayList<Synonym>();
+		for (Synonym synonym : synonyms) {
+			StringBuilder sb = new StringBuilder();
 			if (prefix != null) {
-				synonym = prefix + synonym;
+				sb.append(prefix);
 			}
+			sb.append(synonym.getLabel());
 			if (suffix != null) {
-				synonym = synonym + suffix;
+				sb.append(suffix);
 			}
-			synonyms.add(synonym);
+			addSynonym(results, synonym, sb.toString(), label);
 		}
-		synonyms.remove(label);
-		return synonyms;
-	}
-	
-	protected Set<String> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1, String middle, OWLObject x2, OWLGraphWrapper ontology2, String suffix, String label) {
-		String[] synonymStrings1 = getSynonyms(x1, ontology1);
-		String[] synonymStrings2 = getSynonyms(x2, ontology2);
-		boolean empty1 = synonymStrings1 == null || synonymStrings1.length == 0;
-		boolean empty2 = synonymStrings2 == null || synonymStrings2.length == 0;
-		if (empty1 && empty2) {
-			// both do not have any synonyms
-			return null;
-		}
-		
-		List<String> synonyms1 = createSynList(x1, ontology1, synonymStrings1, empty1);
-		List<String> synonyms2 = createSynList(x2, ontology2, synonymStrings2, empty2);
-		
-		Set<String> synonyms = new HashSet<String>();
-		for (String synonym1 : synonyms1) {
-			for (String synonym2 : synonyms2) {
-				StringBuilder sb = new StringBuilder();
-				if (prefix != null) {
-					sb.append(prefix);
-				}
-				sb.append(synonym1);
-				if (middle != null) {
-					sb.append(middle);
-				}
-				sb.append(synonym2);
-				if (suffix != null) {
-					sb.append(suffix);
-				}
-				synonyms.add(sb.toString());
-			}
-		}
-		synonyms.remove(label);
-		return synonyms;
+		return results;
 	}
 
-	private List<String> createSynList(OWLObject x, OWLGraphWrapper ontology,
-			String[] synonymStrings, boolean empty) {
-		List<String> synonyms;
+	protected List<Synonym> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1, String middle, OWLObject x2, OWLGraphWrapper ontology2, String suffix, String label) {
+		List<Synonym> synonyms1 = getSynonyms(x1, ontology1);
+		List<Synonym> synonyms2 = getSynonyms(x2, ontology2);
+		boolean empty1 = synonyms1 == null || synonyms1.isEmpty();
+		boolean empty2 = synonyms2 == null || synonyms2.isEmpty();
+		if (empty1 && empty2) {
+			// do nothing, as both do not have any synonyms
+			return null;
+		}
+		synonyms1 = addLabel(x1, ontology1, synonyms1);
+		synonyms2 = addLabel(x2, ontology2, synonyms2);
 		
+		List<Synonym> results = new ArrayList<Synonym>();
+		for (Synonym synonym1 : synonyms1) {
+			for (Synonym synonym2 : synonyms2) {
+				if (equalScope(synonym1, synonym2)) {
+					StringBuilder sb = new StringBuilder();
+					if (prefix != null) {
+						sb.append(prefix);
+					}
+					sb.append(synonym1.getLabel());
+					if (middle != null) {
+						sb.append(middle);
+					}
+					sb.append(synonym2.getLabel());
+					if (suffix != null) {
+						sb.append(suffix);
+					}
+					addSynonym(results, synonym1, sb.toString(), label);
+				}
+			}
+		}
+		return results;
+	}
+	
+	protected boolean equalScope(Synonym s1, Synonym s2) {
+		String scope1 = s1.getScope();
+		String scope2 = s2.getScope();
+		if (scope1 == scope2) {
+			// intented: true if both are null
+			return true;
+		}
+		if (scope1 != null) {
+			return scope1.equals(scope2);
+		}
+		return false;
+	}
+
+	private List<Synonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<Synonym> synonyms) {
 		String label = ontology.getLabel(x);
-		
-		if (empty) {
-			// use label for synonym generation
-			synonyms = Collections.singletonList(label);
-		}
-		else {
-			synonyms = new ArrayList<String>(synonymStrings.length + 1);
-			synonyms.addAll(Arrays.asList(synonymStrings));
-			synonyms.add(label);
-		}
+		synonyms.add(new Synonym(label, null, null));
 		return synonyms;
 	}
 	
-	@SuppressWarnings("deprecation")
-	private String[] getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
+	void addSynonym(List<Synonym> results, Synonym synonym, String newLabel, String label) {
+		if (!newLabel.equals(label)) {
+			// if by any chance a synonym has the same label it is ignored
+			List<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
+			results.add(new Synonym(newLabel, synonym.getScope(), xrefs));
+		}
+	}
+	
+	private List<String> addXref(String xref, List<String> xrefs) {
+		if (xref == null) {
+			return xrefs;
+		}
+		if (xrefs == null) {
+			ArrayList<String> list = new ArrayList<String>(1);
+			list.add(xref);
+			return list;
+		}
+		if (!xrefs.contains(xref)) {
+			xrefs.add(xref);
+			return xrefs;
+		}
+		return xrefs;
+	}
+
+	private List<Synonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
-			return ontology.getSynonymStrings(id);
+			// TODO use scope and xrefs
+			String[] synonymStrings = ontology.getSynonymStrings(id);
+			if (synonymStrings != null && synonymStrings.length > 0) {
+				List<Synonym> result = new ArrayList<Synonym>(synonymStrings.length);
+				for (String synonymString : synonymStrings) {
+					result.add(new Synonym(synonymString, null, null));
+				}
+				return result;
+			}
 		}
 		return null;
 	}
@@ -203,7 +234,7 @@ class BasicRules extends BasicTools {
 		}
 	}
 	
-	protected List<TermGenerationOutput> createTermList(String label, String definition, Set<String> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology) {
+	protected List<TermGenerationOutput> createTermList(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology) {
 		List<TermGenerationOutput> output = new ArrayList<TermGenerationOutput>(1);
 		createTermList(label, definition, synonyms, logicalDefinition, input, ontology, output);
 		return output;
@@ -211,7 +242,7 @@ class BasicRules extends BasicTools {
 	
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
-	protected void createTermList(String label, String definition, Set<String> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
+	protected void createTermList(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, TermGenerationInput input, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
 		// Fact Checking
 		// check label
 		OWLObject sameName = ontology.getOWLObjectByLabel(label);

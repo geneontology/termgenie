@@ -67,7 +67,7 @@ public class OntologyServiceImpl extends RemoteServiceServlet implements Ontolog
 	private TermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
 		GWTOntologyTerm identifier = new GWTOntologyTerm(ontologyName, term.getId());
-		return new TermSuggestion(term.getLabel(), identifier , term.getDefinition(), term.getSynonyms());
+		return new TermSuggestion(term.getLabel(), identifier , term.getDefinition(), null);
 	}
 	
 	/**

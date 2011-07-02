@@ -2,7 +2,6 @@ package org.bbop.termgenie.core;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -80,7 +79,7 @@ public interface OntologyAware {
 		public abstract String getId();
 		public abstract String getLabel();
 		public abstract String getDefinition();
-		public abstract Set<String> getSynonyms();
+		public abstract List<Synonym> getSynonyms();
 		public abstract List<String> getDefXRef();
 		public abstract List<Relation> getRelations();
 		public abstract Map<String, String> getMetaData();
@@ -132,13 +131,13 @@ public interface OntologyAware {
 			private final String id;
 			private final String label;
 			private final String definition;
-			private final Set<String> synonyms;
+			private final List<Synonym> synonyms;
 			private final List<String> defXRef;
 			private final List<Relation> relations;
 			private final Map<String, String> metaData;
 
 			public DefaultOntologyTerm(String id, String label, String definition,
-					Set<String> synonyms, List<String> defXRef, 
+					List<Synonym> synonyms, List<String> defXRef, 
 					Map<String, String> metaData, List<Relation> relations) {
 				super();
 				this.id = id;
@@ -177,7 +176,7 @@ public interface OntologyAware {
 			 * @return the synonyms
 			 */
 			@Override
-			public Set<String> getSynonyms() {
+			public List<Synonym> getSynonyms() {
 				return synonyms;
 			}
 			
@@ -242,6 +241,45 @@ public interface OntologyAware {
 		 */
 		public List<String> getProperties() {
 			return properties;
+		}
+	}
+	
+	public static class Synonym {
+		private final String label;
+		private final String scope;
+		private final List<String> xrefs;
+		
+		/**
+		 * @param label
+		 * @param scope
+		 * @param xrefs
+		 */
+		public Synonym(String label, String scope, List<String> xrefs) {
+			super();
+			this.label = label;
+			this.scope = scope;
+			this.xrefs = xrefs;
+		}
+		
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+		
+		/**
+		 * @return the scope
+		 */
+		public String getScope() {
+			return scope;
+		}
+		
+		/**
+		 * @return the xrefs
+		 */
+		public List<String> getXrefs() {
+			return xrefs;
 		}
 	}
 }

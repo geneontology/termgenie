@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -17,6 +16,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.AutoCompletionTools;
 
@@ -164,7 +164,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public Set<String> getSynonyms() {
+			public List<Synonym> getSynonyms() {
 				return null;
 			}
 

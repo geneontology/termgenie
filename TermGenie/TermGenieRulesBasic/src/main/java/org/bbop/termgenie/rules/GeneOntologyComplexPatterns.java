@@ -3,14 +3,12 @@ package org.bbop.termgenie.rules;
 import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -104,7 +102,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		if (prefixes.contains("regulation")) {
 			String label = createName("regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that modulates the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("regulation of ", x, go, null, label);
+			List<Synonym> synonyms = synonyms("regulation of ", x, go, null, label);
 			CDef cdef = new CDef(GO0065007, go);
 			cdef.addDifferentium("regulates", x, go);
 			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
@@ -112,7 +110,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		if (prefixes.contains("negative_regulation")) {
 			String label = createName("negative regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that stops, prevents or reduces the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("negative regulation of ", x, go, null, label);
+			List<Synonym> synonyms = synonyms("negative regulation of ", x, go, null, label);
 			CDef cdef = new CDef(GO0065007, go);
 			cdef.addDifferentium("negatively_regulates", x, go);
 			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
@@ -120,7 +118,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		if (prefixes.contains("positive_regulation")) {
 			String label = createName("positive regulation of "+ name(x, go), input);
 			String definition = createDefinition("Any process that activates or increases the frequency, rate or extent of "+name(x, go)+".", input);
-			Set<String> synonyms = synonyms("positive regulation of ", x, go, null, label);
+			List<Synonym> synonyms = synonyms("positive regulation of ", x, go, null, label);
 			CDef cdef = new CDef(GO0065007, go);
 			cdef.addDifferentium("positively_regulates", x, go);
 			createTermList(label, definition, synonyms, cdef, input, go, generatedTerms);
@@ -150,7 +148,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(p, go) + " involved in " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is involved in "+name(w, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
+		List<Synonym> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
 		CDef cdef = new CDef(p, go);
 		cdef.addDifferentium("part_of", w, go);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -175,7 +173,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(p, go) + " in " + name(c, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that takes place in "+name(c, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " in ", c, go, null, label);
+		List<Synonym> synonyms = synonyms(null, p, go, " in ", c, go, null, label);
 		CDef cdef = new CDef(p, go);
 		cdef.addDifferentium("OBO_REL:occurs_in", c, go);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -197,7 +195,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(p, go) + " " + name(w, go), input);
 		String definition = createDefinition("Any "+name(p, go)+" that is part of a "+name(w, go)+".", input);
-		Set<String> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
+		List<Synonym> synonyms = synonyms(null, p, go, " of ", w, go, null, label);
 		CDef cdef = new CDef(p, go);
 		cdef.addDifferentium("part_of", w, go);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -217,7 +215,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(x, pro) + " binding", input);
 		String definition = createDefinition("Interacting selectively and non-covalently with  "+name(x, pro)+".", input);
-		Set<String> synonyms = synonyms(null, x, pro, " binding", label);
+		List<Synonym> synonyms = synonyms(null, x, pro, " binding", label);
 		CDef cdef = new CDef(GO0005488, go);
 		cdef.addDifferentium("OBO_REL:results_in_binding_of", x, pro);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -237,7 +235,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(x, uberon) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, uberon)+" over time, from its formation to the mature structure.", input);
-		Set<String> synonyms = synonyms(null, x, uberon, " development", label);
+		List<Synonym> synonyms = synonyms(null, x, uberon, " development", label);
 		CDef cdef = new CDef(GO0032502, go);
 		cdef.addDifferentium("OBO_REL:results_in_complete_development_of", x, uberon);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -257,7 +255,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(x, uberon) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, uberon)+" is generated and organized.", input);
-		Set<String> synonyms = synonyms(null, x, uberon, " morphogenesis", label);
+		List<Synonym> synonyms = synonyms(null, x, uberon, " morphogenesis", label);
 		CDef cdef = new CDef(GO0009653, go);
 		cdef.addDifferentium("OBO_REL:results_in_morphogenesis_of", x, uberon);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -277,7 +275,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(x, plant) + " development", input);
 		String definition = createDefinition("The process whose specific outcome is the progression of "+refname(x, plant)+" over time, from its formation to the mature structure.", input);
-		Set<String> synonyms = synonyms(null, x, plant, " development", label);
+		List<Synonym> synonyms = synonyms(null, x, plant, " development", label);
 		CDef cdef = new CDef(GO0032502, go);
 		cdef.addDifferentium("OBO_REL:results_in_complete_development_of", x, plant);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -297,7 +295,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(name(x, plant) + " morphogenesis", input);
 		String definition = createDefinition("The developmental process by which "+refname(x, plant)+" is generated and organized.", input);
-		Set<String> synonyms = synonyms(null, x, plant, " morphogenesis", label);
+		List<Synonym> synonyms = synonyms(null, x, plant, " morphogenesis", label);
 		CDef cdef = new CDef(GO0009653, go);
 		cdef.addDifferentium("OBO_REL:results_in_morphogenesis_of", x, plant);
 		return createTermList(label, definition, synonyms, cdef, input, go);
@@ -318,7 +316,7 @@ class GeneOntologyComplexPatterns extends Patterns {
 		
 		String label = createName(null, list, pro, "-"," complex", input);
 		String definition = createDefinition("Any protein complex consisting of ",list, pro, ", ",".", input);
-		Set<String> synonyms = synonyms(null, list, pro, "-", " complex", label);
+		List<Synonym> synonyms = synonyms(null, list, pro, "-", " complex", label);
 		CDef cdef = new CDef(GO0043234, go);
 		cdef.addDifferentium("has_part", list, pro);
 		return createTermList(label, definition, synonyms, cdef, input, pro);
@@ -341,13 +339,13 @@ class GeneOntologyComplexPatterns extends Patterns {
 		return createName(sb.toString(), input);
 	}
 	
-	private Set<String> synonyms(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, String label) {
+	private List<Synonym> synonyms(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, String label) {
 		final int size = list.size();
 		if (size == 1) {
 			return synonyms(prefix, list.get(0), ontology, suffix, label);
 		}
 		else if (size > 1) {
-			List<String> prefixes = Collections.singletonList(prefix == null ? "" : prefix);
+			List<Synonym> prefixes = null;
 			for (int i = 0; i < list.size(); i++) {
 				OWLObject x = list.get(i);
 				String middle;
@@ -357,41 +355,55 @@ class GeneOntologyComplexPatterns extends Patterns {
 				else {
 					middle = infix;
 				}
-				prefixes = appendSynonyms(prefixes, x, ontology, middle);
+				prefixes = appendSynonyms(prefixes, x, ontology, middle, label);
 			}
 			
-			Set<String> result;
+			List<Synonym> result;
 			if (suffix == null) {
-				result = new HashSet<String>(prefixes);
+				result = new ArrayList<Synonym>(prefixes);
 			} else {
-				result = new HashSet<String>();
-				for (String string : prefixes) {
-					result.add(string+suffix);
+				result = new ArrayList<Synonym>();
+				for (Synonym prefixSynonym : prefixes) {
+					StringBuilder sb = new StringBuilder(prefixSynonym.getLabel());
+					sb.append(suffix);
+					addSynonym(result, prefixSynonym, sb.toString(), label);
 				}
 			}
-			result.remove(label);
 			return result;
 		}
 		return null;
 	}
 	
 	// TODO use scope and xref for synonyms
-	private List<String> appendSynonyms(List<String> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix) {
+	private List<Synonym> appendSynonyms(List<Synonym> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix, String label) {
+		if (prefixes == null) {
+			prefixes = Collections.singletonList(new Synonym("", null, null));
+		}
 		String[] synonymStrings = ontology.getSynonymStrings(x);
-		List<String> synonyms;
-		String label = ontology.getLabel(x);
+		List<Synonym> synonyms;
+		String termLabel = ontology.getLabel(x);
 		if (synonymStrings == null || synonymStrings.length == 0) {
-			synonyms = Collections.singletonList(label);
+			synonyms = Collections.singletonList(new Synonym(termLabel, null, null));
 		}
 		else {
-			synonyms = new ArrayList<String>(synonymStrings.length + 1);
-			synonyms.addAll(Arrays.asList(synonymStrings));
-			synonyms.add(label);
+			synonyms = new ArrayList<Synonym>(synonymStrings.length + 1);
+			for (String synonymString : synonymStrings) {
+				synonyms.add(new Synonym(synonymString, null, null));
+			}
+			synonyms.add(new Synonym(termLabel, null, null));
 		}
-		List<String> results = new ArrayList<String>(synonyms.size() * prefixes.size());
-		for (String prefix : prefixes) {
-			for(String synonym : synonyms) {
-				results.add(prefix + infix + synonym);
+		List<Synonym> results = new ArrayList<Synonym>(synonyms.size() * prefixes.size());
+		for (Synonym prefix : prefixes) {
+			for(Synonym synonym : synonyms) {
+				String pScope = prefix.getScope();
+				String sScope = synonym.getScope();
+				if (pScope == null || pScope.equals(sScope)) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(prefix.getLabel());
+					sb.append(infix);
+					sb.append(synonym.getLabel());
+					addSynonym(results, synonym, sb.toString(), label);
+				}
 			}
 		}
 		return results;

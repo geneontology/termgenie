@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -25,6 +26,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
@@ -176,14 +178,28 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
 		}
 		term.setLabel(candidate.getTerm().getLabel());
-		String[] synonyms = null;
-		Set<String> set = candidate.getTerm().getSynonyms();
-		if (set != null && !set.isEmpty()) {
-			synonyms = set.toArray(new String[set.size()]);
-		}
-		term.setSynonyms(synonyms);
+		term.setSynonyms(createJsonSynonyms(candidate.getTerm().getSynonyms()));
 		term.setMetaData(new JsonTermMetaData(candidate.getTerm().getMetaData()));
 		return term;
+	}
+	
+	private JsonSynonym[] createJsonSynonyms(List<Synonym> synonyms) {
+		if (synonyms != null && !synonyms.isEmpty()) {
+			List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
+			for (Synonym synonym : synonyms) {
+				JsonSynonym jsonSynonym = new JsonSynonym();
+				jsonSynonym.setLabel(synonym.getLabel());
+				jsonSynonym.setScope(synonym.getScope());
+				String[] axrefs = null;
+				List<String> xrefs = synonym.getXrefs();
+				if (xrefs != null && !xrefs.isEmpty()) {
+					axrefs = xrefs.toArray(new String[xrefs.size()]);
+				}
+				jsonSynonym.setXrefs(axrefs);
+				jsonSynonyms.add(jsonSynonym);
+			}
+		}
+		return null;
 	}
 
 	private List<TermGenerationInput> createGenerationTasks(String ontologyName, JsonTermGenerationInput[] allParameters) {
@@ -339,7 +355,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			String id = jsonOntologyTerm.getTermId();
 			String label = null;
 			String definition = null;
-			Set<String> synonyms = null;
+			List<Synonym> synonyms = null;
 			List<String> defxref = null;
 			Map<String, String> metadata = new HashMap<String, String>();
 			List<Relation> relations = null;
@@ -350,8 +366,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				if (owlObject != null) {
 					label = realInstance.getLabel(owlObject);
 					definition = realInstance.getDef(owlObject);
-//					synonyms = realInstance.getSynonymStrings(owlObject);
-					// TODO replace this with a proper implementation
+					synonyms = createSynonyms(owlObject, realInstance);
 					defxref = realInstance.getDefXref(owlObject);
 					
 					// meta data
@@ -379,6 +394,18 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			
 			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations); 
 		}
+	}
+	
+	private static List<Synonym> createSynonyms(OWLObject x, OWLGraphWrapper ontology) {
+		// TODO replace this with a proper implementation for scope and xrefs
+		String[] strings = ontology.getSynonymStrings(x);
+		if (strings != null && strings.length > 0) {
+			List<Synonym> list = new ArrayList<Synonym>(strings.length);
+			for (String string : strings) {
+				list.add(new Synonym(string, null, null));
+			}
+		}
+		return null;
 	}
 	
 	private static void put(Map<String, String> map, String key, String value) {

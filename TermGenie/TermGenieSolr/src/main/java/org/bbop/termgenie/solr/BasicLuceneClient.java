@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
@@ -101,12 +102,17 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
 		String[] syns = ontology.getSynonymStrings(hit);
-		final Set<String> synonyms;
+		final List<Synonym> synonyms;
 		if (syns != null && syns.length > 0) {
-			synonyms = new HashSet<String>(Arrays.asList(syns));
+			synonyms = new ArrayList<Synonym>(syns.length);
+			for (String string : syns) {
+				// TODO handle scope and xref
+				synonyms.add(new Synonym(string, null, null));
+			}
+			
 		}
 		else {
-			synonyms = Collections.emptySet();
+			synonyms = Collections.emptyList();
 		}
 		OntologyTerm term = new OntologyTerm() {
 
@@ -126,7 +132,7 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			}
 
 			@Override
-			public Set<String> getSynonyms() {
+			public List<Synonym> getSynonyms() {
 				return synonyms;
 			}
 

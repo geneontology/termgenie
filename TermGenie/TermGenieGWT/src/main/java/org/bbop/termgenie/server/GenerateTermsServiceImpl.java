@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
@@ -303,7 +302,6 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 			String id = gwtOntologyTerm.getTermId();
 			String label = null;
 			String definition = null;
-			Set<String> synonyms = null;
 			List<String> defxref = null;
 			String comment = null;
 			List<Relation> relations = null;
@@ -314,14 +312,12 @@ public class GenerateTermsServiceImpl extends RemoteServiceServlet implements Ge
 				if (owlObject != null) {
 					label = realInstance.getLabel(owlObject);
 					definition = realInstance.getDef(owlObject);
-//					synonyms = realInstance.getSynonymStrings(owlObject);
-					// TODO replace this with a proper implementation
 					defxref = realInstance.getDefXref(owlObject);
 					comment = realInstance.getComment(owlObject);
 				}
 			}
 			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, Collections.singletonMap("comment", comment), relations); 
+			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, null, defxref, Collections.singletonMap("comment", comment), relations); 
 		}
 
 		@SuppressWarnings("unchecked")
