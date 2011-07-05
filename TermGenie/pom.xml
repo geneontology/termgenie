@@ -44,7 +44,7 @@
 		<module>TermGenieCore</module>
 		<!--<module>TermGenieProva</module>-->
 		<module>TermGenieSolr</module>
-		<module>TermGenieGWT</module>
+		<!--<module>TermGenieGWT</module>-->
 		<module>TermGenieJQuery</module>
 		<module>TermGenieRulesBasic</module>
 	</modules>
