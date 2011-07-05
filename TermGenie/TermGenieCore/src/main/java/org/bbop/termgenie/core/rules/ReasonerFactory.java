@@ -31,7 +31,38 @@ public final class ReasonerFactory {
 	private final static Map<String, Map<String, ReasonerTaskManager>> allManagers = new HashMap<String, Map<String,ReasonerTaskManager>>();
 	
 	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
-		return getTaskManager(ontology, JCEL);
+		String ontologyId = ontology.getOntologyId();
+		if ("go".equals(ontologyId) || "po".equals(ontologyId)) {
+			// use jcel for GeneOntology and Plant ontology
+			return getTaskManager(ontology, JCEL);
+		}
+		// use slow reasoner for other ontologies
+		// Because: JCEL does not support:
+		/*
+		 * This class expression is not supported: 
+		 * 'ObjectExactCardinality(1 
+		 * <http://purl.obolibrary.org/obo/pr_has_part> 
+		 * <http://purl.obolibrary.org/obo/PR_000026037>)'
+		 * 
+		 * 
+		 * This class expression is not supported: 
+		 * 'ObjectUnionOf(
+		 * <http://purl.obolibrary.org/obo/UBERON_0003898> 
+		 * <http://purl.obolibrary.org/obo/UBERON_0003899>)'
+		 */
+		return getTaskManager(ontology, PELLET);
+		/*
+		 * PELLET also complains a bit, but does not fail when loading PRO and Uberon:
+		 * 
+		 * Ignoring unsupported axiom: TransitiveObjectProperty(<http://purl.obolibrary.org/obo/pr_has_part>)
+		 * 
+		 * Ignoring unsupported axiom: SubObjectPropertyOf(
+		 * ObjectPropertyChain( <http://purl.obolibrary.org/obo/BFO_0000068> <http://purl.obolibrary.org/obo/uberon_preceded_by> ) <http://purl.obolibrary.org/obo/uberon_existence_starts_after>)
+		 * 
+		 * Ignoring unsupported axiom: TransitiveObjectProperty(<http://purl.obolibrary.org/obo/BFO_0000050>)
+		 * 
+		 * Ignoring unsupported axiom: TransitiveObjectProperty(<http://purl.obolibrary.org/obo/uberon_preceded_by>)
+		 */
 	}
 
 	public static final ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName) {
