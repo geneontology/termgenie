@@ -131,6 +131,7 @@ function termgenie(){
 			elem.append(loginClickElem);
 			
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
+			var displayUsernameElem = jQuery('<div class="termgenie-username"></div>');
 			
 			var loginPanel = jQuery('<div></div>');
 			loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
@@ -180,7 +181,10 @@ function termgenie(){
 						var password = passwordCheck.value;
 						login(username, password);
 						loginClickElem.detach();
+						elem.append(displayUsernameElem);
 						elem.append(logoutClickElem);
+						displayUsernameElem.text('Loggin in as: '+username);
+						
 						closeLoginDialog();
 					},
 					"Cancel": function() {
@@ -196,6 +200,7 @@ function termgenie(){
 			logoutClickElem.click(function(){
 				logout();
 				logoutClickElem.detach();
+				displayUsernameElem.detach();
 				elem.append(loginClickElem);
 			});
 			
