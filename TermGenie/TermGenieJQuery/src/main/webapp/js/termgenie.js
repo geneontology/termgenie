@@ -183,7 +183,7 @@ function termgenie(){
 						loginClickElem.detach();
 						elem.append(displayUsernameElem);
 						elem.append(logoutClickElem);
-						displayUsernameElem.text('Loggin in as: '+username);
+						displayUsernameElem.text('Logged in as: '+username);
 						
 						closeLoginDialog();
 					},
