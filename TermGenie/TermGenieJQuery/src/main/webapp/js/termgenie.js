@@ -1,4 +1,41 @@
 function termgenie(){
+	
+	function SessionManagementSystem() {
+		
+		var hasSession = false;
+		var waitForInit = [];
+		var sessionId = null;
+		
+		// TODO check if there is already a sessionId in the url 
+		// if yes check if it is valid, if not reload page without sessionId
+		
+		// use json-rpc to create a new session
+		jsonService.user.createSession({
+			onSuccess: function(result) {
+				sessionId = result;
+				hasSession = true;
+				jQuery.each(waitForInit, function(index, callback){
+					callback(sessionId);
+				});
+				waitForInit = [];
+			},
+			onException: function(e) {
+				loggingSystem.logSystemError('Could not create a session. Please try reloading the page.',e);
+			}
+		});
+		
+		return {
+			getSessionId: function(callback) {
+				if (hasSession) {
+					callback(sessionId);
+				}
+				else {
+					waitForInit.push(callback);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Provide an Accordion with the additional functionality to 
 	 * enable/disable individual panes for click events.
@@ -77,7 +114,18 @@ function termgenie(){
 		var panel = createLoginPanel();
 		var userInfo = null;
 		
-		function login(username, password) {
+		function login(username, password, onSuccess, onException) {
+			
+			// request sessionId and then start a login on server
+			mySession.getSessionId(function(sessionId){
+				// use json-rpc for authentication of the session
+				jsonService.user.login({
+					params: [sessionId, username, password],
+					onSuccess: onSuccess,
+					onException: onException
+				});	
+			});
+			
 			userinfo = {
 				username: username,
 				password: password
@@ -163,7 +211,6 @@ function termgenie(){
 			loginPanel.dialog({
 				title: 'Login for TermGenie',
 				autoOpen: false,
-				height: 250,
 				width: 350,
 				modal: true,
 				buttons: {
@@ -176,17 +223,32 @@ function termgenie(){
 							return;
 						}
 						
-						// TODO execute login
-						// on success replace with username and logout button
 						var username = usernameCheck.value;
 						var password = passwordCheck.value;
-						login(username, password);
-						loginClickElem.detach();
-						elem.append(displayUsernameElem);
-						elem.append(logoutClickElem);
-						displayUsernameElem.text('Logged in as: '+username);
+						loginMessagePanel.append(createBusyMessage('Verifying the username and password.'));
+						login(username, password, 
+							function(result){ // onSuccess
+								loginMessagePanel.empty();
+								if (result === true) {
+									// on success replace with username and logout button
+									loginClickElem.detach();
+									elem.append(displayUsernameElem);
+									elem.append(logoutClickElem);
+									displayUsernameElem.text('Logged in as: '+username);
+									passwordInput.clear(); // clear the password for security reasons
+									closeLoginDialog();	
+								}
+								else {
+									// set error message
+									loginMessagePanel.append('<div>Login not successful, please check your username and password.</div>');
+								}
+								
+							},
+							function(e){ // onException
+								loginMessagePanel.empty();
+								loggingSystem.logSystemError('Login service call failed',e);
+							});
 						
-						closeLoginDialog();
 					},
 					"Cancel": function() {
 						closeLoginDialog();
@@ -283,6 +345,12 @@ function termgenie(){
 							message: message,
 							value: value
 						};
+					},
+					/**
+					 * allow to clear the value
+					 */
+					clear: function() {
+						inputElement.val('');
 					}
 				};
 			}
@@ -298,13 +366,24 @@ function termgenie(){
 	              'ontology.autocomplete',
 	              'commit.isValidUser',
 	              'commit.exportTerms',
-	              'commit.commitTerms']
+	              'commit.commitTerms',
+	              'user.createSession',
+	              'user.login',
+	              'user.logout',
+	              'user.keepSessionAlive',
+	              'user.getValue',
+	              'user.setValue',
+	              'user.getValues',
+	              'user.setValues']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
 	
+	// Sessions
+	var mySession = SessionManagementSystem();
+	
 	// Logging and user messages
-	var loggingSystem = LoggingSystem ();
+	var loggingSystem = LoggingSystem();
 	
 	// global elements for this application
 	var myAccordion = MyAccordion('#accordion');
@@ -314,21 +393,25 @@ function termgenie(){
 	// create busy icon and message to show during wait
 	jQuery('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
 	
-	// use json-rpc to retrieve available ontologies
-	jsonService.ontology.availableOntologies({
-		onSuccess: function(result) {
-			/*
-			 * Actual start code for the page.
-			 * 
-			 * Retrieve and create the content for the step 1. 
-			 */
-			createOntologySelector(result);
-		},
-		onException: function(e) {
-			jQuery('#div-select-ontology').empty();
-			loggingSystem.logSystemError('AvailableOntologies service call failed',e);
-			return true;
-		}
+	// request sessionId and then start a request for the ontologies.
+	mySession.getSessionId(function(sessionId){
+		// use json-rpc to retrieve available ontologies
+		jsonService.ontology.availableOntologies({
+			params: [sessionId],
+			onSuccess: function(result) {
+				/*
+				 * Actual start code for the page.
+				 * 
+				 * Retrieve and create the content for the step 1. 
+				 */
+				createOntologySelector(result);
+			},
+			onException: function(e) {
+				jQuery('#div-select-ontology').empty();
+				loggingSystem.logSystemError('AvailableOntologies service call failed',e);
+				return true;
+			}
+		});	
 	});
 	
 	/**
@@ -425,24 +508,27 @@ function termgenie(){
 		// set busy message
 		elem.append(createBusyMessage('Quering for available termplates at the server.'));
 		
-		// start async rpc to retrieve available templates
-		jsonService.generate.availableTermTemplates({
-			params:[ontology],
-			onSuccess: function(result) {
-				// clear busy message
-				elem.empty();
-				// append layout
-				elem.append(termselect);
-				
-				termTemplateWidgetList = TermTemplateWidgetList(result);
-				createTemplateSelectorMenu(ontology, result);
-				registerTermGenerationButton();
-			},
-			onException: function(e) {
-				elem.empty();
-				loggingSystem.logSystemError('AvailableTermTemplates service call failed',e);
-				return true;
-			}
+		// request sessionId
+		mySession.getSessionId(function(sessionId){
+			// start async rpc to retrieve available templates
+			jsonService.generate.availableTermTemplates({
+				params:[sessionId, ontology],
+				onSuccess: function(result) {
+					// clear busy message
+					elem.empty();
+					// append layout
+					elem.append(termselect);
+					
+					termTemplateWidgetList = TermTemplateWidgetList(result);
+					createTemplateSelectorMenu(ontology, result);
+					registerTermGenerationButton();
+				},
+				onException: function(e) {
+					elem.empty();
+					loggingSystem.logSystemError('AvailableTermTemplates service call failed',e);
+					return true;
+				}
+			});
 		});
 		
 		function registerTermGenerationButton() {
@@ -488,17 +574,19 @@ function termgenie(){
 				}
 				busyElement.append(createBusyMessage('Verifing your request and generating terms on the server.'));
 				setStep2HeaderInfo(status.parameters);
-				jsonService.generate.generateTerms({
-					params:[ontology, status.parameters],
-					onSuccess: function(result) {
-						busyElement.empty();
-						renderStep3(result, ontology);
-					},
-					onException: function(e) {
-						busyElement.empty();
-						loggingSystem.logSystemError("GenerateTerms service call failed", e);
-						return true;
-					}
+				mySession.getSessionId(function(sessionId){
+					jsonService.generate.generateTerms({
+						params:[sessionId, ontology, status.parameters],
+						onSuccess: function(result) {
+							busyElement.empty();
+							renderStep3(result, ontology);
+						},
+						onException: function(e) {
+							busyElement.empty();
+							loggingSystem.logSystemError("GenerateTerms service call failed", e);
+							return true;
+						}
+					});
 				});
 			});
 		}
@@ -1088,24 +1176,26 @@ function termgenie(){
 				requestIndex += 1;
 				var myRequestIndex = requestIndex;
 				
-				jsonService.ontology.autocomplete({
-					params:[term, ontologies, 5],
-					onSuccess: function(data) {
-						if (myRequestIndex === requestIndex) {
-							if (data !== null || data.length > 0) {
-								response(data);	
+				mySession.getSessionId(function(sessionId){
+					jsonService.ontology.autocomplete({
+						params:[sessionId, term, ontologies, 5],
+						onSuccess: function(data) {
+							if (myRequestIndex === requestIndex) {
+								if (data !== null || data.length > 0) {
+									response(data);	
+								}
+								else {
+									response([]);
+								}
 							}
-							else {
+						},
+						onException: function(e) {
+							loggingSystem.logSystemError('Autocomplete service call failed', e, true);
+							if (myRequestIndex === requestIndex) {
 								response([]);
 							}
 						}
-					},
-					onException: function(e) {
-						loggingSystem.logSystemError('Autocomplete service call failed', e, true);
-						if (myRequestIndex === requestIndex) {
-							response([]);
-						}
-					}
+					});
 				});
 			},
 			select : function(event, ui) {
@@ -1291,36 +1381,38 @@ function termgenie(){
 				myAccordion.activatePane(3);
 				
 				if (isCommit) {
-					// TODO verify username and password via login panel
-					
 					step4Container.append(createBusyMessage('Executing commit request on the server.'));
 					// try to commit
-					jsonService.commit.commitTerms({
-						params: [terms, ontology, username, password],
-						onSuccess: function(result) {
-							step4Container.empty();
-							renderCommitResult(result, step4Container);
-						},
-						onException: function(e) {
-							step4Container.empty();
-							loggingSystem.logSystemError("CommitTerms service call failed", e);
-							return true;
-						}
+					mySession.getSessionId(function(sessionId){
+						jsonService.commit.commitTerms({
+							params: [sessionId, terms, ontology],
+							onSuccess: function(result) {
+								step4Container.empty();
+								renderCommitResult(result, step4Container);
+							},
+							onException: function(e) {
+								step4Container.empty();
+								loggingSystem.logSystemError("CommitTerms service call failed", e);
+								return true;
+							}
+						});
 					});
 				} else {
 					step4Container.append(createBusyMessage('Preparing terms for export on the server.'));
 					// just generate the info for the export a obo/owl
-					jsonService.commit.exportTerms({
-						params: [terms, ontology],
-						onSuccess: function(result) {
-							step4Container.empty();
-							renderExportResult(result, step4Container);
-						},
-						onException: function(e) {
-							step4Container.empty();
-							loggingSystem.logSystemError("ExportTerms service call failed", e);
-							return true;
-						}
+					mySession.getSessionId(function(sessionId){
+						jsonService.commit.exportTerms({
+							params: [sessionId, terms, ontology],
+							onSuccess: function(result) {
+								step4Container.empty();
+								renderExportResult(result, step4Container);
+							},
+							onException: function(e) {
+								step4Container.empty();
+								loggingSystem.logSystemError("ExportTerms service call failed", e);
+								return true;
+							}
+						});
 					});
 				}
 			}

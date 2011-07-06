@@ -21,10 +21,10 @@ public class SimpleJsonRPCTestClient {
 		OntologyService service = invoker.get(transport, "ontology", OntologyService.class);
 
 		
-		String[] availableOntologies = service.availableOntologies();
+		String[] availableOntologies = service.availableOntologies(null);
 		System.out.println(Arrays.toString(availableOntologies));
 		
-		JsonTermSuggestion[] suggestions = service.autocomplete("pig", new String[]{"GeneOntology"}, 5);
+		JsonTermSuggestion[] suggestions = service.autocomplete(null, "pig", new String[]{"GeneOntology"}, 5);
 		for (JsonTermSuggestion suggestion : suggestions) {
 			System.out.println(suggestion);
 		}

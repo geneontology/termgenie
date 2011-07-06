@@ -7,33 +7,34 @@ import org.bbop.termgenie.data.JsonOntologyTerm;
 
 public interface TermCommitService {
 
-	/**
-	 * @param username
-	 * @param password
-	 * @param ontology
-	 * @return true, if the username and password are valid.
-	 */
-	public boolean isValidUser(String username, String password, String ontology);
+//	/**
+//	 * @param sessionId an id which can be used to retrieve the session object.
+//	 * @param username
+//	 * @param password
+//	 * @param ontology
+//	 * @return true, if the username and password are valid.
+//	 */
+//	public boolean isValidUser(String username, String password, String ontology);
 	
 	/**
 	 * Prepare the terms for export. 
 	 * 
+	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
 	 * @param ontology
 	 * @return {@link JsonExportResult}
 	 */
-	public JsonExportResult exportTerms(JsonOntologyTerm[] terms, String ontology);
+	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
 	
 	/**
-	 * Commit the terms to the ontology.
+	 * Commit the terms to the ontology. Retrieve the username and password from the session
 	 * 
+	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
 	 * @param ontology
-	 * @param username
-	 * @param password
 	 * @return {@link JsonCommitResult}
 	 */
-	public JsonCommitResult commitTerms(JsonOntologyTerm[] terms, String ontology, String username, String password);
+	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
 	
 	
 	public static class JsonCommitResult {

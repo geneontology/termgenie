@@ -10,13 +10,13 @@ public class TermCommitServiceImpl implements TermCommitService {
 
 	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
 	
-	@Override
-	public boolean isValidUser(String username, String password, String ontology) {
-		return ImplementationFactory.getUserCredentialValidator().validate(username, password, ontology);
-	}
+//	@Override
+//	public boolean isValidUser(String username, String password, String ontology) {
+//		return ImplementationFactory.getUserCredentialValidator().validate(username, password, ontology);
+//	}
 
 	@Override
-	public JsonExportResult exportTerms(JsonOntologyTerm[] terms, String ontologyName) {
+	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontologyName) {
 		JsonExportResult result = new JsonExportResult();
 		
 		Ontology ontology = ontologyTools.getOntology(ontologyName);
@@ -98,8 +98,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 	}
 	
 	@Override
-	public JsonCommitResult commitTerms(JsonOntologyTerm[] terms, String ontology, String username,
-			String password) {
+	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology) {
 		JsonCommitResult result = new JsonCommitResult();
 		result.setSuccess(false);
 		result.setMessage("The commit operation is not yet implemented.");
