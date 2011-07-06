@@ -1553,17 +1553,22 @@ function termgenie(){
 				if (!string || typeof string !== 'string') {
 					return jQuery('<input type="text" style="width:250px"/>');
 				}
+				var elem;
 				if (string.length < 35) {
-					return jQuery('<input type="text" style="width:250px" value="'+string+'"/>');
+					elem = jQuery('<input type="text" style="width:250px"/>');
 				}
-				return jQuery('<textarea style="width:250px;height:70px">'+string+'</textarea>');
+				else {
+					elem = jQuery('<textarea style="width:250px;height:70px"></textarea>');
+				}
+				elem.val(string);
+				return elem;
 			}
 			
 			function normalizeString(string) {
 				if (string && string.length > 0) {
 					string = jQuery.trim(string).replace(/\s+/g,' ');
 					if (string.length > 1) {
-						// ignore string with just one char!
+						// ignore strings with just one char!
 						return string;
 					}
 				}
