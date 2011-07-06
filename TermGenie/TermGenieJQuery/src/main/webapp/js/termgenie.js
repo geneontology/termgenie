@@ -132,18 +132,31 @@ function termgenie(){
 			
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			
-			var loginPanel = jQuery('<div>'+
-					'<div style="padding-bottom:5px">To commit terms a login is required.</div>'+
-					'<table><tr><td>Username:</td>'+
-					'<td><input type="text" id="input-user-name"/></td></tr>'+
-					'<tr><td>Password:</td>'+
-					'<td><input type="password" id="input-user-password"/></td></tr>'+
-					'</table>'+
-					'</div>');
+			var loginPanel = jQuery('<div></div>');
+			loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
+			var table = createLayoutTable();
+			table.appendTo(loginPanel);
+			
+			// username
+			var row1 = jQuery('<tr></tr>');
+			row1.appendTo(table);
+			row1.append('<td>Username:</td>');
+			var tablecell1 = jQuery('<td></td>');
+			tablecell1.appendTo(row1);
+			var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "Username", 4);
+			
+			// password
+			var row2 = jQuery('<tr></tr>');
+			row2.appendTo(table);
+			row2.append('<td>Password:</td>');
+			var tablecell2 = jQuery('<td></td>');
+			tablecell2.appendTo(row2);
+			var passwordInput = ParameterizedTextFieldInput(tablecell2, 'password', "Password", 6);
+			
 			loginPanel.appendTo('body');
 			
-			var loginBusyPanel = jQuery('<div></div>');
-			loginBusyPanel.appendTo(loginPanel);
+			var loginMessagePanel = jQuery('<div></div>');
+			loginMessagePanel.appendTo(loginPanel);
 			
 			loginPanel.dialog({
 				title: 'Login for TermGenie',
@@ -153,10 +166,18 @@ function termgenie(){
 				modal: true,
 				buttons: {
 					"Log In": function() {
+						loginMessagePanel.empty();
+						var usernameCheck = usernameInput.check();
+						var passwordCheck = passwordInput.check();
+						if (!(usernameCheck.success === true) || !(passwordCheck.success === true)) {
+							renderLoginErrors(usernameCheck.message, passwordCheck.message);
+							return;
+						}
+						
 						// TODO execute login
 						// on success replace with username and logout button
-						var username = null;
-						var password = null;
+						var username = usernameCheck.value;
+						var password = passwordCheck.value;
 						login(username, password);
 						loginClickElem.detach();
 						elem.append(logoutClickElem);
@@ -167,11 +188,6 @@ function termgenie(){
 					}
 				}
 			});
-			
-			function closeLoginDialog() {
-				loginPanel.dialog( "close" );
-				loginBusyPanel.empty();
-			}
 			
 			loginClickElem.click(function(){
 				loginPanel.dialog('open');
@@ -184,13 +200,88 @@ function termgenie(){
 			});
 			
 			return elem;
+			
+			function closeLoginDialog() {
+				loginPanel.dialog( "close" );
+				loginMessagePanel.empty();
+			}
+			
+			function renderLoginErrors(message1, message2) {
+				var details =[]
+				if(message1 && message1.length > 0) {
+					details.push(message1);
+				}
+				if(message2 && message2.length > 0) {
+					details.push(message2);
+				}
+				loggingSystem.logUserMessage("Unable to login", details);
+			}
+			
+			/**
+			 * Wrapper around an input field with minimalistic validation and error state.
+			 * 
+			 * @param elem parent DOM element
+			 * @param type type of the input field, e.g., text or password
+			 * @param name the name of the input field. To be used in messages. 
+			 * @param minchars number of chars to present to be seen as valid input
+			 * @returns methods for checking and retrieving the input field
+			 */
+			function ParameterizedTextFieldInput(elem, type, name, minchars) {
+				var inputElement = jQuery('<input type="'+type+'"/>'); 
+				elem.append(inputElement);
+				
+				inputElement.change(function(){
+					clearErrorState();
+				});
+				
+				function clearErrorState(){
+					inputElement.removeClass('termgenie-input-field-error');	
+				}
+				
+				function setErrorState() {
+					inputElement.addClass('termgenie-input-field-error');
+				}
+				
+				return {
+					/**
+					 * check the current value of the input field.
+					 * 
+					 * @returns {
+					 * 		success: boolean,
+					 * 		message: String,
+					 * 		value: String
+					 * }
+					 */
+					check : function() {
+						var success = false;
+						var message = undefined;
+						var value = undefined;
+						clearErrorState();
+						var text = inputElement.val();
+						if (text && text.length > 0) {
+							if (text.length >= minchars) {
+								success = true;
+								value = text;
+							}
+							else {
+								setErrorState();
+								message = name+' is too short. The '+name+' consits of at least '+minchars+' characters';
+							}
+						}
+						else {
+							setErrorState();
+							message = name+' is empty. Please specifiy the '+name+' to login.';
+						}
+						return {
+							success: success,
+							message: message,
+							value: value
+						};
+					}
+				};
+			}
 		}
 	}
-	
-	// global elements for this application
-	var myAccordion = MyAccordion('#accordion');
-	var myLoginPanel = LoginPanel(); 
-	var myUserPanel = createUserPanel();
 	
 	//create proxy for json rpc
 	var jsonService = new JsonRpc.ServiceProxy("jsonrpc", {
@@ -205,9 +296,16 @@ function termgenie(){
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
-
 	
-	// create buy icon and message to show during wait
+	// Logging and user messages
+	var loggingSystem = LoggingSystem ();
+	
+	// global elements for this application
+	var myAccordion = MyAccordion('#accordion');
+	var myLoginPanel = LoginPanel(); 
+	var myUserPanel = createUserPanel();
+	
+	// create busy icon and message to show during wait
 	jQuery('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
 	
 	// use json-rpc to retrieve available ontologies
@@ -1178,9 +1276,7 @@ function termgenie(){
 				myAccordion.activatePane(3);
 				
 				if (isCommit) {
-					var username = jQuery('#input-user-name').val();
-					var password = jQuery('#input-user-password').val();
-					// TODO verify username and password
+					// TODO verify username and password via login panel
 					
 					step4Container.append(createBusyMessage('Executing commit request on the server.'));
 					// try to commit
@@ -1693,9 +1789,6 @@ function termgenie(){
 			exportsContainer.append('<pre>'+content+'</pre>');
 		}
 	}
-	
-	// Logging and user messages
-	var loggingSystem = LoggingSystem ();
 	
 	/**
 	 * Provide a simple message and error logging system. 
