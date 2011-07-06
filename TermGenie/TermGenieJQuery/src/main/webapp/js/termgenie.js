@@ -75,7 +75,18 @@ function termgenie(){
 	function LoginPanel() {
 		
 		var panel = createLoginPanel();
+		var userInfo = null;
 		
+		function login(username, password) {
+			userinfo = {
+				username: username,
+				password: password
+			}
+		}
+		
+		function logout() {
+			userInfo = null;
+		}
 		
 		return {
 			/**
@@ -84,20 +95,23 @@ function termgenie(){
 			 * @returns boolean
 			 */
 			isLoggedIn: function() {
-				return false;
+				return userInfo !== null;
 			},
 			
 			/**
 			 * Retrieve the username and password for commiting.
-			 * Only valid, if the user is logged in.
+			 * Only defined, if the user is logged in.
 			 * 
 			 * @returns { username, password }
 			 */
 			getCredentials: function() {
-				return {
-					username : '',
-					password : ''
+				if (userInfo !== null) {
+					return {
+						username : userInfo.username,
+						password : userInfo.password
+					}
 				}
+				return {};
 			}
 		};
 		
@@ -141,16 +155,32 @@ function termgenie(){
 					"Log In": function() {
 						// TODO execute login
 						// on success replace with username and logout button
-//						elem.detach();
+						var username = null;
+						var password = null;
+						login(username, password);
+						loginClickElem.detach();
+						elem.append(logoutClickElem);
+						closeLoginDialog();
 					},
 					"Cancel": function() {
-						jQuery( this ).dialog( "close" );
+						closeLoginDialog();
 					}
 				}
 			});
 			
+			function closeLoginDialog() {
+				loginPanel.dialog( "close" );
+				loginBusyPanel.empty();
+			}
+			
 			loginClickElem.click(function(){
 				loginPanel.dialog('open');
+			});
+			
+			logoutClickElem.click(function(){
+				logout();
+				logoutClickElem.detach();
+				elem.append(loginClickElem);
 			});
 			
 			return elem;
