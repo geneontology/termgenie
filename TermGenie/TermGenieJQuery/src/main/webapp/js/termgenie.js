@@ -167,7 +167,8 @@ function termgenie(){
 	    asynchronous: true,
 	    methods: ['generate.availableTermTemplates', 
 	              'generate.generateTerms', 
-	              'ontology.availableOntologies', 
+	              'ontology.availableOntologies',
+	              'ontology.autocomplete',
 	              'commit.isValidUser',
 	              'commit.exportTerms',
 	              'commit.commitTerms']
@@ -857,15 +858,6 @@ function termgenie(){
 		};
 	}
 	
-	// the autocomplete seems to rely on synchronus responses
-	// it does not work with a function call back (so far)
-	var jsonSyncService = new JsonRpc.ServiceProxy("jsonrpc", {
-	    asynchronous: false,
-	    methods: ['ontology.autocomplete']
-	});
-	// asynchronous
-	JsonRpc.setAsynchronous(jsonSyncService, false);
-	
 	function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
 		
 		var term = undefined;
@@ -956,14 +948,22 @@ function termgenie(){
 			source: function( request, response ) {
 				removeDescriptionDiv();
 				var term = request.term;
-				try {
-					var data = jsonSyncService.ontology.autocomplete(term, ontologies, 5);
-					if (data !== null || data.length > 0) {
-						response(data);	
+				
+				jsonService.ontology.autocomplete({
+					params:[term, ontologies, 5],
+					onSuccess: function(data) {
+						if (data !== null || data.length > 0) {
+							response(data);	
+						}
+						else {
+							response([]);
+						}
+					},
+					onException: function(e) {
+						loggingSystem.logSystemError('Autocomplete service call failed', e, true);
+						response([]);
 					}
-				} catch (e) {
-					loggingSystem.logSystemError('Autocomplete service call failed', e, true);
-				}
+				});
 			},
 			select : function(event, ui) {
 				clearErrorState();
