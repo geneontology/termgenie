@@ -1077,25 +1077,34 @@ function termgenie(){
 			content.append(layout);
 		}
 		
+		// used to prevent race conditions
+		var requestIndex = 0;
+		
 		inputElement.autocomplete({
 			minLength: 3,
 			source: function( request, response ) {
 				removeDescriptionDiv();
 				var term = request.term;
+				requestIndex += 1;
+				var myRequestIndex = requestIndex;
 				
 				jsonService.ontology.autocomplete({
 					params:[term, ontologies, 5],
 					onSuccess: function(data) {
-						if (data !== null || data.length > 0) {
-							response(data);	
-						}
-						else {
-							response([]);
+						if (myRequestIndex === requestIndex) {
+							if (data !== null || data.length > 0) {
+								response(data);	
+							}
+							else {
+								response([]);
+							}
 						}
 					},
 					onException: function(e) {
 						loggingSystem.logSystemError('Autocomplete service call failed', e, true);
-						response([]);
+						if (myRequestIndex === requestIndex) {
+							response([]);
+						}
 					}
 				});
 			},
