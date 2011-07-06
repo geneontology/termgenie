@@ -136,6 +136,7 @@ function termgenie(){
 			var loginPanel = jQuery('<div></div>');
 			loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
 			var table = createLayoutTable();
+			table.addClass('termgenie-login-panel-layout-table');
 			table.appendTo(loginPanel);
 			
 			// username

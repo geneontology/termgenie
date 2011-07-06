@@ -242,3 +242,11 @@ h1 {
 	border: 1px solid;
 	margin: 20px;
 }
+
+.termgenie-login-panel-layout-table {
+	margin: 5px;
+}
+
+.termgenie-login-panel-layout-table td {
+	padding: 2px 5px;
+}
