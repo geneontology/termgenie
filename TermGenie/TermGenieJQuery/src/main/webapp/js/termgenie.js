@@ -7,23 +7,30 @@ function termgenie(){
 		var sessionId = null;
 		
 		// TODO check if there is already a sessionId in the url 
-		// if yes check if it is valid, if not reload page without sessionId
+		// if yes check if it is valid, if not get a new session id
 		
-		// use json-rpc to create a new session
-		jsonService.user.createSession({
-			onSuccess: function(result) {
-				sessionId = result;
-				hasSession = true;
-				jQuery.each(waitForInit, function(index, callback){
-					callback(sessionId);
-				});
-				waitForInit = [];
-			},
-			onException: function(e) {
-				loggingSystem.logSystemError('Could not create a session. Please try reloading the page.',e);
-			}
-		});
+		// default create a new session
+		createSession();
 		
+		/* 
+		 * Goal: Minimize the number of new sessions.
+		 * Requirement: Try to keep the sessionId somewhere else 
+		 * and that survives a site reload.
+		 * (permanent bookmarking is not a goal!)
+		 * 
+		 * TODO Decide: do we always want the session Id in the url?
+		 * this would mean every new page is loaded twice.
+		 * 
+		 * (semi-)alternative: cookies
+		 *   jQuery cookie plugin makes it easy to use them,
+		 *   but cookie can be deactivated. 
+		 *   --> In this case it will revert to the original question.
+		 *   
+		 *   Open questions for cookies: 
+		 *     What happens to if there is more than one 
+		 *     window/tab with termgenie in one browser open?
+		 *     Would they influence each other via the cookie?
+		 */
 		return {
 			getSessionId: function(callback) {
 				if (hasSession) {
@@ -33,6 +40,27 @@ function termgenie(){
 					waitForInit.push(callback);
 				}
 			}
+		}
+		
+		function setSession(result) {
+			sessionId = result;
+			hasSession = true;
+			jQuery.each(waitForInit, function(index, callback){
+				callback(sessionId);
+			});
+			waitForInit = [];
+		}
+		
+		function createSession() {
+			// use json-rpc to create a new session
+			jsonService.user.createSession({
+				onSuccess: function(result) {
+					setSession(result);
+				},
+				onException: function(e) {
+					loggingSystem.logSystemError('Could not create a session. Please try reloading the page.',e);
+				}
+			});
 		}
 	}
 	
