@@ -34,7 +34,13 @@ function termgenie(){
 		return {
 			getSessionId: function(callback) {
 				if (hasSession) {
+					// use this manadory call for the session id 
+					// to keep track of the last time the 
+					// session was updated.
+					// Use this to reset counters for automatic keep alive pings to the server
+					// updatelastcall
 					callback(sessionId);
+					
 				}
 				else {
 					waitForInit.push(callback);
@@ -718,39 +724,36 @@ function termgenie(){
 			var templateListContainer = templateMap[template.name];
 			if (!templateListContainer) {
 				templateListContainer = {
-					count : 0,
-					list : new Array(),
+					list : [],
 					id : 'div-all-template-parameters-'+template.name,
 					wrapperId : 'div-all-template-parameters-wrapper-'+template.name
 				}
 				createTemplateSubList(template, templateListContainer.id, templateListContainer.wrapperId);
 				templateMap[template.name] = templateListContainer;
 			}
-			var templateWidget = TermTemplateWidget(template,templateListContainer.count);
-			templateListContainer.list[templateListContainer.count] = templateWidget;
+			var templateWidget = TermTemplateWidget(template, templateListContainer.list.length);
 			
 			var listElem = jQuery('#'+templateListContainer.id);
 			
 			// if the list was empty create the layout 
-			if (templateListContainer.count === 0) {
+			if (templateListContainer.list.length === 0) {
 				templateWidget.createLayout(listElem);
 			}
 			// append a new line to the list
-			var domId = templateListContainer.id+'-'+templateListContainer.count;
+			var domId = templateListContainer.id+'-'+templateListContainer.list.length;
 			templateWidget.appendLine(listElem, domId);
 			
-			templateListContainer.count += 1;
+			templateListContainer.list.push(templateWidget);
 		}
 		
 		function privateRemoveTemplate(template) {
 			var templateListContainer = templateMap[template.name];
 			if (templateListContainer) {
-				if (templateListContainer.count > 1) {
-					var pos = templateListContainer.count - 1;
+				if (templateListContainer.list.length > 1) {
+					var pos = templateListContainer.list.length - 1;
 					var domId = templateListContainer.id+'-'+pos;
 					jQuery('#'+domId).remove();
-					templateListContainer.list[pos] = undefined;
-					templateListContainer.count = pos;
+					templateListContainer.list.pop();
 				}
 				else {
 					jQuery('#'+templateListContainer.wrapperId).remove();
@@ -992,6 +995,366 @@ function termgenie(){
 				}
 			}
 		};
+	
+		function TextFieldInput(elem, templatePos, validator) {
+			var inputElement = jQuery('<input type="text"/>'); 
+			elem.append(inputElement);
+			
+			inputElement.change(function(){
+				clearErrorState();
+			});
+			
+			function clearErrorState(){
+				inputElement.removeClass('termgenie-input-field-error');	
+			}
+			
+			function setErrorState() {
+				inputElement.addClass('termgenie-input-field-error');
+			}
+			
+			return {
+				extractParameter : function(parameter, template, field, pos, extractionResult) {
+					var success;
+					clearErrorState();
+					if (!pos) {
+						pos = 0;
+					}
+					var text = inputElement.val();
+					if (text !== null && text.length > 0) {
+						if (validator) {
+							success = validator(text, template, field, extractionResult);
+							if(success === false) {
+								setErrorState();
+								return false;
+							}
+						}
+						var list = parameter.strings[templatePos];
+						if (!list) {
+							list = [];
+							parameter.strings[templatePos] = list;
+						}
+						list[pos] = text;
+						return true;
+					}
+					success = (field.required === false);
+					if (success === false) {
+						extractionResult.addError("Required value missing", template, field);
+						setErrorState();
+					}
+					return success;
+				}
+			};
+		}
+		
+		function TextFieldInputList(container, templatePos, min, max, validator) {
+			
+			var list = [];
+			var listParent = createLayoutTable();
+			listParent.appendTo(container);
+			for ( var i = 0; i < min; i+= 1) {
+				appendInput();
+			}
+			createAddRemoveWidget(container, appendInput, removeInput);
+			
+			function appendInput() {
+				if (list.length <  max) {
+					var listElem = jQuery('<tr></tr>');
+					listElem.appendTo(listParent);
+					var tdElement = jQuery('<td></td>');
+					tdElement.appendTo(listElem);
+					var inputElem = TextFieldInput(tdElement, templatePos, validator);  
+					list.push(inputElem);
+				}
+			}
+			
+			function removeInput() {
+				if (list.length > min) {
+					listParent.find('tr').last().remove();
+					list.pop();
+				}
+			}
+			
+			return {
+				extractParameter : function(parameter, template, field, pos, extractionResult) {
+					var success = true;
+					jQuery.each(list, function(index, inputElem){
+						if (inputElem) {
+							var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
+							success = success && csuccess;
+						}
+					});
+					return success;
+				}
+			};
+		}
+		
+		function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
+			
+			var term = undefined;
+			var inputElement = jQuery('<input/>');
+			elem.append(inputElement);
+			var descriptionDiv = null;
+			
+			function clearErrorState() {
+				inputElement.removeClass('termgenie-input-field-error');	
+			}
+			
+			function setErrorState() {
+				inputElement.addClass('termgenie-input-field-error');
+			}
+			
+			function updateDescriptionDiv(ofElement) {
+				var w = ofElement.outerWidth();
+				if (w < 400) {
+					w = 400;
+				}
+				var h = ofElement.outerHeight();
+				if (h < 200) {
+					h = 200;
+				}
+				if (descriptionDiv === null) {
+					descriptionDiv = jQuery('<div><div class="term-description-content"></div></div>')
+						.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
+						.css({
+							'width': w,
+							'height': h
+						})
+						.appendTo('body');
+					descriptionDiv.resizable({
+						minHeight: h,
+						minWidth: w
+					});
+	//				descriptionDiv.draggable();
+				}
+				else {
+					descriptionDiv.resizable( "option", "minHeight", h );
+					descriptionDiv.resizable( "option", "minWidth", w );
+				}
+				descriptionDiv.position({
+					my: 'left top',
+					at: 'right top',
+					of: inputElement.autocomplete('widget'),
+					collision: 'none none'
+				});
+			}
+			
+			function removeDescriptionDiv() {
+				if (descriptionDiv !== null) {
+					descriptionDiv.removeClass('ui-autocomplete-input');
+					descriptionDiv.remove();
+					descriptionDiv = null;
+				}
+			}
+			
+			function setContentDescriptionDiv(item) {
+				var content = descriptionDiv.children().first();
+				content.empty();
+				var layout = createLayoutTableOpenTag();
+				layout += '<tr><td>Ontology</td><td>'+getOntologyName(item.identifier.ontology)+'</td></tr>';
+				layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
+				layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
+				if (item.description && item.description.length > 0) {
+					layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
+				}
+				if (item.synonyms && item.synonyms.length > 0) {
+					layout += '<tr><td>Synonyms</td><td>';
+					for ( var i = 0; i < item.synonyms.length; i++) {
+						var synonym = item.synonyms[i];
+						if (synonym && synonym.length > 0) {
+							if (i > 0) {
+								layout += '<br/>';
+							}
+							layout += synonym;
+						}
+					}
+					layout += '</td></tr>';
+				}
+				layout += '</table>'; 
+				content.append(layout);
+			}
+			
+			// used to prevent race conditions
+			var requestIndex = 0;
+			
+			inputElement.autocomplete({
+				minLength: 3,
+				source: function( request, response ) {
+					removeDescriptionDiv();
+					var term = request.term;
+					requestIndex += 1;
+					var myRequestIndex = requestIndex;
+					
+					mySession.getSessionId(function(sessionId){
+						jsonService.ontology.autocomplete({
+							params:[sessionId, term, ontologies, 5],
+							onSuccess: function(data) {
+								if (myRequestIndex === requestIndex) {
+									if (data !== null || data.length > 0) {
+										response(data);	
+									}
+									else {
+										response([]);
+									}
+								}
+							},
+							onException: function(e) {
+								loggingSystem.logSystemError('Autocomplete service call failed', e, true);
+								if (myRequestIndex === requestIndex) {
+									response([]);
+								}
+							}
+						});
+					});
+				},
+				select : function(event, ui) {
+					clearErrorState();
+					inputElement.val(ui.item.label);
+					term = ui.item;
+					removeDescriptionDiv();
+					return false;
+				},
+				focus : function(event, ui) {
+					inputElement.val(ui.item.label);
+					updateDescriptionDiv(inputElement.autocomplete('widget'));
+					setContentDescriptionDiv(ui.item);
+					return false;
+				},
+				close : function(event, ui) {
+					removeDescriptionDiv();
+				} 
+			})
+			.data( 'autocomplete' )._renderItem = function( ul, item ) {
+				return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
+					.data( 'item.autocomplete', item )
+					.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
+							item.label + '</span></a>' )
+					.appendTo( ul );
+			};
+	
+			
+			
+			return {
+				extractParameter : function(parameter, template, field, pos, extractionResult) {
+					clearErrorState();
+					if (!pos) {
+						pos = 0;
+					}
+					if (term && term !== null) {
+						var text = inputElement.val();
+						if (term.label == text) {
+							var identifier = term.identifier;
+							var list = parameter.terms[templatePos];
+							if (!list) {
+								list = [];
+								parameter.terms[templatePos] = list;
+							}
+							list[pos] = identifier;
+							return true;
+						}
+					}
+					extractionResult.addError('No valid term. Please specify a term from '+
+							getShortOntologyNameList(field.ontologies), template, field);
+					setErrorState();
+					return false;
+				}
+			};
+		}
+		
+		function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
+			
+			var list = [];
+			var listParent = createLayoutTable();
+			listParent.appendTo(container);
+			for ( var i = 0; i < min; i++) {
+				appendInput();
+			}
+			createAddRemoveWidget(container, appendInput, removeInput);
+			
+			function appendInput() {
+				if (list.length <  max) {
+					var listElem = jQuery('<tr></tr>');
+					listElem.appendTo(listParent);
+					var tdElement = jQuery('<td></td>');
+					tdElement.appendTo(listElem);
+					list.push(AutoCompleteOntologyInput(tdElement, templatePos, ontologies));
+				}
+			}
+			
+			function removeInput() {
+				if (list.length > min) {
+					listParent.find('tr').last().remove();
+					list.pop();
+				}
+			}
+			
+			return {
+				extractParameter : function(parameter, template, field, pos, extractionResult) {
+					var success = true;
+					jQuery.each(list, function(index, inputElem){
+						if (inputElem) {
+							var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
+							success = success && csuccess;
+						}
+					});
+					return success;
+				}
+			};
+		}
+		
+		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes) {
+			var checkbox, i, j;
+			
+			var container = createLayoutTable();
+			container.appendTo(elem);
+			var inputContainer = jQuery('<tr><td></td></tr>');
+			inputContainer.appendTo(container);
+			
+			var inputField = AutoCompleteOntologyInput(inputContainer, templatePos, ontologies);
+			
+			var checkboxes = [];
+			for ( i = 0; i < prefixes.length; i++) {
+				checkbox = jQuery('<input type="checkbox" checked="true"/>');
+				checkboxes[i] = checkbox;
+				inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
+				inputContainer.append(checkbox);
+				inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
+				inputContainer.appendTo(container);
+			}
+			
+			function clearErrorState() {
+				container.removeClass('termgenie-input-field-error');	
+			}
+			
+			function setErrorState() {
+				container.addClass('termgenie-input-field-error');
+			}
+			
+			return {
+				extractParameter : function(parameter, template, field, pos, extractionResult) {
+					clearErrorState();
+					if (!pos) {
+						pos = 0;
+					}
+					var success = inputField.extractParameter(parameter, template, field, pos, extractionResult);
+					
+					var cPrefixes = [];
+					
+					for ( j = 0; j < checkboxes.length; j++) {
+						checkbox = checkboxes[j];
+						if(checkbox.is(':checked')) {
+							cPrefixes.push(prefixes[j]);
+						}
+					}
+					if (cPrefixes.length === 0) {
+						setErrorState();
+						extractionResult.addError('No prefixes selected.', template, field);
+						return false;
+					}
+					parameter.strings[templatePos] = cPrefixes;
+					return success;
+				}
+			};
+		}
 	}
 	
 	function ExtractionResult() {
@@ -1012,366 +1375,6 @@ function termgenie(){
 			},
 			getErrors: function() {
 				return errors;
-			}
-		};
-	}
-	
-	function TextFieldInput(elem, templatePos, validator) {
-		var inputElement = jQuery('<input type="text"/>'); 
-		elem.append(inputElement);
-		
-		inputElement.change(function(){
-			clearErrorState();
-		});
-		
-		function clearErrorState(){
-			inputElement.removeClass('termgenie-input-field-error');	
-		}
-		
-		function setErrorState() {
-			inputElement.addClass('termgenie-input-field-error');
-		}
-		
-		return {
-			extractParameter : function(parameter, template, field, pos, extractionResult) {
-				var success;
-				clearErrorState();
-				if (!pos) {
-					pos = 0;
-				}
-				var text = inputElement.val();
-				if (text !== null && text.length > 0) {
-					if (validator) {
-						success = validator(text, template, field, extractionResult);
-						if(success === false) {
-							setErrorState();
-							return false;
-						}
-					}
-					var list = parameter.strings[templatePos];
-					if (!list) {
-						list = [];
-						parameter.strings[templatePos] = list;
-					}
-					list[pos] = text;
-					return true;
-				}
-				success = (field.required === false);
-				if (success === false) {
-					extractionResult.addError("Required value missing", template, field);
-					setErrorState();
-				}
-				return success;
-			}
-		};
-	}
-	
-	function TextFieldInputList(container, templatePos, min, max, validator) {
-		
-		var list = [];
-		var listParent = createLayoutTable();
-		listParent.appendTo(container);
-		for ( var i = 0; i < min; i+= 1) {
-			appendInput();
-		}
-		createAddRemoveWidget(container, appendInput, removeInput);
-		
-		function appendInput() {
-			if (list.length <  max) {
-				var listElem = jQuery('<tr></tr>');
-				listElem.appendTo(listParent);
-				var tdElement = jQuery('<td></td>');
-				tdElement.appendTo(listElem);
-				var inputElem = TextFieldInput(tdElement, templatePos, validator);  
-				list.push(inputElem);
-			}
-		}
-		
-		function removeInput() {
-			if (list.length > min) {
-				listParent.find('tr').last().remove();
-				list.pop();
-			}
-		}
-		
-		return {
-			extractParameter : function(parameter, template, field, pos, extractionResult) {
-				var success = true;
-				jQuery.each(list, function(index, inputElem){
-					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
-						success = success && csuccess;
-					}
-				});
-				return success;
-			}
-		};
-	}
-	
-	function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
-		
-		var term = undefined;
-		var inputElement = jQuery('<input/>');
-		elem.append(inputElement);
-		var descriptionDiv = null;
-		
-		function clearErrorState() {
-			inputElement.removeClass('termgenie-input-field-error');	
-		}
-		
-		function setErrorState() {
-			inputElement.addClass('termgenie-input-field-error');
-		}
-		
-		function updateDescriptionDiv(ofElement) {
-			var w = ofElement.outerWidth();
-			if (w < 400) {
-				w = 400;
-			}
-			var h = ofElement.outerHeight();
-			if (h < 200) {
-				h = 200;
-			}
-			if (descriptionDiv === null) {
-				descriptionDiv = jQuery('<div><div class="term-description-content"></div></div>')
-					.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
-					.css({
-						'width': w,
-						'height': h
-					})
-					.appendTo('body');
-				descriptionDiv.resizable({
-					minHeight: h,
-					minWidth: w
-				});
-//				descriptionDiv.draggable();
-			}
-			else {
-				descriptionDiv.resizable( "option", "minHeight", h );
-				descriptionDiv.resizable( "option", "minWidth", w );
-			}
-			descriptionDiv.position({
-				my: 'left top',
-				at: 'right top',
-				of: inputElement.autocomplete('widget'),
-				collision: 'none none'
-			});
-		}
-		
-		function removeDescriptionDiv() {
-			if (descriptionDiv !== null) {
-				descriptionDiv.removeClass('ui-autocomplete-input');
-				descriptionDiv.remove();
-				descriptionDiv = null;
-			}
-		}
-		
-		function setContentDescriptionDiv(item) {
-			var content = descriptionDiv.children().first();
-			content.empty();
-			var layout = createLayoutTableOpenTag();
-			layout += '<tr><td>Ontology</td><td>'+getOntologyName(item.identifier.ontology)+'</td></tr>';
-			layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
-			layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
-			if (item.description && item.description.length > 0) {
-				layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
-			}
-			if (item.synonyms && item.synonyms.length > 0) {
-				layout += '<tr><td>Synonyms</td><td>';
-				for ( var i = 0; i < item.synonyms.length; i++) {
-					var synonym = item.synonyms[i];
-					if (synonym && synonym.length > 0) {
-						if (i > 0) {
-							layout += '<br/>';
-						}
-						layout += synonym;
-					}
-				}
-				layout += '</td></tr>';
-			}
-			layout += '</table>'; 
-			content.append(layout);
-		}
-		
-		// used to prevent race conditions
-		var requestIndex = 0;
-		
-		inputElement.autocomplete({
-			minLength: 3,
-			source: function( request, response ) {
-				removeDescriptionDiv();
-				var term = request.term;
-				requestIndex += 1;
-				var myRequestIndex = requestIndex;
-				
-				mySession.getSessionId(function(sessionId){
-					jsonService.ontology.autocomplete({
-						params:[sessionId, term, ontologies, 5],
-						onSuccess: function(data) {
-							if (myRequestIndex === requestIndex) {
-								if (data !== null || data.length > 0) {
-									response(data);	
-								}
-								else {
-									response([]);
-								}
-							}
-						},
-						onException: function(e) {
-							loggingSystem.logSystemError('Autocomplete service call failed', e, true);
-							if (myRequestIndex === requestIndex) {
-								response([]);
-							}
-						}
-					});
-				});
-			},
-			select : function(event, ui) {
-				clearErrorState();
-				inputElement.val(ui.item.label);
-				term = ui.item;
-				removeDescriptionDiv();
-				return false;
-			},
-			focus : function(event, ui) {
-				inputElement.val(ui.item.label);
-				updateDescriptionDiv(inputElement.autocomplete('widget'));
-				setContentDescriptionDiv(ui.item);
-				return false;
-			},
-			close : function(event, ui) {
-				removeDescriptionDiv();
-			} 
-		})
-		.data( 'autocomplete' )._renderItem = function( ul, item ) {
-			return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
-				.data( 'item.autocomplete', item )
-				.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
-						item.label + '</span></a>' )
-				.appendTo( ul );
-		};
-
-		
-		
-		return {
-			extractParameter : function(parameter, template, field, pos, extractionResult) {
-				clearErrorState();
-				if (!pos) {
-					pos = 0;
-				}
-				if (term && term !== null) {
-					var text = inputElement.val();
-					if (term.label == text) {
-						var identifier = term.identifier;
-						var list = parameter.terms[templatePos];
-						if (!list) {
-							list = [];
-							parameter.terms[templatePos] = list;
-						}
-						list[pos] = identifier;
-						return true;
-					}
-				}
-				extractionResult.addError('No valid term. Please specify a term from '+
-						getShortOntologyNameList(field.ontologies), template, field);
-				setErrorState();
-				return false;
-			}
-		};
-	}
-	
-	function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
-		
-		var list = [];
-		var listParent = createLayoutTable();
-		listParent.appendTo(container);
-		for ( var i = 0; i < min; i++) {
-			appendInput();
-		}
-		createAddRemoveWidget(container, appendInput, removeInput);
-		
-		function appendInput() {
-			if (list.length <  max) {
-				var listElem = jQuery('<tr></tr>');
-				listElem.appendTo(listParent);
-				var tdElement = jQuery('<td></td>');
-				tdElement.appendTo(listElem);
-				list.push(AutoCompleteOntologyInput(tdElement, templatePos, ontologies));
-			}
-		}
-		
-		function removeInput() {
-			if (list.length > min) {
-				listParent.find('tr').last().remove();
-				list.pop();
-			}
-		}
-		
-		return {
-			extractParameter : function(parameter, template, field, pos, extractionResult) {
-				var success = true;
-				jQuery.each(list, function(index, inputElem){
-					if (inputElem) {
-						var csuccess = inputElem.extractParameter(parameter, template, field, index, extractionResult);
-						success = success && csuccess;
-					}
-				});
-				return success;
-			}
-		};
-	}
-	
-	function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes) {
-		var checkbox, i, j;
-		
-		var container = createLayoutTable();
-		container.appendTo(elem);
-		var inputContainer = jQuery('<tr><td></td></tr>');
-		inputContainer.appendTo(container);
-		
-		var inputField = AutoCompleteOntologyInput(inputContainer, templatePos, ontologies);
-		
-		var checkboxes = [];
-		for ( i = 0; i < prefixes.length; i++) {
-			checkbox = jQuery('<input type="checkbox" checked="true"/>');
-			checkboxes[i] = checkbox;
-			inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
-			inputContainer.append(checkbox);
-			inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
-			inputContainer.appendTo(container);
-		}
-		
-		function clearErrorState() {
-			container.removeClass('termgenie-input-field-error');	
-		}
-		
-		function setErrorState() {
-			container.addClass('termgenie-input-field-error');
-		}
-		
-		return {
-			extractParameter : function(parameter, template, field, pos, extractionResult) {
-				clearErrorState();
-				if (!pos) {
-					pos = 0;
-				}
-				var success = inputField.extractParameter(parameter, template, field, pos, extractionResult);
-				
-				var cPrefixes = [];
-				
-				for ( j = 0; j < checkboxes.length; j++) {
-					checkbox = checkboxes[j];
-					if(checkbox.is(':checked')) {
-						cPrefixes.push(prefixes[j]);
-					}
-				}
-				if (cPrefixes.length === 0) {
-					setErrorState();
-					extractionResult.addError('No prefixes selected.', template, field);
-					return false;
-				}
-				parameter.strings[templatePos] = cPrefixes;
-				return success;
 			}
 		};
 	}
