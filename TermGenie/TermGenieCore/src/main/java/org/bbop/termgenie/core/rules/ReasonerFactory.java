@@ -18,6 +18,7 @@ import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 
 import owltools.graph.OWLGraphWrapper;
+import uk.ac.manchester.cs.factplusplus.owlapiv3.FaCTPlusPlusReasonerFactory;
 
 public final class ReasonerFactory {
 	
@@ -26,16 +27,17 @@ public final class ReasonerFactory {
 	private static final String PELLET = "pellet";
 	private static final String HERMIT = "hermit";
 	private static final String JCEL = "jcel";
-	private final static Set<String> supportedReasoners = new HashSet<String>(Arrays.asList(JCEL,HERMIT,PELLET));
+	private static final String FACT = "Fact++";
+	private final static Set<String> supportedReasoners = new HashSet<String>(Arrays.asList(JCEL,HERMIT,PELLET,FACT));
 	
 	private final static Map<String, Map<String, ReasonerTaskManager>> allManagers = new HashMap<String, Map<String,ReasonerTaskManager>>();
 	
 	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
-		String ontologyId = ontology.getOntologyId();
-		if ("go".equals(ontologyId) || "po".equals(ontologyId)) {
-			// use jcel for GeneOntology and Plant ontology
+//		String ontologyId = ontology.getOntologyId();
+//		if ("go".equals(ontologyId) || "po".equals(ontologyId)) {
+//			// use jcel for GeneOntology and Plant ontology
 			return getTaskManager(ontology, JCEL);
-		}
+//		}
 		// use slow reasoner for other ontologies
 		// Because: JCEL does not support:
 		/*
@@ -50,7 +52,16 @@ public final class ReasonerFactory {
 		 * <http://purl.obolibrary.org/obo/UBERON_0003898> 
 		 * <http://purl.obolibrary.org/obo/UBERON_0003899>)'
 		 */
-		return getTaskManager(ontology, PELLET);
+//		return getTaskManager(ontology, FACT);
+		/*
+		 * FACT++ seems to work, but throws also exceptions for pro and uberon when used:
+		 * 
+		 * pro:
+		 * OWLReasonerRuntimeException: Non-simple object property 'http://purl.obolibrary.org/obo/pr_has_part' is used as a simple one
+		 * 
+		 * uberon:
+		 * OWLReasonerRuntimeException: Non-simple object property 'http://purl.obolibrary.org/obo/BFO_0000050' is used as a simple one
+		 */
 		/*
 		 * PELLET also complains a bit, but does not fail when loading PRO and Uberon:
 		 * 
@@ -62,6 +73,9 @@ public final class ReasonerFactory {
 		 * Ignoring unsupported axiom: TransitiveObjectProperty(<http://purl.obolibrary.org/obo/BFO_0000050>)
 		 * 
 		 * Ignoring unsupported axiom: TransitiveObjectProperty(<http://purl.obolibrary.org/obo/uberon_preceded_by>)
+		 * 
+		 * Unforuntally it is not possible to use pellet with pro or uberon, it takes too long to put a result. 
+		 * (I have not seen any result in my tests.)
 		 */
 	}
 
@@ -93,6 +107,9 @@ public final class ReasonerFactory {
 		}
 		else if (PELLET.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), PelletReasonerFactory.getInstance());
+		}
+		else if (FACT.equals(reasonerName)) {
+			return createManager(ontology.getSourceOntology(), new FaCTPlusPlusReasonerFactory());
 		}
 		return null;
 	}

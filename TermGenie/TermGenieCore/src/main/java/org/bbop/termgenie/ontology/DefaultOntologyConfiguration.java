@@ -17,7 +17,7 @@ import owltools.graph.OWLGraphWrapper;
 
 public class DefaultOntologyConfiguration extends ResourceLoader {
 	
-	private static final String CONIFIG_FILE = "default-ontologies.settings";
+	private static final String SETTINGS_FILE = "default-ontology-configuration.settings";
 
 	private static volatile Map<String, ConfiguredOntology> configuration = null;
 	
@@ -144,7 +144,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 	
 	Map<String, ConfiguredOntology> loadOntologyConfiguration() {
 		try {
-			InputStream inputStream = loadResource(CONIFIG_FILE);
+			InputStream inputStream = loadResource(SETTINGS_FILE);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 			Map<String, ConfiguredOntology> result = new LinkedHashMap<String, ConfiguredOntology>();
 			String line;

@@ -125,6 +125,7 @@ public class DefaultOntologyLoader {
 			if (obodoc == null) {
 				throw new RuntimeException("Could not load: "+realUrl);
 			}
+			DefaultOntologyCleaner.cleanOntology(ontology, obodoc);
 		} catch (StringIndexOutOfBoundsException exception) {
 			LOGGER.warn("Error parsing input: "+realUrl);
 			throw exception;
@@ -135,7 +136,7 @@ public class DefaultOntologyLoader {
 		LOGGER.info("Finished loading ontology: "+ontology);
 		return owlOntology;
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		List<Ontology> ontologies = getOntologies();
 		
