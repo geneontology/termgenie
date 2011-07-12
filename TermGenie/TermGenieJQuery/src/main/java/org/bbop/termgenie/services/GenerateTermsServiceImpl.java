@@ -198,6 +198,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				jsonSynonym.setXrefs(axrefs);
 				jsonSynonyms.add(jsonSynonym);
 			}
+			return jsonSynonyms.toArray(new JsonSynonym[jsonSynonyms.size()]);
 		}
 		return null;
 	}
