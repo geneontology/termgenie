@@ -155,20 +155,29 @@ public class LuceneMemoryOntologyIndex {
 			}
 		}
 		
+		int npeCounter = 0;
+		
 		for (OWLObject owlObject : allOWLObjects) {
 			String value = this.ontology.getLabel(owlObject);
 			if (value != null) {
 				Document doc  = new Document();
 				doc.add(new Field(DEFAULT_FIELD, value, Store.NO, Index.ANALYZED));
-				doc.add(new Field(ID_FIELD, this.ontology.getIdentifier(owlObject), Store.YES,
-						Index.NOT_ANALYZED));
-				Set<String> branchSet = branchInfo.get(owlObject);
-				if (branchSet != null) {
-					for (String branch : branchSet) {
-						doc.add(new Field(BRANCH_FIELD, branch, Store.NO, Index.NOT_ANALYZED));						
+				try {
+					String identifier = this.ontology.getIdentifier(owlObject);
+					doc.add(new Field(ID_FIELD, identifier, Store.YES, Index.NOT_ANALYZED));
+					Set<String> branchSet = branchInfo.get(owlObject);
+					if (branchSet != null) {
+						for (String branch : branchSet) {
+							doc.add(new Field(BRANCH_FIELD, branch, Store.NO, Index.NOT_ANALYZED));						
+						}
 					}
+					writer.addDocument(doc);
+				} catch (NullPointerException exception) {
+					// this happens for relationships
+					// TODO Try to ignore relationships, as silently ignoring exceptions is an anti-pattern
+					npeCounter += 1;
+					logger.error("NPE for getting an ID for: "+owlObject);
 				}
-				writer.addDocument(doc);
 			}
 						
 		}
@@ -179,6 +188,9 @@ public class LuceneMemoryOntologyIndex {
 		searcher = new IndexSearcher(directory);
 		if (logger.isInfoEnabled()) {
 			logger.info("Finished creating index for: "+ontology.getOntologyId());
+			if (npeCounter > 0) {
+				logger.info("During the index creation there were "+npeCounter+" NPEs");
+			}
 		}
 	}
 	
