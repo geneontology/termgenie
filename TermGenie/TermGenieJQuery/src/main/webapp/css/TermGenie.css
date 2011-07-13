@@ -244,7 +244,7 @@ h1 {
 }
 
 .termgenie-login-panel-layout-table td {
-	padding: 2px 5px;
+	padding: 4px 5px;
 }
 
 .termgenie-review-panel-term-details-frame {
@@ -253,18 +253,15 @@ h1 {
 	padding: 5px;
 }
 
-.termgenie-review-panel-term-details-tables td {
+.termgenie-review-panel-term-details-table td {
 	padding: 2px 5px;
 }
 
-.termgenie-review-panel-term-details-tables > thead {
+.termgenie-review-panel-term-details-table .header {
 	font-weight: bold;
 }
 
-.termgenie-review-panel-term-details-table-bottom {
-	margin-top: 5px;
-}
-
-.termgenie-review-panel-term-details-table-bottom div {
+.termgenie-review-panel-term-details-table div {
+	height: 100%;
 	border: 1px solid;
 }

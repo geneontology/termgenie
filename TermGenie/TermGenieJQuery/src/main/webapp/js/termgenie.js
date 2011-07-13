@@ -1623,55 +1623,51 @@ function termgenie(){
 			var elem = jQuery('<td class="termgenie-review-panel-term-details-frame"></td>');
 			parent.append(elem);
 			
-			var interalLayoutTableTop = createLayoutTable();
-			interalLayoutTableTop.addClass('termgenie-review-panel-term-details-tables');
-			elem.append(interalLayoutTableTop);
-			interalLayoutTableTop.append('<thead><tr><td>Label</td><td>Definition</td><td>Def_XRef</td></tr></thead>')
-			var topTrElement = jQuery('<tr></tr>');
-			interalLayoutTableTop.append(topTrElement);
+			var interalLayoutTable = createLayoutTable();
+			interalLayoutTable.addClass('termgenie-review-panel-term-details-table');
+			elem.append(interalLayoutTable);
 			
-			var interalLayoutTableBottom = createLayoutTable();
-			interalLayoutTableBottom.addClass('termgenie-review-panel-term-details-tables');
-			interalLayoutTableBottom.addClass('termgenie-review-panel-term-details-table-bottom');
-			elem.append(interalLayoutTableBottom);
-			interalLayoutTableBottom.append('<thead><tr><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr></thead>')
-			var bottomTrElement = jQuery('<tr></tr>');
-			interalLayoutTableBottom.append(bottomTrElement);
+			interalLayoutTable.append('<tr class="header"><td>Label</td><td>Definition</td><td>Def_XRef</td></tr>')
+			var trElement = jQuery('<tr class="values"></tr>');
+			interalLayoutTable.append(trElement);
 			
 			// render the invidual fields
 			var fieldPanels = {};
 			var tdElement;
 			
-			// Top Table
 			//Label
 			tdElement  = jQuery('<td></td>');
-			topTrElement.append(tdElement);
+			trElement.append(tdElement);
 			fieldPanels.label = StringFieldReviewPanel(tdElement, term.label);
 			
 			//Definition
 			tdElement  = jQuery('<td></td>');
-			topTrElement.append(tdElement);
+			trElement.append(tdElement);
 			fieldPanels.definition = StringFieldReviewPanel(tdElement, term.definition);
 			
 			// Def_XRefs
 			tdElement  = jQuery('<td></td>');
-			topTrElement.append(tdElement);
+			trElement.append(tdElement);
 			fieldPanels.defxRef = StringListFieldReviewPanel(tdElement, term.defxRef);
 			
-			// Bottom table
+			// new header and row
+			interalLayoutTable.append('<tr class="header"><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr>')
+			trElement = jQuery('<tr class="values"></tr>');
+			interalLayoutTable.append(trElement);
+			
 			// synonyms
 			tdElement  = jQuery('<td></td>');
-			bottomTrElement.append(tdElement);
+			trElement.append(tdElement);
 			fieldPanels.synonyms = SynonymListReviewPanel(tdElement, term.synonyms);
 			
 			// Metadata
 			tdElement  = jQuery('<td></td>');
-			bottomTrElement.append(tdElement)
+			trElement.append(tdElement)
 			MetaDataFieldReviewPanel(tdElement, term.metaData);
 			
 			// Relations
 			tdElement  = jQuery('<td></td>');
-			bottomTrElement.append(tdElement)
+			trElement.append(tdElement)
 			RelationFieldReviewPanel(tdElement, term.relations);
 			
 			return {
@@ -1779,11 +1775,15 @@ function termgenie(){
 			 * @returns method for selected synonyms
 			 */
 			function SynonymListReviewPanel(parent, synonyms) {
+				
+				parent.css('height','100%');
+				var divElem = jQuery('<div></div>');
+				parent.append(divElem);
+				
 				if (synonyms && synonyms.length > 0) {
-					
-					var divElem = jQuery('<div></div>');
-					parent.append(divElem);
 					var listParent = createLayoutTable();
+					listParent.css('width','350px');
+					
 					var rows = [];
 					listParent.appendTo(divElem);
 					
@@ -1819,8 +1819,7 @@ function termgenie(){
 					};
 				}
 				else {
-					// empty list
-					// do not allow to add new synonyms (for now)
+					divElem.text('No synonyms')
 					return {
 						getValue : function () {
 							return null;
@@ -1830,6 +1829,9 @@ function termgenie(){
 				
 				function addLine(synonym, showCategory) {
 					var tableRow = jQuery('<tr></tr>');
+					if (rows.length % 2 == 0) {
+						tableRow.css('background-color', '#D0D0D0');
+					}
 					
 					// checkbox
 					var checkboxCell = jQuery('<td></td>');
@@ -1890,10 +1892,11 @@ function termgenie(){
 			 * @returns empty object: no external methods
 			 */
 			function MetaDataFieldReviewPanel(parent, metaData) {
-				
+				parent.css('height','100%');
 				var divElem = jQuery('<div></div>');
 				parent.append(divElem);
 				var table = createLayoutTable();
+				table.css('width','350px');
 				table.appendTo(divElem);
 				jQuery.each(metaData, function(field, value) {
 					table.append('<tr><td>'+field+'</td><td class="nobr">'+value+'</td></tr>');
@@ -1909,7 +1912,7 @@ function termgenie(){
 			 * @returns empty object: no external methods
 			 */
 			function RelationFieldReviewPanel(parent, relations) {
-				
+				parent.css('height','100%');
 				var divElem = jQuery('<div></div>');
 				parent.append(divElem);
 				var table = createLayoutTable();
@@ -1923,14 +1926,14 @@ function termgenie(){
 			
 			function createInputField(string) {
 				if (!string || typeof string !== 'string') {
-					return jQuery('<input type="text" style="width:250px"/>');
+					return jQuery('<input type="text" style="width:350px"/>');
 				}
 				var elem;
-				if (string.length < 35) {
-					elem = jQuery('<input type="text" style="width:250px"/>');
+				if (string.length < 42) {
+					elem = jQuery('<input type="text" style="width:350px"/>');
 				}
 				else {
-					elem = jQuery('<textarea style="width:250px;height:70px"></textarea>');
+					elem = jQuery('<textarea style="width:350px;height:70px"></textarea>');
 				}
 				elem.val(string);
 				return elem;
