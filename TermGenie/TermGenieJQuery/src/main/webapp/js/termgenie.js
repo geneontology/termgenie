@@ -1467,6 +1467,7 @@ function termgenie(){
 	 *     generatedTerms: JsonOntologyTerm {
 	 *     	   id: String,
 	 *     	   label: String,
+	 *         synonyms: JsonSynonym[],
 	 *     	   definition: String,
 	 *     	   logDef: String,
 	 *     	   comment: String,
@@ -1637,7 +1638,7 @@ function termgenie(){
 				var value = term[field];
 				var panel = null;
 				
-				if(jQuery.inArray(field, ['synonyms','defxRef']) >= 0) {
+				if(field === 'defxRef') {
 					if (value && value.length > 0) {
 						panel = StringListFieldReviewPanel(tdElement, term, field);
 					}
@@ -1647,6 +1648,9 @@ function termgenie(){
 				}
 				else if (jQuery.inArray(field, ['label','definition']) >= 0) {
 					panel = StringFieldReviewPanel(tdElement, term, field);
+				}
+				else if (field === 'synonyms') {
+					panel = SynonymListReviewPanel(tdElement, term);
 				}
 				fieldPanels[index] = panel;
 			});
@@ -1782,6 +1786,122 @@ function termgenie(){
 						return null;
 					}
 				};
+			}
+			
+			function SynonymListReviewPanel(parent, term) {
+				if (term.synonyms && term.synonyms.length > 0) {
+					
+					var listParent = createLayoutTable();
+					var rows = [];
+					listParent.appendTo(parent);
+					listParent.append('<tr><td></td><td>Label</td><td>Scope</td><td>Xrefs</td></tr>');
+					
+					jQuery.each(term.synonyms, function(index, synonym){
+						addLine(synonym);
+					});
+					
+//					createAddRemoveWidget(parent, addLine, removeLine);
+					
+					return {
+						getValue : function () {
+							var synonyms = [];
+							jQuery.each(rows, function(index, row){
+								if(row.checkbox.is(':checked')) {
+									var label = normalizeString(row.label.val());
+									if (label !== null) {
+										var scope = normalizeString(row.scope.val());
+										var xrefs = row.xrefs.val();
+										strings.push({
+											label: label,
+											scope: scope,
+											xrefs: xrefs
+										});
+									}
+								}
+							});
+							if (synonyms.length > 0) {
+								return synonyms;
+							}
+							return null;
+						}
+					};
+				}
+				else {
+					// empty list
+					// do not allow to add new synonyms (for now)
+					return {
+						getValue : function () {
+							return null;
+						}
+					};
+				}
+				
+				function addLine(synonym) {
+					var tableRow = jQuery('<tr></tr>');
+					
+					// checkbox
+					var checkboxCell = jQuery('<td></td>');
+					checkboxCell.appendTo(tableRow);
+					var checkbox = jQuery('<input type="checkbox" checked="true"/>');
+					checkbox.appendTo(checkboxCell);
+					
+					// label
+					var labelCell = jQuery('<td></td>');
+					labelCell.appendTo(tableRow);
+					var labelInputField = createInputField(synonym.label);
+					labelInputField.appendTo(labelCell);
+					
+					// scope
+					var scopeCell = jQuery('<td></td>');
+					scopeCell.appendTo(tableRow);
+					var scopeSelect = jQuery('<select>'+
+							'<option value="EXACT">EXACT</option>'+
+							'<option value="BROAD">BROAD</option>'+
+							'<option value="NARROW">NARROW</option>'+
+							'<option value="RELATED">RELATED</option>'+
+							+'</select>');
+					scopeSelect.appendTo(scopeCell);
+					
+					if (synonym.scope && jQuery.inArray(synonym.scope, ['EXACT','BROAD','NARROW','RELATED'])) {
+						// set only the value if it is one of the known scopes (OBO specific!)
+						scopeSelect.val(synonym.scope);
+					}
+					else {
+						// use an empty default
+						scopeSelect.append('<option selected="true"></option>')
+					}
+					
+					// xrefs
+					var xrefCell = jQuery('<td></td>');
+					xrefCell.appendTo(tableRow);
+					var xrefList = XRefList(synonym.xrefs);
+					
+					tableRow.appendTo(listParent);
+					
+					rows.push({
+						tableRow : tableRow,
+						checkbox : checkbox,
+						label : labelInputField,
+						scope : scopeSelect,
+						xrefs : xrefList
+					});
+					
+					function XRefList(xrefs) {
+						
+						return {
+							val: function() {
+								return xrefs;
+							}
+						}
+					}
+				}
+				
+//				function removeLine() {
+//					if (rows.length > strings.length) {
+//						var element = rows.pop();
+//						element.tableCell.remove();
+//					}
+//				}
 			}
 			
 			/**
