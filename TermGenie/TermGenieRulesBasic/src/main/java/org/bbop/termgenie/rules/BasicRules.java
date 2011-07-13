@@ -91,7 +91,7 @@ class BasicRules extends BasicTools {
 
 	private List<Synonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<Synonym> synonyms) {
 		String label = ontology.getLabel(x);
-		synonyms.add(new Synonym(label, null, null));
+		synonyms.add(new Synonym(label, null, null, null));
 		return synonyms;
 	}
 	
@@ -99,7 +99,7 @@ class BasicRules extends BasicTools {
 		if (!newLabel.equals(label)) {
 			// if by any chance a synonym has the same label it is ignored
 			List<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
-			results.add(new Synonym(newLabel, synonym.getScope(), xrefs));
+			results.add(new Synonym(newLabel, synonym.getScope(), synonym.getCategory(), xrefs));
 		}
 	}
 	
@@ -121,12 +121,12 @@ class BasicRules extends BasicTools {
 
 	private List<Synonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
-			// TODO use scope and xrefs
+			// TODO use scope, category, and xref for synonyms
 			String[] synonymStrings = ontology.getSynonymStrings(id);
 			if (synonymStrings != null && synonymStrings.length > 0) {
 				List<Synonym> result = new ArrayList<Synonym>(synonymStrings.length);
 				for (String synonymString : synonymStrings) {
-					result.add(new Synonym(synonymString, null, null));
+					result.add(new Synonym(synonymString, null, null, null));
 				}
 				return result;
 			}

@@ -67,8 +67,32 @@ public class TermCommitServiceImpl implements TermCommitService {
 				for (JsonSynonym synonym : synonyms) {
 					sb.append("synonym: \"");
 					sb.append(synonym.getLabel());
-					// TODO add scope and xrefs
-					sb.append("\"\n");
+					sb.append('"');
+					String scope = synonym.getScope();
+					if (scope != null && !scope.isEmpty()) {
+						sb.append(' ');
+						sb.append(scope);
+					}
+					String category = synonym.getCategory();
+					if (category != null && !category.isEmpty()) {
+						sb.append(' ');
+						sb.append(category);
+					}
+					String[] xrefs = synonym.getXrefs();
+					if (xrefs != null && xrefs.length > 0) {
+						for (int i = 0; i < xrefs.length; i++) {
+							if (i == 0) {
+								sb.append(" [");
+							}
+							else {
+								sb.append(',');
+							}
+							sb.append(xrefs[i]);
+						}
+						sb.append(']');
+					}
+					
+					sb.append("\n");
 				}
 			}
 			

@@ -374,23 +374,23 @@ class GeneOntologyComplexPatterns extends Patterns {
 		return null;
 	}
 	
-	// TODO use scope and xref for synonyms
+	// TODO use scope, category, and xref for synonyms
 	private List<Synonym> appendSynonyms(List<Synonym> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix, String label) {
 		if (prefixes == null) {
-			prefixes = Collections.singletonList(new Synonym("", null, null));
+			prefixes = Collections.singletonList(new Synonym("", null, null, null));
 		}
 		String[] synonymStrings = ontology.getSynonymStrings(x);
 		List<Synonym> synonyms;
 		String termLabel = ontology.getLabel(x);
 		if (synonymStrings == null || synonymStrings.length == 0) {
-			synonyms = Collections.singletonList(new Synonym(termLabel, null, null));
+			synonyms = Collections.singletonList(new Synonym(termLabel, null, null, null));
 		}
 		else {
 			synonyms = new ArrayList<Synonym>(synonymStrings.length + 1);
 			for (String synonymString : synonymStrings) {
-				synonyms.add(new Synonym(synonymString, null, null));
+				synonyms.add(new Synonym(synonymString, null, null, null));
 			}
-			synonyms.add(new Synonym(termLabel, null, null));
+			synonyms.add(new Synonym(termLabel, null, null, null));
 		}
 		List<Synonym> results = new ArrayList<Synonym>(synonyms.size() * prefixes.size());
 		for (Synonym prefix : prefixes) {

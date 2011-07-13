@@ -2,19 +2,16 @@ package org.bbop.termgenie.solr;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
 import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
 import org.bbop.termgenie.tools.Pair;
@@ -106,8 +103,8 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 		if (syns != null && syns.length > 0) {
 			synonyms = new ArrayList<Synonym>(syns.length);
 			for (String string : syns) {
-				// TODO handle scope and xref
-				synonyms.add(new Synonym(string, null, null));
+				// TODO use scope, category, and xref for synonyms
+				synonyms.add(new Synonym(string, null, null, null));
 			}
 			
 		}

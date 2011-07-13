@@ -143,6 +143,7 @@ public class JsonOntologyTerm {
 	public static class JsonSynonym {
 		private String label;
 		private String scope;
+		private String category;
 		private String[] xrefs;
 		/**
 		 * @return the label
@@ -180,9 +181,19 @@ public class JsonOntologyTerm {
 		public void setXrefs(String[] xrefs) {
 			this.xrefs = xrefs;
 		}
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
+		/**
+		 * @return the category
 		 */
+		public String getCategory() {
+			return category;
+		}
+		/**
+		 * @param category the category to set
+		 */
+		public void setCategory(String category) {
+			this.category = category;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -195,6 +206,11 @@ public class JsonOntologyTerm {
 			if (scope != null) {
 				builder.append("scope=");
 				builder.append(scope);
+				builder.append(", ");
+			}
+			if (category != null) {
+				builder.append("category=");
+				builder.append(category);
 				builder.append(", ");
 			}
 			if (xrefs != null) {

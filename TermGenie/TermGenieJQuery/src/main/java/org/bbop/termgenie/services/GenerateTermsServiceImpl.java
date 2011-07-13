@@ -190,6 +190,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				JsonSynonym jsonSynonym = new JsonSynonym();
 				jsonSynonym.setLabel(synonym.getLabel());
 				jsonSynonym.setScope(synonym.getScope());
+				jsonSynonym.setCategory(synonym.getCategory());
 				String[] axrefs = null;
 				List<String> xrefs = synonym.getXrefs();
 				if (xrefs != null && !xrefs.isEmpty()) {
@@ -403,7 +404,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (strings != null && strings.length > 0) {
 			List<Synonym> list = new ArrayList<Synonym>(strings.length);
 			for (String string : strings) {
-				list.add(new Synonym(string, null, null));
+				list.add(new Synonym(string, null, null, null));
 			}
 		}
 		return null;
