@@ -198,10 +198,6 @@ h1 {
 	color: #FF0040;
 }
 
-.term-generation-details {
-	padding: 10px;
-}
-
 .term-generation-details-heading {
 	font-size: 1.5em;
 	font-weight: bold;
@@ -249,4 +245,26 @@ h1 {
 
 .termgenie-login-panel-layout-table td {
 	padding: 2px 5px;
+}
+
+.termgenie-review-panel-term-details-frame {
+	border-width: 1px;
+	border-style: solid;
+	padding: 5px;
+}
+
+.termgenie-review-panel-term-details-tables td {
+	padding: 2px 5px;
+}
+
+.termgenie-review-panel-term-details-tables > thead {
+	font-weight: bold;
+}
+
+.termgenie-review-panel-term-details-table-bottom {
+	margin-top: 5px;
+}
+
+.termgenie-review-panel-term-details-table-bottom div {
+	border: 1px solid;
 }
