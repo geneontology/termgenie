@@ -5,19 +5,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 class BasicRules extends BasicTools {
 	
@@ -98,17 +100,17 @@ class BasicRules extends BasicTools {
 	void addSynonym(List<Synonym> results, Synonym synonym, String newLabel, String label) {
 		if (!newLabel.equals(label)) {
 			// if by any chance a synonym has the same label it is ignored
-			List<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
+			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
 			results.add(new Synonym(newLabel, synonym.getScope(), synonym.getCategory(), xrefs));
 		}
 	}
 	
-	private List<String> addXref(String xref, List<String> xrefs) {
+	private Set<String> addXref(String xref, Set<String> xrefs) {
 		if (xref == null) {
 			return xrefs;
 		}
 		if (xrefs == null) {
-			ArrayList<String> list = new ArrayList<String>(1);
+			HashSet<String> list = new HashSet<String>(1);
 			list.add(xref);
 			return list;
 		}
@@ -121,15 +123,12 @@ class BasicRules extends BasicTools {
 
 	private List<Synonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
-			// TODO use scope, category, and xref for synonyms
-			String[] synonymStrings = ontology.getSynonymStrings(id);
-			if (synonymStrings != null && synonymStrings.length > 0) {
-				List<Synonym> result = new ArrayList<Synonym>(synonymStrings.length);
-				for (String synonymString : synonymStrings) {
-					result.add(new Synonym(synonymString, null, null, null));
-				}
-				return result;
+			List<Synonym> oboSynonyms = ontology.getOBOSynonyms(id);
+			if (oboSynonyms != null && !oboSynonyms.isEmpty()) {
+				// defensive copy
+				oboSynonyms = new ArrayList<Synonym>(oboSynonyms);
 			}
+			return oboSynonyms;
 		}
 		return null;
 	}

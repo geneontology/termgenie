@@ -3,7 +3,6 @@ package org.bbop.termgenie.solr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -15,8 +14,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.AutoCompletionTools;
 
@@ -146,43 +143,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		final String label = solrDocument.getFieldValue("label").toString();
 		Object descObj = solrDocument.getFieldValue("description");
 		final String def = descObj != null ? descObj.toString() : null;
-		return new OntologyTerm() {
-
-			@Override
-			public String getId() {
-				return id;
-			}
-
-			@Override
-			public String getLabel() {
-				return label;
-			}
-
-			@Override
-			public String getDefinition() {
-				return def;
-			}
-
-			@Override
-			public List<Synonym> getSynonyms() {
-				return null;
-			}
-
-			@Override
-			public List<String> getDefXRef() {
-				return null;
-			}
-
-			@Override
-			public List<Relation> getRelations() {
-				return null;
-			}
-			
-			@Override
-			public Map<String, String> getMetaData() {
-				return Collections.emptyMap();
-			}
-		};
+		return new OntologyTerm.DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String>emptyMap(), null);
 	}
 
 	/**

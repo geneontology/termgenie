@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
  * Interface to specify the methods required to access ontologies.
@@ -241,55 +242,6 @@ public interface OntologyAware {
 		 */
 		public List<String> getProperties() {
 			return properties;
-		}
-	}
-	
-	public static class Synonym {
-		private final String label;
-		private final String scope;
-		private final String category;
-		private final List<String> xrefs;
-		
-		/**
-		 * @param label
-		 * @param scope
-		 * @param category
-		 * @param xrefs
-		 */
-		public Synonym(String label, String scope, String category, List<String> xrefs) {
-			super();
-			this.label = label;
-			this.scope = scope;
-			this.category = category;
-			this.xrefs = xrefs;
-		}
-
-		/**
-		 * @return the label
-		 */
-		public String getLabel() {
-			return label;
-		}
-		
-		/**
-		 * @return the scope
-		 */
-		public String getScope() {
-			return scope;
-		}
-		
-		/**
-		 * @return the xrefs
-		 */
-		public List<String> getXrefs() {
-			return xrefs;
-		}
-
-		/**
-		 * @return the category
-		 */
-		public String getCategory() {
-			return category;
 		}
 	}
 }

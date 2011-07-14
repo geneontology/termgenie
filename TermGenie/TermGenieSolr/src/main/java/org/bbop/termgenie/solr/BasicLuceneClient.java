@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
@@ -18,6 +15,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class BasicLuceneClient implements OntologyTermSuggestor {
 
@@ -98,57 +96,8 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 		final String identifier = ontology.getIdentifier(hit);
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
-		String[] syns = ontology.getSynonymStrings(hit);
-		final List<Synonym> synonyms;
-		if (syns != null && syns.length > 0) {
-			synonyms = new ArrayList<Synonym>(syns.length);
-			for (String string : syns) {
-				// TODO use scope, category, and xref for synonyms
-				synonyms.add(new Synonym(string, null, null, null));
-			}
-			
-		}
-		else {
-			synonyms = Collections.emptyList();
-		}
-		OntologyTerm term = new OntologyTerm() {
-
-			@Override
-			public String getId() {
-				return identifier;
-			}
-
-			@Override
-			public String getLabel() {
-				return label;
-			}
-
-			@Override
-			public String getDefinition() {
-				return def;
-			}
-
-			@Override
-			public List<Synonym> getSynonyms() {
-				return synonyms;
-			}
-
-			@Override
-			public List<String> getDefXRef() {
-				return null;
-			}
-
-			@Override
-			public List<Relation> getRelations() {
-				return null;
-			}
-			
-			@Override
-			public Map<String, String> getMetaData() {
-				return Collections.emptyMap();
-			}
-			
-		};
+		List<Synonym> synonyms = ontology.getOBOSynonyms(hit);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String>emptyMap(), null);
 		return term;
 	}
 

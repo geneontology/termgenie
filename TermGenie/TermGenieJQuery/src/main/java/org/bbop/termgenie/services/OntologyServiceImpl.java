@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class OntologyServiceImpl implements OntologyService {
 

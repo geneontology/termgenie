@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyAware.Relation;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -43,6 +42,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphEdge;
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.Synonym;
 import owltools.graph.OWLQuantifiedProperty;
 
 public class GenerateTermsServiceImpl implements GenerateTermsService {
@@ -192,7 +192,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				jsonSynonym.setScope(synonym.getScope());
 				jsonSynonym.setCategory(synonym.getCategory());
 				String[] axrefs = null;
-				List<String> xrefs = synonym.getXrefs();
+				Set<String> xrefs = synonym.getXrefs();
 				if (xrefs != null && !xrefs.isEmpty()) {
 					axrefs = xrefs.toArray(new String[xrefs.size()]);
 				}
@@ -368,7 +368,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				if (owlObject != null) {
 					label = realInstance.getLabel(owlObject);
 					definition = realInstance.getDef(owlObject);
-					synonyms = createSynonyms(owlObject, realInstance);
+					synonyms = realInstance.getOBOSynonyms(owlObject);
 					defxref = realInstance.getDefXref(owlObject);
 					
 					// meta data
@@ -396,18 +396,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			
 			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations); 
 		}
-	}
-	
-	private static List<Synonym> createSynonyms(OWLObject x, OWLGraphWrapper ontology) {
-		// TODO replace this with a proper implementation for scope and xrefs
-		String[] strings = ontology.getSynonymStrings(x);
-		if (strings != null && strings.length > 0) {
-			List<Synonym> list = new ArrayList<Synonym>(strings.length);
-			for (String string : strings) {
-				list.add(new Synonym(string, null, null, null));
-			}
-		}
-		return null;
 	}
 	
 	private static void put(Map<String, String> map, String key, String value) {

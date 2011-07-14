@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Synonym;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 class GeneOntologyComplexPatterns extends Patterns {
 
@@ -374,22 +374,19 @@ class GeneOntologyComplexPatterns extends Patterns {
 		return null;
 	}
 	
-	// TODO use scope, category, and xref for synonyms
 	private List<Synonym> appendSynonyms(List<Synonym> prefixes, OWLObject x, OWLGraphWrapper ontology, String infix, String label) {
 		if (prefixes == null) {
 			prefixes = Collections.singletonList(new Synonym("", null, null, null));
 		}
-		String[] synonymStrings = ontology.getSynonymStrings(x);
+		List<Synonym> oboSynonyms = ontology.getOBOSynonyms(x);
 		List<Synonym> synonyms;
 		String termLabel = ontology.getLabel(x);
-		if (synonymStrings == null || synonymStrings.length == 0) {
+		if (oboSynonyms == null || oboSynonyms.isEmpty()) {
 			synonyms = Collections.singletonList(new Synonym(termLabel, null, null, null));
 		}
 		else {
-			synonyms = new ArrayList<Synonym>(synonymStrings.length + 1);
-			for (String synonymString : synonymStrings) {
-				synonyms.add(new Synonym(synonymString, null, null, null));
-			}
+			synonyms = new ArrayList<Synonym>(oboSynonyms.size() + 1);
+			synonyms.addAll(oboSynonyms);
 			synonyms.add(new Synonym(termLabel, null, null, null));
 		}
 		List<Synonym> results = new ArrayList<Synonym>(synonyms.size() * prefixes.size());
