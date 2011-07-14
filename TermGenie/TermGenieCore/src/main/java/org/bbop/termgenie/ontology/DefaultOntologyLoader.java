@@ -27,14 +27,14 @@ public class DefaultOntologyLoader {
 	
 	private final static Logger LOGGER = Logger.getLogger(DefaultOntologyLoader.class);
 	
-	private static final DefaultOntologyLoader instance = new DefaultOntologyLoader();
+	private static DefaultOntologyLoader instance = null;
 	
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
-	private final LocalFileIRIMapper localFileIRIMapper;
+	private final IRIMapper localFileIRIMapper;
 
-	private DefaultOntologyLoader() {
+	private DefaultOntologyLoader(IRIMapper localFileIRIMapper) {
 		super();
-		localFileIRIMapper = new LocalFileIRIMapper();
+		this.localFileIRIMapper = localFileIRIMapper;
 	}
 
 	/**
@@ -44,6 +44,10 @@ public class DefaultOntologyLoader {
 	 */
 	public synchronized static List<Ontology> getOntologies() {
 		Map<String, ConfiguredOntology> configuration = DefaultOntologyConfiguration.getOntologies();
+		if (instance == null) {
+			instance = new DefaultOntologyLoader(DefaultOntologyConfiguration.getIRIMapper());
+		}
+		
 		List<Ontology> result = new ArrayList<Ontology>();
 		for (String name : configuration.keySet()) {
 			ConfiguredOntology configuredOntology = configuration.get(name);
@@ -116,7 +120,13 @@ public class DefaultOntologyLoader {
 			return null;
 		}
 		LOGGER.info("Loading ontology: "+ontology+"  baseURL: "+url);
-		URL realUrl = localFileIRIMapper.getUrl(url);
+		URL realUrl;
+		if (localFileIRIMapper != null) {
+			realUrl = localFileIRIMapper.mapUrl(url);
+		}
+		else {
+			realUrl = new URL(url);
+		}
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc;
 		try {

@@ -15,15 +15,35 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.tools.ResourceLoader;
 
-public class LocalFileIRIMapper extends ResourceLoader {
+/**
+ * Map IRIs to local file urls. Get the resource from classpath and 
+ * copy it to a temp location.
+ */
+public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 
 	private final static Logger logger = Logger.getLogger(LocalFileIRIMapper.class);
 	
 	private final Map<String, URL> mappings = new HashMap<String, URL>();
 
-	public LocalFileIRIMapper() {
+	/**
+	 * Create the mapper with the given config resource. 
+	 * The configuration format is as follows:
+	 * <ul>
+	 * 	<li>Line based format</li>
+	 *  <li>Comment lines start with '#' character</li>
+	 *  <li>Three columns per line, tabulartor as separator character:</li>
+	 *  <ul>
+	 *  	<li>1st column: original IRI</li>
+	 *  	<li>2nd column: local resource in classpath</li>
+	 *  	<li>3rd column: human readable tempfile name</li>
+	 *  </ul>
+	 * </ul>
+	 * 
+	 * @param resource config file in classpath
+	 */
+	public LocalFileIRIMapper(String resource) {
 		try {
-			InputStream inputStream = loadResource("LocalFileIRIMapper.mappings");
+			InputStream inputStream = loadResource(resource);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -40,7 +60,8 @@ public class LocalFileIRIMapper extends ResourceLoader {
 		}
 	}
 	
-	public URL getUrl(String url) {
+	@Override
+	public URL mapUrl(String url) {
 		URL documentIRI = mappings.get(url);
 		if (documentIRI == null) {
 			logger.info("Unknow IRI: "+url);
@@ -60,21 +81,29 @@ public class LocalFileIRIMapper extends ResourceLoader {
 			file = new File(local);
 			if (!file.exists()) {
 				InputStream inputStream = loadResourceSimple(local);
-				if (inputStream == null) {
-					URL u = new URL(url);
-					inputStream = u.openStream();
+				try {
+					if (inputStream == null) {
+						URL u = new URL(url);
+						inputStream = u.openStream();
+					}
+					// copy to temp location
+					tempFile.getParentFile().mkdirs();
+					tempFile.createNewFile();
+					OutputStream outputStream = new FileOutputStream(tempFile);
+					try {
+						byte[] buf = new byte[1024];
+						int len;
+						while ((len = inputStream.read(buf)) > 0) {
+							outputStream.write(buf, 0, len);
+						}
+					} finally {
+						outputStream.close();
+					}
+				} finally {
+					if (inputStream != null) {
+						inputStream.close();
+					}
 				}
-				// copy to temp location
-				tempFile.getParentFile().mkdirs();
-				tempFile.createNewFile();
-				OutputStream outputStream = new FileOutputStream(tempFile);
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = inputStream.read(buf)) > 0) {
-					outputStream.write(buf, 0, len);
-				}
-				inputStream.close();
-				outputStream.close();
 				file = tempFile;
 			}
 		}
@@ -82,7 +111,7 @@ public class LocalFileIRIMapper extends ResourceLoader {
 	}
 	
 	public static void main(String[] args) {
-		LocalFileIRIMapper mapper = new LocalFileIRIMapper();
+		LocalFileIRIMapper mapper = new LocalFileIRIMapper("default-ontology-iri-mapping-localfile.settings");
 		System.out.println(mapper.mappings.size());
 	}
 }

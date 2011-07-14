@@ -10,18 +10,30 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.ResourceLoader;
 
 import owltools.graph.OWLGraphWrapper;
 
 public class DefaultOntologyConfiguration extends ResourceLoader {
 	
+	private static final Logger logger = Logger.getLogger(DefaultOntologyConfiguration.class);
+	
 	private static final String SETTINGS_FILE = "default-ontology-configuration.settings";
 
-	private static volatile Map<String, ConfiguredOntology> configuration = null;
+	private static volatile Pair<IRIMapper, Map<String, ConfiguredOntology>> configuration = null;
 	
-	public static synchronized Map<String, ConfiguredOntology> getOntologies() {
+	public static Map<String, ConfiguredOntology> getOntologies() {
+		return getConfiguration().getTwo();
+	}
+	
+	public static IRIMapper getIRIMapper() {
+		return getConfiguration().getOne();
+	}
+	
+	private static synchronized Pair<IRIMapper, Map<String, ConfiguredOntology>> getConfiguration() {
 		if (configuration == null) {
 			DefaultOntologyConfiguration c = new DefaultOntologyConfiguration();
 			configuration = c.loadOntologyConfiguration();
@@ -142,27 +154,48 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 		}
 	}
 	
-	Map<String, ConfiguredOntology> loadOntologyConfiguration() {
+	Pair<IRIMapper, Map<String, ConfiguredOntology>> loadOntologyConfiguration() {
+		BufferedReader reader = null;
 		try {
 			InputStream inputStream = loadResource(SETTINGS_FILE);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-			Map<String, ConfiguredOntology> result = new LinkedHashMap<String, ConfiguredOntology>();
+			reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+			Map<String, ConfiguredOntology> map = new LinkedHashMap<String, ConfiguredOntology>();
+			IRIMapper iriMapper = null;
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (line.length() > 0 && !line.startsWith("!")) {
-					if("[Ontology]".startsWith(line)) {
-						parseOntology(reader, result);
+					if(line.startsWith("[Ontology]")) {
+						parseOntology(reader, map);
 					}
-					else if ("[OntologyBranch]".startsWith(line)) {
-						parseOntologyBranch(reader, result);
+					else if (line.startsWith("[OntologyBranch]")) {
+						parseOntologyBranch(reader, map);
+					}
+					else if (line.startsWith("[IRIMapping]")) {
+						iriMapper = parseIRIMapperConfig(reader);
 					}
 				}
 			}
-			reader.close();
-			return result;
+			return new Pair<IRIMapper, Map<String, ConfiguredOntology>>(iriMapper, map);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException exception) {
+					logger.error("Could not close reader.",exception);
+				}
+			}
 		}
+	}
+	
+	private IRIMapper parseIRIMapperConfig(BufferedReader reader) throws IOException {
+		String line = reader.readLine();
+		if (line.startsWith("localfile:")) {
+			String resource = line.substring("localfile:".length()).trim();
+			return new LocalFileIRIMapper(resource);
+		}
+		return null;
 	}
 	
 	private void parseOntology(BufferedReader reader, Map<String, ConfiguredOntology> ontologies) throws IOException {
