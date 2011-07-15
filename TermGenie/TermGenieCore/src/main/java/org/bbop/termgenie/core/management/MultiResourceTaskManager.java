@@ -6,7 +6,16 @@ import java.util.concurrent.Semaphore;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.GenericTaskManagerException;
 
-
+/**
+ * Enable locking of multiple resources for one task. Prevent deadlocks 
+ * by allowing only one task at a time to acquire multiple locks.
+ * This is only deadlock free if all processes acquire their locks at 
+ * the beginning of the task and need no further managed resources 
+ * during execution.
+ *
+ * @param <RESOURCETYPE> type of the managed instances
+ * @param <INFOTYPE> additional info for a resource
+ */
 public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	
 	private final GenericTaskManager<RESOURCETYPE>[] managers;
@@ -25,13 +34,32 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	
 	protected abstract INFOTYPE[] getAdditionalInformations(GenericTaskManager<RESOURCETYPE>...managers);
 	
-	private List<RESOURCETYPE> getManaged() {
-		List<RESOURCETYPE> resources = new ArrayList<RESOURCETYPE>();
+	/**
+	 * Check if the info types match. Used to filter requested resources.
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return boolean
+	 */
+	protected abstract boolean matchRequested(INFOTYPE i1, INFOTYPE i2);
+	
+	private GenericTaskManager<RESOURCETYPE> getResource(INFOTYPE requested) {
+		for (int i = 0; i < infos.length; i++) {
+			if (matchRequested(requested, infos[i])) {
+				return managers[i];
+			}
+		}
+		return null;
+	}
+	
+	private List<RESOURCETYPE> getManaged(INFOTYPE[] infos) {
+		List<RESOURCETYPE> resources = new ArrayList<RESOURCETYPE>(infos.length);
 		boolean hasLock = false;
 		try {
 			lock.acquire();
 			hasLock = true;
-			for(GenericTaskManager<RESOURCETYPE> manager : managers) {
+			for (INFOTYPE requested : infos) {
+				GenericTaskManager<RESOURCETYPE> manager = getResource(requested);
 				resources.add(manager.getManaged());
 			}
 			return resources;
@@ -60,15 +88,16 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		}
 	}
 	
-	private void returnManaged(List<RESOURCETYPE> resources) {
-		// no locking required for releasing
-		if (managers.length != resources.size()) {
-			throw new GenericTaskManagerException("Trying to return a resource list incompatible (different length) with this manager: "+name);
+	private void returnManaged(List<RESOURCETYPE> resources, INFOTYPE[] infos) {
+		//no locking required for releasing
+		if (infos.length != resources.size()) {
+			throw new GenericTaskManagerException("Trying to return a resource list incompatible (different length) with its request");
 		}
 		List<GenericTaskManagerException> exceptions = new ArrayList<GenericTaskManagerException>();
-		for (int i = 0; i < managers.length; i++) {
+		for (int i = 0; i < infos.length; i++) {
 			try {
-				managers[i].returnManaged(resources.get(i));
+				GenericTaskManager<RESOURCETYPE> manager = getResource(infos[i]);
+				manager.returnManaged(resources.get(i));
 			} catch (GenericTaskManagerException exception) {
 				exceptions.add(exception);
 			}
@@ -93,28 +122,14 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	public void runManagedTask(MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task, INFOTYPE...requested) {
 		List<RESOURCETYPE> managed = null;
 		try {
-			managed = getManaged();
-			
-			List<RESOURCETYPE> filtered = new ArrayList<RESOURCETYPE>(requested.length);
-			for (int i = 0; i < requested.length; i++) {
-				filtered.add(getResource(requested[i], managed, infos, task));
-			}
-			task.run(filtered);
+			managed = getManaged(requested);
+			task.run(managed);
 		}
 		finally {
 			if (managed != null) {
-				returnManaged(managed);
+				returnManaged(managed, requested);
 			}
 		}
-	}
-	
-	private RESOURCETYPE getResource(INFOTYPE requested, List<RESOURCETYPE> managed, INFOTYPE[] infos, MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task) {
-		for (int i = 0; i < infos.length; i++) {
-			if (task.matchRequested(requested, infos[i])) {
-				return managed.get(i);
-			}
-		}
-		return null;
 	}
 	
 	/**
@@ -129,14 +144,6 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		 */
 		public void run(List<RESOURCETYPE> requested);
 		
-		/**
-		 * Check if the info types match. Used to filter requested resources.
-		 * 
-		 * @param i1
-		 * @param i2
-		 * @return boolean
-		 */
-		public boolean matchRequested(INFOTYPE i1, INFOTYPE i2);
 	}
 	
 	public static class MultipleTaskManagerExceptionsException extends GenericTaskManagerException {

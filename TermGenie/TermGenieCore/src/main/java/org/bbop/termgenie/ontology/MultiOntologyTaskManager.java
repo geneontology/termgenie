@@ -23,18 +23,16 @@ public class MultiOntologyTaskManager extends MultiResourceTaskManager<OWLGraphW
 		return infos;
 	}
 
-	
-	public abstract static class MultiOntologyTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {
-
-		@Override
-		public boolean matchRequested(Ontology i1, Ontology i2) {
-			if (i1 == i2) {
-				return true;
-			}
-			if (i1 == null || i2 == null) {
-				return false;
-			}
-			return i1.getUniqueName().equals(i2.getUniqueName());
+	@Override
+	public boolean matchRequested(Ontology i1, Ontology i2) {
+		if (i1 == i2) {
+			return true;
 		}
+		if (i1 == null || i2 == null) {
+			return false;
+		}
+		return i1.getUniqueName().equals(i2.getUniqueName());
 	}
+	
+	public abstract static class MultiOntologyTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {}
 }

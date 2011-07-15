@@ -12,7 +12,7 @@ public abstract class GenericTaskManager<T> {
 
 	private volatile T managed = null;
 	private final Semaphore lock; 
-	private final String name;
+	final String name;
 	
 	/**
 	 * Create a new manager, with a binary and fair semaphore.
