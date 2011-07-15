@@ -3,7 +3,6 @@ package org.bbop.termgenie.core;
 import java.util.List;
 import java.util.Map;
 
-import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
@@ -24,34 +23,23 @@ public interface OntologyAware {
 	 */
 	public static class Ontology
 	{
-		protected OWLGraphWrapper realInstance;
 		protected String name;
 		protected String subOntologyName;
 		protected String subOntologyParentId;
 		
 		/**
-		 * @param realInstance
 		 * @param name
 		 * @param subOntologyName
 		 * @param subOntologyParentId
 		 */
-		protected Ontology(OWLGraphWrapper realInstance, String name, String subOntologyName,
+		protected Ontology(String name, String subOntologyName,
 				String subOntologyParentId) {
 			super();
-			this.realInstance = realInstance;
 			this.name = name;
 			this.subOntologyName = subOntologyName;
 			this.subOntologyParentId = subOntologyParentId;
 		}
 
-		protected void setRealInstance(OWLGraphWrapper realInstance) {
-			this.realInstance = realInstance;
-		}
-		
-		public OWLGraphWrapper getRealInstance() {
-			return realInstance;
-		}
-		
 		public String getUniqueName() {
 			return name;
 		}
@@ -73,7 +61,6 @@ public interface OntologyAware {
 	/**
 	 * Wrapper of an ontology term. Intended to be used during 
 	 * rule-based term generation.
-	 * TODO: Fill this with appropriate methods.
 	 */
 	public abstract static class OntologyTerm
 	{

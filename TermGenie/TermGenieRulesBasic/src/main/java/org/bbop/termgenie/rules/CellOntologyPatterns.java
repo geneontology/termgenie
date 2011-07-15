@@ -17,16 +17,16 @@ public class CellOntologyPatterns extends Patterns {
 	private final OWLGraphWrapper cell;
 	private final OWLGraphWrapper uberon;
 	private final OWLGraphWrapper pro;
-	private final OWLGraphWrapper go1;
+	private final OWLGraphWrapper go;
 	
 	private final OWLObject GO0032991;
 
-	protected CellOntologyPatterns(OWLGraphWrapper cell, OWLGraphWrapper uberon, OWLGraphWrapper pro, OWLGraphWrapper go) {
+	protected CellOntologyPatterns(OWLGraphWrapper[] wrappers) {
 		super(DefaultTermTemplates.metazoan_location_specific_cell, DefaultTermTemplates.cell_by_surface_marker);
-		this.cell = cell;
-		this.uberon = uberon;
-		this.pro = pro;
-		this.go1 = go;
+		this.cell = wrappers[0];
+		this.uberon = wrappers[1];
+		this.pro = wrappers[2];
+		this.go = wrappers[3];
 		GO0032991 = getTerm("GO:0032991", go);
 	}
 	
@@ -57,16 +57,16 @@ public class CellOntologyPatterns extends Patterns {
 	@ToMatch
 	protected List<TermGenerationOutput> cell_by_surface_marker(TermGenerationInput input, Map<String, OntologyTerm> pending) {
 		OWLObject c = getSingleTerm(input, "cell", cell);
-		OWLObject p = getSingleTerm(input, "membrane_part", pro, go1);
-		if (c == null || p == null || !(genus(p, GO0032991, go1) || genus(p, null, pro))) {
+		OWLObject p = getSingleTerm(input, "membrane_part", pro, go);
+		if (c == null || p == null || !(genus(p, GO0032991, go) || genus(p, null, pro))) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
-		String label = createName(name(p, pro, go1) + " " + name(c, cell), input);
-		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go1)+" on the plasma membrane.", input);
+		String label = createName(name(p, pro, go) + " " + name(c, cell), input);
+		String definition = createDefinition("Any "+name(c, cell)+" that has "+name(p, pro, go)+" on the plasma membrane.", input);
 		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(c, cell);
-		cdef.addDifferentium("has_plasma_membrane_part", p, pro, go1);
+		cdef.addDifferentium("has_plasma_membrane_part", p, pro, go);
 		cdef.addProperty("multivalued(has_plasma_membrane_part)");
 		cdef.addProperty("any_cardinality(has_plasma_membrane_part)");
 		return createTermList(label, definition, synonyms, cdef, input, cell);

@@ -67,7 +67,7 @@ public final class ReasonerFactory {
 	}
 	
 	private static ReasonerTaskManager createJCelManager(final OWLOntology ontology) {
-		return new ReasonerTaskManager() {
+		return new ReasonerTaskManager("reasoner-manager-jcel-"+ontology.getOntologyID()) {
 			
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner managed) {
@@ -92,7 +92,7 @@ public final class ReasonerFactory {
 	}
 
 	private static ReasonerTaskManager createManager(final OWLOntology ontology, final OWLReasonerFactory reasonerFactory) {
-		return new ReasonerTaskManager() {
+		return new ReasonerTaskManager("reasoner-manager-"+reasonerFactory.getReasonerName()+"-"+ontology.getOntologyID()) {
 			
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner managed) {

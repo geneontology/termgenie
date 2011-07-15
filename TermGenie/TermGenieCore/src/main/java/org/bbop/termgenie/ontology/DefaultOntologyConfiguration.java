@@ -15,8 +15,6 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.ResourceLoader;
 
-import owltools.graph.OWLGraphWrapper;
-
 public class DefaultOntologyConfiguration extends ResourceLoader {
 	
 	private static final Logger logger = Logger.getLogger(DefaultOntologyConfiguration.class);
@@ -48,7 +46,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 		List<String> requires = null;
 		
 		ConfiguredOntology(String name) {
-			super(null, name, null, null);
+			super(name, null, null);
 		}
 		
 		
@@ -102,15 +100,6 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 			return branch;
 		}
 		
-		public Ontology createOntology(OWLGraphWrapper realOntology) {
-			realInstance = realOntology;
-			return this;
-		}
-
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -128,11 +117,6 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 			if (subOntologyParentId != null) {
 				builder.append("subOntologyParentId=");
 				builder.append(subOntologyParentId);
-				builder.append(", ");
-			}
-			if (realInstance != null) {
-				builder.append("realInstance=");
-				builder.append(realInstance);
 				builder.append(", ");
 			}
 			if (source != null) {

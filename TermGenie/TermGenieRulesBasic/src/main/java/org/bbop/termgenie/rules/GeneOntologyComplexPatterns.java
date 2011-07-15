@@ -34,22 +34,19 @@ class GeneOntologyComplexPatterns extends Patterns {
 	private final OWLGraphWrapper plant;
 	
 	/**
-	 * @param go
-	 * @param pro
-	 * @param uberon
-	 * @param plant
+	 * @param wrappers go, pro, uberon, plant
 	 */
-	protected GeneOntologyComplexPatterns(OWLGraphWrapper go, OWLGraphWrapper pro, OWLGraphWrapper uberon, OWLGraphWrapper plant) {
+	protected GeneOntologyComplexPatterns(OWLGraphWrapper[] wrappers) {
 		super(all_regulation, all_regulation_mf,
 				involved_in, occurs_in,
 				part_of_cell_component, protein_binding,
 				metazoan_development, metazoan_morphogenesis,
 				plant_development, plant_morphogenesis,
 				structural_protein_complex);
-		this.go = go;
-		this.pro = pro;
-		this.uberon = uberon;
-		this.plant = plant;
+		this.go = wrappers[0];
+		this.pro = wrappers[1];
+		this.uberon = wrappers[2];
+		this.plant = wrappers[3];
 		GO0008150 = getTerm("GO:0008150", go);
 		GO0065007 = getTerm("GO:0065007", go);
 		GO0003674 = getTerm("GO:0003674", go);

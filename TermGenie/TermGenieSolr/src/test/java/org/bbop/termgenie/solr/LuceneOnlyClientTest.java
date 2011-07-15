@@ -18,20 +18,20 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 	public void testSuggestTerms() {
 		LuceneOnlyClient index = new LuceneOnlyClient(Arrays.asList(go, pro, bp, cc, mf));
 		
-		List<OntologyTerm> terms = index.suggestTerms("exportin-T", pro, 1);
+		List<OntologyTerm> terms = index.suggestTerms("exportin-T", pro.getOntology(), 1);
 		assertNotNull(terms);
 		assertEquals("PR:000017502", terms.get(0).getId());
 		
-		terms = index.suggestTerms("exportin-T", go, 1);
+		terms = index.suggestTerms("exportin-T", go.getOntology(), 1);
 		assertNull(terms);
 		
 		int maxCount = 10;
-		terms = index.suggestTerms("pig", bp, maxCount);
+		terms = index.suggestTerms("pig", bp.getOntology(), maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
 		
-		terms = index.suggestTerms("pigmentation", cc, maxCount);
+		terms = index.suggestTerms("pigmentation", cc.getOntology(), maxCount);
 		assertNull(terms);
 		
 		assertNull(index.suggestTerms("pig", otherOntology, maxCount));

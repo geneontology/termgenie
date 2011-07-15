@@ -9,24 +9,25 @@ import java.util.Map;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class LuceneOnlyClient implements OntologyTermSuggestor {
 	
 	private final Map<String, BasicLuceneClient> luceneIndices;
 
-	public LuceneOnlyClient(Collection<? extends Ontology> ontologies) {
+	public LuceneOnlyClient(Collection<OntologyTaskManager> managers) {
 		super();
-		luceneIndices = createIndices(ontologies);
+		luceneIndices = createIndices(managers);
 	}
 	
-	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies) {
+	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies) {
 		
-		Map<String, List<Ontology>> groups = new HashMap<String, List<Ontology>>();
-		for (Ontology ontology : ontologies) {
-			String name = ontology.getUniqueName();
-			List<Ontology> group = groups.get(name);
+		Map<String, List<OntologyTaskManager>> groups = new HashMap<String, List<OntologyTaskManager>>();
+		for (OntologyTaskManager ontology : ontologies) {
+			String name = ontology.getOntology().getUniqueName();
+			List<OntologyTaskManager> group = groups.get(name);
 			if (group == null) {
-				group = new ArrayList<Ontology>();
+				group = new ArrayList<OntologyTaskManager>();
 				groups.put(name, group);
 			}
 			group.add(ontology);

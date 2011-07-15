@@ -37,6 +37,10 @@ public class GenericTaskManagerTest {
 
 	private static class TestTaskManager extends GenericTaskManager<String> {
 
+		public TestTaskManager() {
+			super("TestTaskManager");
+		}
+		
 		@Override
 		protected String createManaged() {
 			return "v1";

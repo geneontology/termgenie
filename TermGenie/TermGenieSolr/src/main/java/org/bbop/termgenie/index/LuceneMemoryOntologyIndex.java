@@ -23,16 +23,13 @@ import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -40,6 +37,8 @@ import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -300,17 +299,29 @@ public class LuceneMemoryOntologyIndex {
 		}
 	}
 
-	public static void main(String[] args) throws CorruptIndexException, LockObtainFailedException, IOException, ParseException {
+	public static void main(String[] args) {
 		
 		ConfiguredOntology go = DefaultOntologyConfiguration.getOntologies().get("GeneOntology");
-		OWLGraphWrapper ontology = DefaultOntologyLoader.getOntology(go);
+		
+		OntologyTaskManager ontology = DefaultOntologyLoader.getOntology(go);
 
-		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, null, null);
-		Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
-		for (SearchResult searchResult : results) {
-			String id = ontology.getIdentifier(searchResult.hit);
-			String label = ontology.getLabel(searchResult.hit);
-			System.out.println(id+"  "+searchResult.score+"  "+label);	
-		}
+		ontology.runManagedTask(new OntologyTask(){
+
+			@Override
+			public void run(OWLGraphWrapper managed) {
+				try {
+					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null);
+					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
+					for (SearchResult searchResult : results) {
+						String id = managed.getIdentifier(searchResult.hit);
+						String label = managed.getLabel(searchResult.hit);
+						System.out.println(id+"  "+searchResult.score+"  "+label);	
+					}
+				} catch (IOException exception) {
+					throw new RuntimeException(exception);
+				}				
+			}
+			
+		});
 	}
 }

@@ -2,19 +2,19 @@ package org.bbop.termgenie.solr;
 
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.junit.BeforeClass;
 
 public abstract class OntologyProvider {
 	
-	protected static Ontology go;
-	protected static Ontology bp;
-	protected static Ontology mf;
-	protected static Ontology cc;
-	protected static Ontology pro;
+	protected static OntologyTaskManager go;
+	protected static OntologyTaskManager bp;
+	protected static OntologyTaskManager mf;
+	protected static OntologyTaskManager cc;
+	protected static OntologyTaskManager pro;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -26,11 +26,8 @@ public abstract class OntologyProvider {
 		pro = load("ProteinOntology", ontologies);
 	}
 	
-	private static Ontology load(String name, Map<String, ConfiguredOntology> ontologies) {
+	private static OntologyTaskManager load(String name, Map<String, ConfiguredOntology> ontologies) {
 		ConfiguredOntology ontology = ontologies.get(name);
-		if (ontology.getRealInstance() != null) {
-			return ontology;
-		}
-		return ontology.createOntology(DefaultOntologyLoader.getOntology(ontology));
+		return DefaultOntologyLoader.getOntology(ontology);
 	}
 }

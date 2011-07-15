@@ -8,6 +8,7 @@ import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.HermiT.Reasoner;
@@ -35,7 +36,14 @@ public class GeneOntologyResonerSpeedTest {
 	public static void beforeClass() {
 		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
 		ConfiguredOntology configuredOntology = ontologies.get("GeneOntology");
-		wrapper = DefaultOntologyLoader.getOntology(configuredOntology);
+		OntologyTaskManager ontologyTaskManager = DefaultOntologyLoader.getOntology(configuredOntology);
+		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {
+			
+			@Override
+			public void run(OWLGraphWrapper managed) {
+				wrapper = managed;
+			}
+		});
 		ontology = wrapper.getSourceOntology();
 	}
 	
@@ -51,7 +59,7 @@ public class GeneOntologyResonerSpeedTest {
 	
 	@Test
 	public void testJCel() {
-		ReasonerTaskManager manager = new ReasonerTaskManager() {
+		ReasonerTaskManager manager = new ReasonerTaskManager("TestReasonerManager-JCEL") {
 			
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner reasoner) {
@@ -76,7 +84,7 @@ public class GeneOntologyResonerSpeedTest {
 	}
 	
 	private void testReasoner(final OWLReasonerFactory reasonerFactory, final String name) {
-		ReasonerTaskManager manager = new ReasonerTaskManager() {
+		ReasonerTaskManager manager = new ReasonerTaskManager("TestReasonerManager-"+reasonerFactory.getReasonerName()) {
 			
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner reasoner) {

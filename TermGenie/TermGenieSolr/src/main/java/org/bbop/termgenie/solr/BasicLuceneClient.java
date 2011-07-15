@@ -11,6 +11,8 @@ import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -23,20 +25,19 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 	private final String name;
 	private final OWLGraphWrapper ontology; 
 	
-	public static BasicLuceneClient create(Ontology ontology) {
+	public static BasicLuceneClient create(OntologyTaskManager ontology) {
 			List<Pair<String, String>> branches = Collections.emptyList();
-			String branchName = ontology.getBranch();
-			String branchId = ontology.getBranchId();
+			String branchName = ontology.getOntology().getBranch();
+			String branchId = ontology.getOntology().getBranchId();
 			if (branchName != null & branchId != null) {
 				Pair<String, String> pair = new Pair<String, String>(branchName, branchId);
 				branches = Collections.singletonList(pair);
 			}
-			OWLGraphWrapper wrapper = ontology.getRealInstance();
-			String name = ontology.getUniqueName();
-			return new BasicLuceneClient(wrapper, name, null, branches);
+			String name = ontology.getOntology().getUniqueName();
+			return create(ontology, name, branches);
 	}
 	
-	public static BasicLuceneClient create(List<Ontology> ontologies) {
+	public static BasicLuceneClient create(List<OntologyTaskManager> ontologies) {
 		if (ontologies == null || ontologies.isEmpty()) {
 			throw new RuntimeException("At least one ontology is required to create an index.");
 		}
@@ -44,27 +45,56 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			return create(ontologies.get(0));
 		}
 		String name = null;
-		OWLGraphWrapper wrapper = null;
 		List<Pair<String, String>> branches = new ArrayList<Pair<String,String>>();
-		for (Ontology ontology : ontologies) {
+		for (OntologyTaskManager ontology : ontologies) {
 			if (name == null) {
-				name = ontology.getUniqueName();
-				wrapper = ontology.getRealInstance();
+				name = ontology.getOntology().getUniqueName();
 			}
 			else  {
-				String cname = ontology.getUniqueName();
+				String cname = ontology.getOntology().getUniqueName();
 				if (!name.equals(cname)) {
-					throw new RuntimeException("Error: Excpected only one ontology group, but was: "+name+" and "+cname);
+					throw new RuntimeException("Error: Expected only one ontology group, but was: "+name+" and "+cname);
 				}
 			}
-			String branchName = ontology.getBranch();
-			String branchId = ontology.getBranchId();
+			String branchName = ontology.getOntology().getBranch();
+			String branchId = ontology.getOntology().getBranchId();
 			if (branchName != null & branchId != null) {
 				Pair<String, String> pair = new Pair<String, String>(branchName, branchId);
 				branches.add(pair);
 			}
 		}
-		return new BasicLuceneClient(wrapper, name, null, branches);
+		return create(ontologies.get(0), name, branches);
+	}
+	
+	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<Pair<String, String>> branches) {
+		LuceneClientCreatorTask task = new LuceneClientCreatorTask(name, branches);
+		ontology.runManagedTask(task);
+		return task.client;
+	}
+	
+	static class LuceneClientCreatorTask implements OntologyTask {
+
+		String name;
+		List<Pair<String, String>> branches;
+		BasicLuceneClient client = null;
+		
+		/**
+		 * @param name
+		 * @param branches
+		 */
+		LuceneClientCreatorTask(String name, List<Pair<String, String>> branches) {
+			super();
+			this.name = name;
+			this.branches = branches;
+		}
+
+
+
+		@Override
+		public void run(OWLGraphWrapper managed) {
+			client = new BasicLuceneClient(managed, name, null, branches);
+		}
+		
 	}
 	
 	protected BasicLuceneClient(OWLGraphWrapper ontology, String name, String root, List<Pair<String, String>> branches) {

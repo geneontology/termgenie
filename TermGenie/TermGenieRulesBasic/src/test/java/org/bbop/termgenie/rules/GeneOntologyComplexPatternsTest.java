@@ -15,6 +15,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,14 +38,24 @@ public class GeneOntologyComplexPatternsTest {
 		pro = load(PROTEIN_ONTOLOGY, config);
 		uberon = load(UBERON_ONTOLOGY, config);
 		plant = load(PLANT_ONTOLOGY, config);
-		instance = new GeneOntologyComplexPatterns(go, pro, uberon, plant);
+		instance = new GeneOntologyComplexPatterns(new OWLGraphWrapper[]{go, pro, uberon, plant});
 	}
 	
 	private static OWLGraphWrapper load(Ontology ontology, Map<String, ConfiguredOntology> config) {
 		ConfiguredOntology configOntology = config.get(ontology.getUniqueName());
-		OWLGraphWrapper owlGraphWrapper = DefaultOntologyLoader.getOntology(configOntology);
-		configOntology.createOntology(owlGraphWrapper);
-		return owlGraphWrapper;
+		OntologyTaskManager manager = DefaultOntologyLoader.getOntology(configOntology);
+		OntologyTaskImplementation task = new OntologyTaskImplementation();
+		manager.runManagedTask(task);
+		return task.wrapper;
+	}
+	
+	private static final class OntologyTaskImplementation implements OntologyTaskManager.OntologyTask {
+		OWLGraphWrapper wrapper = null;
+		
+		@Override
+		public void run(OWLGraphWrapper managed) {
+			wrapper = managed;
+		}
 	}
 
 	@Test

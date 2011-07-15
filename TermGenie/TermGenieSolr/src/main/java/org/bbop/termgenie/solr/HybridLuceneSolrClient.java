@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class HybridLuceneSolrClient extends SimpleSolrClient {
 
@@ -15,7 +16,7 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 	/**
 	 * @param ontologies
 	 */
-	public HybridLuceneSolrClient(Collection<? extends Ontology> ontologies) {
+	public HybridLuceneSolrClient(Collection<OntologyTaskManager> ontologies) {
 		super();
 		luceneIndices = createIndices(ontologies);
 	}
@@ -24,18 +25,18 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 	 * @param baseUrl  for solr index
 	 * @param ontologies
 	 */
-	public HybridLuceneSolrClient(String baseUrl, Collection<? extends Ontology> ontologies) {
+	public HybridLuceneSolrClient(String baseUrl, Collection<OntologyTaskManager> ontologies) {
 		super(baseUrl);
 		luceneIndices = createIndices(ontologies);
 	}
 	
-	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies) {
+	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies) {
 		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
-		for (Ontology ontology : ontologies) {
-			if (ontology.getUniqueName().equals("GeneOntology")) {
+		for (OntologyTaskManager ontology : ontologies) {
+			String name = ontology.getOntology().getUniqueName();
+			if ("GeneOntology".equals(name)) {
 				continue;
 			}
-			String name = ontology.getUniqueName();
 			BasicLuceneClient luceneClient = indices.get(name);
 			if (luceneClient == null) {
 				luceneClient = BasicLuceneClient.create(ontology);

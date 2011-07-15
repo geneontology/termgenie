@@ -16,9 +16,9 @@ public class UberonPatterns extends Patterns {
 
 	private final OWLGraphWrapper uberon;
 
-	protected UberonPatterns(OWLGraphWrapper uberon) {
+	protected UberonPatterns(OWLGraphWrapper[] wrappers) {
 		super(DefaultTermTemplates.metazoan_location_specific_anatomical_structure);
-		this.uberon = uberon;
+		this.uberon = wrappers[0];
 	}
 
 	@ToMatch

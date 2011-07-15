@@ -11,24 +11,25 @@ import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 /**
  * Stub for providing some basic ontology and pattern input.
  */
 public class OntologyTools {
 	
-	private final Map<String, Ontology> ontologyInstances;
+	private final Map<String, OntologyTaskManager> managerInstances;
 	private final Map<Ontology, String> reverseOntologyInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
 	OntologyTools(TermGenerationEngine engine) {
-		ontologyInstances = new HashMap<String, Ontology>();
+		managerInstances = new HashMap<String, OntologyTaskManager>();
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
-		for(Ontology ontology : DefaultOntologyLoader.getOntologies()) {
-			if (ontology != null) {
-				addOntology(ontology);
+		for(OntologyTaskManager manager : DefaultOntologyLoader.getOntologies()) {
+			if (manager != null && manager.hasRealOntology()) {
+				addOntology(manager);
 			}
 		}
 		
@@ -48,7 +49,8 @@ public class OntologyTools {
 		}
 	}
 	
-	private void addOntology(Ontology ontology) {
+	private void addOntology(OntologyTaskManager manager) {
+		Ontology ontology = manager.getOntology();
 		StringBuilder sb = new StringBuilder();
 		sb.append(ontology.getUniqueName());
 		String branch = ontology.getBranch();
@@ -57,12 +59,12 @@ public class OntologyTools {
 			sb.append(branch);
 		}
 		String name = sb.toString();
-		ontologyInstances.put(name, ontology);
+		managerInstances.put(name, manager);
 		reverseOntologyInstances.put(ontology, name);
 	}
 	
-	public Ontology getOntology(String ontology) {
-		return ontologyInstances.get(ontology);
+	public OntologyTaskManager getManager(String ontology) {
+		return managerInstances.get(ontology);
 	}
 
 	public String getOntologyName(Ontology ontology) {

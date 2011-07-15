@@ -2,10 +2,10 @@ package org.bbop.termgenie.tools;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.rules.HardCodedTermGenerationEngine;
 import org.bbop.termgenie.solr.LuceneOnlyClient;
 
@@ -18,11 +18,10 @@ public class ImplementationFactory {
 	private final OntologyTermSuggestor suggestor;
 	
 	private ImplementationFactory() {
-		List<Ontology> ontologies = DefaultOntologyLoader.getOntologies();
-		engine = new HardCodedTermGenerationEngine(ontologies);
+		List<OntologyTaskManager> managers = DefaultOntologyLoader.getOntologies();
+		engine = new HardCodedTermGenerationEngine(managers);
 		ontologyTools = new OntologyTools(engine);
-		suggestor = new LuceneOnlyClient(ontologies);
-//		suggestor = new SimpleSolrClient();
+		suggestor = new LuceneOnlyClient(managers);
 	}
 	
 	public static TermGenerationEngine getTermGenerationEngine() {

@@ -34,6 +34,8 @@ import org.bbop.termgenie.data.JsonTermTemplate;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 import org.bbop.termgenie.data.JsonValidationHint;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyCommitTool;
@@ -102,11 +104,11 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 //					+ Arrays.toString(allParameters) + "}");
 //		}
 		// retrieve target ontology
-		Ontology ontology = ontologyTools.getOntology(ontologyName);
-		if (ontology == null) {
+		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
+		if (manager == null) {
 			return new JsonGenerationResponse(NO_ONTOLOGY, null, null);
 		}
-
+		
 		// term generation parameter validation
 		List<JsonValidationHint> allErrors = new ArrayList<JsonValidationHint>();
 		for (JsonTermGenerationInput input : allParameters) {
@@ -139,7 +141,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		try {
 			// generate term candidates
 			List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName, allParameters);
-			List<TermGenerationOutput> candidates = generateTermsInternal(ontology, generationTasks);
+			List<TermGenerationOutput> candidates = generateTermsInternal(manager.getOntology(), generationTasks);
 
 			// validate candidates
 			if (candidates == null || candidates.isEmpty()) {
@@ -165,7 +167,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return generationResponse;
 		} catch (Exception exception) {
 			logger.warn("An error occured during the term generation for the parameters: {ontologyName: "+ontologyName+", allParameters: "+Arrays.toString(allParameters)+"}", exception);
-			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persits.", null, null);
+			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null);
 		}
 	}
 
@@ -352,9 +354,24 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		
 		private static OntologyTerm getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
 			String ontologyName = jsonOntologyTerm.getOntology();
-			Ontology ontology = ontologyTools.getOntology(ontologyName);
-			
-			String id = jsonOntologyTerm.getTermId();
+			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
+			OntologyTermTask task = new OntologyTermTask(jsonOntologyTerm.getTermId());
+			manager.runManagedTask(task);
+			return task.getTerm(); 
+		}
+	}
+	
+	private static class OntologyTermTask implements OntologyTask {
+
+		private final String id;
+		private OntologyTerm term = null;
+		
+		OntologyTermTask(String id) {
+			this.id = id;
+		}
+		
+		@Override
+		public void run(OWLGraphWrapper realInstance) {
 			String label = null;
 			String definition = null;
 			List<Synonym> synonyms = null;
@@ -362,7 +379,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			Map<String, String> metadata = new HashMap<String, String>();
 			List<Relation> relations = null;
 			
-			OWLGraphWrapper realInstance = ontology.getRealInstance();
 			if (realInstance != null) {
 				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
 				if (owlObject != null) {
@@ -393,9 +409,13 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					}
 				}
 			}
-			
-			return new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations); 
+			term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
 		}
+		
+		OntologyTerm getTerm() {
+			return term;
+		}
+		
 	}
 	
 	private static void put(Map<String, String> map, String key, String value) {

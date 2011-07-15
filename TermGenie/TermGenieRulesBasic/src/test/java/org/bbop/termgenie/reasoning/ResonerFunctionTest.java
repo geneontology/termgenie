@@ -10,6 +10,7 @@ import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.DefaultOntologyLoader;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -36,7 +37,19 @@ public class ResonerFunctionTest {
 	private static OWLGraphWrapper load(String name) {
 		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
 		ConfiguredOntology configuredOntology = ontologies.get(name);
-		return DefaultOntologyLoader.getOntology(configuredOntology);
+		OntologyTaskManager manager = DefaultOntologyLoader.getOntology(configuredOntology);
+		OntologyTaskImplementation task = new OntologyTaskImplementation();
+		manager.runManagedTask(task);
+		return task.wrapper;
+	}
+	
+	private static final class OntologyTaskImplementation implements OntologyTaskManager.OntologyTask {
+		OWLGraphWrapper wrapper = null;
+		
+		@Override
+		public void run(OWLGraphWrapper managed) {
+			wrapper = managed;
+		}
 	}
 	
 	@Test

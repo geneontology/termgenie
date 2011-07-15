@@ -12,21 +12,31 @@ public abstract class GenericTaskManager<T> {
 
 	private volatile T managed = null;
 	private final Semaphore lock = new Semaphore(1, true); // binary and fair
-
+	private final String name;
+	
+	public GenericTaskManager(String name) {
+		this.name = name;
+	}
+	
 	private T getManaged() {
 		try {
 			lock.acquire();
+			System.err.println("Locked normal: "+name);
 			if (managed == null) {
 				managed = createManaged();
+				if (managed == null) {
+					throw new GenericTaskManagerException("The managed object of "+name+" must never be null!");
+				}
 			}
 			return managed;
 		} catch (InterruptedException exception) {
-			throw new RuntimeException(exception);
+			throw new GenericTaskManagerException("Interrupted during wait.", exception);
 		}
 	}
 	
 	private void returnManaged(T reasoner) {
 		lock.release();
+		System.err.println("Unlocked normal: "+name);
 	}
 	
 	/**
@@ -52,6 +62,7 @@ public abstract class GenericTaskManager<T> {
 		boolean hasLock = false;
 		try {
 			lock.acquire();
+			System.err.println("Locked update: "+name);
 			hasLock = true;
 			if (managed == null) {
 				managed = createManaged();
@@ -60,11 +71,12 @@ public abstract class GenericTaskManager<T> {
 				managed = updateManaged(managed);
 			}
 		} catch (InterruptedException exception) {
-			throw new RuntimeException(exception);
+			throw new GenericTaskManagerException("Interrupted during wait.",exception);
 		}
 		finally {
 			if (hasLock) {
 				lock.release();
+				System.err.println("Unlocked update: "+name);
 			}
 		}
 	}
@@ -98,5 +110,16 @@ public abstract class GenericTaskManager<T> {
 		 * @param managed
 		 */
 		public void run(T managed);
+	}
+	
+	public static class GenericTaskManagerException extends RuntimeException {
+		
+		public GenericTaskManagerException(String message) {
+			super(message);
+		}
+		
+		public GenericTaskManagerException(String message, Throwable exception) {
+			super(message, exception);
+		}
 	}
 }

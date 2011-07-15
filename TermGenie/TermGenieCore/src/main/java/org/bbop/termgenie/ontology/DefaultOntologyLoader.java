@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
@@ -27,8 +28,9 @@ public class DefaultOntologyLoader {
 	
 	private final static Logger LOGGER = Logger.getLogger(DefaultOntologyLoader.class);
 	
-	private static DefaultOntologyLoader instance = null;
+	private static volatile DefaultOntologyLoader instance = null;
 	
+	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
 	private final IRIMapper localFileIRIMapper;
 
@@ -37,24 +39,25 @@ public class DefaultOntologyLoader {
 		this.localFileIRIMapper = localFileIRIMapper;
 	}
 
+	synchronized static DefaultOntologyLoader getInstance() {
+		if (instance == null) {
+			instance = new DefaultOntologyLoader(DefaultOntologyConfiguration.getIRIMapper());
+		}
+		return instance;
+	}
+	
 	/**
 	 * Load all configured ontologies.
 	 * 
 	 * @return ontologies
 	 */
-	public synchronized static List<Ontology> getOntologies() {
+	public synchronized static List<OntologyTaskManager> getOntologies() {
 		Map<String, ConfiguredOntology> configuration = DefaultOntologyConfiguration.getOntologies();
-		if (instance == null) {
-			instance = new DefaultOntologyLoader(DefaultOntologyConfiguration.getIRIMapper());
-		}
-		
-		List<Ontology> result = new ArrayList<Ontology>();
+		List<OntologyTaskManager> result = new ArrayList<OntologyTaskManager>();
 		for (String name : configuration.keySet()) {
 			ConfiguredOntology configuredOntology = configuration.get(name);
-			OWLGraphWrapper realInstance = instance.loadOntology(configuredOntology);
-			if (realInstance != null) {
-				result.add(configuredOntology.createOntology(realInstance));
-			}
+			OntologyTaskManager manager = getInstance().getManager(configuredOntology);
+			result.add(manager);
 		}
 		return result;
 	}
@@ -62,14 +65,39 @@ public class DefaultOntologyLoader {
 	/**
 	 * Load a selected ontology configuration, useful for testing.
 	 * 
-	 * @param ontology parameter
+	 * @param configuredOntology parameter
 	 * @return ontology
 	 */
-	public synchronized static OWLGraphWrapper getOntology(ConfiguredOntology ontology) {
-		OWLGraphWrapper realInstance = instance.loadOntology(ontology);
-		return realInstance;
+	public synchronized static OntologyTaskManager getOntology(final ConfiguredOntology configuredOntology) {
+		return getInstance().getManager(configuredOntology);
 	}
 	
+	private OntologyTaskManager getManager(final ConfiguredOntology configuredOntology) {
+		String uniqueName = configuredOntology.getUniqueName();
+		OntologyTaskManager manager = managers.get(uniqueName);
+		if (manager == null) {
+			manager = new OntologyTaskManager(configuredOntology, hasRealInstance(configuredOntology)) {
+				
+				@Override
+				protected OWLGraphWrapper createManaged() {
+					return loadOntology(configuredOntology);
+				}
+			};
+			managers.put(uniqueName, manager);
+		}
+		return manager;
+	}
+	
+	private static Set<String> skipOntologies = new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
+	
+	private boolean hasRealInstance(ConfiguredOntology configuredOntology) {
+		String name = configuredOntology.getUniqueName();
+		if (skipOntologies.contains(name)) {
+			LOGGER.info("Skipping ontology: "+name);
+			return false;
+		}
+		return true;
+	}
 	
 	private OWLGraphWrapper loadOntology(ConfiguredOntology ontology) {
 		String uniqueName = ontology.getUniqueName();
@@ -112,7 +140,7 @@ public class DefaultOntologyLoader {
 		return new OWLGraphWrapper(owlOntology);
 	}
 
-	private static Set<String> skipOntologies = new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
+	
 	
 	protected OWLOntology loadOWL(String ontology, String url) throws OWLOntologyCreationException, IOException {
 		if (skipOntologies.contains(ontology)) {
@@ -148,10 +176,18 @@ public class DefaultOntologyLoader {
 	}
 
 	public static void main(String[] args) throws Exception {
-		List<Ontology> ontologies = getOntologies();
+		List<OntologyTaskManager> ontologies = getOntologies();
 		
-		OWLGraphWrapper ontology = ontologies.get(0).getRealInstance();
-		OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");
-		System.out.println(owlObject);
+		OntologyTaskManager ontologyTaskManager = ontologies.get(0);
+		ontologyTaskManager.runManagedTask(new OntologyTask(){
+
+			@Override
+			public void run(OWLGraphWrapper ontology) {
+				OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");
+				System.out.println(owlObject);
+				System.out.println(ontology.getLabel(owlObject));
+			}
+		});
+		
 	}
 }

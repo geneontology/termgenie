@@ -1,10 +1,13 @@
 package org.bbop.termgenie.services;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
+
+import owltools.graph.OWLGraphWrapper;
 
 public class TermCommitServiceImpl implements TermCommitService {
 
@@ -19,23 +22,29 @@ public class TermCommitServiceImpl implements TermCommitService {
 	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontologyName) {
 		JsonExportResult result = new JsonExportResult();
 		
-		Ontology ontology = ontologyTools.getOntology(ontologyName);
-		if (ontology == null) {
+		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
+		if (manager == null) {
 			result.setSuccess(false);
 			result.setMessage("Unknown ontology: "+ontologyName);
 			return result;
 		}
 		
 		// TODO use a proper obo export tool here!
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Preliminary export results:<br/>");
 		sb.append("<pre>\n");
 		for (JsonOntologyTerm term : terms) {
 			sb.append("[Term]\n");
-			String id = ontology.getRealInstance().getOntologyId();
-			sb.append("id: ");
-			sb.append(id);
-			sb.append(":-------\n");
+			manager.runManagedTask(new OntologyTask(){
+
+				@Override
+				public void run(OWLGraphWrapper managed) {
+					String id = managed.getOntologyId();
+					sb.append("id: ");
+					sb.append(id);
+					sb.append(":-------\n");
+				}
+			});
 			sb.append("name: ");
 			sb.append(term.getLabel());
 			sb.append('\n');
