@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class GeneOntologyComplexPatternsTest {
 		pro = load(PROTEIN_ONTOLOGY, config);
 		uberon = load(UBERON_ONTOLOGY, config);
 		plant = load(PLANT_ONTOLOGY, config);
-		instance = new GeneOntologyComplexPatterns(new OWLGraphWrapper[]{go, pro, uberon, plant});
+		instance = new GeneOntologyComplexPatterns(Arrays.asList(go, pro, uberon, plant));
 	}
 	
 	private static OWLGraphWrapper load(Ontology ontology, Map<String, ConfiguredOntology> config) {

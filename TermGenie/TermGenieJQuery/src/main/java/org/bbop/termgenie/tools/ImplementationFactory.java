@@ -19,7 +19,7 @@ public class ImplementationFactory {
 	
 	private ImplementationFactory() {
 		List<OntologyTaskManager> managers = DefaultOntologyLoader.getOntologies();
-		engine = new HardCodedTermGenerationEngine(managers);
+		engine = new HardCodedTermGenerationEngine(DefaultOntologyLoader.getMultiOntologyManager());
 		ontologyTools = new OntologyTools(engine);
 		suggestor = new LuceneOnlyClient(managers);
 	}

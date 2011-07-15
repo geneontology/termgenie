@@ -4,28 +4,49 @@ import java.util.concurrent.Semaphore;
 
 /**
  * Provide basic runtime management for an instance. 
- * Allow only one concurrent usage of the managed instance.
+ * Allow limited concurrent usage of the managed instance.
  *
  * @param <T> type of the managed instance
  */
 public abstract class GenericTaskManager<T> {
 
 	private volatile T managed = null;
-	private final Semaphore lock = new Semaphore(1, true); // binary and fair
+	private final Semaphore lock; 
 	private final String name;
 	
+	/**
+	 * Create a new manager, with a binary and fair semaphore.
+	 * 
+	 * @param name the name of this manager
+	 */
 	public GenericTaskManager(String name) {
-		this.name = name;
+		this(name, 1); // binary and fair
 	}
 	
-	private T getManaged() {
+	/**
+	 * Create a new manager, allowing n number of concurrent calls.
+	 * Low Level, only to be used in this package
+	 * 
+	 * @param name the name of this manager
+	 * @param n number of concurrent users
+	 */
+	GenericTaskManager(String name, int n) {
+		this.lock = new Semaphore(n, true); // fair
+		this.name = name;
+	}
+	/**
+	 * Low level method to lock.
+	 * Only to be used in this package
+	 * 
+	 * @return managed
+	 */
+	T getManaged() {
 		try {
 			lock.acquire();
-			System.err.println("Locked normal: "+name);
 			if (managed == null) {
 				managed = createManaged();
 				if (managed == null) {
-					throw new GenericTaskManagerException("The managed object of "+name+" must never be null!");
+					throw new GenericTaskManagerException("The managed object in manager "+name+" must never be null!");
 				}
 			}
 			return managed;
@@ -34,9 +55,17 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 	
-	private void returnManaged(T reasoner) {
+	/**
+	 * Low level method to unlock.
+	 * Only to be used in this package
+	 * 
+	 * @param managed
+	 */
+	void returnManaged(T managed) {
+		if (this.managed != managed) {
+			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: "+name);
+		}
 		lock.release();
-		System.err.println("Unlocked normal: "+name);
 	}
 	
 	/**
@@ -55,14 +84,13 @@ public abstract class GenericTaskManager<T> {
 	protected abstract T updateManaged(T managed);
 	
 	/**
-	 * Tell the reasoner to update its knowledge base. Wait 
-	 * until the reasoning of the other processes is finished.
+	 * Tell the managed object to update. Wait 
+	 * until the other processes are finished.
 	 */
 	public void updateManaged() {
 		boolean hasLock = false;
 		try {
 			lock.acquire();
-			System.err.println("Locked update: "+name);
 			hasLock = true;
 			if (managed == null) {
 				managed = createManaged();
@@ -76,7 +104,6 @@ public abstract class GenericTaskManager<T> {
 		finally {
 			if (hasLock) {
 				lock.release();
-				System.err.println("Unlocked update: "+name);
 			}
 		}
 	}

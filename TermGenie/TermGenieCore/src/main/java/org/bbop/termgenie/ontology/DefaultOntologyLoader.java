@@ -30,6 +30,9 @@ public class DefaultOntologyLoader {
 	
 	private static volatile DefaultOntologyLoader instance = null;
 	
+	// if there are multiple overlapping managers a deadlock may occur!
+	// --> enforce the singleton for manager in the ontology loader 
+	private volatile MultiOntologyTaskManager globalManager = null;
 	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
 	private final IRIMapper localFileIRIMapper;
@@ -54,10 +57,17 @@ public class DefaultOntologyLoader {
 	public synchronized static List<OntologyTaskManager> getOntologies() {
 		Map<String, ConfiguredOntology> configuration = DefaultOntologyConfiguration.getOntologies();
 		List<OntologyTaskManager> result = new ArrayList<OntologyTaskManager>();
+		Set<String> existing = new HashSet<String>(); 
 		for (String name : configuration.keySet()) {
 			ConfiguredOntology configuredOntology = configuration.get(name);
-			OntologyTaskManager manager = getInstance().getManager(configuredOntology);
-			result.add(manager);
+			if (!existing.contains(configuredOntology.getUniqueName())) {
+				existing.add(configuredOntology.getUniqueName());
+				OntologyTaskManager manager = getInstance().getManager(configuredOntology);
+				if (manager != null) {
+					result.add(manager);
+				}
+				
+			}
 		}
 		return result;
 	}
@@ -72,11 +82,23 @@ public class DefaultOntologyLoader {
 		return getInstance().getManager(configuredOntology);
 	}
 	
+	public synchronized static MultiOntologyTaskManager getMultiOntologyManager() {
+		DefaultOntologyLoader instance = getInstance();
+		if (instance.globalManager == null) {
+			List<OntologyTaskManager> ontologies = getOntologies();
+			instance.globalManager = new MultiOntologyTaskManager(ontologies);
+		}
+		return instance.globalManager;
+	}
+	
 	private OntologyTaskManager getManager(final ConfiguredOntology configuredOntology) {
+		if (!hasRealInstance(configuredOntology)) {
+			return null;
+		}
 		String uniqueName = configuredOntology.getUniqueName();
 		OntologyTaskManager manager = managers.get(uniqueName);
 		if (manager == null) {
-			manager = new OntologyTaskManager(configuredOntology, hasRealInstance(configuredOntology)) {
+			manager = new OntologyTaskManager(configuredOntology) {
 				
 				@Override
 				protected OWLGraphWrapper createManaged() {

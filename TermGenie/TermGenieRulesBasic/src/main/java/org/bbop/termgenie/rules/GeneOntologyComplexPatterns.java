@@ -36,17 +36,17 @@ class GeneOntologyComplexPatterns extends Patterns {
 	/**
 	 * @param wrappers go, pro, uberon, plant
 	 */
-	protected GeneOntologyComplexPatterns(OWLGraphWrapper[] wrappers) {
+	protected GeneOntologyComplexPatterns(List<OWLGraphWrapper> wrappers) {
 		super(all_regulation, all_regulation_mf,
 				involved_in, occurs_in,
 				part_of_cell_component, protein_binding,
 				metazoan_development, metazoan_morphogenesis,
 				plant_development, plant_morphogenesis,
 				structural_protein_complex);
-		this.go = wrappers[0];
-		this.pro = wrappers[1];
-		this.uberon = wrappers[2];
-		this.plant = wrappers[3];
+		this.go = wrappers.get(0);
+		this.pro = wrappers.get(1);
+		this.uberon = wrappers.get(2);
+		this.plant = wrappers.get(3);
 		GO0008150 = getTerm("GO:0008150", go);
 		GO0065007 = getTerm("GO:0065007", go);
 		GO0003674 = getTerm("GO:0003674", go);

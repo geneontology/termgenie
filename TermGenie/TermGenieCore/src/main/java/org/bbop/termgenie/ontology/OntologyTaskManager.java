@@ -13,12 +13,10 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	public static interface OntologyTask extends ManagedTask<OWLGraphWrapper>{}
 
 	protected final Ontology ontology;
-	private final boolean hasRealOntology;
 	
-	OntologyTaskManager(Ontology ontology, boolean hasRealOntology) {
+	OntologyTaskManager(Ontology ontology) {
 		super("OntologyTaskManager-"+ontology.getUniqueName());
 		this.ontology = ontology;
-		this.hasRealOntology = hasRealOntology;
 	}
 	
 	@Override
@@ -30,14 +28,4 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 		return ontology;
 	}
 	
-	@Override
-	public void runManagedTask(ManagedTask<OWLGraphWrapper> task) {
-		if (hasRealOntology) {
-			super.runManagedTask(task);
-		}
-	}
-
-	public boolean hasRealOntology() {
-		return hasRealOntology;
-	}
 }

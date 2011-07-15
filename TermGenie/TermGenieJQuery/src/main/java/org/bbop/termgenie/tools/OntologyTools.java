@@ -28,7 +28,7 @@ public class OntologyTools {
 		templates = new HashMap<String, List<TermTemplate>>();
 		
 		for(OntologyTaskManager manager : DefaultOntologyLoader.getOntologies()) {
-			if (manager != null && manager.hasRealOntology()) {
+			if (manager != null) {
 				addOntology(manager);
 			}
 		}

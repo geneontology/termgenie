@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
-import org.bbop.termgenie.core.rules.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
