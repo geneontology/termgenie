@@ -3,6 +3,7 @@ package org.bbop.termgenie.core.rules;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.reasoner.NodeSet;

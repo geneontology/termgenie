@@ -1,4 +1,4 @@
-package org.bbop.termgenie.core.rules;
+package org.bbop.termgenie.core.management;
 
 import java.util.concurrent.Semaphore;
 
@@ -113,7 +113,10 @@ public abstract class GenericTaskManager<T> {
 	}
 	
 	public static class GenericTaskManagerException extends RuntimeException {
-		
+
+		// generated
+		private static final long serialVersionUID = -204418633281300080L;
+
 		public GenericTaskManagerException(String message) {
 			super(message);
 		}
