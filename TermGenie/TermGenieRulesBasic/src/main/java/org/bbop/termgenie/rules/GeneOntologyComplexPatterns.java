@@ -1,13 +1,12 @@
 package org.bbop.termgenie.rules;
 
-import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -36,13 +35,13 @@ class GeneOntologyComplexPatterns extends Patterns {
 	/**
 	 * @param wrappers go, pro, uberon, plant
 	 */
-	protected GeneOntologyComplexPatterns(List<OWLGraphWrapper> wrappers) {
-		super(all_regulation, all_regulation_mf,
-				involved_in, occurs_in,
-				part_of_cell_component, protein_binding,
-				metazoan_development, metazoan_morphogenesis,
-				plant_development, plant_morphogenesis,
-				structural_protein_complex);
+	protected GeneOntologyComplexPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
+		super(templates.all_regulation, templates.all_regulation_mf,
+				templates.involved_in, templates.occurs_in,
+				templates.part_of_cell_component, templates.protein_binding,
+				templates.metazoan_development, templates.metazoan_morphogenesis,
+				templates.plant_development, templates.plant_morphogenesis,
+				templates.structural_protein_complex);
 		this.go = wrappers.get(0);
 		this.pro = wrappers.get(1);
 		this.uberon = wrappers.get(2);

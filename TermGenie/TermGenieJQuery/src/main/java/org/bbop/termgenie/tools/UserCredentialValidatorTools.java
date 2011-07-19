@@ -1,20 +1,16 @@
 package org.bbop.termgenie.tools;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 /**
  * Actual implementation of the validation.
  */
+@Singleton
 public class UserCredentialValidatorTools {
 	
-	private static volatile UserCredentialValidatorTools instance = null;
-	
-	public static synchronized UserCredentialValidatorTools getInstance() {
-		if (instance == null) {
-			instance = new UserCredentialValidatorTools();
-		}
-		return instance;
-	}
-	
-	private UserCredentialValidatorTools() {
+	@Inject
+	UserCredentialValidatorTools() {
 		super();
 	}
 	

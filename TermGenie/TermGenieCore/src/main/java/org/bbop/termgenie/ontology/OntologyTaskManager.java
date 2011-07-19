@@ -14,7 +14,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 
 	protected final Ontology ontology;
 	
-	OntologyTaskManager(Ontology ontology) {
+	public OntologyTaskManager(Ontology ontology) {
 		super("OntologyTaskManager-"+ontology.getUniqueName());
 		this.ontology = ontology;
 	}

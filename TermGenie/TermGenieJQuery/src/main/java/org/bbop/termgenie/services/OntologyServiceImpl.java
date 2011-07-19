@@ -9,16 +9,30 @@ import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
 
+@Singleton
 public class OntologyServiceImpl implements OntologyService {
 
-	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
-	private static final OntologyTermSuggestor suggestor = ImplementationFactory.getOntologyTermSuggestor();
+	private final OntologyTools ontologyTools;
+	private final OntologyTermSuggestor suggestor;
 	
+	/**
+	 * @param ontologyTools
+	 * @param suggestor
+	 */
+	@Inject
+	OntologyServiceImpl(OntologyTools ontologyTools, OntologyTermSuggestor suggestor) {
+		super();
+		this.ontologyTools = ontologyTools;
+		this.suggestor = suggestor;
+	}
+
 	@Override
 	public String[] availableOntologies(String sessionId) {
 		return ontologyTools.getAvailableOntologyNames();

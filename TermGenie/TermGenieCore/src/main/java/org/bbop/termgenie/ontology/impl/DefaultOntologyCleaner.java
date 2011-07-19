@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,36 +13,36 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.ontology.DefaultOntologyCleaner.CleanerConfig.CleanDetails;
+import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyCleaner.CleanerConfig.CleanDetails;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 
-public class DefaultOntologyCleaner extends ResourceLoader {
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
+@Singleton
+public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCleaner {
 
 	private final static Logger LOGGER = Logger.getLogger(DefaultOntologyCleaner.class);
-	private final static String SETTINGS_FILE = "default-ontology-cleaner.settings";
-	private volatile static DefaultOntologyCleaner instance = null;
+	final static String SETTINGS_FILE = "default-ontology-cleaner.settings";
 
 	private final Map<String, CleanerConfig> cleanOntologies;
 
-	private DefaultOntologyCleaner() {
+	@Inject
+	DefaultOntologyCleaner(@Named("DefaultOntologyCleanerResource") String resource) {
 		super();
-		InputStream inputStream = loadResource(SETTINGS_FILE);
+		InputStream inputStream = loadResource(resource);
 		cleanOntologies = CleanerConfig.loadSettings(inputStream);
 	}
 
-	private static final synchronized DefaultOntologyCleaner getInstance() {
-		if (instance == null) {
-			instance = new DefaultOntologyCleaner();
-		}
-		return instance;
-	}
-
-	static void cleanOntology(String ontology, OBODoc obodoc) {
+	@Override
+	public void cleanOBOOntology(String ontology, OBODoc obodoc) {
 		if (obodoc != null) {
-			CleanerConfig cleanerConfig = getInstance().cleanOntologies.get(ontology);
+			CleanerConfig cleanerConfig = cleanOntologies.get(ontology);
 			if (cleanerConfig != null) {
 				LOGGER.info("Cleaning ontology: " + ontology);
 				cleanOBO(obodoc, cleanerConfig);
@@ -50,13 +50,13 @@ public class DefaultOntologyCleaner extends ResourceLoader {
 		}
 	}
 
-	private static void cleanOBO(OBODoc obodoc, CleanerConfig config) {
+	private void cleanOBO(OBODoc obodoc, CleanerConfig config) {
 		cleanFrames(obodoc.getTermFrames(), config.retain_term_clauses);
 		cleanFrames(obodoc.getInstanceFrames(), config.retain_instance_clauses);
 		cleanFrames(obodoc.getTypedefFrames(), config.retain_typedef_clauses);
 	}
 
-	private static void cleanFrames(Collection<Frame> frames, Map<String, CleanDetails> retains) {
+	private void cleanFrames(Collection<Frame> frames, Map<String, CleanDetails> retains) {
 		for (Frame frame : frames) {
 			Collection<Clause> clauses = frame.getClauses();
 			Iterator<Clause> iterator = clauses.iterator();
@@ -72,7 +72,7 @@ public class DefaultOntologyCleaner extends ResourceLoader {
 		}
 	}
 
-	private static void cleanClause(Clause clause, Map<String, CleanDetails> retains) {
+	private void cleanClause(Clause clause, Map<String, CleanDetails> retains) {
 		String tag = clause.getTag();
 		CleanDetails details = retains.get(tag);
 		if (details.clearQualifiers) {
@@ -80,7 +80,7 @@ public class DefaultOntologyCleaner extends ResourceLoader {
 		}
 	}
 
-	private static boolean keepClause(Clause clause, Map<String, CleanDetails> retains) {
+	private boolean keepClause(Clause clause, Map<String, CleanDetails> retains) {
 		String tag = clause.getTag();
 		CleanDetails details = retains.get(tag);
 		if (details == null) {

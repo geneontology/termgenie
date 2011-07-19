@@ -4,19 +4,26 @@ import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyTools;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import owltools.graph.OWLGraphWrapper;
 
+@Singleton
 public class TermCommitServiceImpl implements TermCommitService {
 
-	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
+	private final OntologyTools ontologyTools;
 	
-//	@Override
-//	public boolean isValidUser(String username, String password, String ontology) {
-//		return ImplementationFactory.getUserCredentialValidator().validate(username, password, ontology);
-//	}
+	/**
+	 * @param ontologyTools
+	 */
+	@Inject
+	TermCommitServiceImpl(OntologyTools ontologyTools) {
+		super();
+		this.ontologyTools = ontologyTools;
+	}
 
 	@Override
 	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontologyName) {

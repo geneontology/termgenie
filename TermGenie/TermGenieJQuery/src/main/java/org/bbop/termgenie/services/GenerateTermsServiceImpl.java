@@ -37,25 +37,45 @@ import org.bbop.termgenie.data.JsonValidationHint;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
-import org.bbop.termgenie.tools.ImplementationFactory;
 import org.bbop.termgenie.tools.OntologyCommitTool;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.semanticweb.owlapi.model.OWLObject;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import owltools.graph.OWLGraphEdge;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 import owltools.graph.OWLQuantifiedProperty;
 
+@Singleton
 public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	private static final Logger logger = Logger.getLogger(GenerateTermsServiceImpl.class);
 	
-	private static final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
-	private static final OntologyTools ontologyTools = ImplementationFactory.getOntologyTools();
-	private static final TermGenerationEngine termGeneration = ImplementationFactory.getTermGenerationEngine();
-	private static final OntologyCommitTool committer = ImplementationFactory.getOntologyCommitTool();
+	private final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
+	private final OntologyTools ontologyTools;
+	private final TermGenerationEngine termGeneration;
+	private final OntologyCommitTool committer;
+	private final JsonTemplateTools jsonTools;
 	
+	
+	/**
+	 * @param ontologyTools
+	 * @param termGeneration
+	 * @param committer
+	 */
+	@Inject
+	GenerateTermsServiceImpl(OntologyTools ontologyTools,
+			TermGenerationEngine termGeneration, OntologyCommitTool committer) {
+		super();
+		this.ontologyTools = ontologyTools;
+		this.termGeneration = termGeneration;
+		this.committer = committer;
+		this.jsonTools = new JsonTemplateTools();
+	}
+
 	@Override
 	public JsonTermTemplate[] availableTermTemplates(String sessionId, String ontologyName) {
 		// sanity check
@@ -72,7 +92,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		// encode the templates for JSON
 		List<JsonTermTemplate> jsonTemplates = new ArrayList<JsonTermTemplate>();
 		for (TermTemplate template : templates) {
-			jsonTemplates.add(JsonTemplateTools.createJsonTermTemplate(template));
+			jsonTemplates.add(jsonTools.createJsonTermTemplate(template));
 		}
 		Collections.sort(jsonTemplates, new Comparator<JsonTermTemplate>() {
 
@@ -125,7 +145,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			if (template == null) {
 				return new JsonGenerationResponse("Unknow template specified: " + one.getName(), null, null);
 			}
-			JsonTermTemplate jsonTermTemplate = JsonTemplateTools.createJsonTermTemplate(template);
+			JsonTermTemplate jsonTermTemplate = jsonTools.createJsonTermTemplate(template);
 			
 			List<JsonValidationHint> errors = FieldValidatorTool.validateParameters(
 					template, jsonTermTemplate,parameter);
@@ -156,7 +176,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					jsonCandidates.add(jsonCandidate);				
 				}
 				else {
-					JsonTermTemplate template = JsonTemplateTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
 					jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
 				}
 			}
@@ -211,7 +231,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		for (JsonTermGenerationInput jsonInput : allParameters) {
 			JsonTermTemplate jsonTemplate = jsonInput.getTermTemplate();
 			TermTemplate template = getTermTemplate(ontologyName, jsonTemplate.getName());
-			TermGenerationParameters parameters = JsonTemplateTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(), jsonTemplate, template);
+			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(), jsonTemplate, template);
 			TermGenerationInput input = new TermGenerationInput(template, parameters);
 			result.add(input);
 		}
@@ -272,7 +292,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	 * Tools for converting term generation details into the JSON enabled
 	 * (transfer) objects.
 	 */
-	static class JsonTemplateTools {
+	class JsonTemplateTools {
 
 		/**
 		 * Convert a single template into a JSON specific data structure.
@@ -280,7 +300,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		 * @param template
 		 * @return internal format
 		 */
-		static JsonTermTemplate createJsonTermTemplate(TermTemplate template) {
+		JsonTermTemplate createJsonTermTemplate(TermTemplate template) {
 			JsonTermTemplate jsonTermTemplate = new JsonTermTemplate();
 			jsonTermTemplate.setName(template.getName());
 			jsonTermTemplate.setDisplay(template.getDisplayName());
@@ -296,7 +316,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return jsonTermTemplate;
 		}
 
-		private static JsonTemplateField createJsonTemplateField(TemplateField field) {
+		private JsonTemplateField createJsonTemplateField(TemplateField field) {
 			JsonTemplateField jsonField = new JsonTemplateField();
 			jsonField.setName(field.getName());
 			jsonField.setRequired(field.isRequired());
@@ -315,7 +335,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return jsonField;
 		}
 		
-		static TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json, JsonTermTemplate jsonTemplate, TermTemplate template) {
+		TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json, JsonTermTemplate jsonTemplate, TermTemplate template) {
 			int fieldCount = template.getFieldCount();
 			TermGenerationParameters result = new TermGenerationParameters(fieldCount);
 			for (int pos = 0; pos < fieldCount; pos++) {
@@ -325,7 +345,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return result;
 		}
 		
-		private static String[] getStrings(JsonTermGenerationParameter json, int pos) {
+		private String[] getStrings(JsonTermGenerationParameter json, int pos) {
 			String[][] allStrings = json.getStrings();
 			if (allStrings.length > pos) {
 				String[] jsonStrings = allStrings[pos];
@@ -336,7 +356,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new String[]{};
 		}
 		
-		private static OntologyTerm[] getTerms(JsonTermGenerationParameter json, int pos) {
+		private OntologyTerm[] getTerms(JsonTermGenerationParameter json, int pos) {
 			JsonOntologyTermIdentifier[][] allTerms = json.getTerms();
 			if (allTerms.length > pos) {
 				JsonOntologyTermIdentifier[] jsonTerms = allTerms[pos];
@@ -352,7 +372,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new OntologyTerm[]{};
 		}
 		
-		private static OntologyTerm getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
+		private OntologyTerm getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
 			String ontologyName = jsonOntologyTerm.getOntology();
 			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
 			OntologyTermTask task = new OntologyTermTask(jsonOntologyTerm.getTermId());

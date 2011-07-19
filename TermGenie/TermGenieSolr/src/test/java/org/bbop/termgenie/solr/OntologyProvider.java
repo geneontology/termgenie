@@ -2,11 +2,17 @@ package org.bbop.termgenie.solr;
 
 import java.util.Map;
 
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.junit.BeforeClass;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public abstract class OntologyProvider {
 	
@@ -15,10 +21,16 @@ public abstract class OntologyProvider {
 	protected static OntologyTaskManager mf;
 	protected static OntologyTaskManager cc;
 	protected static OntologyTaskManager pro;
+	private static OntologyLoader loader;
+	protected static DefaultTermTemplates templates;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new DefaultTermTemplatesModule());
+		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
+		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
+		loader = injector.getInstance(OntologyLoader.class);
+		templates = injector.getInstance(DefaultTermTemplates.class);
 		go = load("GeneOntology", ontologies);
 		bp = load("biological_process", ontologies);
 		mf = load("molecular_function", ontologies);
@@ -28,6 +40,6 @@ public abstract class OntologyProvider {
 	
 	private static OntologyTaskManager load(String name, Map<String, ConfiguredOntology> ontologies) {
 		ConfiguredOntology ontology = ontologies.get(name);
-		return DefaultOntologyLoader.getOntology(ontology);
+		return loader.getOntology(ontology);
 	}
 }

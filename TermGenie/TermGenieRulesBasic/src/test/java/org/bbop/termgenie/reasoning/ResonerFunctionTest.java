@@ -7,10 +7,11 @@ import java.util.Map;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -19,15 +20,24 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 public class ResonerFunctionTest {
 
 	private static OWLGraphWrapper go;
 	private static OWLGraphWrapper pro;
 	private static OWLGraphWrapper uberon;
 	private static OWLGraphWrapper plant;
+	private static Map<String, ConfiguredOntology> ontologies;
+	private static OntologyLoader loader;
 	
 	@BeforeClass
 	public static void beforeClass() {
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
+		ontologies = config.getOntologyConfigurations();
+		loader = injector.getInstance(OntologyLoader.class);
 		go = load("GeneOntology");
 		pro = load("ProteinOntology");
 		uberon = load("Uberon");
@@ -35,9 +45,8 @@ public class ResonerFunctionTest {
 	}
 	
 	private static OWLGraphWrapper load(String name) {
-		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
 		ConfiguredOntology configuredOntology = ontologies.get(name);
-		OntologyTaskManager manager = DefaultOntologyLoader.getOntology(configuredOntology);
+		OntologyTaskManager manager = loader.getOntology(configuredOntology);
 		OntologyTaskImplementation task = new OntologyTaskImplementation();
 		manager.runManagedTask(task);
 		return task.wrapper;

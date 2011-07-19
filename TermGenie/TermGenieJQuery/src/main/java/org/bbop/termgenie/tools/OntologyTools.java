@@ -10,24 +10,29 @@ import java.util.Map;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Stub for providing some basic ontology and pattern input.
  */
+@Singleton
 public class OntologyTools {
 	
 	private final Map<String, OntologyTaskManager> managerInstances;
 	private final Map<Ontology, String> reverseOntologyInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
-	OntologyTools(TermGenerationEngine engine) {
+	@Inject
+	OntologyTools(TermGenerationEngine engine, OntologyLoader loader) {
 		managerInstances = new HashMap<String, OntologyTaskManager>();
 		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
-		for(OntologyTaskManager manager : DefaultOntologyLoader.getOntologies()) {
+		for(OntologyTaskManager manager : loader.getOntologies()) {
 			if (manager != null) {
 				addOntology(manager);
 			}

@@ -1,9 +1,8 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +11,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
@@ -24,71 +28,57 @@ import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
-public class DefaultOntologyLoader {
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
+@Singleton
+public class DefaultOntologyLoader implements OntologyLoader {
 	
 	private final static Logger LOGGER = Logger.getLogger(DefaultOntologyLoader.class);
 	
-	private static volatile DefaultOntologyLoader instance = null;
-	
-	// if there are multiple overlapping managers a deadlock may occur!
-	// --> enforce the singleton for manager in the ontology loader 
-	private volatile MultiOntologyTaskManager globalManager = null;
 	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
+	
 	private final IRIMapper localFileIRIMapper;
-
-	private DefaultOntologyLoader(IRIMapper localFileIRIMapper) {
+	private final OntologyCleaner cleaner;
+	private final Map<String, ConfiguredOntology> configurations;
+	private final Set<String> skipOntologies;
+	
+	@Inject
+	DefaultOntologyLoader(OntologyConfiguration configuration, 
+			IRIMapper localFileIRIMapper, 
+			OntologyCleaner cleaner, 
+			@Named("DefaultOntologyLoaderSkipOntologies") Set<String> skipOntologies) {
 		super();
 		this.localFileIRIMapper = localFileIRIMapper;
+		this.cleaner = cleaner;
+		this.skipOntologies = skipOntologies;
+		configurations = configuration.getOntologyConfigurations();
 	}
 
-	synchronized static DefaultOntologyLoader getInstance() {
-		if (instance == null) {
-			instance = new DefaultOntologyLoader(DefaultOntologyConfiguration.getIRIMapper());
-		}
-		return instance;
-	}
-	
-	/**
-	 * Load all configured ontologies.
-	 * 
-	 * @return ontologies
-	 */
-	public synchronized static List<OntologyTaskManager> getOntologies() {
-		Map<String, ConfiguredOntology> configuration = DefaultOntologyConfiguration.getOntologies();
+	@Override
+	public synchronized List<OntologyTaskManager> getOntologies() {
 		List<OntologyTaskManager> result = new ArrayList<OntologyTaskManager>();
 		Set<String> existing = new HashSet<String>(); 
-		for (String name : configuration.keySet()) {
-			ConfiguredOntology configuredOntology = configuration.get(name);
+		for (String name : configurations.keySet()) {
+			ConfiguredOntology configuredOntology = configurations.get(name);
 			if (!existing.contains(configuredOntology.getUniqueName())) {
 				existing.add(configuredOntology.getUniqueName());
-				OntologyTaskManager manager = getInstance().getManager(configuredOntology);
+				OntologyTaskManager manager = getManager(configuredOntology);
 				if (manager != null) {
 					result.add(manager);
 				}
-				
 			}
 		}
 		return result;
 	}
 	
-	/**
-	 * Load a selected ontology configuration, useful for testing.
-	 * 
-	 * @param configuredOntology parameter
-	 * @return ontology
-	 */
-	public synchronized static OntologyTaskManager getOntology(final ConfiguredOntology configuredOntology) {
-		return getInstance().getManager(configuredOntology);
-	}
-	
-	public synchronized static MultiOntologyTaskManager getMultiOntologyManager() {
-		DefaultOntologyLoader instance = getInstance();
-		if (instance.globalManager == null) {
-			List<OntologyTaskManager> ontologies = getOntologies();
-			instance.globalManager = new MultiOntologyTaskManager(ontologies);
-		}
-		return instance.globalManager;
+	@Override
+	public synchronized OntologyTaskManager getOntology(ConfiguredOntology configuredOntology) {
+		return getManager(configuredOntology);
 	}
 	
 	private OntologyTaskManager getManager(final ConfiguredOntology configuredOntology) {
@@ -109,8 +99,6 @@ public class DefaultOntologyLoader {
 		}
 		return manager;
 	}
-	
-	private static Set<String> skipOntologies = new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
 	
 	private boolean hasRealInstance(ConfiguredOntology configuredOntology) {
 		String name = configuredOntology.getUniqueName();
@@ -185,7 +173,7 @@ public class DefaultOntologyLoader {
 			if (obodoc == null) {
 				throw new RuntimeException("Could not load: "+realUrl);
 			}
-			DefaultOntologyCleaner.cleanOntology(ontology, obodoc);
+			cleaner.cleanOBOOntology(ontology, obodoc);
 		} catch (StringIndexOutOfBoundsException exception) {
 			LOGGER.warn("Error parsing input: "+realUrl);
 			throw exception;
@@ -198,7 +186,9 @@ public class DefaultOntologyLoader {
 	}
 
 	public static void main(String[] args) throws Exception {
-		List<OntologyTaskManager> ontologies = getOntologies();
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
+		List<OntologyTaskManager> ontologies = loader.getOntologies();
 		
 		OntologyTaskManager ontologyTaskManager = ontologies.get(0);
 		ontologyTaskManager.runManagedTask(new OntologyTask(){

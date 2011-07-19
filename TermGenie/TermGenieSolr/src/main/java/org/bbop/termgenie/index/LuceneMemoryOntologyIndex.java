@@ -34,15 +34,19 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Basic auto-completion using an in-memory lucene index.
@@ -301,9 +305,10 @@ public class LuceneMemoryOntologyIndex {
 
 	public static void main(String[] args) {
 		
-		ConfiguredOntology go = DefaultOntologyConfiguration.getOntologies().get("GeneOntology");
-		
-		OntologyTaskManager ontology = DefaultOntologyLoader.getOntology(go);
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
+		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
+		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
 
 		ontology.runManagedTask(new OntologyTask(){
 

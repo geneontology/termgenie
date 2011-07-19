@@ -18,8 +18,8 @@ public class HumanPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper fma;
 	private final OWLGraphWrapper pato;
 
-	protected HumanPhenotypePatterns(List<OWLGraphWrapper> wrappers) {
-		super(DefaultTermTemplates.hpo_entity_quality);
+	protected HumanPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
+		super(templates.hpo_entity_quality);
 		this.hpo = wrappers.get(0);
 		this.fma = wrappers.get(1);
 		this.pato = wrappers.get(2);

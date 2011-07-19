@@ -7,9 +7,9 @@ import java.util.List;
  * Tool for reading and writing a list of strings.
  * TODO: encode or replace separator chars and newline chars in the input string.
  */
-public class ListHelper {
+class ListHelper {
 
-	public static List<String> parseString(String serializedString, char separatorChar) {
+	static List<String> parseString(String serializedString, char separatorChar) {
 		List<String> prefixes = null;
 		if (serializedString != null) {
 			serializedString = serializedString.trim();
@@ -28,7 +28,7 @@ public class ListHelper {
 		return prefixes;
 	}
 	
-	public static String serializeList(List<String> list, char separatorChar) {
+	static String serializeList(List<String> list, char separatorChar) {
 		StringBuilder sb = new StringBuilder();
 		for (String element : list) {
 			if (sb.length() > 0) {

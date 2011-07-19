@@ -8,10 +8,10 @@ import org.bbop.termgenie.core.management.MultiResourceTaskManager;
 
 import owltools.graph.OWLGraphWrapper;
 
-public class MultiOntologyTaskManager extends MultiResourceTaskManager<OWLGraphWrapper, Ontology> {
+public abstract class MultiOntologyTaskManager extends MultiResourceTaskManager<OWLGraphWrapper, Ontology> {
 
-	MultiOntologyTaskManager(List<OntologyTaskManager> ontologies) {
-		super("MultiOntologyManager", ontologies.toArray(new OntologyTaskManager[ontologies.size()]));
+	protected MultiOntologyTaskManager(String name, List<OntologyTaskManager> ontologies) {
+		super(name, ontologies.toArray(new OntologyTaskManager[ontologies.size()]));
 	}
 
 	@Override

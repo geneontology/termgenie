@@ -11,18 +11,31 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.io.CardinalityHelper;
-import org.bbop.termgenie.core.io.FlatFileTermTemplateIO;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateRule;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class FlatFileTermTemplateIOTest {
 
-	private FlatFileTermTemplateIO templateIO = new FlatFileTermTemplateIO();;
+	private static TermTemplateIO templateIO;
+	private static DefaultTermTemplates templates;
 
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), 
+				new DefaultTermTemplatesModule(), new TermTemplateIOModule());
+		templateIO = injector.getInstance(TermTemplateIO.class);
+		templates = injector.getInstance(DefaultTermTemplates.class);
+	}
+	
 	/**
 	 * Tests for {@link FlatFileTermTemplateIO#writeTemplates(java.util.Collection, BufferedWriter)} 
 	 * and {@link FlatFileTermTemplateIO#readTemplates(java.io.BufferedReader)}
@@ -32,7 +45,7 @@ public class FlatFileTermTemplateIOTest {
 	@Test
 	public void testReadWriteTemplates() throws IOException {
 		
-		List<TermTemplate> read0 = TestTermTemplates.getTestTemplates();
+		List<TermTemplate> read0 = templates.defaultTemplates;
 		
 		String write1 = write(read0);
 		List<TermTemplate> read1 = read(write1);
@@ -47,12 +60,6 @@ public class FlatFileTermTemplateIOTest {
 		
 		String write3 = write(read2);
 		assertEquals(write1, write3);
-	}
-	
-	private static class TestTermTemplates extends DefaultTermTemplates {
-		static List<TermTemplate> getTestTemplates() {
-			return defaultTemplates;
-		}
 	}
 	
 	private void compare(List<TermTemplate> l1, List<TermTemplate> l2) {

@@ -5,15 +5,11 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.junit.Test;
 
 public class LuceneOnlyClientTest extends OntologyProvider {
 
-	private static Ontology otherOntology = DefaultTermTemplates.CELL_ONTOLOGY;
-	
 	@Test
 	public void testSuggestTerms() {
 		LuceneOnlyClient index = new LuceneOnlyClient(Arrays.asList(go, pro, bp, cc, mf));
@@ -34,7 +30,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 		terms = index.suggestTerms("pigmentation", cc.getOntology(), maxCount);
 		assertNull(terms);
 		
-		assertNull(index.suggestTerms("pig", otherOntology, maxCount));
+		assertNull(index.suggestTerms("pig", templates.CELL_ONTOLOGY, maxCount));
 	}
 
 }

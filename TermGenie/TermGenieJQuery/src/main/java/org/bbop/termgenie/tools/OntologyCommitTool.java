@@ -5,24 +5,20 @@ import java.util.List;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 /**
  * Place holder for implementing the commit of new terms for the ontology.
  */
+@Singleton
 public class OntologyCommitTool {
 	
-	private static volatile OntologyCommitTool instance = null;
-	
-	private OntologyCommitTool() {
+	@Inject
+	OntologyCommitTool() {
 		super();
 	}
 	
-	public static synchronized OntologyCommitTool getInstance() {
-		if (instance == null) {
-			instance = new OntologyCommitTool();
-		}
-		return instance;
-	}
-
 	/**
 	 * @param ontology
 	 * @param candidates

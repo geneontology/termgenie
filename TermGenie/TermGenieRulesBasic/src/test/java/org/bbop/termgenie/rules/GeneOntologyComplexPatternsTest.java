@@ -1,6 +1,5 @@
 package org.bbop.termgenie.rules;
 
-import static org.bbop.termgenie.core.rules.DefaultTermTemplates.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -11,18 +10,24 @@ import java.util.Map;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class GeneOntologyComplexPatternsTest {
 	
@@ -31,20 +36,26 @@ public class GeneOntologyComplexPatternsTest {
 	private static OWLGraphWrapper pro;
 	private static OWLGraphWrapper uberon;
 	private static OWLGraphWrapper plant;
+	private static OntologyLoader loader;
+	private static DefaultTermTemplates templates;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<String, ConfiguredOntology> config = DefaultOntologyConfiguration.getOntologies();
-		go = load(GENE_ONTOLOGY, config);
-		pro = load(PROTEIN_ONTOLOGY, config);
-		uberon = load(UBERON_ONTOLOGY, config);
-		plant = load(PLANT_ONTOLOGY, config);
-		instance = new GeneOntologyComplexPatterns(Arrays.asList(go, pro, uberon, plant));
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new DefaultTermTemplatesModule());
+		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
+		templates = injector.getInstance(DefaultTermTemplates.class);
+		Map<String, ConfiguredOntology> ontologies = config.getOntologyConfigurations();
+		loader = injector.getInstance(OntologyLoader.class);
+		go = load(templates.GENE_ONTOLOGY, ontologies);
+		pro = load(templates.PROTEIN_ONTOLOGY, ontologies);
+		uberon = load(templates.UBERON_ONTOLOGY, ontologies);
+		plant = load(templates.PLANT_ONTOLOGY, ontologies);
+		instance = new GeneOntologyComplexPatterns(Arrays.asList(go, pro, uberon, plant), templates);
 	}
 	
 	private static OWLGraphWrapper load(Ontology ontology, Map<String, ConfiguredOntology> config) {
 		ConfiguredOntology configOntology = config.get(ontology.getUniqueName());
-		OntologyTaskManager manager = DefaultOntologyLoader.getOntology(configOntology);
+		OntologyTaskManager manager = loader.getOntology(configOntology);
 		OntologyTaskImplementation task = new OntologyTaskImplementation();
 		manager.runManagedTask(task);
 		return task.wrapper;
@@ -62,7 +73,7 @@ public class GeneOntologyComplexPatternsTest {
 	@Test
 	public void testGenerateTerms() {
 		TermGenerationInput input1 = createRegulationBPExample1();
-		List<TermGenerationOutput> output1 = instance.generateTerms(GENE_ONTOLOGY, Collections.singletonList(input1));
+		List<TermGenerationOutput> output1 = instance.generateTerms(templates.GENE_ONTOLOGY, Collections.singletonList(input1));
 		assertEquals(3, output1.size());
 		for (TermGenerationOutput termGenerationOutput : output1) {
 			assertFalse("the requested terms are already in the ontology",
@@ -75,7 +86,7 @@ public class GeneOntologyComplexPatternsTest {
 	@Test
 	public void testGetDefXref() {
 		TermGenerationInput input = createRegulationBPExample1();
-		input.getParameters().getStrings()[all_regulation.getFieldPos("DefX_Ref")] = new String[]{"test input xref0", "test input xref1"};
+		input.getParameters().getStrings()[templates.all_regulation.getFieldPos("DefX_Ref")] = new String[]{"test input xref0", "test input xref1"};
 		List<String> defXref = instance.getDefXref(input);
 		assertArrayEquals(new String[]{"test input xref0", "test input xref1"}, defXref.toArray());
 	}
@@ -83,7 +94,7 @@ public class GeneOntologyComplexPatternsTest {
 	@Test
 	public void testGetComment() {
 		TermGenerationInput input = createInvoledInExample1();
-		input.getParameters().getStrings()[involved_in.getFieldPos("Comment")] = new String[]{"test input comment"};
+		input.getParameters().getStrings()[templates.involved_in.getFieldPos("Comment")] = new String[]{"test input comment"};
 		String comment = instance.getComment(input);
 		assertEquals("test input comment", comment);
 	}
@@ -94,7 +105,7 @@ public class GeneOntologyComplexPatternsTest {
 		
 		assertEquals("test gen def", instance.createDefinition("test gen def", input));
 		
-		input.getParameters().getStrings()[involved_in.getFieldPos("Definition")] = new String[]{"test input def"};
+		input.getParameters().getStrings()[templates.involved_in.getFieldPos("Definition")] = new String[]{"test input def"};
 		
 		assertEquals("test input def", instance.createDefinition("test gen def", input));
 	}
@@ -105,7 +116,7 @@ public class GeneOntologyComplexPatternsTest {
 		
 		assertEquals("test gen name", instance.createName("test gen name", input));
 		
-		input.getParameters().setStringValues(involved_in, "Name", "test input name");
+		input.getParameters().setStringValues(templates.involved_in, "Name", "test input name");
 		
 		assertEquals("test input name", instance.createName("test gen name", input));
 	}
@@ -114,7 +125,7 @@ public class GeneOntologyComplexPatternsTest {
 	// --------------- Helper methods ---------------
 	
 	private TermGenerationInput createRegulationBPExample1() {
-		TermTemplate template = all_regulation;
+		TermTemplate template = templates.all_regulation;
 		TermGenerationParameters parameters = new TermGenerationParameters(template.getFieldCount());
 		
 		OntologyTerm term = create("GO:0048069", go); // eye pigmentation;
@@ -126,7 +137,7 @@ public class GeneOntologyComplexPatternsTest {
 	}
 
 	private TermGenerationInput createInvoledInExample1() {
-		TermTemplate template = involved_in;
+		TermTemplate template = templates.involved_in;
 		TermGenerationParameters parameters = new TermGenerationParameters(template.getFieldCount());
 		OntologyTerm part = create("GO:0042440", go); // pigment metabolic process
 		OntologyTerm whole = create("GO:0043473", go); // pigmentation

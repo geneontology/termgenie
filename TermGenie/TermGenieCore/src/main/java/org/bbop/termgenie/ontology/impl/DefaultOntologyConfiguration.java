@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,33 +12,33 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.tools.ResourceLoader;
 
-public class DefaultOntologyConfiguration extends ResourceLoader {
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
+@Singleton
+public class DefaultOntologyConfiguration extends ResourceLoader implements OntologyConfiguration {
 	
 	private static final Logger logger = Logger.getLogger(DefaultOntologyConfiguration.class);
 	
-	private static final String SETTINGS_FILE = "default-ontology-configuration.settings";
+	static final String SETTINGS_FILE = "default-ontology-configuration.settings";
 
-	private static volatile Pair<IRIMapper, Map<String, ConfiguredOntology>> configuration = null;
+	private final Map<String, ConfiguredOntology> configuration;
 	
-	public static Map<String, ConfiguredOntology> getOntologies() {
-		return getConfiguration().getTwo();
+	@Inject
+	DefaultOntologyConfiguration(@Named("DefaultOntologyConfigurationResource") String resource) {
+		super();
+		configuration = loadOntologyConfiguration(resource);
 	}
 	
-	public static IRIMapper getIRIMapper() {
-		return getConfiguration().getOne();
-	}
-	
-	private static synchronized Pair<IRIMapper, Map<String, ConfiguredOntology>> getConfiguration() {
-		if (configuration == null) {
-			DefaultOntologyConfiguration c = new DefaultOntologyConfiguration();
-			configuration = c.loadOntologyConfiguration();
-		}
+	@Override
+	public Map<String, ConfiguredOntology> getOntologyConfigurations() {
 		return configuration;
 	}
-	
+
 	public static class ConfiguredOntology extends Ontology {
 		
 		String source = null;
@@ -138,13 +138,12 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 		}
 	}
 	
-	Pair<IRIMapper, Map<String, ConfiguredOntology>> loadOntologyConfiguration() {
+	private Map<String, ConfiguredOntology> loadOntologyConfiguration(String resource) {
 		BufferedReader reader = null;
 		try {
-			InputStream inputStream = loadResource(SETTINGS_FILE);
+			InputStream inputStream = loadResource(resource);
 			reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 			Map<String, ConfiguredOntology> map = new LinkedHashMap<String, ConfiguredOntology>();
-			IRIMapper iriMapper = null;
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (line.length() > 0 && !line.startsWith("!")) {
@@ -154,12 +153,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 					else if (line.startsWith("[OntologyBranch]")) {
 						parseOntologyBranch(reader, map);
 					}
-					else if (line.startsWith("[IRIMapping]")) {
-						iriMapper = parseIRIMapperConfig(reader);
-					}
 				}
 			}
-			return new Pair<IRIMapper, Map<String, ConfiguredOntology>>(iriMapper, map);
+			return Collections.unmodifiableMap(map);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		} finally {
@@ -171,15 +167,6 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 				}
 			}
 		}
-	}
-	
-	private IRIMapper parseIRIMapperConfig(BufferedReader reader) throws IOException {
-		String line = reader.readLine();
-		if (line.startsWith("localfile:")) {
-			String resource = line.substring("localfile:".length()).trim();
-			return new LocalFileIRIMapper(resource);
-		}
-		return null;
 	}
 	
 	private void parseOntology(BufferedReader reader, Map<String, ConfiguredOntology> ontologies) throws IOException {
@@ -257,7 +244,8 @@ public class DefaultOntologyConfiguration extends ResourceLoader {
 	}
 	
 	public static void main(String[] args) {
-		Map<String, ConfiguredOntology> ontologies = getOntologies();
+		DefaultOntologyConfiguration c = new DefaultOntologyConfiguration(SETTINGS_FILE);
+		Map<String, ConfiguredOntology> ontologies = c.getOntologyConfigurations();
 		for (String key : ontologies.keySet()) {
 			ConfiguredOntology ontology = ontologies.get(key);
 			System.out.print(ontology.getUniqueName());

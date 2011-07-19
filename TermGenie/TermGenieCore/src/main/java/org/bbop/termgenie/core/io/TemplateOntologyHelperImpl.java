@@ -9,21 +9,28 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Tool for the association of Ontologies to a string.
  */
-public class OntologyHelper {
+@Singleton
+class TemplateOntologyHelperImpl implements TemplateOntologyHelper {
 
-	private static Map<String, Ontology> ontologyMap = new HashMap<String, Ontology>();
-	static {
-		for(Ontology ontology : DefaultOntologyConfiguration.getOntologies().values()) {
+	private final Map<String, Ontology> ontologyMap = new HashMap<String, Ontology>();
+	
+	@Inject
+	TemplateOntologyHelperImpl(OntologyConfiguration configuration) {
+		for(Ontology ontology : configuration.getOntologyConfigurations().values()) {
 			ontologyMap.put(serializeOntology(ontology), ontology);
 		}
 	}
 	
-	public static List<Ontology> readOntologies(String serializedNames) {
+	@Override
+	public List<Ontology> readOntologies(String serializedNames) {
 		List<String> ontologies = splitOntologies(serializedNames);
 		if (ontologies != null) {
 			List<Ontology> result = new ArrayList<Ontology>(ontologies.size());
@@ -38,9 +45,9 @@ public class OntologyHelper {
 		return null;
 	}
 	
-	private static final Pattern splitPattern = Pattern.compile("\\|");
+	private final Pattern splitPattern = Pattern.compile("\\|");
 	
-	private static List<String> splitOntologies(String serializedNames) {
+	private List<String> splitOntologies(String serializedNames) {
 		if (serializedNames == null) {
 			return null;
 		}
@@ -55,7 +62,8 @@ public class OntologyHelper {
 		}
 	}
 	
-	public static String serializeOntologies(List<Ontology> ontologies) {
+	@Override
+	public String serializeOntologies(List<Ontology> ontologies) {
 		StringBuilder sb = new StringBuilder();
 		for (Ontology ontology : ontologies) {
 			if (sb.length() > 0) {

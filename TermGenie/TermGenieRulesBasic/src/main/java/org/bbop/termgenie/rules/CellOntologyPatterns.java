@@ -21,8 +21,8 @@ public class CellOntologyPatterns extends Patterns {
 	
 	private final OWLObject GO0032991;
 
-	protected CellOntologyPatterns(List<OWLGraphWrapper> wrappers) {
-		super(DefaultTermTemplates.metazoan_location_specific_cell, DefaultTermTemplates.cell_by_surface_marker);
+	protected CellOntologyPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
+		super(templates.metazoan_location_specific_cell, templates.cell_by_surface_marker);
 		this.cell = wrappers.get(0);
 		this.uberon = wrappers.get(1);
 		this.pro = wrappers.get(2);

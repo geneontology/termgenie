@@ -5,10 +5,11 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration;
-import org.bbop.termgenie.ontology.DefaultOntologyConfiguration.ConfiguredOntology;
-import org.bbop.termgenie.ontology.DefaultOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.HermiT.Reasoner;
@@ -23,6 +24,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import owltools.graph.OWLGraphWrapper;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
@@ -34,9 +37,12 @@ public class GeneOntologyResonerSpeedTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Map<String, ConfiguredOntology> ontologies = DefaultOntologyConfiguration.getOntologies();
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
+		Map<String, ConfiguredOntology> ontologies = config.getOntologyConfigurations();
 		ConfiguredOntology configuredOntology = ontologies.get("GeneOntology");
-		OntologyTaskManager ontologyTaskManager = DefaultOntologyLoader.getOntology(configuredOntology);
+		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
+		OntologyTaskManager ontologyTaskManager = loader.getOntology(configuredOntology);
 		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {
 			
 			@Override

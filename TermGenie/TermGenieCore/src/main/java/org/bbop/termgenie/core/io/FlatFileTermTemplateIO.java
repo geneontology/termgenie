@@ -21,10 +21,14 @@ import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateRule;
 import org.bbop.termgenie.core.TermTemplate;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 /**
  * Tool for reading and writing templates to file in line based format.
  */
-public class FlatFileTermTemplateIO {
+@Singleton
+class FlatFileTermTemplateIO implements TermTemplateIO {
 	
 	private static final String FLAT_FILE_TAG_RULE = "RULE";
 	private static final String FLAT_FILE_TAG_HINT = "hint";
@@ -38,6 +42,18 @@ public class FlatFileTermTemplateIO {
 	private static final String FLAT_FILE_TAG_TEMPLATE = "TEMPLATE";
 	private static final String FLAT_FILE_TAG_FIELD = "FIELD";
 
+	private final TemplateOntologyHelper helper;
+	
+	/**
+	 * @param helper
+	 */
+	@Inject
+	FlatFileTermTemplateIO(TemplateOntologyHelper helper) {
+		super();
+		this.helper = helper;
+	}
+
+	@Override
 	public void writeTemplates(Collection<TermTemplate> templates, BufferedWriter writer) throws IOException {
 		for (TermTemplate template : templates) {
 			writeTemplate(template, writer);
@@ -46,6 +62,7 @@ public class FlatFileTermTemplateIO {
 		}
 	}
 	
+	@Override
 	public void writeTemplates(Collection<TermTemplate> templates, File outputFile) {
 		BufferedWriter writer = null;
 		try {
@@ -159,7 +176,7 @@ public class FlatFileTermTemplateIO {
 	
 	private void addOntologies(List<Ontology> ontologies, BufferedWriter writer) throws IOException {
 		if (ontologies != null && !ontologies.isEmpty()) {
-			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(OntologyHelper.serializeOntologies(ontologies));
+			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
 			writer.newLine();
 		}
 	}
@@ -200,7 +217,7 @@ public class FlatFileTermTemplateIO {
 		}
 		
 		private List<Ontology> getOntologies(String ontologiesString) {
-			return OntologyHelper.readOntologies(ontologiesString);
+			return helper.readOntologies(ontologiesString);
 		}
 
 		private List<TemplateField> createFields() {
@@ -211,7 +228,7 @@ public class FlatFileTermTemplateIO {
 						parseRequired(map), 
 						CardinalityHelper.parseCardinality(map.get(FLAT_FILE_TAG_CARDINALITY)), 
 						ListHelper.parseString(map.get(FLAT_FILE_TAG_PREFIXES), SEPARATOR_CHAR), 
-						OntologyHelper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
+						helper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
 				fields.add(templateField);
 			}
 			return fields;
@@ -228,6 +245,10 @@ public class FlatFileTermTemplateIO {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bbop.termgenie.core.io.TermTemplateIO#readTemplates(java.io.BufferedReader)
+	 */
+	@Override
 	public List<TermTemplate> readTemplates(BufferedReader reader) throws IOException {
 		int count = 0;
 		String line;

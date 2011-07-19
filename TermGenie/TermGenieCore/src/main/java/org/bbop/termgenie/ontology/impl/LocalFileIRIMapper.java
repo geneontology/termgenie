@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,15 +13,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.tools.ResourceLoader;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
  * Map IRIs to local file urls. Get the resource from classpath and 
  * copy it to a temp location.
  */
+@Singleton
 public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 
 	private final static Logger logger = Logger.getLogger(LocalFileIRIMapper.class);
+	final static String SETTINGS_FILE = "default-ontology-iri-mapping-localfile.settings";
 	
 	private final Map<String, URL> mappings = new HashMap<String, URL>();
 
@@ -41,7 +50,8 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	 * 
 	 * @param resource config file in classpath
 	 */
-	public LocalFileIRIMapper(String resource) {
+	@Inject
+	LocalFileIRIMapper(@Named("LocalFileIRIMapperResource") String resource) {
 		try {
 			InputStream inputStream = loadResource(resource);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -111,7 +121,10 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	}
 	
 	public static void main(String[] args) {
-		LocalFileIRIMapper mapper = new LocalFileIRIMapper("default-ontology-iri-mapping-localfile.settings");
-		System.out.println(mapper.mappings.size());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		IRIMapper mapper = injector.getInstance(IRIMapper.class);
+		System.out.println(((LocalFileIRIMapper) mapper).mappings.size());
+		
+		System.out.println(mapper == injector.getInstance(IRIMapper.class));
 	}
 }

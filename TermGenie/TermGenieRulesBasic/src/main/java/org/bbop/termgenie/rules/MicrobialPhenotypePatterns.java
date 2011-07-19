@@ -18,8 +18,8 @@ public class MicrobialPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper pato;
 	private final OWLGraphWrapper omp;
 
-	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers) {
-		super(DefaultTermTemplates.omp_entity_quality);
+	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
+		super(templates.omp_entity_quality);
 		this.omp = wrappers.get(0);
 		this.go = wrappers.get(1);
 		this.pato = wrappers.get(2);

@@ -9,17 +9,28 @@ import org.apache.solr.common.SolrDocument;
 import org.bbop.termgenie.core.OntologyAware.Ontology;
 import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
+import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Tests for {@link SimpleSolrClient}.
  */
-public class SimpleSolrClientTest {
+public class SimpleSolrClientTest extends OntologyProvider {
 
-	private static SimpleSolrClient client = new SimpleSolrClient();
-	private static Ontology ontology = DefaultTermTemplates.GENE_ONTOLOGY;
+	private static DefaultTermTemplates templates;
+	private static SimpleSolrClient client;
 	
-	private static Ontology otherOntology = DefaultTermTemplates.CELL_ONTOLOGY;
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new DefaultTermTemplatesModule());
+		templates = injector.getInstance(DefaultTermTemplates.class);
+		client = new SimpleSolrClient();
+	}
 	
 	/**
 	 *  Tests for {@link SimpleSolrClient#suggestTerms(String, Ontology, int)}.
@@ -28,11 +39,11 @@ public class SimpleSolrClientTest {
 	public void testSuggestTerms() {
 		String query = "pig";
 		int maxCount = 10;
-		List<OntologyTerm> terms = client.suggestTerms(query, ontology, maxCount);
+		List<OntologyTerm> terms = client.suggestTerms(query, templates.GENE_ONTOLOGY, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
-		assertNull(client.suggestTerms(query, otherOntology, maxCount));
+		assertNull(client.suggestTerms(query, templates.CELL_ONTOLOGY, maxCount));
 	}
 
 	/**

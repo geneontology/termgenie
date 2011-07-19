@@ -6,13 +6,13 @@ import org.bbop.termgenie.core.TemplateField.Cardinality;
 /**
  * Tool for parsing a simple cardinality constraint.
  */
-public class CardinalityHelper
+class CardinalityHelper
 {
 	private final static String SINGLE_CONSTANT = "1"; 
 	private final static String ONE2N_CONSTANT = "1..N";
 	private final static String TWO2N_CONSTANT = "2..N";
 	
-	public static Cardinality parseCardinality(String string) {
+	static Cardinality parseCardinality(String string) {
 		if (string == null || SINGLE_CONSTANT.equals(string)) {
 			// do not write this out, assume this as default
 			return TemplateField.SINGLE_FIELD_CARDINALITY;
@@ -26,7 +26,7 @@ public class CardinalityHelper
 		throw new RuntimeException("Unkown cardinality: "+string);
 	}
 	
-	public static String serializeCardinality(Cardinality cardinality) {
+	static String serializeCardinality(Cardinality cardinality) {
 		if (TemplateField.SINGLE_FIELD_CARDINALITY.equals(cardinality)) {
 			// do not write this info, assume this as default
 			return null;

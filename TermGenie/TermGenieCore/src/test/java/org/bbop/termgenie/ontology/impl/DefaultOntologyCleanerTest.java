@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.impl;
 
 import static org.junit.Assert.*;
 
@@ -6,15 +6,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.filters.StringInputStream;
-import org.bbop.termgenie.ontology.DefaultOntologyCleaner.CleanerConfig;
-import org.junit.BeforeClass;
+import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyCleaner.CleanerConfig;
 import org.junit.Test;
 
-public class DefaultOntologyCleanerTest {
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
+public class DefaultOntologyCleanerTest {
 
 	@Test
 	public void testLoadCleanerConfig() {
@@ -61,6 +60,14 @@ public class DefaultOntologyCleanerTest {
 		for (String string : set1) {
 			assertTrue(set2.contains(string));
 		}
+	}
+	
+	@Test
+	public void testGuice() {
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyCleaner cleaner = injector.getInstance(OntologyCleaner.class);
+		
+		assertTrue("Assert the singleton pattern", cleaner == injector.getInstance(OntologyCleaner.class));
 	}
 
 }
