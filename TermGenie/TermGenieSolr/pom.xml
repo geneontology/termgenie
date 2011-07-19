@@ -6,7 +6,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieSolr</artifactId>
-	<name>Solr Adaptor for TermGenie</name>
+	<name>TermGenieSolr</name>
+	<description>Solr and Lucene Adaptors for TermGenie</description>
 	<dependencies>
 		<dependency>
 			<artifactId>solr-solrj</artifactId>

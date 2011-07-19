@@ -6,7 +6,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieRulesBasic</artifactId>
-	<name>Basic hardcoded rules for TermGenie</name>
+	<name>TermGenieRulesBasic</name>
+	<description>Basic hardcoded rules for TermGenie</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
