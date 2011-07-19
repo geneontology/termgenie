@@ -75,5 +75,6 @@
 		<module>TermGenieSolr</module>
 		<module>TermGenieJQuery</module>
 		<module>TermGenieRulesBasic</module>
+		<module>TermGenieRulesDynamic</module>
 	</modules>
 </project>
