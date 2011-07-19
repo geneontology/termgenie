@@ -133,31 +133,6 @@ class BasicRules extends BasicTools {
 		return null;
 	}
 	
-	protected String createCDef(String prefix, OWLObject x, OWLGraphWrapper ontology, String infix, String suffix) {
-		return createCDef(prefix, Collections.singletonList(x), ontology, infix, null, suffix);
-	}
-	
-	protected String createCDef(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String type, String separator, String suffix) {
-		StringBuilder sb = new StringBuilder();
-		if (prefix != null) {
-			sb.append(prefix);
-		}
-		for (int i = 0; i < list.size(); i++) {
-			OWLObject x = list.get(i);
-			if (i > 0) {
-				sb.append(separator);
-			}
-			if (type != null) {
-				sb.append(type);
-			}
-			sb.append(ontology.getIdentifier(x));
-		}
-		if (suffix != null) {
-			sb.append(suffix);
-		}
-		return sb.toString();
-	}
-	
 	protected String createDefinition(String prefix, List<OWLObject> list, OWLGraphWrapper ontology, String infix, String suffix, TermGenerationInput input) {
 		StringBuilder sb = new StringBuilder();
 		if (prefix != null) {
