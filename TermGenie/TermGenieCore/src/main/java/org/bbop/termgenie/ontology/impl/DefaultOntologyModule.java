@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
-import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
@@ -74,9 +72,9 @@ public class DefaultOntologyModule extends IOCModule {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new DefaultTermTemplatesModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		MultiOntologyTaskManager manager = injector.getInstance(MultiOntologyTaskManager.class);
-		DefaultTermTemplates templates = injector.getInstance(DefaultTermTemplates.class);
 		MultiOntologyTask task = new MultiOntologyTask() {
 
 			@Override
@@ -84,7 +82,7 @@ public class DefaultOntologyModule extends IOCModule {
 				System.out.println("requested: "+requested.size());
 			}
 		};
-		manager.runManagedTask(task, templates.GENE_ONTOLOGY);
+		manager.runManagedTask(task, configuration.getOntologyConfigurations().get("GeneOntology"));
 		
 	}
 	

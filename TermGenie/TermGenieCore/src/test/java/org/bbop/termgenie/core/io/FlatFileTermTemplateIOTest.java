@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -13,26 +15,23 @@ import java.util.List;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
-import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class FlatFileTermTemplateIOTest {
+public class FlatFileTermTemplateIOTest extends ResourceLoader {
 
 	private static TermTemplateIO templateIO;
-	private static DefaultTermTemplates templates;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), 
-				new DefaultTermTemplatesModule(), new TermTemplateIOModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(),
+				new TermTemplateIOModule());
 		templateIO = injector.getInstance(TermTemplateIO.class);
-		templates = injector.getInstance(DefaultTermTemplates.class);
 	}
 	
 	/**
@@ -44,7 +43,8 @@ public class FlatFileTermTemplateIOTest {
 	@Test
 	public void testReadWriteTemplates() throws IOException {
 		
-		List<TermTemplate> read0 = templates.defaultTemplates;
+		InputStream in = loadResource("test_termgenie_rules.txt");
+		List<TermTemplate> read0 = templateIO.readTemplates(new BufferedReader(new InputStreamReader(in)));
 		
 		String write1 = write(read0);
 		List<TermTemplate> read1 = read(write1);

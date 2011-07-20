@@ -8,6 +8,7 @@ public class TermGenerationEngineModule extends IOCModule {
 	@Override
 	protected void configure() {
 		bind(TermGenerationEngine.class).to(HardCodedTermGenerationEngine.class);
+		bind(DefaultTermTemplates.class);
 	}
 
 }

@@ -30,7 +30,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 		terms = index.suggestTerms("pigmentation", cc.getOntology(), maxCount);
 		assertNull(terms);
 		
-		assertNull(index.suggestTerms("pig", templates.CELL_ONTOLOGY, maxCount));
+		assertNull(index.suggestTerms("pig", cc.getOntology(), maxCount));
 	}
 
 }

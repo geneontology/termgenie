@@ -1,4 +1,4 @@
-package org.bbop.termgenie.core.rules;
+package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
 import java.util.Arrays;

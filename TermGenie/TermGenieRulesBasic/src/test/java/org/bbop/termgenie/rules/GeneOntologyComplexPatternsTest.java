@@ -10,8 +10,7 @@ import java.util.Map;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.rules.DefaultTermTemplates;
-import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
+import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
@@ -41,7 +40,13 @@ public class GeneOntologyComplexPatternsTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new DefaultTermTemplatesModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new IOCModule() {
+			
+			@Override
+			protected void configure() {
+				bind(DefaultTermTemplates.class);
+			}
+		});
 		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
 		templates = injector.getInstance(DefaultTermTemplates.class);
 		Map<String, ConfiguredOntology> ontologies = config.getOntologyConfigurations();

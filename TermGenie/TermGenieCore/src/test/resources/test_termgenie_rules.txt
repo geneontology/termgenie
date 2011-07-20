@@ -72,9 +72,23 @@ FIELD
 name	Comment
 #
 RULE
-Dummy Rule
- Dummy Name Rule
-2nd line
+  var go = GeneOntology;
+  var p = termgenie.getSingleTerm("part", go);
+  var w = termgenie.getSingleTerm("whole", go);
+  var check = termgenie.checkGenus(p, "GO:0008150", go, input);
+  if (check.isGenus() === false) {
+    return check.error();
+  }
+  var check = termgenie.checkGenus(w, "GO:0008150", go);
+  if (check.isGenus() === false) {
+    return check.error();
+  }
+  var label = termgenie.name(p, go) + " involved in " + termgenie.name(w, go);
+  var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
+  var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
+  var cdef = termgenie.cdef(p, go);
+  cdef.addDifferentium("part_of", w, go);
+  return termgenie.createTermList(label, definition, synonyms, cdef, input, go);
 
 
 TEMPLATE
