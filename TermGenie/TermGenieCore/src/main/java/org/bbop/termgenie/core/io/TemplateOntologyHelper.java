@@ -2,7 +2,7 @@ package org.bbop.termgenie.core.io;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 
 /**
  * Tool for the association of Ontologies to a string. 

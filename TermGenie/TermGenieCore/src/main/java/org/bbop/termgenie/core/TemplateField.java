@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Specifications for a field in an ontology term generation template.
  */
-public class TemplateField implements OntologyAware {
+public class TemplateField {
 	
 	private final String name;
 	private final boolean required;
@@ -188,7 +188,6 @@ public class TemplateField implements OntologyAware {
 		return functionalPrefixes;
 	}
 
-	@Override
 	public List<Ontology> getCorrespondingOntologies() {
 		return correspondingOntologies;
 	}

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -39,17 +39,15 @@ public class OntologyTools {
 		}
 		
 		for (TermTemplate template : engine.getAvailableTemplates()) {
-			List<Ontology> ontologies = template.getCorrespondingOntologies();
-			for (Ontology ontology : ontologies) {
-				String name = getOntologyName(ontology);
-				if (name != null) {
-					List<TermTemplate> list = templates.get(name);
-					if (list == null) {
-						list = new ArrayList<TermTemplate>();
-						templates.put(name, list);
-					}
-					list.add(template);
+			Ontology ontology = template.getCorrespondingOntology();
+			String name = getOntologyName(ontology);
+			if (name != null) {
+				List<TermTemplate> list = templates.get(name);
+				if (list == null) {
+					list = new ArrayList<TermTemplate>();
+					templates.put(name, list);
 				}
+				list.add(template);
 			}
 		}
 	}

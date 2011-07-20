@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class HybridLuceneSolrClient extends SimpleSolrClient {

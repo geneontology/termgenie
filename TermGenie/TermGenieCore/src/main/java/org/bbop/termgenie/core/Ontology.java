@@ -6,58 +6,44 @@ import java.util.Map;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * Interface to specify the methods required to access ontologies.
- *
+ * Wrapper of an ontology, provides additional methods for identifying the ontology.
  */
-public interface OntologyAware {
-
-	/**
-	 * Retrieve the corresponding ontology, connected to this object.
-	 * 
-	 * @return List of ontologies or null if not available
-	 */
-	public List<Ontology> getCorrespondingOntologies();
+public class Ontology
+{
+	protected String name;
+	protected String subOntologyName;
+	protected String subOntologyParentId;
 	
 	/**
-	 * Wrapper of an ontology, provides additional methods for identifying the ontology.
+	 * @param name
+	 * @param subOntologyName
+	 * @param subOntologyParentId
 	 */
-	public static class Ontology
-	{
-		protected String name;
-		protected String subOntologyName;
-		protected String subOntologyParentId;
-		
-		/**
-		 * @param name
-		 * @param subOntologyName
-		 * @param subOntologyParentId
-		 */
-		protected Ontology(String name, String subOntologyName,
-				String subOntologyParentId) {
-			super();
-			this.name = name;
-			this.subOntologyName = subOntologyName;
-			this.subOntologyParentId = subOntologyParentId;
-		}
-
-		public String getUniqueName() {
-			return name;
-		}
-		
-		public String getBranch() {
-			return subOntologyName;
-		}
-		
-		public String getBranchId() {
-			return subOntologyParentId;
-		}
-		
-		protected void setBranch(String subOntologyName, String subOntologyParentId) {
-			this.subOntologyName = subOntologyName;
-			this.subOntologyParentId= subOntologyParentId;
-		} 
+	protected Ontology(String name, String subOntologyName,
+			String subOntologyParentId) {
+		super();
+		this.name = name;
+		this.subOntologyName = subOntologyName;
+		this.subOntologyParentId = subOntologyParentId;
 	}
 
+	public String getUniqueName() {
+		return name;
+	}
+	
+	public String getBranch() {
+		return subOntologyName;
+	}
+	
+	public String getBranchId() {
+		return subOntologyParentId;
+	}
+	
+	protected void setBranch(String subOntologyName, String subOntologyParentId) {
+		this.subOntologyName = subOntologyName;
+		this.subOntologyParentId= subOntologyParentId;
+	}
+	
 	/**
 	 * Wrapper of an ontology term. Intended to be used during 
 	 * rule-based term generation.
@@ -192,7 +178,7 @@ public interface OntologyAware {
 		}
 	}
 	
-	public class Relation 
+	public static class Relation 
 	{
 		private final String source;
 		private final String target;

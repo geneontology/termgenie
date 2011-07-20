@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.solr.common.SolrDocument;
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;

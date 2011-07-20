@@ -10,9 +10,8 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
-import org.bbop.termgenie.core.TemplateRule;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
@@ -71,16 +70,8 @@ public class FlatFileTermTemplateIOTest {
 			assertEquals(t1.getDisplayName(), t2.getDisplayName());
 			assertEquals(t1.getDescription(), t2.getDescription());
 			assertEquals(t1.getHint(), t2.getHint());
-			compareList(t1.getCorrespondingOntologies(), t2.getCorrespondingOntologies());
-			List<TemplateRule> rl1 = t1.getRules();
-			List<TemplateRule> rl2 = t2.getRules();
-			assertEquals(rl1.size(), rl2.size());
-			for (int j = 0; j < rl1.size(); j++) {
-				TemplateRule r1 = rl1.get(j);
-				TemplateRule r2 = rl2.get(j);
-				assertEquals(r1.getName(), r2.getName());
-				assertEquals(r1.getValue(), r2.getValue());
-			}
+			compare(t1.getCorrespondingOntology(), t2.getCorrespondingOntology());
+			assertEquals(t1.getRules(), t2.getRules());
 			List<TemplateField> fl1 = t1.getFields();
 			List<TemplateField> fl2 = t2.getFields();
 			assertEquals(fl1.size(), fl2.size());

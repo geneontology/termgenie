@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 
+import owltools.graph.OWLGraphWrapper;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import owltools.graph.OWLGraphWrapper;
 
 @Singleton
 public class HardCodedTermGenerationEngine implements TermGenerationEngine {

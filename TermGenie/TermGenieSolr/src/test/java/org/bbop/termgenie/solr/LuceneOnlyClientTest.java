@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.junit.Test;
 
 public class LuceneOnlyClientTest extends OntologyProvider {

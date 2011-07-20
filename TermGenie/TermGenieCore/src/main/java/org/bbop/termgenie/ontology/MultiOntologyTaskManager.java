@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.MultiResourceTaskManager;
 

@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
+import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;

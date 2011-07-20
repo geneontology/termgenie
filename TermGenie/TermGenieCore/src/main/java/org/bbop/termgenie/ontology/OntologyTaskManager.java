@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 
 import owltools.graph.OWLGraphWrapper;

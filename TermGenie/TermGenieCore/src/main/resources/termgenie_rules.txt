@@ -14,11 +14,9 @@ FIELD
 name	DefX_Ref
 cardinality	1..N
 #
-RULE	TermRule
+RULE
 Dummy Rule
-     2nd line
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -38,10 +36,9 @@ FIELD
 name	DefX_Ref
 cardinality	1..N
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -74,10 +71,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -109,10 +105,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -144,10 +139,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -174,10 +168,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -204,10 +197,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -234,10 +226,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -264,7 +255,7 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
 
 
@@ -291,10 +282,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -322,11 +312,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-2nd line
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -353,10 +341,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -388,10 +375,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -423,10 +409,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -458,10 +443,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -494,10 +478,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 
@@ -529,10 +512,9 @@ cardinality	1..N
 FIELD
 name	Comment
 #
-RULE	TermRule
+RULE
 Dummy Rule
-RULE	NameRule
-Dummy Name Rule
+ Dummy Name Rule
 2nd line
 
 

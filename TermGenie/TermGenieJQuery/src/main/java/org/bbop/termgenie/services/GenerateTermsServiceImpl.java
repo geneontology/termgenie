@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
-import org.bbop.termgenie.core.OntologyAware.Relation;
+import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -41,13 +41,13 @@ import org.bbop.termgenie.tools.OntologyCommitTool;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.semanticweb.owlapi.model.OWLObject;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import owltools.graph.OWLGraphEdge;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 import owltools.graph.OWLQuantifiedProperty;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class GenerateTermsServiceImpl implements GenerateTermsService {

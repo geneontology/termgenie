@@ -2,7 +2,7 @@ package org.bbop.termgenie.tools;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 
 import com.google.inject.Inject;

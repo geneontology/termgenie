@@ -10,15 +10,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.TemplateField.Cardinality;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
-import org.bbop.termgenie.core.TemplateRule;
+import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
 
 import com.google.inject.Inject;
@@ -117,8 +116,8 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			writer.append(FLAT_FILE_TAG_HINT).append(SEPARATOR_CHAR).append(hint);
 			writer.newLine();
 		}
-		// ontologies
-		addOntologies(template.getCorrespondingOntologies(), writer);
+		// ontology
+		addOntology(template.getCorrespondingOntology(), writer);
 		
 		// template fields
 		for (TemplateField templateField : template.getFields()) {
@@ -161,16 +160,14 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			addOntologies(templateField.getCorrespondingOntologies(), writer);
 		}
 		// rule
-		List<TemplateRule> rules = template.getRules();
+		String rules = template.getRules();
 		if (!rules.isEmpty()) {
 			writer.append(COMMENT_CHAR);
 			writer.newLine();
-			for (TemplateRule rule : rules) {
-				writer.append(FLAT_FILE_TAG_RULE).append(SEPARATOR_CHAR).append(rule.getName());
-				writer.newLine();
-				writer.append(rule.getValue());
-				writer.newLine();
-			}
+			writer.append(FLAT_FILE_TAG_RULE);
+			writer.newLine();
+			writer.append(rules);
+			writer.newLine();
 		}
 	}
 	
@@ -179,6 +176,10 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
 			writer.newLine();
 		}
+	}
+	
+	private void addOntology(Ontology ontology, BufferedWriter writer) throws IOException {
+		addOntologies(Collections.singletonList(ontology), writer);
 	}
 
 	private class ReadData {
@@ -189,31 +190,21 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		String hint = null;
 		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
 		Map<String, String> currentField = null;
-		Map<String, StringBuilder> rules = new LinkedHashMap<String, StringBuilder>();
-		StringBuilder currentRule = null;
+		StringBuilder rules = null;
 		
 		void newCurrentField() {
 			currentField = new HashMap<String, String>();
 			fields.add(currentField);
 		}
 		
-		void newRuleBuffer(String name) {
-			currentRule = new StringBuilder();
-			rules.put(name, currentRule);
+		void newRuleBuffer() {
+			rules = new StringBuilder();
 		}
 		
 		TermTemplate createTermTemplate() {
 			List<Ontology> ontologies = getOntologies(ontology);
-			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, displayname, description, createFields(), createRule(rules), hint);
+			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, displayname, description, createFields(), rules != null ? rules.toString() : null, hint);
 			return termTermplate;
-		}
-		
-		private List<TemplateRule> createRule(Map<String, StringBuilder> values) {
-			List<TemplateRule> list = new ArrayList<TemplateRule>(values.size());
-			for (String name : values.keySet()) {
-				list.add(new TemplateRule(name, values.get(name).toString()));
-			}
-			return list;
 		}
 		
 		private List<Ontology> getOntologies(String ontologiesString) {
@@ -296,12 +287,12 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			} else if (line.startsWith(FLAT_FILE_TAG_CARDINALITY)) {
 				handleField(data, FLAT_FILE_TAG_CARDINALITY, value, count);
 			} else if (line.startsWith(FLAT_FILE_TAG_RULE)) {
-				data.newRuleBuffer(value);
-			} else if (data.currentRule != null) {
-				if (data.currentRule.length() > 0) {
-					data.currentRule.append('\n');
+				data.newRuleBuffer();
+			} else if (data.rules != null) {
+				if (data.rules.length() > 0) {
+					data.rules.append('\n');
 				}
-				data.currentRule.append(line);
+				data.rules.append(line);
 			}
 		}
 		if (data != null) {

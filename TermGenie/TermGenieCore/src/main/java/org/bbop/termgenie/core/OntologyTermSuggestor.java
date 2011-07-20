@@ -2,8 +2,7 @@ package org.bbop.termgenie.core;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.OntologyAware.Ontology;
-import org.bbop.termgenie.core.OntologyAware.OntologyTerm;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 
 public interface OntologyTermSuggestor {
 

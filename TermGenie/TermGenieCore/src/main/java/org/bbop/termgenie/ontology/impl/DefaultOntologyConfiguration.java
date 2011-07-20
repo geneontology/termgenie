@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.OntologyAware.Ontology;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.tools.ResourceLoader;
 

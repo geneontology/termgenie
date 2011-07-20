@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.rules.DefaultTermTemplates;
 import org.bbop.termgenie.core.rules.DefaultTermTemplatesModule;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.junit.BeforeClass;
 
 import com.google.inject.Guice;

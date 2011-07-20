@@ -3,33 +3,33 @@ package org.bbop.termgenie.core;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * Data container for templates.
  */
-public class TermTemplate implements OntologyAware {
+public class TermTemplate {
 
-	private final List<Ontology> correspondingOntologies;
+	private final Ontology correspondingOntology;
 	private final String name;
 	private final String displayName;
 	private final String description;
 	private final List<TemplateField> fields;
-	private final List<TemplateRule> rules;
+	private final String rules;
 	private final String hint;
-	
-	//TODO
-	// what is the actual template?, How to handle automatic name generation?
-	// who is allowed to use this rule?
 	
 	/**
 	 * @param correspondingOntology
 	 * @param name
+	 * @param displayName
+	 * @param description
 	 * @param fields
 	 * @param rules
+	 * @param hint
 	 */
 	public TermTemplate(Ontology correspondingOntology, String name, String displayName, String description,
-			List<TemplateField> fields, List<TemplateRule> rules, String hint) {
+			List<TemplateField> fields, String rules, String hint) {
 		super();
-		this.correspondingOntologies = Collections.singletonList(correspondingOntology);
+		this.correspondingOntology = correspondingOntology;
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("The name, must never be empty");
 		}
@@ -44,9 +44,8 @@ public class TermTemplate implements OntologyAware {
 		this.hint = hint;
 	}
 
-	@Override
-	public List<Ontology> getCorrespondingOntologies() {
-		return correspondingOntologies;
+	public Ontology getCorrespondingOntology() {
+		return correspondingOntology;
 	}
 
 	/**
@@ -66,7 +65,7 @@ public class TermTemplate implements OntologyAware {
 	/**
 	 * @return the rules
 	 */
-	public List<TemplateRule> getRules() {
+	public String getRules() {
 		return rules;
 	}
 	
@@ -154,9 +153,9 @@ public class TermTemplate implements OntologyAware {
 			builder.append(displayName);
 			builder.append(", ");
 		}
-		if (correspondingOntologies != null) {
-			builder.append("correspondingOntologies=");
-			builder.append(correspondingOntologies);
+		if (correspondingOntology != null) {
+			builder.append("correspondingOntology=");
+			builder.append(correspondingOntology);
 			builder.append(", ");
 		}
 		if (description != null) {
