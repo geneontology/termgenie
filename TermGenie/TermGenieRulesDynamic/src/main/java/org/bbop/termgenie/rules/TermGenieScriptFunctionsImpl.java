@@ -86,6 +86,24 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	private int getFieldPos(String name) {
 		return input.getTermTemplate().getFieldPos(name);
 	}
+	
+	@Override
+	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology) {
+		OntologyTerm[] terms = getFieldTerms(name);
+		if (terms == null || terms.length == 0) {
+			return new OWLObject[0];
+		}
+		List<OWLObject> result = new ArrayList<OWLObject>();
+		for (OntologyTerm term : terms) {
+			if (term != null) {
+				OWLObject x = getTermSimple(term.getId(), ontology);
+				if (x != null) {
+					result.add(x);
+				}
+			}
+		}
+		return result.toArray(new OWLObject[result.size()]);
+	}
 
 	private static final CheckResult okay = new CheckResult() {
 		
@@ -219,7 +237,8 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		return sb.toString();
 	}
 	
-	private String refname(OWLObject x, OWLGraphWrapper ontology) {
+	@Override
+	public String refname(OWLObject x, OWLGraphWrapper ontology) {
 		String name = name(x, ontology);
 		return starts_with_vowl(name) ? "an "+name : "a "+name;
 	}
@@ -391,6 +410,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	
 	@Override
 	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology) {
+		return new CDefImpl(genus, ontology);
+	}
+	
+	@Override
+	public CDef cdef(String id, OWLGraphWrapper ontology) {
+		OWLObject genus = ontology.getOWLObjectByIdentifier(id);
 		return new CDefImpl(genus, ontology);
 	}
 

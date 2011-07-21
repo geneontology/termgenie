@@ -20,6 +20,15 @@ public interface TermGenieScriptFunctions {
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper...ontologies);
 	
 	/**
+	 * Retrieve all terms as list from given the template field.
+	 * 
+	 * @param name of template field
+	 * @param ontologies the ontologies to search in for the id extracted from the field
+	 * @return term or null
+	 */
+	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology);
+	
+	/**
 	 * @param x the term
 	 * @param parent the parent term
 	 * @param ontology the ontology used for relations
@@ -81,6 +90,16 @@ public interface TermGenieScriptFunctions {
 	 */
 	public String name(OWLObject x, OWLGraphWrapper...ontologies);
 	
+	
+	/**
+	 * create the ref name of a term: prepend 'a ' or 'an ' to the label
+	 * 
+	 * @param x
+	 * @param ontology
+	 * @return refname
+	 */
+	public String refname(OWLObject x, OWLGraphWrapper ontology);
+	
 	/**
 	 * Create new synonyms for a given term with a prefix and suffix.
 	 * The new label is required as it is used to prevent accidential 
@@ -135,6 +154,17 @@ public interface TermGenieScriptFunctions {
 	 * @see CDef for adding differentia and properties
 	 */
 	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology);
+	
+	/**
+	 * Create a logical definition for a term in form of a {@link CDef}.
+	 * 
+	 * @param genus id
+	 * @param ontology
+	 * @return cdef
+	 * 
+	 * @see CDef for adding differentia and properties
+	 */
+	public CDef cdef(String genus, OWLGraphWrapper ontology);
 	
 	/**
 	 * Locigal defintion used for relation generation in term genie.
