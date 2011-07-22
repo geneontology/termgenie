@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bbop.termgenie</groupId>
 	<artifactId>TermGenie</artifactId>
+	<name>TermGenie</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -40,6 +41,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<url>https://code.google.com/p/termgenie/</url>
+	<issueManagement>
+		<url>https://code.google.com/p/termgenie/issues/list</url>
+	</issueManagement>
+	<inceptionYear>2011</inceptionYear>
+	<developers>
+	</developers>
+	<scm>
+		<url>https://termgenie.googlecode.com/svn/</url>
+	</scm>
+	<organization>
+		<name>BBOP</name>
+		<url>http://berkeleybop.org/</url>
+	</organization>
 	<build>
 	  	<plugins>
 	  		<plugin>
