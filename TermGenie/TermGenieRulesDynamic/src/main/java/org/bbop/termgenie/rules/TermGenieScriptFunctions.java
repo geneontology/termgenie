@@ -1,5 +1,6 @@
 package org.bbop.termgenie.rules;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -214,6 +215,7 @@ public interface TermGenieScriptFunctions {
 	
 	/**
 	 * Create a new term and add it to the result output.
+	 * Create the output list with {@link #createList()}.
 	 * 
 	 * @param label
 	 * @param definition
@@ -223,6 +225,23 @@ public interface TermGenieScriptFunctions {
 	 * @param output the list the new term is added to.
 	 */
 	public void addTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology, List<TermGenerationOutput> output);
+	
+	/**
+	 * Create an empty list to filled with results.
+	 * Use in conjunction with {@link #addTerm(String, String, List, CDef, OWLGraphWrapper, List)}.
+	 * 
+	 * @return result list
+	 */
+	public List<TermGenerationOutput> createList();
+	
+	/**
+	 * Check if a value is in the collection.
+	 * 
+	 * @param collection
+	 * @param value
+	 * @return true if hte collection contains the value
+	 */
+	public boolean contains(Collection<String> collection, String value);
 	
 	/**
 	 * Create an error in the expected return format.

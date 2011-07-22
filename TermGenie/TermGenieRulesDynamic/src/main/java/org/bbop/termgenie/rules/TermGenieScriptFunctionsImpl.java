@@ -526,6 +526,16 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 	
 	@Override
+	public List<TermGenerationOutput> createList() {
+		return new ArrayList<TermGenerationOutput>();
+	}
+
+	@Override
+	public boolean contains(Collection<String> collection, String value) {
+		return collection.contains(value);
+	}
+
+	@Override
 	public List<TermGenerationOutput> error(String message) {
 		TermGenerationOutput output = new TermGenerationOutput(null, input, false, message);
 		return Collections.singletonList(output);
