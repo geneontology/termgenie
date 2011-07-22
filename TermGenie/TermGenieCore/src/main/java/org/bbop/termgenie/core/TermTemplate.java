@@ -14,6 +14,9 @@ public class TermTemplate {
 	private final String displayName;
 	private final String description;
 	private final List<TemplateField> fields;
+	private final List<Ontology> external;
+	private final List<String> requires;
+	private final String obo_namespace;
 	private final String rules;
 	private final String hint;
 	
@@ -23,11 +26,17 @@ public class TermTemplate {
 	 * @param displayName
 	 * @param description
 	 * @param fields
+	 * @param external
+	 * @param requires
+	 * @param obo_namespace
 	 * @param rules
 	 * @param hint
 	 */
-	public TermTemplate(Ontology correspondingOntology, String name, String displayName, String description,
-			List<TemplateField> fields, String rules, String hint) {
+	public TermTemplate(Ontology correspondingOntology, 
+			String name, String displayName, String description,
+			List<TemplateField> fields, List<Ontology> external, 
+			List<String> requires, String obo_namespace, String rules, 
+			String hint) {
 		super();
 		this.correspondingOntology = correspondingOntology;
 		if (name == null || name.isEmpty()) {
@@ -39,6 +48,9 @@ public class TermTemplate {
 			throw new IllegalArgumentException("The field list, must never be empty");
 		}
 		this.fields = Collections.unmodifiableList(fields);
+		this.external = external != null ? Collections.unmodifiableList(external) : null;
+		this.requires = requires != null ? Collections.unmodifiableList(requires) : null;
+		this.obo_namespace = obo_namespace;
 		this.rules = rules;
 		this.description = description;
 		this.hint = hint;
@@ -60,6 +72,27 @@ public class TermTemplate {
 	 */
 	public List<TemplateField> getFields() {
 		return fields;
+	}
+
+	/**
+	 * @return the external
+	 */
+	public List<Ontology> getExternal() {
+		return external;
+	}
+
+	/**
+	 * @return the requires
+	 */
+	public List<String> getRequires() {
+		return requires;
+	}
+
+	/**
+	 * @return the obo_namespace
+	 */
+	public String getOboNamespace() {
+		return obo_namespace;
 	}
 
 	/**
@@ -166,6 +199,11 @@ public class TermTemplate {
 		if (fields != null) {
 			builder.append("fields=");
 			builder.append(fields);
+			builder.append(", ");
+		}
+		if (external != null) {
+			builder.append("external=");
+			builder.append(external);
 			builder.append(", ");
 		}
 		if (rules != null) {

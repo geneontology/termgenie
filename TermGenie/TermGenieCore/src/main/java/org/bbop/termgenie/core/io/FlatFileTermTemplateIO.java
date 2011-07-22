@@ -32,6 +32,9 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 	private static final String FLAT_FILE_TAG_RULE = "RULE";
 	private static final String FLAT_FILE_TAG_HINT = "hint";
 	private static final String FLAT_FILE_TAG_ONTOLOGY = "ontology";
+	private static final String FLAT_FILE_TAG_EXTERNAL = "external";
+	private static final String FLAT_FILE_TAG_OBO_NAMESPACE = "obo_namespace";
+	private static final String FLAT_FILE_TAG_REQUIRES = "requires";
 	private static final String FLAT_FILE_TAG_PREFIXES = "prefixes";
 	private static final String FLAT_FILE_TAG_CARDINALITY = "cardinality";
 	private static final String FLAT_FILE_TAG_REQUIRED = "required";
@@ -119,6 +122,23 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		// ontology
 		addOntology(template.getCorrespondingOntology(), writer);
 		
+		// external
+		addOntologies(FLAT_FILE_TAG_EXTERNAL, template.getExternal(), writer);
+		
+		// obo_namespace
+		final String oboNamespace = template.getOboNamespace();
+		if (oboNamespace != null) {
+			writer.append(FLAT_FILE_TAG_OBO_NAMESPACE).append(SEPARATOR_CHAR).append(oboNamespace);
+			writer.newLine();
+		}
+		
+		// requires
+		final List<String> requires = template.getRequires();
+		if (requires != null && !requires.isEmpty()) {
+			writer.append(FLAT_FILE_TAG_REQUIRES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(requires, SEPARATOR_CHAR));
+			writer.newLine();
+		}
+		
 		// template fields
 		for (TemplateField templateField : template.getFields()) {
 			writer.append(COMMENT_CHAR);
@@ -172,8 +192,12 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 	}
 	
 	private void addOntologies(List<Ontology> ontologies, BufferedWriter writer) throws IOException {
+		addOntologies(FLAT_FILE_TAG_ONTOLOGY, ontologies, writer);
+	}
+	
+	private void addOntologies(String tag, List<Ontology> ontologies, BufferedWriter writer) throws IOException {
 		if (ontologies != null && !ontologies.isEmpty()) {
-			writer.append(FLAT_FILE_TAG_ONTOLOGY).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
+			writer.append(tag).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
 			writer.newLine();
 		}
 	}
@@ -191,6 +215,9 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
 		Map<String, String> currentField = null;
 		StringBuilder rules = null;
+		String external = null;
+		String requires = null;
+		String obo_namespace = null;
 		
 		void newCurrentField() {
 			currentField = new HashMap<String, String>();
@@ -203,7 +230,18 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		
 		TermTemplate createTermTemplate() {
 			List<Ontology> ontologies = getOntologies(ontology);
-			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, displayname, description, createFields(), rules != null ? rules.toString() : null, hint);
+			List<Ontology> external = this.external == null ? null : getOntologies(this.external);
+			TermTemplate termTermplate = new TermTemplate(
+					ontologies.get(0), 
+					name, 
+					displayname, 
+					description, 
+					createFields(), 
+					external,
+					ListHelper.parseString(requires, SEPARATOR_CHAR),
+					obo_namespace,
+					rules != null ? rules.toString() : null, 
+					hint);
 			return termTermplate;
 		}
 		
@@ -274,6 +312,12 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 				data.displayname = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
 				data.description = value;
+			} else if (line.startsWith(FLAT_FILE_TAG_EXTERNAL)) {
+				data.external = value;
+			} else if (line.startsWith(FLAT_FILE_TAG_OBO_NAMESPACE)) {
+				data.obo_namespace = value;
+			} else if (line.startsWith(FLAT_FILE_TAG_REQUIRES)) {
+				data.requires = value;
 			} else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {
 				if (data.currentField == null) {
 					data.ontology = value;

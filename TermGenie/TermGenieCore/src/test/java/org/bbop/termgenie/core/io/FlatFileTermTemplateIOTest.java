@@ -43,10 +43,13 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 	@Test
 	public void testReadWriteTemplates() throws IOException {
 		
-		InputStream in = loadResource("test_termgenie_rules.txt");
-		List<TermTemplate> read0 = templateIO.readTemplates(new BufferedReader(new InputStreamReader(in)));
+		String init = load(loadResource("test_termgenie_rules.txt"));
+		List<TermTemplate> read0 = templateIO.readTemplates(new BufferedReader(new StringReader(init)));
 		
 		String write1 = write(read0);
+		
+		assertEquals(init, write1);
+		
 		List<TermTemplate> read1 = read(write1);
 		compare(read0, read1);
 		
@@ -59,6 +62,17 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 		
 		String write3 = write(read2);
 		assertEquals(write1, write3);
+	}
+	
+	private String load(InputStream in) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line);
+			sb.append('\n');
+		}
+		return sb.toString();
 	}
 	
 	private void compare(List<TermTemplate> l1, List<TermTemplate> l2) {

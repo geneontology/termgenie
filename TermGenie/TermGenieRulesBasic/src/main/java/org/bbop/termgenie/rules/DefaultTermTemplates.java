@@ -221,7 +221,7 @@ public class DefaultTermTemplates {
 	
 	private TermTemplate create(Ontology correspondingOntology, String name, String displayName, String description, String hint, String rules,
 			TemplateField...fields) {
-		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, displayName, description, Arrays.asList(fields), rules, hint);
+		TermTemplate termTemplate = new TermTemplate(correspondingOntology, name, displayName, description, Arrays.asList(fields), null, null, null, rules, hint);
 		defaultTemplates.add(termTemplate);
 		return termTemplate;
 	}

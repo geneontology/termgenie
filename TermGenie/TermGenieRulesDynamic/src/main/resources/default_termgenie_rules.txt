@@ -3,6 +3,7 @@ name	all_regulation
 displayname	regulation: biological_process
 description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for biological processes). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
+obo_namespace	biological_process
 #
 FIELD
 name	target
@@ -71,6 +72,7 @@ name	all_regulation_mf
 displayname	regulation: molecular_function
 description	Select all three subtemplates to generate terms for regulation, negative regulations and positive regulation (for molecular functions). Names, synonyms and definitions are all generated automatically
 ontology	GeneOntology
+obo_namespace	biological_process
 #
 FIELD
 name	target
@@ -134,12 +136,13 @@ RULE
   return terms;
 
 
-
 TEMPLATE
 name	involved_in
 description	processes involved in other processes
 hint	[part] involved in [whole]
 ontology	GeneOntology
+obo_namespace	biological_process
+requires	biological_process_xp_self.obo
 #
 FIELD
 name	part
@@ -188,6 +191,8 @@ TEMPLATE
 name	occurs_in
 description	processes occurring in parts of the cell
 ontology	GeneOntology
+obo_namespace	biological_process
+requires	biological_process_xp_cellular_component.obo
 #
 FIELD
 name	process
@@ -216,7 +221,6 @@ RULE
   var go = GeneOntology;
   var p = termgenie.getSingleTerm("process", go);
   var c = termgenie.getSingleTerm("location", go);
-
   var check = termgenie.checkGenus(p, "GO:0008150", go);
   if (check.isGenus() !== true) {
     return check.error();
@@ -232,10 +236,12 @@ RULE
   cdef.addDifferentium("OBO_REL:occurs_in", c, go);
   return termgenie.createTerm(label, definition, synonyms, cdef, go);
 
+
 TEMPLATE
 name	part_of_cell_component
 description	cell components part of other cell components
 ontology	GeneOntology
+obo_namespace	cellular_component
 #
 FIELD
 name	part
@@ -285,6 +291,8 @@ name	protein_binding
 description	binding to a protein
 ontology	GeneOntology
 external	ProteinOntology
+obo_namespace	biological_process
+requires	molecular_function_xp_protein.obo
 #
 FIELD
 name	target
@@ -325,6 +333,8 @@ name	metazoan_development
 description	development of an animal anatomical structure
 ontology	GeneOntology
 external	Uberon
+obo_namespace	biological_process
+requires	biological_process_xp_uber_anatomy.obo
 #
 FIELD
 name	target
@@ -367,6 +377,8 @@ name	metazoan_morphogenesis
 description	morphogenesis of an animal anatomical structure
 ontology	GeneOntology
 external	Uberon
+obo_namespace	biological_process
+requires	biological_process_xp_uber_anatomy.obo
 #
 FIELD
 name	target
@@ -407,6 +419,8 @@ name	plant_development
 description	development of a plant anatomical structure
 ontology	GeneOntology
 external	PO
+obo_namespace	biological_process
+requires	biological_process_xp_plant_anatomy.obo
 #
 FIELD
 name	target
@@ -449,6 +463,8 @@ name	plant_morphogenesis
 description	morphogenesis of a plant animal anatomical structure
 ontology	GeneOntology
 external	PO
+obo_namespace	biological_process
+requires	biological_process_xp_plant_anatomy.obo
 #
 FIELD
 name	target
@@ -483,10 +499,14 @@ RULE
   cdef.addDifferentium("OBO_REL:results_in_morphogenesis_of", x, plant);
   return termgenie.createTerm(label, definition, synonyms, cdef, go);
 
+
 TEMPLATE
 name	structural_protein_complex
 description	protein complex defined structurally
 ontology	GeneOntology
+external	ProteinOntology
+obo_namespace	cellular_component
+#requires	cellular_component_xp_protein.obo
 #
 FIELD
 name	unit
@@ -535,6 +555,8 @@ name	abnormal_morphology
 description	Abnormal X morphology
 ontology	HumanPhenotype
 external	FMA|PATO
+obo_namespace	medical_genetics
+requires	human-phenotype-ontology_xp.obo
 #
 FIELD
 name	target
@@ -567,12 +589,13 @@ RULE
   return termgenie.createTerm(label, definition, synonyms, cdef, HumanPhenotype);
 
 
-
 TEMPLATE
 name	hpo_entity_quality
 description	basic EQ template
 ontology	HumanPhenotype
 external	FMA|PATO
+obo_namespace	medical_genetics
+requires	human-phenotype-ontology_xp.obo
 #
 FIELD
 name	entity
@@ -616,6 +639,7 @@ name	omp_entity_quality
 description	basic EQ template
 ontology	OMP
 external	GeneOntology|PATO
+obo_namespace	omp
 #
 FIELD
 name	entity
@@ -661,6 +685,7 @@ name	metazoan_location_specific_cell
 description	A cell type differentiated by its anatomical location (animals)
 ontology	CL
 external	Uberon
+obo_namespace	cell
 #
 FIELD
 name	cell
@@ -705,6 +730,7 @@ name	cell_by_surface_marker
 description	A cell type differentiated by proteins or complexes on the plasma membrane
 ontology	CL
 external	ProteinOntology|GeneOntology
+obo_namespace	cell
 #
 FIELD
 name	cell
@@ -753,6 +779,7 @@ TEMPLATE
 name	metazoan_location_specific_anatomical_structure
 description	location-specific anatomical structure
 ontology	Uberon
+obo_namespace	uberon
 #
 FIELD
 name	part
