@@ -9,7 +9,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
@@ -34,19 +33,14 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		this.templateOntologyManagers = new HashMap<TermTemplate, Ontology[]>();
 		this.templates = templates;
 		for (TermTemplate termTemplate : templates) {
+			List<Ontology> requiredOntologies = new ArrayList<Ontology>();
 			Ontology targetOntology = termTemplate.getCorrespondingOntology();
-			Map<String, Ontology> ontologies = new HashMap<String, Ontology>();
-			ontologies.put(targetOntology.getUniqueName(), targetOntology);
-			for(TemplateField templateField : termTemplate.getFields()) {
-				List<Ontology> fieldOntologies = templateField.getCorrespondingOntologies();
-				for (Ontology ontology : fieldOntologies) {
-					String key = ontology.getUniqueName();
-					if (!ontologies.containsKey(key)) {
-						ontologies.put(key, ontology);
-					}
-				}
+			requiredOntologies.add(targetOntology);
+			List<Ontology> external = termTemplate.getExternal();
+			if (external != null && !external.isEmpty()) {
+				requiredOntologies.addAll(external);
 			}
-			Ontology[] array = ontologies.values().toArray(new Ontology[ontologies.size()]);
+			Ontology[] array = requiredOntologies.toArray(new Ontology[requiredOntologies.size()]);
 			templateOntologyManagers.put(termTemplate, array);
 		}
 	}
