@@ -76,9 +76,9 @@
 
 	<repositories>
 		<repository>
-			<id>GroupRepository</id>
-			<name>Group Repository</name>
-			<url>${bbopgrouprepository}</url>
+			<id>BerkeleyBOP</id>
+			<name>Berkeley BOP maven repository</name>
+			<url>http://code.berkeleybop.org/maven/repository/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
