@@ -2,6 +2,7 @@ package org.bbop.termgenie.tools;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 
 import com.google.inject.Provides;
@@ -15,8 +16,8 @@ public class TermGenieToolsModule extends IOCModule {
 	}
 
 	@Provides @Singleton
-	OntologyTools provideOntologyTools(TermGenerationEngine engine, OntologyLoader loader) {
-		return new OntologyTools(engine, loader);
+	OntologyTools provideOntologyTools(TermGenerationEngine engine, OntologyLoader loader, OntologyConfiguration configuration) {
+		return new OntologyTools(engine, loader, configuration);
 	}
 	
 	@Provides @Singleton

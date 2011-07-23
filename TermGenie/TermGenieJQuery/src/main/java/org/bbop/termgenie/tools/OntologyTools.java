@@ -10,6 +10,7 @@ import java.util.Map;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
@@ -23,18 +24,17 @@ import com.google.inject.Singleton;
 public class OntologyTools {
 	
 	private final Map<String, OntologyTaskManager> managerInstances;
-	private final Map<Ontology, String> reverseOntologyInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
 	@Inject
-	OntologyTools(TermGenerationEngine engine, OntologyLoader loader) {
+	OntologyTools(TermGenerationEngine engine, OntologyLoader loader, OntologyConfiguration configuration) {
 		managerInstances = new HashMap<String, OntologyTaskManager>();
-		reverseOntologyInstances = new HashMap<Ontology, String>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
 		for(OntologyTaskManager manager : loader.getOntologies()) {
 			if (manager != null) {
-				addOntology(manager);
+				Ontology ontology = manager.getOntology();
+				managerInstances.put(ontology.getUniqueName(), manager);
 			}
 		}
 		
@@ -52,8 +52,11 @@ public class OntologyTools {
 		}
 	}
 	
-	private void addOntology(OntologyTaskManager manager) {
-		Ontology ontology = manager.getOntology();
+	public OntologyTaskManager getManager(String ontology) {
+		return managerInstances.get(ontology);
+	}
+
+	public String getOntologyName(Ontology ontology) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ontology.getUniqueName());
 		String branch = ontology.getBranch();
@@ -62,16 +65,7 @@ public class OntologyTools {
 			sb.append(branch);
 		}
 		String name = sb.toString();
-		managerInstances.put(name, manager);
-		reverseOntologyInstances.put(ontology, name);
-	}
-	
-	public OntologyTaskManager getManager(String ontology) {
-		return managerInstances.get(ontology);
-	}
-
-	public String getOntologyName(Ontology ontology) {
-		return reverseOntologyInstances.get(ontology);
+		return name;
 	}
 	
 	public String[] getAvailableOntologyNames() {
@@ -91,10 +85,6 @@ public class OntologyTools {
 			}
 		});
 		return names.toArray(new String[names.size()]);
-	}
-	
-	List<Ontology> getAvailableOntologies() {
-		return new ArrayList<Ontology>(reverseOntologyInstances.keySet());
 	}
 	
 	public List<TermTemplate> getTermTemplates(String ontologyName) {

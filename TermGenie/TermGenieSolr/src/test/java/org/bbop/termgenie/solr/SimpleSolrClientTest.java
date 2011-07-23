@@ -30,11 +30,11 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	public void testSuggestTerms() {
 		String query = "pig";
 		int maxCount = 10;
-		List<OntologyTerm> terms = client.suggestTerms(query, go.getOntology(), maxCount);
+		List<OntologyTerm> terms = client.suggestTerms(query, go, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
-		assertNull(client.suggestTerms(query, cc.getOntology(), maxCount));
+		assertNull(client.suggestTerms(query, cc, maxCount));
 	}
 
 	/**

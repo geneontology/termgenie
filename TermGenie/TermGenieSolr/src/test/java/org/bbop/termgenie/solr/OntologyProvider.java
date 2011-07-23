@@ -2,6 +2,7 @@ package org.bbop.termgenie.solr;
 
 import java.util.Map;
 
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -14,11 +15,15 @@ import com.google.inject.Injector;
 
 public abstract class OntologyProvider {
 	
-	protected static OntologyTaskManager go;
-	protected static OntologyTaskManager bp;
-	protected static OntologyTaskManager mf;
-	protected static OntologyTaskManager cc;
-	protected static OntologyTaskManager pro;
+	protected static OntologyTaskManager goManager;
+	protected static OntologyTaskManager proManager;
+	
+	protected static Ontology go;
+	protected static Ontology bp;
+	protected static Ontology mf;
+	protected static Ontology cc;
+	protected static Ontology pro;
+	
 	private static OntologyLoader loader;
 
 	@BeforeClass
@@ -27,11 +32,15 @@ public abstract class OntologyProvider {
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		loader = injector.getInstance(OntologyLoader.class);
-		go = load("GeneOntology", ontologies);
-		bp = load("biological_process", ontologies);
-		mf = load("molecular_function", ontologies);
-		cc = load("cellular_component", ontologies);
-		pro = load("ProteinOntology", ontologies);
+		
+		go = ontologies.get("GeneOntology");
+		bp = ontologies.get("biological_process");
+		mf = ontologies.get("molecular_function");
+		cc = ontologies.get("cellular_component");
+		pro = ontologies.get("ProteinOntology");
+		
+		goManager = load("GeneOntology", ontologies);
+		proManager = load("ProteinOntology", ontologies);
 	}
 	
 	private static OntologyTaskManager load(String name, Map<String, ConfiguredOntology> ontologies) {

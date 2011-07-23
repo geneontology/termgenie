@@ -37,6 +37,18 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>BBOPDeployRepository</id>
+			<name>BBOPDeployRepository</name>
+			<url>${bbopdeployrepository}</url>
+		</repository>
+		<snapshotRepository>
+			<id>BBOPSnapshotRepository</id>
+			<name>BBOPSnapshotRepository</name>
+			<url>${bbopsnapshotrepository}</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -82,6 +94,10 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>BerkeleyBOPSnapshot</id>
+			<url>http://code.berkeleybop.org/maven/snapshot-repository/</url>
 		</repository>
 	</repositories>
 

@@ -15,19 +15,23 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 	
 	private final Map<String, BasicLuceneClient> luceneIndices;
 
-	public LuceneOnlyClient(Collection<OntologyTaskManager> managers) {
+	public LuceneOnlyClient(Collection<? extends Ontology> ontologies, Collection<OntologyTaskManager> managers) {
 		super();
-		luceneIndices = createIndices(managers);
+		luceneIndices = createIndices(ontologies, managers);
 	}
 	
-	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies) {
+	private static Map<String, BasicLuceneClient> createIndices(Collection<? extends Ontology> ontologies, Collection<OntologyTaskManager> managers) {
 		
-		Map<String, List<OntologyTaskManager>> groups = new HashMap<String, List<OntologyTaskManager>>();
-		for (OntologyTaskManager ontology : ontologies) {
-			String name = ontology.getOntology().getUniqueName();
-			List<OntologyTaskManager> group = groups.get(name);
+		Map<String, List<Ontology>> groups = new HashMap<String, List<Ontology>>();
+		Map<String, OntologyTaskManager> nameManagers = new HashMap<String, OntologyTaskManager>();
+		for (OntologyTaskManager manager : managers) {
+			nameManagers.put(manager.getOntology().getUniqueName(), manager);
+		}
+		for(Ontology ontology : ontologies) {
+			String name = ontology.getUniqueName();
+			List<Ontology> group = groups.get(name);
 			if (group == null) {
-				group = new ArrayList<OntologyTaskManager>();
+				group = new ArrayList<Ontology>();
 				groups.put(name, group);
 			}
 			group.add(ontology);
@@ -35,7 +39,11 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 
 		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
 		for (String name : groups.keySet()) {
-			indices.put(name, BasicLuceneClient.create(groups.get(name)));
+			OntologyTaskManager manager  = nameManagers.get(name);
+			if (manager == null) {
+				throw new RuntimeException("No OntologyTaskManager found for name: "+name);
+			}
+			indices.put(name, BasicLuceneClient.create(groups.get(name), manager));
 		}
 		return indices;
 	}

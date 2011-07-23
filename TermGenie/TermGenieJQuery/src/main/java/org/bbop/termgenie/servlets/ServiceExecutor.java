@@ -1,6 +1,7 @@
 package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
 import org.bbop.termgenie.rules.TermGenerationEngineModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
@@ -22,7 +23,7 @@ public class ServiceExecutor {
 		executor  = new JsonRpcExecutor();
         Injector injector = Guice.createInjector(
         		new DefaultOntologyModule(),
-        		new TermGenerationEngineModule(),
+        		new DefaultDynamicRulesModule(),
         		new TermGenieToolsModule(),
         		new TermGenieServiceModule());
 

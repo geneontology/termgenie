@@ -37,33 +37,33 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 			return create(ontology, name, branches);
 	}
 	
-	public static BasicLuceneClient create(List<OntologyTaskManager> ontologies) {
+	public static BasicLuceneClient create(List<Ontology> ontologies, OntologyTaskManager manager) {
 		if (ontologies == null || ontologies.isEmpty()) {
 			throw new RuntimeException("At least one ontology is required to create an index.");
 		}
 		if (ontologies.size() == 1) {
-			return create(ontologies.get(0));
+			return create(manager);
 		}
 		String name = null;
 		List<Pair<String, String>> branches = new ArrayList<Pair<String,String>>();
-		for (OntologyTaskManager ontology : ontologies) {
+		for (Ontology ontology : ontologies) {
 			if (name == null) {
-				name = ontology.getOntology().getUniqueName();
+				name = ontology.getUniqueName();
 			}
 			else  {
-				String cname = ontology.getOntology().getUniqueName();
+				String cname = ontology.getUniqueName();
 				if (!name.equals(cname)) {
 					throw new RuntimeException("Error: Expected only one ontology group, but was: "+name+" and "+cname);
 				}
 			}
-			String branchName = ontology.getOntology().getBranch();
-			String branchId = ontology.getOntology().getBranchId();
+			String branchName = ontology.getBranch();
+			String branchId = ontology.getBranchId();
 			if (branchName != null & branchId != null) {
 				Pair<String, String> pair = new Pair<String, String>(branchName, branchId);
 				branches.add(pair);
 			}
 		}
-		return create(ontologies.get(0), name, branches);
+		return create(manager, name, branches);
 	}
 	
 	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<Pair<String, String>> branches) {

@@ -1,8 +1,14 @@
 package org.bbop.termgenie.services;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
 import org.bbop.termgenie.solr.LuceneOnlyClient;
 
 import com.google.inject.Provides;
@@ -19,8 +25,10 @@ public class TermGenieServiceModule extends IOCModule {
 	}
 	
 	@Provides @Singleton
-	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyLoader loader) {
-		return new LuceneOnlyClient(loader.getOntologies());
+	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyConfiguration configuration, OntologyLoader loader) {
+		List<OntologyTaskManager> managers = loader.getOntologies();
+		Collection<ConfiguredOntology> ontologies = configuration.getOntologyConfigurations().values();
+		return new LuceneOnlyClient(ontologies, managers);
 	}
 	
 }
