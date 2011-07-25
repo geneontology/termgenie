@@ -27,12 +27,13 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * @author hdietze
- *
+ * An implementation of functions for the termgenie scripting environment. 
+ * Hiding the results in an internal variable, allows type safe retrieval.
  */
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	private final TermGenerationInput input;
+	private List<TermGenerationOutput> result;
 	
 	/**
 	 * @param input
@@ -43,7 +44,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 
 	@Override
-	public OWLObject getSingleTerm(String name, OWLGraphWrapper... ontologies) {
+	public OWLObject getSingleTerm(String name, OWLGraphWrapper ontology) {
+		return getSingleTerm(name, new OWLGraphWrapper[]{ontology});
+	}
+	
+	@Override
+	public OWLObject getSingleTerm(String name, OWLGraphWrapper[] ontologies) {
 		String id = getFieldSingleTerm(name).getId(); 
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
@@ -113,7 +119,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		
 		@Override
-		public List<TermGenerationOutput> error() {
+		public String error() {
 			return null;
 		}
 	};
@@ -134,7 +140,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			sb.append(getTermShortInfo(parent, ontology));
 			sb.append(" is not a parent of ");
 			sb.append(getTermShortInfo(x, ontology));
-			final List<TermGenerationOutput> error = error(sb.toString());
+			final String error = sb.toString();
 			
 			return new CheckResult(){
 
@@ -144,7 +150,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 				}
 
 				@Override
-				public List<TermGenerationOutput> error() {
+				public String error() {
 					return error;
 				}
 			};
@@ -152,7 +158,13 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		return okay;
 	}
 	
-	protected boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology) {
+	@Override
+	public boolean genus(OWLObject x, String parent, OWLGraphWrapper ontology) {
+		return genus(x, ontology.getOWLObjectByIdentifier(parent), ontology);
+	}
+
+	@Override
+	public boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology) {
 		if (parent == null) {
 			// TODO check if the term is in the ontology
 			return true;
@@ -205,7 +217,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 	
 	@Override
-	public String name(OWLObject x, OWLGraphWrapper... ontologies) {
+	public String name(OWLObject x, OWLGraphWrapper ontology) {
+		return name(x, new OWLGraphWrapper[]{ontology});
+	}
+	
+	@Override
+	public String name(OWLObject x, OWLGraphWrapper[] ontologies) {
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
 				String label = ontology.getLabel(x);
@@ -239,7 +256,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	
 	@Override
 	public String refname(OWLObject x, OWLGraphWrapper ontology) {
-		String name = name(x, ontology);
+		return refname(x, new OWLGraphWrapper[]{ontology});
+	}
+	
+	@Override
+	public String refname(OWLObject x, OWLGraphWrapper[] ontologies) {
+		String name = name(x, ontologies);
 		return starts_with_vowl(name) ? "an "+name : "a "+name;
 	}
 	
@@ -391,17 +413,27 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		
 		@Override
-		public void differentium(String rel, OWLObject term, OWLGraphWrapper...ontologies) {
+		public void differentium(String rel, OWLObject term, OWLGraphWrapper[] ontologies) {
 			differentium(rel, new OWLObject[]{term}, ontologies);
 		}
 		
 		@Override
-		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper...ontologies) {
+		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper[] ontologies) {
 			differentiumRelations.add(rel);
 			differentiumTerms.add(terms);
 			differentiumOntologies.add(ontologies);
 		}
 		
+		@Override
+		public void differentium(String rel, OWLObject term, OWLGraphWrapper ontology) {
+			differentium(rel, new OWLObject[]{term}, new OWLGraphWrapper[]{ontology});
+		}
+
+		@Override
+		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper ontology) {
+			differentium(rel, terms, new OWLGraphWrapper[]{ontology});
+		}
+
 		@Override
 		public void property(String property) {
 			properties.add(property);
@@ -420,17 +452,17 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 
 	@Override
-	public List<TermGenerationOutput> createTerm(String label, String definition,
+	public synchronized void createTerm(String label, String definition,
 			List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology) {
-		List<TermGenerationOutput> output = new ArrayList<TermGenerationOutput>(1);
-		addTerm(label, definition, synonyms, logicalDefinition, ontology, output);
-		return output;
+		if (result == null) {
+			result = new ArrayList<TermGenerationOutput>(1);	
+		}
+		addTerm(label, definition, synonyms, logicalDefinition, ontology, result);
 	}
 
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
-	@Override
-	public void addTerm(String label, String definition, List<Synonym> synonyms,
+	private void addTerm(String label, String definition, List<Synonym> synonyms,
 			CDef logicalDefinition, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
 		
 		// get overwrites from GUI
@@ -526,19 +558,37 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 	
 	@Override
-	public List<TermGenerationOutput> createList() {
-		return new ArrayList<TermGenerationOutput>();
+	public boolean contains(String[] array, String value) {
+		if (array != null && array.length > 0) {
+			for (String string : array) {
+				if (value == null) {
+					if (string == null) {
+						return true;
+					}
+				} else if (value.equals(string)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
-	public boolean contains(Collection<String> collection, String value) {
-		return collection.contains(value);
+	public synchronized void error(String message) {
+		TermGenerationOutput error = createError(message);
+		if (result == null) {
+			result = new ArrayList<TermGenerationOutput>(1);
+		}
+		result.add(error);
 	}
 
-	@Override
-	public List<TermGenerationOutput> error(String message) {
-		TermGenerationOutput output = new TermGenerationOutput(null, input, false, message);
-		return Collections.singletonList(output);
+	protected TermGenerationOutput createError(String message) {
+		TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
+		return error;
+	}
+	
+	public List<TermGenerationOutput> getResult() {
+		return result;
 	}
 
 }

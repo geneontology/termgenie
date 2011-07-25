@@ -1,5 +1,6 @@
 package org.bbop.termgenie.core.rules;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
@@ -54,6 +55,23 @@ public interface TermGenerationEngine {
 		public TermGenerationParameters getParameters() {
 			return parameters;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("TermGenerationInput [");
+			if (termTemplate != null) {
+				builder.append("termTemplate=");
+				builder.append(termTemplate);
+				builder.append(", ");
+			}
+			if (parameters != null) {
+				builder.append("parameters=");
+				builder.append(parameters);
+			}
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	public class TermGenerationOutput {
@@ -104,6 +122,33 @@ public interface TermGenerationEngine {
 		public String getMessage() {
 			return message;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("TermGenerationOutput [");
+			builder.append("success=");
+			builder.append(success);
+			if (term != null) {
+				builder.append(", ");
+				builder.append("term=");
+				builder.append(term);
+			}
+			if (message != null) {
+				builder.append(", ");
+				builder.append("message=");
+				builder.append(message);
+			}
+			if (input != null) {
+				builder.append(", ");
+				builder.append("input=");
+				builder.append(input);
+			}
+			builder.append("]");
+			return builder.toString();
+		}
+		
+		
 	}
 
 	public final class TermGenerationParameters {
@@ -166,6 +211,26 @@ public interface TermGenerationEngine {
 		
 		private <T> void setValues(T[][] storeTo, TermTemplate template, int pos, T...values) {
 			storeTo[pos] = values;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("TermGenerationParameters [");
+			if (terms != null) {
+				builder.append("terms=");
+				builder.append(Arrays.toString(terms));
+				builder.append(", ");
+			}
+			if (strings != null) {
+				builder.append("strings=");
+				builder.append(Arrays.toString(strings));
+			}
+			builder.append("]");
+			return builder.toString();
 		}
 	}
 }

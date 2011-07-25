@@ -1,9 +1,7 @@
 package org.bbop.termgenie.rules;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -15,10 +13,19 @@ public interface TermGenieScriptFunctions {
 	 * Retrieve a term given the template field name.
 	 * 
 	 * @param name of template field
+	 * @param ontology the ontology to search in for the id extracted from the field
+	 * @return term or null
+	 */
+	public OWLObject getSingleTerm(String name, OWLGraphWrapper ontology);
+	
+	/**
+	 * Retrieve a term given the template field name.
+	 * 
+	 * @param name of template field
 	 * @param ontologies the ontologies to search in for the id extracted from the field
 	 * @return term or null
 	 */
-	public OWLObject getSingleTerm(String name, OWLGraphWrapper...ontologies);
+	public OWLObject getSingleTerm(String name, OWLGraphWrapper[] ontologies);
 	
 	/**
 	 * Retrieve all terms as list from given the template field.
@@ -49,6 +56,22 @@ public interface TermGenieScriptFunctions {
 	 */
 	public CheckResult checkGenus(OWLObject x, String parent, OWLGraphWrapper ontology);
 	
+	/**
+	 * @param x
+	 * @param parent
+	 * @param ontology
+	 * @return true if x is a genus of parent
+	 */
+	public boolean genus(OWLObject x, OWLObject parent, OWLGraphWrapper ontology);
+	
+	/**
+	 * @param x
+	 * @param parent
+	 * @param ontology
+	 * @return true if x is a genus of parent
+	 */
+	public boolean genus(OWLObject x, String parent, OWLGraphWrapper ontology);
+	
 	public static interface CheckResult {
 		
 		/**
@@ -63,7 +86,7 @@ public interface TermGenieScriptFunctions {
 		 * 
 		 * @return error or null
 		 */
-		public List<TermGenerationOutput> error();
+		public String error();
 	}
 	
 	/**
@@ -86,10 +109,19 @@ public interface TermGenieScriptFunctions {
 	 * retrieve the name of a term
 	 * 
 	 * @param x term
+	 * @param ontology the ontology to look the name up
+	 * @return name
+	 */
+	public String name(OWLObject x, OWLGraphWrapper ontology);
+	
+	/**
+	 * retrieve the name of a term
+	 * 
+	 * @param x term
 	 * @param ontologies the ontologies to look the name up
 	 * @return name
 	 */
-	public String name(OWLObject x, OWLGraphWrapper...ontologies);
+	public String name(OWLObject x, OWLGraphWrapper[] ontologies);
 	
 	
 	/**
@@ -100,6 +132,15 @@ public interface TermGenieScriptFunctions {
 	 * @return refname
 	 */
 	public String refname(OWLObject x, OWLGraphWrapper ontology);
+	
+	/**
+	 * create the ref name of a term: prepend 'a ' or 'an ' to the label
+	 * 
+	 * @param x
+	 * @param ontologies
+	 * @return refname
+	 */
+	public String refname(OWLObject x, OWLGraphWrapper[] ontologies);
 	
 	/**
 	 * Create new synonyms for a given term with a prefix and suffix.
@@ -177,9 +218,27 @@ public interface TermGenieScriptFunctions {
 		 * 
 		 * @param rel relation
 		 * @param term term
+		 * @param ontology the ontology to look the terms up
+		 */
+		public void differentium(String rel, OWLObject term, OWLGraphWrapper ontology);
+		
+		/**
+		 * Add a differentium to this cdef.
+		 * 
+		 * @param rel relation
+		 * @param terms terms
+		 * @param ontology the ontology to look the terms up
+		 */
+		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper ontology);
+		
+		/**
+		 * Add a differentium to this cdef.
+		 * 
+		 * @param rel relation
+		 * @param term term
 		 * @param ontologies the ontologies to look the terms up
 		 */
-		public void differentium(String rel, OWLObject term, OWLGraphWrapper...ontologies);
+		public void differentium(String rel, OWLObject term, OWLGraphWrapper[] ontologies);
 		
 		/**
 		 * Add a differentium to this cdef.
@@ -188,7 +247,7 @@ public interface TermGenieScriptFunctions {
 		 * @param terms terms
 		 * @param ontologies the ontologies to look the terms up
 		 */
-		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper...ontologies);
+		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper[] ontologies);
 		
 		/**
 		 * Add a property to this cdef.
@@ -211,37 +270,16 @@ public interface TermGenieScriptFunctions {
 	 * @param ontology
 	 * @return output the output which can be returned.
 	 */
-	public List<TermGenerationOutput> createTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology);
+	public void createTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology);
 	
 	/**
-	 * Create a new term and add it to the result output.
-	 * Create the output list with {@link #createList()}.
+	 * Check if a value is in the array.
 	 * 
-	 * @param label
-	 * @param definition
-	 * @param synonyms
-	 * @param logicalDefinition
-	 * @param ontology
-	 * @param output the list the new term is added to.
-	 */
-	public void addTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology, List<TermGenerationOutput> output);
-	
-	/**
-	 * Create an empty list to filled with results.
-	 * Use in conjunction with {@link #addTerm(String, String, List, CDef, OWLGraphWrapper, List)}.
-	 * 
-	 * @return result list
-	 */
-	public List<TermGenerationOutput> createList();
-	
-	/**
-	 * Check if a value is in the collection.
-	 * 
-	 * @param collection
+	 * @param array
 	 * @param value
 	 * @return true if hte collection contains the value
 	 */
-	public boolean contains(Collection<String> collection, String value);
+	public boolean contains(String[] array, String value);
 	
 	/**
 	 * Create an error in the expected return format.
@@ -249,6 +287,6 @@ public interface TermGenieScriptFunctions {
 	 * @param message
 	 * @return error message in the proper format
 	 */
-	public List<TermGenerationOutput> error(String message);
+	public void error(String message);
 	
 }

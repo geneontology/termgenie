@@ -201,16 +201,22 @@ public class TermTemplate {
 			builder.append(fields);
 			builder.append(", ");
 		}
+		// do not render external, they polute the output
+		/*
 		if (external != null) {
 			builder.append("external=");
 			builder.append(external);
 			builder.append(", ");
 		}
+		*/
+		// do not render rules, they polute the output
+		/*
 		if (rules != null) {
 			builder.append("rules=");
 			builder.append(rules);
 			builder.append(", ");
 		}
+		*/
 		if (hint != null) {
 			builder.append("hint=");
 			builder.append(hint);

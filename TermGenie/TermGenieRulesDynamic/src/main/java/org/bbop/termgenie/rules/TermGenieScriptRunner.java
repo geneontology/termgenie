@@ -1,10 +1,13 @@
 package org.bbop.termgenie.rules;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -24,6 +27,9 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	private final List<TermTemplate> templates;
 	private final Map<TermTemplate, Ontology[]> templateOntologyManagers;
 	private final MultiOntologyTaskManager multiOntologyTaskManager;
+	
+	// set to true, for debugging
+	private boolean printScript = false;
 	
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates, MultiOntologyTaskManager multiOntologyTaskManager) {
@@ -94,7 +100,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			this.script = script;
 		}
 	
-		@SuppressWarnings("unchecked")
 		@Override
 		public void run(List<OWLGraphWrapper> requested) {
 			TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input);
@@ -104,15 +109,70 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					engine.put(ontologies[i].getUniqueName(), requested.get(i));
 				}
 				engine.put("termgenie", functionsImpl);
-				result = (List<TermGenerationOutput>) engine.eval(script);
+				if (printScript) {
+					PrintWriter writer = new PrintWriter(System.out);
+					printScript(writer, script);
+					writer.flush();
+				}
+				engine.eval(script);
+				Invocable invocableEngine = (Invocable) engine;
+				invocableEngine.invokeFunction("run");
+				result = functionsImpl.getResult();
 			} catch (ScriptException exception) {
-				result = functionsImpl.error("Error during script execution:\n"+exception.getMessage());
+				result = createError(functionsImpl, "Error during script execution:\n"+exception.getMessage());
 			} catch (ClassCastException exception) {
-				result = functionsImpl.error("Error, script did not return expected type:\n"+exception.getMessage());
+				result = createError(functionsImpl, "Error, script did not return expected type:\n"+exception.getMessage());
+			} catch (NoSuchMethodException exception) {
+				result = createError(functionsImpl, "Error, script did not contain expected method run:\n"+exception.getMessage());
 			}
+		}
+		
+		private List<TermGenerationOutput> createError(TermGenieScriptFunctionsImpl functionsImpl, String message) {
+			return Collections.singletonList(functionsImpl.createError(message));
 		}
 	}
 
+	/**
+	 * Print the script with additional line numbers for easy debugging.
+	 * 
+	 * @param writer
+	 * @param script
+	 */
+	private static void printScript(PrintWriter writer, String script) {
+		writer.println();
+		writer.println("Script:");
+		int pos;
+		int prev = 0;
+		int count = 1;
+		while ((pos = script.indexOf('\n', prev)) >= 0) {
+			writer.print(count);
+			if (count < 10) {
+				writer.print(' ');
+			}
+			if (count < 100) {
+				writer.print(' ');
+			}
+			writer.print(' ');
+			writer.println(script.substring(prev, pos));
+			
+			prev = pos + 1;
+			count += 1;
+		}
+		if (prev < script.length()) {
+			writer.print(count);
+			if (count < 10) {
+				writer.print(' ');
+			}
+			if (count < 100) {
+				writer.print(' ');
+			}
+			writer.print(' ');
+			writer.println(script.substring(prev));
+		}
+		writer.println();
+		writer.println();
+	}
+	
 	@Override
 	public List<TermTemplate> getAvailableTemplates() {
 		return templates;
