@@ -8,7 +8,6 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.tools.OntologyTools;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -52,12 +51,7 @@ public class OntologyServiceImpl implements OntologyService {
 		
 		for (String ontologyName : ontologyNames) {
 			//  get ontology
-			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
-			if (manager == null) {
-				// unknown ontology, do nothing
-				continue;
-			}
-			Ontology ontology = manager.getOntology();
+			Ontology ontology = ontologyTools.getOntology(ontologyName);
 			if (ontology == null) {
 				// unknown ontology, do nothing
 				continue;

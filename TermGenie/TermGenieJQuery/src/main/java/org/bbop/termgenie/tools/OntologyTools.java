@@ -13,6 +13,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,11 +24,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class OntologyTools {
 	
+	private final Map<String, ConfiguredOntology> ontologyInstances;
 	private final Map<String, OntologyTaskManager> managerInstances;
 	private final Map<String, List<TermTemplate>> templates;
 	
 	@Inject
 	OntologyTools(TermGenerationEngine engine, OntologyLoader loader, OntologyConfiguration configuration) {
+		ontologyInstances = new HashMap<String, ConfiguredOntology>();
 		managerInstances = new HashMap<String, OntologyTaskManager>();
 		templates = new HashMap<String, List<TermTemplate>>();
 		
@@ -36,6 +39,10 @@ public class OntologyTools {
 				Ontology ontology = manager.getOntology();
 				managerInstances.put(ontology.getUniqueName(), manager);
 			}
+		}
+		
+		for(ConfiguredOntology ontology : configuration.getOntologyConfigurations().values()) {
+			ontologyInstances.put(ontologyName(ontology), ontology);
 		}
 		
 		for (TermTemplate template : engine.getAvailableTemplates()) {
@@ -53,10 +60,27 @@ public class OntologyTools {
 	}
 	
 	public OntologyTaskManager getManager(String ontology) {
-		return managerInstances.get(ontology);
+		OntologyTaskManager ontologyTaskManager = managerInstances.get(ontology);
+		if (ontologyTaskManager == null) {
+			int pos = ontology.indexOf('|');
+			if (pos > 0) {
+				ontology = ontology.substring(0, pos);
+				ontologyTaskManager = managerInstances.get(ontology);
+			}
+		}
+		return ontologyTaskManager;
+	}
+
+	public Ontology getOntology(String ontologyName) {
+		return ontologyInstances.get(ontologyName);
 	}
 
 	public String getOntologyName(Ontology ontology) {
+		String name = ontologyName(ontology);
+		return name;
+	}
+
+	protected String ontologyName(Ontology ontology) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ontology.getUniqueName());
 		String branch = ontology.getBranch();

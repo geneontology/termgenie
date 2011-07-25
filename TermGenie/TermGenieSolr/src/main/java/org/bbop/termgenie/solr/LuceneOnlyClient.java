@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class LuceneOnlyClient implements OntologyTermSuggestor {
+	
+	private static final Logger logger = Logger.getLogger(LuceneOnlyClient.class);
 	
 	private final Map<String, BasicLuceneClient> luceneIndices;
 
@@ -41,9 +44,11 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 		for (String name : groups.keySet()) {
 			OntologyTaskManager manager  = nameManagers.get(name);
 			if (manager == null) {
-				throw new RuntimeException("No OntologyTaskManager found for name: "+name);
+				logger.warn("No OntologyTaskManager found for name: "+name);
 			}
-			indices.put(name, BasicLuceneClient.create(groups.get(name), manager));
+			else {
+				indices.put(name, BasicLuceneClient.create(groups.get(name), manager));
+			}
 		}
 		return indices;
 	}
