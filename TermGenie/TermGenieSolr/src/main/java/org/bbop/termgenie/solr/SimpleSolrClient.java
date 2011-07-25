@@ -59,7 +59,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 	protected List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
 		// escape query string of solr/lucene query syntax and create query
-		query = solrTools.preprocessQuery(query);
+		query = solrTools.preprocessQuery(query, null);
 		try {
 			// simple query
 			SolrDocumentList results = query(query, branch, server, 0, maxCount);

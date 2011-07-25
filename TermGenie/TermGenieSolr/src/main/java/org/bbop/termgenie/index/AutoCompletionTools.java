@@ -56,11 +56,13 @@ public abstract class AutoCompletionTools<T> {
 	 * Pre-process the query String, return null, if no valid tokens are identified 
 	 * 
 	 * @param queryString
+	 * @param name of the ID Field
 	 * @return string or null
 	 */
-	public String preprocessQuery(String queryString) {
+	public String preprocessQuery(String queryString, String idField) {
 		StringBuilder subquery1 = new StringBuilder();
 		StringBuilder subquery2 = new StringBuilder();
+		StringBuilder subquery3 = new StringBuilder();
 		List<String> list = AutoCompletionTools.split(queryString);
 		if (list.isEmpty()) {
 			return null;
@@ -72,17 +74,29 @@ public abstract class AutoCompletionTools<T> {
 			if (subquery1.length() == 0) {
 				subquery1.append('(');
 				subquery2.append("(\"");
+				if (idField != null) {
+					subquery3.append("(");
+					subquery3.append(idField);
+					subquery3.append(":\"");
+				}
 			}
 			else{
 				subquery1.append(" AND ");
 				subquery2.append(' ');
+				if (idField != null) {
+					subquery3.append(' ');
+				}
 			}
 			subquery1.append(string);
-			subquery2.append(string);
 			subquery1.append('*');
+			subquery2.append(string);
+			if (idField != null) {
+				subquery3.append(string);
+			}
 		}
 		subquery1.append(')');
 		subquery2.append("\"^2)");
+		subquery3.append("\")");
 		
 		if (charCount < 2) {
 			// at least two non-whitespace characters are required
@@ -92,6 +106,10 @@ public abstract class AutoCompletionTools<T> {
 		StringBuilder sb = new StringBuilder(subquery1);
 		sb.append(" OR ");
 		sb.append(subquery2);
+		if (idField != null) {
+			sb.append(" OR ");
+			sb.append(subquery3);
+		}
 		return sb.toString();
 	}
 	

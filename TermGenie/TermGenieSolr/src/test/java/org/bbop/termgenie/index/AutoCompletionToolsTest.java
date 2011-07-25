@@ -48,13 +48,25 @@ public class AutoCompletionToolsTest {
 	public void ttt() {
 		MyAutoCompletionTools instance = new MyAutoCompletionTools();
 		
-		assertEquals(null, instance.preprocessQuery(""));
-		assertEquals(null, instance.preprocessQuery(" "));
-		assertEquals(null, instance.preprocessQuery(" a "));
-		assertEquals("(ab*) OR (\"ab\"^2)", instance.preprocessQuery(" ab "));
-		assertEquals("(a* AND b*) OR (\"a b\"^2)", instance.preprocessQuery(" a  b "));
-		assertEquals("(a\\:b*) OR (\"a\\:b\"^2)", instance.preprocessQuery(" a:b "));
-		assertEquals("(me* AND a\\:b*) OR (\"me a\\:b\"^2)", instance.preprocessQuery(" me  a:b "));
+		assertEquals(null, instance.preprocessQuery("", null));
+		assertEquals(null, instance.preprocessQuery("", "id"));
+		assertEquals(null, instance.preprocessQuery(" ", null));
+		assertEquals(null, instance.preprocessQuery(" ", "id"));
+		
+		assertEquals(null, instance.preprocessQuery(" a ", null));
+		assertEquals(null, instance.preprocessQuery(" a ", "id"));
+		
+		assertEquals("(ab*) OR (\"ab\"^2)", instance.preprocessQuery(" ab ", null));
+		assertEquals("(ab*) OR (\"ab\"^2) OR (id:\"ab\")", instance.preprocessQuery(" ab ", "id"));
+		
+		assertEquals("(a* AND b*) OR (\"a b\"^2)", instance.preprocessQuery(" a  b ", null));
+		assertEquals("(a* AND b*) OR (\"a b\"^2) OR (id:\"a b\")", instance.preprocessQuery(" a  b ", "id"));
+		
+		assertEquals("(a\\:b*) OR (\"a\\:b\"^2)", instance.preprocessQuery(" a:b ", null));
+		assertEquals("(a\\:b*) OR (\"a\\:b\"^2) OR (id:\"a\\:b\")", instance.preprocessQuery(" a:b ", "id"));
+		
+		assertEquals("(me* AND a\\:b*) OR (\"me a\\:b\"^2)", instance.preprocessQuery(" me  a:b ", null));
+		assertEquals("(me* AND a\\:b*) OR (\"me a\\:b\"^2) OR (id:\"me a\\:b\")", instance.preprocessQuery(" me  a:b ", "id"));
 	}
 	
 	private void cmp(String s, String...strings) {

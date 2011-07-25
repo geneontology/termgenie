@@ -55,7 +55,7 @@ public class LuceneMemoryOntologyIndex {
 
 	private static final Logger logger = Logger.getLogger(LuceneMemoryOntologyIndex.class);
 	
-	private static final Version version = Version.LUCENE_31;
+	private static final Version version = Version.LUCENE_33;
 	private static final String DEFAULT_FIELD = "label";
 	private static final String BRANCH_FIELD = "branch";
 	private static final String ID_FIELD = "id";
@@ -116,12 +116,14 @@ public class LuceneMemoryOntologyIndex {
 			logger.info(message.toString());	
 		}
 		this.ontology = ontology;
-		if (branches == null || branches.isEmpty()) {
-			analyzer = new StandardAnalyzer(version);
-		} else {
-			Map<String, Analyzer> alternatives =  Collections.<String, Analyzer>singletonMap(BRANCH_FIELD, new WhitespaceAnalyzer(version));
-			analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(version), alternatives);
+		
+		Map<String, Analyzer> alternatives = new HashMap<String, Analyzer>();
+		WhitespaceAnalyzer whitespaceAnalyzer = new WhitespaceAnalyzer(version);
+		alternatives.put(ID_FIELD, whitespaceAnalyzer);
+		if (branches != null && !branches.isEmpty()) {
+			alternatives.put(BRANCH_FIELD, whitespaceAnalyzer);
 		}
+		analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(version), alternatives);
 		
 		RAMDirectory directory = new RAMDirectory();
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
@@ -226,7 +228,7 @@ public class LuceneMemoryOntologyIndex {
 				// do not search for strings with only one char
 				return Collections.emptyList();
 			}
-			queryString = tools.preprocessQuery(queryString);
+			queryString = tools.preprocessQuery(queryString, ID_FIELD);
 			if (queryString == null) {
 				// do not search for strings with no tokens
 				return Collections.emptyList();
