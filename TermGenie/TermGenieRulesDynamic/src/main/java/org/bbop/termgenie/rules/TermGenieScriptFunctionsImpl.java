@@ -21,6 +21,7 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -295,7 +296,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			if (suffix != null) {
 				sb.append(suffix);
 			}
-			addSynonym(results, synonym, sb.toString(), label);
+			addSynonym(results, synonym, synonym.getScope(), sb.toString(), label);
 		}
 		return results;
 	}
@@ -317,7 +318,8 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		List<Synonym> results = new ArrayList<Synonym>();
 		for (Synonym synonym1 : synonyms1) {
 			for (Synonym synonym2 : synonyms2) {
-				if (equalScope(synonym1, synonym2)) {
+				Pair<Boolean,String> match = matchScopes(synonym1, synonym2);
+				if (match.getOne()) {
 					StringBuilder sb = new StringBuilder();
 					if (prefix != null) {
 						sb.append(prefix);
@@ -330,37 +332,46 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 					if (suffix != null) {
 						sb.append(suffix);
 					}
-					addSynonym(results, synonym1, sb.toString(), label);
+					addSynonym(results, synonym1, match.getTwo(), sb.toString(), label);
 				}
 			}
 		}
 		return results;
 	}
 
-	protected boolean equalScope(Synonym s1, Synonym s2) {
+	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null); 
+	
+	protected Pair<Boolean, String> matchScopes(Synonym s1, Synonym s2) {
 		String scope1 = s1.getScope();
 		String scope2 = s2.getScope();
 		if (scope1 == scope2) {
 			// intented: true if both are null
-			return true;
+			return new Pair<Boolean, String>(true, scope1);
 		}
-		if (scope1 != null) {
-			return scope1.equals(scope2);
+		if (scope1 == null || scope2 == null) {
+			return new Pair<Boolean, String>(true, null);
 		}
-		return false;
+		if (scope1.equals(scope2)) {
+			return new Pair<Boolean, String>(true, scope1);
+		}
+		return MISMATCH;
 	}
-
+	
 	private List<Synonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<Synonym> synonyms) {
 		String label = ontology.getLabel(x);
+		if (synonyms == null) {
+			synonyms = new ArrayList<Synonym>(1);
+		}
 		synonyms.add(new Synonym(label, null, null, null));
 		return synonyms;
 	}
 	
-	void addSynonym(List<Synonym> results, Synonym synonym, String newLabel, String label) {
+	void addSynonym(List<Synonym> results, Synonym synonym, String scope, String newLabel, String label) {
 		if (!newLabel.equals(label)) {
 			// if by any chance a synonym has the same label it is ignored
 			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
-			results.add(new Synonym(newLabel, synonym.getScope(), synonym.getCategory(), xrefs));
+			// TODO what to to with categories if creating a compound synonym?
+			results.add(new Synonym(newLabel, scope, null, xrefs));
 		}
 	}
 	

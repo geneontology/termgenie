@@ -245,7 +245,7 @@ function run() {
     termgenie.error(check.error());
     return;
   }
-  check = checkGenus(c, "GO:0005575", go);
+  check = termgenie.checkGenus(c, "GO:0005575", go);
   if (check.isGenus() !== true) {
     termgenie.error(check.error());
     return;
@@ -257,6 +257,74 @@ function run() {
   cdef.differentium("OBO_REL:occurs_in", c, go);
   termgenie.createTerm(label, definition, synonyms, cdef, go);
 }
+
+TEMPLATE
+name	regulation_by
+description	processes regulated by other regulating processes
+ontology	GeneOntology
+obo_namespace	biological_process
+requires	biological_process_xp_self.obo
+#
+FIELD
+name	process
+required	true
+ontology	GeneOntology	biological_process
+#
+FIELD
+name	regulator
+required	true
+ontology	GeneOntology	biological_process
+#
+FIELD
+name	Name
+#
+FIELD
+name	Definition
+#
+FIELD
+name	DefX_Ref
+cardinality	1..N
+#
+FIELD
+name	Comment
+#
+RULE
+function run() {
+  var go = GeneOntology;
+  var p = termgenie.getSingleTerm("process", go);
+  var r = termgenie.getSingleTerm("regulator", go);
+  var check = termgenie.checkGenus(p, "GO:0008150", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  check = termgenie.checkGenus(r, "GO:0050789", go); // regulation of biological process
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  subrun(r);
+  
+  var negative_r = go.getOWLObjectByLabel("negative "+termgenie.name(r, go));
+  if (negative_r !== null) {
+    subrun(negative_r);
+  }
+  
+  var positive_r = go.getOWLObjectByLabel("positive "+termgenie.name(r, go));
+  if (positive_r !== null) {
+    subrun(positive_r);
+  }
+  
+  function subrun(regulator) {
+    var label = "regulation of "+termgenie.name(p, go) + " by " + termgenie.name(regulator, go);
+    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(p, go)+", by "+termgenie.name(regulator, go)+".";
+    var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, label);
+    var cdef = termgenie.cdef(p, go);
+    cdef.differentium("is_a", p, go);
+    cdef.differentium("is_a", regulator, go);
+    termgenie.createTerm(label, definition, synonyms, cdef, go);
+  };
+};
 
 
 TEMPLATE
