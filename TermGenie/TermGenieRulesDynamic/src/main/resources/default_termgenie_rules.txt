@@ -319,7 +319,7 @@ function run() {
     var label = "regulation of "+termgenie.name(p, go) + " by " + termgenie.name(regulator, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(p, go)+", by "+termgenie.name(regulator, go)+".";
     var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, label);
-    var cdef = termgenie.cdef(p, go);
+    var cdef = termgenie.cdef("GO:0065007", go);
     cdef.differentium("is_a", p, go);
     cdef.differentium("is_a", regulator, go);
     termgenie.createTerm(label, definition, synonyms, cdef, go);
