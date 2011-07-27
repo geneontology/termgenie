@@ -319,9 +319,13 @@ function run() {
     var label = "regulation of "+termgenie.name(p, go) + " by " + termgenie.name(regulator, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(p, go)+", by "+termgenie.name(regulator, go)+".";
     var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007", go);
-    cdef.differentium("is_a", p, go);
-    cdef.differentium("is_a", regulator, go);
+    
+    // intentionally null, as the intended relations do not fit the pattern
+    // but the synonyms, might be of some use
+    var cdef = null;
+    // var cdef = termgenie.cdef("GO:0065007", go);
+    // cdef.differentium("is_a", p, go);
+    // cdef.differentium("is_a", regulator, go);
     termgenie.createTerm(label, definition, synonyms, cdef, go);
   };
 };
