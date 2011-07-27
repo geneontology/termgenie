@@ -481,15 +481,25 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	
 	@Override
 	public CDef cdef(OWLObject genus) {
-		return new CDefImpl(genus, targetOntology);
+		return cdef(genus, targetOntology);
 	}
 	
 	@Override
 	public CDef cdef(String id) {
-		OWLObject genus = targetOntology.getOWLObjectByIdentifier(id);
-		return cdef(genus);
+		return cdef(id, targetOntology);
 	}
 
+	@Override
+	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology) {
+		return new CDefImpl(genus, ontology);
+	}
+	
+	@Override
+	public CDef cdef(String id, OWLGraphWrapper ontology) {
+		OWLObject genus = ontology.getOWLObjectByIdentifier(id);
+		return cdef(genus);
+	}
+	
 	@Override
 	public synchronized void createTerm(String label, String definition,
 			List<Synonym> synonyms, CDef logicalDefinition) {

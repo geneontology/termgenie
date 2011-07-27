@@ -208,6 +208,28 @@ public interface TermGenieScriptFunctions {
 	public CDef cdef(String genus);
 	
 	/**
+	 * Create a logical definition for a term in form of a {@link CDef}.
+	 * 
+	 * @param genus
+	 * @param ontology
+	 * @return cdef
+	 * 
+	 * @see CDef for adding differentia and properties
+	 */
+	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology);
+	
+	/**
+	 * Create a logical definition for a term in form of a {@link CDef}.
+	 * 
+	 * @param genus id
+	 * @param ontology
+	 * @return cdef
+	 * 
+	 * @see CDef for adding differentia and properties
+	 */
+	public CDef cdef(String genus, OWLGraphWrapper ontology);
+	
+	/**
 	 * Locigal defintion used for relation generation in term genie.
 	 */
 	public static interface CDef {
