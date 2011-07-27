@@ -34,16 +34,29 @@ import owltools.graph.OWLGraphWrapper.Synonym;
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	private final TermGenerationInput input;
+	private final OWLGraphWrapper targetOntology;
+	private final String patternID;
+	private int count = 0;
+	
 	private List<TermGenerationOutput> result;
 	
 	/**
 	 * @param input
+	 * @param patternID
 	 */
-	TermGenieScriptFunctionsImpl(TermGenerationInput input) {
+	TermGenieScriptFunctionsImpl(TermGenerationInput input, OWLGraphWrapper targetOntology, String patternID) {
 		super();
 		this.input = input;
+		this.targetOntology = targetOntology;
+		this.patternID = patternID;
 	}
-
+	
+	private String getNewId() {
+		String id = patternID + count;
+		count += 1;
+		return id;
+	}
+	
 	@Override
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper ontology) {
 		return getSingleTerm(name, new OWLGraphWrapper[]{ontology});
@@ -407,9 +420,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		final OWLObject genus;
 		final OWLGraphWrapper ontology;
 		
-		final List<String> differentiumRelations = new ArrayList<String>();
-		final List<OWLObject[]> differentiumTerms = new ArrayList<OWLObject[]>();
-		final List<OWLGraphWrapper[]> differentiumOntologies = new ArrayList<OWLGraphWrapper[]>();
+		final List<Differentium> differentia = new ArrayList<Differentium>();
 		
 		final List<String> properties = new ArrayList<String>();
 		
@@ -425,14 +436,16 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		
 		@Override
 		public void differentium(String rel, OWLObject term, OWLGraphWrapper[] ontologies) {
-			differentium(rel, new OWLObject[]{term}, ontologies);
+			differentium(rel, Collections.singletonList(term), Arrays.asList(ontologies));
 		}
 		
 		@Override
 		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper[] ontologies) {
-			differentiumRelations.add(rel);
-			differentiumTerms.add(terms);
-			differentiumOntologies.add(ontologies);
+			differentium(rel, Arrays.asList(terms), Arrays.asList(ontologies));
+		}
+		
+		private void differentium(String rel, List<OWLObject> terms, List<OWLGraphWrapper> ontologies) {
+			differentia.add(new Differentium(rel, terms, ontologies));
 		}
 		
 		@Override
@@ -449,32 +462,47 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		public void property(String property) {
 			properties.add(property);
 		}
+
+		@Override
+		public Pair<OWLObject, OWLGraphWrapper> getBase() {
+			return new Pair<OWLObject, OWLGraphWrapper>(genus, ontology);
+		}
+
+		@Override
+		public List<String> getProperties() {
+			return Collections.unmodifiableList(properties);
+		}
+
+		@Override
+		public List<Differentium> getDifferentia() {
+			return Collections.unmodifiableList(differentia);
+		}
 	}
 	
 	@Override
-	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology) {
-		return new CDefImpl(genus, ontology);
+	public CDef cdef(OWLObject genus) {
+		return new CDefImpl(genus, targetOntology);
 	}
 	
 	@Override
-	public CDef cdef(String id, OWLGraphWrapper ontology) {
-		OWLObject genus = ontology.getOWLObjectByIdentifier(id);
-		return new CDefImpl(genus, ontology);
+	public CDef cdef(String id) {
+		OWLObject genus = targetOntology.getOWLObjectByIdentifier(id);
+		return cdef(genus);
 	}
 
 	@Override
 	public synchronized void createTerm(String label, String definition,
-			List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology) {
+			List<Synonym> synonyms, CDef logicalDefinition) {
 		if (result == null) {
 			result = new ArrayList<TermGenerationOutput>(1);	
 		}
-		addTerm(label, definition, synonyms, logicalDefinition, ontology, result);
+		addTerm(label, definition, synonyms, logicalDefinition, result);
 	}
 
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
 	private void addTerm(String label, String definition, List<Synonym> synonyms,
-			CDef logicalDefinition, OWLGraphWrapper ontology, List<TermGenerationOutput> output) {
+			CDef logicalDefinition, List<TermGenerationOutput> output) {
 		
 		// get overwrites from GUI
 		String inputName = getInput("Name");
@@ -495,9 +523,9 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		
 		// Fact Checking
 		// check label
-		OWLObject sameName = ontology.getOWLObjectByLabel(label);
+		OWLObject sameName = targetOntology.getOWLObjectByLabel(label);
 		if (sameName != null) {
-			output.add(singleError("The term "+ontology.getIdentifier(sameName)+" with the same label already exists", input));
+			output.add(singleError("The term "+targetOntology.getIdentifier(sameName)+" with the same label already exists", input));
 			return;
 		}
 		
@@ -534,13 +562,30 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		Map<String, String> metaData = new HashMap<String, String>();
 		metaData.put("creation_date", getDate());
 		metaData.put("created_by", "TermGenie");
-		metaData.put("resource", ontology.getOntologyId());
+		metaData.put("resource", targetOntology.getOntologyId());
 		metaData.put("comment", getInput("Comment"));
 
-		// TODO use cdef to create relationships (differentium, intersection, restriction, ...)
+		String newId = getNewId();
+		
 		List<Relation> relations = null;
 		
-		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, defxrefs, metaData, relations);
+		if (logicalDefinition != null) {
+			// TODO use cdef to create relationships (differentium, intersection, restriction, ...)
+//			Pair<OWLObject, OWLGraphWrapper> base = logicalDefinition.getBase();
+//			Obo2Owl obo2Owl = new Obo2Owl() {
+//
+//				@Override
+//				protected void init() {
+//					init(targetOntology.getManager());
+//				}
+//			};
+//			Frame termFrame = new Frame(FrameType.TERM);
+//			termFrame.setId(newId);
+//			obo2Owl.trTermFrame(termFrame);
+//			List<Differentium> differentia = logicalDefinition.getDifferentia();
+//			List<String> properties = logicalDefinition.getProperties();
+		}
+		DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
 		
 		output.add(success(term, input));
 

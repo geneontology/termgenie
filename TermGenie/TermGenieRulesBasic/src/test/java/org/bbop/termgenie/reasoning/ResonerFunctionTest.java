@@ -56,8 +56,9 @@ public class ResonerFunctionTest {
 		OWLGraphWrapper wrapper = null;
 		
 		@Override
-		public void run(OWLGraphWrapper managed) {
+		public boolean run(OWLGraphWrapper managed) {
 			wrapper = managed;
+			return false;
 		}
 	}
 	
@@ -100,7 +101,7 @@ public class ResonerFunctionTest {
 		ManagedTask<OWLReasoner> task = new ManagedTask<OWLReasoner>() {
 
 			@Override
-			public void run(OWLReasoner reasoner) {
+			public boolean run(OWLReasoner reasoner) {
 				startup.stop();
 				System.out.println("finished preparing reasoner, time: "+startup.getTimeString());
 				System.out.println("Reasoning for: "+wrapper.getOntologyId());
@@ -124,6 +125,7 @@ public class ResonerFunctionTest {
 				
 				assertTrue(containsParent);
 				assertTrue(containsChild);
+				return false;
 			}
 		};
 		reasonerManager.runManagedTask(task);

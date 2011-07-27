@@ -28,9 +28,10 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		ReasonerTask task = new ReasonerTask() {
 			
 			@Override
-			public void run(OWLReasoner managed) {
+			public boolean run(OWLReasoner managed) {
 				NodeSet<OWLClass> subClasses = managed.getSubClasses(wrapper.getOWLClass(x), false);
 				result.addAll(subClasses.getFlattened());
+				return false;
 			}
 		};
 		runManagedTask(task);
@@ -42,9 +43,10 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		ReasonerTask task = new ReasonerTask() {
 			
 			@Override
-			public void run(OWLReasoner managed) {
+			public boolean run(OWLReasoner managed) {
 				NodeSet<OWLClass> subClasses = managed.getSuperClasses(wrapper.getOWLClass(x), false);
 				result.addAll(subClasses.getFlattened());
+				return false;
 			}
 		};
 		runManagedTask(task);

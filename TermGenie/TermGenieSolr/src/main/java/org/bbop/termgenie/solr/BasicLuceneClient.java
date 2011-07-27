@@ -91,8 +91,9 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 
 
 		@Override
-		public void run(OWLGraphWrapper managed) {
+		public boolean run(OWLGraphWrapper managed) {
 			client = new BasicLuceneClient(managed, name, null, branches);
+			return false;
 		}
 		
 	}

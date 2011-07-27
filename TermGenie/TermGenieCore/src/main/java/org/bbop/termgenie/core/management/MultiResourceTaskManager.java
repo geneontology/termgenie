@@ -123,7 +123,17 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		List<RESOURCETYPE> managed = null;
 		try {
 			managed = getManaged(requested);
-			task.run(managed);
+			List<Boolean> modifiedList = task.run(managed);
+			if (modifiedList != null) {
+				for (int i = 0; i < modifiedList.size(); i++) {
+					Boolean modified = modifiedList.get(i);
+					if (modified != null && modified && i < managed.size()) {
+						GenericTaskManager<RESOURCETYPE> manager = getResource(requested[i]);
+						manager.updateManaged(managed.get(i));
+						
+					}
+				}
+			}
 		}
 		finally {
 			if (managed != null) {
@@ -142,7 +152,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		 * 
 		 * @param managed
 		 */
-		public void run(List<RESOURCETYPE> requested);
+		public List<Boolean> run(List<RESOURCETYPE> requested);
 		
 	}
 	

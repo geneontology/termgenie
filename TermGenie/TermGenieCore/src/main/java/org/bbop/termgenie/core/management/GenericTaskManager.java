@@ -117,7 +117,14 @@ public abstract class GenericTaskManager<T> {
 		T managed = null;
 		try {
 			managed = getManaged();
-			task.run(managed);
+			boolean modified = task.run(managed);
+			if (modified) {
+				/*
+				 * if the instance was modifed, reload to 
+				 * recreate old state
+				 */
+				updateManaged(managed);
+			}
 		}
 		finally {
 			if (managed != null) {
@@ -135,8 +142,9 @@ public abstract class GenericTaskManager<T> {
 		 * Run the task with a managed instance.
 		 * 
 		 * @param managed
+		 * @return true if the instance was modified
 		 */
-		public void run(T managed);
+		public boolean run(T managed);
 	}
 	
 	public static class GenericTaskManagerException extends RuntimeException {

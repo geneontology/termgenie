@@ -125,15 +125,15 @@ public class HardCodedTermGenerationEngine implements TermGenerationEngine {
 			}
 			
 			@Override
-			public void run(List<OWLGraphWrapper> requested) {
+			public List<Boolean> run(List<OWLGraphWrapper> requested) {
 				try {
 					Constructor<? extends Patterns> constructor = c.getDeclaredConstructor(List.class, DefaultTermTemplates.class);
 					Patterns pattern = constructor.newInstance(requested, templates);
 					terms = pattern.generateTerms(ontology, generationTasks);
 				} catch (Exception exception) {
 					this.exception = exception;
-					return;
 				}
+				return null;
 				
 			}
 			

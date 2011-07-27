@@ -199,6 +199,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		if (defXRef != null && !defXRef.isEmpty()) {
 			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
 		}
+		term.setTempId(candidate.getTerm().getId());
 		term.setLabel(candidate.getTerm().getLabel());
 		term.setSynonyms(createJsonSynonyms(candidate.getTerm().getSynonyms()));
 		term.setMetaData(new JsonTermMetaData(candidate.getTerm().getMetaData()));
@@ -391,7 +392,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 		
 		@Override
-		public void run(OWLGraphWrapper realInstance) {
+		public boolean run(OWLGraphWrapper realInstance) {
 			String label = null;
 			String definition = null;
 			List<Synonym> synonyms = null;
@@ -430,6 +431,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				}
 			}
 			term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
+			return false;
 		}
 		
 		OntologyTerm getTerm() {

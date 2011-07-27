@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class JsonOntologyTerm {
 	
+	private String tempId;
 	private String label;
 	private String definition;
 	private JsonSynonym[] synonyms; 
@@ -14,6 +15,20 @@ public class JsonOntologyTerm {
 	
 	public JsonOntologyTerm() {
 		super();
+	}
+
+	/**
+	 * @return the tempId
+	 */
+	public String getTempId() {
+		return tempId;
+	}
+
+	/**
+	 * @param tempId the tempId to set
+	 */
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
 	}
 
 	/**
@@ -107,32 +122,35 @@ public class JsonOntologyTerm {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JsonOntologyTerm [");
+		builder.append("tempId=");
+		builder.append(tempId);
 		if (label != null) {
+			builder.append(", ");
 			builder.append("label=");
 			builder.append(label);
-			builder.append(", ");
 		}
 		if (definition != null) {
+			builder.append(", ");
 			builder.append("definition=");
 			builder.append(definition);
-			builder.append(", ");
 		}
 		if (synonyms != null) {
+			builder.append(", ");
 			builder.append("synonyms=");
 			builder.append(Arrays.toString(synonyms));
-			builder.append(", ");
 		}
 		if (defxRef != null) {
+			builder.append(", ");
 			builder.append("defxRef=");
 			builder.append(Arrays.toString(defxRef));
-			builder.append(", ");
 		}
 		if (relations != null) {
+			builder.append(", ");
 			builder.append("relations=");
 			builder.append(Arrays.toString(relations));
-			builder.append(", ");
 		}
 		if (metaData != null) {
+			builder.append(", ");
 			builder.append("metaData=");
 			builder.append(metaData.toString());
 		}

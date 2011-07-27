@@ -78,8 +78,9 @@ public class DefaultOntologyModule extends IOCModule {
 		MultiOntologyTask task = new MultiOntologyTask() {
 
 			@Override
-			public void run(List<OWLGraphWrapper> requested) {
+			public List<Boolean> run(List<OWLGraphWrapper> requested) {
 				System.out.println("requested: "+requested.size());
+				return null;
 			}
 		};
 		manager.runManagedTask(task, configuration.getOntologyConfigurations().get("GeneOntology"));

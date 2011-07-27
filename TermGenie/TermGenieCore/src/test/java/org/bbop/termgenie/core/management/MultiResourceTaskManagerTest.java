@@ -110,7 +110,7 @@ public class MultiResourceTaskManagerTest {
 			}
 
 			@Override
-			public void run(List<String> requested) {
+			public List<Boolean> run(List<String> requested) {
 				try {
 					Thread.sleep(100);
 					long current = System.currentTimeMillis() - startTime;
@@ -119,6 +119,7 @@ public class MultiResourceTaskManagerTest {
 					
 					events.add(Arrays.toString(requested.toArray())+Long.toString(current));
 					Thread.sleep(400);
+					return null;
 				} catch (InterruptedException exception) {
 					throw new RuntimeException(exception);
 				}

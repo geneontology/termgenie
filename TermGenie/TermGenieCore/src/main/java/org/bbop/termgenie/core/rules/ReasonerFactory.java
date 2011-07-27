@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -28,7 +29,7 @@ public final class ReasonerFactory {
 	private static final String JCEL = "jcel";
 	private final static Set<String> supportedReasoners = new HashSet<String>(Arrays.asList(JCEL,HERMIT,PELLET));
 	
-	private final static Map<String, Map<String, ReasonerTaskManager>> allManagers = new HashMap<String, Map<String,ReasonerTaskManager>>();
+	private final static Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers = new HashMap<String, Map<String,Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
 	
 	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
 		return getTaskManager(ontology, JCEL);
@@ -39,18 +40,21 @@ public final class ReasonerFactory {
 		if(reasonerName == null || !supportedReasoners.contains(reasonerName)) {
 			throw new RuntimeException("Unknown reasoner: "+reasonerName);
 		}
-		Map<String, ReasonerTaskManager> managers = allManagers.get(reasonerName);
+		Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
 		if (managers == null) {
-			managers = new HashMap<String, ReasonerTaskManager>();
+			managers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
 			allManagers.put(reasonerName, managers);
 		}
 		String ontologyName = ontology.getOntologyId();
-		ReasonerTaskManager manager = managers.get(ontologyName);
-		if (manager == null) {
-			manager = createManager(ontology, reasonerName);
-			managers.put(ontologyName, manager);
+		Pair<OWLGraphWrapper, ReasonerTaskManager> pair = managers.get(ontologyName);
+		// TODO warning this is a hack. 
+		// There should be a proper event which marks a changed ontology!
+		// This will work for now, but relies on too many assumptions
+		if (pair == null || pair.getOne() != ontology) {
+			pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, createManager(ontology, reasonerName));
+			managers.put(ontologyName, pair);
 		}
-		return manager;
+		return pair.getTwo();
 	}
 	
 	private static ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {

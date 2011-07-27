@@ -76,10 +76,11 @@ public class GenericTaskManagerTest {
 				sleep(startSleep);
 				manager.runManagedTask(new GenericTaskManager.ManagedTask<String>() {
 					@Override
-					public void run(String managed) {
+					public boolean run(String managed) {
 						try {
 							result.add(name+managed);
 							sleep(workSleep);
+							return false;
 						} catch (InterruptedException exception) {
 							throw new RuntimeException(exception);
 						}

@@ -58,9 +58,11 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			return null;
 		}
 		List<TermGenerationOutput> generationOutputs = new ArrayList<TermGenerationOutput>();
+		int count = 0;
 		for (TermGenerationInput input : generationTasks) {
 			TermTemplate termTemplate = input.getTermTemplate();
-			String templateOntologyName = termTemplate.getCorrespondingOntology().getUniqueName();
+			Ontology targetOntology = termTemplate.getCorrespondingOntology();
+			String templateOntologyName = targetOntology.getUniqueName();
 			String requestedOntologyName = ontology.getUniqueName();
 			if (!templateOntologyName.equals(requestedOntologyName)) {
 				StringBuilder sb = new StringBuilder();
@@ -74,40 +76,78 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			}
 			final Ontology[] ontologies = templateOntologyManagers.get(termTemplate);
 			if (ontologies != null && ontologies.length > 0) {
-				GenerationTask task = new GenerationTask(ontologies, input, termTemplate.getRules());
+				String templateId = getTemplateId(termTemplate, count);
+				String script = termTemplate.getRules();
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
 				}
 			}
+			count += 1;
 		}
 		if (!generationOutputs.isEmpty()) {
 			return generationOutputs;
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * Create an id for a templat which is unique for this 
+	 * input during a single {@link #generateTerms(Ontology, List)} 
+	 * request.
+	 * 
+	 * @param template
+	 * @param count
+	 * @return templateId
+	 */
+	private String getTemplateId(TermTemplate template, int count) {
+		StringBuilder sb = new StringBuilder();
+		String name = template.getName();
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
+			if (Character.isLetterOrDigit(c)) {
+				sb.append(c);
+			}
+		}
+		sb.append(count);
+		return sb.toString();
+	}
 
 	private final class GenerationTask extends MultiOntologyTask {
 		private final Ontology[] ontologies;
+		private final Ontology targetOntology;
 		private final String script;
 		private final TermGenerationInput input;
+		private final String templateId;
 		
 		List<TermGenerationOutput> result = null;
+		
+		
 
-		private GenerationTask(Ontology[] ontologies, TermGenerationInput input, String script) {
+		private GenerationTask(Ontology[] ontologies, Ontology targetOntology, TermGenerationInput input, String script, String templateId) {
 			this.ontologies = ontologies;
+			this.targetOntology = targetOntology;
 			this.input = input;
 			this.script = script;
+			this.templateId = templateId;
 		}
 	
 		@Override
-		public void run(List<OWLGraphWrapper> requested) {
-			TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input);
+		public List<Boolean> run(List<OWLGraphWrapper> requested) {
+			
 			try {
+				OWLGraphWrapper targetOntology = null;
 				ScriptEngine engine = jsEngineManager.getEngine();
 				for (int i = 0; i < ontologies.length; i++) {
-					engine.put(ontologies[i].getUniqueName(), requested.get(i));
+					String name = ontologies[i].getUniqueName();
+					engine.put(name, requested.get(i));
+					if (name.equals(this.targetOntology.getUniqueName())) {
+						targetOntology = requested.get(i);
+					}
 				}
+				TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId);
 				engine.put("termgenie", functionsImpl);
 				if (printScript) {
 					PrintWriter writer = new PrintWriter(System.out);
@@ -119,16 +159,18 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				invocableEngine.invokeFunction("run");
 				result = functionsImpl.getResult();
 			} catch (ScriptException exception) {
-				result = createError(functionsImpl, "Error during script execution:\n"+exception.getMessage());
+				result = createError("Error during script execution:\n"+exception.getMessage());
 			} catch (ClassCastException exception) {
-				result = createError(functionsImpl, "Error, script did not return expected type:\n"+exception.getMessage());
+				result = createError("Error, script did not return expected type:\n"+exception.getMessage());
 			} catch (NoSuchMethodException exception) {
-				result = createError(functionsImpl, "Error, script did not contain expected method run:\n"+exception.getMessage());
+				result = createError("Error, script did not contain expected method run:\n"+exception.getMessage());
 			}
+			return null;
 		}
 		
-		private List<TermGenerationOutput> createError(TermGenieScriptFunctionsImpl functionsImpl, String message) {
-			return Collections.singletonList(functionsImpl.createError(message));
+		protected List<TermGenerationOutput> createError(String message) {
+			TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
+			return Collections.singletonList(error);
 		}
 	}
 

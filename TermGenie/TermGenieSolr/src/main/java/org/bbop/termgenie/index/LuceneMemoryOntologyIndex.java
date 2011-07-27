@@ -315,7 +315,7 @@ public class LuceneMemoryOntologyIndex {
 		ontology.runManagedTask(new OntologyTask(){
 
 			@Override
-			public void run(OWLGraphWrapper managed) {
+			public boolean run(OWLGraphWrapper managed) {
 				try {
 					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null);
 					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
@@ -324,6 +324,7 @@ public class LuceneMemoryOntologyIndex {
 						String label = managed.getLabel(searchResult.hit);
 						System.out.println(id+"  "+searchResult.score+"  "+label);	
 					}
+					return false;
 				} catch (IOException exception) {
 					throw new RuntimeException(exception);
 				}				

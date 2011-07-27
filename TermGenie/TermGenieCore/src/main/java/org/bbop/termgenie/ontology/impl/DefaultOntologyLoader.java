@@ -194,10 +194,11 @@ public class DefaultOntologyLoader implements OntologyLoader {
 		ontologyTaskManager.runManagedTask(new OntologyTask(){
 
 			@Override
-			public void run(OWLGraphWrapper ontology) {
+			public boolean run(OWLGraphWrapper ontology) {
 				OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");
 				System.out.println(owlObject);
 				System.out.println(ontology.getLabel(owlObject));
+				return false;
 			}
 		});
 		

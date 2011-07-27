@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import java.util.List;
 
+import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -190,23 +191,21 @@ public interface TermGenieScriptFunctions {
 	 * Create a logical definition for a term in form of a {@link CDef}.
 	 * 
 	 * @param genus
-	 * @param ontology
 	 * @return cdef
 	 * 
 	 * @see CDef for adding differentia and properties
 	 */
-	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology);
+	public CDef cdef(OWLObject genus);
 	
 	/**
 	 * Create a logical definition for a term in form of a {@link CDef}.
 	 * 
 	 * @param genus id
-	 * @param ontology
 	 * @return cdef
 	 * 
 	 * @see CDef for adding differentia and properties
 	 */
-	public CDef cdef(String genus, OWLGraphWrapper ontology);
+	public CDef cdef(String genus);
 	
 	/**
 	 * Locigal defintion used for relation generation in term genie.
@@ -255,6 +254,77 @@ public interface TermGenieScriptFunctions {
 		 * @param property
 		 */
 		public void property(String property);
+		
+		
+		public Pair<OWLObject, OWLGraphWrapper> getBase();
+		
+		public List<String> getProperties();
+		
+		public List<Differentium> getDifferentia();
+		
+		
+		public static class Differentium {
+			
+			private final String relation;
+			private final List<OWLObject> terms;
+			private final List<OWLGraphWrapper> ontologies;
+			
+			/**
+			 * @param relation
+			 * @param terms
+			 * @param ontologies
+			 */
+			public Differentium(String relation, List<OWLObject> terms,
+					List<OWLGraphWrapper> ontologies) {
+				super();
+				this.relation = relation;
+				this.terms = terms;
+				this.ontologies = ontologies;
+			}
+
+			/**
+			 * @return the relation
+			 */
+			public String getRelation() {
+				return relation;
+			}
+
+			/**
+			 * @return the terms
+			 */
+			public List<OWLObject> getTerms() {
+				return terms;
+			}
+
+			/**
+			 * @return the ontologies
+			 */
+			public List<OWLGraphWrapper> getOntologies() {
+				return ontologies;
+			}
+
+			@Override
+			public String toString() {
+				StringBuilder builder = new StringBuilder();
+				builder.append("Differentium [");
+				if (relation != null) {
+					builder.append("relation=");
+					builder.append(relation);
+				}
+				if (terms != null) {
+					builder.append(", ");
+					builder.append("terms=");
+					builder.append(terms);
+				}
+				if (ontologies != null) {
+					builder.append(", ");
+					builder.append("ontologies=");
+					builder.append(ontologies);
+				}
+				builder.append("]");
+				return builder.toString();
+			}
+		}
 	}
 	
 	
@@ -267,10 +337,9 @@ public interface TermGenieScriptFunctions {
 	 * @param definition
 	 * @param synonyms
 	 * @param logicalDefinition
-	 * @param ontology
 	 * @return output the output which can be returned.
 	 */
-	public void createTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition, OWLGraphWrapper ontology);
+	public void createTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition);
 	
 	/**
 	 * Check if a value is in the array.
