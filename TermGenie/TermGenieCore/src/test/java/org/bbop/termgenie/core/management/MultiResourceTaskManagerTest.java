@@ -146,6 +146,11 @@ public class MultiResourceTaskManagerTest {
 		protected String updateManaged(String managed) {
 			return createManaged();
 		}
+
+		@Override
+		protected String resetManaged(String managed) {
+			return createManaged();
+		}
 		
 	}
 }

@@ -16,6 +16,13 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	public ReasonerTaskManager(String name) {
 		super(name);
 	}
+	
+	@Override
+	protected OWLReasoner resetManaged(OWLReasoner managed) {
+		// Do nothing as the reasoner cannot change the ontology.
+		return managed;
+	}
+
 	/**
 	 * A task which requires a reasoner. 
 	 */

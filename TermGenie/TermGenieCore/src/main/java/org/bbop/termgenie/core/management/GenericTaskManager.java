@@ -60,10 +60,14 @@ public abstract class GenericTaskManager<T> {
 	 * Only to be used in this package
 	 * 
 	 * @param managed
+	 * @param modified
 	 */
-	void returnManaged(T managed) {
+	void returnManaged(T managed, boolean modified) {
 		if (this.managed != managed) {
 			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: "+name);
+		}
+		if (modified) {
+			this.managed = resetManaged(managed);
 		}
 		lock.release();
 	}
@@ -82,6 +86,14 @@ public abstract class GenericTaskManager<T> {
 	 * @return updated managed instance
 	 */
 	protected abstract T updateManaged(T managed);
+	
+	/**
+	 * Update the current managed instance. 
+	 * 
+	 * @param managed current managed instance
+	 * @return updated managed instance
+	 */
+	protected abstract T resetManaged(T managed);
 	
 	/**
 	 * Tell the managed object to update. Wait 
@@ -115,20 +127,14 @@ public abstract class GenericTaskManager<T> {
 	 */
 	public void runManagedTask(ManagedTask<T> task) {
 		T managed = null;
+		boolean modified = false;
 		try {
 			managed = getManaged();
-			boolean modified = task.run(managed);
-			if (modified) {
-				/*
-				 * if the instance was modifed, reload to 
-				 * recreate old state
-				 */
-				updateManaged(managed);
-			}
+			modified = task.run(managed);
 		}
 		finally {
 			if (managed != null) {
-				returnManaged(managed);
+				returnManaged(managed, modified);
 			}
 		}
 	}

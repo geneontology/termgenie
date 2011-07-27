@@ -35,6 +35,27 @@ public class GenericTaskManagerTest {
 		thread.join();
 		assertArrayEquals(new String[]{"t1v1","t2v1","t3v2","t4v2"}, result.toArray(new String[0]));
 	}
+	
+	/**
+	 * Use threads to simulate concurrent users and assert the expected 
+	 * results, even after updating the managed instance. 
+	 * 
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void testGenericTaskManager2() throws InterruptedException {
+		TestTaskManager manager = new TestTaskManager();
+		List<String> result = Collections.synchronizedList(new ArrayList<String>());
+		
+		new TestGenericTask("t1", manager, 100, 100, result).start();
+		new TestGenericModifyingTask("t2", manager, 150, 100, result).start();
+		new TestGenericTask("t3", manager, 200, 100, result).start();
+		TestGenericTask thread = new TestGenericTask("t4", manager, 300, 100, result);
+		thread.start();
+		
+		thread.join();
+		assertArrayEquals(new String[]{"t1v1","t2v1","t3r1","t4r1"}, result.toArray(new String[0]));
+	}
 
 	private static class TestTaskManager extends GenericTaskManager<String> {
 
@@ -50,6 +71,11 @@ public class GenericTaskManagerTest {
 		@Override
 		protected String updateManaged(String managed) {
 			return "v2";
+		}
+
+		@Override
+		protected String resetManaged(String managed) {
+			return "r1";
 		}
 	}
 	
@@ -92,6 +118,46 @@ public class GenericTaskManagerTest {
 		}
 	}
 	
+	
+	private static class TestGenericModifyingTask extends Thread {
+
+		private final GenericTaskManager<String> manager;
+		private final long startSleep;
+		private final long workSleep;
+		private final List<String> result;
+		private final String name;
+		
+		TestGenericModifyingTask(String name, GenericTaskManager<String> manager, long startSleep, long workSleep, List<String> result) {
+			super();
+			this.name = name;
+			this.manager = manager;
+			this.startSleep = startSleep;
+			this.workSleep = workSleep;
+			this.result = result;
+		}
+
+		@Override
+		public void run() {
+			try {
+				sleep(startSleep);
+				manager.runManagedTask(new GenericTaskManager.ManagedTask<String>() {
+					@Override
+					public boolean run(String managed) {
+						try {
+							result.add(name+managed);
+							sleep(workSleep);
+							return true;
+						} catch (InterruptedException exception) {
+							throw new RuntimeException(exception);
+						}
+					}
+				});
+			} catch (InterruptedException exception) {
+				throw new RuntimeException(exception);
+			}
+		}
+	}
+	
 	private static class TestGenericUpdateTask extends Thread {
 
 		private final GenericTaskManager<String> manager;
@@ -113,4 +179,5 @@ public class GenericTaskManagerTest {
 			}
 		}
 	}
+	
 }

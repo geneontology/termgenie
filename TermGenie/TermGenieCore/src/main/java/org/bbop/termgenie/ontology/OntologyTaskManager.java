@@ -24,6 +24,11 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 		return createManaged();
 	}
 	
+	@Override
+	protected OWLGraphWrapper resetManaged(OWLGraphWrapper managed) {
+		return createManaged();
+	}
+
 	public Ontology getOntology() {
 		return ontology;
 	}

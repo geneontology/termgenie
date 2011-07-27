@@ -85,6 +85,12 @@ public final class ReasonerFactory {
 				return createReasoner("Creating jcel reasoner: "+ontology.getOntologyID());
 			}
 			
+			@Override
+			protected OWLReasoner resetManaged(OWLReasoner managed) {
+				// Do nothing as a reasoner cannot change the underlying ontology
+				return managed;
+			}
+
 			private OWLReasoner createReasoner(String logMessage) {
 				logger.info(logMessage);
 				JcelReasoner reasoner = new JcelReasoner(ontology);
@@ -108,6 +114,12 @@ public final class ReasonerFactory {
 			@Override
 			protected OWLReasoner createManaged() {
 				return reasonerFactory.createNonBufferingReasoner(ontology);
+			}
+
+			@Override
+			protected OWLReasoner resetManaged(OWLReasoner managed) {
+				// Do nothing as a reasoner cannot change the underlying ontology
+				return managed;
 			}
 		};
 	}

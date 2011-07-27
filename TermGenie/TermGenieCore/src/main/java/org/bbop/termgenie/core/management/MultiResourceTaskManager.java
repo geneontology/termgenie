@@ -70,7 +70,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 			List<GenericTaskManagerException> innerExceptions = new ArrayList<GenericTaskManagerException>();
 			for (int i=0; i<resources.size(); i++) {
 				try {
-					managers[i].returnManaged(resources.get(i));
+					managers[i].returnManaged(resources.get(i), false);
 				} catch (GenericTaskManagerException innerException) {
 					// log the exception, but continue releasing
 					innerExceptions.add(innerException);
@@ -88,7 +88,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		}
 	}
 	
-	private void returnManaged(List<RESOURCETYPE> resources, INFOTYPE[] infos) {
+	private void returnManaged(List<RESOURCETYPE> resources, List<Boolean> modifieds, INFOTYPE[] infos) {
 		//no locking required for releasing
 		if (infos.length != resources.size()) {
 			throw new GenericTaskManagerException("Trying to return a resource list incompatible (different length) with its request");
@@ -97,7 +97,11 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		for (int i = 0; i < infos.length; i++) {
 			try {
 				GenericTaskManager<RESOURCETYPE> manager = getResource(infos[i]);
-				manager.returnManaged(resources.get(i));
+				boolean modified = false;
+				if (modifieds != null && modifieds.size() > i) {
+					modified = modifieds.get(i);
+				}
+				manager.returnManaged(resources.get(i), modified);
 			} catch (GenericTaskManagerException exception) {
 				exceptions.add(exception);
 			}
@@ -121,23 +125,14 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	 */
 	public void runManagedTask(MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task, INFOTYPE...requested) {
 		List<RESOURCETYPE> managed = null;
+		List<Boolean> modifiedList = null;
 		try {
 			managed = getManaged(requested);
-			List<Boolean> modifiedList = task.run(managed);
-			if (modifiedList != null) {
-				for (int i = 0; i < modifiedList.size(); i++) {
-					Boolean modified = modifiedList.get(i);
-					if (modified != null && modified && i < managed.size()) {
-						GenericTaskManager<RESOURCETYPE> manager = getResource(requested[i]);
-						manager.updateManaged(managed.get(i));
-						
-					}
-				}
-			}
+			modifiedList = task.run(managed);
 		}
 		finally {
 			if (managed != null) {
-				returnManaged(managed, requested);
+				returnManaged(managed, modifiedList, requested);
 			}
 		}
 	}
