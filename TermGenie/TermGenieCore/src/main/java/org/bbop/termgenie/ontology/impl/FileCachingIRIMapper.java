@@ -51,21 +51,18 @@ public class FileCachingIRIMapper implements IRIMapper {
 		createFolder(cacheDirectory);
 		validityHelper = new FileValidity(TimeUnit.MILLISECONDS.convert(period, unit));
 
-		// use invalid settings to deactive the reloading
-		if (period > 0 && unit != null) {
-			// use java.concurrent to schedule a periodic task of reloading the IRI content.
-			Runnable command = new Runnable() {
-				@Override
-				public void run() {
-					reloadIRIs();
-				}
-			};
-			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-			scheduler.scheduleWithFixedDelay(command, period, period, unit);
-		}
+		// use java.concurrent to schedule a periodic task of reloading the IRI content.
+		Runnable command = new Runnable() {
+			@Override
+			public void run() {
+				reloadIRIs();
+			}
+		};
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleWithFixedDelay(command, period, period, unit);
 	}
 	
-	private void reloadIRIs() {
+	protected void reloadIRIs() {
 		validityHelper.setInvalidRecursive(cacheDirectory);
 	}
 	
@@ -100,7 +97,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 	}
 
-	private URL mapUrl(URL originalURL) {
+	private synchronized URL mapUrl(URL originalURL) {
 		File localFile = localCacheFile(originalURL);
 		if (!isValid(localFile)) {
 			createFile(localFile);
@@ -257,6 +254,9 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 		
 		private Date getDate(File validityFile) {
+			if (!validityFile.exists()) {
+				return null;
+			}
 			BufferedReader reader = null;
 			IOException prevException = null;
 			try {
