@@ -67,6 +67,30 @@ public class FileCachingIRIMapperTest {
 	}
 	
 	@Test
+	public void testAutoReload() throws Exception {
+		String localCache = testFolder.getAbsolutePath();
+		final List<String> requests = new ArrayList<String>();
+		new FileCachingIRIMapper(localCache, 200L, TimeUnit.MILLISECONDS) {
+			
+			private int count = 0;
+
+			@Override
+			protected void reloadIRIs() {
+				requests.add("reload"+count);
+				count += 1;  
+			}
+			
+			
+		};
+		Thread.sleep(700L);
+		
+		assertEquals(3, requests.size());
+		assertEquals("reload0", requests.get(0));
+		assertEquals("reload1", requests.get(1));
+		assertEquals("reload2", requests.get(2));
+	}
+	
+	@Test
 	public void testLocalCacheFilename() throws Exception {
 		assertEquals("www.foo.bar/test.obo", FileCachingIRIMapper.localCacheFilename(new URL("http://www.foo.bar/test.obo")));
 	}
