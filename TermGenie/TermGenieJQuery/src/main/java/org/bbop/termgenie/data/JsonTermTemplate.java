@@ -142,7 +142,7 @@ public class JsonTermTemplate {
 		 * @param required
 		 * @param cardinality
 		 * @param functionalPrefixes
-		 * @param ontology
+		 * @param ontologies 
 		 */
 		public JsonTemplateField(String name, boolean required, JsonCardinality cardinality,
 				String[] functionalPrefixes, String[] ontologies) {

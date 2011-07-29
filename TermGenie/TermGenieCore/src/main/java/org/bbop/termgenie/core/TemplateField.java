@@ -93,7 +93,6 @@ public class TemplateField {
 	 * and no corresponding ontology.
 	 * 
 	 * @param name
-	 * @param correspondingOntology
 	 */
 	public TemplateField(String name) {
 		this(name, false, SINGLE_FIELD_CARDINALITY, null);

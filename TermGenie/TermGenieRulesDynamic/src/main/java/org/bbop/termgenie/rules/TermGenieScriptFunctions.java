@@ -32,7 +32,7 @@ public interface TermGenieScriptFunctions {
 	 * Retrieve all terms as list from given the template field.
 	 * 
 	 * @param name of template field
-	 * @param ontologies the ontologies to search in for the id extracted from the field
+	 * @param ontology the ontology to search in for the id extracted from the field
 	 * @return term or null
 	 */
 	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology);
@@ -359,7 +359,6 @@ public interface TermGenieScriptFunctions {
 	 * @param definition
 	 * @param synonyms
 	 * @param logicalDefinition
-	 * @return output the output which can be returned.
 	 */
 	public void createTerm(String label, String definition, List<Synonym> synonyms, CDef logicalDefinition);
 	
@@ -376,7 +375,6 @@ public interface TermGenieScriptFunctions {
 	 * Create an error in the expected return format.
 	 * 
 	 * @param message
-	 * @return error message in the proper format
 	 */
 	public void error(String message);
 	

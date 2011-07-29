@@ -232,7 +232,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		for (JsonTermGenerationInput jsonInput : allParameters) {
 			JsonTermTemplate jsonTemplate = jsonInput.getTermTemplate();
 			TermTemplate template = getTermTemplate(ontologyName, jsonTemplate.getName());
-			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(), jsonTemplate, template);
+			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(), template);
 			TermGenerationInput input = new TermGenerationInput(template, parameters);
 			result.add(input);
 		}
@@ -336,7 +336,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return jsonField;
 		}
 		
-		TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json, JsonTermTemplate jsonTemplate, TermTemplate template) {
+		TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json, TermTemplate template) {
 			int fieldCount = template.getFieldCount();
 			TermGenerationParameters result = new TermGenerationParameters(fieldCount);
 			for (int pos = 0; pos < fieldCount; pos++) {

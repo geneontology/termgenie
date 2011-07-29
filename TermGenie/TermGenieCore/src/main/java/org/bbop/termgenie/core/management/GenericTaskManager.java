@@ -140,7 +140,9 @@ public abstract class GenericTaskManager<T> {
 	}
 
 	/**
-	 * A task which requires a managed instance. 
+	 * A task which requires a managed instance.
+	 *  
+	 * @param <T> 
 	 */
 	public static interface ManagedTask<T> {
 		

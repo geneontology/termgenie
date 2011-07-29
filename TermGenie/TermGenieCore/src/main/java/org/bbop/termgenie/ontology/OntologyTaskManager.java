@@ -10,7 +10,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	/**
 	 * A task which requires an ontology. 
 	 */
-	public static interface OntologyTask extends ManagedTask<OWLGraphWrapper>{}
+	public static interface OntologyTask extends ManagedTask<OWLGraphWrapper>{/* intentionally empty */}
 
 	protected final Ontology ontology;
 	

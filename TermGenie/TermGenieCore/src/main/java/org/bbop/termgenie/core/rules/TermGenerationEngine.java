@@ -167,8 +167,7 @@ public interface TermGenerationEngine {
 		}
 		
 		/**
-		 * @param terms
-		 * @param strings
+		 * @param fieldCount
 		 */
 		public TermGenerationParameters(int fieldCount) {
 			this(new OntologyTerm[fieldCount][], new String[fieldCount][]);

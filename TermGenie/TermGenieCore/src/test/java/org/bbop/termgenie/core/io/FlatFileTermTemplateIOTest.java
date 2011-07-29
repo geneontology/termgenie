@@ -2,16 +2,17 @@ package org.bbop.termgenie.core.io;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.WriterOutputStream;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
@@ -44,7 +45,7 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 	public void testReadWriteTemplates() throws IOException {
 		
 		String init = load(loadResource("test_termgenie_rules.txt"));
-		List<TermTemplate> read0 = templateIO.readTemplates(new BufferedReader(new StringReader(init)));
+		List<TermTemplate> read0 = read(init);
 		
 		String write1 = write(read0);
 		
@@ -65,14 +66,7 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 	}
 	
 	private String load(InputStream in) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		String line;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line);
-			sb.append('\n');
-		}
-		return sb.toString();
+		return IOUtils.toString(in);
 	}
 	
 	private void compare(List<TermTemplate> l1, List<TermTemplate> l2) {
@@ -129,18 +123,19 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 		}
 	}
 	
-	private String write(Collection<TermTemplate> templates) throws IOException {
+	private String write(Collection<TermTemplate> templates) {
 		StringWriter stringWriter = new StringWriter();
-		BufferedWriter writer = new BufferedWriter(stringWriter);
+		OutputStream writer = new WriterOutputStream(stringWriter);
 		templateIO.writeTemplates(templates, writer);
-		writer.close();
+		IOUtils.closeQuietly(writer);
 		String writtenString = stringWriter.getBuffer().toString();
 		return writtenString;
 	}
 	
 	private List<TermTemplate> read(String string) throws IOException {
-		BufferedReader reader = new BufferedReader(new StringReader(string));
+		InputStream reader = new StringInputStream(string);
 		List<TermTemplate> readTemplates = templateIO.readTemplates(reader);
+		IOUtils.closeQuietly(reader);
 		return readTemplates;
 	}
 

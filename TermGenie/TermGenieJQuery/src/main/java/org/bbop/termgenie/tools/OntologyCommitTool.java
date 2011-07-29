@@ -24,6 +24,7 @@ public class OntologyCommitTool {
 	 * @param candidates
 	 * 
 	 * TODO decide on return value, boolean is too simple.
+	 * @return boolean
 	 */
 	public boolean commitCandidates(Ontology ontology, List<TermGenerationOutput> candidates) {
 		throw new RuntimeException("Commit is currently not supported");

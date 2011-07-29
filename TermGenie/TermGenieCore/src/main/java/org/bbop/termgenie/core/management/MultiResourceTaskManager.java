@@ -139,13 +139,17 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	
 	/**
 	 * A task which requires multiple managed resources. 
+	 * 
+	 * @param <RESOURCETYPE> 
+	 * @param <INFOTYPE> 
 	 */
 	public static interface MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> {
 		
 		/**
 		 * Run the task with a managed instance of each resource.
 		 * 
-		 * @param managed
+		 * @param requested 
+		 * @return list of modified flags 
 		 */
 		public List<Boolean> run(List<RESOURCETYPE> requested);
 		

@@ -92,6 +92,9 @@ public class LuceneMemoryOntologyIndex {
 	
 	/**
 	 * @param ontology
+	 * @param root
+	 * @param branches
+	 * @throws IOException
 	 */
 	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, String root, List<Pair<String, String>> branches) throws IOException {
 		super();
@@ -141,25 +144,28 @@ public class LuceneMemoryOntologyIndex {
 		}
 		
 		Map<OWLObject, Set<String>> branchInfo = new HashMap<OWLObject, Set<String>>();
-		ReasonerTaskManager taskManager = ReasonerFactory.getDefaultTaskManager(ontology);
-		for(Pair<String, String> branch : branches) {
-			String name = branch.getOne();
-			String id = branch.getTwo();
-			OWLObject owlObject = this.ontology.getOWLObjectByIdentifier(id);
-			if (owlObject == null) {
-				throw new RuntimeException("Cannot create branch "+branch+" for unknown id: "+id);
-			}
-			add(owlObject, name, branchInfo);
-			Collection<OWLObject> descendants = taskManager.getDescendants(owlObject, this.ontology);
-			if (logger.isInfoEnabled()) {
-				logger.info("Adding branch (" + name + "," + id + ") with " + descendants.size()
-						+ " descendants");
-			}
-			for (OWLObject descendant : descendants) {
-				add(descendant, name, branchInfo);
+		if (branches != null) {
+			ReasonerTaskManager taskManager = ReasonerFactory.getDefaultTaskManager(ontology);
+			for (Pair<String, String> branch : branches) {
+				String name = branch.getOne();
+				String id = branch.getTwo();
+				OWLObject owlObject = this.ontology.getOWLObjectByIdentifier(id);
+				if (owlObject == null) {
+					throw new RuntimeException("Cannot create branch " + branch
+							+ " for unknown id: " + id);
+				}
+				add(owlObject, name, branchInfo);
+				Collection<OWLObject> descendants = taskManager.getDescendants(owlObject,
+						this.ontology);
+				if (logger.isInfoEnabled()) {
+					logger.info("Adding branch (" + name + "," + id + ") with "
+							+ descendants.size() + " descendants");
+				}
+				for (OWLObject descendant : descendants) {
+					add(descendant, name, branchInfo);
+				}
 			}
 		}
-		
 		int npeCounter = 0;
 		
 		for (OWLObject owlObject : allOWLObjects) {

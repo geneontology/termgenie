@@ -61,6 +61,7 @@ class Patterns extends BasicRules {
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ToMatch {
+		// intentionally empty
 	}
 
 	@SuppressWarnings("unchecked")

@@ -15,6 +15,7 @@ public class MultiResourceTaskManagerTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		// intentionally empty
 	}
 
 	@Test

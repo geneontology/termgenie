@@ -1,17 +1,16 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.tools.ResourceLoader;
@@ -52,11 +51,12 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	 */
 	@Inject
 	LocalFileIRIMapper(@Named("LocalFileIRIMapperResource") String resource) {
+		InputStream inputStream = null;
 		try {
-			InputStream inputStream = loadResource(resource);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-			String line;
-			while ((line = reader.readLine()) != null) {
+			inputStream = loadResource(resource);
+			LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
+			while (lineIterator.hasNext()) {
+				String line = lineIterator.next();
 				if (line.length() > 0 && !line.startsWith("#")) {
 					String[] strings = line.split("\\t");
 					if (strings.length == 3) {
@@ -64,9 +64,11 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 					}
 				}
 			}
-			reader.close();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
+		}
+		finally {
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 	
@@ -97,22 +99,9 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 						inputStream = u.openStream();
 					}
 					// copy to temp location
-					tempFile.getParentFile().mkdirs();
-					tempFile.createNewFile();
-					OutputStream outputStream = new FileOutputStream(tempFile);
-					try {
-						byte[] buf = new byte[1024];
-						int len;
-						while ((len = inputStream.read(buf)) > 0) {
-							outputStream.write(buf, 0, len);
-						}
-					} finally {
-						outputStream.close();
-					}
+					FileUtils.copyInputStreamToFile(inputStream, tempFile);
 				} finally {
-					if (inputStream != null) {
-						inputStream.close();
-					}
+					IOUtils.closeQuietly(inputStream);
 				}
 				file = tempFile;
 			}

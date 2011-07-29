@@ -40,7 +40,7 @@ public class FieldValidatorTool {
 			}
 			
 			final boolean hasOntologies = hasOntologies(field);
-			if (hasOntologies && stringCount > 0) {
+			if (hasOntologies && strings != null && stringCount > 0) {
 				if (hasPrefixes(field)) {
 					// check if strings correspond to the given prefixes in the template
 					Set<String> prefixes = new HashSet<String>(field.getFunctionalPrefixes());

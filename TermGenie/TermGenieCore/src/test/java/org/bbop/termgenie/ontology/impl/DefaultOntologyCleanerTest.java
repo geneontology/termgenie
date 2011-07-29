@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,10 +17,12 @@ import com.google.inject.Injector;
 public class DefaultOntologyCleanerTest {
 
 	@Test
-	public void testLoadCleanerConfig() {
+	public void testLoadCleanerConfig() throws IOException {
 		String source = "[Ontology]\n name: ProteinOntology \n[Term]\nts [ts1,ts2] true \n [Typdef] \n td [td1] \n\n!tx\n\n [Instance]\n in1\n in2\n"+
 		"[Ontology]\n name: Uberon \n[Term]\nts [ts1,ts2] \n [Typdef] \n td [td1] \n\n!tx\n\n [Instance]\n in1 true \n in2";
-		Map<String, CleanerConfig> settings = CleanerConfig.loadSettings(new StringInputStream(source));
+		StringInputStream inputStream = new StringInputStream(source);
+		Map<String, CleanerConfig> settings = CleanerConfig.loadSettings(inputStream);
+		inputStream.close();
 		assertEquals(2, settings.size());
 		CleanerConfig cleanerConfig1 = settings.get("ProteinOntology");
 		assertNotNull(cleanerConfig1);

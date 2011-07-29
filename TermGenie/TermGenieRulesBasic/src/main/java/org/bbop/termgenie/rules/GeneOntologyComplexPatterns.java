@@ -356,13 +356,16 @@ class GeneOntologyComplexPatterns extends Patterns {
 			List<Synonym> result;
 			if (suffix == null) {
 				result = new ArrayList<Synonym>(prefixes);
-			} else {
+			} else if (prefixes != null) {
 				result = new ArrayList<Synonym>();
 				for (Synonym prefixSynonym : prefixes) {
 					StringBuilder sb = new StringBuilder(prefixSynonym.getLabel());
 					sb.append(suffix);
 					addSynonym(result, prefixSynonym, sb.toString(), label);
 				}
+			}
+			else {
+				result = new ArrayList<Synonym>(0);
 			}
 			return result;
 		}

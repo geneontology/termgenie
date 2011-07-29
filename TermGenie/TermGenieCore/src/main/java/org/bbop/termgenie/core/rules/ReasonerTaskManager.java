@@ -26,7 +26,9 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	/**
 	 * A task which requires a reasoner. 
 	 */
-	public static interface ReasonerTask extends ManagedTask<OWLReasoner>{}
+	public static interface ReasonerTask extends ManagedTask<OWLReasoner>{
+		// intentionally empty
+	}
 	
 	// implement some common reasoner tasks.
 	

@@ -540,7 +540,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		
 		// def xref
-		List<String> defxrefs = getDefXref(input);
+		List<String> defxrefs = getDefXref();
 		if (defxrefs != null) {
 			// check xref conformity
 			boolean hasXRef = false;
@@ -601,7 +601,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	}
 	
-	private List<String> getDefXref(TermGenerationInput input) {
+	private List<String> getDefXref() {
 		String[] strings =  getInputs("DefX_Ref");
 		if (strings == null || strings.length == 0) {
 			return null;

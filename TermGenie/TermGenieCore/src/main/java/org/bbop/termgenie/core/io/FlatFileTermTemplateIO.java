@@ -1,13 +1,9 @@
 package org.bbop.termgenie.core.io;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
@@ -55,69 +54,69 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		this.helper = helper;
 	}
 
-	@Override
-	public void writeTemplates(Collection<TermTemplate> templates, BufferedWriter writer) throws IOException {
+	public void writeTemplates(Collection<TermTemplate> templates, StringBuilder writer) {
 		for (TermTemplate template : templates) {
 			writeTemplate(template, writer);
-			writer.newLine();
-			writer.newLine();
+			newLine(writer);
+			newLine(writer);
 		}
 	}
 	
+	private static void newLine(StringBuilder sb) {
+		sb.append('\n');
+	}
+	
 	@Override
-	public void writeTemplates(Collection<TermTemplate> templates, File outputFile) {
-		BufferedWriter writer = null;
+	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) {
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
-			writeTemplates(templates, writer);
-		} catch (UnsupportedEncodingException exception) {
-			throw new RuntimeException(exception);
-		} catch (FileNotFoundException exception) {
-			throw new RuntimeException(exception);
+			StringBuilder sb = new StringBuilder();
+			writeTemplates(templates, sb);
+			IOUtils.write(sb, outputStream, "UTF-8");
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException exception) {
-					throw new RuntimeException(exception);
-				}
-			}
 		}
+	}
 
+	public void writeTemplates(Collection<TermTemplate> templates, File outputFile) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			writeTemplates(templates, sb);
+			FileUtils.write(outputFile, sb, "UTF-8");
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 	
 	private static char SEPARATOR_CHAR = '\t';
 	private static char COMMENT_CHAR = '#';
 	
-	private void writeTemplate(TermTemplate template, BufferedWriter writer) throws IOException {
+	private void writeTemplate(TermTemplate template, StringBuilder writer) {
 		writer.append(FLAT_FILE_TAG_TEMPLATE);
-		writer.newLine();
+		newLine(writer);
 		
 		// name
 		writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(template.getName());
-		writer.newLine();
+		newLine(writer);
 		
 		// display name
 		String displayName = template.getDisplayName();
 		if (displayName != null) {
 			writer.append(FLAT_FILE_TAG_DISPLAY_NAME).append(SEPARATOR_CHAR).append(displayName);
-			writer.newLine();
+			newLine(writer);
 		}
 		
 		// description
 		String description = template.getDescription();
 		if (description != null) {
 			writer.append(FLAT_FILE_TAG_DESCRIPTION).append(SEPARATOR_CHAR).append(description);
-			writer.newLine();
+			newLine(writer);
 		}
 		
 		// hint
 		final String hint = template.getHint();
 		if (hint != null) {
 			writer.append(FLAT_FILE_TAG_HINT).append(SEPARATOR_CHAR).append(hint);
-			writer.newLine();
+			newLine(writer);
 		}
 		// ontology
 		addOntology(template.getCorrespondingOntology(), writer);
@@ -129,33 +128,33 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		final String oboNamespace = template.getOboNamespace();
 		if (oboNamespace != null) {
 			writer.append(FLAT_FILE_TAG_OBO_NAMESPACE).append(SEPARATOR_CHAR).append(oboNamespace);
-			writer.newLine();
+			newLine(writer);
 		}
 		
 		// requires
 		final List<String> requires = template.getRequires();
 		if (requires != null && !requires.isEmpty()) {
 			writer.append(FLAT_FILE_TAG_REQUIRES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(requires, SEPARATOR_CHAR));
-			writer.newLine();
+			newLine(writer);
 		}
 		
 		// template fields
 		for (TemplateField templateField : template.getFields()) {
 			writer.append(COMMENT_CHAR);
-			writer.newLine();
+			newLine(writer);
 			
 			writer.append(FLAT_FILE_TAG_FIELD);
-			writer.newLine();
+			newLine(writer);
 			
 			// String name
 			writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(templateField.getName());
-			writer.newLine();
+			newLine(writer);
 			
 			// boolean required
 			if (templateField.isRequired()) {
 				// assume not required as default.
 				writer.append(FLAT_FILE_TAG_REQUIRED).append(SEPARATOR_CHAR).append(Boolean.toString(templateField.isRequired()));
-				writer.newLine();
+				newLine(writer);
 			}
 			
 			// Cardinality cardinality;
@@ -165,7 +164,7 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 				if (serializedCardinality != null) {
 					writer.append(FLAT_FILE_TAG_CARDINALITY).append(SEPARATOR_CHAR);
 					writer.append(serializedCardinality);
-					writer.newLine();
+					newLine(writer);
 				}
 			}
 			
@@ -173,7 +172,7 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			List<String> prefixes = templateField.getFunctionalPrefixes();
 			if (!prefixes.isEmpty()) {
 				writer.append(FLAT_FILE_TAG_PREFIXES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(prefixes, SEPARATOR_CHAR));
-				writer.newLine();
+				newLine(writer);
 			}
 			
 			// Ontology correspondingOntology;
@@ -183,26 +182,26 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		String rules = template.getRules();
 		if (!rules.isEmpty()) {
 			writer.append(COMMENT_CHAR);
-			writer.newLine();
+			newLine(writer);
 			writer.append(FLAT_FILE_TAG_RULE);
-			writer.newLine();
+			newLine(writer);
 			writer.append(rules);
-			writer.newLine();
+			newLine(writer);
 		}
 	}
 	
-	private void addOntologies(List<Ontology> ontologies, BufferedWriter writer) throws IOException {
+	private void addOntologies(List<Ontology> ontologies, StringBuilder writer) {
 		addOntologies(FLAT_FILE_TAG_ONTOLOGY, ontologies, writer);
 	}
 	
-	private void addOntologies(String tag, List<Ontology> ontologies, BufferedWriter writer) throws IOException {
+	private void addOntologies(String tag, List<Ontology> ontologies, StringBuilder writer) {
 		if (ontologies != null && !ontologies.isEmpty()) {
 			writer.append(tag).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
-			writer.newLine();
+			newLine(writer);
 		}
 	}
 	
-	private void addOntology(Ontology ontology, BufferedWriter writer) throws IOException {
+	private void addOntology(Ontology ontology, StringBuilder writer) {
 		addOntologies(Collections.singletonList(ontology), writer);
 	}
 
@@ -274,17 +273,15 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bbop.termgenie.core.io.TermTemplateIO#readTemplates(java.io.BufferedReader)
-	 */
+	@SuppressWarnings("null")
 	@Override
-	public List<TermTemplate> readTemplates(BufferedReader reader) throws IOException {
+	public List<TermTemplate> readTemplates(InputStream inputStream) throws IOException {
 		int count = 0;
-		String line;
 		List<TermTemplate> result = new ArrayList<TermTemplate>();
 		ReadData data = null;
-
-		while ((line = reader.readLine()) != null) {
+		LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
+		while (lineIterator.hasNext()) {
+			String line = lineIterator.next();
 			count++;
 			if (line.length() == 0 || line.charAt(0) == COMMENT_CHAR) {
 				continue;

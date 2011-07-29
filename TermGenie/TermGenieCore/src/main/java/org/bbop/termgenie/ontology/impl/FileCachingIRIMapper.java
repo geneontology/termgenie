@@ -1,12 +1,8 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.IRIMapper;
 
@@ -124,16 +122,10 @@ public class FileCachingIRIMapper implements IRIMapper {
 		IOException prevException = null;
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
-
 		try {
 			inputStream = getInputStream(originalURL);
 			outputStream = new FileOutputStream(localFile);
-
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = inputStream.read(buf)) > 0) {
-				outputStream.write(buf, 0, len);
-			}
+			IOUtils.copy(inputStream, outputStream);
 
 		} catch (IOException exception) {
 			prevException = exception;
@@ -163,13 +155,11 @@ public class FileCachingIRIMapper implements IRIMapper {
 			if (prevException != null) {
 				throw new RuntimeException(prevException);
 			}
-			else {
-				/* 
-				 * only set the file valid, if there were no exceptions 
-				 * and the output stream is closed.
-				 */
-				validityHelper.setValid(localFile);
-			}
+			/* 
+			 * only set the file valid, if there were no exceptions 
+			 * and the output stream is closed.
+			 */
+			validityHelper.setValid(localFile);
 		}
 	}
 	
@@ -254,66 +244,24 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 		
 		private Date getDate(File validityFile) {
-			if (!validityFile.exists()) {
-				return null;
-			}
-			BufferedReader reader = null;
-			IOException prevException = null;
-			try {
-				reader = new BufferedReader(new FileReader(validityFile));
-				String readLine = reader.readLine();
-				return df.get().parse(readLine);
-			} catch (IOException exception) {
-				prevException = exception;
-			} catch (ParseException exception) {
-				validityFile.delete();
-			}
-			finally {
-				if (reader != null) {
-					try {
-						reader.close();
-					} catch (IOException exception) {
-						if (prevException == null) {
-							prevException = exception;
-						}
-						else {
-							logger.error("Could not close writer for file: "+validityFile.getAbsolutePath());
-						}
-					}
-				}
-				if (prevException != null) {
-					throw new RuntimeException(prevException);
+			if (validityFile.exists()) {
+				try {
+					String dateString = FileUtils.readFileToString(validityFile);
+					return df.get().parse(dateString);
+				} catch (IOException exception) {
+					throw new RuntimeException(exception);
+				} catch (ParseException exception) {
+					validityFile.delete();
 				}
 			}
 			return null;
 		}
 		
 		private void setDate(Date date, File validityFile) {
-			BufferedWriter writer = null;
-			IOException prevException = null;
 			try {
-				writer = new BufferedWriter(new FileWriter(validityFile));
-				writer.append(df.get().format(date));
-				writer.append('\n');
+				FileUtils.write(validityFile, df.get().format(date));
 			} catch (IOException exception) {
-				prevException = exception;
-			}
-			finally {
-				if (writer != null) {
-					try {
-						writer.close();
-					} catch (IOException exception) {
-						if (prevException == null) {
-							prevException = exception;
-						}
-						else {
-							logger.error("Could not close writer for file: "+validityFile.getAbsolutePath());
-						}
-					}
-				}
-				if (prevException != null) {
-					throw new RuntimeException(prevException);
-				}
+				throw new RuntimeException(exception);
 			}
 		}
 		

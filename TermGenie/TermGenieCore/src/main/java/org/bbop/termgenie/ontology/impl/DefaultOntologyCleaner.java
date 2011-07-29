@@ -1,9 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyCleaner.CleanerConfig.CleanDetails;
@@ -106,14 +106,12 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 
 		static Map<String, CleanerConfig> loadSettings(InputStream inputStream) {
 			Map<String, CleanerConfig> settings = new HashMap<String, CleanerConfig>();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String line;
-
 			CleanerConfig currentConfig = null;
 			Map<String, CleanDetails> currentMap = null;
 			try {
-				while ((line = reader.readLine()) != null) {
-					line = line.trim();
+				LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
+				while (lineIterator.hasNext()) {
+					String line = lineIterator.next().trim();
 					if (line.length() < 1 || line.charAt(0) == '!') {
 						continue;
 					}
@@ -146,12 +144,9 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 				return settings;
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
-			} finally {
-				try {
-					reader.close();
-				} catch (IOException exception) {
-					LOGGER.error("unable to close reader", exception);
-				}
+			}
+			finally {
+				IOUtils.closeQuietly(inputStream);
 			}
 		}
 

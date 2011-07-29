@@ -34,5 +34,5 @@ public abstract class MultiOntologyTaskManager extends MultiResourceTaskManager<
 		return i1.getUniqueName().equals(i2.getUniqueName());
 	}
 	
-	public abstract static class MultiOntologyTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {}
+	public abstract static class MultiOntologyTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {/* intentionally empty */}
 }

@@ -2,7 +2,6 @@ package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
-import org.bbop.termgenie.rules.TermGenerationEngineModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;

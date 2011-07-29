@@ -33,9 +33,7 @@ public class TestFolderTools {
 			if (testFolder.exists() && !testFolder.isDirectory()) {
 				throw new RuntimeException("Try to use a resource as testFolder, which is not a folder: "+testFolder.getAbsolutePath());
 			}
-			else {
-				testFolder.mkdirs();
-			}
+			testFolder.mkdirs();
 			return testFolder;
 		} catch (URISyntaxException exception) {
 			throw new RuntimeException(exception);

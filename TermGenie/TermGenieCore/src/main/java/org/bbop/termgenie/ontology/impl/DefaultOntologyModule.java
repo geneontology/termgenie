@@ -37,7 +37,7 @@ public class DefaultOntologyModule extends IOCModule {
 	@Override
 	protected void configure() {
 		bind(OntologyLoader.class).to(DefaultOntologyLoader.class);
-		bind(new TypeLiteral<Set<String>>(){}).
+		bind(new TypeLiteral<Set<String>>(){/* intentionally empty */}).
 			annotatedWith(Names.named("DefaultOntologyLoaderSkipOntologies")).
 			toInstance(new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL")));
 		

@@ -1,16 +1,15 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.tools.ResourceLoader;
@@ -21,8 +20,6 @@ import com.google.inject.name.Named;
 
 @Singleton
 public class DefaultOntologyConfiguration extends ResourceLoader implements OntologyConfiguration {
-	
-	private static final Logger logger = Logger.getLogger(DefaultOntologyConfiguration.class);
 	
 	static final String SETTINGS_FILE = "default-ontology-configuration.settings";
 
@@ -139,19 +136,19 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 	}
 	
 	private Map<String, ConfiguredOntology> loadOntologyConfiguration(String resource) {
-		BufferedReader reader = null;
+		InputStream inputStream = null;
 		try {
-			InputStream inputStream = loadResource(resource);
-			reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+			inputStream = loadResource(resource);
+			LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
 			Map<String, ConfiguredOntology> map = new LinkedHashMap<String, ConfiguredOntology>();
-			String line;
-			while ((line = reader.readLine()) != null) {
+			while (lineIterator.hasNext()) {
+				String line = lineIterator.next();
 				if (line.length() > 0 && !line.startsWith("!")) {
 					if(line.startsWith("[Ontology]")) {
-						parseOntology(reader, map);
+						parseOntology(lineIterator, map);
 					}
 					else if (line.startsWith("[OntologyBranch]")) {
-						parseOntologyBranch(reader, map);
+						parseOntologyBranch(lineIterator, map);
 					}
 				}
 			}
@@ -159,21 +156,14 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException exception) {
-					logger.error("Could not close reader.",exception);
-				}
-			}
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 	
-	private void parseOntology(BufferedReader reader, Map<String, ConfiguredOntology> ontologies) throws IOException {
-		String line;
+	private void parseOntology(LineIterator reader, Map<String, ConfiguredOntology> ontologies) {
 		ConfiguredOntology current = null;
-		while ((line = reader.readLine()) != null) {
-			line = line.trim();
+		while (reader.hasNext()) {
+			String line = reader.next().trim();
 			if (line.length() <= 1) {
 				if (current != null) {
 					ontologies.put(current.getUniqueName(), current);
@@ -202,13 +192,12 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		}
 	}
 	
-	private void parseOntologyBranch(BufferedReader reader, Map<String, ConfiguredOntology> ontologies) throws IOException  {
-		String line;
+	private void parseOntologyBranch(LineIterator reader, Map<String, ConfiguredOntology> ontologies) {
 		String name = null;
 		String ontology = null;
 		String parent = null;
-		while ((line = reader.readLine()) != null) {
-			line = line.trim();
+		while (reader.hasNext()) {
+			String line = reader.next().trim();
 			if (line.length() <= 1) {
 				if (name != null && ontology != null && parent != null) {
 					ConfiguredOntology full = ontologies.get(ontology);

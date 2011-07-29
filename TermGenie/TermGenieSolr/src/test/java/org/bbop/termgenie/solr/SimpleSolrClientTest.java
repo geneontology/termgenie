@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.solr.common.SolrDocument;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.index.AutoCompletionTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	}
 
 	/**
-	 * Tests for {@link SimpleSolrClient#sortbyLabelLength(List)}
+	 * Tests for {@link AutoCompletionTools#sortbyLabelLength(List)}
 	 */
 	@Test
 	public void testSortbyLabelLength() {

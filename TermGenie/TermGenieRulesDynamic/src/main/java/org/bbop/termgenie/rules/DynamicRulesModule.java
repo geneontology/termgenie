@@ -1,13 +1,12 @@
 package org.bbop.termgenie.rules;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.inject.Singleton;
 
+import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.io.TermTemplateIO;
 import org.bbop.termgenie.core.io.TermTemplateIOModule;
@@ -29,12 +28,15 @@ public abstract class DynamicRulesModule extends IOCModule {
 	
 	@Provides @Singleton
 	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO) {
-		InputStream in = getResourceInputStream();
-		BufferedReader reader  = new BufferedReader(new InputStreamReader(in));
+		InputStream in = null;
 		try {
-			return templateIO.readTemplates(reader);
+			in = getResourceInputStream();
+			return templateIO.readTemplates(in);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
+		}
+		finally {
+			IOUtils.closeQuietly(in);
 		}
 	}
 

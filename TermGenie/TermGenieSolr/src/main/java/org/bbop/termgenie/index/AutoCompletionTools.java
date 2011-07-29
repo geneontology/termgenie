@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Tools for auto-completion.
+ * 
+ * @param <T> 
  */
 public abstract class AutoCompletionTools<T> {
 
@@ -56,7 +58,7 @@ public abstract class AutoCompletionTools<T> {
 	 * Pre-process the query String, return null, if no valid tokens are identified 
 	 * 
 	 * @param queryString
-	 * @param name of the ID Field
+	 * @param idField name of the ID Field
 	 * @return string or null
 	 */
 	public String preprocessQuery(String queryString, String idField) {
