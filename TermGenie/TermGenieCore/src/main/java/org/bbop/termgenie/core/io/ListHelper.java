@@ -7,25 +7,32 @@ import java.util.List;
  * Tool for reading and writing a list of strings.
  * TODO: encode or replace separator chars and newline chars in the input string.
  */
-class ListHelper {
+public class ListHelper {
 
-	static List<String> parseString(String serializedString, char separatorChar) {
-		List<String> prefixes = null;
+	public static List<String> parseString(String serializedString, char separatorChar) {
+		List<String> results = null;
 		if (serializedString != null) {
 			serializedString = serializedString.trim();
-			prefixes = new ArrayList<String>();
+			results = new ArrayList<String>();
 			int start = 0;
 			int pos;
 			int length = serializedString.length();
 			while ((pos = serializedString.indexOf(separatorChar, start)) >= 0) {
-				prefixes.add(serializedString.substring(start, pos));
+				add(serializedString.substring(start, pos), results);
 				start = Math.min(pos + 1, length);
 			}
 			if (start <  length) {
-				prefixes.add(serializedString.substring(start));
+				add(serializedString.substring(start), results);
 			}
 		}
-		return prefixes;
+		return results;
+	}
+	
+	private static void add(String s, List<String> list) {
+		if (s != null && s.length() > 0) {
+			s = s.trim();
+			list.add(s);
+		}
 	}
 	
 	static String serializeList(List<String> list, char separatorChar) {
