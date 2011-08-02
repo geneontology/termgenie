@@ -59,6 +59,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieCore</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
 			<version>${openjpa.version}</version>

@@ -81,7 +81,10 @@
 	  		<plugin>
 	  			<groupId>org.apache.maven.plugins</groupId>
 	  			<artifactId>maven-surefire-plugin</artifactId>
-	  			<version>2.8.1</version>
+	  			<version>2.9</version>
+	  			<configuration>
+	  				<argLine>-Xmx1G</argLine>
+	  			</configuration>
 	  		</plugin>
 	  		<plugin>
 	  			<groupId>org.apache.maven.plugins</groupId>
@@ -110,6 +113,25 @@
 	  			</executions>
 	  		</plugin>
 	  	</plugins>
+	  	<pluginManagement>
+	  		<plugins>
+	  			<plugin>
+	  				<groupId>org.apache.maven.plugins</groupId>
+	  				<artifactId>maven-war-plugin</artifactId>
+	  				<version>2.1.1</version>
+	  			</plugin>
+		  			<plugin>
+		  			<groupId>org.apache.maven.plugins</groupId>
+		  			<artifactId>maven-assembly-plugin</artifactId>
+		  			<version>2.2.1</version>
+		  		</plugin>
+		  		<plugin>
+		  			<groupId>org.apache.maven.plugins</groupId>
+		  			<artifactId>maven-jar-plugin</artifactId>
+		  			<version>2.3.1</version>
+		  		</plugin>
+	  		</plugins>
+	  	</pluginManagement>
 	</build>
 
 	<repositories>
@@ -124,6 +146,9 @@
 		<repository>
 			<id>BerkeleyBOPSnapshot</id>
 			<url>http://code.berkeleybop.org/maven/snapshot-repository/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -133,5 +158,6 @@
 		<module>TermGenieJQuery</module>
 		<module>TermGenieRulesBasic</module>
 		<module>TermGenieRulesDynamic</module>
+		<module>TermGeniePersistence</module>
 	</modules>
 </project>

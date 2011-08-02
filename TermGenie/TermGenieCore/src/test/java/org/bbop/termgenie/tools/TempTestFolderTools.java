@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.impl;
+package org.bbop.termgenie.tools;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * Helper tools for handling temporary test folders.
  */
-public class TestFolderTools {
+public class TempTestFolderTools {
 
 	/**
 	 * Create a new test folder relative to a given class. The idea is, that
@@ -18,7 +18,7 @@ public class TestFolderTools {
 	 * project, thus isolating multiple project instances from each other. 
 	 * Also, usually, the user has the appropriate rights in the build folder.
 	 *  
-	 *  Limits: The class may not be in a jar.
+	 *  Limits: The class cls may not be in a jar.
 	 * 
 	 * @param cls The class to which this test folder should be relative to.
 	 * @return testFolder

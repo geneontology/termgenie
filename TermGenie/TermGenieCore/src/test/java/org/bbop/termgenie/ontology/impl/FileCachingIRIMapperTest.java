@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.tools.ant.filters.StringInputStream;
+import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,12 +22,12 @@ public class FileCachingIRIMapperTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		testFolder = TestFolderTools.createTestFolder(FileCachingIRIMapperTest.class);
+		testFolder = TempTestFolderTools.createTestFolder(FileCachingIRIMapperTest.class);
 	}
 	
 	@AfterClass
 	public static void afterClass() {
-		TestFolderTools.deleteTestFolder(testFolder);
+		TempTestFolderTools.deleteTestFolder(testFolder);
 	}
 	
 	@Test
