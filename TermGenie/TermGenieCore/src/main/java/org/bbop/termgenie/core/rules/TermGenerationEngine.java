@@ -187,27 +187,61 @@ public interface TermGenerationEngine {
 			return strings;
 		}
 		
+		/**
+		 * @param template
+		 * @param field
+		 * @param values
+		 */
 		public void setStringValues(TermTemplate template, String field, String...values) {
 			setValues(strings, template, field, values);
 		}
 		
+		/**
+		 * @param template
+		 * @param pos
+		 * @param values
+		 */
 		public void setStringValues(TermTemplate template, int pos, String...values) {
 			setValues(strings, template, pos, values);
 		}
 		
+		/**
+		 * @param template
+		 * @param field
+		 * @param values
+		 */
 		public void setTermValues(TermTemplate template, String field, OntologyTerm...values) {
 			setValues(terms, template, field, values);
 		}
 		
+		/**
+		 * @param template
+		 * @param pos
+		 * @param values
+		 */
 		public void setTermValues(TermTemplate template, int pos, OntologyTerm...values) {
 			setValues(terms, template, pos, values);
 		}
 
+		/**
+		 * @param <T>
+		 * @param storeTo
+		 * @param template
+		 * @param field
+		 * @param values
+		 */
 		private <T> void setValues(T[][] storeTo, TermTemplate template, String field, T...values) {
 			int pos = template.getFieldPos(field);
 			storeTo[pos] = values;
 		}
 		
+		/**
+		 * @param <T>
+		 * @param storeTo
+		 * @param template
+		 * @param pos
+		 * @param values
+		 */
 		private <T> void setValues(T[][] storeTo, TermTemplate template, int pos, T...values) {
 			storeTo[pos] = values;
 		}

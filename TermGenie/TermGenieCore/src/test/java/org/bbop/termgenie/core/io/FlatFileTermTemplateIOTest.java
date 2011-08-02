@@ -2,7 +2,6 @@ package org.bbop.termgenie.core.io;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,8 +35,8 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 	}
 	
 	/**
-	 * Tests for {@link FlatFileTermTemplateIO#writeTemplates(java.util.Collection, BufferedWriter)} 
-	 * and {@link FlatFileTermTemplateIO#readTemplates(java.io.BufferedReader)}
+	 * Tests for {@link FlatFileTermTemplateIO#writeTemplates} 
+	 * and {@link FlatFileTermTemplateIO#readTemplates}
 	 * 
 	 * @throws IOException
 	 */
