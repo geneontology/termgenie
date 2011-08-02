@@ -75,5 +75,15 @@
 			<artifactId>derby</artifactId>
 			<version>10.8.1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.xerial</groupId>
+		    <artifactId>sqlite-jdbc</artifactId>
+		    <version>3.7.2</version>
+		</dependency>
 	</dependencies>
 </project>

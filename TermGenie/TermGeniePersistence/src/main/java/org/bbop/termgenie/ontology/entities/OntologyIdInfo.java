@@ -1,12 +1,12 @@
 package org.bbop.termgenie.ontology.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
 public class OntologyIdInfo {
 
-	@Id
 	private String ontologyName;
 	private String pattern;
 	private int current;
@@ -15,6 +15,7 @@ public class OntologyIdInfo {
 	/**
 	 * @return the ontologyName
 	 */
+	@Id
 	public String getOntologyName() {
 		return ontologyName;
 	}
@@ -29,6 +30,7 @@ public class OntologyIdInfo {
 	/**
 	 * @return the pattern
 	 */
+	@Column
 	public String getPattern() {
 		return pattern;
 	}
@@ -43,6 +45,7 @@ public class OntologyIdInfo {
 	/**
 	 * @return the current
 	 */
+	@Column
 	public int getCurrent() {
 		return current;
 	}
@@ -57,6 +60,7 @@ public class OntologyIdInfo {
 	/**
 	 * @return the maximum
 	 */
+	@Column
 	public int getMaximum() {
 		return maximum;
 	}

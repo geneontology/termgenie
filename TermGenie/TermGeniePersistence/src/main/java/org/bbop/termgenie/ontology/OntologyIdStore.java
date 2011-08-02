@@ -26,6 +26,21 @@ public class OntologyIdStore {
 
 	private static final Logger logger = Logger.getLogger(OntologyIdStore.class);
 	
+	/**
+	 * Create a new store with a given configuration and {@link EntityManager}.
+	 * The configuration is expected to be in the following format:
+	 * <ul> 
+	 *   <li>Each line represents one ontology</li>
+	 *   <li>A line a for fields, separated by tabulators</li>
+	 *   <li>Field 1: ontology name</li>
+	 *   <li>Field 2: id pattern</li>
+	 *   <li>Field 3: ID range start</li>
+	 *   <li>Field 4: ID range end</li>
+	 * </ul>
+	 * 
+	 * @param inputStream stream containing the configuration
+	 * @param entityManager the entity manager for persistence
+	 */
 	@Inject
 	OntologyIdStore(InputStream inputStream, EntityManager entityManager) {
 		super();
@@ -125,10 +140,9 @@ public class OntologyIdStore {
 	private OntologyIdInfo getInfo(String ontologyName, EntityManager entityManager) {
 		
 		TypedQuery<OntologyIdInfo> query = entityManager.createQuery(
-				"SELECT o FROM :target infos " +
-                "WHERE infos.ontologyName = :ontologyName", OntologyIdInfo.class);
-		query.setParameter("target", OntologyIdInfo.class.getSimpleName());
-		query.setParameter("ontologyName", ontologyName);
+				"SELECT info FROM OntologyIdInfo info " +
+                "WHERE info.ontologyName = ?1", OntologyIdInfo.class);
+		query.setParameter(1, ontologyName);
 		List<OntologyIdInfo> results = query.getResultList();
 		if (results != null && !results.isEmpty()) {
 			OntologyIdInfo info = results.get(0);
@@ -166,21 +180,21 @@ public class OntologyIdStore {
 	/*
 	 * helper to increase readbility of the code
 	 */
-	private static void warn (String message) {
+	void warn (String message) {
 		logger.warn(message);
 	}
 
 	/*
 	 * helper to increase readbility of the code
 	 */
-	private static void error(String message) {
+	void error(String message) {
 		throw new OntologyIdStoreException(message);
 	}
 
 	/*
 	 * helper to increase readbility of the code
 	 */
-	private static void error(String message, Throwable cause) {
+	void error(String message, Throwable cause) {
 		throw new OntologyIdStoreException(message, cause);
 	}
 

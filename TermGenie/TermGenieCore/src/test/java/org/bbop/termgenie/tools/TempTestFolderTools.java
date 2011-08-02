@@ -14,7 +14,7 @@ public class TempTestFolderTools {
 
 	/**
 	 * Create a new test folder relative to a given class. The idea is, that
-	 * the test older is created in the build directory of the corresponding 
+	 * the test folder is created in the build directory of the corresponding 
 	 * project, thus isolating multiple project instances from each other. 
 	 * Also, usually, the user has the appropriate rights in the build folder.
 	 *  
@@ -34,8 +34,11 @@ public class TempTestFolderTools {
 				throw new RuntimeException("Try to use a resource as testFolder, which is not a folder: "+testFolder.getAbsolutePath());
 			}
 			testFolder.mkdirs();
+			FileUtils.cleanDirectory(testFolder);
 			return testFolder;
 		} catch (URISyntaxException exception) {
+			throw new RuntimeException(exception);
+		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
