@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.apache.openjpa.persistence.PersistentMap;
+import org.apache.openjpa.persistence.PersistentCollection;
 
 @Entity
 public class CommitedOntologyTermRelation {
@@ -70,7 +70,7 @@ public class CommitedOntologyTermRelation {
 	/**
 	 * @return the properties
 	 */
-	@PersistentMap
+	@PersistentCollection
 	public List<String> getProperties() {
 		return properties;
 	}
