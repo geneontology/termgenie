@@ -30,25 +30,19 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieCore</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieSolr</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieRulesDynamic</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
