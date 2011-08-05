@@ -200,12 +200,11 @@ public class ReloadingOntologyLoader implements OntologyLoader {
 		else {
 			realUrl = new URL(url);
 		}
-		String lowerCaseUrl = url.toLowerCase();
-		if (lowerCaseUrl.endsWith(".obo")) {
+		if (realUrl.getPath().endsWith(".obo") || realUrl.getQuery().endsWith(".obo")) {
 			return loadOBO2OWL(ontology, realUrl);
 		}
-		else if (lowerCaseUrl.endsWith(".owl")) {
-			OWLOntologyManager manager = OWLManager.createOWLOntologyManager(); // persist?
+		else if (realUrl.getPath().endsWith(".owl") || realUrl.getQuery().endsWith(".owl")) {
+			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 			return manager.loadOntologyFromOntologyDocument(IRI.create(url));
 		}
 		else {
