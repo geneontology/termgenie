@@ -153,5 +153,9 @@ public class MultiResourceTaskManagerTest {
 			return createManaged();
 		}
 		
+		@Override
+		protected void setChanged() {
+			// Do nothing in tests
+		}
 	}
 }

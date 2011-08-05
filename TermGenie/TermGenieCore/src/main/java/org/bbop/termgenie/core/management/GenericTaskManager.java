@@ -66,10 +66,16 @@ public abstract class GenericTaskManager<T> {
 		if (this.managed != managed) {
 			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: "+name);
 		}
-		if (modified) {
-			this.managed = resetManaged(managed);
+		try {
+			if (modified) {
+				this.managed = resetManaged(managed);
+			}
+			setChanged();
+		} catch (GenericTaskManagerException exception) {
+			throw exception;
+		} finally {
+			lock.release();
 		}
-		lock.release();
 	}
 	
 	/**
@@ -109,6 +115,7 @@ public abstract class GenericTaskManager<T> {
 			}
 			else {
 				managed = updateManaged(managed);
+				setChanged();
 			}
 		} catch (InterruptedException exception) {
 			throw new GenericTaskManagerException("Interrupted during wait.",exception);
@@ -120,6 +127,8 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 	
+	protected abstract void setChanged();
+
 	/**
 	 * Run a managed task. Encapsulate the wait and return operations for the managed instance.
 	 * 

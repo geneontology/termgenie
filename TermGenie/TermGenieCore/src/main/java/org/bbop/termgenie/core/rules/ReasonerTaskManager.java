@@ -23,6 +23,11 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		return managed;
 	}
 
+	@Override
+	protected void setChanged() {
+		// do nothing for now
+	}
+
 	/**
 	 * A task which requires a reasoner. 
 	 */

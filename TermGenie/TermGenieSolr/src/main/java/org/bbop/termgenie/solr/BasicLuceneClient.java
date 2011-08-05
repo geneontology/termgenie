@@ -8,35 +8,53 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.Pair;
+import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.EventSubscriber;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-public class BasicLuceneClient implements OntologyTermSuggestor {
+public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber<OntologyChangeEvent> {
 
-	private final LuceneMemoryOntologyIndex index;
 	private final String name;
-	private final OWLGraphWrapper ontology; 
+	private final List<String> roots;
+	private final List<Pair<String, List<String>>> branches;
 	
+	private LuceneMemoryOntologyIndex index;
+	private OWLGraphWrapper ontology;
+	
+	/**
+	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene memory index.
+	 * 
+	 * @param ontology
+	 * @return new Instance of {@link BasicLuceneClient}
+	 */
 	public static BasicLuceneClient create(OntologyTaskManager ontology) {
-			List<Pair<String, String>> branches = Collections.emptyList();
-			String branchName = ontology.getOntology().getBranch();
-			String branchId = ontology.getOntology().getBranchId();
-			if (branchName != null & branchId != null) {
-				Pair<String, String> pair = new Pair<String, String>(branchName, branchId);
-				branches = Collections.singletonList(pair);
-			}
-			String name = ontology.getOntology().getUniqueName();
-			return create(ontology, name, branches);
+		List<String> roots = ontology.getOntology().getRoots();	
+		List<Pair<String, List<String>>> branches = Collections.emptyList();
+		String branchName = ontology.getOntology().getBranch();
+		if (branchName != null & roots != null) {
+			Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, roots);
+			branches = Collections.singletonList(pair);
+			roots = null;
+		}
+		String name = ontology.getOntology().getUniqueName();
+		return create(ontology, name, roots, branches);
 	}
 	
+	/**
+	 * @param ontologies
+	 * @param manager
+	 * @return new Instance of {@link BasicLuceneClient}
+	 */
 	public static BasicLuceneClient create(List<Ontology> ontologies, OntologyTaskManager manager) {
 		if (ontologies == null || ontologies.isEmpty()) {
 			throw new RuntimeException("At least one ontology is required to create an index.");
@@ -44,8 +62,9 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 		if (ontologies.size() == 1) {
 			return create(manager);
 		}
+		List<String> roots = null;
 		String name = null;
-		List<Pair<String, String>> branches = new ArrayList<Pair<String,String>>();
+		List<Pair<String, List<String>>> branches = new ArrayList<Pair<String,List<String>>>();
 		for (Ontology ontology : ontologies) {
 			if (name == null) {
 				name = ontology.getUniqueName();
@@ -57,57 +76,80 @@ public class BasicLuceneClient implements OntologyTermSuggestor {
 				}
 			}
 			String branchName = ontology.getBranch();
-			String branchId = ontology.getBranchId();
-			if (branchName != null & branchId != null) {
-				Pair<String, String> pair = new Pair<String, String>(branchName, branchId);
+			List<String> cRoots = ontology.getRoots();
+			if (branchName == null) {
+				roots = cRoots;
+			}
+			else if (roots != null) {
+				Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, roots);
 				branches.add(pair);
 			}
 		}
-		return create(manager, name, branches);
+		return create(manager, name, roots, branches);
 	}
 	
-	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<Pair<String, String>> branches) {
-		LuceneClientCreatorTask task = new LuceneClientCreatorTask(name, branches);
+	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<String> roots, List<Pair<String, List<String>>> branches) {
+		BasicLuceneClient client = new BasicLuceneClient(name, roots, branches);
+		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
 		ontology.runManagedTask(task);
 		return task.client;
 	}
 	
-	static class LuceneClientCreatorTask implements OntologyTask {
+	static class LuceneClientSetupTask implements OntologyTask {
 
-		String name;
-		List<Pair<String, String>> branches;
 		BasicLuceneClient client = null;
 		
 		/**
-		 * @param name
-		 * @param branches
+		 * @param client
 		 */
-		LuceneClientCreatorTask(String name, List<Pair<String, String>> branches) {
+		LuceneClientSetupTask(BasicLuceneClient client) {
 			super();
-			this.name = name;
-			this.branches = branches;
+			this.client = client;
 		}
-
-
 
 		@Override
 		public boolean run(OWLGraphWrapper managed) {
-			client = new BasicLuceneClient(managed, name, null, branches);
+			client.setup(managed);
 			return false;
 		}
 		
 	}
 	
-	protected BasicLuceneClient(OWLGraphWrapper ontology, String name, String root, List<Pair<String, String>> branches) {
-		this.ontology = ontology;
+	/**
+	 * @param name
+	 * @param roots
+	 * @param branches
+	 */
+	protected BasicLuceneClient(String name, List<String> roots, List<Pair<String,List<String>>> branches) {
+		super();
 		this.name = name;
+		this.roots = roots;
+		this.branches = branches;
+		EventBus.subscribe(OntologyChangeEvent.class, this);
+	}
+
+	void setup(OWLGraphWrapper ontology) {
+		this.ontology = ontology;
+		LuceneMemoryOntologyIndex old = index;
 		try {
-			index = new LuceneMemoryOntologyIndex(ontology, root, branches);
+			index = new LuceneMemoryOntologyIndex(ontology, roots, branches);
+			if (old != null) {
+				old.close();
+			}
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 	
+	@Override
+	public void onEvent(OntologyChangeEvent event) {
+		// check if the changed ontology is the one used for this index
+		if (this.name.equals(event.getOntology().getUniqueName())) {
+			LuceneClientSetupTask task = new LuceneClientSetupTask(this);
+			event.getManager().runManagedTask(task);
+		}
+	}
+
 	@Override
 	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if (this.name.equals(ontology.getUniqueName())) {

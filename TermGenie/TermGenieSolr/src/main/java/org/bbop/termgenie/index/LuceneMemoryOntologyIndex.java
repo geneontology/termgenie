@@ -92,23 +92,23 @@ public class LuceneMemoryOntologyIndex {
 	
 	/**
 	 * @param ontology
-	 * @param root
+	 * @param roots
 	 * @param branches
 	 * @throws IOException
 	 */
-	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, String root, List<Pair<String, String>> branches) throws IOException {
+	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, List<String> roots, List<Pair<String,List<String>>> branches) throws IOException {
 		super();
 		if (logger.isInfoEnabled()) {
 			StringBuilder message = new StringBuilder();
 			message.append("Start creating lucene memory index for: ");
 			message.append(ontology.getOntologyId());
-			if (root != null) {
+			if (roots != null) {
 				message.append(" Root: ");
-				message.append(root);
+				message.append(roots);
 			}
 			if (branches != null && !branches.isEmpty()) {
 				message.append(" Branches: ");
-				for(Pair<String, String> branch : branches) {
+				for(Pair<String, List<String>> branch : branches) {
 					message.append(" (");
 					message.append(branch.getOne());
 					message.append(",");
@@ -132,37 +132,33 @@ public class LuceneMemoryOntologyIndex {
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
-		if (root == null) {
+		if (roots == null || roots.isEmpty()) {
 			allOWLObjects = this.ontology.getAllOWLObjects();
 		}
 		else {
-			OWLObject x = this.ontology.getOWLObjectByIdentifier(root);
-			if (x == null) {
-				throw new RuntimeException("Error: could not find root term with id: "+root);
-			}
-			allOWLObjects = this.ontology.getDescendantsReflexive(x);
+			allOWLObjects = getDecendants(roots);
 		}
 		
 		Map<OWLObject, Set<String>> branchInfo = new HashMap<OWLObject, Set<String>>();
 		if (branches != null) {
 			ReasonerTaskManager taskManager = ReasonerFactory.getDefaultTaskManager(ontology);
-			for (Pair<String, String> branch : branches) {
+			for (Pair<String, List<String>> branch : branches) {
 				String name = branch.getOne();
-				String id = branch.getTwo();
-				OWLObject owlObject = this.ontology.getOWLObjectByIdentifier(id);
-				if (owlObject == null) {
-					throw new RuntimeException("Cannot create branch " + branch
-							+ " for unknown id: " + id);
-				}
-				add(owlObject, name, branchInfo);
-				Collection<OWLObject> descendants = taskManager.getDescendants(owlObject,
-						this.ontology);
-				if (logger.isInfoEnabled()) {
-					logger.info("Adding branch (" + name + "," + id + ") with "
-							+ descendants.size() + " descendants");
-				}
-				for (OWLObject descendant : descendants) {
-					add(descendant, name, branchInfo);
+				List<String> ids = branch.getTwo();
+				if (ids != null && !ids.isEmpty()) {
+					for(OWLObject owlObject : getDecendants(ids)) {
+						add(owlObject, name, branchInfo);
+						Collection<OWLObject> descendants = taskManager.getDescendants(owlObject,
+								this.ontology);
+						if (logger.isInfoEnabled()) {
+							logger.info("Adding branch (" + name + "," + 
+									ontology.getIdentifier(owlObject) + ") with "
+									+ descendants.size() + " descendants");
+						}
+						for (OWLObject descendant : descendants) {
+							add(descendant, name, branchInfo);
+						}
+					}
 				}
 			}
 		}
@@ -203,6 +199,21 @@ public class LuceneMemoryOntologyIndex {
 				logger.info("During the index creation there were "+npeCounter+" NPEs");
 			}
 		}
+	}
+	
+	private Set<OWLObject> getDecendants(List<String> ids) {
+		Set<OWLObject> result = new HashSet<OWLObject>();
+		for(String id : ids) {
+			OWLObject x = this.ontology.getOWLObjectByIdentifier(id);
+			if (x == null) {
+				throw new RuntimeException("Error: could not find term with id: "+id);
+			}
+			Set<OWLObject> owlObjects = this.ontology.getDescendantsReflexive(x);
+			if (owlObjects != null && !owlObjects.isEmpty()) {
+				result.addAll(owlObjects);
+			}
+		}
+		return result;
 	}
 	
 	private void add(OWLObject x, String branch, Map<OWLObject, Set<String>> branchInfo) {
@@ -337,5 +348,14 @@ public class LuceneMemoryOntologyIndex {
 			}
 			
 		});
+	}
+
+	public void close() {
+		try {
+			searcher.close();
+		} catch (IOException exception) {
+			logger.warn("Could not close lucene searcher.", exception);
+		}
+		analyzer.close();
 	}
 }

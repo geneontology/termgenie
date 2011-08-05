@@ -12,19 +12,19 @@ public class Ontology
 {
 	protected String name;
 	protected String subOntologyName;
-	protected String subOntologyParentId;
+	protected List<String> roots;
 	
 	/**
 	 * @param name
 	 * @param subOntologyName
-	 * @param subOntologyParentId
+	 * @param roots
 	 */
 	protected Ontology(String name, String subOntologyName,
-			String subOntologyParentId) {
+			List<String> roots) {
 		super();
 		this.name = name;
 		this.subOntologyName = subOntologyName;
-		this.subOntologyParentId = subOntologyParentId;
+		this.roots = roots;
 	}
 
 	public String getUniqueName() {
@@ -35,13 +35,13 @@ public class Ontology
 		return subOntologyName;
 	}
 	
-	public String getBranchId() {
-		return subOntologyParentId;
+	public List<String> getRoots() {
+		return roots;
 	}
 	
-	protected void setBranch(String subOntologyName, String subOntologyParentId) {
+	protected void setBranch(String subOntologyName, List<String> roots) {
 		this.subOntologyName = subOntologyName;
-		this.subOntologyParentId= subOntologyParentId;
+		this.roots = roots;
 	}
 	
 	/**

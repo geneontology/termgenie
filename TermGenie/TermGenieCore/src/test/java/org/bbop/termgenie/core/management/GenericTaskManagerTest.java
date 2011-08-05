@@ -77,6 +77,11 @@ public class GenericTaskManagerTest {
 		protected String resetManaged(String managed) {
 			return "r1";
 		}
+
+		@Override
+		protected void setChanged() {
+			// Do nothing in tests
+		}
 	}
 	
 	private static class TestGenericTask extends Thread {

@@ -88,12 +88,12 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			return requires;
 		}
 		
-		protected ConfiguredOntology createBranch(String subOntologyName, String subOntologyParentId) {
+		protected ConfiguredOntology createBranch(String subOntologyName, List<String> roots) {
 			ConfiguredOntology branch = new ConfiguredOntology(name);
 			branch.requires = requires;
 			branch.source = source;
 			branch.supports = supports;
-			branch.setBranch(subOntologyName, subOntologyParentId);
+			branch.setBranch(subOntologyName, roots);
 			return branch;
 		}
 		
@@ -111,9 +111,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 				builder.append(subOntologyName);
 				builder.append(", ");
 			}
-			if (subOntologyParentId != null) {
-				builder.append("subOntologyParentId=");
-				builder.append(subOntologyParentId);
+			if (roots != null) {
+				builder.append("roots=");
+				builder.append(roots);
 				builder.append(", ");
 			}
 			if (source != null) {
@@ -195,14 +195,14 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 	private void parseOntologyBranch(LineIterator reader, Map<String, ConfiguredOntology> ontologies) {
 		String name = null;
 		String ontology = null;
-		String parent = null;
+		List<String> roots = null;
 		while (reader.hasNext()) {
 			String line = reader.next().trim();
 			if (line.length() <= 1) {
-				if (name != null && ontology != null && parent != null) {
+				if (name != null && ontology != null && roots != null) {
 					ConfiguredOntology full = ontologies.get(ontology);
 					if (full != null) {
-						ontologies.put(name, full.createBranch(name, parent));
+						ontologies.put(name, full.createBranch(name, roots));
 					}
 				}
 				// empty lines as end marker
@@ -216,7 +216,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 					ontology = getValue(line, "ontology: ");
 				}
 				else if (line.startsWith("parent: ")) {
-					parent = getValue(line, "parent: ");
+					roots = getValue(roots, line, "parent: ");
 				}
 			}
 		}
@@ -232,6 +232,20 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		return value;
 	}
 	
+	private List<String> getValue(List<String> results, String line, String prefix) {
+		if (results == null) {
+			results = new ArrayList<String>();
+		}
+		String value = line.substring(prefix.length());
+		int comment = value.indexOf(" !");
+		if (comment > 0) {
+			value = value.substring(0, comment);
+		}
+		value = value.trim();
+		results.add(value);
+		return results;
+	}
+	
 	public static void main(String[] args) {
 		DefaultOntologyConfiguration c = new DefaultOntologyConfiguration(SETTINGS_FILE);
 		Map<String, ConfiguredOntology> ontologies = c.getOntologyConfigurations();
@@ -242,7 +256,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 				System.out.print(" - ");
 				System.out.print(ontology.getBranch());
 				System.out.print(" ! ");
-				System.out.print(ontology.getBranchId());
+				System.out.print(ontology.getRoots());
 			}
 			System.out.println();
 			System.out.println(ontology.source);

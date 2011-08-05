@@ -7,7 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.tools.Pair;
+import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.EventSubscriber;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -20,7 +24,7 @@ import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 
 import owltools.graph.OWLGraphWrapper;
 
-public final class ReasonerFactory {
+public final class ReasonerFactory implements EventSubscriber<OntologyChangeEvent> {
 	
 	private static final Logger logger = Logger.getLogger(ReasonerFactory.class);
 	
@@ -29,7 +33,15 @@ public final class ReasonerFactory {
 	private static final String JCEL = "jcel";
 	private final static Set<String> supportedReasoners = new HashSet<String>(Arrays.asList(JCEL,HERMIT,PELLET));
 	
-	private final static Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers = new HashMap<String, Map<String,Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
+	private final static ReasonerFactory instance = new ReasonerFactory();
+	
+	private final Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers;
+	
+	public ReasonerFactory() {
+		super();
+		allManagers = new HashMap<String, Map<String,Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
+		EventBus.subscribe(OntologyChangeEvent.class, this);
+	}
 	
 	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
 		return getTaskManager(ontology, JCEL);
@@ -40,24 +52,50 @@ public final class ReasonerFactory {
 		if(reasonerName == null || !supportedReasoners.contains(reasonerName)) {
 			throw new RuntimeException("Unknown reasoner: "+reasonerName);
 		}
-		Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
-		if (managers == null) {
-			managers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
-			allManagers.put(reasonerName, managers);
-		}
-		String ontologyName = ontology.getOntologyId();
-		Pair<OWLGraphWrapper, ReasonerTaskManager> pair = managers.get(ontologyName);
-		// TODO warning this is a hack. 
-		// There should be a proper event which marks a changed ontology!
-		// This will work for now, but relies on too many assumptions
-		if (pair == null || pair.getOne() != ontology) {
-			pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, createManager(ontology, reasonerName));
-			managers.put(ontologyName, pair);
-		}
-		return pair.getTwo();
+		return instance.getManager(ontology, reasonerName);
 	}
 	
-	private static ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
+	private ReasonerTaskManager getManager(OWLGraphWrapper ontology, String reasonerName) {
+		synchronized (allManagers) {
+			Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
+			if (managers == null) {
+				managers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
+				allManagers.put(reasonerName, managers);
+			}
+			String ontologyName = ontology.getOntologyId();
+			Pair<OWLGraphWrapper, ReasonerTaskManager> pair = managers.get(ontologyName);
+			if (pair == null || pair.getOne() != ontology) {
+				pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, createManager(
+						ontology, reasonerName));
+				managers.put(ontologyName, pair);
+			}
+			return pair.getTwo();
+		}
+	}
+
+	/**
+	 * Handle an ontology change.
+	 * 
+	 * This assumes that an ontology change can only be executed, if the
+	 * {@link OntologyTaskManager} has the lock and reasoning only happens also
+	 * in locked phase via the {@link OntologyTaskManager}. Otherwise, it is not
+	 * guaranteed, that the reasoner instances are up-to-date.
+	 * 
+	 * @param event
+	 */
+	@Override
+	public void onEvent(OntologyChangeEvent event) {
+		synchronized (allManagers) {
+			for(String reasonerName : allManagers.keySet()) {
+				Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
+				if (managers != null && !managers.isEmpty()) {
+					managers.remove(event.getManager().getOntologyId());
+				}
+			}
+		}
+	}
+
+	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
 		if (JCEL.equals(reasonerName)) {
 			return createJCelManager(ontology.getSourceOntology());
 		}
@@ -70,7 +108,7 @@ public final class ReasonerFactory {
 		return null;
 	}
 	
-	private static ReasonerTaskManager createJCelManager(final OWLOntology ontology) {
+	private ReasonerTaskManager createJCelManager(final OWLOntology ontology) {
 		return new ReasonerTaskManager("reasoner-manager-jcel-"+ontology.getOntologyID()) {
 			
 			@Override
@@ -101,7 +139,7 @@ public final class ReasonerFactory {
 		};
 	}
 
-	private static ReasonerTaskManager createManager(final OWLOntology ontology, final OWLReasonerFactory reasonerFactory) {
+	private ReasonerTaskManager createManager(final OWLOntology ontology, final OWLReasonerFactory reasonerFactory) {
 		return new ReasonerTaskManager("reasoner-manager-"+reasonerFactory.getReasonerName()+"-"+ontology.getOntologyID()) {
 			
 			@Override
