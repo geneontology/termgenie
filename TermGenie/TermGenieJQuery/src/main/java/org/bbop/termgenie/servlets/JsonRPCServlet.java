@@ -17,7 +17,7 @@ public class JsonRPCServlet extends HttpServlet {
 	
 	public JsonRPCServlet() {
 		super();
-		executor = new ServiceExecutor();
+		executor = ServiceExecutor.getInstance();
 	}
 	
 	@Override

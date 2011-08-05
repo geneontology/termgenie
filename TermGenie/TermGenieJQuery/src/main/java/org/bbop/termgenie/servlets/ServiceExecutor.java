@@ -16,9 +16,18 @@ import com.google.inject.Injector;
 
 public class ServiceExecutor {
 
+	private static volatile ServiceExecutor instance = null;
+	
 	private final JsonRpcExecutor executor;
 	
-	public ServiceExecutor() {
+	public static synchronized ServiceExecutor getInstance() {
+		if (instance == null) {
+			instance = new ServiceExecutor();
+		}
+		return instance;
+	}
+	
+	private ServiceExecutor() {
 		executor  = new JsonRpcExecutor();
         Injector injector = Guice.createInjector(
         		new DefaultOntologyModule(),
