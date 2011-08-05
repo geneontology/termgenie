@@ -8,15 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class MultiResourceTaskManagerTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		// intentionally empty
-	}
 
 	@Test
 	public void testRunManagedTask() throws Exception {
@@ -58,9 +52,6 @@ public class MultiResourceTaskManagerTest {
 		}
 		for (Thread thread : threads) {
 			thread.join();
-		}
-		for (String event : events) {
-			System.out.println(event);
 		}
 		assertEquals(4, events.size());
 		
