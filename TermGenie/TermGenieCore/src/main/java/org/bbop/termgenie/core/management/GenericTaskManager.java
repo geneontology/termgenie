@@ -70,11 +70,13 @@ public abstract class GenericTaskManager<T> {
 			if (modified) {
 				this.managed = resetManaged(managed);
 			}
-			setChanged();
 		} catch (GenericTaskManagerException exception) {
 			throw exception;
 		} finally {
 			lock.release();
+			if (modified) {
+				setChanged();
+			}
 		}
 	}
 	

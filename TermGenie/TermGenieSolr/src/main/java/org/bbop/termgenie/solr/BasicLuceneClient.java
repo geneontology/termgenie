@@ -80,8 +80,8 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 			if (branchName == null) {
 				roots = cRoots;
 			}
-			else if (roots != null) {
-				Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, roots);
+			else if (cRoots != null) {
+				Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, cRoots);
 				branches.add(pair);
 			}
 		}

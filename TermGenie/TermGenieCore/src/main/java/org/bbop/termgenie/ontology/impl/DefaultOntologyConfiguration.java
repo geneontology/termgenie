@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.io.ListHelper;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.tools.ResourceLoader;
 
@@ -46,6 +47,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			super(name, null, null);
 		}
 		
+		void setRoots(List<String> roots) {
+			this.roots = roots;
+		}
 		
 		void addSupport(String support) {
 			if (support == null) {
@@ -185,6 +189,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 				else if (current != null && line.startsWith("requires: ")) {
 					current.addRequires(getValue(line, "requires: "));
 				}
+				else if (current != null && line.startsWith("roots: ")) {
+					current.setRoots(getValues(null, line, "roots: "));
+				}
 			}
 		}
 		if (current != null) {
@@ -199,7 +206,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		while (reader.hasNext()) {
 			String line = reader.next().trim();
 			if (line.length() <= 1) {
-				if (name != null && ontology != null && roots != null) {
+				if (name != null && ontology != null && roots != null && !roots.isEmpty()) {
 					ConfiguredOntology full = ontologies.get(ontology);
 					if (full != null) {
 						ontologies.put(name, full.createBranch(name, roots));
@@ -216,7 +223,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 					ontology = getValue(line, "ontology: ");
 				}
 				else if (line.startsWith("parent: ")) {
-					roots = getValue(roots, line, "parent: ");
+					roots = getValues(roots, line, "parent: ");
 				}
 			}
 		}
@@ -232,7 +239,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		return value;
 	}
 	
-	private List<String> getValue(List<String> results, String line, String prefix) {
+	private List<String> getValues(List<String> results, String line, String prefix) {
 		if (results == null) {
 			results = new ArrayList<String>();
 		}
@@ -242,7 +249,10 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			value = value.substring(0, comment);
 		}
 		value = value.trim();
-		results.add(value);
+		List<String> result = ListHelper.parseString(value, ' ');
+		if (result != null && !result.isEmpty()) {
+			results.addAll(result);
+		}
 		return results;
 	}
 	

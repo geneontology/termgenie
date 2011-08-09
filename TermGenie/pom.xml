@@ -54,6 +54,36 @@
 				<groupId>org.bbop</groupId>
 				<artifactId>OWLTools</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>jcel-owlapi</artifactId>
+						<groupId>de.tud.inf.lat</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jcel-core</artifactId>
+						<groupId>de.tud.inf.lat</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>owlapiv3</artifactId>
+						<groupId>owlapi</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>jcel</groupId>
+				<artifactId>jcel.owlapi</artifactId>
+				<version>0.15.0</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>owlapi</artifactId>
+						<groupId>owlapi</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>owlapi</groupId>
+				<artifactId>owlapi</artifactId>
+				<version>3.2.4</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>

@@ -2,6 +2,7 @@ package org.bbop.termgenie.index;
 
 import static org.bbop.termgenie.index.AutoCompletionTools.*;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +52,7 @@ import com.google.inject.Injector;
 /**
  * Basic auto-completion using an in-memory lucene index.
  */
-public class LuceneMemoryOntologyIndex {
+public class LuceneMemoryOntologyIndex implements Closeable {
 
 	private static final Logger logger = Logger.getLogger(LuceneMemoryOntologyIndex.class);
 	
@@ -132,39 +133,35 @@ public class LuceneMemoryOntologyIndex {
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
+		ReasonerTaskManager taskManager = getReasonerManager(ontology);
 		if (roots == null || roots.isEmpty()) {
 			allOWLObjects = this.ontology.getAllOWLObjects();
 		}
 		else {
-			allOWLObjects = getDecendants(roots);
+			allOWLObjects = getDecendantsReflexive(roots, taskManager);
 		}
 		
-		Map<OWLObject, Set<String>> branchInfo = new HashMap<OWLObject, Set<String>>();
+		BranchInfos branchInfos = null;
 		if (branches != null) {
-			ReasonerTaskManager taskManager = ReasonerFactory.getDefaultTaskManager(ontology);
+			branchInfos = new BranchInfos();
 			for (Pair<String, List<String>> branch : branches) {
 				String name = branch.getOne();
 				List<String> ids = branch.getTwo();
 				if (ids != null && !ids.isEmpty()) {
-					for(OWLObject owlObject : getDecendants(ids)) {
-						add(owlObject, name, branchInfo);
-						Collection<OWLObject> descendants = taskManager.getDescendants(owlObject,
-								this.ontology);
-						if (logger.isInfoEnabled()) {
-							logger.info("Adding branch (" + name + "," + 
-									ontology.getIdentifier(owlObject) + ") with "
-									+ descendants.size() + " descendants");
-						}
-						for (OWLObject descendant : descendants) {
-							add(descendant, name, branchInfo);
-						}
-					}
+					branchInfos.add(name, getDecendantsReflexive(ids, taskManager));
 				}
 			}
+			branchInfos.setup();
 		}
 		int npeCounter = 0;
+		int obsoleteCounter = 0;
 		
 		for (OWLObject owlObject : allOWLObjects) {
+			boolean isObsolete = this.ontology.getIsObsolete(owlObject);
+			if (isObsolete) {
+				obsoleteCounter += 1;
+				continue;
+			}
 			String value = this.ontology.getLabel(owlObject);
 			if (value != null) {
 				Document doc  = new Document();
@@ -172,16 +169,14 @@ public class LuceneMemoryOntologyIndex {
 				try {
 					String identifier = this.ontology.getIdentifier(owlObject);
 					doc.add(new Field(ID_FIELD, identifier, Store.YES, Index.NOT_ANALYZED));
-					Set<String> branchSet = branchInfo.get(owlObject);
-					if (branchSet != null) {
-						for (String branch : branchSet) {
-							doc.add(new Field(BRANCH_FIELD, branch, Store.NO, Index.NOT_ANALYZED));						
+					if (branchInfos != null && branchInfos.isValid()) {
+						for(String branchName : branchInfos.getBranches(owlObject)) {
+							doc.add(new Field(BRANCH_FIELD, branchName, Store.NO,
+									Index.NOT_ANALYZED));
 						}
 					}
 					writer.addDocument(doc);
 				} catch (NullPointerException exception) {
-					// this happens for relationships
-					// TODO Try to ignore relationships, as silently ignoring exceptions is an anti-pattern
 					npeCounter += 1;
 					logger.error("NPE for getting an ID for: "+owlObject);
 				}
@@ -195,42 +190,98 @@ public class LuceneMemoryOntologyIndex {
 		searcher = new IndexSearcher(directory);
 		if (logger.isInfoEnabled()) {
 			logger.info("Finished creating index for: "+ontology.getOntologyId());
+			if (branchInfos != null && branchInfos.isValid()) {
+				logger.info(branchInfos.createSummary());
+			}
+			if (obsoleteCounter > 0) {
+				logger.info("Skipped "+obsoleteCounter+" obsolete terms during index creation");
+			}
 			if (npeCounter > 0) {
 				logger.info("During the index creation there were "+npeCounter+" NPEs");
 			}
 		}
 	}
+
+	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology) {
+		return ReasonerFactory.getDefaultTaskManager(ontology);
+	}
 	
-	private Set<OWLObject> getDecendants(List<String> ids) {
+	private class BranchInfos {
+		List<String> names = new ArrayList<String>();
+		List<Set<OWLObject>> objects = new ArrayList<Set<OWLObject>>();
+		int[] objectsCounts = null;
+		
+		void add(String name, Set<OWLObject> objects) {
+			if (objects != null && !objects.isEmpty()) {
+				names.add(name);
+				this.objects.add(objects);
+				logger.info("Found branch " + name + " with " + 
+						objects.size() + " terms.");
+			}
+		}
+		
+		void setup() {
+			int length = names.size();
+			objectsCounts = new int[length];
+			for (int i = 0; i < length; i++) {
+				objectsCounts[i] = 0;
+			}
+		}
+		
+		boolean isValid() {
+			return !names.isEmpty() && objects.size() == names.size()
+			 && objectsCounts != null && objectsCounts.length == objects.size();
+		}
+		
+		List<String> getBranches(OWLObject x) {
+			List<String> branches = new ArrayList<String>(3);
+			for (int i = 0; i < names.size(); i++) {
+				String branchName = names.get(i);
+				Set<OWLObject> objects = this.objects.get(i);
+				if (objects.contains(x)) {
+					branches.add(branchName);
+					objectsCounts[i] += 1;
+				}
+			}
+			
+			return Collections.emptyList();
+		}
+		
+		String createSummary() {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < objectsCounts.length; i++) {
+				if (sb.length() > 0) {
+					sb.append('\n');
+				}
+				sb.append("Inserted terms for branch ");
+				sb.append(names.get(i));
+				sb.append(": ");
+				sb.append(objectsCounts[i]);
+			}
+			return sb.toString();
+		}
+		
+	}
+	
+	private Set<OWLObject> getDecendantsReflexive(List<String> ids, ReasonerTaskManager taskManager) {
 		Set<OWLObject> result = new HashSet<OWLObject>();
 		for(String id : ids) {
 			OWLObject x = this.ontology.getOWLObjectByIdentifier(id);
 			if (x == null) {
 				throw new RuntimeException("Error: could not find term with id: "+id);
 			}
-			Set<OWLObject> owlObjects = this.ontology.getDescendantsReflexive(x);
+			result.add(x);
+			Collection<OWLObject> owlObjects = taskManager.getDescendants(x, this.ontology);
 			if (owlObjects != null && !owlObjects.isEmpty()) {
-				result.addAll(owlObjects);
+				for (OWLObject owlObject : owlObjects) {
+					if (!owlObject.isBottomEntity() && !owlObject.isTopEntity()) {
+						result.add(owlObject);
+					}	
+				}
+				
 			}
 		}
 		return result;
-	}
-	
-	private void add(OWLObject x, String branch, Map<OWLObject, Set<String>> branchInfo) {
-		Set<String> branches = branchInfo.get(x);
-		if (branches == null) {
-			branchInfo.put(x, Collections.singleton(branch));
-		}
-		else {
-			if (!branches.contains(branch)) {
-				// logger.info("Term "+ontology.getIdentifier(x)+" with multiple branches: "+branch+" "+branches);
-				if (branches.size() == 1) {
-					branches = new HashSet<String>(branches);
-					branchInfo.put(x, branches);
-				}
-				branches.add(branch);
-			}
-		}
 	}
 	
 	public Collection<SearchResult> search(String queryString, int maxCount, String branch) {
@@ -350,6 +401,7 @@ public class LuceneMemoryOntologyIndex {
 		});
 	}
 
+	@Override
 	public void close() {
 		try {
 			searcher.close();

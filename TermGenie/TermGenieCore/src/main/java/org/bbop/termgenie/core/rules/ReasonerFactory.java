@@ -19,6 +19,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 
+import de.tudresden.inf.lat.jcel.owlapi.main.JcelOWLReasonerFactory;
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 
@@ -27,6 +28,8 @@ import owltools.graph.OWLGraphWrapper;
 public final class ReasonerFactory implements EventSubscriber<OntologyChangeEvent> {
 	
 	private static final Logger logger = Logger.getLogger(ReasonerFactory.class);
+	
+	static boolean USE_CUSTOM_JCEL_FACTORY = true;
 	
 	private static final String PELLET = "pellet";
 	private static final String HERMIT = "hermit";
@@ -44,7 +47,7 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 	}
 	
 	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
-		return getTaskManager(ontology, JCEL);
+		return getTaskManager(ontology, HERMIT);
 	}
 
 	public static final ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName) {
@@ -97,14 +100,21 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 
 	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
 		if (JCEL.equals(reasonerName)) {
-			return createJCelManager(ontology.getSourceOntology());
+			if (USE_CUSTOM_JCEL_FACTORY) {
+				return createJCelManager(ontology.getSourceOntology());
+			}
+			// even though they provide a factory in 0.15.0, 
+			// it is still throwing an NPE, 
+			// because some internal setup was not done!
+			OWLReasonerFactory factory = new JcelOWLReasonerFactory();
+			return createManager(ontology.getSourceOntology(), factory);
 		}
 		else if (HERMIT.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), new Reasoner.ReasonerFactory());
 		}
 		else if (PELLET.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), PelletReasonerFactory.getInstance());
-		}
+		} 
 		return null;
 	}
 	
