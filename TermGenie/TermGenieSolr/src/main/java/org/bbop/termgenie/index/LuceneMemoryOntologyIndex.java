@@ -251,7 +251,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < objectsCounts.length; i++) {
 				if (sb.length() > 0) {
-					sb.append('\n');
+					sb.append("; ");
 				}
 				sb.append("Inserted terms for branch ");
 				sb.append(names.get(i));
