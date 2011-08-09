@@ -170,9 +170,12 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					String identifier = this.ontology.getIdentifier(owlObject);
 					doc.add(new Field(ID_FIELD, identifier, Store.YES, Index.NOT_ANALYZED));
 					if (branchInfos != null && branchInfos.isValid()) {
-						for(String branchName : branchInfos.getBranches(owlObject)) {
-							doc.add(new Field(BRANCH_FIELD, branchName, Store.NO,
-									Index.NOT_ANALYZED));
+						List<String> brancheNames = branchInfos.getBranches(owlObject);
+						if (!brancheNames.isEmpty()) {
+							for(String branchName : brancheNames) {
+								doc.add(new Field(BRANCH_FIELD, branchName, Store.NO,
+										Index.NOT_ANALYZED));
+							}
 						}
 					}
 					writer.addDocument(doc);
@@ -243,7 +246,9 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					objectsCounts[i] += 1;
 				}
 			}
-			
+			if (!branches.isEmpty()) {
+				return branches;
+			}
 			return Collections.emptyList();
 		}
 		
