@@ -54,20 +54,6 @@
 				<groupId>org.bbop</groupId>
 				<artifactId>OWLTools</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>jcel-owlapi</artifactId>
-						<groupId>de.tud.inf.lat</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>jcel-core</artifactId>
-						<groupId>de.tud.inf.lat</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>owlapiv3</artifactId>
-						<groupId>owlapi</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>jcel</groupId>
@@ -130,6 +116,11 @@
 				<artifactId>h2</artifactId>
 				<version>1.3.158</version>
 			</dependency>
+			<dependency>
+				<groupId>org.semanticweb</groupId>
+				<artifactId>HermiT</artifactId>
+				<version>1.3.4</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>
@@ -150,7 +141,7 @@
 
 	<url>https://code.google.com/p/termgenie/</url>
 	<issueManagement>
-		<url>https://code.google.com/p/termgenie/issues/list</url>
+	<url>https://code.google.com/p/termgenie/issues/list</url>
 	</issueManagement>
 	<inceptionYear>2011</inceptionYear>
 	<developers>

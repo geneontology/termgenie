@@ -41,6 +41,10 @@
 			<artifactId>owlapi</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.semanticweb</groupId>
+			<artifactId>HermiT</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
