@@ -30,6 +30,10 @@ public class ConfiguredOntology extends Ontology {
 		supports.add(support);
 	}
 	
+	void setSupport(List<String> supports) {
+		this.supports = supports;
+	}
+	
 	void addRequires(String requires) {
 		if (requires == null) {
 			return;
@@ -38,6 +42,10 @@ public class ConfiguredOntology extends Ontology {
 			this.requires = new ArrayList<String>(3);
 		}
 		this.requires.add(requires);
+	}
+	
+	void setRequires(List<String> requires) {
+		this.requires = requires;
 	}
 
 	/**
