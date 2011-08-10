@@ -65,7 +65,7 @@ roots: CL:0000000
 
 [Ontology]
 name: PO ! Plant ontology
-source: http://palea.cgrb.oregonstate.edu/viewsvn/Poc/trunk/ontology/OBO_format/po_anatomy.obo?view=co
+source: http://palea.cgrb.oregonstate.edu/viewsvn/Poc/tags/live/plant_ontology.obo?view=co
 roots: PO:0025131 PO:0009012
 
 

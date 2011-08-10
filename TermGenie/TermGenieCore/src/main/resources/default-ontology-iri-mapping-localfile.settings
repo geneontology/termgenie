@@ -30,4 +30,4 @@ http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/mammalian_p
 http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo	ontologies/cell-2011-05-16.obo	termgenie-ontologies/cell.obo
 
 # PLANT
-http://palea.cgrb.oregonstate.edu/viewsvn/Poc/trunk/ontology/OBO_format/po_anatomy.obo?view=co	ontologies/po_anatomy-2011-05-16.obo	termgenie-ontologies/po_anatomy.obo
+http://palea.cgrb.oregonstate.edu/viewsvn/Poc/tags/live/plant_ontology.obo?view=co	ontologies/plant_ontology-2011-08-09.obo	termgenie-ontologies/plant_ontology.obo
