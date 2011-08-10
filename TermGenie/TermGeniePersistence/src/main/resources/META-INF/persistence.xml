@@ -4,6 +4,9 @@
      <persistence-unit name="derby" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.OntologyIdInfo</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="derby"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -13,6 +16,9 @@
     <persistence-unit name="hslqdb" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.OntologyIdInfo</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="hsql"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -24,6 +30,9 @@
     <persistence-unit name="h2" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.OntologyIdInfo</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -36,6 +45,9 @@
     <persistence-unit name="sqlite" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.OntologyIdInfo</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
         <properties>
         	<property name="openjpa.Log" value="log4j"/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
