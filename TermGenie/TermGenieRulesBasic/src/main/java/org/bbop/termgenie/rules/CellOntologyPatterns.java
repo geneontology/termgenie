@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -20,8 +21,8 @@ public class CellOntologyPatterns extends Patterns {
 	
 	private final OWLObject GO0032991;
 
-	protected CellOntologyPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
-		super(templates.metazoan_location_specific_cell, templates.cell_by_surface_marker);
+	protected CellOntologyPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+		super(factory, templates.metazoan_location_specific_cell, templates.cell_by_surface_marker);
 		this.cell = wrappers.get(0);
 		this.uberon = wrappers.get(1);
 		this.pro = wrappers.get(2);

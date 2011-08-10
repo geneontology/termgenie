@@ -1,5 +1,6 @@
 package org.bbop.termgenie.servlets;
 
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
 import org.bbop.termgenie.services.GenerateTermsService;
@@ -33,7 +34,8 @@ public class ServiceExecutor {
         		new DefaultOntologyModule(),
         		new DefaultDynamicRulesModule(),
         		new TermGenieToolsModule(),
-        		new TermGenieServiceModule());
+        		new TermGenieServiceModule(),
+        		new ReasonerModule());
 
         add("generate", injector, GenerateTermsService.class);
         add("ontology", injector, OntologyService.class);

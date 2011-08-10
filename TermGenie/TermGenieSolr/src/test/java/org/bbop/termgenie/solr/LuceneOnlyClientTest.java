@@ -19,7 +19,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 	public static void setupBefore() {
 		List<Ontology> ontologies = Arrays.asList(go, pro, bp, cc, mf);
 		List<OntologyTaskManager> managers = Arrays.asList(goManager, proManager);
-		index = new LuceneOnlyClient(ontologies, managers);	
+		index = new LuceneOnlyClient(ontologies, managers, factory);	
 	}
 	
 	@Test

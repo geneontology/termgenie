@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -17,8 +18,8 @@ public class MicrobialPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper pato;
 	private final OWLGraphWrapper omp;
 
-	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
-		super(templates.omp_entity_quality);
+	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+		super(factory, templates.omp_entity_quality);
 		this.omp = wrappers.get(0);
 		this.go = wrappers.get(1);
 		this.pato = wrappers.get(2);

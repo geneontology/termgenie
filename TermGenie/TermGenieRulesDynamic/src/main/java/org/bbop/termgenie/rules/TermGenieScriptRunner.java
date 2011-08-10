@@ -13,6 +13,7 @@ import javax.script.ScriptException;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
@@ -30,10 +31,12 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	
 	// set to true, for debugging
 	private boolean printScript = false;
+	private final ReasonerFactory factory;
 	
 	@Inject
-	TermGenieScriptRunner(List<TermTemplate> templates, MultiOntologyTaskManager multiOntologyTaskManager) {
+	TermGenieScriptRunner(List<TermTemplate> templates, MultiOntologyTaskManager multiOntologyTaskManager, ReasonerFactory factory) {
 		super();
+		this.factory = factory;
 		this.jsEngineManager = new JSEngineManager();
 		this.multiOntologyTaskManager = multiOntologyTaskManager;
 		this.templateOntologyManagers = new HashMap<TermTemplate, Ontology[]>();
@@ -78,7 +81,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			if (ontologies != null && ontologies.length > 0) {
 				String templateId = getTemplateId(termTemplate, count);
 				String script = termTemplate.getRules();
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId, factory);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
@@ -121,17 +124,19 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		private final String script;
 		private final TermGenerationInput input;
 		private final String templateId;
+		private final ReasonerFactory factory;
 		
 		List<TermGenerationOutput> result = null;
 		
 		
 
-		private GenerationTask(Ontology[] ontologies, Ontology targetOntology, TermGenerationInput input, String script, String templateId) {
+		private GenerationTask(Ontology[] ontologies, Ontology targetOntology, TermGenerationInput input, String script, String templateId, ReasonerFactory factory) {
 			this.ontologies = ontologies;
 			this.targetOntology = targetOntology;
 			this.input = input;
 			this.script = script;
 			this.templateId = templateId;
+			this.factory = factory;
 		}
 	
 		@Override
@@ -147,7 +152,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 						targetOntology = requested.get(i);
 					}
 				}
-				TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId);
+				TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId, factory);
 				engine.put("termgenie", functionsImpl);
 				if (printScript) {
 					PrintWriter writer = new PrintWriter(System.out);

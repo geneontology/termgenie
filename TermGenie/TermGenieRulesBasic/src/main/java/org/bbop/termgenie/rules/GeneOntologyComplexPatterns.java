@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -34,8 +35,9 @@ class GeneOntologyComplexPatterns extends Patterns {
 	/**
 	 * @param wrappers go, pro, uberon, plant
 	 */
-	protected GeneOntologyComplexPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
-		super(templates.all_regulation, templates.all_regulation_mf,
+	protected GeneOntologyComplexPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+		super(factory,
+				templates.all_regulation, templates.all_regulation_mf,
 				templates.involved_in, templates.occurs_in,
 				templates.part_of_cell_component, templates.protein_binding,
 				templates.metazoan_development, templates.metazoan_morphogenesis,

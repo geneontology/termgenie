@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -15,8 +16,8 @@ public class UberonPatterns extends Patterns {
 
 	private final OWLGraphWrapper uberon;
 
-	protected UberonPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
-		super(templates.metazoan_location_specific_anatomical_structure);
+	protected UberonPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+		super(factory, templates.metazoan_location_specific_anatomical_structure);
 		this.uberon = wrappers.get(0);
 	}
 

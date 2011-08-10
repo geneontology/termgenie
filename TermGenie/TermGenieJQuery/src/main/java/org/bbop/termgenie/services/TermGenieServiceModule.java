@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -25,10 +26,10 @@ public class TermGenieServiceModule extends IOCModule {
 	}
 	
 	@Provides @Singleton
-	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyConfiguration configuration, OntologyLoader loader) {
+	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyConfiguration configuration, OntologyLoader loader, ReasonerFactory factory) {
 		List<OntologyTaskManager> managers = loader.getOntologies();
 		Collection<ConfiguredOntology> ontologies = configuration.getOntologyConfigurations().values();
-		return new LuceneOnlyClient(ontologies, managers);
+		return new LuceneOnlyClient(ontologies, managers, factory);
 	}
 	
 }

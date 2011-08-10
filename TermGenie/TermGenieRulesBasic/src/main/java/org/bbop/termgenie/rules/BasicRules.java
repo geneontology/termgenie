@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -23,6 +24,10 @@ import owltools.graph.OWLGraphWrapper.Synonym;
 
 class BasicRules extends BasicTools {
 	
+	protected BasicRules(ReasonerFactory factory) {
+		super(factory);
+	}
+
 	protected List<Synonym> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology, String suffix, String label) {
 		List<Synonym> synonyms = getSynonyms(x, ontology);
 		if (synonyms == null || synonyms.isEmpty()) {

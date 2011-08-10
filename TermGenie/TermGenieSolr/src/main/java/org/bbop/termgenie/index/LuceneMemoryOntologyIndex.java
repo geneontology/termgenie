@@ -34,6 +34,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -95,9 +96,10 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	 * @param ontology
 	 * @param roots
 	 * @param branches
+	 * @param reasonerFactory
 	 * @throws IOException
 	 */
-	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, List<String> roots, List<Pair<String,List<String>>> branches) throws IOException {
+	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, List<String> roots, List<Pair<String,List<String>>> branches, ReasonerFactory reasonerFactory) throws IOException {
 		super();
 		if (logger.isInfoEnabled()) {
 			StringBuilder message = new StringBuilder();
@@ -133,7 +135,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
-		ReasonerTaskManager taskManager = getReasonerManager(ontology);
+		ReasonerTaskManager taskManager = getReasonerManager(ontology, reasonerFactory);
 		if (roots == null || roots.isEmpty()) {
 			allOWLObjects = this.ontology.getAllOWLObjects();
 		}
@@ -205,8 +207,8 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		}
 	}
 
-	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology) {
-		return ReasonerFactory.getDefaultTaskManager(ontology);
+	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology, ReasonerFactory reasonerFactory) {
+		return reasonerFactory.getDefaultTaskManager(ontology);
 	}
 	
 	private class BranchInfos {
@@ -380,17 +382,18 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 	public static void main(String[] args) {
 		
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
-
+		final ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
+		
 		ontology.runManagedTask(new OntologyTask(){
 
 			@Override
 			public boolean run(OWLGraphWrapper managed) {
 				try {
-					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null);
+					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, factory);
 					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
 					for (SearchResult searchResult : results) {
 						String id = managed.getIdentifier(searchResult.hit);

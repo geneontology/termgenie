@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -31,10 +33,11 @@ public class ResonerFunctionTest {
 	private static OWLGraphWrapper plant;
 	private static Map<String, ConfiguredOntology> ontologies;
 	private static OntologyLoader loader;
+	private static ReasonerFactory factory;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
 		ontologies = config.getOntologyConfigurations();
 		loader = injector.getInstance(OntologyLoader.class);
@@ -42,6 +45,7 @@ public class ResonerFunctionTest {
 		pro = load("ProteinOntology");
 		uberon = load("Uberon");
 		plant = load("PO");
+		factory = injector.getInstance(ReasonerFactory.class);
 	}
 	
 	private static OWLGraphWrapper load(String name) {
@@ -90,38 +94,41 @@ public class ResonerFunctionTest {
 	}
 	
 	private void testDefaultReasonerWithOntology(final OWLGraphWrapper wrapper, final String parent, final String child) {
-		ReasonerTaskManager reasonerManager = ReasonerFactory.getDefaultTaskManager(wrapper);
+		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(wrapper);
 		
 		final OWLClass p = wrapper.getOWLClass(wrapper.getOWLObjectByIdentifier(parent));
 		assertNotNull(p);
 		final OWLClass c = wrapper.getOWLClass(wrapper.getOWLObjectByIdentifier(child));
 		assertNotNull(c);
 		
-		final Timer startup = new Timer();
+		final StopWatch startup = new StopWatch();
+		startup.start();
 		ManagedTask<OWLReasoner> task = new ManagedTask<OWLReasoner>() {
 
 			@Override
 			public boolean run(OWLReasoner reasoner) {
 				startup.stop();
-				System.out.println("finished preparing reasoner, time: "+startup.getTimeString());
+				System.out.println("finished preparing reasoner, time: "+startup);
 				System.out.println("Reasoning for: "+wrapper.getOntologyId());
 				System.out.println("Start quering for super classes of: "+child);
 				
-				Timer t1 = new Timer();
+				StopWatch t1 = new StopWatch();
+				t1.start();
 				NodeSet<OWLClass> superClasses = reasoner.getSuperClasses(c, false);
 				System.out.println("Finished query. Start checking whether parent is contained: "+parent);
 				boolean containsParent = superClasses.containsEntity(p);
 				t1.stop();
-				System.out.println("Finished contains, time "+t1.getTimeString());
+				System.out.println("Finished contains, time "+t1);
 				
 				System.out.println("Start quering for sub classes of: "+parent);
 				
-				Timer t2 = new Timer();
+				StopWatch t2 = new StopWatch();
+				t2.start();
 				NodeSet<OWLClass> subClasses = reasoner.getSubClasses(p, false);
 				System.out.println("Finished query. Start checking whether child is contained:" + child);
 				boolean containsChild = subClasses.containsEntity(c);
 				t2.stop();
-				System.out.println("Finished contains, time "+t2.getTimeString());
+				System.out.println("Finished contains, time "+t2);
 				
 				assertTrue(containsParent);
 				assertTrue(containsChild);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -17,8 +18,8 @@ public class HumanPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper fma;
 	private final OWLGraphWrapper pato;
 
-	protected HumanPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates) {
-		super(templates.hpo_entity_quality);
+	protected HumanPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+		super(factory, templates.hpo_entity_quality);
 		this.hpo = wrappers.get(0);
 		this.fma = wrappers.get(1);
 		this.pato = wrappers.get(2);

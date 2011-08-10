@@ -9,6 +9,7 @@ import java.util.List;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
@@ -27,6 +28,7 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 	private final String name;
 	private final List<String> roots;
 	private final List<Pair<String, List<String>>> branches;
+	private final ReasonerFactory factory;
 	
 	private LuceneMemoryOntologyIndex index;
 	private OWLGraphWrapper ontology;
@@ -35,9 +37,10 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene memory index.
 	 * 
 	 * @param ontology
+	 * @param factory
 	 * @return new Instance of {@link BasicLuceneClient}
 	 */
-	public static BasicLuceneClient create(OntologyTaskManager ontology) {
+	public static BasicLuceneClient create(OntologyTaskManager ontology, ReasonerFactory factory) {
 		List<String> roots = ontology.getOntology().getRoots();	
 		List<Pair<String, List<String>>> branches = Collections.emptyList();
 		String branchName = ontology.getOntology().getBranch();
@@ -47,20 +50,21 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 			roots = null;
 		}
 		String name = ontology.getOntology().getUniqueName();
-		return create(ontology, name, roots, branches);
+		return create(ontology, name, roots, branches, factory);
 	}
 	
 	/**
 	 * @param ontologies
 	 * @param manager
+	 * @param factory
 	 * @return new Instance of {@link BasicLuceneClient}
 	 */
-	public static BasicLuceneClient create(List<Ontology> ontologies, OntologyTaskManager manager) {
+	public static BasicLuceneClient create(List<Ontology> ontologies, OntologyTaskManager manager, ReasonerFactory factory) {
 		if (ontologies == null || ontologies.isEmpty()) {
 			throw new RuntimeException("At least one ontology is required to create an index.");
 		}
 		if (ontologies.size() == 1) {
-			return create(manager);
+			return create(manager, factory);
 		}
 		List<String> roots = null;
 		String name = null;
@@ -85,11 +89,11 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 				branches.add(pair);
 			}
 		}
-		return create(manager, name, roots, branches);
+		return create(manager, name, roots, branches, factory);
 	}
 	
-	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<String> roots, List<Pair<String, List<String>>> branches) {
-		BasicLuceneClient client = new BasicLuceneClient(name, roots, branches);
+	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<String> roots, List<Pair<String, List<String>>> branches, ReasonerFactory factory) {
+		BasicLuceneClient client = new BasicLuceneClient(name, roots, branches, factory);
 		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
 		ontology.runManagedTask(task);
 		return task.client;
@@ -120,11 +124,12 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 	 * @param roots
 	 * @param branches
 	 */
-	protected BasicLuceneClient(String name, List<String> roots, List<Pair<String,List<String>>> branches) {
+	protected BasicLuceneClient(String name, List<String> roots, List<Pair<String,List<String>>> branches, ReasonerFactory factory) {
 		super();
 		this.name = name;
 		this.roots = roots;
 		this.branches = branches;
+		this.factory = factory;
 		EventBus.subscribe(OntologyChangeEvent.class, this);
 	}
 
@@ -132,7 +137,7 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 		this.ontology = ontology;
 		LuceneMemoryOntologyIndex old = index;
 		try {
-			index = new LuceneMemoryOntologyIndex(ontology, roots, branches);
+			index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory);
 			if (old != null) {
 				old.close();
 			}

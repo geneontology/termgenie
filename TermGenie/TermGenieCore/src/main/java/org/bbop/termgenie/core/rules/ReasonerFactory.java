@@ -18,18 +18,16 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
+import com.google.inject.Singleton;
 
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelOWLReasonerFactory;
-import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
-import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasonerProcessor;
 
 import owltools.graph.OWLGraphWrapper;
 
+@Singleton
 public final class ReasonerFactory implements EventSubscriber<OntologyChangeEvent> {
 	
 	private static final Logger logger = Logger.getLogger(ReasonerFactory.class);
-	
-	static boolean USE_CUSTOM_JCEL_FACTORY = true;
 	
 	private static final String PELLET = "pellet";
 	private static final String HERMIT = "hermit";
@@ -40,17 +38,17 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 	
 	private final Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers;
 	
-	public ReasonerFactory() {
+	ReasonerFactory() {
 		super();
 		allManagers = new HashMap<String, Map<String,Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
 		EventBus.subscribe(OntologyChangeEvent.class, this);
 	}
 	
-	public static final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
+	public final ReasonerTaskManager getDefaultTaskManager(OWLGraphWrapper ontology) {
 		return getTaskManager(ontology, HERMIT);
 	}
 
-	public static final ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName) {
+	public final ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName) {
 	
 		if(reasonerName == null || !supportedReasoners.contains(reasonerName)) {
 			throw new RuntimeException("Unknown reasoner: "+reasonerName);
@@ -100,12 +98,6 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 
 	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
 		if (JCEL.equals(reasonerName)) {
-			if (USE_CUSTOM_JCEL_FACTORY) {
-				return createJCelManager(ontology.getSourceOntology());
-			}
-			// even though they provide a factory in 0.15.0, 
-			// it is still throwing an NPE, 
-			// because some internal setup was not done!
 			OWLReasonerFactory factory = new JcelOWLReasonerFactory();
 			return createManager(ontology.getSourceOntology(), factory);
 		}
@@ -118,37 +110,6 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 		return null;
 	}
 	
-	private ReasonerTaskManager createJCelManager(final OWLOntology ontology) {
-		return new ReasonerTaskManager("reasoner-manager-jcel-"+ontology.getOntologyID()) {
-			
-			@Override
-			protected OWLReasoner updateManaged(OWLReasoner managed) {
-				// TODO find out if there is an option to re-use the reasoner
-				// TODO how to do incremental changes?
-				return createReasoner("Updating jcel reasoner: "+ontology.getOntologyID());
-			}
-			
-			@Override
-			protected OWLReasoner createManaged() {
-				return createReasoner("Creating jcel reasoner: "+ontology.getOntologyID());
-			}
-			
-			@Override
-			protected OWLReasoner resetManaged(OWLReasoner managed) {
-				// Do nothing as a reasoner cannot change the underlying ontology
-				return managed;
-			}
-
-			private OWLReasoner createReasoner(String logMessage) {
-				logger.info(logMessage);
-				JcelReasoner reasoner = new JcelReasoner(ontology);
-				JcelReasonerProcessor processor = reasoner.getProcessor();
-				processor.precomputeInferences();
-				return reasoner;
-			}
-		};
-	}
-
 	private ReasonerTaskManager createManager(final OWLOntology ontology, final OWLReasonerFactory reasonerFactory) {
 		return new ReasonerTaskManager("reasoner-manager-"+reasonerFactory.getReasonerName()+"-"+ontology.getOntologyID()) {
 			
@@ -161,7 +122,10 @@ public final class ReasonerFactory implements EventSubscriber<OntologyChangeEven
 			
 			@Override
 			protected OWLReasoner createManaged() {
-				return reasonerFactory.createNonBufferingReasoner(ontology);
+				logger.info("Create reasoner: "+reasonerFactory.getReasonerName()+" for ontology: "+ontology.getOntologyID());
+				OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
+				reasoner.precomputeInferences();
+				return reasoner;
 			}
 
 			@Override

@@ -15,7 +15,7 @@ public class HybridLuceneSolrClientTest extends OntologyProvider {
 	@Test
 	public void testSuggestTerms() {
 		Collection<OntologyTaskManager> ontologies = Arrays.<OntologyTaskManager>asList(goManager, proManager);
-		HybridLuceneSolrClient client = new HybridLuceneSolrClient(ontologies);
+		HybridLuceneSolrClient client = new HybridLuceneSolrClient(ontologies, factory);
 		
 		List<OntologyTerm> terms = client.suggestTerms("exportin-T", pro, 1);
 		assertNotNull(terms);

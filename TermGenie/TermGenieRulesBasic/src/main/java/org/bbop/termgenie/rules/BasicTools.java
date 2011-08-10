@@ -17,6 +17,16 @@ import owltools.graph.OWLGraphWrapper;
 
 class BasicTools {
 	
+	private final ReasonerFactory factory;
+	
+	/**
+	 * @param factory
+	 */
+	protected BasicTools(ReasonerFactory factory) {
+		super();
+		this.factory = factory;
+	}
+
 	protected OWLObject getTermSimple(String id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
 			return ontology.getOWLObjectByIdentifier(id);
@@ -77,7 +87,7 @@ class BasicTools {
 			return true;
 		}
 		if (ontology != null) {
-			ReasonerTaskManager manager = ReasonerFactory.getDefaultTaskManager(ontology);
+			ReasonerTaskManager manager = factory.getDefaultTaskManager(ontology);
 			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
 			if (ancestors != null) {
 				return ancestors.contains(parent);

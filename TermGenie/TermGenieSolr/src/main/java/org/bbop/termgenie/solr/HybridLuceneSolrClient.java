@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class HybridLuceneSolrClient extends SimpleSolrClient {
@@ -15,22 +16,24 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 	
 	/**
 	 * @param ontologies
+	 * @param factory
 	 */
-	public HybridLuceneSolrClient(Collection<OntologyTaskManager> ontologies) {
+	public HybridLuceneSolrClient(Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
 		super();
-		luceneIndices = createIndices(ontologies);
+		luceneIndices = createIndices(ontologies, factory);
 	}
 
 	/**
 	 * @param baseUrl  for solr index
 	 * @param ontologies
+	 * @param factory 
 	 */
-	public HybridLuceneSolrClient(String baseUrl, Collection<OntologyTaskManager> ontologies) {
+	public HybridLuceneSolrClient(String baseUrl, Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
 		super(baseUrl);
-		luceneIndices = createIndices(ontologies);
+		luceneIndices = createIndices(ontologies, factory);
 	}
 	
-	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies) {
+	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
 		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
 		for (OntologyTaskManager ontology : ontologies) {
 			String name = ontology.getOntology().getUniqueName();
@@ -39,7 +42,7 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 			}
 			BasicLuceneClient luceneClient = indices.get(name);
 			if (luceneClient == null) {
-				luceneClient = BasicLuceneClient.create(ontology);
+				luceneClient = BasicLuceneClient.create(ontology, factory);
 				indices.put(name, luceneClient);
 			}
 		}

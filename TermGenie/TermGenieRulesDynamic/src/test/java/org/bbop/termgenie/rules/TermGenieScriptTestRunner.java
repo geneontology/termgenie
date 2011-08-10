@@ -11,6 +11,7 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -39,7 +40,7 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = Guice.createInjector(new DefaultDynamicRulesModule(), new DefaultOntologyModule());
+		Injector injector = Guice.createInjector(new DefaultDynamicRulesModule(), new DefaultOntologyModule(), new ReasonerModule());
 		
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);

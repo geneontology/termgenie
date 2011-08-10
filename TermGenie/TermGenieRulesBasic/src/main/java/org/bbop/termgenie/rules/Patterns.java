@@ -15,6 +15,7 @@ import java.util.Map;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -25,8 +26,8 @@ class Patterns extends BasicRules {
 
 	private final Map<String, Method> methods;
 	
-	protected Patterns(TermTemplate...templates) {
-		super();
+	protected Patterns(ReasonerFactory factory, TermTemplate...templates) {
+		super(factory);
 		methods = new HashMap<String, Method>();
 	    for(Method method : getClass().getDeclaredMethods()) {
 			if (method.isAnnotationPresent(ToMatch.class)) {

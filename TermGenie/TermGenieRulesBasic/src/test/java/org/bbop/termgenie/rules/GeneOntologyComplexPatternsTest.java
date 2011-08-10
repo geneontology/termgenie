@@ -11,6 +11,8 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
@@ -46,7 +48,7 @@ public class GeneOntologyComplexPatternsTest {
 			protected void configure() {
 				bind(DefaultTermTemplates.class);
 			}
-		});
+		}, new ReasonerModule());
 		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
 		templates = injector.getInstance(DefaultTermTemplates.class);
 		Map<String, ConfiguredOntology> ontologies = config.getOntologyConfigurations();
@@ -55,7 +57,8 @@ public class GeneOntologyComplexPatternsTest {
 		pro = load(templates.PROTEIN_ONTOLOGY, ontologies);
 		uberon = load(templates.UBERON_ONTOLOGY, ontologies);
 		plant = load(templates.PLANT_ONTOLOGY, ontologies);
-		instance = new GeneOntologyComplexPatterns(Arrays.asList(go, pro, uberon, plant), templates);
+		ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
+		instance = new GeneOntologyComplexPatterns(Arrays.asList(go, pro, uberon, plant), templates, factory);
 	}
 	
 	private static OWLGraphWrapper load(Ontology ontology, Map<String, ConfiguredOntology> config) {

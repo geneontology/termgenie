@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -27,16 +28,18 @@ public class PlantOntologyIndexTest {
 
 	protected static OntologyTaskManager plantManager;
 	protected static Ontology plant;
+	protected static ReasonerFactory factory;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
 		plant = ontologies.get("PO");
 		ConfiguredOntology ontology = ontologies.get("PO");
 		plantManager = loader.getOntology(ontology);
+		factory = injector.getInstance(ReasonerFactory.class);
 	}
 	
 	@Test
@@ -59,11 +62,11 @@ public class PlantOntologyIndexTest {
 	protected LuceneMemoryOntologyIndex createIndex(OWLGraphWrapper ontology) throws IOException {
 		List<String> roots = plant.getRoots();
 		List<Pair<String, List<String>>> branches = null;
-		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, branches) {
+		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory) {
 
 			@Override
-			protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology) {
-				return ReasonerFactory.getTaskManager(ontology, "jcel");
+			protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology, ReasonerFactory reasonerFactory) {
+				return reasonerFactory.getTaskManager(ontology, "jcel");
 			}
 			
 		};

@@ -33,6 +33,7 @@ import owltools.graph.OWLGraphWrapper.Synonym;
  */
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
+	private final ReasonerFactory factory;
 	private final TermGenerationInput input;
 	private final OWLGraphWrapper targetOntology;
 	private final String patternID;
@@ -42,13 +43,16 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	
 	/**
 	 * @param input
+	 * @param targetOntology
 	 * @param patternID
+	 * @param factory
 	 */
-	TermGenieScriptFunctionsImpl(TermGenerationInput input, OWLGraphWrapper targetOntology, String patternID) {
+	TermGenieScriptFunctionsImpl(TermGenerationInput input, OWLGraphWrapper targetOntology, String patternID, ReasonerFactory factory) {
 		super();
 		this.input = input;
 		this.targetOntology = targetOntology;
 		this.patternID = patternID;
+		this.factory = factory;
 	}
 	
 	private String getNewId() {
@@ -187,7 +191,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			return true;
 		}
 		if (ontology != null) {
-			ReasonerTaskManager manager = ReasonerFactory.getDefaultTaskManager(ontology);
+			ReasonerTaskManager manager = factory.getDefaultTaskManager(ontology);
 			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
 			if (ancestors != null) {
 				return ancestors.contains(parent);
