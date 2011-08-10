@@ -13,7 +13,7 @@ import owltools.graph.OWLGraphWrapper;
 
 public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner> {
 
-	public ReasonerTaskManager(String name) {
+	protected ReasonerTaskManager(String name) {
 		super(name);
 	}
 	
