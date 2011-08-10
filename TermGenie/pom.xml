@@ -47,6 +47,11 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -54,6 +59,12 @@
 				<groupId>org.bbop</groupId>
 				<artifactId>OWLTools</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>jcel</groupId>
@@ -90,6 +101,10 @@
 						<artifactId>slf4j-api</artifactId>
 						<groupId>org.slf4j</groupId>
 					</exclusion>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -121,6 +136,12 @@
 				<groupId>org.semanticweb</groupId>
 				<artifactId>HermiT</artifactId>
 				<version>1.3.4</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
