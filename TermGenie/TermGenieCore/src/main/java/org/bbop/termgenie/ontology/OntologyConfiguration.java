@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.util.Map;
 
-import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 /**
  * Information about the available {@link ConfiguredOntology}.

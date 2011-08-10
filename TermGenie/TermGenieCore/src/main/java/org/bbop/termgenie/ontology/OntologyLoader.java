@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
-import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration.ConfiguredOntology;
+import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 public interface OntologyLoader {
 
