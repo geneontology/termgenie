@@ -11,6 +11,7 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -29,7 +30,6 @@ import org.semanticweb.owlapi.model.OWLObject;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class TermGenieScriptTestRunner {
@@ -40,7 +40,7 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = Guice.createInjector(new DefaultDynamicRulesModule(), new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultDynamicRulesModule(), new DefaultOntologyModule(), new ReasonerModule());
 		
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);

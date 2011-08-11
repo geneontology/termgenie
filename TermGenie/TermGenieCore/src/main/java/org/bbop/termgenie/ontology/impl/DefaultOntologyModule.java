@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
@@ -16,12 +17,10 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Names;
+import com.google.inject.name.Named;
 
 /**
  * Module providing the default ontologies.
@@ -36,21 +35,39 @@ public class DefaultOntologyModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(OntologyLoader.class).to(DefaultOntologyLoader.class);
-		bind(new TypeLiteral<Set<String>>(){/* intentionally empty */}).
-			annotatedWith(Names.named("DefaultOntologyLoaderSkipOntologies")).
-			toInstance(new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL")));
+		bindOntologyLoader();
 		
+		bindOntologyConfiguration();
+		
+		bindOntologyCleaner();
+		
+		bindIRIMapper();
+	}
+
+	protected void bindOntologyLoader() {
+		bind(OntologyLoader.class).to(DefaultOntologyLoader.class);
+	}
+
+	@Provides @Singleton @Named("DefaultOntologyLoaderSkipOntologies")
+	protected Set<String> getDefaultOntologyLoaderSkipOntologies() {
+		return new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
+	}
+	
+	protected void bindOntologyConfiguration() {
 		bind(OntologyConfiguration.class).to(DefaultOntologyConfiguration.class);
 		bind("DefaultOntologyConfigurationResource", DefaultOntologyConfiguration.SETTINGS_FILE);
-		
+	}
+
+	protected void bindOntologyCleaner() {
 		bind(OntologyCleaner.class).to(DefaultOntologyCleaner.class);
 		bind("DefaultOntologyCleanerResource", DefaultOntologyCleaner.SETTINGS_FILE);
-		
+	}
+
+	protected void bindIRIMapper() {
 		bind(IRIMapper.class).to(LocalFileIRIMapper.class);
 		bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
 	}
-
+	
 	@Provides @Singleton
 	MultiOntologyTaskManager provideMultiOntologyTaskManager(OntologyLoader loader) {
 		
@@ -72,7 +89,7 @@ public class DefaultOntologyModule extends IOCModule {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		MultiOntologyTaskManager manager = injector.getInstance(MultiOntologyTaskManager.class);
 		MultiOntologyTask task = new MultiOntologyTask() {

@@ -10,7 +10,7 @@ public class DefaultOntologyConfigurationTest {
 
 	@Test
 	public void testGetOntologyConfigurations() {
-		DefaultOntologyConfiguration d = new DefaultOntologyConfiguration("default-ontology-configuration.settings");
+		DefaultOntologyConfiguration d = new DefaultOntologyConfiguration("default-ontology-configuration.settings", false);
 		Map<String, ConfiguredOntology> configurations = d.getOntologyConfigurations();
 		assertEquals(12, configurations.size());
 		assertTrue(configurations.containsKey("GeneOntology"));

@@ -72,4 +72,26 @@ public abstract class IOCModule extends AbstractModule {
 		bind(Integer.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 	
+	/**
+	 * Convinence method for binding a {@link Boolean} parameter, a flag. 
+	 * Check system properties for overwrites.
+	 * 
+	 * @param name
+	 * @param defaultValue
+	 */
+	protected void bind(String name, boolean defaultValue) {
+		boolean value = defaultValue;
+		String property = System.getProperty(name, null);
+		if (property != null) {
+			property = property.toLowerCase();
+			if ("true".equals(property)) {
+				value = true;
+			}
+			else if ("false".equals(property)) {
+				value = false;
+			}
+		}
+		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(new Boolean(value));
+	}
+	
 }

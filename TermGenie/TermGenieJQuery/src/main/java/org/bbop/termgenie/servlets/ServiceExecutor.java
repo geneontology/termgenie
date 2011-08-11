@@ -1,8 +1,9 @@
 package org.bbop.termgenie.servlets;
 
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
+import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
@@ -12,7 +13,6 @@ import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.json.rpc.server.JsonRpcExecutor;
 import org.json.rpc.server.JsonRpcServerTransport;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class ServiceExecutor {
@@ -30,9 +30,9 @@ public class ServiceExecutor {
 	
 	private ServiceExecutor() {
 		executor  = new JsonRpcExecutor();
-        Injector injector = Guice.createInjector(
+        Injector injector = TermGenieGuice.createInjector(
         		new DefaultOntologyModule(),
-        		new DefaultDynamicRulesModule(),
+        		new DefaultXMLDynamicRulesModule(),
         		new TermGenieToolsModule(),
         		new TermGenieServiceModule(),
         		new ReasonerModule());

@@ -1,11 +1,17 @@
 package org.bbop.termgenie.tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class ResourceLoader {
+public abstract class ResourceLoader {
 
-	public ResourceLoader() {
+	private final boolean tryLoadAsFiles;
+	
+	protected ResourceLoader(boolean tryLoadAsFiles) {
 		super();
+		this.tryLoadAsFiles = tryLoadAsFiles;
 	}
 
 	protected InputStream loadResource(String name) {
@@ -29,6 +35,18 @@ public class ResourceLoader {
 		}
 		if (inputStream == null) {
 			inputStream = ResourceLoader.class.getResourceAsStream(name);
+		}
+		if (inputStream == null && tryLoadAsFiles) {
+			// try loading as file
+			// security issues?
+			File file = new File(name);
+			if (file.isFile() && file.canRead()) {
+				try {
+					return new FileInputStream(file);
+				} catch (FileNotFoundException exception) {
+					// intentionally empty
+				}
+			}
 		}
 		if (name.charAt(0) != '/') {
 			// this is required for the loading of resources in the servlet container.

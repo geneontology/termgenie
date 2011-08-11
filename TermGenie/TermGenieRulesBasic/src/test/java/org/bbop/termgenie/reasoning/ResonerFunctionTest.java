@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -22,7 +23,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class ResonerFunctionTest {
@@ -37,7 +37,7 @@ public class ResonerFunctionTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
 		ontologies = config.getOntologyConfigurations();
 		loader = injector.getInstance(OntologyLoader.class);

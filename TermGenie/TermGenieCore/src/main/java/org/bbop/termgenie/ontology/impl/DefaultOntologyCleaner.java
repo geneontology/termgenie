@@ -33,8 +33,9 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 	private final Map<String, CleanerConfig> cleanOntologies;
 
 	@Inject
-	DefaultOntologyCleaner(@Named("DefaultOntologyCleanerResource") String resource) {
-		super();
+	DefaultOntologyCleaner(@Named("DefaultOntologyCleanerResource") String resource, 
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+		super(tryResourceLoadAsFiles);
 		InputStream inputStream = loadResource(resource);
 		cleanOntologies = CleanerConfig.loadSettings(inputStream);
 	}

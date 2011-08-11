@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -33,7 +34,6 @@ import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -234,7 +234,7 @@ public class ReloadingOntologyLoader implements OntologyLoader {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
 		List<OntologyTaskManager> ontologies = loader.getOntologies();
 		

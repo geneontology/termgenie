@@ -27,10 +27,11 @@ public abstract class DynamicRulesModule extends IOCModule {
 	
 	@Provides @Singleton
 	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO, 
-			@Named("DynamicRulesTemplateResource") String templateResource) {
+			@Named("DynamicRulesTemplateResource") String templateResource,
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
 		InputStream in = null;
 		try {
-			in = getResourceInputStream(templateResource);
+			in = getResourceInputStream(templateResource, tryResourceLoadAsFiles);
 			return templateIO.readTemplates(in);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -40,6 +41,6 @@ public abstract class DynamicRulesModule extends IOCModule {
 		}
 	}
 
-	protected abstract InputStream getResourceInputStream(String templateResource);
+	protected abstract InputStream getResourceInputStream(String templateResource, boolean tryResourceLoadAsFiles);
 	
 }

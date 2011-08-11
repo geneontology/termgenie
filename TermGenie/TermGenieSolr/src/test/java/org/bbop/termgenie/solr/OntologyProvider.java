@@ -3,6 +3,7 @@ package org.bbop.termgenie.solr;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -12,7 +13,6 @@ import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.junit.BeforeClass;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public abstract class OntologyProvider {
@@ -32,7 +32,7 @@ public abstract class OntologyProvider {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		loader = injector.getInstance(OntologyLoader.class);

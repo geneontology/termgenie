@@ -10,8 +10,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 public class DefaultXMLDynamicRulesModule extends DefaultDynamicRulesModule {
 
 	@Override
-	protected void configure() {
-		super.configure();
+	protected void bindTemplateIO() {
 		install(new XMLTermTemplateModule());
 		bind("DynamicRulesTemplateResource", "default_termgenie_rules.xml");
 	}

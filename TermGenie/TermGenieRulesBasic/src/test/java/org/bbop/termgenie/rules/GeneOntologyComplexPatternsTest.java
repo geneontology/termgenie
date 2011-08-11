@@ -11,6 +11,7 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -27,7 +28,6 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class GeneOntologyComplexPatternsTest {
@@ -42,7 +42,7 @@ public class GeneOntologyComplexPatternsTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new IOCModule() {
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new IOCModule() {
 			
 			@Override
 			protected void configure() {

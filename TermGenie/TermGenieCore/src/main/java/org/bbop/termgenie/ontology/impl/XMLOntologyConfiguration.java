@@ -42,8 +42,9 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	private final Map<String, ConfiguredOntology> configuration;
 	
 	@Inject
-	XMLOntologyConfiguration(@Named("XMLOntologyConfigurationResource") String resource) {
-		super();
+	XMLOntologyConfiguration(@Named("XMLOntologyConfigurationResource") String resource,
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+		super(tryResourceLoadAsFiles);
 		configuration = loadOntologyConfiguration(resource);
 	}
 	
@@ -259,7 +260,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	}
 
 	public static void main(String[] args) {
-		XMLOntologyConfiguration c = new XMLOntologyConfiguration(SETTINGS_FILE);
+		XMLOntologyConfiguration c = new XMLOntologyConfiguration(SETTINGS_FILE, false);
 		Map<String, ConfiguredOntology> ontologies = c.getOntologyConfigurations();
 		for (String key : ontologies.keySet()) {
 			ConfiguredOntology ontology = ontologies.get(key);

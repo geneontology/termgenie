@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
@@ -19,10 +20,9 @@ import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 import owltools.graph.OWLGraphWrapper;
+
+import com.google.inject.Injector;
 
 public class PlantOntologyIndexTest {
 
@@ -32,7 +32,7 @@ public class PlantOntologyIndexTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);

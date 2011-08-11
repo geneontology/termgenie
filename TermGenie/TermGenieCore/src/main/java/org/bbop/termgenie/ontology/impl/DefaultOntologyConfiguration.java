@@ -26,8 +26,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 	private final Map<String, ConfiguredOntology> configuration;
 	
 	@Inject
-	DefaultOntologyConfiguration(@Named("DefaultOntologyConfigurationResource") String resource) {
-		super();
+	DefaultOntologyConfiguration(@Named("DefaultOntologyConfigurationResource") String resource,
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+		super(tryResourceLoadAsFiles);
 		configuration = loadOntologyConfiguration(resource);
 	}
 	
@@ -154,7 +155,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 	}
 	
 	public static void main(String[] args) {
-		DefaultOntologyConfiguration c = new DefaultOntologyConfiguration(SETTINGS_FILE);
+		DefaultOntologyConfiguration c = new DefaultOntologyConfiguration(SETTINGS_FILE, false);
 		Map<String, ConfiguredOntology> ontologies = c.getOntologyConfigurations();
 		for (String key : ontologies.keySet()) {
 			ConfiguredOntology ontology = ontologies.get(key);

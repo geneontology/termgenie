@@ -15,21 +15,25 @@ import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class FlatFileTermTemplateIOTest extends ResourceLoader {
 
 	private static TermTemplateIO templateIO;
+	
+	public FlatFileTermTemplateIOTest() {
+		super(false);
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(),
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
 				new TermTemplateIOModule());
 		templateIO = injector.getInstance(TermTemplateIO.class);
 	}

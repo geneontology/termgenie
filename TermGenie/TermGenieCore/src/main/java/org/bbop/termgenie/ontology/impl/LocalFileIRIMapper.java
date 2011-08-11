@@ -12,10 +12,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.tools.ResourceLoader;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -50,7 +50,9 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	 * @param resource config file in classpath
 	 */
 	@Inject
-	LocalFileIRIMapper(@Named("LocalFileIRIMapperResource") String resource) {
+	LocalFileIRIMapper(@Named("LocalFileIRIMapperResource") String resource,
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+		super(tryResourceLoadAsFiles);
 		InputStream inputStream = null;
 		try {
 			inputStream = loadResource(resource);
@@ -110,7 +112,7 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	}
 	
 	public static void main(String[] args) {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
 		IRIMapper mapper = injector.getInstance(IRIMapper.class);
 		System.out.println(((LocalFileIRIMapper) mapper).mappings.size());
 		

@@ -12,23 +12,30 @@ import org.bbop.termgenie.tools.ResourceLoader;
  */
 public class DefaultDynamicRulesModule extends DynamicRulesModule {
 
-	private static MyResourceLoader loader = new MyResourceLoader();
-
 	@Override
 	protected void configure() {
 		super.configure();
+		bindTemplateIO();
+	}
+
+	protected void bindTemplateIO() {
 		install(new TermTemplateIOModule());
 		bind("DynamicRulesTemplateResource", "default_termgenie_rules.txt");
 	}
 
 	@Override
-	protected InputStream getResourceInputStream(String resource) {
+	protected InputStream getResourceInputStream(String resource, boolean tryResourceLoadAsFiles) {
+		MyResourceLoader loader = new MyResourceLoader(tryResourceLoadAsFiles);
 		InputStream in = loader.loadResource(resource);
 		return in;
 	}
 
 	private static class MyResourceLoader extends ResourceLoader {
 
+		public MyResourceLoader(boolean tryResourceLoadAsFiles) {
+			super(tryResourceLoadAsFiles);
+		}
+		
 		@Override
 		public InputStream loadResource(String name) {
 			return super.loadResource(name);

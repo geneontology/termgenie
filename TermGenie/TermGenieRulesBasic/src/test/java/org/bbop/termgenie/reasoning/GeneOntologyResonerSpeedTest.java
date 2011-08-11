@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -25,7 +26,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import owltools.graph.OWLGraphWrapper;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelReasoner;
@@ -38,7 +38,7 @@ public class GeneOntologyResonerSpeedTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
 		OntologyConfiguration config = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = config.getOntologyConfigurations();
 		ConfiguredOntology configuredOntology = ontologies.get("GeneOntology");

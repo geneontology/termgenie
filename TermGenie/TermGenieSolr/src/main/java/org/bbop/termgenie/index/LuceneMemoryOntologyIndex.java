@@ -33,6 +33,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
@@ -47,7 +48,6 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 /**
@@ -382,7 +382,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 	public static void main(String[] args) {
 		
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);

@@ -12,23 +12,27 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class XMLTermTemplateIOTest extends ResourceLoader {
+
+	protected XMLTermTemplateIOTest() {
+		super(false);
+	}
 
 	private static FlatFileTermTemplateIO flatfile;
 	private static XMLTermTemplateIO instance;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = Guice.createInjector(new DefaultOntologyModule(), new IOCModule() {
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new IOCModule() {
 			
 			@Override
 			protected void configure() {
