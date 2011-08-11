@@ -10,14 +10,14 @@
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
 				<prefixes>
 					<prefix>regulation</prefix>
 					<prefix>negative_regulation</prefix>
 					<prefix>positive_regulation</prefix>
 				</prefixes>
-				<ontology name="GeneOntology">
-					<branch>biological_process</branch>
-				</ontology>
 			</field>
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
@@ -91,14 +91,14 @@ function run() {
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>molecular_function</branch>
+				</ontology>
 				<prefixes>
 					<prefix>regulation</prefix>
 					<prefix>negative_regulation</prefix>
 					<prefix>positive_regulation</prefix>
 				</prefixes>
-				<ontology name="GeneOntology">
-					<branch>molecular_function</branch>
-				</ontology>
 			</field>
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
@@ -583,8 +583,8 @@ function run() {
 		<!-- <requires>cellular_component_xp_protein.obo</requires>  -->
 		<fields>
 			<field name="unit" required="true">
-				<cardinality>2..N</cardinality>
 				<ontology name="ProteinOntology" />
+				<cardinality>2..N</cardinality>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
