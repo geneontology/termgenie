@@ -202,7 +202,7 @@ function run(){
   var cdef = termgenie.cdef(p);
   cdef.differentium("part_of", w, go);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -256,7 +256,7 @@ function run() {
   var cdef = termgenie.cdef(p);
   cdef.differentium("OBO_REL:occurs_in", c, go);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 TEMPLATE
 name	regulation_by
@@ -381,7 +381,7 @@ function run() {
   var cdef = termgenie.cdef(p);
   cdef.differentium("part_of", w, go);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -426,7 +426,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0005488");
   cdef.differentium("OBO_REL:results_in_binding_of", x, pro);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -473,7 +473,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0032502";
   cdef.differentium("OBO_REL:results_in_complete_development_of", x, uberon);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -518,7 +518,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0009653");
   cdef.differentium("OBO_REL:results_in_morphogenesis_of", x, uberon);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -565,7 +565,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0032502");
   cdef.differentium("OBO_REL:results_in_complete_development_of", x, plant);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -610,7 +610,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0009653");
   cdef.differentium("OBO_REL:results_in_morphogenesis_of", x, plant);
   termgenie.createTerm(label, definition, synonyms, cdef);
-}
+};
 
 
 TEMPLATE
@@ -663,7 +663,7 @@ function run() {
   var cdef = termgenie.cdef("GO:0043234");
   cdef.differentium("has_part", list, pro);
   termgenie.createTerm(label, definition, synonyms, cdef, pro);
-}
+};
 
 
 TEMPLATE
@@ -705,7 +705,7 @@ function run() {
   var cdef = termgenie.cdef('PATO:0000051', PATO);
   cdef.differentium("OBO_REL:inheres_in", a, FMA);
   termgenie.createTerm(label, definition, synonyms, cdef, HumanPhenotype);
-}
+};
 
 
 TEMPLATE
@@ -753,7 +753,7 @@ function run() {
   var cdef = termgenie.cdef(q, PATO); // TODO check if this the correct genus
   cdef.differentium("OBO_REL:inheres_in", e, FMA);
   termgenie.createTerm(label, definition, synonyms, cdef, HumanPhenotype);
-}
+};
 
 
 TEMPLATE
@@ -802,7 +802,7 @@ function run() {
   var cdef = termgenie.cdef(q, PATO);
   cdef.differentium("OBO_REL:inheres_in", e, go);
   termgenie.createTerm(label, definition, synonyms, cdef, OMP);
-}
+};
 
 
 TEMPLATE
@@ -850,7 +850,7 @@ function run() {
   var cdef = termgenie.cdef(c);
   cdef.differentium("part_of", a, Uberon);
   termgenie.createTerm(label, definition, synonyms, cdef, CL);
-}
+};
 
 
 TEMPLATE
@@ -903,7 +903,7 @@ function run() {
   cdef.property("multivalued(has_plasma_membrane_part)");
   cdef.property("any_cardinality(has_plasma_membrane_part)");
   termgenie.createTerm(label, definition, synonyms, cdef, CL);
-}
+};
 
 
 TEMPLATE
@@ -950,5 +950,5 @@ function run() {
   var cdef = termgenie.cdef(p);
   cdef.differentium("part_of", w, Uberon);
   termgenie.createTerm(label, definition, synonyms, cdef, Uberon);
-}
+};
 

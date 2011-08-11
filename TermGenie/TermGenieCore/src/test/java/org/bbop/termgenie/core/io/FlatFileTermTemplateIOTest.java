@@ -122,7 +122,7 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 		}
 	}
 	
-	private String write(Collection<TermTemplate> templates) {
+	private String write(Collection<TermTemplate> templates) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		OutputStream writer = new WriterOutputStream(stringWriter);
 		templateIO.writeTemplates(templates, writer);
