@@ -9,11 +9,11 @@ import javax.inject.Singleton;
 import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.io.TermTemplateIO;
-import org.bbop.termgenie.core.io.TermTemplateIOModule;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 
 import com.google.inject.Provides;
+import com.google.inject.name.Named;
 
 /**
  * Module which provides a {@link TermGenerationEngine}, using rules extracted from an external source. 
@@ -22,15 +22,15 @@ public abstract class DynamicRulesModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		install(new TermTemplateIOModule());
 		bind(TermGenerationEngine.class).to(TermGenieScriptRunner.class);
 	}
 	
 	@Provides @Singleton
-	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO) {
+	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO, 
+			@Named("DynamicRulesTemplateResource") String templateResource) {
 		InputStream in = null;
 		try {
-			in = getResourceInputStream();
+			in = getResourceInputStream(templateResource);
 			return templateIO.readTemplates(in);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -40,6 +40,6 @@ public abstract class DynamicRulesModule extends IOCModule {
 		}
 	}
 
-	protected abstract InputStream getResourceInputStream();
+	protected abstract InputStream getResourceInputStream(String templateResource);
 	
 }
