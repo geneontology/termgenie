@@ -25,6 +25,6 @@ public class TermGenieGuice {
 		for (Module module : modules) {
 			allModules.add(module);
 		}
-		return Guice.createInjector(modules);
+		return Guice.createInjector(allModules);
 	}
 }
