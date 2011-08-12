@@ -17,16 +17,16 @@ public interface TermGenerationEngine {
 	 * @param generationTasks
 	 * @return candidates
 	 */
-	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks);
+	public List<TermGenerationOutput> generateTerms(Ontology ontology,
+			List<TermGenerationInput> generationTasks);
 
 	/**
-	 * Retrieve all patterns available for this term generation engine. 
+	 * Retrieve all patterns available for this term generation engine.
 	 * 
 	 * @return templates
 	 */
 	public List<TermTemplate> getAvailableTemplates();
-	
-	
+
 	public final class TermGenerationInput {
 
 		private final TermTemplate termTemplate;
@@ -87,7 +87,11 @@ public interface TermGenerationEngine {
 		 * @param success
 		 * @param message
 		 */
-		public TermGenerationOutput(OntologyTerm term, TermGenerationInput input, boolean success, String message) {
+		public TermGenerationOutput(OntologyTerm term,
+				TermGenerationInput input,
+				boolean success,
+				String message)
+		{
 			super();
 			this.term = term;
 			this.input = input;
@@ -147,15 +151,14 @@ public interface TermGenerationEngine {
 			builder.append("]");
 			return builder.toString();
 		}
-		
-		
+
 	}
 
 	public final class TermGenerationParameters {
 
 		private final OntologyTerm[][] terms;
 		private final String[][] strings;
-		
+
 		/**
 		 * @param terms
 		 * @param strings
@@ -165,7 +168,7 @@ public interface TermGenerationEngine {
 			this.terms = terms;
 			this.strings = strings;
 		}
-		
+
 		/**
 		 * @param fieldCount
 		 */
@@ -186,7 +189,7 @@ public interface TermGenerationEngine {
 		public String[][] getStrings() {
 			return strings;
 		}
-		
+
 		/**
 		 * @param template
 		 * @param field
@@ -195,7 +198,7 @@ public interface TermGenerationEngine {
 		public void setStringValues(TermTemplate template, String field, String...values) {
 			setValues(strings, template, field, values);
 		}
-		
+
 		/**
 		 * @param template
 		 * @param pos
@@ -204,7 +207,7 @@ public interface TermGenerationEngine {
 		public void setStringValues(TermTemplate template, int pos, String...values) {
 			setValues(strings, template, pos, values);
 		}
-		
+
 		/**
 		 * @param template
 		 * @param field
@@ -213,7 +216,7 @@ public interface TermGenerationEngine {
 		public void setTermValues(TermTemplate template, String field, OntologyTerm...values) {
 			setValues(terms, template, field, values);
 		}
-		
+
 		/**
 		 * @param template
 		 * @param pos
@@ -234,7 +237,7 @@ public interface TermGenerationEngine {
 			int pos = template.getFieldPos(field);
 			storeTo[pos] = values;
 		}
-		
+
 		/**
 		 * @param <T>
 		 * @param storeTo
@@ -246,7 +249,8 @@ public interface TermGenerationEngine {
 			storeTo[pos] = values;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override

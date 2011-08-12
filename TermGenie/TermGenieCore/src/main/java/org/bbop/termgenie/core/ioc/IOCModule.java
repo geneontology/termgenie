@@ -6,15 +6,14 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
 /**
- * Wrapper for guice configuration modules. E.g., allow overwrites 
- * for some parameters with system properties. 
- *
+ * Wrapper for guice configuration modules. E.g., allow overwrites for some
+ * parameters with system properties.
  */
 public abstract class IOCModule extends AbstractModule {
 
 	/**
-	 * Convinence method for binding a {@link String} parameter. 
-	 * Check system properties for overwrites.
+	 * Convinence method for binding a {@link String} parameter. Check system
+	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
@@ -26,10 +25,10 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
-	
+
 	/**
-	 * Convinence method for binding a {@link Long} parameter. 
-	 * Check system properties for overwrites.
+	 * Convinence method for binding a {@link Long} parameter. Check system
+	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
@@ -41,10 +40,10 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(Long.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
-	
+
 	/**
-	 * Convinence method for binding a {@link TimeUnit} parameter. 
-	 * Check system properties for overwrites.
+	 * Convinence method for binding a {@link TimeUnit} parameter. Check system
+	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
@@ -56,10 +55,10 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(TimeUnit.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
-	
+
 	/**
-	 * Convinence method for binding a {@link Integer} parameter. 
-	 * Check system properties for overwrites.
+	 * Convinence method for binding a {@link Integer} parameter. Check system
+	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
@@ -71,10 +70,10 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(Integer.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
-	
+
 	/**
-	 * Convinence method for binding a {@link Boolean} parameter, a flag. 
-	 * Check system properties for overwrites.
+	 * Convinence method for binding a {@link Boolean} parameter, a flag. Check
+	 * system properties for overwrites.
 	 * 
 	 * @param name
 	 * @param defaultValue
@@ -93,5 +92,5 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
-	
+
 }

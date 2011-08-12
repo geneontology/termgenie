@@ -27,7 +27,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 class FlatFileTermTemplateIO implements TermTemplateIO {
-	
+
 	private static final String FLAT_FILE_TAG_RULE = "RULE";
 	private static final String FLAT_FILE_TAG_HINT = "hint";
 	private static final String FLAT_FILE_TAG_ONTOLOGY = "ontology";
@@ -44,7 +44,7 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 	private static final String FLAT_FILE_TAG_FIELD = "FIELD";
 
 	private final TemplateOntologyHelper helper;
-	
+
 	/**
 	 * @param helper
 	 */
@@ -61,11 +61,11 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			newLine(writer);
 		}
 	}
-	
+
 	private static void newLine(StringBuilder sb) {
 		sb.append('\n');
 	}
-	
+
 	@Override
 	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) {
 		try {
@@ -86,32 +86,32 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			throw new RuntimeException(exception);
 		}
 	}
-	
+
 	private static char SEPARATOR_CHAR = '\t';
 	private static char COMMENT_CHAR = '#';
-	
+
 	private void writeTemplate(TermTemplate template, StringBuilder writer) {
 		writer.append(FLAT_FILE_TAG_TEMPLATE);
 		newLine(writer);
-		
+
 		// name
 		writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(template.getName());
 		newLine(writer);
-		
+
 		// display name
 		String displayName = template.getDisplayName();
 		if (displayName != null) {
 			writer.append(FLAT_FILE_TAG_DISPLAY_NAME).append(SEPARATOR_CHAR).append(displayName);
 			newLine(writer);
 		}
-		
+
 		// description
 		String description = template.getDescription();
 		if (description != null) {
 			writer.append(FLAT_FILE_TAG_DESCRIPTION).append(SEPARATOR_CHAR).append(description);
 			newLine(writer);
 		}
-		
+
 		// hint
 		final String hint = template.getHint();
 		if (hint != null) {
@@ -120,43 +120,44 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		}
 		// ontology
 		addOntology(template.getCorrespondingOntology(), writer);
-		
+
 		// external
 		addOntologies(FLAT_FILE_TAG_EXTERNAL, template.getExternal(), writer);
-		
+
 		// obo_namespace
 		final String oboNamespace = template.getOboNamespace();
 		if (oboNamespace != null) {
 			writer.append(FLAT_FILE_TAG_OBO_NAMESPACE).append(SEPARATOR_CHAR).append(oboNamespace);
 			newLine(writer);
 		}
-		
+
 		// requires
 		final List<String> requires = template.getRequires();
 		if (requires != null && !requires.isEmpty()) {
-			writer.append(FLAT_FILE_TAG_REQUIRES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(requires, SEPARATOR_CHAR));
+			writer.append(FLAT_FILE_TAG_REQUIRES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(requires,
+					SEPARATOR_CHAR));
 			newLine(writer);
 		}
-		
+
 		// template fields
 		for (TemplateField templateField : template.getFields()) {
 			writer.append(COMMENT_CHAR);
 			newLine(writer);
-			
+
 			writer.append(FLAT_FILE_TAG_FIELD);
 			newLine(writer);
-			
+
 			// String name
 			writer.append(FLAT_FILE_TAG_NAME).append(SEPARATOR_CHAR).append(templateField.getName());
 			newLine(writer);
-			
+
 			// boolean required
 			if (templateField.isRequired()) {
 				// assume not required as default.
 				writer.append(FLAT_FILE_TAG_REQUIRED).append(SEPARATOR_CHAR).append(Boolean.toString(templateField.isRequired()));
 				newLine(writer);
 			}
-			
+
 			// Cardinality cardinality;
 			Cardinality cardinality = templateField.getCardinality();
 			if (cardinality != null) {
@@ -167,14 +168,15 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 					newLine(writer);
 				}
 			}
-			
+
 			// List<String> functionalPrefixes;
 			List<String> prefixes = templateField.getFunctionalPrefixes();
 			if (!prefixes.isEmpty()) {
-				writer.append(FLAT_FILE_TAG_PREFIXES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(prefixes, SEPARATOR_CHAR));
+				writer.append(FLAT_FILE_TAG_PREFIXES).append(SEPARATOR_CHAR).append(ListHelper.serializeList(prefixes,
+						SEPARATOR_CHAR));
 				newLine(writer);
 			}
-			
+
 			// Ontology correspondingOntology;
 			addOntologies(templateField.getCorrespondingOntologies(), writer);
 		}
@@ -189,61 +191,53 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			newLine(writer);
 		}
 	}
-	
+
 	private void addOntologies(List<Ontology> ontologies, StringBuilder writer) {
 		addOntologies(FLAT_FILE_TAG_ONTOLOGY, ontologies, writer);
 	}
-	
+
 	private void addOntologies(String tag, List<Ontology> ontologies, StringBuilder writer) {
 		if (ontologies != null && !ontologies.isEmpty()) {
 			writer.append(tag).append(SEPARATOR_CHAR).append(helper.serializeOntologies(ontologies));
 			newLine(writer);
 		}
 	}
-	
+
 	private void addOntology(Ontology ontology, StringBuilder writer) {
 		addOntologies(Collections.singletonList(ontology), writer);
 	}
 
 	private class ReadData {
+
 		String ontology = null;
 		String name = null;
 		String displayname = null;
 		String description = null;
 		String hint = null;
-		List<Map<String, String>> fields=new ArrayList<Map<String,String>>();
+		List<Map<String, String>> fields = new ArrayList<Map<String, String>>();
 		Map<String, String> currentField = null;
 		StringBuilder rules = null;
 		String external = null;
 		String requires = null;
 		String obo_namespace = null;
-		
+
 		void newCurrentField() {
 			currentField = new HashMap<String, String>();
 			fields.add(currentField);
 		}
-		
+
 		void newRuleBuffer() {
 			rules = new StringBuilder();
 		}
-		
+
 		TermTemplate createTermTemplate() {
 			List<Ontology> ontologies = getOntologies(ontology);
 			List<Ontology> external = this.external == null ? null : getOntologies(this.external);
-			TermTemplate termTermplate = new TermTemplate(
-					ontologies.get(0), 
-					name, 
-					displayname, 
-					description, 
-					createFields(), 
-					external,
-					ListHelper.parseString(requires, SEPARATOR_CHAR),
-					obo_namespace,
-					rules != null ? rules.toString() : null, 
-					hint);
+			TermTemplate termTermplate = new TermTemplate(ontologies.get(0), name, displayname, description, createFields(), external, ListHelper.parseString(requires,
+					SEPARATOR_CHAR), obo_namespace, rules != null ? rules.toString() : null, hint);
 			return termTermplate;
 		}
-		
+
 		private List<Ontology> getOntologies(String ontologiesString) {
 			return helper.readOntologies(ontologiesString);
 		}
@@ -251,12 +245,8 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		private List<TemplateField> createFields() {
 			List<TemplateField> fields = new ArrayList<TemplateField>(this.fields.size());
 			for (Map<String, String> map : this.fields) {
-				TemplateField templateField = new TemplateField(
-						map.get(FLAT_FILE_TAG_NAME), 
-						parseRequired(map), 
-						CardinalityHelper.parseCardinality(map.get(FLAT_FILE_TAG_CARDINALITY)), 
-						ListHelper.parseString(map.get(FLAT_FILE_TAG_PREFIXES), SEPARATOR_CHAR), 
-						helper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
+				TemplateField templateField = new TemplateField(map.get(FLAT_FILE_TAG_NAME), parseRequired(map), CardinalityHelper.parseCardinality(map.get(FLAT_FILE_TAG_CARDINALITY)), ListHelper.parseString(map.get(FLAT_FILE_TAG_PREFIXES),
+						SEPARATOR_CHAR), helper.readOntologies(map.get(FLAT_FILE_TAG_ONTOLOGY)));
 				fields.add(templateField);
 			}
 			return fields;
@@ -270,9 +260,9 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 			// assume a field as not required, if not specified
 			return false;
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("null")
 	@Override
 	public List<TermTemplate> readTemplates(InputStream inputStream) throws IOException {
@@ -295,41 +285,57 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 				}
 				// start new data collection
 				data = new ReadData();
-			} else if (line.startsWith(FLAT_FILE_TAG_FIELD)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_FIELD)) {
 				data.newCurrentField();
-			} else if (line.startsWith(FLAT_FILE_TAG_NAME)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_NAME)) {
 				if (data.currentField == null) {
 					data.name = value;
-				} else {
+				}
+				else {
 					data.currentField.put(FLAT_FILE_TAG_NAME, value);
 				}
-			} else if(line.startsWith(FLAT_FILE_TAG_HINT)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_HINT)) {
 				data.hint = value;
-			} else if(line.startsWith(FLAT_FILE_TAG_DISPLAY_NAME)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_DISPLAY_NAME)) {
 				data.displayname = value;
-			} else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_DESCRIPTION)) {
 				data.description = value;
-			} else if (line.startsWith(FLAT_FILE_TAG_EXTERNAL)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_EXTERNAL)) {
 				data.external = value;
-			} else if (line.startsWith(FLAT_FILE_TAG_OBO_NAMESPACE)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_OBO_NAMESPACE)) {
 				data.obo_namespace = value;
-			} else if (line.startsWith(FLAT_FILE_TAG_REQUIRES)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_REQUIRES)) {
 				data.requires = value;
-			} else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_ONTOLOGY)) {
 				if (data.currentField == null) {
 					data.ontology = value;
-				} else {
+				}
+				else {
 					data.currentField.put(FLAT_FILE_TAG_ONTOLOGY, value);
 				}
-			} else if (line.startsWith(FLAT_FILE_TAG_REQUIRED)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_REQUIRED)) {
 				handleField(data, FLAT_FILE_TAG_REQUIRED, value, count);
-			} else if (line.startsWith(FLAT_FILE_TAG_PREFIXES)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_PREFIXES)) {
 				handleField(data, FLAT_FILE_TAG_PREFIXES, value, count);
-			} else if (line.startsWith(FLAT_FILE_TAG_CARDINALITY)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_CARDINALITY)) {
 				handleField(data, FLAT_FILE_TAG_CARDINALITY, value, count);
-			} else if (line.startsWith(FLAT_FILE_TAG_RULE)) {
+			}
+			else if (line.startsWith(FLAT_FILE_TAG_RULE)) {
 				data.newRuleBuffer();
-			} else if (data.rules != null) {
+			}
+			else if (data.rules != null) {
 				if (data.rules.length() > 0) {
 					data.rules.append('\n');
 				}
@@ -339,15 +345,16 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		if (data != null) {
 			TermTemplate template = data.createTermTemplate();
 			result.add(template);
-		} else {
+		}
+		else {
 			throw new RuntimeException("Error: no templates read");
 		}
 		return result;
 	}
-	
+
 	private void handleField(ReadData data, String tag, String value, int count) {
 		if (data.currentField == null) {
-			throw new RuntimeException("Syntax error on line: "+count+"\n unexecpected "+tag+" tag. May be you forgot the "+FLAT_FILE_TAG_FIELD+" tag to start a new term field");
+			throw new RuntimeException("Syntax error on line: " + count + "\n unexecpected " + tag + " tag. May be you forgot the " + FLAT_FILE_TAG_FIELD + " tag to start a new term field");
 		}
 		data.currentField.put(tag, value);
 	}
@@ -361,5 +368,5 @@ class FlatFileTermTemplateIO implements TermTemplateIO {
 		}
 		return null;
 	}
-	
+
 }

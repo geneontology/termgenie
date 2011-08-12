@@ -8,7 +8,7 @@ import java.io.InputStream;
 public abstract class ResourceLoader {
 
 	private final boolean tryLoadAsFiles;
-	
+
 	protected ResourceLoader(boolean tryLoadAsFiles) {
 		super();
 		this.tryLoadAsFiles = tryLoadAsFiles;
@@ -23,7 +23,7 @@ public abstract class ResourceLoader {
 		}
 		InputStream inputStream = loadResourceSimple(name);
 		if (inputStream == null) {
-			throw new RuntimeException("Could not load resource: "+name);
+			throw new RuntimeException("Could not load resource: " + name);
 		}
 		return inputStream;
 	}
@@ -49,8 +49,9 @@ public abstract class ResourceLoader {
 			}
 		}
 		if (name.charAt(0) != '/') {
-			// this is required for the loading of resources in the servlet container.
-			return loadResourceSimple("/"+name);
+			// this is required for the loading of resources in the servlet
+			// container.
+			return loadResourceSimple("/" + name);
 		}
 		return inputStream;
 	}

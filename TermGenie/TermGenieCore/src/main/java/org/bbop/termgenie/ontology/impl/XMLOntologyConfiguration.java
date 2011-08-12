@@ -23,7 +23,7 @@ import com.google.inject.name.Named;
 
 @Singleton
 public class XMLOntologyConfiguration extends ResourceLoader implements OntologyConfiguration {
-	
+
 	static final String SETTINGS_FILE = "ontology-configuration.xml";
 
 	private static final String TAG_ontologyconfiguration = "ontologyconfiguration";
@@ -36,18 +36,19 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	private static final String TAG_roots = "roots";
 	private static final String TAG_root = "root";
 	private static final String TAG_ontologybranch = "ontologybranch";
-	
+
 	private static final String ATTR_name = "name";
-	
+
 	private final Map<String, ConfiguredOntology> configuration;
-	
+
 	@Inject
 	XMLOntologyConfiguration(@Named("XMLOntologyConfigurationResource") String resource,
-			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles)
+	{
 		super(tryResourceLoadAsFiles);
 		configuration = loadOntologyConfiguration(resource);
 	}
-	
+
 	@Override
 	public Map<String, ConfiguredOntology> getOntologyConfigurations() {
 		return configuration;
@@ -59,34 +60,36 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 			inputStream = loadResource(resource);
 			XMLInputFactory factory = XMLInputFactory.newInstance();
 			XMLStreamReader parser = factory.createXMLStreamReader(inputStream);
-			
+
 			Map<String, ConfiguredOntology> map = null;
 			for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
 				if (event == XMLStreamConstants.START_ELEMENT) {
-			        String element = parser.getLocalName();
-			        if (TAG_ontologyconfiguration.equals(element)) {
-			        	if (map != null) {
-			        		error("Multiple "+TAG_ontologyconfiguration+" tags found", parser);
+					String element = parser.getLocalName();
+					if (TAG_ontologyconfiguration.equals(element)) {
+						if (map != null) {
+							error("Multiple " + TAG_ontologyconfiguration + " tags found", parser);
 						}
-			        	map = new LinkedHashMap<String, ConfiguredOntology>();
+						map = new LinkedHashMap<String, ConfiguredOntology>();
 					}
-			        else if (TAG_ontology.equals(element)) {
-			        	if (map == null) {
-							error("No "+TAG_ontologyconfiguration+" top level element found.", parser);
+					else if (TAG_ontology.equals(element)) {
+						if (map == null) {
+							error("No " + TAG_ontologyconfiguration + " top level element found.",
+									parser);
 						}
-			        	parseOntology(parser, map);
-			        }
-			    }
+						parseOntology(parser, map);
+					}
+				}
 			}
 			parser.close();
 			return Collections.unmodifiableMap(map);
 		} catch (XMLStreamException exception) {
 			throw new RuntimeException(exception);
-		} finally {
+		}
+		finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
-	
+
 	private void error(String message, XMLStreamReader parser) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(message);
@@ -100,8 +103,10 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 		}
 		throw new RuntimeException(sb.toString());
 	}
-	
-	private void parseOntology(XMLStreamReader parser, Map<String, ConfiguredOntology> ontologies) throws XMLStreamException {
+
+	private void parseOntology(XMLStreamReader parser, Map<String, ConfiguredOntology> ontologies)
+			throws XMLStreamException
+	{
 		String name = getAttribute(parser, ATTR_name);
 		ConfiguredOntology current = new ConfiguredOntology(name);
 		while (true) {
@@ -135,34 +140,43 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 					parseOntologyBranch(parser, current, ontologies);
 				}
 				else {
-					error("Unexpected tag: "+element, parser);
+					error("Unexpected tag: " + element, parser);
 				}
 			}
 		}
 	}
 
-	private void parseSupports(XMLStreamReader parser, ConfiguredOntology current) throws XMLStreamException {
+	private void parseSupports(XMLStreamReader parser, ConfiguredOntology current)
+			throws XMLStreamException
+	{
 		if (current.supports != null) {
-			error("Multiple "+TAG_supports+" tags found", parser);
+			error("Multiple " + TAG_supports + " tags found", parser);
 		}
 		current.setSupport(parseList(parser, TAG_supports, TAG_support));
 	}
 
-	private void parseRequires(XMLStreamReader parser, ConfiguredOntology current) throws XMLStreamException {
+	private void parseRequires(XMLStreamReader parser, ConfiguredOntology current)
+			throws XMLStreamException
+	{
 		if (current.requires != null) {
-			error("Multiple "+TAG_requires+" tags found", parser);
+			error("Multiple " + TAG_requires + " tags found", parser);
 		}
 		current.setRequires(parseList(parser, TAG_requires, TAG_name));
 	}
-	
-	private void parseRoots(XMLStreamReader parser, ConfiguredOntology current) throws XMLStreamException {
+
+	private void parseRoots(XMLStreamReader parser, ConfiguredOntology current)
+			throws XMLStreamException
+	{
 		if (current.getRoots() != null) {
-			error("Multiple "+TAG_roots+" tags found", parser);
+			error("Multiple " + TAG_roots + " tags found", parser);
 		}
 		current.setRoots(parseList(parser, TAG_roots, TAG_root));
 	}
 
-	private void parseOntologyBranch(XMLStreamReader parser, ConfiguredOntology current, Map<String, ConfiguredOntology> ontologies) throws XMLStreamException {
+	private void parseOntologyBranch(XMLStreamReader parser,
+			ConfiguredOntology current,
+			Map<String, ConfiguredOntology> ontologies) throws XMLStreamException
+	{
 		String name = getAttribute(parser, ATTR_name);
 		List<String> roots = null;
 		while (true) {
@@ -178,23 +192,28 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 						roots = parseList(parser, TAG_roots, TAG_root);
 					}
 					else {
-						error("Unexpected element: "+parser.getLocalName(), parser);
+						error("Unexpected element: " + parser.getLocalName(), parser);
 					}
 					break;
 			}
 		}
 	}
-	
-	private void addOntology(ConfiguredOntology ontology, Map<String, ConfiguredOntology> ontologies, XMLStreamReader parser) {
+
+	private void addOntology(ConfiguredOntology ontology,
+			Map<String, ConfiguredOntology> ontologies,
+			XMLStreamReader parser)
+	{
 		if (ontology.source == null) {
-			error("Missing tag: "+TAG_source, parser);
+			error("Missing tag: " + TAG_source, parser);
 		}
 		String name = ontology.getUniqueName();
 		String branch = ontology.getBranch();
 		ontologies.put(branch != null ? branch : name, ontology);
 	}
 
-	private List<String> parseList(XMLStreamReader parser, String tag, String subTag) throws XMLStreamException {
+	private List<String> parseList(XMLStreamReader parser, String tag, String subTag)
+			throws XMLStreamException
+	{
 		List<String> result = null;
 		while (true) {
 			switch (parser.next()) {
@@ -221,7 +240,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 			}
 		}
 	}
-	
+
 	private String parseElement(XMLStreamReader parser, String tag) throws XMLStreamException {
 		String text = null;
 		while (true) {
@@ -242,7 +261,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 					text = parser.getText();
 					break;
 				case XMLStreamConstants.START_ELEMENT:
-					error("Unexpected element: "+parser.getLocalName(), parser);
+					error("Unexpected element: " + parser.getLocalName(), parser);
 					break;
 			}
 		}
@@ -251,10 +270,10 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	private String getAttribute(XMLStreamReader parser, String attrName) {
 		String value = parser.getAttributeValue(null, attrName);
 		if (value == null) {
-			error("Missing Attribute: "+attrName, parser);
+			error("Missing Attribute: " + attrName, parser);
 		}
 		else if (value.isEmpty()) {
-			error("Empty Attribute: "+attrName, parser);
+			error("Empty Attribute: " + attrName, parser);
 		}
 		return value;
 	}
@@ -275,10 +294,10 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 			System.out.print("source: ");
 			System.out.println(ontology.source);
 			for (String support : ontology.getSupports()) {
-				System.out.println("Support: "+support);
+				System.out.println("Support: " + support);
 			}
 			for (String requires : ontology.getRequires()) {
-				System.out.println("Requires: "+requires);
+				System.out.println("Requires: " + requires);
 			}
 			System.out.println();
 		}

@@ -5,14 +5,15 @@ import java.util.Collection;
 import owltools.graph.OWLGraphWrapper;
 
 /**
- * Wrap the configuration and creation of reasoners.
- * Encapsulate the reasoning for one ontology in a {@link ReasonerTaskManager}
- * to isolate different requests from each other.
+ * Wrap the configuration and creation of reasoners. Encapsulate the reasoning
+ * for one ontology in a {@link ReasonerTaskManager} to isolate different
+ * requests from each other.
  */
-public interface ReasonerFactory{
-	
+public interface ReasonerFactory {
+
 	/**
-	 * Get a task manager for a given ontology, using a default reasoner implementation.
+	 * Get a task manager for a given ontology, using a default reasoner
+	 * implementation.
 	 * 
 	 * @param ontology
 	 * @return taskManager
@@ -27,7 +28,7 @@ public interface ReasonerFactory{
 	 * @return taskManager
 	 */
 	public ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName);
-	
+
 	/**
 	 * Retrieve a collection of all available reasoners in this factory.
 	 * 

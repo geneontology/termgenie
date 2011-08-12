@@ -33,8 +33,9 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 	private final Map<String, CleanerConfig> cleanOntologies;
 
 	@Inject
-	DefaultOntologyCleaner(@Named("DefaultOntologyCleanerResource") String resource, 
-			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+	DefaultOntologyCleaner(@Named("DefaultOntologyCleanerResource") String resource,
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles)
+	{
 		super(tryResourceLoadAsFiles);
 		InputStream inputStream = loadResource(resource);
 		cleanOntologies = CleanerConfig.loadSettings(inputStream);
@@ -86,9 +87,11 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 		CleanDetails details = retains.get(tag);
 		if (details == null) {
 			return false;
-		} else if (details.types.isEmpty()) {
+		}
+		else if (details.types.isEmpty()) {
 			return true;
-		} else {
+		}
+		else {
 			String value = clause.getValue().toString();
 			return details.types.contains(value);
 		}
@@ -97,6 +100,7 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 	static class CleanerConfig {
 
 		public static class CleanDetails {
+
 			Set<String> types = Collections.emptySet();
 			boolean clearQualifiers = false;
 		}
@@ -119,24 +123,29 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 					if (line.equals("[Ontology]")) {
 						currentConfig = new CleanerConfig();
 						currentMap = null;
-					} else if (line.startsWith("name:")) {
+					}
+					else if (line.startsWith("name:")) {
 						if (currentConfig != null) {
 							String name = line.substring(5).trim();
 							settings.put(name, currentConfig);
 						}
-					} else if (line.equals("[Term]")) {
+					}
+					else if (line.equals("[Term]")) {
 						if (currentConfig != null) {
 							currentMap = currentConfig.retain_term_clauses;
 						}
-					} else if (line.equals("[Typdef]")) {
+					}
+					else if (line.equals("[Typdef]")) {
 						if (currentConfig != null) {
 							currentMap = currentConfig.retain_typedef_clauses;
 						}
-					} else if (line.equals("[Instance]")) {
+					}
+					else if (line.equals("[Instance]")) {
 						if (currentConfig != null) {
 							currentMap = currentConfig.retain_instance_clauses;
 						}
-					} else {
+					}
+					else {
 						if (currentMap != null) {
 							parseLine(line, currentMap);
 						}
@@ -157,7 +166,8 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 			CleanDetails details = new CleanDetails();
 			if (spacePos < 0) {
 				tag = line;
-			} else {
+			}
+			else {
 				tag = line.substring(0, spacePos);
 				int startListPos = line.indexOf('[', spacePos);
 				int endListPos = line.indexOf(']', startListPos);
@@ -165,7 +175,8 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 					if (endListPos > 0) {
 						details.types = parseList(line.substring(startListPos, endListPos + 1));
 						spacePos = findWhitespace(line, endListPos);
-					} else {
+					}
+					else {
 						// irregular line, remove
 						tag = null;
 						spacePos = -1;

@@ -5,8 +5,8 @@ import java.util.List;
 import org.bbop.termgenie.core.Ontology;
 
 /**
- * Tool for the association of Ontologies to a string. 
- * To be used only for term templates.
+ * Tool for the association of Ontologies to a string. To be used only for term
+ * templates.
  */
 public interface TemplateOntologyHelper {
 
@@ -17,7 +17,7 @@ public interface TemplateOntologyHelper {
 	 * @return list of ontologies
 	 */
 	public List<Ontology> readOntologies(String serializedNames);
-	
+
 	/**
 	 * Create the serialized representation for a list of ontologies.
 	 * 

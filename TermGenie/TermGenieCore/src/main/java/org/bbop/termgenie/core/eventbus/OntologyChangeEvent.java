@@ -4,7 +4,7 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 public class OntologyChangeEvent {
-	
+
 	static {
 		/*
 		 * Call the setup in the static block. Guarantees the proper setup of
@@ -18,7 +18,7 @@ public class OntologyChangeEvent {
 
 	/**
 	 * @param manager
-	 * @param ontology 
+	 * @param ontology
 	 */
 	public OntologyChangeEvent(OntologyTaskManager manager, Ontology ontology) {
 		super();

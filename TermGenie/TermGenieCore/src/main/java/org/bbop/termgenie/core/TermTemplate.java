@@ -3,7 +3,6 @@ package org.bbop.termgenie.core;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Data container for templates.
  */
@@ -19,7 +18,7 @@ public class TermTemplate {
 	private final String obo_namespace;
 	private final String rules;
 	private final String hint;
-	
+
 	/**
 	 * @param correspondingOntology
 	 * @param name
@@ -32,11 +31,17 @@ public class TermTemplate {
 	 * @param rules
 	 * @param hint
 	 */
-	public TermTemplate(Ontology correspondingOntology, 
-			String name, String displayName, String description,
-			List<TemplateField> fields, List<Ontology> external, 
-			List<String> requires, String obo_namespace, String rules, 
-			String hint) {
+	public TermTemplate(Ontology correspondingOntology,
+			String name,
+			String displayName,
+			String description,
+			List<TemplateField> fields,
+			List<Ontology> external,
+			List<String> requires,
+			String obo_namespace,
+			String rules,
+			String hint)
+	{
 		super();
 		this.correspondingOntology = correspondingOntology;
 		if (name == null || name.isEmpty()) {
@@ -101,7 +106,7 @@ public class TermTemplate {
 	public String getRules() {
 		return rules;
 	}
-	
+
 	/**
 	 * @return the description
 	 */
@@ -140,7 +145,7 @@ public class TermTemplate {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Retrieve the field pos for a given name.
 	 * 
@@ -159,7 +164,7 @@ public class TermTemplate {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Retrieve field count for the template.
 	 * 
@@ -169,7 +174,8 @@ public class TermTemplate {
 		return fields.size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -203,20 +209,14 @@ public class TermTemplate {
 		}
 		// do not render external, they polute the output
 		/*
-		if (external != null) {
-			builder.append("external=");
-			builder.append(external);
-			builder.append(", ");
-		}
-		*/
+		 * if (external != null) { builder.append("external=");
+		 * builder.append(external); builder.append(", "); }
+		 */
 		// do not render rules, they polute the output
 		/*
-		if (rules != null) {
-			builder.append("rules=");
-			builder.append(rules);
-			builder.append(", ");
-		}
-		*/
+		 * if (rules != null) { builder.append("rules="); builder.append(rules);
+		 * builder.append(", "); }
+		 */
 		if (hint != null) {
 			builder.append("hint=");
 			builder.append(hint);

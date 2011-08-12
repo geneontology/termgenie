@@ -6,21 +6,21 @@ import java.util.Map;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * Wrapper of an ontology, provides additional methods for identifying the ontology.
+ * Wrapper of an ontology, provides additional methods for identifying the
+ * ontology.
  */
-public class Ontology
-{
+public class Ontology {
+
 	protected String name;
 	protected String subOntologyName;
 	protected List<String> roots;
-	
+
 	/**
 	 * @param name
 	 * @param subOntologyName
 	 * @param roots
 	 */
-	protected Ontology(String name, String subOntologyName,
-			List<String> roots) {
+	protected Ontology(String name, String subOntologyName, List<String> roots) {
 		super();
 		this.name = name;
 		this.subOntologyName = subOntologyName;
@@ -30,32 +30,38 @@ public class Ontology
 	public String getUniqueName() {
 		return name;
 	}
-	
+
 	public String getBranch() {
 		return subOntologyName;
 	}
-	
+
 	public List<String> getRoots() {
 		return roots;
 	}
-	
+
 	protected void setBranch(String subOntologyName, List<String> roots) {
 		this.subOntologyName = subOntologyName;
 		this.roots = roots;
 	}
-	
+
 	/**
-	 * Wrapper of an ontology term. Intended to be used during 
-	 * rule-based term generation.
+	 * Wrapper of an ontology term. Intended to be used during rule-based term
+	 * generation.
 	 */
-	public abstract static class OntologyTerm
-	{
+	public abstract static class OntologyTerm {
+
 		public abstract String getId();
+
 		public abstract String getLabel();
+
 		public abstract String getDefinition();
+
 		public abstract List<Synonym> getSynonyms();
+
 		public abstract List<String> getDefXRef();
+
 		public abstract List<Relation> getRelations();
+
 		public abstract Map<String, String> getMetaData();
 
 		@Override
@@ -101,7 +107,7 @@ public class Ontology
 		}
 
 		public static class DefaultOntologyTerm extends OntologyTerm {
-			
+
 			private final String id;
 			private final String label;
 			private final String definition;
@@ -110,9 +116,14 @@ public class Ontology
 			private final List<Relation> relations;
 			private final Map<String, String> metaData;
 
-			public DefaultOntologyTerm(String id, String label, String definition,
-					List<Synonym> synonyms, List<String> defXRef, 
-					Map<String, String> metaData, List<Relation> relations) {
+			public DefaultOntologyTerm(String id,
+					String label,
+					String definition,
+					List<Synonym> synonyms,
+					List<String> defXRef,
+					Map<String, String> metaData,
+					List<Relation> relations)
+			{
 				super();
 				this.id = id;
 				this.label = label;
@@ -122,6 +133,7 @@ public class Ontology
 				this.relations = relations;
 				this.metaData = metaData;
 			}
+
 			/**
 			 * @return the id
 			 */
@@ -129,7 +141,7 @@ public class Ontology
 			public String getId() {
 				return id;
 			}
-			
+
 			/**
 			 * @return the label
 			 */
@@ -137,7 +149,7 @@ public class Ontology
 			public String getLabel() {
 				return label;
 			}
-			
+
 			/**
 			 * @return the definition
 			 */
@@ -145,7 +157,7 @@ public class Ontology
 			public String getDefinition() {
 				return definition;
 			}
-			
+
 			/**
 			 * @return the synonyms
 			 */
@@ -153,7 +165,7 @@ public class Ontology
 			public List<Synonym> getSynonyms() {
 				return synonyms;
 			}
-			
+
 			/**
 			 * @return the defXRef
 			 */
@@ -161,6 +173,7 @@ public class Ontology
 			public List<String> getDefXRef() {
 				return defXRef;
 			}
+
 			/**
 			 * @return the relations
 			 */
@@ -168,6 +181,7 @@ public class Ontology
 			public List<Relation> getRelations() {
 				return relations;
 			}
+
 			/**
 			 * @return the metaData
 			 */
@@ -177,13 +191,13 @@ public class Ontology
 			}
 		}
 	}
-	
-	public static class Relation 
-	{
+
+	public static class Relation {
+
 		private final String source;
 		private final String target;
 		private final List<String> properties;
-		
+
 		/**
 		 * @param source
 		 * @param target

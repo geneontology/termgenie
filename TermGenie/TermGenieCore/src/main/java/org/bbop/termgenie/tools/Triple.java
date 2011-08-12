@@ -5,7 +5,7 @@ public class Triple<A, B, C> {
 	private final A one;
 	private final B two;
 	private final C three;
-	
+
 	/**
 	 * @param one
 	 * @param two

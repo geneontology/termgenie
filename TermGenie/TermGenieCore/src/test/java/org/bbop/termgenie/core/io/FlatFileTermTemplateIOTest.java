@@ -26,7 +26,7 @@ import com.google.inject.Injector;
 public class FlatFileTermTemplateIOTest extends ResourceLoader {
 
 	private static TermTemplateIO templateIO;
-	
+
 	public FlatFileTermTemplateIOTest() {
 		super(false);
 	}
@@ -37,41 +37,41 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 				new TermTemplateIOModule());
 		templateIO = injector.getInstance(TermTemplateIO.class);
 	}
-	
+
 	/**
-	 * Tests for {@link FlatFileTermTemplateIO#writeTemplates} 
-	 * and {@link FlatFileTermTemplateIO#readTemplates}
+	 * Tests for {@link FlatFileTermTemplateIO#writeTemplates} and
+	 * {@link FlatFileTermTemplateIO#readTemplates}
 	 * 
 	 * @throws IOException
 	 */
 	@Test
 	public void testReadWriteTemplates() throws IOException {
-		
+
 		String init = load(loadResource("test_termgenie_rules.txt"));
 		List<TermTemplate> read0 = read(init);
-		
+
 		String write1 = write(read0);
-		
+
 		assertEquals(init, write1);
-		
+
 		List<TermTemplate> read1 = read(write1);
 		compare(read0, read1);
-		
+
 		String write2 = write(read1);
-		
+
 		assertEquals(write1, write2);
-		
+
 		List<TermTemplate> read2 = read(write2);
 		compare(read0, read2);
-		
+
 		String write3 = write(read2);
 		assertEquals(write1, write3);
 	}
-	
+
 	private String load(InputStream in) throws IOException {
 		return IOUtils.toString(in);
 	}
-	
+
 	private void compare(List<TermTemplate> l1, List<TermTemplate> l2) {
 		assertEquals(l1.size(), l2.size());
 		for (int i = 0; i < l1.size(); i++) {
@@ -93,11 +93,12 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 				assertEquals(f1.getName(), f2.getName());
 				assertEquals(f1.isRequired(), f2.isRequired());
 				assertEquals(f1.getFunctionalPrefixes(), f1.getFunctionalPrefixes());
-				assertEquals(CardinalityHelper.serializeCardinality(f1.getCardinality()), CardinalityHelper.serializeCardinality(f2.getCardinality()));
+				assertEquals(CardinalityHelper.serializeCardinality(f1.getCardinality()),
+						CardinalityHelper.serializeCardinality(f2.getCardinality()));
 			}
 		}
 	}
-	
+
 	private void compareList(List<Ontology> l1, List<Ontology> l2) {
 		if (l1 == null) {
 			assertNull(l2);
@@ -111,7 +112,7 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 			compare(o1, o2);
 		}
 	}
-	
+
 	private void compare(Ontology o1, Ontology o2) {
 		if (o1 == null) {
 			assertNull(o2);
@@ -121,11 +122,12 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 		assertEquals(o1.getUniqueName(), o2.getUniqueName());
 		if (o1.getBranch() == null) {
 			assertNull(o2.getBranch());
-		} else {
+		}
+		else {
 			assertEquals(o1.getBranch(), o2.getBranch());
 		}
 	}
-	
+
 	private String write(Collection<TermTemplate> templates) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		OutputStream writer = new WriterOutputStream(stringWriter);
@@ -134,7 +136,7 @@ public class FlatFileTermTemplateIOTest extends ResourceLoader {
 		String writtenString = stringWriter.getBuffer().toString();
 		return writtenString;
 	}
-	
+
 	private List<TermTemplate> read(String string) throws IOException {
 		InputStream reader = new StringInputStream(string);
 		List<TermTemplate> readTemplates = templateIO.readTemplates(reader);

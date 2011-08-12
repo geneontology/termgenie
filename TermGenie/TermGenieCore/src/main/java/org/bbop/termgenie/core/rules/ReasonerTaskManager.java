@@ -16,7 +16,7 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	protected ReasonerTaskManager(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	protected OWLReasoner resetManaged(OWLReasoner managed) {
 		// Do nothing as the reasoner cannot change the ontology.
@@ -29,18 +29,18 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	}
 
 	/**
-	 * A task which requires a reasoner. 
+	 * A task which requires a reasoner.
 	 */
-	public static interface ReasonerTask extends ManagedTask<OWLReasoner>{
+	public static interface ReasonerTask extends ManagedTask<OWLReasoner> {
 		// intentionally empty
 	}
-	
+
 	// implement some common reasoner tasks.
-	
+
 	public Collection<OWLObject> getDescendants(final OWLObject x, final OWLGraphWrapper wrapper) {
 		final Collection<OWLObject> result = new HashSet<OWLObject>();
 		ReasonerTask task = new ReasonerTask() {
-			
+
 			@Override
 			public boolean run(OWLReasoner managed) {
 				NodeSet<OWLClass> subClasses = managed.getSubClasses(wrapper.getOWLClass(x), false);
@@ -51,14 +51,15 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		runManagedTask(task);
 		return result;
 	}
-	
+
 	public Collection<OWLObject> getAncestors(final OWLObject x, final OWLGraphWrapper wrapper) {
 		final Collection<OWLObject> result = new HashSet<OWLObject>();
 		ReasonerTask task = new ReasonerTask() {
-			
+
 			@Override
 			public boolean run(OWLReasoner managed) {
-				NodeSet<OWLClass> subClasses = managed.getSuperClasses(wrapper.getOWLClass(x), false);
+				NodeSet<OWLClass> subClasses = managed.getSuperClasses(wrapper.getOWLClass(x),
+						false);
 				result.addAll(subClasses.getFlattened());
 				return false;
 			}

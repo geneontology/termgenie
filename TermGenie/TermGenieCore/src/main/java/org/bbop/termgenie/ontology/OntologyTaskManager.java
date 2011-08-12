@@ -10,15 +10,18 @@ import owltools.graph.OWLGraphWrapper;
 public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWrapper> {
 
 	/**
-	 * A task which requires an ontology. 
+	 * A task which requires an ontology.
 	 */
-	public static interface OntologyTask extends ManagedTask<OWLGraphWrapper>{/* intentionally empty */}
+	public static interface OntologyTask extends ManagedTask<OWLGraphWrapper> {/*
+																				 * intentionally
+																				 * empty
+																				 */}
 
 	protected final Ontology ontology;
 	private String ontologyId = null;
-	
+
 	public OntologyTaskManager(Ontology ontology) {
-		super("OntologyTaskManager-"+ontology.getUniqueName());
+		super("OntologyTaskManager-" + ontology.getUniqueName());
 		this.ontology = ontology;
 		runManagedTask(new OntologyTask() {
 
@@ -29,11 +32,11 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 			}
 		});
 	}
-	
+
 	public String getOntologyId() {
 		return ontologyId;
 	}
-	
+
 	@Override
 	protected void setChanged() {
 		EventBus.publish(new OntologyChangeEvent(this, ontology));
@@ -43,7 +46,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) {
 		return createManaged();
 	}
-	
+
 	@Override
 	protected OWLGraphWrapper resetManaged(OWLGraphWrapper managed) {
 		return createManaged();
@@ -52,5 +55,5 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	public Ontology getOntology() {
 		return ontology;
 	}
-	
+
 }

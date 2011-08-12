@@ -22,36 +22,37 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
- * Map IRIs to local file urls. Get the resource from classpath and 
- * copy it to a temp location.
+ * Map IRIs to local file urls. Get the resource from classpath and copy it to a
+ * temp location.
  */
 @Singleton
 public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 
 	private final static Logger logger = Logger.getLogger(LocalFileIRIMapper.class);
 	final static String SETTINGS_FILE = "default-ontology-iri-mapping-localfile.settings";
-	
+
 	private final Map<String, URL> mappings = new HashMap<String, URL>();
 
 	/**
-	 * Create the mapper with the given config resource. 
-	 * The configuration format is as follows:
+	 * Create the mapper with the given config resource. The configuration
+	 * format is as follows:
 	 * <ul>
-	 * 	<li>Line based format</li>
-	 *  <li>Comment lines start with '#' character</li>
-	 *  <li>Three columns per line, tabulartor as separator character:</li>
-	 *  <ul>
-	 *  	<li>1st column: original IRI</li>
-	 *  	<li>2nd column: local resource in classpath</li>
-	 *  	<li>3rd column: human readable tempfile name</li>
-	 *  </ul>
+	 * <li>Line based format</li>
+	 * <li>Comment lines start with '#' character</li>
+	 * <li>Three columns per line, tabulartor as separator character:</li>
+	 * <ul>
+	 * <li>1st column: original IRI</li>
+	 * <li>2nd column: local resource in classpath</li>
+	 * <li>3rd column: human readable tempfile name</li>
+	 * </ul>
 	 * </ul>
 	 * 
 	 * @param resource config file in classpath
 	 */
 	@Inject
 	LocalFileIRIMapper(@Named("LocalFileIRIMapperResource") String resource,
-			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles)
+	{
 		super(tryResourceLoadAsFiles);
 		InputStream inputStream = null;
 		try {
@@ -73,12 +74,12 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
-	
+
 	@Override
 	public URL mapUrl(String url) {
 		URL documentIRI = mappings.get(url);
 		if (documentIRI == null) {
-			logger.info("Unknow IRI: "+url);
+			logger.info("Unknow IRI: " + url);
 			try {
 				documentIRI = new URL(url);
 			} catch (MalformedURLException exception) {
@@ -87,7 +88,7 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 		}
 		return documentIRI;
 	}
-	
+
 	private void addMapping(String url, String local, String temp) throws IOException {
 		File tempFile = new File(System.getProperty("java.io.tmpdir"), temp);
 		File file = tempFile;
@@ -102,7 +103,8 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 					}
 					// copy to temp location
 					FileUtils.copyInputStreamToFile(inputStream, tempFile);
-				} finally {
+				}
+				finally {
 					IOUtils.closeQuietly(inputStream);
 				}
 				file = tempFile;
@@ -110,12 +112,12 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 		}
 		mappings.put(url, file.toURI().toURL());
 	}
-	
+
 	public static void main(String[] args) {
 		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
 		IRIMapper mapper = injector.getInstance(IRIMapper.class);
 		System.out.println(((LocalFileIRIMapper) mapper).mappings.size());
-		
+
 		System.out.println(mapper == injector.getInstance(IRIMapper.class));
 	}
 }

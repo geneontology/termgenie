@@ -7,19 +7,19 @@ import java.util.List;
 import org.bbop.termgenie.core.Ontology;
 
 public class ConfiguredOntology extends Ontology {
-	
+
 	String source = null;
 	List<String> supports = null;
 	List<String> requires = null;
-	
+
 	ConfiguredOntology(String name) {
 		super(name, null, null);
 	}
-	
+
 	void setRoots(List<String> roots) {
 		this.roots = roots;
 	}
-	
+
 	void addSupport(String support) {
 		if (support == null) {
 			return;
@@ -29,11 +29,11 @@ public class ConfiguredOntology extends Ontology {
 		}
 		supports.add(support);
 	}
-	
+
 	void setSupport(List<String> supports) {
 		this.supports = supports;
 	}
-	
+
 	void addRequires(String requires) {
 		if (requires == null) {
 			return;
@@ -43,7 +43,7 @@ public class ConfiguredOntology extends Ontology {
 		}
 		this.requires.add(requires);
 	}
-	
+
 	void setRequires(List<String> requires) {
 		this.requires = requires;
 	}
@@ -58,7 +58,6 @@ public class ConfiguredOntology extends Ontology {
 		return supports;
 	}
 
-
 	/**
 	 * @return the requires
 	 */
@@ -68,7 +67,7 @@ public class ConfiguredOntology extends Ontology {
 		}
 		return requires;
 	}
-	
+
 	protected ConfiguredOntology createBranch(String subOntologyName, List<String> roots) {
 		ConfiguredOntology branch = new ConfiguredOntology(name);
 		branch.requires = requires;
@@ -77,7 +76,7 @@ public class ConfiguredOntology extends Ontology {
 		branch.setBranch(subOntologyName, roots);
 		return branch;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

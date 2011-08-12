@@ -27,20 +27,19 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * Cache remote IRIs as a local file. Allow periodic reloads of 
- * the original IRI for updates.
+ * Cache remote IRIs as a local file. Allow periodic reloads of the original IRI
+ * for updates.
  */
 @Singleton
 public class FileCachingIRIMapper implements IRIMapper {
-	
+
 	private static final Logger logger = Logger.getLogger(FileCachingIRIMapper.class);
 
 	private final FileValidity validityHelper;
 	private final File cacheDirectory;
 
 	@Inject
-	FileCachingIRIMapper (
-			@Named("FileCachingIRIMapperLocalCache") String localCache,
+	FileCachingIRIMapper(@Named("FileCachingIRIMapperLocalCache") String localCache,
 			@Named("FileCachingIRIMapperPeriod") long period,
 			@Named("FileCachingIRIMapperTimeUnit") TimeUnit unit)
 	{
@@ -49,8 +48,10 @@ public class FileCachingIRIMapper implements IRIMapper {
 		createFolder(cacheDirectory);
 		validityHelper = new FileValidity(TimeUnit.MILLISECONDS.convert(period, unit));
 
-		// use java.concurrent to schedule a periodic task of reloading the IRI content.
+		// use java.concurrent to schedule a periodic task of reloading the IRI
+		// content.
 		Runnable command = new Runnable() {
+
 			@Override
 			public void run() {
 				reloadIRIs();
@@ -59,14 +60,14 @@ public class FileCachingIRIMapper implements IRIMapper {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		scheduler.scheduleWithFixedDelay(command, period, period, unit);
 	}
-	
+
 	protected void reloadIRIs() {
 		validityHelper.setInvalidRecursive(cacheDirectory);
 	}
-	
+
 	/**
-	 * Overwrite this method to implement more sophisticated methods. 
-	 * E.g., fall-back on local copies, if the URL is not reachable.
+	 * Overwrite this method to implement more sophisticated methods. E.g.,
+	 * fall-back on local copies, if the URL is not reachable.
 	 * 
 	 * @param url
 	 * @return inputStream
@@ -75,7 +76,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 	protected InputStream getInputStream(URL url) throws IOException {
 		return url.openStream();
 	}
-	
+
 	@Override
 	public URL mapUrl(String url) {
 		try {
@@ -88,7 +89,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 				return mapUrl(originalURL);
 			}
 			else {
-				throw new RuntimeException("Unknown protocol: "+protocol);
+				throw new RuntimeException("Unknown protocol: " + protocol);
 			}
 		} catch (MalformedURLException exception) {
 			throw new RuntimeException(exception);
@@ -107,7 +108,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			throw new RuntimeException(exception);
 		}
 	}
-	
+
 	private void createFile(File localFile) {
 		File folder = localFile.getParentFile();
 		createFolder(folder);
@@ -129,14 +130,16 @@ public class FileCachingIRIMapper implements IRIMapper {
 
 		} catch (IOException exception) {
 			prevException = exception;
-		} finally {
+		}
+		finally {
 			if (inputStream != null) {
 				try {
 					inputStream.close();
 				} catch (IOException exception) {
 					if (prevException == null) {
 						prevException = exception;
-					} else {
+					}
+					else {
 						logger.error("Problem closing inputStream.", exception);
 					}
 				}
@@ -147,7 +150,8 @@ public class FileCachingIRIMapper implements IRIMapper {
 				} catch (IOException exception) {
 					if (prevException == null) {
 						prevException = exception;
-					} else {
+					}
+					else {
 						logger.error("Problem closing outputStream.", exception);
 					}
 				}
@@ -155,29 +159,29 @@ public class FileCachingIRIMapper implements IRIMapper {
 			if (prevException != null) {
 				throw new RuntimeException(prevException);
 			}
-			/* 
-			 * only set the file valid, if there were no exceptions 
-			 * and the output stream is closed.
+			/*
+			 * only set the file valid, if there were no exceptions and the
+			 * output stream is closed.
 			 */
 			validityHelper.setValid(localFile);
 		}
 	}
-	
+
 	private boolean isValid(File localFile) {
 		return localFile.exists() && validityHelper.isValid(localFile);
 	}
-	
+
 	private File localCacheFile(URL url) {
 		return new File(cacheDirectory, localCacheFilename(url));
 	}
-	
+
 	static String localCacheFilename(URL url) {
 		StringBuilder sb = new StringBuilder();
 		escapeToBuffer(sb, url.getHost());
 		escapeToBuffer(sb, url.getPath());
 		return sb.toString();
 	}
-	
+
 	static void escapeToBuffer(StringBuilder sb, String s) {
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
@@ -207,30 +211,32 @@ public class FileCachingIRIMapper implements IRIMapper {
 			throw new RuntimeException("Cannot write into the specified folder: " + folder.getAbsolutePath());
 		}
 	}
-	
+
 	/**
 	 * Helper for checking, whether a file is still valid
 	 */
 	static class FileValidity {
-		
+
 		private static final String VALIDITY_FILE_SUFFIX = ".validity";
-		
+
 		private static final class ValidityFileFilter implements FileFilter {
+
 			@Override
 			public boolean accept(File pathname) {
 				return pathname.isDirectory() || pathname.getName().endsWith(VALIDITY_FILE_SUFFIX);
 			}
 		}
 
-		private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>(){
+		private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
+
 			@Override
 			protected DateFormat initialValue() {
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			}
 		};
-		
-		private final long validPeriod; 
-		
+
+		private final long validPeriod;
+
 		/**
 		 * @param validPeriod
 		 */
@@ -240,9 +246,9 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 
 		private File getValidityFile(File file) {
-			return new File(file.getParentFile(), file.getName()+VALIDITY_FILE_SUFFIX);
+			return new File(file.getParentFile(), file.getName() + VALIDITY_FILE_SUFFIX);
 		}
-		
+
 		private Date getDate(File validityFile) {
 			if (validityFile.exists()) {
 				try {
@@ -256,7 +262,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			}
 			return null;
 		}
-		
+
 		private void setDate(Date date, File validityFile) {
 			try {
 				FileUtils.write(validityFile, df.get().format(date));
@@ -264,22 +270,22 @@ public class FileCachingIRIMapper implements IRIMapper {
 				throw new RuntimeException(exception);
 			}
 		}
-		
+
 		private void deleteValidityFile(File file) {
 			File validityFile = getValidityFile(file);
 			if (validityFile.exists()) {
 				validityFile.delete();
 			}
 		}
-		
-		void setValid(File file){
+
+		void setValid(File file) {
 			setDate(new Date(), getValidityFile(file));
 		}
-		
+
 		void setInvalid(File file) {
 			deleteValidityFile(file);
 		}
-		
+
 		void setInvalidRecursive(File directory) {
 			File[] files = directory.listFiles(new ValidityFileFilter());
 			if (files != null) {
@@ -293,7 +299,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 				}
 			}
 		}
-		
+
 		boolean isValid(File file) {
 			Date date = getDate(getValidityFile(file));
 			if (date != null) {
@@ -303,5 +309,5 @@ public class FileCachingIRIMapper implements IRIMapper {
 			return false;
 		}
 	}
-	
+
 }

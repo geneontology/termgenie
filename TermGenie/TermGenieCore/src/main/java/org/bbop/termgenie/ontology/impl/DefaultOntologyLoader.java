@@ -15,11 +15,11 @@ import com.google.inject.name.Named;
  */
 @Singleton
 public class DefaultOntologyLoader extends ReloadingOntologyLoader {
-	
+
 	@Inject
-	DefaultOntologyLoader(OntologyConfiguration configuration, 
-			IRIMapper iriMapper, 
-			OntologyCleaner cleaner, 
+	DefaultOntologyLoader(OntologyConfiguration configuration,
+			IRIMapper iriMapper,
+			OntologyCleaner cleaner,
 			@Named("DefaultOntologyLoaderSkipOntologies") Set<String> skipOntologies)
 	{
 		super(configuration, iriMapper, cleaner, skipOntologies, 0, null);

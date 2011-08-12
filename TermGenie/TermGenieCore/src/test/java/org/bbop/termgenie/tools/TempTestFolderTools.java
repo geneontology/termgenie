@@ -13,25 +13,24 @@ import org.apache.commons.io.FileUtils;
 public class TempTestFolderTools {
 
 	/**
-	 * Create a new test folder relative to a given class. The idea is, that
-	 * the test folder is created in the build directory of the corresponding 
-	 * project, thus isolating multiple project instances from each other. 
-	 * Also, usually, the user has the appropriate rights in the build folder.
-	 *  
-	 *  Limits: The class cls may not be in a jar.
+	 * Create a new test folder relative to a given class. The idea is, that the
+	 * test folder is created in the build directory of the corresponding
+	 * project, thus isolating multiple project instances from each other. Also,
+	 * the user usually has the appropriate rights in the build folder. <br/>
+	 * <br/>
+	 * <b>Limits:</b> The class cls may not be in a jar.
 	 * 
 	 * @param cls The class to which this test folder should be relative to.
 	 * @return testFolder
-	 * 
 	 * @see #deleteTestFolder(File)
 	 */
 	public static File createTestFolder(Class<?> cls) {
 		try {
 			URL resource = getResourceURL(cls);
 			File classFile = new File(resource.toURI());
-			File testFolder = new File(classFile.getParentFile(), cls.getSimpleName()+"-TestFolder");
+			File testFolder = new File(classFile.getParentFile(), cls.getSimpleName() + "-TestFolder");
 			if (testFolder.exists() && !testFolder.isDirectory()) {
-				throw new RuntimeException("Try to use a resource as testFolder, which is not a folder: "+testFolder.getAbsolutePath());
+				throw new RuntimeException("Try to use a resource as testFolder, which is not a folder: " + testFolder.getAbsolutePath());
 			}
 			testFolder.mkdirs();
 			FileUtils.cleanDirectory(testFolder);
@@ -42,7 +41,7 @@ public class TempTestFolderTools {
 			throw new RuntimeException(exception);
 		}
 	}
-	
+
 	private static URL getResourceURL(Class<?> cls) {
 		String name = cls.getName();
 		StringBuilder sb = new StringBuilder();
@@ -50,17 +49,17 @@ public class TempTestFolderTools {
 			char c = name.charAt(i);
 			if (c == '.') {
 				c = '/';
-			} 
+			}
 			sb.append(c);
 		}
 		sb.append(".class");
 		URL resource = find(sb.toString(), cls);
 		if (resource == null) {
-			throw new RuntimeException("No resource found for class: "+cls.getName());
+			throw new RuntimeException("No resource found for class: " + cls.getName());
 		}
 		return resource;
 	}
-	
+
 	private static URL find(String name, Class<?> cls) {
 		URL resource = cls.getResource(name);
 		if (resource == null) {
@@ -68,15 +67,12 @@ public class TempTestFolderTools {
 		}
 		return resource;
 	}
-	
+
 	/**
-	 * Delete a testFolder recursively. 
-	 * 
-	 * WARNING: Only use it on test folders created with this tool, 
-	 * as this is a full recursive delete!
+	 * Delete a testFolder recursively. WARNING: Only use it on test folders
+	 * created with this tool, as this is a full recursive delete!
 	 * 
 	 * @param testFolder
-	 * 
 	 * @see #createTestFolder(Class)
 	 */
 	public static void deleteTestFolder(File testFolder) {

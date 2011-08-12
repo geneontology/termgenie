@@ -36,11 +36,11 @@ public class DefaultOntologyModule extends IOCModule {
 	@Override
 	protected void configure() {
 		bindOntologyLoader();
-		
+
 		bindOntologyConfiguration();
-		
+
 		bindOntologyCleaner();
-		
+
 		bindIRIMapper();
 	}
 
@@ -48,11 +48,13 @@ public class DefaultOntologyModule extends IOCModule {
 		bind(OntologyLoader.class).to(DefaultOntologyLoader.class);
 	}
 
-	@Provides @Singleton @Named("DefaultOntologyLoaderSkipOntologies")
+	@Provides
+	@Singleton
+	@Named("DefaultOntologyLoaderSkipOntologies")
 	protected Set<String> getDefaultOntologyLoaderSkipOntologies() {
-		return new HashSet<String>(Arrays.asList("HumanPhenotype","FMA","PATO", "OMP", "CL"));
+		return new HashSet<String>(Arrays.asList("HumanPhenotype", "FMA", "PATO", "OMP", "CL"));
 	}
-	
+
 	protected void bindOntologyConfiguration() {
 		bind(OntologyConfiguration.class).to(DefaultOntologyConfiguration.class);
 		bind("DefaultOntologyConfigurationResource", DefaultOntologyConfiguration.SETTINGS_FILE);
@@ -67,22 +69,22 @@ public class DefaultOntologyModule extends IOCModule {
 		bind(IRIMapper.class).to(LocalFileIRIMapper.class);
 		bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
 	}
-	
-	@Provides @Singleton
+
+	@Provides
+	@Singleton
 	MultiOntologyTaskManager provideMultiOntologyTaskManager(OntologyLoader loader) {
-		
+
 		List<OntologyTaskManager> ontologies = loader.getOntologies();
 		return new ManagedMultiOntologyTaskManager(ontologies);
 	}
-	
+
 	private static class ManagedMultiOntologyTaskManager extends MultiOntologyTaskManager {
-		
+
 		ManagedMultiOntologyTaskManager(List<OntologyTaskManager> ontologies) {
 			super("ManagedMultiOntologyTaskManager", ontologies);
 		}
 	}
-	
-	
+
 	/**
 	 * Main method for a quick test of the config (error free startup).
 	 * 
@@ -96,12 +98,12 @@ public class DefaultOntologyModule extends IOCModule {
 
 			@Override
 			public List<Boolean> run(List<OWLGraphWrapper> requested) {
-				System.out.println("requested: "+requested.size());
+				System.out.println("requested: " + requested.size());
 				return null;
 			}
 		};
 		manager.runManagedTask(task, configuration.getOntologyConfigurations().get("GeneOntology"));
-		
+
 	}
-	
+
 }

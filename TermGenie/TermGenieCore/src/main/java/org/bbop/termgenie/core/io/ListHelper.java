@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tool for reading and writing a list of strings.
- * TODO: encode or replace separator chars and newline chars in the input string.
+ * Tool for reading and writing a list of strings. TODO: encode or replace
+ * separator chars and newline chars in the input string.
  */
 public class ListHelper {
 
@@ -21,20 +21,20 @@ public class ListHelper {
 				add(serializedString.substring(start, pos), results);
 				start = Math.min(pos + 1, length);
 			}
-			if (start <  length) {
+			if (start < length) {
 				add(serializedString.substring(start), results);
 			}
 		}
 		return results;
 	}
-	
+
 	private static void add(String s, List<String> list) {
 		if (s != null && s.length() > 0) {
 			s = s.trim();
 			list.add(s);
 		}
 	}
-	
+
 	static String serializeList(List<String> list, char separatorChar) {
 		StringBuilder sb = new StringBuilder();
 		for (String element : list) {

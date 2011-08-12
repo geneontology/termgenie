@@ -4,7 +4,7 @@ public class Pair<A, B> {
 
 	private final A one;
 	private final B two;
-	
+
 	/**
 	 * @param one
 	 * @param two
@@ -14,14 +14,14 @@ public class Pair<A, B> {
 		this.one = one;
 		this.two = two;
 	}
-	
+
 	/**
 	 * @return the one
 	 */
 	public A getOne() {
 		return one;
 	}
-	
+
 	/**
 	 * @return the two
 	 */

@@ -15,9 +15,10 @@ public interface TermTemplateIO {
 	 * 
 	 * @param templates
 	 * @param outputStream
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) throws IOException;
+	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream)
+			throws IOException;
 
 	/**
 	 * Parse the templates from a given input stream

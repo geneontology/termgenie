@@ -8,8 +8,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * Provide an application specific {@link Injector}, which always loads first the
- * {@link GlobalConfigModule}.
+ * Provide an application specific {@link Injector}, which always loads first
+ * the {@link GlobalConfigModule}.
  */
 public class TermGenieGuice {
 
@@ -19,7 +19,7 @@ public class TermGenieGuice {
 	 * @param modules
 	 * @return injector
 	 */
-	public static Injector createInjector(IOCModule... modules) {
+	public static Injector createInjector(IOCModule...modules) {
 		List<Module> allModules = new ArrayList<Module>(modules.length + 1);
 		allModules.add(new GlobalConfigModule());
 		for (Module module : modules) {

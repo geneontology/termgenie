@@ -20,18 +20,19 @@ import com.google.inject.name.Named;
 
 @Singleton
 public class DefaultOntologyConfiguration extends ResourceLoader implements OntologyConfiguration {
-	
+
 	static final String SETTINGS_FILE = "default-ontology-configuration.settings";
 
 	private final Map<String, ConfiguredOntology> configuration;
-	
+
 	@Inject
 	DefaultOntologyConfiguration(@Named("DefaultOntologyConfigurationResource") String resource,
-			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles)
+	{
 		super(tryResourceLoadAsFiles);
 		configuration = loadOntologyConfiguration(resource);
 	}
-	
+
 	@Override
 	public Map<String, ConfiguredOntology> getOntologyConfigurations() {
 		return configuration;
@@ -46,7 +47,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			while (lineIterator.hasNext()) {
 				String line = lineIterator.next();
 				if (line.length() > 0 && !line.startsWith("!")) {
-					if(line.startsWith("[Ontology]")) {
+					if (line.startsWith("[Ontology]")) {
 						parseOntology(lineIterator, map);
 					}
 					else if (line.startsWith("[OntologyBranch]")) {
@@ -57,11 +58,12 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			return Collections.unmodifiableMap(map);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
-		} finally {
+		}
+		finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
-	
+
 	private void parseOntology(LineIterator reader, Map<String, ConfiguredOntology> ontologies) {
 		ConfiguredOntology current = null;
 		while (reader.hasNext()) {
@@ -96,8 +98,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			ontologies.put(current.getUniqueName(), current);
 		}
 	}
-	
-	private void parseOntologyBranch(LineIterator reader, Map<String, ConfiguredOntology> ontologies) {
+
+	private void parseOntologyBranch(LineIterator reader, Map<String, ConfiguredOntology> ontologies)
+	{
 		String name = null;
 		String ontology = null;
 		List<String> roots = null;
@@ -126,7 +129,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			}
 		}
 	}
-	
+
 	private String getValue(String line, String prefix) {
 		String value = line.substring(prefix.length());
 		int comment = value.indexOf(" !");
@@ -136,7 +139,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		value = value.trim();
 		return value;
 	}
-	
+
 	private List<String> getValues(List<String> results, String line, String prefix) {
 		if (results == null) {
 			results = new ArrayList<String>();
@@ -153,7 +156,7 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 		}
 		return results;
 	}
-	
+
 	public static void main(String[] args) {
 		DefaultOntologyConfiguration c = new DefaultOntologyConfiguration(SETTINGS_FILE, false);
 		Map<String, ConfiguredOntology> ontologies = c.getOntologyConfigurations();
@@ -169,10 +172,10 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 			System.out.println();
 			System.out.println(ontology.source);
 			for (String support : ontology.getSupports()) {
-				System.out.println("Support: "+support);
+				System.out.println("Support: " + support);
 			}
 			for (String requires : ontology.getRequires()) {
-				System.out.println("Requires: "+requires);
+				System.out.println("Requires: " + requires);
 			}
 			System.out.println();
 		}

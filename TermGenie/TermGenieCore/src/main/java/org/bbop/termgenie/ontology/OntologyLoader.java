@@ -12,7 +12,7 @@ public interface OntologyLoader {
 	 * @return ontology managers
 	 */
 	public List<OntologyTaskManager> getOntologies();
-	
+
 	/**
 	 * Get a selected ontology configuration, useful for testing.
 	 * 
@@ -20,5 +20,5 @@ public interface OntologyLoader {
 	 * @return ontology manager
 	 */
 	public OntologyTaskManager getOntology(ConfiguredOntology configuredOntology);
-	
+
 }

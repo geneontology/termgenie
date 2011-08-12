@@ -14,5 +14,5 @@ public class TermTemplateIOModule extends IOCModule {
 		bind(TermTemplateIO.class).to(FlatFileTermTemplateIO.class);
 		bind(TemplateOntologyHelper.class).to(TemplateOntologyHelperImpl.class);
 	}
-	
+
 }

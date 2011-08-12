@@ -8,14 +8,15 @@ import org.bbop.termgenie.core.management.MultiResourceTaskManager;
 
 import owltools.graph.OWLGraphWrapper;
 
-public abstract class MultiOntologyTaskManager extends MultiResourceTaskManager<OWLGraphWrapper, Ontology> {
+public abstract class MultiOntologyTaskManager extends MultiResourceTaskManager<OWLGraphWrapper, Ontology>
+{
 
 	protected MultiOntologyTaskManager(String name, List<OntologyTaskManager> ontologies) {
 		super(name, ontologies.toArray(new OntologyTaskManager[ontologies.size()]));
 	}
 
 	@Override
-	protected Ontology[] getAdditionalInformations(GenericTaskManager<OWLGraphWrapper>... managers) {
+	protected Ontology[] getAdditionalInformations(GenericTaskManager<OWLGraphWrapper>...managers) {
 		Ontology[] infos = new Ontology[managers.length];
 		for (int i = 0; i < managers.length; i++) {
 			infos[i] = ((OntologyTaskManager) managers[i]).getOntology();
@@ -33,6 +34,8 @@ public abstract class MultiOntologyTaskManager extends MultiResourceTaskManager<
 		}
 		return i1.getUniqueName().equals(i2.getUniqueName());
 	}
-	
-	public abstract static class MultiOntologyTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {/* intentionally empty */}
+
+	public abstract static class MultiOntologyTask implements
+			MultiResourceManagedTask<OWLGraphWrapper, Ontology>
+	{/* intentionally empty */}
 }

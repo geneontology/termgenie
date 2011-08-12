@@ -3,17 +3,17 @@ package org.bbop.termgenie.core.management;
 import java.util.concurrent.Semaphore;
 
 /**
- * Provide basic runtime management for an instance. 
- * Allow limited concurrent usage of the managed instance.
- *
+ * Provide basic runtime management for an instance. Allow limited concurrent
+ * usage of the managed instance.
+ * 
  * @param <T> type of the managed instance
  */
 public abstract class GenericTaskManager<T> {
 
 	private volatile T managed = null;
-	private final Semaphore lock; 
+	private final Semaphore lock;
 	final String name;
-	
+
 	/**
 	 * Create a new manager, with a binary and fair semaphore.
 	 * 
@@ -22,10 +22,10 @@ public abstract class GenericTaskManager<T> {
 	public GenericTaskManager(String name) {
 		this(name, 1); // binary and fair
 	}
-	
+
 	/**
-	 * Create a new manager, allowing n number of concurrent calls.
-	 * Low Level, only to be used in this package
+	 * Create a new manager, allowing n number of concurrent calls. Low Level,
+	 * only to be used in this package
 	 * 
 	 * @param name the name of this manager
 	 * @param n number of concurrent users
@@ -34,9 +34,9 @@ public abstract class GenericTaskManager<T> {
 		this.lock = new Semaphore(n, true); // fair
 		this.name = name;
 	}
+
 	/**
-	 * Low level method to lock.
-	 * Only to be used in this package
+	 * Low level method to lock. Only to be used in this package
 	 * 
 	 * @return managed
 	 */
@@ -46,7 +46,7 @@ public abstract class GenericTaskManager<T> {
 			if (managed == null) {
 				managed = createManaged();
 				if (managed == null) {
-					throw new GenericTaskManagerException("The managed object in manager "+name+" must never be null!");
+					throw new GenericTaskManagerException("The managed object in manager " + name + " must never be null!");
 				}
 			}
 			return managed;
@@ -54,17 +54,16 @@ public abstract class GenericTaskManager<T> {
 			throw new GenericTaskManagerException("Interrupted during wait.", exception);
 		}
 	}
-	
+
 	/**
-	 * Low level method to unlock.
-	 * Only to be used in this package
+	 * Low level method to unlock. Only to be used in this package
 	 * 
 	 * @param managed
 	 * @param modified
 	 */
 	void returnManaged(T managed, boolean modified) {
 		if (this.managed != managed) {
-			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: "+name);
+			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: " + name);
 		}
 		try {
 			if (modified) {
@@ -72,40 +71,41 @@ public abstract class GenericTaskManager<T> {
 			}
 		} catch (GenericTaskManagerException exception) {
 			throw exception;
-		} finally {
+		}
+		finally {
 			lock.release();
 			if (modified) {
 				setChanged();
 			}
 		}
 	}
-	
+
 	/**
 	 * Create a managed instance.
 	 * 
 	 * @return managed instance
 	 */
 	protected abstract T createManaged();
-	
+
 	/**
-	 * Update the current managed instance. 
+	 * Update the current managed instance.
 	 * 
 	 * @param managed current managed instance
 	 * @return updated managed instance
 	 */
 	protected abstract T updateManaged(T managed);
-	
+
 	/**
-	 * Update the current managed instance. 
+	 * Update the current managed instance.
 	 * 
 	 * @param managed current managed instance
 	 * @return updated managed instance
 	 */
 	protected abstract T resetManaged(T managed);
-	
+
 	/**
-	 * Tell the managed object to update. Wait 
-	 * until the other processes are finished.
+	 * Tell the managed object to update. Wait until the other processes are
+	 * finished.
 	 */
 	public void updateManaged() {
 		boolean hasLock = false;
@@ -120,7 +120,7 @@ public abstract class GenericTaskManager<T> {
 				setChanged();
 			}
 		} catch (InterruptedException exception) {
-			throw new GenericTaskManagerException("Interrupted during wait.",exception);
+			throw new GenericTaskManagerException("Interrupted during wait.", exception);
 		}
 		finally {
 			if (hasLock) {
@@ -128,11 +128,12 @@ public abstract class GenericTaskManager<T> {
 			}
 		}
 	}
-	
+
 	protected abstract void setChanged();
 
 	/**
-	 * Run a managed task. Encapsulate the wait and return operations for the managed instance.
+	 * Run a managed task. Encapsulate the wait and return operations for the
+	 * managed instance.
 	 * 
 	 * @param task
 	 */
@@ -152,11 +153,11 @@ public abstract class GenericTaskManager<T> {
 
 	/**
 	 * A task which requires a managed instance.
-	 *  
-	 * @param <T> 
+	 * 
+	 * @param <T>
 	 */
 	public static interface ManagedTask<T> {
-		
+
 		/**
 		 * Run the task with a managed instance.
 		 * 
@@ -165,7 +166,7 @@ public abstract class GenericTaskManager<T> {
 		 */
 		public boolean run(T managed);
 	}
-	
+
 	public static class GenericTaskManagerException extends RuntimeException {
 
 		// generated
@@ -174,7 +175,7 @@ public abstract class GenericTaskManager<T> {
 		public GenericTaskManagerException(String message) {
 			super(message);
 		}
-		
+
 		public GenericTaskManagerException(String message, Throwable exception) {
 			super(message, exception);
 		}
