@@ -23,7 +23,7 @@ import com.google.inject.Injector;
 
 public class XMLTermTemplateIOTest extends ResourceLoader {
 
-	protected XMLTermTemplateIOTest() {
+	public XMLTermTemplateIOTest() {
 		super(false);
 	}
 
