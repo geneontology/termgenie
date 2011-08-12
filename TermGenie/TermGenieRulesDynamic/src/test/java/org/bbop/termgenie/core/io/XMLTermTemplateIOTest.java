@@ -32,13 +32,14 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new IOCModule() {
-			
-			@Override
-			protected void configure() {
-				bind(TemplateOntologyHelper.class).to(TemplateOntologyHelperImpl.class);
-			}
-		});
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
+				new IOCModule() {
+
+					@Override
+					protected void configure() {
+						bind(TemplateOntologyHelper.class).to(TemplateOntologyHelperImpl.class);
+					}
+				});
 		TemplateOntologyHelper helper = injector.getInstance(TemplateOntologyHelper.class);
 		flatfile = new FlatFileTermTemplateIO(helper);
 		instance = new XMLTermTemplateIO(injector.getInstance(OntologyConfiguration.class));
@@ -47,24 +48,25 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 	@Test
 	public void testTemplateIO() throws IOException {
 		List<TermTemplate> templates0 = flatfile.readTemplates(loadResource("default_termgenie_rules.txt"));
-		
+
 		String xmlString1 = write(templates0);
 		List<TermTemplate> templates1 = read(xmlString1);
 		assertTemplateList(templates0, templates1);
-		
+
 		String xmlString2 = write(templates1);
 		List<TermTemplate> templates2 = read(xmlString1);
 		assertTemplateList(templates0, templates2);
-		
+
 		assertEquals(xmlString1, xmlString2);
 	}
-	
+
 	private void assertTemplateList(List<TermTemplate> templates1, List<TermTemplate> templates2) {
 		assertEquals(templates1.size(), templates2.size());
 		for (int i = 0; i < templates1.size(); i++) {
 			TermTemplate t1 = templates1.get(i);
 			TermTemplate t2 = templates2.get(i);
-			assertNotNull(t1); assertNotNull(t2);
+			assertNotNull(t1);
+			assertNotNull(t2);
 			assertEquals(t1.getName(), t2.getName());
 			assertEquals(t1.getDisplayName(), t2.getDisplayName());
 			assertEquals(t1.getDescription(), t2.getDescription());
@@ -77,7 +79,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 			assertFields(t1.getFields(), t2.getFields());
 		}
 	}
-	
+
 	private void assertFields(List<TemplateField> fields1, List<TemplateField> fields2) {
 		assertNotNull(fields1);
 		assertNotNull(fields2);
@@ -103,7 +105,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 			assertArrayEquals(l1.toArray(), l2.toArray());
 		}
 	}
-	
+
 	private void assertOntologies(List<Ontology> l1, List<Ontology> l2) {
 		if (l1 != l2) {
 			assertNotNull(l1);
@@ -114,21 +116,21 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 			}
 		}
 	}
-	
+
 	private void assertOntology(Ontology o1, Ontology o2) {
 		if (o1 != o2) {
 			assertEquals(o1.getUniqueName(), o2.getUniqueName());
 			assertEquals(o1.getBranch(), o2.getBranch());
 		}
 	}
-	
+
 	private String write(Collection<TermTemplate> templates) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		instance.writeTemplates(templates, outputStream);
 		outputStream.close();
 		return outputStream.toString();
 	}
-	
+
 	private List<TermTemplate> read(String xmlString) throws IOException {
 		StringInputStream inputStream = new StringInputStream(xmlString);
 		List<TermTemplate> templates = instance.readTemplates(inputStream);

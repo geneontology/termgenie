@@ -13,7 +13,7 @@ import org.apache.openjpa.persistence.PersistentCollection;
 
 @Entity
 public class CommitedOntologyTermRelation {
-	
+
 	private int id;
 	private String source;
 	private String target;
@@ -23,7 +23,7 @@ public class CommitedOntologyTermRelation {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
@@ -39,7 +39,7 @@ public class CommitedOntologyTermRelation {
 	 * @return the source
 	 */
 	@Column
-	@Basic(optional=false)
+	@Basic(optional = false)
 	public String getSource() {
 		return source;
 	}
@@ -55,7 +55,7 @@ public class CommitedOntologyTermRelation {
 	 * @return the target
 	 */
 	@Column
-	@Basic(optional=false)
+	@Basic(optional = false)
 	public String getTarget() {
 		return target;
 	}

@@ -4,18 +4,19 @@ public class JsonTermGenerationInput {
 
 	private JsonTermTemplate termTemplate;
 	private JsonTermGenerationParameter termGenerationParameter;
-	
+
 	/**
 	 * @param termTemplate
 	 * @param termGenerationParameter
 	 */
 	public JsonTermGenerationInput(JsonTermTemplate termTemplate,
-			JsonTermGenerationParameter termGenerationParameter) {
+			JsonTermGenerationParameter termGenerationParameter)
+	{
 		this();
 		this.termTemplate = termTemplate;
 		this.termGenerationParameter = termGenerationParameter;
 	}
-	
+
 	public JsonTermGenerationInput() {
 		super();
 	}
@@ -48,7 +49,8 @@ public class JsonTermGenerationInput {
 		this.termGenerationParameter = termGenerationParameter;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

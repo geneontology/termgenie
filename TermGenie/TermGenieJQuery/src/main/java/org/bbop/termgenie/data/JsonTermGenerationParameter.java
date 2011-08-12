@@ -53,7 +53,7 @@ public class JsonTermGenerationParameter {
 		if (matrix != null) {
 			builder.append(name);
 			builder.append(":{");
-			for(int i = 0; i< matrix.length; i++) {
+			for (int i = 0; i < matrix.length; i++) {
 				if (i > 0) {
 					builder.append(", ");
 				}
@@ -64,13 +64,13 @@ public class JsonTermGenerationParameter {
 				else {
 					builder.append(Arrays.toString(termList));
 				}
-			}			
+			}
 			builder.append("}, ");
 		}
 	}
 
 	public static final class JsonOntologyTermIdentifier {
-		
+
 		private String ontology;
 		private String termId;
 
@@ -96,8 +96,7 @@ public class JsonTermGenerationParameter {
 		}
 
 		/**
-		 * @param ontology
-		 *            the ontology to set
+		 * @param ontology the ontology to set
 		 */
 		public void setOntology(String ontology) {
 			this.ontology = ontology;
@@ -111,14 +110,14 @@ public class JsonTermGenerationParameter {
 		}
 
 		/**
-		 * @param termId
-		 *            the termId to set
+		 * @param termId the termId to set
 		 */
 		public void setTermId(String termId) {
 			this.termId = termId;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override

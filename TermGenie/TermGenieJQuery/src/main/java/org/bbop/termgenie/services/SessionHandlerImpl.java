@@ -4,21 +4,20 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-
 public class SessionHandlerImpl implements SessionHandler {
 
 	private static final Logger logger = Logger.getLogger(SessionHandlerImpl.class);
-	
+
 	// TODO replace this with a proper session key generation
 	private static final Random random = new Random(-1);
-	
+
 	@Override
 	public String createSession() {
 		long long1 = random.nextLong();
 		long long2 = random.nextLong();
-		String sessionId = Long.toString(long1, Character.MAX_RADIX)+
-			Long.toString(long2, Character.MAX_RADIX);
-		logger.info("Creating new session: "+sessionId);
+		String sessionId = Long.toString(long1, Character.MAX_RADIX) + Long.toString(long2,
+				Character.MAX_RADIX);
+		logger.info("Creating new session: " + sessionId);
 		return sessionId;
 	}
 
@@ -35,7 +34,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public void logout(String sessionId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public void setValue(String sessionId, String key, String value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -65,8 +64,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public void setValues(String sessionId, String[] keys, String[] values) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 }

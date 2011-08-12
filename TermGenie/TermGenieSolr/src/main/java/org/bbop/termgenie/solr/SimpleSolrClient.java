@@ -18,22 +18,24 @@ import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.AutoCompletionTools;
 
 public class SimpleSolrClient implements OntologyTermSuggestor {
+
 	private static final Logger logger = Logger.getLogger(SimpleSolrClient.class);
 	private final String baseUrl;
-	
+
 	// package private for testing purposes
-	static final AutoCompletionTools<SolrDocument> solrTools = new AutoCompletionTools<SolrDocument>() {
-		
+	static final AutoCompletionTools<SolrDocument> solrTools = new AutoCompletionTools<SolrDocument>()
+	{
+
 		@Override
 		protected String getLabel(SolrDocument t) {
 			return t.getFieldValue("label").toString();
 		}
-		
+
 		@Override
 		protected String escape(String string) {
 			return ClientUtils.escapeQueryChars(string);
 		}
-	}; 
+	};
 
 	public SimpleSolrClient() {
 		// default server
@@ -56,7 +58,8 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return null;
 	}
 
-	protected List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount) {
+	protected List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount)
+	{
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
 		// escape query string of solr/lucene query syntax and create query
 		query = solrTools.preprocessQuery(query, null);
@@ -68,13 +71,12 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			// the same maximum score
 			Float maxScore = results.getMaxScore();
 			List<SolrDocument> solrDocuments = getDocumentsWithMaxScore(results, maxScore);
-			if (maxCount < 100 && solrDocuments.size() == maxCount
-					&& results.getNumFound() > maxCount) {
+			if (maxCount < 100 && solrDocuments.size() == maxCount && results.getNumFound() > maxCount) {
 				// assume there are even more hits with max score.
 				// need to fetch all (max 100), to re-rank the top hits
 				SolrDocumentList result2 = query(query, branch, server, maxCount, 100 - maxCount);
 				solrDocuments.addAll(getDocumentsWithMaxScore(result2, maxScore));
-				
+
 				// sort results by ascending label length
 				solrTools.sortbyLabelLength(solrDocuments);
 				if (solrDocuments.size() > maxCount) {
@@ -105,32 +107,38 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			Float score = (Float) solrDocument.getFieldValue("score");
 			if (score != null && Math.abs(maxScore.floatValue() - score.floatValue()) <= 0.0001f) {
 				documents.add(solrDocument);
-			} else {
+			}
+			else {
 				break;
 			}
 		}
 		return documents;
 	}
 
-	SolrDocumentList query(String query, String branch, CommonsHttpSolrServer server,
-			int start, int chunkSize) throws SolrServerException {
+	SolrDocumentList query(String query,
+			String branch,
+			CommonsHttpSolrServer server,
+			int start,
+			int chunkSize) throws SolrServerException
+	{
 		SolrQuery solrQuery = new SolrQuery().
-		// search for query  as literal string and as prefix
-		setQuery(query). 
+		// search for query as literal string and as prefix
+		setQuery(query). // query
 		setRows(chunkSize). // length
 		setStart(start). // offset
 		setParam("version", "2.2").
 		// include score in results
-		setParam("fl", "*,score"). 
+		setParam("fl", "*,score").
 		// search for ontology terms
-		addFilterQuery("document_category:ontology_class"); 
+		addFilterQuery("document_category:ontology_class");
 		if (branch != null) {
 			// search only for one branch
 			// (i.e. biological_process, molecular_function, cellular_component)
 			solrQuery.addFilterQuery("source:" + branch);
 		}
 		else {
-			// TODO hack the server contains also cell terms without a source info
+			// TODO hack the server contains also cell terms without a source
+			// info
 			solrQuery.addFilterQuery("source:(biological_process OR molecular_function OR cellular_component)");
 		}
 		QueryResponse rsp = server.query(solrQuery);
@@ -143,7 +151,7 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		final String label = solrDocument.getFieldValue("label").toString();
 		Object descObj = solrDocument.getFieldValue("description");
 		final String def = descObj != null ? descObj.toString() : null;
-		return new OntologyTerm.DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String>emptyMap(), null);
+		return new OntologyTerm.DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String> emptyMap(), null);
 	}
 
 	/**
@@ -157,9 +165,9 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 			System.out.println(term);
 		}
 		System.out.println("-----------------------------");
-		 List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm",null, 10);
-		 for (OntologyTerm term : terms2) {
-			 System.out.println(term);
-		 }
+		List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm", null, 10);
+		for (OntologyTerm term : terms2) {
+			System.out.println(term);
+		}
 	}
 }

@@ -28,13 +28,16 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	private final List<TermTemplate> templates;
 	private final Map<TermTemplate, Ontology[]> templateOntologyManagers;
 	private final MultiOntologyTaskManager multiOntologyTaskManager;
-	
+
 	// set to true, for debugging
 	private boolean printScript = false;
 	private final ReasonerFactory factory;
-	
+
 	@Inject
-	TermGenieScriptRunner(List<TermTemplate> templates, MultiOntologyTaskManager multiOntologyTaskManager, ReasonerFactory factory) {
+	TermGenieScriptRunner(List<TermTemplate> templates,
+			MultiOntologyTaskManager multiOntologyTaskManager,
+			ReasonerFactory factory)
+	{
 		super();
 		this.factory = factory;
 		this.jsEngineManager = new JSEngineManager();
@@ -55,7 +58,9 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	}
 
 	@Override
-	public List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks) {
+	public List<TermGenerationOutput> generateTerms(Ontology ontology,
+			List<TermGenerationInput> generationTasks)
+	{
 		if (ontology == null || generationTasks == null || generationTasks.isEmpty()) {
 			// do nothing
 			return null;
@@ -94,12 +99,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		}
 		return null;
 	}
-	
-	
+
 	/**
-	 * Create an id for a templat which is unique for this 
-	 * input during a single {@link #generateTerms(Ontology, List)} 
-	 * request.
+	 * Create an id for a templat which is unique for this input during a single
+	 * {@link #generateTerms(Ontology, List)} request.
 	 * 
 	 * @param template
 	 * @param count
@@ -119,18 +122,23 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	}
 
 	private final class GenerationTask extends MultiOntologyTask {
+
 		private final Ontology[] ontologies;
 		private final Ontology targetOntology;
 		private final String script;
 		private final TermGenerationInput input;
 		private final String templateId;
 		private final ReasonerFactory factory;
-		
-		List<TermGenerationOutput> result = null;
-		
-		
 
-		private GenerationTask(Ontology[] ontologies, Ontology targetOntology, TermGenerationInput input, String script, String templateId, ReasonerFactory factory) {
+		List<TermGenerationOutput> result = null;
+
+		private GenerationTask(Ontology[] ontologies,
+				Ontology targetOntology,
+				TermGenerationInput input,
+				String script,
+				String templateId,
+				ReasonerFactory factory)
+		{
 			this.ontologies = ontologies;
 			this.targetOntology = targetOntology;
 			this.input = input;
@@ -138,10 +146,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			this.templateId = templateId;
 			this.factory = factory;
 		}
-	
+
 		@Override
 		public List<Boolean> run(List<OWLGraphWrapper> requested) {
-			
+
 			try {
 				OWLGraphWrapper targetOntology = null;
 				ScriptEngine engine = jsEngineManager.getEngine();
@@ -164,15 +172,15 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				invocableEngine.invokeFunction("run");
 				result = functionsImpl.getResult();
 			} catch (ScriptException exception) {
-				result = createError("Error during script execution:\n"+exception.getMessage());
+				result = createError("Error during script execution:\n" + exception.getMessage());
 			} catch (ClassCastException exception) {
-				result = createError("Error, script did not return expected type:\n"+exception.getMessage());
+				result = createError("Error, script did not return expected type:\n" + exception.getMessage());
 			} catch (NoSuchMethodException exception) {
-				result = createError("Error, script did not contain expected method run:\n"+exception.getMessage());
+				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
 			}
 			return null;
 		}
-		
+
 		protected List<TermGenerationOutput> createError(String message) {
 			TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
 			return Collections.singletonList(error);
@@ -201,7 +209,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			}
 			writer.print(' ');
 			writer.println(script.substring(prev, pos));
-			
+
 			prev = pos + 1;
 			count += 1;
 		}
@@ -219,7 +227,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		writer.println();
 		writer.println();
 	}
-	
+
 	@Override
 	public List<TermTemplate> getAvailableTemplates() {
 		return templates;

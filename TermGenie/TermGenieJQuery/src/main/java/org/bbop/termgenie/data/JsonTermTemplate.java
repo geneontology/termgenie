@@ -3,8 +3,8 @@ package org.bbop.termgenie.data;
 import java.util.Arrays;
 
 /**
- * This class is required to map the internal representation of fields to an object which
- * can be serialized into JSON.
+ * This class is required to map the internal representation of fields to an
+ * object which can be serialized into JSON.
  */
 public class JsonTermTemplate {
 
@@ -26,8 +26,7 @@ public class JsonTermTemplate {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -41,13 +40,12 @@ public class JsonTermTemplate {
 	}
 
 	/**
-	 * @param fields
-	 *            the fields to set
+	 * @param fields the fields to set
 	 */
 	public void setFields(JsonTemplateField[] fields) {
 		this.fields = fields;
 	}
-	
+
 	/**
 	 * @return the hint
 	 */
@@ -90,7 +88,8 @@ public class JsonTermTemplate {
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -126,7 +125,7 @@ public class JsonTermTemplate {
 	}
 
 	public static class JsonTemplateField {
-		
+
 		private String name;
 		private boolean required;
 		private JsonCardinality cardinality;
@@ -142,10 +141,14 @@ public class JsonTermTemplate {
 		 * @param required
 		 * @param cardinality
 		 * @param functionalPrefixes
-		 * @param ontologies 
+		 * @param ontologies
 		 */
-		public JsonTemplateField(String name, boolean required, JsonCardinality cardinality,
-				String[] functionalPrefixes, String[] ontologies) {
+		public JsonTemplateField(String name,
+				boolean required,
+				JsonCardinality cardinality,
+				String[] functionalPrefixes,
+				String[] ontologies)
+		{
 			super();
 			this.name = name;
 			this.required = required;
@@ -162,8 +165,7 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param name
-		 *            the name to set
+		 * @param name the name to set
 		 */
 		public void setName(String name) {
 			this.name = name;
@@ -177,8 +179,7 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param required
-		 *            the required to set
+		 * @param required the required to set
 		 */
 		public void setRequired(boolean required) {
 			this.required = required;
@@ -192,8 +193,7 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param cardinality
-		 *            the cardinality to set
+		 * @param cardinality the cardinality to set
 		 */
 		public void setCardinality(JsonCardinality cardinality) {
 			this.cardinality = cardinality;
@@ -207,8 +207,7 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param functionalPrefixes
-		 *            the functionalPrefixes to set
+		 * @param functionalPrefixes the functionalPrefixes to set
 		 */
 		public void setFunctionalPrefixes(String[] functionalPrefixes) {
 			this.functionalPrefixes = functionalPrefixes;
@@ -227,8 +226,9 @@ public class JsonTermTemplate {
 		public void setOntologies(String[] ontologies) {
 			this.ontologies = ontologies;
 		}
-		
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
@@ -263,7 +263,7 @@ public class JsonTermTemplate {
 	}
 
 	public static class JsonCardinality {
-		
+
 		private int min;
 		private int max;
 
@@ -289,8 +289,7 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param min
-		 *            the min to set
+		 * @param min the min to set
 		 */
 		public void setMin(int min) {
 			this.min = min;
@@ -304,18 +303,18 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @param max
-		 *            the max to set
+		 * @param max the max to set
 		 */
 		public void setMax(int max) {
 			this.max = max;
 		}
-		
+
 		public boolean isUnique() {
 			return min == 1 && max == 1;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override

@@ -23,25 +23,29 @@ import org.semanticweb.owlapi.model.OWLObject;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber<OntologyChangeEvent> {
+public class BasicLuceneClient implements
+		OntologyTermSuggestor,
+		EventSubscriber<OntologyChangeEvent>
+{
 
 	private final String name;
 	private final List<String> roots;
 	private final List<Pair<String, List<String>>> branches;
 	private final ReasonerFactory factory;
-	
+
 	private LuceneMemoryOntologyIndex index;
 	private OWLGraphWrapper ontology;
-	
+
 	/**
-	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene memory index.
+	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene
+	 * memory index.
 	 * 
 	 * @param ontology
 	 * @param factory
 	 * @return new Instance of {@link BasicLuceneClient}
 	 */
 	public static BasicLuceneClient create(OntologyTaskManager ontology, ReasonerFactory factory) {
-		List<String> roots = ontology.getOntology().getRoots();	
+		List<String> roots = ontology.getOntology().getRoots();
 		List<Pair<String, List<String>>> branches = Collections.emptyList();
 		String branchName = ontology.getOntology().getBranch();
 		if (branchName != null & roots != null) {
@@ -52,14 +56,17 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 		String name = ontology.getOntology().getUniqueName();
 		return create(ontology, name, roots, branches, factory);
 	}
-	
+
 	/**
 	 * @param ontologies
 	 * @param manager
 	 * @param factory
 	 * @return new Instance of {@link BasicLuceneClient}
 	 */
-	public static BasicLuceneClient create(List<Ontology> ontologies, OntologyTaskManager manager, ReasonerFactory factory) {
+	public static BasicLuceneClient create(List<Ontology> ontologies,
+			OntologyTaskManager manager,
+			ReasonerFactory factory)
+	{
 		if (ontologies == null || ontologies.isEmpty()) {
 			throw new RuntimeException("At least one ontology is required to create an index.");
 		}
@@ -68,15 +75,15 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 		}
 		List<String> roots = null;
 		String name = null;
-		List<Pair<String, List<String>>> branches = new ArrayList<Pair<String,List<String>>>();
+		List<Pair<String, List<String>>> branches = new ArrayList<Pair<String, List<String>>>();
 		for (Ontology ontology : ontologies) {
 			if (name == null) {
 				name = ontology.getUniqueName();
 			}
-			else  {
+			else {
 				String cname = ontology.getUniqueName();
 				if (!name.equals(cname)) {
-					throw new RuntimeException("Error: Expected only one ontology group, but was: "+name+" and "+cname);
+					throw new RuntimeException("Error: Expected only one ontology group, but was: " + name + " and " + cname);
 				}
 			}
 			String branchName = ontology.getBranch();
@@ -91,18 +98,23 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 		}
 		return create(manager, name, roots, branches, factory);
 	}
-	
-	private static BasicLuceneClient create(OntologyTaskManager ontology, String name, List<String> roots, List<Pair<String, List<String>>> branches, ReasonerFactory factory) {
+
+	private static BasicLuceneClient create(OntologyTaskManager ontology,
+			String name,
+			List<String> roots,
+			List<Pair<String, List<String>>> branches,
+			ReasonerFactory factory)
+	{
 		BasicLuceneClient client = new BasicLuceneClient(name, roots, branches, factory);
 		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
 		ontology.runManagedTask(task);
 		return task.client;
 	}
-	
+
 	static class LuceneClientSetupTask implements OntologyTask {
 
 		BasicLuceneClient client = null;
-		
+
 		/**
 		 * @param client
 		 */
@@ -116,15 +128,19 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 			client.setup(managed);
 			return false;
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param name
 	 * @param roots
 	 * @param branches
 	 */
-	protected BasicLuceneClient(String name, List<String> roots, List<Pair<String,List<String>>> branches, ReasonerFactory factory) {
+	protected BasicLuceneClient(String name,
+			List<String> roots,
+			List<Pair<String, List<String>>> branches,
+			ReasonerFactory factory)
+	{
 		super();
 		this.name = name;
 		this.roots = roots;
@@ -145,7 +161,7 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 			throw new RuntimeException(exception);
 		}
 	}
-	
+
 	@Override
 	public void onEvent(OntologyChangeEvent event) {
 		// check if the changed ontology is the one used for this index
@@ -158,7 +174,9 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 	@Override
 	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if (this.name.equals(ontology.getUniqueName())) {
-			Collection<SearchResult> searchResults = index.search(query, maxCount, ontology.getBranch());
+			Collection<SearchResult> searchResults = index.search(query,
+					maxCount,
+					ontology.getBranch());
 			if (searchResults != null && !searchResults.isEmpty()) {
 				List<OntologyTerm> suggestions = new ArrayList<OntologyTerm>(searchResults.size());
 				for (SearchResult searchResult : searchResults) {
@@ -169,13 +187,13 @@ public class BasicLuceneClient implements OntologyTermSuggestor, EventSubscriber
 		}
 		return null;
 	}
-	
+
 	private OntologyTerm createTerm(OWLObject hit) {
 		final String identifier = ontology.getIdentifier(hit);
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
 		List<Synonym> synonyms = ontology.getOBOSynonyms(hit);
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String>emptyMap(), null);
+		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
 		return term;
 	}
 

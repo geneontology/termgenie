@@ -16,7 +16,8 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
 /**
- * Module which provides a {@link TermGenerationEngine}, using rules extracted from an external source. 
+ * Module which provides a {@link TermGenerationEngine}, using rules extracted
+ * from an external source.
  */
 public abstract class DynamicRulesModule extends IOCModule {
 
@@ -24,11 +25,13 @@ public abstract class DynamicRulesModule extends IOCModule {
 	protected void configure() {
 		bind(TermGenerationEngine.class).to(TermGenieScriptRunner.class);
 	}
-	
-	@Provides @Singleton
-	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO, 
+
+	@Provides
+	@Singleton
+	List<TermTemplate> providesTermTemplates(TermTemplateIO templateIO,
 			@Named("DynamicRulesTemplateResource") String templateResource,
-			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles) {
+			@Named("TryResourceLoadAsFiles") boolean tryResourceLoadAsFiles)
+	{
 		InputStream in = null;
 		try {
 			in = getResourceInputStream(templateResource, tryResourceLoadAsFiles);
@@ -41,6 +44,7 @@ public abstract class DynamicRulesModule extends IOCModule {
 		}
 	}
 
-	protected abstract InputStream getResourceInputStream(String templateResource, boolean tryResourceLoadAsFiles);
-	
+	protected abstract InputStream getResourceInputStream(String templateResource,
+			boolean tryResourceLoadAsFiles);
+
 }

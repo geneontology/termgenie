@@ -8,6 +8,9 @@ import org.bbop.termgenie.ontology.OntologyLoader;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+/**
+ * Module for commons tools in the TermGenie web application.
+ */
 public class TermGenieToolsModule extends IOCModule {
 
 	@Override
@@ -15,18 +18,24 @@ public class TermGenieToolsModule extends IOCModule {
 		// intentionally empty
 	}
 
-	@Provides @Singleton
-	OntologyTools provideOntologyTools(TermGenerationEngine engine, OntologyLoader loader, OntologyConfiguration configuration) {
+	@Provides
+	@Singleton
+	OntologyTools provideOntologyTools(TermGenerationEngine engine,
+			OntologyLoader loader,
+			OntologyConfiguration configuration)
+	{
 		return new OntologyTools(engine, loader, configuration);
 	}
-	
-	@Provides @Singleton
+
+	@Provides
+	@Singleton
 	OntologyCommitTool provideOntologyCommitTool() {
 		return new OntologyCommitTool();
 	}
-	
-	@Provides @Singleton
-	UserCredentialValidatorTools  provideUserCredentialValidatorTools() {
+
+	@Provides
+	@Singleton
+	UserCredentialValidatorTools provideUserCredentialValidatorTools() {
 		return new UserCredentialValidatorTools();
 	}
 }

@@ -18,7 +18,10 @@ public class MicrobialPhenotypePatterns extends Patterns {
 	private final OWLGraphWrapper pato;
 	private final OWLGraphWrapper omp;
 
-	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+	protected MicrobialPhenotypePatterns(List<OWLGraphWrapper> wrappers,
+			DefaultTermTemplates templates,
+			ReasonerFactory factory)
+	{
 		super(factory, templates.omp_entity_quality);
 		this.omp = wrappers.get(0);
 		this.go = wrappers.get(1);
@@ -26,15 +29,18 @@ public class MicrobialPhenotypePatterns extends Patterns {
 	}
 
 	@ToMatch
-	protected List<TermGenerationOutput> omp_entity_quality(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+	protected List<TermGenerationOutput> omp_entity_quality(TermGenerationInput input,
+			Map<String, OntologyTerm> pending)
+	{
 		OWLObject e = getSingleTerm(input, "entity", go);
 		OWLObject q = getSingleTerm(input, "quality", pato);
-		if (e == null ||  q == null) {
+		if (e == null || q == null) {
 			// check branch
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String label = createName(name(q, pato) + " of " + name(e, go), input);
-		String definition = createDefinition("Any "+name(q, pato)+" of "+name(e, go)+".", input);
+		String definition = createDefinition("Any " + name(q, pato) + " of " + name(e, go) + ".",
+				input);
 		List<Synonym> synonyms = null; // TODO
 		CDef cdef = new CDef(q, pato);
 		cdef.addDifferentium("OBO_REL:inheres_in", e, go);

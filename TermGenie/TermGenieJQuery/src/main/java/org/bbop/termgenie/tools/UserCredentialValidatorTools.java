@@ -8,12 +8,12 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class UserCredentialValidatorTools {
-	
+
 	@Inject
 	UserCredentialValidatorTools() {
 		super();
 	}
-	
+
 	/**
 	 * @param username
 	 * @param password

@@ -20,14 +20,14 @@ import org.junit.Test;
 public class SimpleSolrClientTest extends OntologyProvider {
 
 	private static SimpleSolrClient client;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		client = new SimpleSolrClient();
 	}
-	
+
 	/**
-	 *  Tests for {@link SimpleSolrClient#suggestTerms(String, Ontology, int)}.
+	 * Tests for {@link SimpleSolrClient#suggestTerms(String, Ontology, int)}.
 	 */
 	@Test
 	public void testSuggestTerms() {
@@ -41,7 +41,8 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	}
 
 	/**
-	 * Tests for {@link SimpleSolrClient#searchGeneOntologyTerms(String, String, int)}
+	 * Tests for
+	 * {@link SimpleSolrClient#searchGeneOntologyTerms(String, String, int)}
 	 */
 	@Test
 	public void testSearchGeneOntologyTerms() {
@@ -71,7 +72,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	static void assertEqualsLabel(String expected, SolrDocument document) {
 		assertEquals(expected, document.getFieldValue("label").toString());
 	}
-	
+
 	static SolrDocument createDoc(String label) {
 		SolrDocument doc = new SolrDocument();
 		doc.addField("label", label);

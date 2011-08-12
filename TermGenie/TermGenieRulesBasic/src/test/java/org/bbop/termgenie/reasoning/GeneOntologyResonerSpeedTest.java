@@ -45,7 +45,7 @@ public class GeneOntologyResonerSpeedTest {
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
 		OntologyTaskManager ontologyTaskManager = loader.getOntology(configuredOntology);
 		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {
-			
+
 			@Override
 			public boolean run(OWLGraphWrapper managed) {
 				wrapper = managed;
@@ -54,27 +54,27 @@ public class GeneOntologyResonerSpeedTest {
 		});
 		ontology = wrapper.getSourceOntology();
 	}
-	
+
 	@Test
 	public void testHermit() {
 		testReasoner(new Reasoner.ReasonerFactory(), "Hermit");
 	}
-	
+
 	@Test
 	public void testPellet() {
 		testReasoner(PelletReasonerFactory.getInstance(), "Pellet");
 	}
-	
+
 	@Test
 	public void testJCel() {
 		ReasonerTaskManager manager = new ReasonerTaskManager("TestReasonerManager-JCEL") {
-			
+
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner reasoner) {
 				// Do nothing
 				return reasoner;
 			}
-			
+
 			@Override
 			protected OWLReasoner createManaged() {
 				System.out.println("----------------------");
@@ -85,36 +85,37 @@ public class GeneOntologyResonerSpeedTest {
 				JcelReasonerProcessor processor = reasoner.getProcessor();
 				processor.precomputeInferences();
 				t0.stop();
-				System.out.println("precomputeInferences:    "+t0);
+				System.out.println("precomputeInferences:    " + t0);
 				return reasoner;
 			}
 		};
 		testReasoner(manager);
 	}
-	
+
 	private void testReasoner(final OWLReasonerFactory reasonerFactory, final String name) {
-		ReasonerTaskManager manager = new ReasonerTaskManager("TestReasonerManager-"+reasonerFactory.getReasonerName()) {
-			
+		ReasonerTaskManager manager = new ReasonerTaskManager("TestReasonerManager-" + reasonerFactory.getReasonerName())
+		{
+
 			@Override
 			protected OWLReasoner updateManaged(OWLReasoner reasoner) {
 				// Do nothing
 				return reasoner;
 			}
-			
+
 			@Override
 			protected OWLReasoner createManaged() {
 				System.out.println("----------------------");
-				System.out.println("Reasoner: "+name);
+				System.out.println("Reasoner: " + name);
 				return reasonerFactory.createNonBufferingReasoner(ontology);
 			}
 		};
 		testReasoner(manager);
 	}
-	
+
 	private void testReasoner(ReasonerTaskManager manager) {
-		
+
 		manager.runManagedTask(new ReasonerTaskManager.ReasonerTask() {
-			
+
 			@Override
 			public boolean run(OWLReasoner reasoner) {
 				StopWatch t1 = new StopWatch();
@@ -122,48 +123,53 @@ public class GeneOntologyResonerSpeedTest {
 				boolean isConsistent = reasoner.isConsistent();
 				t1.stop();
 				assertTrue(isConsistent);
-				
+
 				OWLClass superDescription = get("GO:0006915"); // apoptosis
-				OWLClass subDescriptionIsa = get("GO:0044346");// fibroblast apoptosis
-				OWLClass subDescriptionPartOf = get("GO:0070782"); // phosphatidylserine exposure on apoptotic cell surface
-				
+				OWLClass subDescriptionIsa = get("GO:0044346");// fibroblast
+																// apoptosis
+				OWLClass subDescriptionPartOf = get("GO:0070782"); // phosphatidylserine
+																	// exposure
+																	// on
+																	// apoptotic
+																	// cell
+																	// surface
+
 				StopWatch t2 = new StopWatch();
 				t2.start();
 				NodeSet<OWLClass> subClasses = reasoner.getSubClasses(superDescription, false);
 				t2.stop();
-				
+
 				StopWatch t3 = new StopWatch();
 				t3.start();
 				boolean containsIsa = subClasses.containsEntity(subDescriptionIsa);
 				boolean containsPartOf = subClasses.containsEntity(subDescriptionPartOf);
 				t3.stop();
-				
+
 				System.out.println(subClasses);
-				System.out.println("descendant isa: "+containsIsa);
-				System.out.println("descendant part of: "+containsPartOf);
-				
+				System.out.println("descendant isa: " + containsIsa);
+				System.out.println("descendant part of: " + containsPartOf);
+
 				StopWatch t4 = new StopWatch();
 				t4.start();
 				Node<OWLClass> topClassNode = reasoner.getTopClassNode();
 				t4.stop();
-				
+
 				System.out.println("\n Runtime");
-				System.out.println("isConsistent:    "+t1);
-				System.out.println("getSubClasses:   "+t2);
-				System.out.println("containsEntity:  "+t3);
-				System.out.println("getTopClassNode: "+t4);
+				System.out.println("isConsistent:    " + t1);
+				System.out.println("getSubClasses:   " + t2);
+				System.out.println("containsEntity:  " + t3);
+				System.out.println("getTopClassNode: " + t4);
 				System.out.println("----------------------");
-				
+
 				assertTrue(containsIsa);
 				assertFalse(containsPartOf);
 				assertTrue(topClassNode.getSize() > 0);
 				return false;
 			}
 		});
-		
-		
+
 	}
-	
+
 	private OWLClass get(String id) {
 		OWLObject x = wrapper.getOWLObjectByIdentifier(id);
 		if (x != null) {

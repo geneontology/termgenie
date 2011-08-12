@@ -18,7 +18,8 @@ public class FieldValidatorTool {
 
 	public static List<JsonValidationHint> validateParameters(TermTemplate template,
 			JsonTermTemplate jsonTemplate,
-			JsonTermGenerationParameter parameter) {
+			JsonTermGenerationParameter parameter)
+	{
 
 		List<TemplateField> fields = template.getFields();
 		List<JsonValidationHint> errors = new ArrayList<JsonValidationHint>();
@@ -29,7 +30,7 @@ public class FieldValidatorTool {
 
 			JsonOntologyTermIdentifier[] terms = getList(parameter.getTerms(), i);
 			String[] strings = getList(parameter.getStrings(), i);
-			
+
 			int termCount = terms == null ? 0 : terms.length;
 			int stringCount = strings == null ? 0 : strings.length;
 
@@ -38,15 +39,16 @@ public class FieldValidatorTool {
 				errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
 				continue;
 			}
-			
+
 			final boolean hasOntologies = hasOntologies(field);
 			if (hasOntologies && strings != null && stringCount > 0) {
 				if (hasPrefixes(field)) {
-					// check if strings correspond to the given prefixes in the template
+					// check if strings correspond to the given prefixes in the
+					// template
 					Set<String> prefixes = new HashSet<String>(field.getFunctionalPrefixes());
-					for(String string : strings) {
+					for (String string : strings) {
 						if (!prefixes.contains(string)) {
-							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix: "+string));
+							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix: " + string));
 						}
 					}
 				}
@@ -54,7 +56,7 @@ public class FieldValidatorTool {
 					errors.add(new JsonValidationHint(jsonTemplate, i, "Conflicting values (string and ontology term) for field"));
 				}
 			}
-			
+
 			int count = hasOntologies ? termCount : stringCount;
 
 			// assert minimum
@@ -96,15 +98,15 @@ public class FieldValidatorTool {
 		}
 		return null;
 	}
-	
+
 	private static boolean hasOntologies(TemplateField field) {
 		List<Ontology> ontologies = field.getCorrespondingOntologies();
 		return ontologies != null && !ontologies.isEmpty();
 	}
-	
+
 	private static boolean hasPrefixes(TemplateField field) {
 		List<String> prefixes = field.getFunctionalPrefixes();
 		return prefixes != null && !prefixes.isEmpty();
 	}
-	
+
 }

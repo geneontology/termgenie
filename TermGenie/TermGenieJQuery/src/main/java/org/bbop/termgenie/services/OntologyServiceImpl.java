@@ -20,7 +20,7 @@ public class OntologyServiceImpl implements OntologyService {
 
 	private final OntologyTools ontologyTools;
 	private final OntologyTermSuggestor suggestor;
-	
+
 	/**
 	 * @param ontologyTools
 	 * @param suggestor
@@ -38,19 +38,23 @@ public class OntologyServiceImpl implements OntologyService {
 	}
 
 	@Override
-	public JsonTermSuggestion[] autocomplete(String sessionId, String query, String[] ontologyNames, int max) {
+	public JsonTermSuggestion[] autocomplete(String sessionId,
+			String query,
+			String[] ontologyNames,
+			int max)
+	{
 		// sanity checks
-		if (query == null || query.length() <= 2  || ontologyNames == null || ontologyNames.length == 0) {
+		if (query == null || query.length() <= 2 || ontologyNames == null || ontologyNames.length == 0) {
 			return null;
 		}
 		if (max < 0 || max > 10) {
 			max = 10;
 		}
-		
+
 		List<JsonTermSuggestion> suggestions = new ArrayList<JsonTermSuggestion>();
-		
+
 		for (String ontologyName : ontologyNames) {
-			//  get ontology
+			// get ontology
 			Ontology ontology = ontologyTools.getOntology(ontologyName);
 			if (ontology == null) {
 				// unknown ontology, do nothing
@@ -77,11 +81,11 @@ public class OntologyServiceImpl implements OntologyService {
 		}
 		return suggestions.toArray(new JsonTermSuggestion[suggestions.size()]);
 	}
-	
+
 	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
 		JsonOntologyTermIdentifier identifier = new JsonOntologyTermIdentifier(ontologyName, term.getId());
-		return new JsonTermSuggestion(term.getLabel(), identifier , term.getDefinition(), getSynonyms(term));
+		return new JsonTermSuggestion(term.getLabel(), identifier, term.getDefinition(), getSynonyms(term));
 	}
 
 	private String[] getSynonyms(OntologyTerm term) {
@@ -89,13 +93,13 @@ public class OntologyServiceImpl implements OntologyService {
 		if (synonyms != null && !synonyms.isEmpty()) {
 			String[] strings = new String[synonyms.size()];
 			for (int i = 0; i < strings.length; i++) {
-				strings[i] =  synonyms.get(i).getLabel();
+				strings[i] = synonyms.get(i).getLabel();
 			}
 			return strings;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Merge two list by inserting it after the corresponding element in the
 	 * target list. See {@link OntologyServiceImplTest} for details.
@@ -120,7 +124,8 @@ public class OntologyServiceImpl implements OntologyService {
 		if (targetLength == insertLength) {
 			target.add(insert.remove(insertLength - 1));
 			insertLength = insert.size();
-		} else if (targetLength < insertLength) {
+		}
+		else if (targetLength < insertLength) {
 			int fromIndex = Math.max(0, insertLength - (insertLength - targetLength + 1));
 			List<T> subList = new ArrayList<T>(insert.subList(fromIndex, insertLength));
 			target.addAll(subList);

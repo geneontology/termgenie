@@ -19,23 +19,24 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * TODO Re-design this to allow pending IDs, which have a timeout and can be reused (a day later?).
+ * TODO Re-design this to allow pending IDs, which have a timeout and can be
+ * reused (a day later?).
  */
 @Singleton
 public class OntologyIdStore {
 
 	private static final Logger logger = Logger.getLogger(OntologyIdStore.class);
-	
+
 	/**
 	 * Create a new store with a given configuration and {@link EntityManager}.
 	 * The configuration is expected to be in the following format:
-	 * <ul> 
-	 *   <li>Each line represents one ontology</li>
-	 *   <li>A line a for fields, separated by tabulators</li>
-	 *   <li>Field 1: ontology name</li>
-	 *   <li>Field 2: id pattern</li>
-	 *   <li>Field 3: ID range start</li>
-	 *   <li>Field 4: ID range end</li>
+	 * <ul>
+	 * <li>Each line represents one ontology</li>
+	 * <li>A line a for fields, separated by tabulators</li>
+	 * <li>Field 1: ontology name</li>
+	 * <li>Field 2: id pattern</li>
+	 * <li>Field 3: ID range start</li>
+	 * <li>Field 4: ID range end</li>
 	 * </ul>
 	 * 
 	 * @param inputStream stream containing the configuration
@@ -53,7 +54,7 @@ public class OntologyIdStore {
 				lineCount += 1;
 				if (string.startsWith("#") || string.length() < 7) {
 					// ignore comments
-					// ignore line with too few chars 
+					// ignore line with too few chars
 					// (4 cols + 3 separators = 7 chars)
 					continue;
 				}
@@ -64,25 +65,38 @@ public class OntologyIdStore {
 					int start = Integer.parseInt(fields.get(2));
 					int max = Integer.parseInt(fields.get(3));
 					if (max <= start) {
-						error("Invalid configuration line #"+lineCount+": the start of the ID range must be smaller than the end: "+desc(ontologyName, start, max, pattern));
+						error("Invalid configuration line #" + lineCount + ": the start of the ID range must be smaller than the end: " + desc(ontologyName,
+								start,
+								max,
+								pattern));
 					}
-					
+
 					OntologyIdInfo info = getInfo(ontologyName, entityManager);
 					if (info != null) {
 						// check if content is consistent with stored info
 						int current = info.getCurrent();
 						if (current < start) {
-							error("Contradicting configuration line #"+lineCount+": current ID range start ("+current+") is smaller than the new configured one: "+desc(ontologyName, start, max, pattern));
-						} else if (current < start) {
+							error("Contradicting configuration line #" + lineCount + ": current ID range start (" + current + ") is smaller than the new configured one: " + desc(ontologyName,
+									start,
+									max,
+									pattern));
+						}
+						else if (current < start) {
 							info.setCurrent(start);
 						}
 						if (max != info.getMaximum()) {
 							// if different log message and update
-							warn("Contradicting configuration line #"+lineCount+": current ID range end ("+info.getMaximum()+") is different than the new configured one: "+desc(ontologyName, start, max, pattern));
+							warn("Contradicting configuration line #" + lineCount + ": current ID range end (" + info.getMaximum() + ") is different than the new configured one: " + desc(ontologyName,
+									start,
+									max,
+									pattern));
 							info.setMaximum(max);
 						}
 						if (!pattern.equals(info.getPattern())) {
-							warn("Contradicting configuration line #"+lineCount+": current ID range end ("+info.getPattern()+") is different than the new configured one: "+desc(ontologyName, start, max, pattern));
+							warn("Contradicting configuration line #" + lineCount + ": current ID range end (" + info.getPattern() + ") is different than the new configured one: " + desc(ontologyName,
+									start,
+									max,
+									pattern));
 							info.setPattern(pattern);
 						}
 					}
@@ -98,7 +112,7 @@ public class OntologyIdStore {
 				}
 				else {
 					// warn, skip line
-					warn("Skipping line #"+lineCount+" in configuration with unexpected number of fields: "+fields.size());
+					warn("Skipping line #" + lineCount + " in configuration with unexpected number of fields: " + fields.size());
 				}
 			}
 			entityManager.getTransaction().commit();
@@ -109,9 +123,9 @@ public class OntologyIdStore {
 		finally {
 			IOUtils.closeQuietly(inputStream);
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param ontology
 	 * @param entityManager
@@ -124,7 +138,7 @@ public class OntologyIdStore {
 		int maximum = info.getMaximum();
 		int next = current + 1;
 		if (next >= maximum) {
-			error("Upper limit ("+Integer.toString(maximum)+") of the ID range reached for ontology: "+ontology.getUniqueName());
+			error("Upper limit (" + Integer.toString(maximum) + ") of the ID range reached for ontology: " + ontology.getUniqueName());
 		}
 		info.setCurrent(next);
 		String pattern = info.getPattern();
@@ -132,16 +146,15 @@ public class OntologyIdStore {
 		entityManager.getTransaction().commit();
 		return nf.format(current);
 	}
-	
+
 	private OntologyIdInfo getInfo(Ontology ontology, EntityManager entityManager) {
 		return getInfo(ontology.getUniqueName(), entityManager);
 	}
-	
+
 	private OntologyIdInfo getInfo(String ontologyName, EntityManager entityManager) {
-		
-		TypedQuery<OntologyIdInfo> query = entityManager.createQuery(
-				"SELECT info FROM OntologyIdInfo info " +
-                "WHERE info.ontologyName = ?1", OntologyIdInfo.class);
+
+		TypedQuery<OntologyIdInfo> query = entityManager.createQuery("SELECT info FROM OntologyIdInfo info " + "WHERE info.ontologyName = ?1",
+				OntologyIdInfo.class);
 		query.setParameter(1, ontologyName);
 		List<OntologyIdInfo> results = query.getResultList();
 		if (results != null && !results.isEmpty()) {
@@ -150,9 +163,9 @@ public class OntologyIdStore {
 		}
 		return null;
 	}
-	
-	//--------------------- Helper methods and classes ---------------------
-	
+
+	// --------------------- Helper methods and classes ---------------------
+
 	/**
 	 * Create a description string for the given fields.
 	 * 
@@ -180,7 +193,7 @@ public class OntologyIdStore {
 	/*
 	 * helper to increase readbility of the code
 	 */
-	void warn (String message) {
+	void warn(String message) {
 		logger.warn(message);
 	}
 
@@ -199,8 +212,8 @@ public class OntologyIdStore {
 	}
 
 	/**
-	 * Provides a custom {@link RuntimeException} to allow optional handling 
-	 * of runtime errors, specific to this class. 
+	 * Provides a custom {@link RuntimeException} to allow optional handling of
+	 * runtime errors, specific to this class.
 	 */
 	public static class OntologyIdStoreException extends RuntimeException {
 
@@ -213,7 +226,7 @@ public class OntologyIdStore {
 		public OntologyIdStoreException(String message) {
 			super(message);
 		}
-		
+
 		/**
 		 * @param message
 		 * @param cause

@@ -18,32 +18,31 @@ import com.google.inject.Injector;
 public class ServiceExecutor {
 
 	private static volatile ServiceExecutor instance = null;
-	
+
 	private final JsonRpcExecutor executor;
-	
+
 	public static synchronized ServiceExecutor getInstance() {
 		if (instance == null) {
 			instance = new ServiceExecutor();
 		}
 		return instance;
 	}
-	
-	private ServiceExecutor() {
-		executor  = new JsonRpcExecutor();
-        Injector injector = TermGenieGuice.createInjector(
-        		new DefaultOntologyModule(),
-        		new DefaultXMLDynamicRulesModule(),
-        		new TermGenieToolsModule(),
-        		new TermGenieServiceModule(),
-        		new ReasonerModule());
 
-        add("generate", injector, GenerateTermsService.class);
-        add("ontology", injector, OntologyService.class);
-        add("commit", injector, TermCommitService.class);
-        add("user", injector, SessionHandler.class);
-		
-    }
-	
+	private ServiceExecutor() {
+		executor = new JsonRpcExecutor();
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
+				new DefaultXMLDynamicRulesModule(),
+				new TermGenieToolsModule(),
+				new TermGenieServiceModule(),
+				new ReasonerModule());
+
+		add("generate", injector, GenerateTermsService.class);
+		add("ontology", injector, OntologyService.class);
+		add("commit", injector, TermCommitService.class);
+		add("user", injector, SessionHandler.class);
+
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T> void add(String path, Injector injector, Class<T> c) {
 		executor.addHandler(path, injector.getInstance(c), c);
@@ -52,5 +51,5 @@ public class ServiceExecutor {
 	public void execute(JsonRpcServerTransport transport) {
 		executor.execute(transport);
 	}
-	
+
 }

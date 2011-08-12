@@ -10,8 +10,8 @@ public class JSEngineManager {
 	public JSEngineManager() {
 		manager = new ScriptEngineManager();
 	}
-	
+
 	public ScriptEngine getEngine() {
-		return manager.getEngineByName("js"); 
+		return manager.getEngineByName("js");
 	}
 }

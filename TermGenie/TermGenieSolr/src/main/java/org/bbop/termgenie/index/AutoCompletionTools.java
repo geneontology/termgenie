@@ -8,13 +8,13 @@ import java.util.List;
 /**
  * Tools for auto-completion.
  * 
- * @param <T> 
+ * @param <T>
  */
 public abstract class AutoCompletionTools<T> {
 
 	/**
-	 * Split the string into tokens using white spaces. 
-	 * Ignore multiple white spaces (begin, end, and in-between)
+	 * Split the string into tokens using white spaces. Ignore multiple white
+	 * spaces (begin, end, and in-between)
 	 * 
 	 * @param s
 	 * @return list of non-white space sub strings
@@ -23,7 +23,7 @@ public abstract class AutoCompletionTools<T> {
 		if (s.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
+
 		int start = -1;
 		for (int i = 0; i < s.length(); i++) {
 			if (!Character.isWhitespace(s.charAt(i))) {
@@ -53,9 +53,10 @@ public abstract class AutoCompletionTools<T> {
 		}
 		return tokens;
 	}
-	
+
 	/**
-	 * Pre-process the query String, return null, if no valid tokens are identified 
+	 * Pre-process the query String, return null, if no valid tokens are
+	 * identified
 	 * 
 	 * @param queryString
 	 * @param idField name of the ID Field
@@ -82,7 +83,7 @@ public abstract class AutoCompletionTools<T> {
 					subquery3.append(":\"");
 				}
 			}
-			else{
+			else {
 				subquery1.append(" AND ");
 				subquery2.append(' ');
 				if (idField != null) {
@@ -99,12 +100,12 @@ public abstract class AutoCompletionTools<T> {
 		subquery1.append(')');
 		subquery2.append("\"^2)");
 		subquery3.append("\")");
-		
+
 		if (charCount < 2) {
 			// at least two non-whitespace characters are required
 			return null;
 		}
-		
+
 		StringBuilder sb = new StringBuilder(subquery1);
 		sb.append(" OR ");
 		sb.append(subquery2);
@@ -114,9 +115,9 @@ public abstract class AutoCompletionTools<T> {
 		}
 		return sb.toString();
 	}
-	
+
 	protected abstract String escape(String string);
-	
+
 	public void sortbyLabelLength(List<T> documents) {
 		Collections.sort(documents, new Comparator<T>() {
 
@@ -130,10 +131,10 @@ public abstract class AutoCompletionTools<T> {
 			}
 		});
 	}
-	
+
 	public static boolean fEquals(float f1, float f2) {
 		return Math.abs(f1 - f2) < 0.0001f;
 	}
-	
+
 	protected abstract String getLabel(T t);
 }

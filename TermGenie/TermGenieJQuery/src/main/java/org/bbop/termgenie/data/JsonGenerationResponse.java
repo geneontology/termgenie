@@ -8,15 +8,18 @@ public class JsonGenerationResponse {
 	private String generalError;
 	private JsonValidationHint[] errors;
 	private JsonOntologyTerm[] generatedTerms;
-	
+
 	/**
 	 * Default constructor.
 	 */
 	public JsonGenerationResponse() {
 		super();
 	}
-	
-	public JsonGenerationResponse(String generalError, Collection<JsonValidationHint> errors, Collection<JsonOntologyTerm> terms) {
+
+	public JsonGenerationResponse(String generalError,
+			Collection<JsonValidationHint> errors,
+			Collection<JsonOntologyTerm> terms)
+	{
 		if (errors != null) {
 			this.errors = errors.toArray(new JsonValidationHint[errors.size()]);
 		}
@@ -25,7 +28,7 @@ public class JsonGenerationResponse {
 		}
 		this.generalError = generalError;
 	}
-	
+
 	/**
 	 * @return the errors
 	 */
@@ -68,7 +71,8 @@ public class JsonGenerationResponse {
 		this.generalError = generalError;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -92,6 +96,5 @@ public class JsonGenerationResponse {
 		builder.append("}");
 		return builder.toString();
 	}
-	
-	
+
 }

@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.bbop.termgenie.data.JsonOntologyTerm;
 
-
 public interface TermCommitService {
 
 //	/**
@@ -15,9 +14,9 @@ public interface TermCommitService {
 //	 * @return true, if the username and password are valid.
 //	 */
 //	public boolean isValidUser(String username, String password, String ontology);
-	
+
 	/**
-	 * Prepare the terms for export. 
+	 * Prepare the terms for export.
 	 * 
 	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
@@ -25,9 +24,10 @@ public interface TermCommitService {
 	 * @return {@link JsonExportResult}
 	 */
 	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
-	
+
 	/**
-	 * Commit the terms to the ontology. Retrieve the username and password from the session
+	 * Commit the terms to the ontology. Retrieve the username and password from
+	 * the session
 	 * 
 	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
@@ -35,13 +35,13 @@ public interface TermCommitService {
 	 * @return {@link JsonCommitResult}
 	 */
 	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
-	
-	
+
 	public static class JsonCommitResult {
+
 		private boolean success;
 		private String message;
 		private JsonOntologyTerm[] terms;
-		
+
 		public JsonCommitResult() {
 			super();
 		}
@@ -107,14 +107,14 @@ public interface TermCommitService {
 			return builder.toString();
 		}
 	}
-	
-	
+
 	public static class JsonExportResult {
+
 		private boolean success;
 		private String message;
 		private String[] formats;
 		private String[] contents;
-		
+
 		public JsonExportResult() {
 			super();
 		}

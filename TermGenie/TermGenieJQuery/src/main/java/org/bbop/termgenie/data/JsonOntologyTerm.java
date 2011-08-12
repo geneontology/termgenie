@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class JsonOntologyTerm {
-	
+
 	private String tempId;
 	private String label;
 	private String definition;
-	private JsonSynonym[] synonyms; 
+	private JsonSynonym[] synonyms;
 	private String[] defxRef;
 	private JsonTermRelation[] relations;
 	private JsonTermMetaData metaData;
-	
+
 	public JsonOntologyTerm() {
 		super();
 	}
@@ -100,7 +100,7 @@ public class JsonOntologyTerm {
 	public void setSynonyms(JsonSynonym[] synonyms) {
 		this.synonyms = synonyms;
 	}
-	
+
 	/**
 	 * @return the metaData
 	 */
@@ -115,7 +115,8 @@ public class JsonOntologyTerm {
 		this.metaData = metaData;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -157,61 +158,70 @@ public class JsonOntologyTerm {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 	public static class JsonSynonym {
+
 		private String label;
 		private String scope;
 		private String category;
 		private String[] xrefs;
+
 		/**
 		 * @return the label
 		 */
 		public String getLabel() {
 			return label;
 		}
+
 		/**
 		 * @param label the label to set
 		 */
 		public void setLabel(String label) {
 			this.label = label;
 		}
+
 		/**
 		 * @return the scope
 		 */
 		public String getScope() {
 			return scope;
 		}
+
 		/**
 		 * @param scope the scope to set
 		 */
 		public void setScope(String scope) {
 			this.scope = scope;
 		}
+
 		/**
 		 * @return the xrefs
 		 */
 		public String[] getXrefs() {
 			return xrefs;
 		}
+
 		/**
 		 * @param xrefs the xrefs to set
 		 */
 		public void setXrefs(String[] xrefs) {
 			this.xrefs = xrefs;
 		}
+
 		/**
 		 * @return the category
 		 */
 		public String getCategory() {
 			return category;
 		}
+
 		/**
 		 * @param category the category to set
 		 */
 		public void setCategory(String category) {
 			this.category = category;
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -241,10 +251,11 @@ public class JsonOntologyTerm {
 	}
 
 	public static class JsonTermRelation {
+
 		private String source;
 		private String target;
 		private String[] properties;
-		
+
 		public JsonTermRelation() {
 			super();
 		}
@@ -291,7 +302,8 @@ public class JsonOntologyTerm {
 			this.properties = properties;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
@@ -316,19 +328,21 @@ public class JsonOntologyTerm {
 			return builder.toString();
 		}
 	}
-	
+
 	public static class JsonTermMetaData {
+
 		private String created_by;
 		private String creation_date;
 		private String resource;
 		private String comment;
-		
+
 		/**
 		 * Default constructor
 		 */
 		public JsonTermMetaData() {
 			super();
 		}
+
 		public JsonTermMetaData(Map<String, String> metaData) {
 			this();
 			this.created_by = metaData.get("created_by");
@@ -336,55 +350,65 @@ public class JsonOntologyTerm {
 			this.resource = metaData.get("resource");
 			this.comment = metaData.get("comment");
 		}
+
 		/**
 		 * @return the created_by
 		 */
 		public String getCreated_by() {
 			return created_by;
 		}
+
 		/**
 		 * @param created_by the created_by to set
 		 */
 		public void setCreated_by(String created_by) {
 			this.created_by = created_by;
 		}
+
 		/**
 		 * @return the creation_date
 		 */
 		public String getCreation_date() {
 			return creation_date;
 		}
+
 		/**
 		 * @param creation_date the creation_date to set
 		 */
 		public void setCreation_date(String creation_date) {
 			this.creation_date = creation_date;
 		}
+
 		/**
 		 * @return the resource
 		 */
 		public String getResource() {
 			return resource;
 		}
+
 		/**
 		 * @param resource the resource to set
 		 */
 		public void setResource(String resource) {
 			this.resource = resource;
 		}
+
 		/**
 		 * @return the comment
 		 */
 		public String getComment() {
 			return comment;
 		}
+
 		/**
 		 * @param comment the comment to set
 		 */
 		public void setComment(String comment) {
 			this.comment = comment;
 		}
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
 		@Override

@@ -40,37 +40,42 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new DefaultDynamicRulesModule(), new DefaultOntologyModule(), new ReasonerModule());
-		
+		Injector injector = TermGenieGuice.createInjector(new DefaultDynamicRulesModule(),
+				new DefaultOntologyModule(),
+				new ReasonerModule());
+
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
 	}
-	
+
 	@Test
 	public void test1() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters(termTemplate.getFieldCount());
-		
+
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
-		
+
 		parameters.setTermValues(termTemplate, 0, getTerm("GO:0043473", ontologyManager));
-		parameters.setStringValues(termTemplate, 0, "regulation", "negative_regulation", "positive_regulation");
-		
-		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters );
+		parameters.setStringValues(termTemplate,
+				0,
+				"regulation",
+				"negative_regulation",
+				"positive_regulation");
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
-		
+
 		assertNotNull(list);
 		assertEquals(3, list.size());
-		
+
 		assertEquals("regulation of pigmentation", list.get(0).getTerm().getLabel());
 		assertEquals("negative regulation of pigmentation", list.get(1).getTerm().getLabel());
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getLabel());
 	}
-	
-	
+
 	private OntologyTerm getTerm(String id, OntologyTaskManager ontologyManager) {
 		OntologyTaskImplementation task = new OntologyTaskImplementation(id);
 		ontologyManager.runManagedTask(task);
@@ -78,9 +83,10 @@ public class TermGenieScriptTestRunner {
 	}
 
 	private final class OntologyTaskImplementation implements OntologyTask {
+
 		private DefaultOntologyTerm term = null;
 		private final String id;
-	
+
 		/**
 		 * @param id
 		 */

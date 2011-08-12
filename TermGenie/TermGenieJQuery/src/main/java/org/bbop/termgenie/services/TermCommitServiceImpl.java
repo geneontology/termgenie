@@ -30,9 +30,9 @@ import owltools.graph.OWLGraphWrapper;
 public class TermCommitServiceImpl implements TermCommitService {
 
 	private static final Logger logger = Logger.getLogger(TermCommitServiceImpl.class);
-	
+
 	private final OntologyTools ontologyTools;
-	
+
 	/**
 	 * @param ontologyTools
 	 */
@@ -43,13 +43,16 @@ public class TermCommitServiceImpl implements TermCommitService {
 	}
 
 	@Override
-	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontologyName) {
+	public JsonExportResult exportTerms(String sessionId,
+			JsonOntologyTerm[] terms,
+			String ontologyName)
+	{
 		JsonExportResult result = new JsonExportResult();
-		
+
 		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
 		if (manager == null) {
 			result.setSuccess(false);
-			result.setMessage("Unknown ontology: "+ontologyName);
+			result.setMessage("Unknown ontology: " + ontologyName);
 			return result;
 		}
 		String ontologyIdPrefix = getOntologyIdPrefix(manager);
@@ -57,14 +60,14 @@ public class TermCommitServiceImpl implements TermCommitService {
 		OBODoc doc = new OBODoc();
 		doc.setHeaderFrame(new Frame(FrameType.HEADER));
 		for (JsonOntologyTerm term : terms) {
-			final Frame frame  = new Frame(FrameType.TERM);
-			
+			final Frame frame = new Frame(FrameType.TERM);
+
 			// id
 			frame.setId(createFakeId(ontologyIdPrefix, count));
-			
+
 			// name
 			addClause(frame, OboFormatTag.TAG_NAME, term.getLabel());
-			
+
 			// definition
 			Clause defClause = create(OboFormatTag.TAG_DEF, term.getDefinition());
 			frame.addClause(defClause);
@@ -94,7 +97,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 					frame.addClause(synClause);
 				}
 			}
-			
+
 			// relations
 			JsonTermRelation[] relations = term.getRelations();
 			if (relations != null) {
@@ -102,24 +105,23 @@ public class TermCommitServiceImpl implements TermCommitService {
 					// TODO write relations
 				}
 			}
-			
+
 			// meta data
 			JsonTermMetaData metaData = term.getMetaData();
 			addClause(frame, OboFormatTag.TAG_COMMENT, metaData.getComment());
 			addClause(frame, OboFormatTag.TAG_CREATED_BY, metaData.getCreated_by());
 			addClause(frame, OboFormatTag.TAG_CREATION_DATE, metaData.getCreation_date());
-			
-			
+
 			try {
 				doc.addTermFrame(frame);
 			} catch (FrameMergeException exception) {
 				result.setSuccess(false);
-				result.setMessage("Could not create OBO export: "+exception.getMessage());
+				result.setMessage("Could not create OBO export: " + exception.getMessage());
 				return result;
 			}
 			count += 1;
 		}
-		
+
 		OBOFormatWriter writer = new OBOFormatWriter();
 		try {
 			StringWriter stringWriter = new StringWriter();
@@ -127,28 +129,28 @@ public class TermCommitServiceImpl implements TermCommitService {
 			writer.write(doc, bwriter);
 			bwriter.close();
 			result.setSuccess(true);
-			result.setFormats(new String[]{"OBO"});
-			result.setContents(new String[]{stringWriter.getBuffer().toString()});
+			result.setFormats(new String[] { "OBO" });
+			result.setContents(new String[] { stringWriter.getBuffer().toString() });
 			// TODO add OWL export support
 			return result;
 		} catch (IOException exception) {
 			logger.error("Could not create export results.", exception);
 			result.setSuccess(false);
-			result.setMessage("Could not write OBO export: "+exception.getMessage());
+			result.setMessage("Could not write OBO export: " + exception.getMessage());
 			return result;
 		}
 	}
-	
+
 	private void addClause(Frame frame, OboFormatTag tag, String value) {
 		if (value != null && !value.isEmpty()) {
 			frame.addClause(create(tag, value));
 		}
 	}
-	
+
 	private Clause create(OboFormatTag tag, String value) {
 		return new Clause(tag.toString(), value);
 	}
-	
+
 	private String createFakeId(String prefix, int count) {
 		StringBuilder sb = new StringBuilder(prefix);
 		sb.append(":fake");
@@ -161,16 +163,17 @@ public class TermCommitServiceImpl implements TermCommitService {
 		sb.append(count);
 		return sb.toString();
 	}
-	
+
 	private String getOntologyIdPrefix(OntologyTaskManager manager) {
 		LocalTask task = new LocalTask();
 		manager.runManagedTask(task);
 		return task.id;
 	}
-	
+
 	private final class LocalTask implements OntologyTask {
+
 		String id = null;
-	
+
 		@Override
 		public boolean run(OWLGraphWrapper managed) {
 			id = managed.getOntologyId();
@@ -179,7 +182,8 @@ public class TermCommitServiceImpl implements TermCommitService {
 	}
 
 	@Override
-	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology) {
+	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology)
+	{
 		JsonCommitResult result = new JsonCommitResult();
 		result.setSuccess(false);
 		result.setMessage("The commit operation is not yet implemented.");

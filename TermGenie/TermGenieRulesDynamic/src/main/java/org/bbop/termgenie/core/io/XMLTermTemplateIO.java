@@ -22,9 +22,11 @@ public class XMLTermTemplateIO implements TermTemplateIO {
 		reader = new XMLTermTemplateIOReader(ontologyConfiguration);
 		writer = new XMLTermTemplateIOWriter();
 	}
-	
+
 	@Override
-	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) throws IOException {
+	public void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream)
+			throws IOException
+	{
 		writer.writeTemplates(templates, outputStream);
 	}
 

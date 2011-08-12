@@ -13,17 +13,17 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class OntologyCommitTool {
-	
+
 	@Inject
 	OntologyCommitTool() {
 		super();
 	}
-	
+
 	/**
+	 * TODO modify return value, boolean is too simple.
+	 * 
 	 * @param ontology
 	 * @param candidates
-	 * 
-	 * TODO decide on return value, boolean is too simple.
 	 * @return boolean
 	 */
 	public boolean commitCandidates(Ontology ontology, List<TermGenerationOutput> candidates) {

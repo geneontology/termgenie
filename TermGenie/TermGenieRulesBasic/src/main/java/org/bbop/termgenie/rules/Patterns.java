@@ -25,29 +25,31 @@ import owltools.graph.OWLGraphWrapper;
 class Patterns extends BasicRules {
 
 	private final Map<String, Method> methods;
-	
+
 	protected Patterns(ReasonerFactory factory, TermTemplate...templates) {
 		super(factory);
 		methods = new HashMap<String, Method>();
-	    for(Method method : getClass().getDeclaredMethods()) {
+		for (Method method : getClass().getDeclaredMethods()) {
 			if (method.isAnnotationPresent(ToMatch.class)) {
 				String name = method.getName();
 				methods.put(name, method);
 			}
-	    }
-	    checkAvailablePatterns(templates);
+		}
+		checkAvailablePatterns(templates);
 	}
-	
+
 	private void checkAvailablePatterns(TermTemplate...templates) {
 		for (TermTemplate termTemplate : templates) {
 			Method method = methods.get(termTemplate.getName());
 			if (method == null) {
-				throw new RuntimeException("No implementation found for template: "+termTemplate.getName());
+				throw new RuntimeException("No implementation found for template: " + termTemplate.getName());
 			}
 		}
 	}
-	
-	public final List<TermGenerationOutput> generateTerms(Ontology ontology, List<TermGenerationInput> generationTasks) {
+
+	public final List<TermGenerationOutput> generateTerms(Ontology ontology,
+			List<TermGenerationInput> generationTasks)
+	{
 		List<TermGenerationOutput> result = new ArrayList<TermGenerationOutput>();
 		Map<String, OntologyTerm> pending = new HashMap<String, OntologyTerm>();
 		for (TermGenerationInput input : generationTasks) {
@@ -58,7 +60,7 @@ class Patterns extends BasicRules {
 		}
 		return result;
 	}
-	
+
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ToMatch {
@@ -66,12 +68,16 @@ class Patterns extends BasicRules {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<TermGenerationOutput> generate(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+	private List<TermGenerationOutput> generate(TermGenerationInput input,
+			Map<String, OntologyTerm> pending)
+	{
 		TermTemplate template = input.getTermTemplate();
 		Method method = methods.get(template.getName());
 		if (method != null) {
 			try {
-				List<TermGenerationOutput> output = (List<TermGenerationOutput>) method.invoke(this, input, pending);
+				List<TermGenerationOutput> output = (List<TermGenerationOutput>) method.invoke(this,
+						input,
+						pending);
 				return output;
 			} catch (IllegalArgumentException exception) {
 				throw new RuntimeException(exception);
@@ -83,9 +89,12 @@ class Patterns extends BasicRules {
 		}
 		return null;
 	}
-	
-	protected OWLObject getSingleTerm(TermGenerationInput input, String name, OWLGraphWrapper...ontologies) {
-		String id = getFieldSingleTerm(input, name).getId(); 
+
+	protected OWLObject getSingleTerm(TermGenerationInput input,
+			String name,
+			OWLGraphWrapper...ontologies)
+	{
+		String id = getFieldSingleTerm(input, name).getId();
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
 				OWLObject x = getTermSimple(id, ontology);
@@ -94,10 +103,13 @@ class Patterns extends BasicRules {
 				}
 			}
 		}
-		return null ;
+		return null;
 	}
-	
-	protected List<OWLObject> getListTerm(TermGenerationInput input, String name, OWLGraphWrapper ontology) {
+
+	protected List<OWLObject> getListTerm(TermGenerationInput input,
+			String name,
+			OWLGraphWrapper ontology)
+	{
 		List<OntologyTerm> terms = getFieldTermList(input, name);
 		if (terms == null || terms.isEmpty()) {
 			return Collections.emptyList();
@@ -113,5 +125,5 @@ class Patterns extends BasicRules {
 		}
 		return result;
 	}
-	
+
 }

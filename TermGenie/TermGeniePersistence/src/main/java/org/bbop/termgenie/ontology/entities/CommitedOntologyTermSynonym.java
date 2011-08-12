@@ -11,18 +11,18 @@ import javax.persistence.Id;
 import org.apache.openjpa.persistence.PersistentCollection;
 
 public class CommitedOntologyTermSynonym {
-	
+
 	private int id;
 	private String label;
 	private String scope;
 	private String category;
-	private Set<String>  xrefs;
+	private Set<String> xrefs;
 
 	/**
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
@@ -37,8 +37,8 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the label
 	 */
-	@Column(length=Integer.MAX_VALUE)
-	@Basic(optional=false)
+	@Column(length = Integer.MAX_VALUE)
+	@Basic(optional = false)
 	public String getLabel() {
 		return label;
 	}
@@ -54,7 +54,7 @@ public class CommitedOntologyTermSynonym {
 	 * @return the scope
 	 */
 	@Column
-	@Basic(optional=true)
+	@Basic(optional = true)
 	public String getScope() {
 		return scope;
 	}
@@ -70,7 +70,7 @@ public class CommitedOntologyTermSynonym {
 	 * @return the category
 	 */
 	@Column
-	@Basic(optional=true)
+	@Basic(optional = true)
 	public String getCategory() {
 		return category;
 	}

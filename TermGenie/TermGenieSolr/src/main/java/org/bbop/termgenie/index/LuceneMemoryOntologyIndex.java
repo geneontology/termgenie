@@ -56,13 +56,13 @@ import com.google.inject.Injector;
 public class LuceneMemoryOntologyIndex implements Closeable {
 
 	private static final Logger logger = Logger.getLogger(LuceneMemoryOntologyIndex.class);
-	
+
 	private static final Version version = Version.LUCENE_33;
 	private static final String DEFAULT_FIELD = "label";
 	private static final String BRANCH_FIELD = "branch";
 	private static final String ID_FIELD = "id";
 	private static final FieldSelector FIELD_SELECTOR = new FieldSelector() {
-		
+
 		private static final long serialVersionUID = 139300915748750525L;
 
 		@Override
@@ -74,24 +74,25 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			return FieldSelectorResult.NO_LOAD;
 		}
 	};
-	
-	private final AutoCompletionTools<SearchResult> tools = new AutoCompletionTools<SearchResult>() {
-		
+
+	private final AutoCompletionTools<SearchResult> tools = new AutoCompletionTools<SearchResult>()
+	{
+
 		@Override
 		protected String getLabel(SearchResult t) {
 			return ontology.getLabel(t.hit);
 		}
-		
+
 		@Override
 		protected String escape(String string) {
 			return QueryParser.escape(string);
 		}
 	};
-	
+
 	private final OWLGraphWrapper ontology;
 	private final Analyzer analyzer;
 	private final IndexSearcher searcher;
-	
+
 	/**
 	 * @param ontology
 	 * @param roots
@@ -99,7 +100,11 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	 * @param reasonerFactory
 	 * @throws IOException
 	 */
-	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology, List<String> roots, List<Pair<String,List<String>>> branches, ReasonerFactory reasonerFactory) throws IOException {
+	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology,
+			List<String> roots,
+			List<Pair<String, List<String>>> branches,
+			ReasonerFactory reasonerFactory) throws IOException
+	{
 		super();
 		if (logger.isInfoEnabled()) {
 			StringBuilder message = new StringBuilder();
@@ -111,7 +116,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			if (branches != null && !branches.isEmpty()) {
 				message.append(" Branches: ");
-				for(Pair<String, List<String>> branch : branches) {
+				for (Pair<String, List<String>> branch : branches) {
 					message.append(" (");
 					message.append(branch.getOne());
 					message.append(",");
@@ -119,10 +124,10 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					message.append(") ");
 				}
 			}
-			logger.info(message.toString());	
+			logger.info(message.toString());
 		}
 		this.ontology = ontology;
-		
+
 		Map<String, Analyzer> alternatives = new HashMap<String, Analyzer>();
 		WhitespaceAnalyzer whitespaceAnalyzer = new WhitespaceAnalyzer(version);
 		alternatives.put(ID_FIELD, whitespaceAnalyzer);
@@ -130,7 +135,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			alternatives.put(BRANCH_FIELD, whitespaceAnalyzer);
 		}
 		analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(version), alternatives);
-		
+
 		RAMDirectory directory = new RAMDirectory();
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
 		IndexWriter writer = new IndexWriter(directory, conf);
@@ -142,7 +147,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		else {
 			allOWLObjects = getDecendantsReflexive(roots, taskManager);
 		}
-		
+
 		BranchInfos branchInfos = null;
 		if (branches != null) {
 			branchInfos = new BranchInfos();
@@ -157,7 +162,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		}
 		int npeCounter = 0;
 		int obsoleteCounter = 0;
-		
+
 		for (OWLObject owlObject : allOWLObjects) {
 			boolean isObsolete = this.ontology.getIsObsolete(owlObject);
 			if (isObsolete) {
@@ -166,7 +171,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			String value = this.ontology.getLabel(owlObject);
 			if (value != null) {
-				Document doc  = new Document();
+				Document doc = new Document();
 				doc.add(new Field(DEFAULT_FIELD, value, Store.NO, Index.ANALYZED));
 				try {
 					String identifier = this.ontology.getIdentifier(owlObject);
@@ -174,57 +179,58 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					if (branchInfos != null && branchInfos.isValid()) {
 						List<String> brancheNames = branchInfos.getBranches(owlObject);
 						if (!brancheNames.isEmpty()) {
-							for(String branchName : brancheNames) {
-								doc.add(new Field(BRANCH_FIELD, branchName, Store.NO,
-										Index.NOT_ANALYZED));
+							for (String branchName : brancheNames) {
+								doc.add(new Field(BRANCH_FIELD, branchName, Store.NO, Index.NOT_ANALYZED));
 							}
 						}
 					}
 					writer.addDocument(doc);
 				} catch (NullPointerException exception) {
 					npeCounter += 1;
-					logger.error("NPE for getting an ID for: "+owlObject);
+					logger.error("NPE for getting an ID for: " + owlObject);
 				}
 			}
-						
+
 		}
-		
+
 		writer.optimize();
 		writer.close();
-		
+
 		searcher = new IndexSearcher(directory);
 		if (logger.isInfoEnabled()) {
-			logger.info("Finished creating index for: "+ontology.getOntologyId());
+			logger.info("Finished creating index for: " + ontology.getOntologyId());
 			if (branchInfos != null && branchInfos.isValid()) {
 				logger.info(branchInfos.createSummary());
 			}
 			if (obsoleteCounter > 0) {
-				logger.info("Skipped "+obsoleteCounter+" obsolete terms during index creation");
+				logger.info("Skipped " + obsoleteCounter + " obsolete terms during index creation");
 			}
 			if (npeCounter > 0) {
-				logger.info("During the index creation there were "+npeCounter+" NPEs");
+				logger.info("During the index creation there were " + npeCounter + " NPEs");
 			}
 		}
 	}
 
-	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology, ReasonerFactory reasonerFactory) {
+	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology,
+			ReasonerFactory reasonerFactory)
+	{
 		return reasonerFactory.getDefaultTaskManager(ontology);
 	}
-	
+
 	private class BranchInfos {
+
 		List<String> names = new ArrayList<String>();
 		List<Set<OWLObject>> objects = new ArrayList<Set<OWLObject>>();
 		int[] objectsCounts = null;
-		
+
 		void add(String name, Set<OWLObject> objects) {
 			if (objects != null && !objects.isEmpty()) {
 				names.add(name);
 				this.objects.add(objects);
-				logger.info("Found branch " + name + " with " + 
-						objects.size() + " terms.");
+				logger.info("Found branch " + name + " with " + objects.size() + " terms.");
 			}
 		}
-		
+
 		void setup() {
 			int length = names.size();
 			objectsCounts = new int[length];
@@ -232,12 +238,11 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				objectsCounts[i] = 0;
 			}
 		}
-		
+
 		boolean isValid() {
-			return !names.isEmpty() && objects.size() == names.size()
-			 && objectsCounts != null && objectsCounts.length == objects.size();
+			return !names.isEmpty() && objects.size() == names.size() && objectsCounts != null && objectsCounts.length == objects.size();
 		}
-		
+
 		List<String> getBranches(OWLObject x) {
 			List<String> branches = new ArrayList<String>(3);
 			for (int i = 0; i < names.size(); i++) {
@@ -253,7 +258,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			return Collections.emptyList();
 		}
-		
+
 		String createSummary() {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < objectsCounts.length; i++) {
@@ -267,15 +272,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			return sb.toString();
 		}
-		
+
 	}
-	
-	private Set<OWLObject> getDecendantsReflexive(List<String> ids, ReasonerTaskManager taskManager) {
+
+	private Set<OWLObject> getDecendantsReflexive(List<String> ids, ReasonerTaskManager taskManager)
+	{
 		Set<OWLObject> result = new HashSet<OWLObject>();
-		for(String id : ids) {
+		for (String id : ids) {
 			OWLObject x = this.ontology.getOWLObjectByIdentifier(id);
 			if (x == null) {
-				throw new RuntimeException("Error: could not find term with id: "+id);
+				throw new RuntimeException("Error: could not find term with id: " + id);
 			}
 			result.add(x);
 			Collection<OWLObject> owlObjects = taskManager.getDescendants(x, this.ontology);
@@ -283,14 +289,14 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				for (OWLObject owlObject : owlObjects) {
 					if (!owlObject.isBottomEntity() && !owlObject.isTopEntity()) {
 						result.add(owlObject);
-					}	
+					}
 				}
-				
+
 			}
 		}
 		return result;
 	}
-	
+
 	public Collection<SearchResult> search(String queryString, int maxCount, String branch) {
 		try {
 			if (queryString == null || queryString.isEmpty() || maxCount < 1) {
@@ -308,7 +314,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				// do not search for strings with no tokens
 				return Collections.emptyList();
 			}
-			
+
 			QueryParser p = new QueryParser(version, DEFAULT_FIELD, analyzer);
 			if (branch != null) {
 				StringBuilder sb = new StringBuilder();
@@ -325,7 +331,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			if (topDocs.totalHits == 0) {
 				return Collections.emptyList();
 			}
-			
+
 			boolean rerank = false;
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			float maxScore = topDocs.getMaxScore();
@@ -338,15 +344,15 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					scoreDocs = topDocs.scoreDocs;
 				}
 			}
-			
+
 			List<SearchResult> results = new ArrayList<SearchResult>(scoreDocs.length);
-			
+
 			for (ScoreDoc scoreDoc : scoreDocs) {
 				Document doc = searcher.doc(scoreDoc.doc, FIELD_SELECTOR);
 				String id = doc.get("id");
 				OWLObject owlObject = ontology.getOWLObjectByIdentifier(id);
 				if (owlObject != null) {
-					if (!rerank || fEquals(maxScore, scoreDoc.score) ) {
+					if (!rerank || fEquals(maxScore, scoreDoc.score)) {
 						results.add(new SearchResult(owlObject, scoreDoc.score));
 					}
 				}
@@ -363,12 +369,12 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		}
 		return Collections.emptyList();
 	}
-	
+
 	public static class SearchResult {
-		
+
 		public final OWLObject hit;
 		public final float score;
-		
+
 		/**
 		 * @param hit
 		 * @param score
@@ -381,14 +387,15 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	}
 
 	public static void main(String[] args) {
-		
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
+				new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
 		final ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
-		
-		ontology.runManagedTask(new OntologyTask(){
+
+		ontology.runManagedTask(new OntologyTask() {
 
 			@Override
 			public boolean run(OWLGraphWrapper managed) {
@@ -398,14 +405,14 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 					for (SearchResult searchResult : results) {
 						String id = managed.getIdentifier(searchResult.hit);
 						String label = managed.getLabel(searchResult.hit);
-						System.out.println(id+"  "+searchResult.score+"  "+label);	
+						System.out.println(id + "  " + searchResult.score + "  " + label);
 					}
 					return false;
 				} catch (IOException exception) {
 					throw new RuntimeException(exception);
-				}				
+				}
 			}
-			
+
 		});
 	}
 

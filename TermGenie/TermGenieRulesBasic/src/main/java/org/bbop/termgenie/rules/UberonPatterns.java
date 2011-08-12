@@ -16,13 +16,18 @@ public class UberonPatterns extends Patterns {
 
 	private final OWLGraphWrapper uberon;
 
-	protected UberonPatterns(List<OWLGraphWrapper> wrappers, DefaultTermTemplates templates, ReasonerFactory factory) {
+	protected UberonPatterns(List<OWLGraphWrapper> wrappers,
+			DefaultTermTemplates templates,
+			ReasonerFactory factory)
+	{
 		super(factory, templates.metazoan_location_specific_anatomical_structure);
 		this.uberon = wrappers.get(0);
 	}
 
 	@ToMatch
-	protected List<TermGenerationOutput> metazoan_location_specific_anatomical_structure(TermGenerationInput input, Map<String, OntologyTerm> pending) {
+	protected List<TermGenerationOutput> metazoan_location_specific_anatomical_structure(TermGenerationInput input,
+			Map<String, OntologyTerm> pending)
+	{
 		OWLObject p = getSingleTerm(input, "part", uberon);
 		OWLObject w = getSingleTerm(input, "whole", uberon);
 		if (p == null || w == null) {
@@ -30,7 +35,9 @@ public class UberonPatterns extends Patterns {
 			return error("The specified terms do not correspond to the pattern", input);
 		}
 		String label = createName(name(w, uberon) + " " + name(p, uberon), input);
-		String definition = createDefinition("Any "+name(p, uberon)+" that is part of a "+name(w, uberon)+".", input);
+		String definition = createDefinition("Any " + name(p, uberon) + " that is part of a " + name(w,
+				uberon) + ".",
+				input);
 		List<Synonym> synonyms = synonyms(null, p, uberon, " of ", w, uberon, null, label);
 		CDef logicalDefinition = new CDef(p, uberon);
 		logicalDefinition.addDifferentium("part_of", w, uberon);

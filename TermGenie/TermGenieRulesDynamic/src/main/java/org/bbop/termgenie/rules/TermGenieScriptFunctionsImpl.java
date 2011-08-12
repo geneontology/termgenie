@@ -28,7 +28,7 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * An implementation of functions for the termgenie scripting environment. 
+ * An implementation of functions for the termgenie scripting environment.
  * Hiding the results in an internal variable, allows type safe retrieval.
  */
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
@@ -38,37 +38,41 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	private final OWLGraphWrapper targetOntology;
 	private final String patternID;
 	private int count = 0;
-	
+
 	private List<TermGenerationOutput> result;
-	
+
 	/**
 	 * @param input
 	 * @param targetOntology
 	 * @param patternID
 	 * @param factory
 	 */
-	TermGenieScriptFunctionsImpl(TermGenerationInput input, OWLGraphWrapper targetOntology, String patternID, ReasonerFactory factory) {
+	TermGenieScriptFunctionsImpl(TermGenerationInput input,
+			OWLGraphWrapper targetOntology,
+			String patternID,
+			ReasonerFactory factory)
+	{
 		super();
 		this.input = input;
 		this.targetOntology = targetOntology;
 		this.patternID = patternID;
 		this.factory = factory;
 	}
-	
+
 	private String getNewId() {
 		String id = patternID + count;
 		count += 1;
 		return id;
 	}
-	
+
 	@Override
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper ontology) {
-		return getSingleTerm(name, new OWLGraphWrapper[]{ontology});
+		return getSingleTerm(name, new OWLGraphWrapper[] { ontology });
 	}
-	
+
 	@Override
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper[] ontologies) {
-		String id = getFieldSingleTerm(name).getId(); 
+		String id = getFieldSingleTerm(name).getId();
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
 				OWLObject x = getTermSimple(id, ontology);
@@ -79,14 +83,14 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return null;
 	}
-	
+
 	private OWLObject getTermSimple(String id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
 			return ontology.getOWLObjectByIdentifier(id);
 		}
 		return null;
 	}
-	
+
 	private OntologyTerm getFieldSingleTerm(String name) {
 		OntologyTerm[] terms = getFieldTerms(name);
 		if (terms == null || terms.length < 1) {
@@ -94,7 +98,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return terms[0];
 	}
-	
+
 	private OntologyTerm[] getFieldTerms(String name) {
 		int pos = getFieldPos(name);
 		if (pos < 0) {
@@ -106,11 +110,11 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return matrix[pos];
 	}
-	
+
 	private int getFieldPos(String name) {
 		return input.getTermTemplate().getFieldPos(name);
 	}
-	
+
 	@Override
 	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology) {
 		OntologyTerm[] terms = getFieldTerms(name);
@@ -130,37 +134,40 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 
 	private static final CheckResult okay = new CheckResult() {
-		
+
 		@Override
 		public boolean isGenus() {
 			return true;
 		}
-		
+
 		@Override
 		public String error() {
 			return null;
 		}
 	};
-	
+
 	@Override
 	public CheckResult checkGenus(OWLObject x, String parentId, OWLGraphWrapper ontology) {
 		OWLObject parent = ontology.getOWLObjectByIdentifier(parentId);
 		return checkGenus(x, parent, ontology);
 	}
-	
+
 	@Override
-	public CheckResult checkGenus(final OWLObject x, final OWLObject parent, final OWLGraphWrapper ontology) {
+	public CheckResult checkGenus(final OWLObject x,
+			final OWLObject parent,
+			final OWLGraphWrapper ontology)
+	{
 		if (!genus(x, parent, ontology)) {
 			// check branch
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("The specified term does not correspond to the patterns  The term ");
 			sb.append(getTermShortInfo(parent, ontology));
 			sb.append(" is not a parent of ");
 			sb.append(getTermShortInfo(x, ontology));
 			final String error = sb.toString();
-			
-			return new CheckResult(){
+
+			return new CheckResult() {
 
 				@Override
 				public boolean isGenus() {
@@ -175,7 +182,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return okay;
 	}
-	
+
 	@Override
 	public boolean genus(OWLObject x, String parent, OWLGraphWrapper ontology) {
 		return genus(x, ontology.getOWLObjectByIdentifier(parent), ontology);
@@ -199,9 +206,9 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return false;
 	}
-	
+
 	private String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology) {
-		return "\""+ontology.getLabel(x)+"\" ("+ontology.getIdentifier(x)+")";
+		return "\"" + ontology.getLabel(x) + "\" (" + ontology.getIdentifier(x) + ")";
 	}
 
 	@Override
@@ -233,12 +240,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return matrix[pos];
 	}
-	
+
 	@Override
 	public String name(OWLObject x, OWLGraphWrapper ontology) {
-		return name(x, new OWLGraphWrapper[]{ontology});
+		return name(x, new OWLGraphWrapper[] { ontology });
 	}
-	
+
 	@Override
 	public String name(OWLObject x, OWLGraphWrapper[] ontologies) {
 		for (OWLGraphWrapper ontology : ontologies) {
@@ -247,13 +254,18 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 				if (label != null) {
 					return label;
 				}
-			}	
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public String definition(String prefix, OWLObject[] terms, OWLGraphWrapper ontology, String infix, String suffix) {
+	public String definition(String prefix,
+			OWLObject[] terms,
+			OWLGraphWrapper ontology,
+			String infix,
+			String suffix)
+	{
 		StringBuilder sb = new StringBuilder();
 		if (prefix != null) {
 			sb.append(prefix);
@@ -265,40 +277,44 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			}
 			sb.append(refname(x, ontology));
 		}
-		
+
 		if (suffix != null) {
 			sb.append(suffix);
 		}
 		return sb.toString();
 	}
-	
+
 	@Override
 	public String refname(OWLObject x, OWLGraphWrapper ontology) {
-		return refname(x, new OWLGraphWrapper[]{ontology});
+		return refname(x, new OWLGraphWrapper[] { ontology });
 	}
-	
+
 	@Override
 	public String refname(OWLObject x, OWLGraphWrapper[] ontologies) {
 		String name = name(x, ontologies);
-		return starts_with_vowl(name) ? "an "+name : "a "+name;
+		return starts_with_vowl(name) ? "an " + name : "a " + name;
 	}
-	
+
 	private boolean starts_with_vowl(String name) {
 		char c = Character.toLowerCase(name.charAt(0));
 		switch (c) {
-		case 'a':
-		case 'e':
-		case 'i':
-		case 'o':
-		case 'u':
-			return true;
+			case 'a':
+			case 'e':
+			case 'i':
+			case 'o':
+			case 'u':
+				return true;
 		}
 		return false;
 	}
-	
+
 	@Override
-	public List<Synonym> synonyms(String prefix, OWLObject x, OWLGraphWrapper ontology,
-			String suffix, String label) {
+	public List<Synonym> synonyms(String prefix,
+			OWLObject x,
+			OWLGraphWrapper ontology,
+			String suffix,
+			String label)
+	{
 		List<Synonym> synonyms = getSynonyms(x, ontology);
 		if (synonyms == null || synonyms.isEmpty()) {
 			return null;
@@ -319,8 +335,15 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 
 	@Override
-	public List<Synonym> synonyms(String prefix, OWLObject x1, OWLGraphWrapper ontology1,
-			String infix, OWLObject x2, OWLGraphWrapper ontology2, String suffix, String label) {
+	public List<Synonym> synonyms(String prefix,
+			OWLObject x1,
+			OWLGraphWrapper ontology1,
+			String infix,
+			OWLObject x2,
+			OWLGraphWrapper ontology2,
+			String suffix,
+			String label)
+	{
 		List<Synonym> synonyms1 = getSynonyms(x1, ontology1);
 		List<Synonym> synonyms2 = getSynonyms(x2, ontology2);
 		boolean empty1 = synonyms1 == null || synonyms1.isEmpty();
@@ -331,11 +354,11 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		synonyms1 = addLabel(x1, ontology1, synonyms1);
 		synonyms2 = addLabel(x2, ontology2, synonyms2);
-		
+
 		List<Synonym> results = new ArrayList<Synonym>();
 		for (Synonym synonym1 : synonyms1) {
 			for (Synonym synonym2 : synonyms2) {
-				Pair<Boolean,String> match = matchScopes(synonym1, synonym2);
+				Pair<Boolean, String> match = matchScopes(synonym1, synonym2);
 				if (match.getOne()) {
 					StringBuilder sb = new StringBuilder();
 					if (prefix != null) {
@@ -356,8 +379,8 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		return results;
 	}
 
-	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null); 
-	
+	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null);
+
 	protected Pair<Boolean, String> matchScopes(Synonym s1, Synonym s2) {
 		String scope1 = s1.getScope();
 		String scope2 = s2.getScope();
@@ -373,7 +396,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return MISMATCH;
 	}
-	
+
 	private List<Synonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<Synonym> synonyms) {
 		String label = ontology.getLabel(x);
 		if (synonyms == null) {
@@ -382,8 +405,13 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		synonyms.add(new Synonym(label, null, null, null));
 		return synonyms;
 	}
-	
-	void addSynonym(List<Synonym> results, Synonym synonym, String scope, String newLabel, String label) {
+
+	void addSynonym(List<Synonym> results,
+			Synonym synonym,
+			String scope,
+			String newLabel,
+			String label)
+	{
 		if (!newLabel.equals(label)) {
 			// if by any chance a synonym has the same label it is ignored
 			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
@@ -391,7 +419,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			results.add(new Synonym(newLabel, scope, null, xrefs));
 		}
 	}
-	
+
 	private Set<String> addXref(String xref, Set<String> xrefs) {
 		if (xref == null) {
 			return xrefs;
@@ -419,15 +447,16 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 		return null;
 	}
-	
+
 	private static class CDefImpl implements CDef {
+
 		final OWLObject genus;
 		final OWLGraphWrapper ontology;
-		
+
 		final List<Differentium> differentia = new ArrayList<Differentium>();
-		
+
 		final List<String> properties = new ArrayList<String>();
-		
+
 		/**
 		 * @param genus
 		 * @param ontology
@@ -437,29 +466,32 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			this.genus = genus;
 			this.ontology = ontology;
 		}
-		
+
 		@Override
 		public void differentium(String rel, OWLObject term, OWLGraphWrapper[] ontologies) {
 			differentium(rel, Collections.singletonList(term), Arrays.asList(ontologies));
 		}
-		
+
 		@Override
 		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper[] ontologies) {
 			differentium(rel, Arrays.asList(terms), Arrays.asList(ontologies));
 		}
-		
-		private void differentium(String rel, List<OWLObject> terms, List<OWLGraphWrapper> ontologies) {
+
+		private void differentium(String rel,
+				List<OWLObject> terms,
+				List<OWLGraphWrapper> ontologies)
+		{
 			differentia.add(new Differentium(rel, terms, ontologies));
 		}
-		
+
 		@Override
 		public void differentium(String rel, OWLObject term, OWLGraphWrapper ontology) {
-			differentium(rel, new OWLObject[]{term}, new OWLGraphWrapper[]{ontology});
+			differentium(rel, new OWLObject[] { term }, new OWLGraphWrapper[] { ontology });
 		}
 
 		@Override
 		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper ontology) {
-			differentium(rel, terms, new OWLGraphWrapper[]{ontology});
+			differentium(rel, terms, new OWLGraphWrapper[] { ontology });
 		}
 
 		@Override
@@ -482,12 +514,12 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			return Collections.unmodifiableList(differentia);
 		}
 	}
-	
+
 	@Override
 	public CDef cdef(OWLObject genus) {
 		return cdef(genus, targetOntology);
 	}
-	
+
 	@Override
 	public CDef cdef(String id) {
 		return cdef(id, targetOntology);
@@ -497,52 +529,60 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology) {
 		return new CDefImpl(genus, ontology);
 	}
-	
+
 	@Override
 	public CDef cdef(String id, OWLGraphWrapper ontology) {
 		OWLObject genus = ontology.getOWLObjectByIdentifier(id);
 		return cdef(genus);
 	}
-	
+
 	@Override
-	public synchronized void createTerm(String label, String definition,
-			List<Synonym> synonyms, CDef logicalDefinition) {
+	public synchronized void createTerm(String label,
+			String definition,
+			List<Synonym> synonyms,
+			CDef logicalDefinition)
+	{
 		if (result == null) {
-			result = new ArrayList<TermGenerationOutput>(1);	
+			result = new ArrayList<TermGenerationOutput>(1);
 		}
 		addTerm(label, definition, synonyms, logicalDefinition, result);
 	}
 
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
-	
-	private void addTerm(String label, String definition, List<Synonym> synonyms,
-			CDef logicalDefinition, List<TermGenerationOutput> output) {
-		
+
+	private void addTerm(String label,
+			String definition,
+			List<Synonym> synonyms,
+			CDef logicalDefinition,
+			List<TermGenerationOutput> output)
+	{
+
 		// get overwrites from GUI
 		String inputName = getInput("Name");
 		if (inputName != null) {
-			inputName = inputName.trim(); 
+			inputName = inputName.trim();
 			if (inputName.length() > 1) {
 				label = inputName;
 			}
 		}
-		
+
 		String inputDefinition = getInput("Definition");
 		if (inputDefinition != null) {
-			inputDefinition = inputDefinition.trim(); 
+			inputDefinition = inputDefinition.trim();
 			if (inputDefinition.length() > 1) {
 				definition = inputDefinition;
 			}
 		}
-		
+
 		// Fact Checking
 		// check label
 		OWLObject sameName = targetOntology.getOWLObjectByLabel(label);
 		if (sameName != null) {
-			output.add(singleError("The term "+targetOntology.getIdentifier(sameName)+" with the same label already exists", input));
+			output.add(singleError("The term " + targetOntology.getIdentifier(sameName) + " with the same label already exists",
+					input));
 			return;
 		}
-		
+
 		// def xref
 		List<String> defxrefs = getDefXref();
 		if (defxrefs != null) {
@@ -551,14 +591,16 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			for (String defxref : defxrefs) {
 				// check if the termgenie def_xref is already in the list
 				hasXRef = hasXRef || defxref.equals("GOC:TermGenie");
-				
+
 				// simple defxref check, TODO use a centralized qc check.
 				if (defxref.length() < 3) {
-					output.add(singleError("The Def_Xref "+defxref+" is too short. A Def_Xref consists of a prefix and suffix with a colon (:) as separator", input));
+					output.add(singleError("The Def_Xref " + defxref + " is too short. A Def_Xref consists of a prefix and suffix with a colon (:) as separator",
+							input));
 					continue;
 				}
-				if(!def_xref_Pattern.matcher(defxref).matches()) {
-					output.add(singleError("The Def_Xref "+defxref+" does not conform to the expected pattern. A Def_Xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.", input));
+				if (!def_xref_Pattern.matcher(defxref).matches()) {
+					output.add(singleError("The Def_Xref " + defxref + " does not conform to the expected pattern. A Def_Xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.",
+							input));
 				}
 			}
 			if (!hasXRef) {
@@ -572,7 +614,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		else {
 			defxrefs = Collections.singletonList("GOC:TermGenie");
 		}
-		
+
 		Map<String, String> metaData = new HashMap<String, String>();
 		metaData.put("creation_date", getDate());
 		metaData.put("created_by", "TermGenie");
@@ -580,45 +622,48 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		metaData.put("comment", getInput("Comment"));
 
 		String newId = getNewId();
-		
+
 		List<Relation> relations = null;
-		
+
 		if (logicalDefinition != null) {
-			// TODO use cdef to create relationships (differentium, intersection, restriction, ...)
-//			Pair<OWLObject, OWLGraphWrapper> base = logicalDefinition.getBase();
-//			Obo2Owl obo2Owl = new Obo2Owl() {
-//
-//				@Override
-//				protected void init() {
-//					init(targetOntology.getManager());
-//				}
-//			};
-//			Frame termFrame = new Frame(FrameType.TERM);
-//			termFrame.setId(newId);
-//			obo2Owl.trTermFrame(termFrame);
-//			List<Differentium> differentia = logicalDefinition.getDifferentia();
-//			List<String> properties = logicalDefinition.getProperties();
+			// TODO use cdef to create relationships (differentium,
+			// intersection, restriction, ...)
+			// Pair<OWLObject, OWLGraphWrapper> base =
+			// logicalDefinition.getBase();
+			// Obo2Owl obo2Owl = new Obo2Owl() {
+			//
+			// @Override
+			// protected void init() {
+			// init(targetOntology.getManager());
+			// }
+			// };
+			// Frame termFrame = new Frame(FrameType.TERM);
+			// termFrame.setId(newId);
+			// obo2Owl.trTermFrame(termFrame);
+			// List<Differentium> differentia =
+			// logicalDefinition.getDifferentia();
+			// List<String> properties = logicalDefinition.getProperties();
 		}
 		DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
-		
+
 		output.add(success(term, input));
 
 	}
-	
+
 	private List<String> getDefXref() {
-		String[] strings =  getInputs("DefX_Ref");
+		String[] strings = getInputs("DefX_Ref");
 		if (strings == null || strings.length == 0) {
 			return null;
 		}
 		return Arrays.asList(strings);
 	}
-	
+
 	private final static DateFormat df = new ISO8601DateFormat();
-	
+
 	private String getDate() {
 		return df.format(new Date());
 	}
-	
+
 	private static TermGenerationOutput singleError(String message, TermGenerationInput input) {
 		return new TermGenerationOutput(null, input, false, message);
 	}
@@ -626,7 +671,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	private static TermGenerationOutput success(OntologyTerm term, TermGenerationInput input) {
 		return new TermGenerationOutput(term, input, true, null);
 	}
-	
+
 	@Override
 	public boolean contains(String[] array, String value) {
 		if (array != null && array.length > 0) {
@@ -635,7 +680,8 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 					if (string == null) {
 						return true;
 					}
-				} else if (value.equals(string)) {
+				}
+				else if (value.equals(string)) {
 					return true;
 				}
 			}
@@ -656,7 +702,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
 		return error;
 	}
-	
+
 	public List<TermGenerationOutput> getResult() {
 		return result;
 	}

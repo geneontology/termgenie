@@ -21,24 +21,24 @@ import org.bbop.termgenie.core.TermTemplate;
 class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 
 	private final XMLOutputFactory factory;
-	
+
 	XMLTermTemplateIOWriter() {
 		super();
 		factory = XMLOutputFactory.newInstance();
 	}
-	
+
 	/**
 	 * @param templates
 	 * @param outputStream
-	 * @throws XMLStreamException 
+	 * @throws XMLStreamException
 	 */
 	void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) {
 		try {
 			XMLStreamWriter writer = createWriter(outputStream);
 			writer.writeStartDocument();
 			writer.writeStartElement(TAG_termgenietemplates);
-			writer.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance");
-			writer.writeAttribute("xsi:noNamespaceSchemaLocation","default_termgenie_rules.xsd");
+			writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			writer.writeAttribute("xsi:noNamespaceSchemaLocation", "default_termgenie_rules.xsd");
 			for (TermTemplate termTemplate : templates) {
 				writer.writeStartElement(TAG_template);
 				writer.writeAttribute(ATTR_name, termTemplate.getName());
@@ -58,12 +58,12 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			writer.writeEndElement();
 			writer.writeEndDocument();
 			writer.flush();
-			
+
 		} catch (XMLStreamException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
-	
+
 	private void writeRule(String rules, XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement(TAG_rule);
 		writer.writeCharacters("\n");
@@ -72,7 +72,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		writer.writeEndElement();
 	}
 
-	private void writeFields(List<TemplateField> fields, XMLStreamWriter writer) throws XMLStreamException {
+	private void writeFields(List<TemplateField> fields, XMLStreamWriter writer)
+			throws XMLStreamException
+	{
 		writer.writeStartElement(TAG_fields);
 		for (TemplateField templateField : fields) {
 			writer.writeStartElement(TAG_field);
@@ -88,7 +90,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			}
 			Cardinality cardinality = templateField.getCardinality();
 			if (cardinality.getMinimum() != 1 || cardinality.getMaximum() != 1) {
-				writeTag(TAG_cardinality, CardinalityHelper.serializeCardinality(cardinality), writer);
+				writeTag(TAG_cardinality,
+						CardinalityHelper.serializeCardinality(cardinality),
+						writer);
 			}
 			List<String> prefixes = templateField.getFunctionalPrefixes();
 			if (prefixes != null && !prefixes.isEmpty()) {
@@ -103,7 +107,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		writer.writeEndElement();
 	}
 
-	private void writeRequires(List<String> requires, XMLStreamWriter writer) throws XMLStreamException {
+	private void writeRequires(List<String> requires, XMLStreamWriter writer)
+			throws XMLStreamException
+	{
 		if (requires != null) {
 			for (String require : requires) {
 				writeTag(TAG_requires, require, writer);
@@ -111,7 +117,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		}
 	}
 
-	private void writeExternal(List<Ontology> external, XMLStreamWriter writer) throws XMLStreamException {
+	private void writeExternal(List<Ontology> external, XMLStreamWriter writer)
+			throws XMLStreamException
+	{
 		if (external != null) {
 			writer.writeStartElement(TAG_external);
 			for (Ontology ontology : external) {
@@ -121,31 +129,33 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		}
 	}
 
-	private void writeOntology(Ontology ontology, XMLStreamWriter writer) throws XMLStreamException {
+	private void writeOntology(Ontology ontology, XMLStreamWriter writer) throws XMLStreamException
+	{
 		writer.writeStartElement(TAG_ontology);
 		writer.writeAttribute(ATTR_name, ontology.getUniqueName());
 		writeTag(TAG_branch, ontology.getBranch(), writer);
 		writer.writeEndElement();
 	}
 
-	static void writeTag(String tag, String text, XMLStreamWriter writer) throws XMLStreamException {
+	static void writeTag(String tag, String text, XMLStreamWriter writer) throws XMLStreamException
+	{
 		if (text != null) {
 			writer.writeStartElement(tag);
 			writer.writeCharacters(text);
 			writer.writeEndElement();
 		}
 	}
-	
+
 	private XMLStreamWriter createWriter(OutputStream outputStream) throws XMLStreamException {
 		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
 		PrettyPrintHandler handler = new PrettyPrintHandler(writer);
-		return (XMLStreamWriter) Proxy.newProxyInstance(
-				XMLStreamWriter.class.getClassLoader(),
-				new Class[]{XMLStreamWriter.class},
-				handler );
+		return (XMLStreamWriter) Proxy.newProxyInstance(XMLStreamWriter.class.getClassLoader(),
+				new Class[] { XMLStreamWriter.class },
+				handler);
 	}
 
 	private static class PrettyPrintHandler implements InvocationHandler {
+
 		private XMLStreamWriter target;
 
 		private int depth = 0;

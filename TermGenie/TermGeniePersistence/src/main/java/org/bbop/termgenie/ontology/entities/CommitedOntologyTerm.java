@@ -23,14 +23,14 @@ public class CommitedOntologyTerm {
 	private List<String> defXRef;
 	private List<CommitedOntologyTermRelation> relations;
 	private Map<String, String> metaData;
-	
+
 	private Date commitDate;
 
 	/**
 	 * @return the id
 	 */
 	@Id
-	@Basic(optional=false)
+	@Basic(optional = false)
 	public String getId() {
 		return id;
 	}
@@ -46,7 +46,7 @@ public class CommitedOntologyTerm {
 	 * @return the ontology
 	 */
 	@Column
-	@Basic(optional=false)
+	@Basic(optional = false)
 	public String getOntology() {
 		return ontology;
 	}
@@ -61,8 +61,8 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the label
 	 */
-	@Column(length=Integer.MAX_VALUE)
-	@Basic(optional=false)
+	@Column(length = Integer.MAX_VALUE)
+	@Basic(optional = false)
 	public String getLabel() {
 		return label;
 	}
@@ -77,7 +77,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the definition
 	 */
-	@Column(length=Integer.MAX_VALUE)
+	@Column(length = Integer.MAX_VALUE)
 	@Basic
 	public String getDefinition() {
 		return definition;
@@ -154,7 +154,7 @@ public class CommitedOntologyTerm {
 	 * @return the commitDate
 	 */
 	@Column
-	@Basic(optional=false)
+	@Basic(optional = false)
 	public Date getCommitDate() {
 		return commitDate;
 	}
@@ -165,5 +165,5 @@ public class CommitedOntologyTerm {
 	public void setCommitDate(Date commitDate) {
 		this.commitDate = commitDate;
 	}
-	
+
 }

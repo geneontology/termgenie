@@ -13,27 +13,34 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 public class HybridLuceneSolrClient extends SimpleSolrClient {
 
 	private final Map<String, BasicLuceneClient> luceneIndices;
-	
+
 	/**
 	 * @param ontologies
 	 * @param factory
 	 */
-	public HybridLuceneSolrClient(Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
+	public HybridLuceneSolrClient(Collection<OntologyTaskManager> ontologies,
+			ReasonerFactory factory)
+	{
 		super();
 		luceneIndices = createIndices(ontologies, factory);
 	}
 
 	/**
-	 * @param baseUrl  for solr index
+	 * @param baseUrl for solr index
 	 * @param ontologies
-	 * @param factory 
+	 * @param factory
 	 */
-	public HybridLuceneSolrClient(String baseUrl, Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
+	public HybridLuceneSolrClient(String baseUrl,
+			Collection<OntologyTaskManager> ontologies,
+			ReasonerFactory factory)
+	{
 		super(baseUrl);
 		luceneIndices = createIndices(ontologies, factory);
 	}
-	
-	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies, ReasonerFactory factory) {
+
+	private static Map<String, BasicLuceneClient> createIndices(Collection<OntologyTaskManager> ontologies,
+			ReasonerFactory factory)
+	{
 		Map<String, BasicLuceneClient> indices = new HashMap<String, BasicLuceneClient>();
 		for (OntologyTaskManager ontology : ontologies) {
 			String name = ontology.getOntology().getUniqueName();
@@ -48,7 +55,7 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 		}
 		return indices;
 	}
-	
+
 	@Override
 	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if ("GeneOntology".equals(ontology.getUniqueName())) {

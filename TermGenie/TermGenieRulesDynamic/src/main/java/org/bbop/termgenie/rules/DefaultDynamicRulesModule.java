@@ -35,7 +35,7 @@ public class DefaultDynamicRulesModule extends DynamicRulesModule {
 		public MyResourceLoader(boolean tryResourceLoadAsFiles) {
 			super(tryResourceLoadAsFiles);
 		}
-		
+
 		@Override
 		public InputStream loadResource(String name) {
 			return super.loadResource(name);

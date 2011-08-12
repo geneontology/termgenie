@@ -23,28 +23,31 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class OntologyTools {
-	
+
 	private final Map<String, ConfiguredOntology> ontologyInstances;
 	private final Map<String, OntologyTaskManager> managerInstances;
 	private final Map<String, List<TermTemplate>> templates;
-	
+
 	@Inject
-	OntologyTools(TermGenerationEngine engine, OntologyLoader loader, OntologyConfiguration configuration) {
+	OntologyTools(TermGenerationEngine engine,
+			OntologyLoader loader,
+			OntologyConfiguration configuration)
+	{
 		ontologyInstances = new HashMap<String, ConfiguredOntology>();
 		managerInstances = new HashMap<String, OntologyTaskManager>();
 		templates = new HashMap<String, List<TermTemplate>>();
-		
-		for(OntologyTaskManager manager : loader.getOntologies()) {
+
+		for (OntologyTaskManager manager : loader.getOntologies()) {
 			if (manager != null) {
 				Ontology ontology = manager.getOntology();
 				managerInstances.put(ontology.getUniqueName(), manager);
 			}
 		}
-		
-		for(ConfiguredOntology ontology : configuration.getOntologyConfigurations().values()) {
+
+		for (ConfiguredOntology ontology : configuration.getOntologyConfigurations().values()) {
 			ontologyInstances.put(ontologyName(ontology), ontology);
 		}
-		
+
 		for (TermTemplate template : engine.getAvailableTemplates()) {
 			Ontology ontology = template.getCorrespondingOntology();
 			String name = getOntologyName(ontology);
@@ -58,7 +61,7 @@ public class OntologyTools {
 			}
 		}
 	}
-	
+
 	public OntologyTaskManager getManager(String ontology) {
 		OntologyTaskManager ontologyTaskManager = managerInstances.get(ontology);
 		if (ontologyTaskManager == null) {
@@ -91,10 +94,10 @@ public class OntologyTools {
 		String name = sb.toString();
 		return name;
 	}
-	
+
 	public String[] getAvailableOntologyNames() {
 		ArrayList<String> names = new ArrayList<String>(templates.keySet());
-		//  sort names: prefer ontologies that have more templates
+		// sort names: prefer ontologies that have more templates
 		// if two ontologies have the same number, use alphabetical sort
 		Collections.sort(names, new Comparator<String>() {
 
@@ -110,7 +113,7 @@ public class OntologyTools {
 		});
 		return names.toArray(new String[names.size()]);
 	}
-	
+
 	public List<TermTemplate> getTermTemplates(String ontologyName) {
 		return templates.get(ontologyName);
 	}

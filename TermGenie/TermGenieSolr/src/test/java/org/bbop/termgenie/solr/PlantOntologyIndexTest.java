@@ -29,10 +29,11 @@ public class PlantOntologyIndexTest {
 	protected static OntologyTaskManager plantManager;
 	protected static Ontology plant;
 	protected static ReasonerFactory factory;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(), new ReasonerModule());
+		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
+				new ReasonerModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
@@ -41,7 +42,7 @@ public class PlantOntologyIndexTest {
 		plantManager = loader.getOntology(ontology);
 		factory = injector.getInstance(ReasonerFactory.class);
 	}
-	
+
 	@Test
 	public void testPlantOntologyIndex() {
 		plantManager.runManagedTask(new OntologyTask() {
@@ -62,13 +63,16 @@ public class PlantOntologyIndexTest {
 	protected LuceneMemoryOntologyIndex createIndex(OWLGraphWrapper ontology) throws IOException {
 		List<String> roots = plant.getRoots();
 		List<Pair<String, List<String>>> branches = null;
-		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory) {
+		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory)
+		{
 
 			@Override
-			protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology, ReasonerFactory reasonerFactory) {
+			protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology,
+					ReasonerFactory reasonerFactory)
+			{
 				return reasonerFactory.getTaskManager(ontology, "jcel");
 			}
-			
+
 		};
 		return index;
 	}

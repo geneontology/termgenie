@@ -19,16 +19,16 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 	public static void setupBefore() {
 		List<Ontology> ontologies = Arrays.asList(go, pro, bp, cc, mf);
 		List<OntologyTaskManager> managers = Arrays.asList(goManager, proManager);
-		index = new LuceneOnlyClient(ontologies, managers, factory);	
+		index = new LuceneOnlyClient(ontologies, managers, factory);
 	}
-	
+
 	@Test
 	public void testSuggestTermsPro() {
 		List<OntologyTerm> terms = index.suggestTerms("exportin-T", pro, 1);
 		assertNotNull(terms);
 		assertEquals("PR:000017502", terms.get(0).getId());
 	}
-	
+
 	@Test
 	public void testSuggestTermsProID() {
 		List<OntologyTerm> terms = index.suggestTerms("PR:000017502", pro, 1);
@@ -36,34 +36,34 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 		assertEquals(1, terms.size());
 		assertEquals("PR:000017502", terms.get(0).getId());
 	}
-	
+
 	@Test
 	public void testSuggestTermsGO() {
 		List<OntologyTerm> terms = index.suggestTerms("exportin-T", go, 1);
 		assertNull(terms);
-		
+
 		int maxCount = 10;
 		terms = index.suggestTerms("pig", bp, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
-		
+
 		terms = index.suggestTerms("pigmentation", cc, maxCount);
 		assertNull(terms);
-		
+
 		terms = index.suggestTerms("pig", cc, maxCount);
 		// GO:0048770 pigment granule
 		assertEquals(1, terms.size());
 		assertEquals("GO:0048770", terms.get(0).getId());
 	}
-	
+
 	@Test
 	public void testSuggestTermsGOID() {
 		List<OntologyTerm> terms = index.suggestTerms("GO:0048770", cc, 10);
 		assertNotNull(terms);
 		assertEquals(1, terms.size());
 		assertEquals("GO:0048770", terms.get(0).getId());
-		
+
 		terms = index.suggestTerms("GO:0048770", go, 10);
 		assertNotNull(terms);
 		assertEquals(1, terms.size());

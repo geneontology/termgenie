@@ -15,13 +15,13 @@ public class JsonRpcConformityTest {
 	@Test
 	public void testMethodInterfaces() {
 		TypeChecker checker = new GsonTypeChecker();
-		
+
 		assertTrue(checker.isValidInterface(GenerateTermsService.class, true));
-		
+
 		assertTrue(checker.isValidInterface(OntologyService.class, true));
-		
+
 		assertTrue(checker.isValidInterface(TermCommitService.class, true));
-		
+
 		assertTrue(checker.isValidInterface(SessionHandler.class, true));
 	}
 }

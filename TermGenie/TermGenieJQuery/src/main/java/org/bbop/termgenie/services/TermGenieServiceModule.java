@@ -15,6 +15,9 @@ import org.bbop.termgenie.solr.LuceneOnlyClient;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+/**
+ * Module containg the implementations for the TermGenie services.
+ */
 public class TermGenieServiceModule extends IOCModule {
 
 	@Override
@@ -24,12 +27,16 @@ public class TermGenieServiceModule extends IOCModule {
 		bind(SessionHandler.class).to(SessionHandlerImpl.class);
 		bind(TermCommitService.class).to(TermCommitServiceImpl.class);
 	}
-	
-	@Provides @Singleton
-	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyConfiguration configuration, OntologyLoader loader, ReasonerFactory factory) {
+
+	@Provides
+	@Singleton
+	OntologyTermSuggestor provideOntologyTermSuggestor(OntologyConfiguration configuration,
+			OntologyLoader loader,
+			ReasonerFactory factory)
+	{
 		List<OntologyTaskManager> managers = loader.getOntologies();
 		Collection<ConfiguredOntology> ontologies = configuration.getOntologyConfigurations().values();
 		return new LuceneOnlyClient(ontologies, managers, factory);
 	}
-	
+
 }

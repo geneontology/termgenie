@@ -27,8 +27,9 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 	private final EntityManager entityManager;
 
 	@Inject
-	CommitAwareOntologyLoader(OntologyConfiguration configuration, IRIMapper iriMapper,
-			OntologyCleaner cleaner, 
+	CommitAwareOntologyLoader(OntologyConfiguration configuration,
+			IRIMapper iriMapper,
+			OntologyCleaner cleaner,
 			@Named("DefaultOntologyLoaderSkipOntologies") Set<String> skipOntologies,
 			@Named("ReloadingOntologyLoaderPeriod") long period,
 			@Named("ReloadingOntologyLoaderTimeUnit") TimeUnit unit,
@@ -36,21 +37,23 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 	{
 		super(configuration, iriMapper, cleaner, skipOntologies, period, unit);
 		this.entityManager = entityManager;
-		
+
 	}
 
 	@Override
 	protected OWLGraphWrapper load(Ontology ontology, String url)
-			throws OWLOntologyCreationException, IOException {
+			throws OWLOntologyCreationException, IOException
+	{
 		OWLGraphWrapper wrapper = super.load(ontology, url);
 		if (wrapper != null) {
 			addCommitedTerms(ontology, wrapper);
 		}
 		return wrapper;
 	}
-	
+
 	private void addCommitedTerms(Ontology ontology, OWLGraphWrapper wrapper) {
-		TypedQuery<CommitedOntologyTerm> query = entityManager.createQuery("select t from CommitedOntologyTerm as t where t.ontology = ?1", CommitedOntologyTerm.class);
+		TypedQuery<CommitedOntologyTerm> query = entityManager.createQuery("select t from CommitedOntologyTerm as t where t.ontology = ?1",
+				CommitedOntologyTerm.class);
 		query.setParameter(1, ontology.getUniqueName());
 		List<CommitedOntologyTerm> terms = query.getResultList();
 		for (CommitedOntologyTerm term : terms) {
@@ -60,13 +63,13 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 
 	private void addTerm(CommitedOntologyTerm term, OWLGraphWrapper wrapper) {
 		// create owl description
-		
+
 		// check if the term is already in the ontology via id
-		
+
 		// check if a term with the same label exists
-		
+
 		// add term to owl
 		throw new RuntimeException("Not implemented");
 	}
-	
+
 }
