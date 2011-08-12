@@ -80,18 +80,18 @@ public abstract class IOCModule extends AbstractModule {
 	 * @param defaultValue
 	 */
 	protected void bind(String name, boolean defaultValue) {
-		boolean value = defaultValue;
+		Boolean value = Boolean.valueOf(defaultValue);
 		String property = System.getProperty(name, null);
 		if (property != null) {
 			property = property.toLowerCase();
 			if ("true".equals(property)) {
-				value = true;
+				value = Boolean.TRUE;
 			}
 			else if ("false".equals(property)) {
-				value = false;
+				value = Boolean.FALSE;
 			}
 		}
-		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(new Boolean(value));
+		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 	
 }
