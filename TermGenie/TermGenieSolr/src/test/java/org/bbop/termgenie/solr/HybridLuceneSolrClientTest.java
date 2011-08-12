@@ -8,8 +8,10 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class HybridLuceneSolrClientTest extends OntologyProvider {
 
 	@Test

@@ -10,11 +10,13 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.index.AutoCompletionTools;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests for {@link SimpleSolrClient}.
  */
+@Ignore
 public class SimpleSolrClientTest extends OntologyProvider {
 
 	private static SimpleSolrClient client;
