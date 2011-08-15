@@ -14,5 +14,16 @@
 			<artifactId>TermGenieOntologyCommit-API</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.team.cvs</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.0-I20070607</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>osgi</artifactId>
+					<groupId>org.eclipse</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 </project>
