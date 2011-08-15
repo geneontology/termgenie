@@ -8,6 +8,7 @@
 	<artifactId>TermGenieOntologyCommit</artifactId>
 	<name>TermGenieOntologyCommit</name>
 	<description>Adapters for TermGenie to commit new terms and ontology changes</description>
+	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
