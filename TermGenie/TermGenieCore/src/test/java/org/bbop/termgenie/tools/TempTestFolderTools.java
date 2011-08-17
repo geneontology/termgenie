@@ -29,10 +29,7 @@ public class TempTestFolderTools {
 			URL resource = getResourceURL(cls);
 			File classFile = new File(resource.toURI());
 			File testFolder = new File(classFile.getParentFile(), cls.getSimpleName() + "-TestFolder");
-			if (testFolder.exists() && !testFolder.isDirectory()) {
-				throw new RuntimeException("Try to use a resource as testFolder, which is not a folder: " + testFolder.getAbsolutePath());
-			}
-			testFolder.mkdirs();
+			FileUtils.forceMkdir(testFolder);
 			FileUtils.cleanDirectory(testFolder);
 			return testFolder;
 		} catch (URISyntaxException exception) {

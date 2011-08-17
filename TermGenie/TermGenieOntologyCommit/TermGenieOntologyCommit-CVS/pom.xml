@@ -15,15 +15,16 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.team.cvs</groupId>
-			<artifactId>core</artifactId>
-			<version>3.3.0-I20070607</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>osgi</artifactId>
-					<groupId>org.eclipse</groupId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieCore</artifactId>
+			<version>${project.parent.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.lib</groupId>
+			<artifactId>cvsclient</artifactId>
+			<version>200110816</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -5,6 +5,19 @@ http://wiki.eclipse.org/CVS_Development
 
 maven artefact, 20070607
 
+		<dependency>
+			<groupId>org.eclipse.team.cvs</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.0-I20070607</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>osgi</artifactId>
+					<groupId>org.eclipse</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
 2) http://www.jcvs.org/
 Version 5.4.2
 July 25, 2004
@@ -12,5 +25,16 @@ July 25, 2004
 JavaDoc: http://www.gjt.org/javadoc/com/ice/cvsc/
 
 3) http://sourceforge.net/projects/javacvs/
-Alpha, last update 2009-07-17
+Alpha, last update 2009-07-17, but code seems to be from 2002-2004
+
+4) http://versioncontrol.netbeans.org/javacvs/library/
+
+<dependency>
+    <groupId>org.netbeans.lib</groupId>
+    <artifactId>cvsclient</artifactId>
+    <version>20060125</version>
+</dependency>
+
+--> outdated, create new jar from source (mercurial)
+
 

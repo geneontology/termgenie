@@ -113,4 +113,13 @@ public class ConfiguredOntology extends Ontology {
 		builder.append("]");
 		return builder.toString();
 	}
+	
+	public static ConfiguredOntology createCopy(ConfiguredOntology ontology, String localSource) {
+		ConfiguredOntology modified = new ConfiguredOntology(ontology.getUniqueName());
+		modified.requires = ontology.requires;
+		modified.source = localSource;
+		modified.supports = ontology.supports;
+		modified.setBranch(ontology.subOntologyName, ontology.roots);
+		return modified;
+	}
 }

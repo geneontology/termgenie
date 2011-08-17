@@ -3,21 +3,16 @@ package org.bbop.termgenie.core.rules;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.tools.Pair;
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.EventSubscriber;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+
+import owltools.graph.OWLGraphWrapper;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 import com.google.inject.Inject;
@@ -26,33 +21,24 @@ import com.google.inject.name.Named;
 
 import de.tudresden.inf.lat.jcel.owlapi.main.JcelOWLReasonerFactory;
 
-import owltools.graph.OWLGraphWrapper;
-
 @Singleton
-public final class ReasonerFactoryImpl implements
-		ReasonerFactory,
-		EventSubscriber<OntologyChangeEvent>
-{
+public class ReasonerFactoryImpl implements ReasonerFactory {
 
 	private static final Logger logger = Logger.getLogger(ReasonerFactoryImpl.class);
-
+	static final String REASONER_FACTORY_DEFAULT_REASONER = "ReasonerFactoryDefaultReasoner";
+	
 	static final String PELLET = "pellet";
 	static final String HERMIT = "hermit";
 	static final String JCEL = "jcel";
 
-	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL,
-			HERMIT,
-			PELLET)));
+	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, PELLET)));
 
-	private final Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers;
 	private final String defaultReasoner;
 
 	@Inject
-	ReasonerFactoryImpl(@Named("ReasonerFactoryDefaultReasoner") String defaultReasoner) {
+	ReasonerFactoryImpl(@Named(REASONER_FACTORY_DEFAULT_REASONER) String defaultReasoner) {
 		super();
-		allManagers = new HashMap<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
 		this.defaultReasoner = defaultReasoner;
-		EventBus.subscribe(OntologyChangeEvent.class, this);
 	}
 
 	@Override
@@ -69,48 +55,13 @@ public final class ReasonerFactoryImpl implements
 		return getManager(ontology, reasonerName);
 	}
 
-	private ReasonerTaskManager getManager(OWLGraphWrapper ontology, String reasonerName) {
-		synchronized (allManagers) {
-			Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
-			if (managers == null) {
-				managers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
-				allManagers.put(reasonerName, managers);
-			}
-			String ontologyName = ontology.getOntologyId();
-			Pair<OWLGraphWrapper, ReasonerTaskManager> pair = managers.get(ontologyName);
-			if (pair == null || pair.getOne() != ontology) {
-				pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, createManager(ontology,
-						reasonerName));
-				managers.put(ontologyName, pair);
-			}
-			return pair.getTwo();
-		}
+	protected ReasonerTaskManager getManager(OWLGraphWrapper ontology, String reasonerName) {
+		return createManager(ontology, reasonerName);
 	}
 
 	@Override
 	public Collection<String> getSupportedReasoners() {
 		return supportedReasoners;
-	}
-
-	/**
-	 * Handle an ontology change. This assumes that an ontology change can only
-	 * be executed, if the {@link OntologyTaskManager} has the lock and
-	 * reasoning only happens also in locked phase via the
-	 * {@link OntologyTaskManager}. Otherwise, it is not guaranteed, that the
-	 * reasoner instances are up-to-date.
-	 * 
-	 * @param event
-	 */
-	@Override
-	public void onEvent(OntologyChangeEvent event) {
-		synchronized (allManagers) {
-			for (String reasonerName : allManagers.keySet()) {
-				Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
-				if (managers != null && !managers.isEmpty()) {
-					managers.remove(event.getManager().getOntologyId());
-				}
-			}
-		}
 	}
 
 	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
