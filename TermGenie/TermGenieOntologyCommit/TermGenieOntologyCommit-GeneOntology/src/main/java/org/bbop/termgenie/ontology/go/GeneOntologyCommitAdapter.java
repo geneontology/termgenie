@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -15,12 +16,17 @@ import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
+import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
+import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.entities.CommitHistory;
+import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -45,6 +51,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 	private final String cvsOntologyFileName;
 	private final String cvsRoot;
 	private final String cvsPassword;
+	private final CommitHistoryStore store;
 
 	@Inject
 	GeneOntologyCommitAdapter(ConfiguredOntology source,
@@ -53,7 +60,8 @@ public class GeneOntologyCommitAdapter implements Committer {
 			@Named(ReasonerModule.NAMED_DIRECT_REASONER_FACTORY) ReasonerFactory reasonerFactory,
 			@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot,
-			@Named("GeneOntologyCommitAdapterCVSPassword") String cvsPassword)
+			@Named("GeneOntologyCommitAdapterCVSPassword") String cvsPassword,
+			CommitHistoryStore store)
 	{
 		super();
 		this.go = source;
@@ -62,6 +70,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 		this.cvsRoot = cvsRoot;
 		this.cvsPassword = cvsPassword;
 		loader = new DirectOntologyLoader(iriMapper, cleaner);
+		this.store = store;
 	}
 
 	@Override
@@ -125,14 +134,37 @@ public class GeneOntologyCommitAdapter implements Committer {
 			
 			// apply changes
 
+			// TOODO
+			
 			// reason and check validity
 			// only throw error if there is an inconsistency,
 			// which can not be recovered silently!
 			ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(ontology);
 			
+			// TODO
+			
 			File oboFile = createOBOFile(oboFolder, ontology);
 			
-			// add terms to local commit log
+			CommitHistory history;
+			CommitHistoryItem historyItem;
+			try {
+				// add terms to local commit log
+				history = store.loadAll(go.getUniqueName());
+				Date date = new Date();
+				String user = commitInfo.getUsername();
+				if (history == null) {
+					history = CommitHistoryTools.create(terms, relations, user, date);
+					historyItem = history.getItems().get(0);
+				}
+				else {
+					historyItem = CommitHistoryTools.add(history, terms, relations, user, date);
+				}
+				store.store(history);
+			} catch (CommitHistoryStoreException exception) {
+				String message = "Problems handling commit history for ontology: "+ontology;
+				throw new CommitException(message, exception);
+			}
+			
 
 			copyOBOFileForCommit(cvsGoFile, oboFile);
 
@@ -143,8 +175,14 @@ public class GeneOntologyCommitAdapter implements Committer {
 				throw new CommitException("", exception);
 			}
 
-			// set terms in commit log as commited
-
+			try {
+				// set terms in commit log as committed
+				historyItem.setCommitted(true);
+				store.store(history);
+			} catch (CommitHistoryStoreException exception) {
+				String message = "Problems handling commit history for ontology: "+ontology;
+				throw new CommitException(message, exception);
+			}
 			return true;
 		}
 		finally {

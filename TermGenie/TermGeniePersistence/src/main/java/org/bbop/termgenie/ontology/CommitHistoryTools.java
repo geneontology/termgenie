@@ -21,7 +21,7 @@ public class CommitHistoryTools {
 		// no instances allowed
 	}
 
-	public static void add(CommitHistory history, List<CommitObject<OntologyTerm>> terms, List<CommitObject<Relation>> relations, String user, Date date) {
+	public static CommitHistoryItem add(CommitHistory history, List<CommitObject<OntologyTerm>> terms, List<CommitObject<Relation>> relations, String user, Date date) {
 		CommitHistoryItem item = new CommitHistoryItem();
 	
 		item.setTerms(translateTerms(terms));
@@ -37,6 +37,7 @@ public class CommitHistoryTools {
 			items.add(item);
 			history.setItems(items);
 		}
+		return item;
 	}
 
 	public static CommitHistory create(List<CommitObject<OntologyTerm>> terms, List<CommitObject<Relation>> relations, String user, Date date) {
