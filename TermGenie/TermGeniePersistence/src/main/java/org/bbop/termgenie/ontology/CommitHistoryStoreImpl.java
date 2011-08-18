@@ -32,7 +32,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 
 	@Override
 	public CommitHistory loadAll(String ontology) throws CommitHistoryStoreException {
-		String qlString = "SELECT history FROM CommitHistory history " + "WHERE history.ontology = ?1";
+		String qlString = "SELECT history FROM CommitHistory history WHERE history.ontology = ?1";
 		TypedQuery<CommitHistory> query = entityManager.createQuery(qlString, CommitHistory.class);
 		query.setParameter(1, ontology);
 		List<CommitHistory> results = query.getResultList();
@@ -50,12 +50,12 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 		boolean hasFrom = from != null;
 		boolean hasTo = to != null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT history.items FROM CommitHistory history, WHERE history.ontology = ?1");
+		sb.append("SELECT history.items FROM CommitHistory history, IN(history.items) items WHERE history.ontology = ?1");
 		if (hasFrom) {
-			sb.append(" AND history.items.date >= ?2");
+			sb.append(" AND items.date >= ?2");
 		}
 		if (hasTo) {
-			sb.append(" AND history.items.date <= ?");
+			sb.append(" AND items.date <= ?");
 			int param = hasFrom ? 3 : 2;
 			sb.append(param);
 		}

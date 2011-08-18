@@ -37,7 +37,6 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 	{
 		super(configuration, iriMapper, cleaner, skipOntologies, period, unit);
 		this.entityManager = entityManager;
-
 	}
 
 	@Override

@@ -5,17 +5,21 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
 
+@Entity
 public class CommitHistoryItem {
 
 	private int id;
 	private Date date = null;
 	private String user;
+	private boolean committed = false;
 
 	private List<CommitedOntologyTerm> terms = null;
 	private List<CommitedOntologyTermRelation> relations = null;
@@ -68,6 +72,21 @@ public class CommitHistoryItem {
 	}
 
 	/**
+	 * @return the committed
+	 */
+	@Column
+	public boolean isCommitted() {
+		return committed;
+	}
+
+	/**
+	 * @param committed the committed to set
+	 */
+	public void setCommitted(boolean committed) {
+		this.committed = committed;
+	}
+
+	/**
 	 * @return the terms
 	 */
 	@PersistentCollection
@@ -81,7 +100,7 @@ public class CommitHistoryItem {
 	public void setTerms(List<CommitedOntologyTerm> terms) {
 		this.terms = terms;
 	}
-
+	
 	/**
 	 * @return the relations
 	 */

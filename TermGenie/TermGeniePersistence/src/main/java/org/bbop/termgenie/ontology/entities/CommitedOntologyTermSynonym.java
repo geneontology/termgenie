@@ -4,12 +4,14 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
 
+@Entity
 public class CommitedOntologyTermSynonym {
 
 	private int id;
@@ -37,7 +39,7 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the label
 	 */
-	@Column(length = Integer.MAX_VALUE)
+	@Column
 	@Basic(optional = false)
 	public String getLabel() {
 		return label;

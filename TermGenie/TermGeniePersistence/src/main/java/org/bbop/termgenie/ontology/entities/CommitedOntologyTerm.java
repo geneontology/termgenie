@@ -43,7 +43,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the label
 	 */
-	@Column(length = Integer.MAX_VALUE)
+	@Column
 	@Basic(optional = false)
 	public String getLabel() {
 		return label;
@@ -59,7 +59,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the definition
 	 */
-	@Column(length = Integer.MAX_VALUE)
+	@Column
 	@Basic
 	public String getDefinition() {
 		return definition;

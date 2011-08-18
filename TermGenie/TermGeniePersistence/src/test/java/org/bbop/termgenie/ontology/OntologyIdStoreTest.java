@@ -68,14 +68,22 @@ public class OntologyIdStoreTest {
 		EntityManager entityManager = emf.createEntityManager();
 		assertNotNull(entityManager);
 
-		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + "barOntology \t bar:000000 \t 9000 \t 10000";
+		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + //
+		"barOntology \t bar:000000 \t 9000 \t 10000 \n" + //
+		"longOntology \t long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 \t 9000 \t 10000";
 
 		StopWatch watch1 = new StopWatch();
 		watch1.start();
 		OntologyIdStore store = new OntologyIdStore(new StringInputStream(storeConfig), entityManager);
 		watch1.stop();
 
-		Ontology ontology = new Ontology("testOntologyName", null, null) { /* intentionally empty */};
+		Ontology ontology = new Ontology("testOntologyName", null, null) {
+			// intentionally empty
+		};
+		
+		Ontology longOntology = new Ontology("longOntology", null, null) {
+			// intentionally empty
+		};
 
 		StopWatch watch2 = new StopWatch();
 		watch2.start();
@@ -96,6 +104,7 @@ public class OntologyIdStoreTest {
 		assertEquals("foo:000044", store.getNewId(ontology, entityManager));
 		assertEquals("foo:000045", store.getNewId(ontology, entityManager));
 		assertEquals("foo:000046", store.getNewId(ontology, entityManager));
+		assertEquals("long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009000", store.getNewId(longOntology, entityManager));
 		watch3.stop();
 
 		System.out.println(label + " Loading :" + watch1);
