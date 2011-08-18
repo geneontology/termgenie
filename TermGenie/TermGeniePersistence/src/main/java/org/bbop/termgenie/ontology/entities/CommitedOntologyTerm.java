@@ -1,6 +1,5 @@
 package org.bbop.termgenie.ontology.entities;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import org.apache.openjpa.persistence.PersistentMap;
 public class CommitedOntologyTerm {
 
 	private String id;
-	private String ontology;
 	private String label;
 	private String definition;
 	private List<CommitedOntologyTermSynonym> synonyms;
@@ -24,7 +22,7 @@ public class CommitedOntologyTerm {
 	private List<CommitedOntologyTermRelation> relations;
 	private Map<String, String> metaData;
 
-	private Date commitDate;
+	private int operation;
 
 	/**
 	 * @return the id
@@ -40,22 +38,6 @@ public class CommitedOntologyTerm {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the ontology
-	 */
-	@Column
-	@Basic(optional = false)
-	public String getOntology() {
-		return ontology;
-	}
-
-	/**
-	 * @param ontology the ontology to set
-	 */
-	public void setOntology(String ontology) {
-		this.ontology = ontology;
 	}
 
 	/**
@@ -151,19 +133,18 @@ public class CommitedOntologyTerm {
 	}
 
 	/**
-	 * @return the commitDate
+	 * @return the operation
 	 */
 	@Column
-	@Basic(optional = false)
-	public Date getCommitDate() {
-		return commitDate;
+	public int getOperation() {
+		return operation;
 	}
-
+	
 	/**
-	 * @param commitDate the commitDate to set
+	 * @param operation the operation to set
 	 */
-	public void setCommitDate(Date commitDate) {
-		this.commitDate = commitDate;
+	public void setOperation(int operation) {
+		this.operation = operation;
 	}
 
 }

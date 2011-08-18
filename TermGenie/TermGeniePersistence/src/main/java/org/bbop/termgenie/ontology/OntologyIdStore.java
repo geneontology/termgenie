@@ -191,21 +191,21 @@ public class OntologyIdStore {
 	}
 
 	/*
-	 * helper to increase readbility of the code
+	 * helper to increase readability of the code
 	 */
 	void warn(String message) {
 		logger.warn(message);
 	}
 
 	/*
-	 * helper to increase readbility of the code
+	 * helper to increase readability of the code
 	 */
 	void error(String message) {
 		throw new OntologyIdStoreException(message);
 	}
 
 	/*
-	 * helper to increase readbility of the code
+	 * helper to increase readability of the code
 	 */
 	void error(String message, Throwable cause) {
 		throw new OntologyIdStoreException(message, cause);

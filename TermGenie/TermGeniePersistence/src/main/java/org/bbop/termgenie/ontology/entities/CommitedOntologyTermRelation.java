@@ -18,6 +18,8 @@ public class CommitedOntologyTermRelation {
 	private String source;
 	private String target;
 	private List<String> properties;
+	
+	private int operation;
 
 	/**
 	 * @return the id
@@ -80,5 +82,20 @@ public class CommitedOntologyTermRelation {
 	 */
 	public void setProperties(List<String> properties) {
 		this.properties = properties;
+	}
+
+	/**
+	 * @return the operation
+	 */
+	@Column
+	public int getOperation() {
+		return operation;
+	}
+	
+	/**
+	 * @param operation the operation to set
+	 */
+	public void setOperation(int operation) {
+		this.operation = operation;
 	}
 }

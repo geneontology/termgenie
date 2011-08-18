@@ -284,5 +284,6 @@
 		<module>TermGenieRulesBasic</module>
 		<module>TermGenieRulesDynamic</module>
 		<module>TermGeniePersistence</module>
+		<module>TermGenieOntologyCommit</module>
 	</modules>
 </project>

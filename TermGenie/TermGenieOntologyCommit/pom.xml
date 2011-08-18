@@ -16,4 +16,9 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
+	<modules>
+		<module>TermGenieOntologyCommit-API</module>
+		<module>TermGenieOntologyCommit-CVS</module>
+		<module>TermGenieOntologyCommit-GeneOntology</module>
+	</modules>
 </project>
