@@ -1,21 +1,30 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-
-import owltools.graph.OWLGraphWrapper;
+import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
+import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.model.FrameMergeException;
+import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.model.Xref;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -40,35 +49,151 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 	}
 
 	@Override
-	protected OWLGraphWrapper load(Ontology ontology, String url)
-			throws OWLOntologyCreationException, IOException
-	{
-		OWLGraphWrapper wrapper = super.load(ontology, url);
-		if (wrapper != null) {
-			addCommitedTerms(ontology, wrapper);
-		}
-		return wrapper;
+	protected void postProcessOWLOntology(String ontology, OWLOntology owlOntology) {
+		// TODO Auto-generated method stub
+		super.postProcessOWLOntology(ontology, owlOntology);
 	}
 
-	private void addCommitedTerms(Ontology ontology, OWLGraphWrapper wrapper) {
+	@Override
+	protected void postProcessOBOOntology(String ontology, OBODoc obodoc) {
+		super.postProcessOBOOntology(ontology, obodoc);
 		TypedQuery<CommitedOntologyTerm> query = entityManager.createQuery("select t from CommitedOntologyTerm as t where t.ontology = ?1",
 				CommitedOntologyTerm.class);
-		query.setParameter(1, ontology.getUniqueName());
+		query.setParameter(1, ontology);
 		List<CommitedOntologyTerm> terms = query.getResultList();
 		for (CommitedOntologyTerm term : terms) {
-			addTerm(term, wrapper);
+			handleTerm(term, obodoc);
 		}
 	}
 
-	private void addTerm(CommitedOntologyTerm term, OWLGraphWrapper wrapper) {
-		// create owl description
+	private boolean handleTerm(CommitedOntologyTerm term, OBODoc obodoc) {
+		int operation = term.getOperation();
+		if (operation >= 0) {
+			Modification type = Modification.values()[operation];
+			String id = term.getId();
+			Frame frame = obodoc.getTermFrame(id);
+			switch (type) {
+				case add:
+					if (frame != null) {
+						LOGGER.warn("Skipping already existing term from history: "+id);
+						return false;
+					}
+					frame = new Frame(FrameType.TERM);
+					fillOBO(frame, term);
+					try {
+						obodoc.addFrame(frame);
+					} catch (FrameMergeException exception) {
+						LOGGER.error("Could not add new term to ontology: "+id, exception);
+						return false;
+					}
+					break;
+				case modify:
+					if (frame == null) {
+						LOGGER.warn("Skipping modification of non-existing term from history: "+id);
+						return false;
+					}
+					break;
+					
+				case remove:
+					if (frame == null) {
+						LOGGER.warn("Skipping removal of non-existing term from history: "+id);
+						return false;
+					}
+					Collection<Frame> frames = obodoc.getTermFrames();
+					frames.remove(frame);
+					break;
 
-		// check if the term is already in the ontology via id
-
-		// check if a term with the same label exists
-
-		// add term to owl
-		throw new RuntimeException("Not implemented");
+				default:
+					// do nothing
+					break;
+			}
+		}
+		return false;
 	}
 
+	private void fillOBO(Frame frame, CommitedOntologyTerm term) {
+		String id = term.getId();
+		frame.addClause(new Clause(OboFormatTag.TAG_ID.name(), id));
+		frame.addClause(new Clause(OboFormatTag.TAG_NAME.name(), term.getLabel()));
+		String definition = term.getDefinition();
+		if (definition != null) {
+			Clause cl = new Clause(OboFormatTag.TAG_DEF.name(), definition);
+			List<String> defXRef = term.getDefXRef();
+			if (defXRef != null && !defXRef.isEmpty()) {
+				for (String xref : defXRef) {
+					cl.addXref(new Xref(xref));
+				}
+			}
+			frame.addClause(cl);
+		}
+		Map<String, String> metaData = term.getMetaData();
+		if (metaData != null && !metaData.isEmpty()) {
+			for (Entry<String, String> entry : metaData.entrySet()) {
+				frame.addClause(new Clause(entry.getKey(), entry.getValue()));
+			}
+		}
+		fillSynonyms(frame, term);
+		fillRelations(frame, term, id);
+	}
+
+	protected void fillSynonyms(Frame frame, CommitedOntologyTerm term) {
+		List<CommitedOntologyTermSynonym> synonyms = term.getSynonyms();
+		if (synonyms != null && !synonyms.isEmpty()) {
+			for (CommitedOntologyTermSynonym termSynonym : synonyms) {
+				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM.name(), termSynonym.getLabel());
+				List<String> defXRef = term.getDefXRef();
+				if (defXRef != null && !defXRef.isEmpty()) {
+					for (String xref : defXRef) {
+						cl.addXref(new Xref(xref));
+					}
+				}
+				String scope = termSynonym.getScope();
+				if (scope != null) {
+					cl.addValue(scope);
+				}
+				String category = termSynonym.getCategory();
+				if (category != null) {
+					cl.addValue(category);
+				}
+				frame.addClause(cl);
+			}
+		}
+	}
+
+	protected void fillRelations(Frame frame, CommitedOntologyTerm term, String id) {
+		List<CommitedOntologyTermRelation> relations = term.getRelations();
+		if (relations != null && !relations.isEmpty()) {
+			for (CommitedOntologyTermRelation relation : relations) {
+				if (id.equals(relation.getSource())) {
+					String target = relation.getTarget();
+					Map<String, String> properties = relation.getProperties();
+					if (properties != null && !properties.isEmpty()) {
+						String type = properties.get("type");
+						if (OboFormatTag.TAG_IS_A.name().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else if (OboFormatTag.TAG_INTERSECTION_OF.name().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else if (OboFormatTag.TAG_UNION_OF.name().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else if (OboFormatTag.TAG_DISJOINT_FROM.name().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else if (OboFormatTag.TAG_RELATIONSHIP.name().equals(type)) {
+							String relationshipType = properties.get("relationship");
+							if (relationshipType != null) {
+								Clause cl = new Clause(type);
+								cl.addValue(relationshipType);
+								cl.addValue(target);
+								frame.addClause(cl);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }

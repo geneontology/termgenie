@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology.entities;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.PersistentMap;
 
 @Entity
 public class CommitedOntologyTermRelation {
@@ -17,7 +17,7 @@ public class CommitedOntologyTermRelation {
 	private int id;
 	private String source;
 	private String target;
-	private List<String> properties;
+	private Map<String, String> properties;
 	
 	private int operation;
 
@@ -72,15 +72,15 @@ public class CommitedOntologyTermRelation {
 	/**
 	 * @return the properties
 	 */
-	@PersistentCollection
-	public List<String> getProperties() {
+	@PersistentMap
+	public Map<String, String> getProperties() {
 		return properties;
 	}
 
 	/**
 	 * @param properties the properties to set
 	 */
-	public void setProperties(List<String> properties) {
+	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
 	}
 

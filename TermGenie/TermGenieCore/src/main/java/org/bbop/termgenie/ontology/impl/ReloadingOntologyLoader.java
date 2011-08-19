@@ -39,7 +39,7 @@ import com.google.inject.name.Named;
 @Singleton
 public class ReloadingOntologyLoader extends BaseOntologyLoader implements OntologyLoader {
 
-	final static Logger LOGGER = Logger.getLogger(ReloadingOntologyLoader.class);
+	protected final static Logger LOGGER = Logger.getLogger(ReloadingOntologyLoader.class);
 
 	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
 	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();

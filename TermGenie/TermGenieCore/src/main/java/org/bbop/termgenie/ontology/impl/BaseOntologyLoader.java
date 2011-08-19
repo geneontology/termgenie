@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -71,14 +72,50 @@ public class BaseOntologyLoader {
 			return loadOBO2OWL(ontology, realUrl);
 		}
 		else if (realUrl.getPath().endsWith(".owl") || realUrl.getQuery().endsWith(".owl")) {
-			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-			return manager.loadOntologyFromOntologyDocument(IRI.create(url));
+			return loadOWLPure(ontology, realUrl);
 		}
 		else {
 			throw new RuntimeException("Unable to load ontology from url, as no known suffix ('.obo' or '.owl') was detected: " + url);
 		}
 	}
 
+	/**
+	 * Load an owl ontology from a given URL.
+	 * 
+	 * @param ontology
+	 * @param realUrl
+	 * @return OWLOntology
+	 * @throws OWLOntologyCreationException
+	 */
+	protected OWLOntology loadOWLPure(String ontology, URL realUrl) throws OWLOntologyCreationException {
+		try {
+			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+			OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
+			return owlOntology;
+		} catch (URISyntaxException exception) {
+			throw new OWLOntologyCreationException(exception);
+		}
+	}
+	
+	/**
+	 * Method called for post processing of owl ontologies after the load.
+	 * 
+	 * @param ontology
+	 * @param owlOntology
+	 */
+	protected void postProcessOWLOntology(String ontology, OWLOntology owlOntology) {
+		// do nothing
+	}
+
+	/**
+	 * Load an OBO ontology and convert it to OWL.
+	 * 
+	 * @param ontology
+	 * @param realUrl
+	 * @return OWLOntology
+	 * @throws IOException
+	 * @throws OWLOntologyCreationException
+	 */
 	protected OWLOntology loadOBO2OWL(String ontology, URL realUrl)
 			throws IOException, OWLOntologyCreationException
 	{
@@ -90,16 +127,27 @@ public class BaseOntologyLoader {
 			if (obodoc == null) {
 				throw new RuntimeException("Could not load: " + realUrl);
 			}
-			cleaner.cleanOBOOntology(ontology, obodoc);
+			postProcessOBOOntology(ontology, obodoc);
 		} catch (StringIndexOutOfBoundsException exception) {
 			LOGGER.warn("Error parsing input: " + realUrl);
 			throw exception;
 		}
+		
 		Obo2Owl obo2Owl = new Obo2Owl();
 		LOGGER.info("Convert ontology " + ontology + " to owl.");
 		OWLOntology owlOntology = obo2Owl.convert(obodoc);
 		LOGGER.info("Finished loading ontology: " + ontology);
 		return owlOntology;
+	}
+	
+	/**
+	 * Method called for post processing of obo ontologies after the load.
+	 * 
+	 * @param ontology
+	 * @param obodoc
+	 */
+	protected void postProcessOBOOntology(String ontology, OBODoc obodoc) {
+		cleaner.cleanOBOOntology(ontology, obodoc);
 	}
 
 }

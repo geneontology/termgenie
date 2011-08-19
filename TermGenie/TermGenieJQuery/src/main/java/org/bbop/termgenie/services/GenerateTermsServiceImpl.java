@@ -431,9 +431,9 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 						for (OWLGraphEdge edge : outgoingEdges) {
 							String source = realInstance.getIdentifier(edge.getSource());
 							String target = realInstance.getIdentifier(edge.getTarget());
-							List<String> properties = new ArrayList<String>();
+							Map<String, String> properties = new HashMap<String, String>(); 
 							for (OWLQuantifiedProperty property : edge.getQuantifiedPropertyList()) {
-								properties.add(property.getPropertyId() + " " + property.getQuantifier().toString());
+								properties.put(property.getPropertyId(), property.getQuantifier().name());
 							}
 							Relation r = new Relation(source, target, properties);
 							relations.add(r);

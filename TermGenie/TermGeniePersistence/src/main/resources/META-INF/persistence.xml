@@ -7,6 +7,8 @@
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="derby"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -19,6 +21,8 @@
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="hsql"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -33,6 +37,8 @@
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>
         	<property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
         	<property name="openjpa.Log" value="log4j"/>
@@ -48,6 +54,8 @@
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
+    	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>
         	<property name="openjpa.Log" value="log4j"/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>

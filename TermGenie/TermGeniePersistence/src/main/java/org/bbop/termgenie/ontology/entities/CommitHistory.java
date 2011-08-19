@@ -2,7 +2,6 @@ package org.bbop.termgenie.ontology.entities;
 
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 

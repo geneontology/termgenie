@@ -196,14 +196,14 @@ public class Ontology {
 
 		private final String source;
 		private final String target;
-		private final List<String> properties;
+		private final Map<String, String> properties;
 
 		/**
 		 * @param source
 		 * @param target
 		 * @param properties
 		 */
-		public Relation(String source, String target, List<String> properties) {
+		public Relation(String source, String target, Map<String, String> properties) {
 			super();
 			this.source = source;
 			this.target = target;
@@ -227,7 +227,7 @@ public class Ontology {
 		/**
 		 * @return the properties
 		 */
-		public List<String> getProperties() {
+		public Map<String, String> getProperties() {
 			return properties;
 		}
 	}
