@@ -64,6 +64,11 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 		return supportedReasoners;
 	}
 
+	@Override
+	public void updateBuffered(String id) {
+		// do nothing
+	}
+
 	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
 		if (JCEL.equals(reasonerName)) {
 			OWLReasonerFactory factory = new JcelOWLReasonerFactory();

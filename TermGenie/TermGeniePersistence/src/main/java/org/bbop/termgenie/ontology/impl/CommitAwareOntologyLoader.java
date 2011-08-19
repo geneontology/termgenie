@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
@@ -113,11 +114,11 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 
 	private void fillOBO(Frame frame, CommitedOntologyTerm term) {
 		String id = term.getId();
-		frame.addClause(new Clause(OboFormatTag.TAG_ID.name(), id));
-		frame.addClause(new Clause(OboFormatTag.TAG_NAME.name(), term.getLabel()));
+		frame.addClause(new Clause(OboFormatTag.TAG_ID.getTag(), id));
+		frame.addClause(new Clause(OboFormatTag.TAG_NAME.getTag(), term.getLabel()));
 		String definition = term.getDefinition();
 		if (definition != null) {
-			Clause cl = new Clause(OboFormatTag.TAG_DEF.name(), definition);
+			Clause cl = new Clause(OboFormatTag.TAG_DEF.getTag(), definition);
 			List<String> defXRef = term.getDefXRef();
 			if (defXRef != null && !defXRef.isEmpty()) {
 				for (String xref : defXRef) {
@@ -140,7 +141,7 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 		List<CommitedOntologyTermSynonym> synonyms = term.getSynonyms();
 		if (synonyms != null && !synonyms.isEmpty()) {
 			for (CommitedOntologyTermSynonym termSynonym : synonyms) {
-				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM.name(), termSynonym.getLabel());
+				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM.getTag(), termSynonym.getLabel());
 				List<String> defXRef = term.getDefXRef();
 				if (defXRef != null && !defXRef.isEmpty()) {
 					for (String xref : defXRef) {
@@ -168,27 +169,30 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 					String target = relation.getTarget();
 					Map<String, String> properties = relation.getProperties();
 					if (properties != null && !properties.isEmpty()) {
-						String type = properties.get("type");
-						if (OboFormatTag.TAG_IS_A.name().equals(type)) {
+						String type = Relation.getType(properties);
+						if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
 							frame.addClause(new Clause(type, target));
 						}
-						else if (OboFormatTag.TAG_INTERSECTION_OF.name().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else if (OboFormatTag.TAG_UNION_OF.name().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else if (OboFormatTag.TAG_DISJOINT_FROM.name().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else if (OboFormatTag.TAG_RELATIONSHIP.name().equals(type)) {
-							String relationshipType = properties.get("relationship");
-							if (relationshipType != null) {
-								Clause cl = new Clause(type);
-								cl.addValue(relationshipType);
-								cl.addValue(target);
-								frame.addClause(cl);
+						else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
+							Clause cl = new Clause(type);
+							String relationShip = Relation.getRelationShip(properties);
+							if (relationShip != null) {
+								cl.addValue(relationShip);
 							}
+							cl.addValue(target);
+							frame.addClause(cl);
+						}
+						else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
+							frame.addClause(new Clause(type, target));
+						}
+						else {
+							Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
+							cl.addValue(type);
+							cl.addValue(target);
+							frame.addClause(cl);
 						}
 					}
 				}

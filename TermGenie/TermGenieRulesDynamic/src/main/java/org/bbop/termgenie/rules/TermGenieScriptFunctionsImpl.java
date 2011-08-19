@@ -21,29 +21,41 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.rules.TermGenieScriptFunctions.CDef.Differentium;
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.obo2owl.Obo2Owl;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * An implementation of functions for the termgenie scripting environment.
+ * An implementation of functions for the TermGenie scripting environment.
  * Hiding the results in an internal variable, allows type safe retrieval.
  */
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	private final ReasonerFactory factory;
 	private final TermGenerationInput input;
-	private final OWLGraphWrapper targetOntology;
+	private final String targetOntologyId;
+	final OWLGraphWrapper targetOntology;
 	private final String patternID;
+	private final Obo2Owl obo2Owl;
 	private int count = 0;
 
 	private List<TermGenerationOutput> result;
+	private boolean modified = false;
 
 	/**
 	 * @param input
 	 * @param targetOntology
+	 * @param targetOntologyId
 	 * @param patternID
 	 * @param factory
 	 */
@@ -55,8 +67,17 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		super();
 		this.input = input;
 		this.targetOntology = targetOntology;
+		this.targetOntologyId = targetOntology.getOntologyId();
 		this.patternID = patternID;
 		this.factory = factory;
+		this.obo2Owl = new Obo2Owl(targetOntology.getManager()) {
+
+			@Override
+			protected void apply(OWLOntologyChange change) {
+				super.apply(change);
+				modified = true;
+			}
+		};
 	}
 
 	private String getNewId() {
@@ -413,7 +434,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			String label)
 	{
 		if (!newLabel.equals(label)) {
-			// if by any chance a synonym has the same label it is ignored
+			// if by any chance a synonym has the same label, it is ignored
 			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
 			// TODO what to to with categories if creating a compound synonym?
 			results.add(new Synonym(newLabel, scope, null, xrefs));
@@ -623,31 +644,139 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 		String newId = getNewId();
 
-		List<Relation> relations = null;
+		List<Relation> relations = new ArrayList<Relation>();
 
 		if (logicalDefinition != null) {
-			// TODO use cdef to create relationships (differentium,
-			// intersection, restriction, ...)
-			// Pair<OWLObject, OWLGraphWrapper> base =
-			// logicalDefinition.getBase();
-			// Obo2Owl obo2Owl = new Obo2Owl() {
-			//
-			// @Override
-			// protected void init() {
-			// init(targetOntology.getManager());
-			// }
-			// };
-			// Frame termFrame = new Frame(FrameType.TERM);
-			// termFrame.setId(newId);
-			// obo2Owl.trTermFrame(termFrame);
-			// List<Differentium> differentia =
-			// logicalDefinition.getDifferentia();
-			// List<String> properties = logicalDefinition.getProperties();
+			Pair<OWLObject, OWLGraphWrapper> genus = logicalDefinition.getBase();
+			addIntersection(relations, newId, genus.getOne(), genus.getTwo());
+
+			List<Differentium> differentia = logicalDefinition.getDifferentia();
+			for (Differentium differentium : differentia) {
+				List<OWLObject> terms = differentium.getTerms();
+				String relation = differentium.getRelation();
+				for (int i = 0; i < terms.size(); i++) {
+					addIntersection(relations,
+							newId,
+							relation,
+							terms.get(i),
+							differentium.getOntologies());
+					addRelation(relations,
+							newId,
+							relation,
+							terms.get(i),
+							differentium.getOntologies());
+
+				}
+			}
+			List<Relation> inferred = extractRelations(newId, relations);
+			if (inferred != null && !inferred.isEmpty()) {
+				relations.addAll(relations);
+			}
 		}
 		DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
 
 		output.add(success(term, input));
 
+	}
+
+	private void addMinimalRelations(Frame frame, List<Relation> relations) {
+		for (Relation relation : relations) {
+			String target = relation.getTarget();
+			Map<String, String> properties = relation.getProperties();
+			if (properties != null && !properties.isEmpty()) {
+				String type = Relation.getType(properties);
+				if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
+					frame.addClause(new Clause(type, target));
+				}
+				else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
+					Clause cl = new Clause(type);
+					String relationShip = Relation.getRelationShip(properties);
+					if (relationShip != null) {
+						cl.addValue(relationShip);
+					}
+					cl.addValue(target);
+					frame.addClause(cl);
+				}
+				else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
+					frame.addClause(new Clause(type, target));
+				}
+				else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
+					frame.addClause(new Clause(type, target));
+				}
+				else {
+					Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
+					cl.addValue(type);
+					cl.addValue(target);
+					frame.addClause(cl);
+				}
+			}
+		}
+	}
+
+	private List<Relation> extractRelations(String newId, List<Relation> knownRelations) {
+
+		Frame termFrame = new Frame(FrameType.TERM);
+		termFrame.setId(newId);
+		addMinimalRelations(termFrame, knownRelations);
+
+		OWLClassExpression cls = obo2Owl.trTermFrame(termFrame);
+
+		factory.updateBuffered(targetOntologyId);
+		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
+		InferRelationshipsTask task = new InferRelationshipsTask(targetOntology, cls, knownRelations);
+		reasonerManager.runManagedTask(task);
+		return task.getRelations();
+	}
+
+	private void addRelation(List<Relation> relations,
+			String source,
+			String relationship,
+			OWLObject x,
+			List<OWLGraphWrapper> ontologies)
+	{
+		String id = null;
+		for (OWLGraphWrapper ontology : ontologies) {
+			id = ontology.getIdentifier(x);
+			if (id != null) {
+				break;
+			}
+		}
+		if (id != null) {
+			Map<String, String> properties = new HashMap<String, String>();
+			Relation.setType(properties, relationship);
+			relations.add(new Relation(source, id, properties));
+		}
+	}
+
+	private void addIntersection(List<Relation> relations,
+			String source,
+			OWLObject x,
+			OWLGraphWrapper ontology)
+	{
+		String target = ontology.getIdentifier(x);
+		Map<String, String> properties = new HashMap<String, String>();
+		Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF);
+		relations.add(new Relation(source, target, properties));
+	}
+
+	private void addIntersection(List<Relation> relations,
+			String source,
+			String relationship,
+			OWLObject x,
+			List<OWLGraphWrapper> ontologies)
+	{
+		String id = null;
+		for (OWLGraphWrapper ontology : ontologies) {
+			id = ontology.getIdentifier(x);
+			if (id != null) {
+				break;
+			}
+		}
+		if (id != null) {
+			Map<String, String> properties = new HashMap<String, String>();
+			Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF, relationship);
+			relations.add(new Relation(source, id, properties));
+		}
 	}
 
 	private List<String> getDefXref() {
@@ -705,6 +834,10 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	public List<TermGenerationOutput> getResult() {
 		return result;
+	}
+
+	public boolean hasModifiedOntology() {
+		return modified;
 	}
 
 }

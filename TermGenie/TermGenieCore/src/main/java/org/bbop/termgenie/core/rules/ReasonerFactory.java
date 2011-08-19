@@ -35,4 +35,11 @@ public interface ReasonerFactory {
 	 * @return reasoner names
 	 */
 	public Collection<String> getSupportedReasoners();
+	
+	/**
+	 * Update the buffered reasoners to reload the underlying ontology.
+	 * 
+	 * @param id ontology id
+	 */
+	public void updateBuffered(String id);
 }

@@ -3,6 +3,8 @@ package org.bbop.termgenie.core;
 import java.util.List;
 import java.util.Map;
 
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
@@ -230,5 +232,29 @@ public class Ontology {
 		public Map<String, String> getProperties() {
 			return properties;
 		}
+		
+		public static void setType(Map<String, String> properties, OboFormatTag tag) {
+			setType(properties, tag.getTag());
+		}
+		
+		public static void setType(Map<String, String> properties, OboFormatTag tag, String relationshipType) {
+			setType(properties, tag.getTag());
+			if (relationshipType != null) {
+				properties.put("relationship", relationshipType);
+			}
+		}
+		
+		public static void setType(Map<String, String> properties, String relationship) {
+			properties.put("type", relationship);
+		}
+		
+		public static String getType(Map<String, String> properties) {
+			return properties.get("type");
+		}
+		
+		public static String getRelationShip(Map<String, String> properties) {
+			return properties.get("relationship");
+		}
+		
 	}
 }

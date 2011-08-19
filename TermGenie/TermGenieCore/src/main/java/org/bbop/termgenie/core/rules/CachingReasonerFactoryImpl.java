@@ -59,13 +59,19 @@ public class CachingReasonerFactoryImpl extends ReasonerFactoryImpl implements
 	 */
 	@Override
 	public void onEvent(OntologyChangeEvent event) {
+		updateBuffered(event.getManager().getOntologyId());
+	}
+
+	@Override
+	public void updateBuffered(String id) {
 		synchronized (allManagers) {
 			for (String reasonerName : allManagers.keySet()) {
 				Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
 				if (managers != null && !managers.isEmpty()) {
-					managers.remove(event.getManager().getOntologyId());
+					managers.remove(id);
 				}
 			}
 		}
 	}
+
 }

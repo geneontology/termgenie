@@ -150,6 +150,12 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		@Override
 		public List<Boolean> run(List<OWLGraphWrapper> requested) {
 
+			List<Boolean> modified = new ArrayList<Boolean>(requested.size());
+			for (int i = 0; i < requested.size(); i++) {
+				modified.add(Boolean.FALSE);
+			}
+			Integer targetOntologyIndex = null;
+			TermGenieScriptFunctionsImpl functionsImpl = null;
 			try {
 				OWLGraphWrapper targetOntology = null;
 				ScriptEngine engine = jsEngineManager.getEngine();
@@ -158,9 +164,15 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					engine.put(name, requested.get(i));
 					if (name.equals(this.targetOntology.getUniqueName())) {
 						targetOntology = requested.get(i);
+						targetOntologyIndex = Integer.valueOf(i);
 					}
 				}
-				TermGenieScriptFunctionsImpl functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId, factory);
+				if (targetOntology == null || targetOntologyIndex == null) {
+					result = createError("Could not find requested ontology: "+this.targetOntology.getUniqueName());
+					return modified;
+				}
+				
+				functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId, factory);
 				engine.put("termgenie", functionsImpl);
 				if (printScript) {
 					PrintWriter writer = new PrintWriter(System.out);
@@ -177,8 +189,17 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				result = createError("Error, script did not return expected type:\n" + exception.getMessage());
 			} catch (NoSuchMethodException exception) {
 				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
+			} finally {
+				// set the target ontology modified flag
+				if (functionsImpl != null) {
+					if (functionsImpl.hasModifiedOntology()) {
+						if (targetOntologyIndex != null) {
+							modified.set(targetOntologyIndex.intValue(), Boolean.TRUE);
+						}
+					}
+				}
 			}
-			return null;
+			return modified;
 		}
 
 		protected List<TermGenerationOutput> createError(String message) {
