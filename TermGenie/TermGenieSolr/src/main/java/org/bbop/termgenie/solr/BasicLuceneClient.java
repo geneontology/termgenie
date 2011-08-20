@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
 import org.bbop.termgenie.ontology.OntologyTaskManager;

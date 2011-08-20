@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
@@ -18,6 +17,7 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
@@ -163,41 +163,7 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 
 	protected void fillRelations(Frame frame, CommitedOntologyTerm term, String id) {
 		List<CommitedOntologyTermRelation> relations = term.getRelations();
-		if (relations != null && !relations.isEmpty()) {
-			for (CommitedOntologyTermRelation relation : relations) {
-				if (id.equals(relation.getSource())) {
-					String target = relation.getTarget();
-					Map<String, String> properties = relation.getProperties();
-					if (properties != null && !properties.isEmpty()) {
-						String type = Relation.getType(properties);
-						if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
-							Clause cl = new Clause(type);
-							String relationShip = Relation.getRelationShip(properties);
-							if (relationShip != null) {
-								cl.addValue(relationShip);
-							}
-							cl.addValue(target);
-							frame.addClause(cl);
-						}
-						else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
-							frame.addClause(new Clause(type, target));
-						}
-						else {
-							Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
-							cl.addValue(type);
-							cl.addValue(target);
-							frame.addClause(cl);
-						}
-					}
-				}
-			}
-		}
+		OBOConverterTools.fillRelations(frame, relations, id);
 	}
 	
 }

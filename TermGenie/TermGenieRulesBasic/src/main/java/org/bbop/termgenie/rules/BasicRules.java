@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -308,7 +308,7 @@ class BasicRules extends BasicTools {
 
 		// TODO use cdef to create relationships (differentium, intersection,
 		// restriction, ...)
-		List<Relation> relations = null;
+		List<IRelation> relations = null;
 
 		DefaultOntologyTerm term = new DefaultOntologyTerm(null, label, definition, synonyms, defxrefs, metaData, relations);
 

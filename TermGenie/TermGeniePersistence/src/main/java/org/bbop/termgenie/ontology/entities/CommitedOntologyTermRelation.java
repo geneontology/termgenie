@@ -10,9 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentMap;
+import org.bbop.termgenie.core.Ontology.IRelation;
 
 @Entity
-public class CommitedOntologyTermRelation {
+public class CommitedOntologyTermRelation implements IRelation {
 
 	private int id;
 	private String source;
@@ -40,6 +41,7 @@ public class CommitedOntologyTermRelation {
 	/**
 	 * @return the source
 	 */
+	@Override
 	@Column
 	@Basic(optional = false)
 	public String getSource() {
@@ -56,6 +58,7 @@ public class CommitedOntologyTermRelation {
 	/**
 	 * @return the target
 	 */
+	@Override
 	@Column
 	@Basic(optional = false)
 	public String getTarget() {
@@ -72,6 +75,7 @@ public class CommitedOntologyTermRelation {
 	/**
 	 * @return the properties
 	 */
+	@Override
 	@PersistentMap
 	public Map<String, String> getProperties() {
 		return properties;

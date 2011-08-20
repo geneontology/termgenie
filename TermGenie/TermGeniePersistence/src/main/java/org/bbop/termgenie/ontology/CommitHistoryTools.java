@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
@@ -106,18 +107,18 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	private static List<CommitedOntologyTermRelation> translateRelations(List<Relation> relations) {
+	private static List<CommitedOntologyTermRelation> translateRelations(List<IRelation> relations) {
 		List<CommitedOntologyTermRelation> result = null;
 		if (relations != null && !relations.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTermRelation>(relations.size());
-			for (Relation relation : relations) {
+			for (IRelation relation : relations) {
 				result.add(translateRelation(relation, null));
 			}
 		}
 		return result;
 	}
 
-	protected static CommitedOntologyTermRelation translateRelation(Relation relation,
+	protected static CommitedOntologyTermRelation translateRelation(IRelation relation,
 			CommitObject.Modification type)
 	{
 		CommitedOntologyTermRelation rel = new CommitedOntologyTermRelation();

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.junit.Test;
 
 /**

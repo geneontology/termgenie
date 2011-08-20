@@ -62,7 +62,7 @@ public class Ontology {
 
 		public abstract List<String> getDefXRef();
 
-		public abstract List<Relation> getRelations();
+		public abstract List<IRelation> getRelations();
 
 		public abstract Map<String, String> getMetaData();
 
@@ -115,7 +115,7 @@ public class Ontology {
 			private final String definition;
 			private final List<Synonym> synonyms;
 			private final List<String> defXRef;
-			private final List<Relation> relations;
+			private final List<IRelation> relations;
 			private final Map<String, String> metaData;
 
 			public DefaultOntologyTerm(String id,
@@ -124,7 +124,7 @@ public class Ontology {
 					List<Synonym> synonyms,
 					List<String> defXRef,
 					Map<String, String> metaData,
-					List<Relation> relations)
+					List<IRelation> relations)
 			{
 				super();
 				this.id = id;
@@ -180,7 +180,7 @@ public class Ontology {
 			 * @return the relations
 			 */
 			@Override
-			public List<Relation> getRelations() {
+			public List<IRelation> getRelations() {
 				return relations;
 			}
 
@@ -193,8 +193,27 @@ public class Ontology {
 			}
 		}
 	}
+	
+	public static interface IRelation {
 
-	public static class Relation {
+		/**
+		 * @return the source
+		 */
+		public String getSource();
+
+		/**
+		 * @return the target
+		 */
+		public String getTarget();
+
+		/**
+		 * @return the properties
+		 */
+		public Map<String, String> getProperties();
+
+	}
+
+	public static class Relation implements IRelation {
 
 		private final String source;
 		private final String target;
@@ -215,6 +234,7 @@ public class Ontology {
 		/**
 		 * @return the source
 		 */
+		@Override
 		public String getSource() {
 			return source;
 		}
@@ -222,6 +242,7 @@ public class Ontology {
 		/**
 		 * @return the target
 		 */
+		@Override
 		public String getTarget() {
 			return target;
 		}
@@ -229,6 +250,7 @@ public class Ontology {
 		/**
 		 * @return the properties
 		 */
+		@Override
 		public Map<String, String> getProperties() {
 			return properties;
 		}

@@ -11,6 +11,7 @@ import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -21,10 +22,10 @@ import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
+import owltools.graph.OWLGraphWrapper;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import owltools.graph.OWLGraphWrapper;
 
 @Singleton
 public class TermCommitServiceImpl implements TermCommitService {
@@ -102,7 +103,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 			JsonTermRelation[] relations = term.getRelations();
 			if (relations != null) {
 				for (JsonTermRelation relation : relations) {
-					// TODO write relations
+					OBOConverterTools.fillRelation(frame, JsonTermRelation.convert(relation), null);
 				}
 			}
 

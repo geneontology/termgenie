@@ -1,7 +1,10 @@
 package org.bbop.termgenie.data;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.bbop.termgenie.core.Ontology.IRelation;
 
 public class JsonOntologyTerm {
 
@@ -254,7 +257,7 @@ public class JsonOntologyTerm {
 
 		private String source;
 		private String target;
-		private String[] properties;
+		private String[][] properties;
 
 		public JsonTermRelation() {
 			super();
@@ -291,14 +294,14 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the properties
 		 */
-		public String[] getProperties() {
+		public String[][] getProperties() {
 			return properties;
 		}
 
 		/**
 		 * @param properties the properties to set
 		 */
-		public void setProperties(String[] properties) {
+		public void setProperties(String[][] properties) {
 			this.properties = properties;
 		}
 
@@ -326,6 +329,37 @@ public class JsonOntologyTerm {
 			}
 			builder.append("]");
 			return builder.toString();
+		}
+		
+		public static IRelation convert(final JsonTermRelation jsonRelation) {
+			final Map<String, String> properties = new HashMap<String, String>();
+			
+			String[][] strings = jsonRelation.getProperties();
+			if (strings != null) {
+				for (int i = 0; i < strings.length; i++) {
+					String[] pair = strings[i];
+					if (pair != null && pair.length == 2) {
+						properties.put(pair[0], pair[1]);
+					}
+				}
+			}
+			return new IRelation() {
+				
+				@Override
+				public String getTarget() {
+					return jsonRelation.getTarget();
+				}
+				
+				@Override
+				public String getSource() {
+					return jsonRelation.getSource();
+				}
+				
+				@Override
+				public Map<String, String> getProperties() {
+					return properties;
+				}
+			};
 		}
 	}
 

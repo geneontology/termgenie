@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
@@ -21,10 +22,10 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.rules.TermGenieScriptFunctions.CDef.Differentium;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Obo2Owl;
-import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -644,7 +645,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 		String newId = getNewId();
 
-		List<Relation> relations = new ArrayList<Relation>();
+		List<IRelation> relations = new ArrayList<IRelation>();
 
 		if (logicalDefinition != null) {
 			Pair<OWLObject, OWLGraphWrapper> genus = logicalDefinition.getBase();
@@ -668,7 +669,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 				}
 			}
-			List<Relation> inferred = extractRelations(newId, relations);
+			List<IRelation> inferred = extractRelations(newId, relations);
 			if (inferred != null && !inferred.isEmpty()) {
 				relations.addAll(relations);
 			}
@@ -679,45 +680,11 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	}
 
-	private void addMinimalRelations(Frame frame, List<Relation> relations) {
-		for (Relation relation : relations) {
-			String target = relation.getTarget();
-			Map<String, String> properties = relation.getProperties();
-			if (properties != null && !properties.isEmpty()) {
-				String type = Relation.getType(properties);
-				if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
-					frame.addClause(new Clause(type, target));
-				}
-				else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
-					Clause cl = new Clause(type);
-					String relationShip = Relation.getRelationShip(properties);
-					if (relationShip != null) {
-						cl.addValue(relationShip);
-					}
-					cl.addValue(target);
-					frame.addClause(cl);
-				}
-				else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
-					frame.addClause(new Clause(type, target));
-				}
-				else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
-					frame.addClause(new Clause(type, target));
-				}
-				else {
-					Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
-					cl.addValue(type);
-					cl.addValue(target);
-					frame.addClause(cl);
-				}
-			}
-		}
-	}
-
-	private List<Relation> extractRelations(String newId, List<Relation> knownRelations) {
+	private List<IRelation> extractRelations(String newId, List<IRelation> knownRelations) {
 
 		Frame termFrame = new Frame(FrameType.TERM);
 		termFrame.setId(newId);
-		addMinimalRelations(termFrame, knownRelations);
+		OBOConverterTools.fillRelations(termFrame, knownRelations, null);
 
 		OWLClassExpression cls = obo2Owl.trTermFrame(termFrame);
 
@@ -728,7 +695,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		return task.getRelations();
 	}
 
-	private void addRelation(List<Relation> relations,
+	private void addRelation(List<IRelation> relations,
 			String source,
 			String relationship,
 			OWLObject x,
@@ -748,7 +715,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		}
 	}
 
-	private void addIntersection(List<Relation> relations,
+	private void addIntersection(List<IRelation> relations,
 			String source,
 			OWLObject x,
 			OWLGraphWrapper ontology)
@@ -759,7 +726,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		relations.add(new Relation(source, target, properties));
 	}
 
-	private void addIntersection(List<Relation> relations,
+	private void addIntersection(List<IRelation> relations,
 			String source,
 			String relationship,
 			OWLObject x,

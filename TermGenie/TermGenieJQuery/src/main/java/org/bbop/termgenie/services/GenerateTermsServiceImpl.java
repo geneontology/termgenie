@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TemplateField;
@@ -409,7 +410,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			List<Synonym> synonyms = null;
 			List<String> defxref = null;
 			Map<String, String> metadata = new HashMap<String, String>();
-			List<Relation> relations = null;
+			List<IRelation> relations = null;
 
 			if (realInstance != null) {
 				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
@@ -427,7 +428,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					// relations
 					Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
 					if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
-						relations = new ArrayList<Relation>(outgoingEdges.size());
+						relations = new ArrayList<IRelation>(outgoingEdges.size());
 						for (OWLGraphEdge edge : outgoingEdges) {
 							String source = realInstance.getIdentifier(edge.getSource());
 							String target = realInstance.getIdentifier(edge.getTarget());

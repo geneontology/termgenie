@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -103,7 +103,7 @@ public class TermGenieScriptTestRunner {
 			List<Synonym> synonyms = managed.getOBOSynonyms(x);
 			List<String> defXRef = managed.getDefXref(x);
 			Map<String, String> metaData = new HashMap<String, String>();
-			List<Relation> relations = Collections.emptyList();
+			List<IRelation> relations = Collections.emptyList();
 			term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
 			return false;
 		}

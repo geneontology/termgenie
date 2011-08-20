@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -19,11 +20,11 @@ class InferRelationshipsTask implements ReasonerTask {
 	
 	private final OWLGraphWrapper ontology;
 	private final OWLClassExpression cls;
-	private final List<Relation> knownRelations;
+	private final List<IRelation> knownRelations;
 	
-	private List<Relation> relations = null;
+	private List<IRelation> relations = null;
 
-	InferRelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls, List<Relation> knownRelations) {
+	InferRelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls, List<IRelation> knownRelations) {
 		super();
 		this.ontology = ontology;
 		this.cls = cls;
@@ -38,7 +39,7 @@ class InferRelationshipsTask implements ReasonerTask {
 		// only use direct ones
 		NodeSet<OWLClass> superClasses = reasoner.getSuperClasses(cls, true);
 		String source = ontology.getIdentifier(cls);
-		relations = new ArrayList<Relation>();
+		relations = new ArrayList<IRelation>();
 		for(OWLClass parent : superClasses.getFlattened()) {
 			String target = ontology.getIdentifier(parent);
 			Map<String, String> properties = new HashMap<String, String>();
@@ -51,7 +52,7 @@ class InferRelationshipsTask implements ReasonerTask {
 		return false;
 	}
 
-	public List<Relation> getRelations() {
+	public List<IRelation> getRelations() {
 		return relations;
 	}
 }
