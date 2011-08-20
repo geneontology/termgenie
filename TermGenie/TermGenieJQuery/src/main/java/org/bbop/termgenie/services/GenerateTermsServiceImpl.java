@@ -28,6 +28,7 @@ import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
@@ -208,6 +209,14 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		term.setLabel(candidate.getTerm().getLabel());
 		term.setSynonyms(createJsonSynonyms(candidate.getTerm().getSynonyms()));
 		term.setMetaData(new JsonTermMetaData(candidate.getTerm().getMetaData()));
+		List<IRelation> relations = candidate.getTerm().getRelations();
+		if (relations != null && !relations.isEmpty()) {
+			JsonTermRelation[] jsonRelations = new JsonTermRelation[relations.size()];
+			for (int i = 0; i < jsonRelations.length; i++) {
+				jsonRelations[i] = JsonTermRelation.convert(relations.get(i));
+			}
+			term.setRelations(jsonRelations);
+		}
 		return term;
 	}
 

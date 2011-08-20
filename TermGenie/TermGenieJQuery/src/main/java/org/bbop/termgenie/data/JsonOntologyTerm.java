@@ -3,8 +3,10 @@ package org.bbop.termgenie.data;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
+import org.bbop.termgenie.core.Ontology.Relation;
 
 public class JsonOntologyTerm {
 
@@ -331,7 +333,7 @@ public class JsonOntologyTerm {
 			return builder.toString();
 		}
 		
-		public static IRelation convert(final JsonTermRelation jsonRelation) {
+		public static IRelation convert(JsonTermRelation jsonRelation) {
 			final Map<String, String> properties = new HashMap<String, String>();
 			
 			String[][] strings = jsonRelation.getProperties();
@@ -343,23 +345,23 @@ public class JsonOntologyTerm {
 					}
 				}
 			}
-			return new IRelation() {
-				
-				@Override
-				public String getTarget() {
-					return jsonRelation.getTarget();
+			return new Relation(jsonRelation.source, jsonRelation.target, properties);
+		}
+		
+		public static JsonTermRelation convert(IRelation relation) {
+			JsonTermRelation jsonRelation = new JsonTermRelation();
+			jsonRelation.source = relation.getSource();
+			jsonRelation.target = relation.getTarget();
+			Map<String, String> properties = relation.getProperties();
+			if (properties != null && !properties.isEmpty()) {
+				String[][] strings = new String[properties.size()][];
+				int counter = 0;
+				for (Entry<String, String> entry : properties.entrySet()) {
+					strings[counter] = new String[]{entry.getKey(), entry.getValue()};
+					counter += 1;
 				}
-				
-				@Override
-				public String getSource() {
-					return jsonRelation.getSource();
-				}
-				
-				@Override
-				public Map<String, String> getProperties() {
-					return properties;
-				}
-			};
+			}
+			return jsonRelation;
 		}
 	}
 
