@@ -205,6 +205,11 @@ public class Ontology {
 		 * @return the target
 		 */
 		public String getTarget();
+		
+		/**
+		 * @return the target label
+		 */
+		public String getTargetLabel();
 
 		/**
 		 * @return the properties
@@ -217,17 +222,20 @@ public class Ontology {
 
 		private final String source;
 		private final String target;
+		private final String targetLabel;
 		private final Map<String, String> properties;
 
 		/**
 		 * @param source
 		 * @param target
+		 * @param targetLabel 
 		 * @param properties
 		 */
-		public Relation(String source, String target, Map<String, String> properties) {
+		public Relation(String source, String target, String targetLabel, Map<String, String> properties) {
 			super();
 			this.source = source;
 			this.target = target;
+			this.targetLabel = targetLabel;
 			this.properties = properties;
 		}
 
@@ -245,6 +253,14 @@ public class Ontology {
 		@Override
 		public String getTarget() {
 			return target;
+		}
+		
+		/**
+		 * @return the target label;
+		 */
+		@Override
+		public String getTargetLabel() {
+			return targetLabel;
 		}
 
 		/**

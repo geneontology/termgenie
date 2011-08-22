@@ -28,10 +28,13 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -47,7 +50,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	private final String targetOntologyId;
 	final OWLGraphWrapper targetOntology;
 	private final String patternID;
-	private final Obo2Owl obo2Owl;
+	private final TermGenieObo2Owl obo2Owl;
 	private int count = 0;
 
 	private List<TermGenerationOutput> result;
@@ -69,16 +72,29 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		this.input = input;
 		this.targetOntology = targetOntology;
 		this.targetOntologyId = targetOntology.getOntologyId();
-		this.patternID = patternID;
+		this.patternID = targetOntology.getOntologyId().toUpperCase() + ":" + patternID;
 		this.factory = factory;
-		this.obo2Owl = new Obo2Owl(targetOntology.getManager()) {
+		this.obo2Owl = new TermGenieObo2Owl(targetOntology.getManager());
+		obo2Owl.setObodoc(new OBODoc());
+		obo2Owl.setOwlOntology(targetOntology.getSourceOntology());
+	}
 
-			@Override
-			protected void apply(OWLOntologyChange change) {
-				super.apply(change);
-				modified = true;
-			}
-		};
+	private final class TermGenieObo2Owl extends Obo2Owl {
+	
+		private TermGenieObo2Owl(OWLOntologyManager manager) {
+			super(manager);
+		}
+	
+		@Override
+		protected void apply(OWLOntologyChange change) {
+			super.apply(change);
+			modified = true;
+		}
+	
+		@Override
+		public void setOwlOntology(OWLOntology owlOntology) {
+			super.setOwlOntology(owlOntology);
+		}
 	}
 
 	private String getNewId() {
@@ -702,16 +718,18 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			List<OWLGraphWrapper> ontologies)
 	{
 		String id = null;
+		String label = null;
 		for (OWLGraphWrapper ontology : ontologies) {
 			id = ontology.getIdentifier(x);
 			if (id != null) {
+				label = ontology.getLabel(x);
 				break;
 			}
 		}
 		if (id != null) {
 			Map<String, String> properties = new HashMap<String, String>();
 			Relation.setType(properties, relationship);
-			relations.add(new Relation(source, id, properties));
+			relations.add(new Relation(source, id, label, properties));
 		}
 	}
 
@@ -721,9 +739,10 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			OWLGraphWrapper ontology)
 	{
 		String target = ontology.getIdentifier(x);
+		String targetLabel = ontology.getLabel(x);
 		Map<String, String> properties = new HashMap<String, String>();
 		Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF);
-		relations.add(new Relation(source, target, properties));
+		relations.add(new Relation(source, target, targetLabel, properties));
 	}
 
 	private void addIntersection(List<IRelation> relations,
@@ -733,16 +752,18 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 			List<OWLGraphWrapper> ontologies)
 	{
 		String id = null;
+		String label = null;
 		for (OWLGraphWrapper ontology : ontologies) {
 			id = ontology.getIdentifier(x);
 			if (id != null) {
+				label = ontology.getLabel(x);
 				break;
 			}
 		}
 		if (id != null) {
 			Map<String, String> properties = new HashMap<String, String>();
 			Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF, relationship);
-			relations.add(new Relation(source, id, properties));
+			relations.add(new Relation(source, id, label, properties));
 		}
 	}
 

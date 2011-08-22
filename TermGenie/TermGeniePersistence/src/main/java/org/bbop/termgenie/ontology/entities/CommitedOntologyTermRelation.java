@@ -18,6 +18,7 @@ public class CommitedOntologyTermRelation implements IRelation {
 	private int id;
 	private String source;
 	private String target;
+	private String targetLabel;
 	private Map<String, String> properties;
 	
 	private int operation;
@@ -70,6 +71,23 @@ public class CommitedOntologyTermRelation implements IRelation {
 	 */
 	public void setTarget(String target) {
 		this.target = target;
+	}
+	
+	/**
+	 * @return the targetLabel
+	 */
+	@Override
+	@Column
+	@Basic(optional = false)
+	public String getTargetLabel() {
+		return targetLabel;
+	}
+	
+	/**
+	 * @param targetLabel the targetLabel to set
+	 */
+	public void setTargetLabel(String targetLabel) {
+		this.targetLabel = targetLabel;
 	}
 
 	/**

@@ -11,6 +11,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -23,6 +24,8 @@ import owltools.graph.OWLGraphWrapper;
 import com.google.inject.Inject;
 
 public class TermGenieScriptRunner implements TermGenerationEngine {
+	
+	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
@@ -185,6 +188,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				result = functionsImpl.getResult();
 			} catch (ScriptException exception) {
 				result = createError("Error during script execution:\n" + exception.getMessage());
+				logger.error("Error during script execution", exception);
 			} catch (ClassCastException exception) {
 				result = createError("Error, script did not return expected type:\n" + exception.getMessage());
 			} catch (NoSuchMethodException exception) {

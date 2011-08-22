@@ -42,9 +42,10 @@ class InferRelationshipsTask implements ReasonerTask {
 		relations = new ArrayList<IRelation>();
 		for(OWLClass parent : superClasses.getFlattened()) {
 			String target = ontology.getIdentifier(parent);
+			String targetLabel = ontology.getLabel(parent);
 			Map<String, String> properties = new HashMap<String, String>();
 			Relation.setType(properties, OboFormatTag.TAG_IS_A);
-			getRelations().add(new Relation(source, target, properties));
+			getRelations().add(new Relation(source, target, targetLabel, properties));
 		}
 		
 		// have some relations been removed by this?

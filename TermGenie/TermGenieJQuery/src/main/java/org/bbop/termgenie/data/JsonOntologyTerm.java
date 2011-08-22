@@ -259,6 +259,7 @@ public class JsonOntologyTerm {
 
 		private String source;
 		private String target;
+		private String targetLabel;
 		private String[][] properties;
 
 		public JsonTermRelation() {
@@ -291,6 +292,20 @@ public class JsonOntologyTerm {
 		 */
 		public void setTarget(String target) {
 			this.target = target;
+		}
+		
+		/**
+		 * @return the targetLabel
+		 */
+		public String getTargetLabel() {
+			return targetLabel;
+		}
+
+		/**
+		 * @param targetLabel the targetLabel to set
+		 */
+		public void setTargetLabel(String targetLabel) {
+			this.targetLabel = targetLabel;
 		}
 
 		/**
@@ -345,13 +360,14 @@ public class JsonOntologyTerm {
 					}
 				}
 			}
-			return new Relation(jsonRelation.source, jsonRelation.target, properties);
+			return new Relation(jsonRelation.source, jsonRelation.target, jsonRelation.targetLabel, properties);
 		}
 		
 		public static JsonTermRelation convert(IRelation relation) {
 			JsonTermRelation jsonRelation = new JsonTermRelation();
 			jsonRelation.source = relation.getSource();
 			jsonRelation.target = relation.getTarget();
+			jsonRelation.targetLabel = relation.getTargetLabel();
 			Map<String, String> properties = relation.getProperties();
 			if (properties != null && !properties.isEmpty()) {
 				String[][] strings = new String[properties.size()][];

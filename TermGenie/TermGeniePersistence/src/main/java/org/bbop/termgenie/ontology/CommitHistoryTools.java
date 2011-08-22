@@ -126,6 +126,7 @@ public class CommitHistoryTools {
 		rel.setProperties(relation.getProperties());
 		rel.setSource(relation.getSource());
 		rel.setTarget(relation.getTarget());
+		rel.setTargetLabel(relation.getTargetLabel());
 		return rel;
 	}
 

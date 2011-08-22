@@ -1917,11 +1917,42 @@ function termgenie(){
 				parent.append(divElem);
 				var table = createLayoutTable();
 				table.appendTo(divElem);
-				
-				table.append('<tr><td>TODO</td></tr>')
-				
-				// TODO render relations
-				return {};
+				jQuery.each(relations, function(index, relation){
+					// create map from array based objects
+					var relProperties = {};
+					jQuery.each(relation.properties, function(propIndex, pair){
+						relProperties[pair[0]] = pair[1];
+					});
+					
+					// check type
+					var type = relProperties.type;
+					if (type && type.length !== 0) {
+						// only append relation, if a type is given
+						var sb;
+						if(type === 'is_a') {
+							sb = 'is_a: '+ relation.target;
+						}
+						else if (type === 'intersection_of') {
+							sb = 'intersection_of: ';
+							var intersectionRelationship = relProperties.relationship;
+							if (intersectionRelationship && intersectionRelationship.length !== 0) {
+								sb += intersectionRelationship + ' ';
+							}
+							sb += relation.target;
+						}
+						else if (type === 'union_of') {
+							sb = 'union_of: '+ relation.target;
+						}
+						else {
+							sb = 'relationship: '+type + ' ' + relation.target;
+						}
+						sb += '! ' + relation.targetLabel;
+						table.append('<tr><td class="nobr">'+sb+'</td></tr>');
+					}
+				});
+				return {
+					relations: relations
+				};
 			}
 			
 			function createInputField(string) {
