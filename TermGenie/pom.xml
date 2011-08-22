@@ -280,10 +280,10 @@
 	<modules>
 		<module>TermGenieCore</module>
 		<module>TermGenieSolr</module>
-		<module>TermGenieJQuery</module>
 		<module>TermGenieRulesBasic</module>
 		<module>TermGenieRulesDynamic</module>
 		<module>TermGeniePersistence</module>
 		<module>TermGenieOntologyCommit</module>
+		<module>WebApplications</module>
 	</modules>
 </project>
