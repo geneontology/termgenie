@@ -40,6 +40,7 @@ class InferRelationshipsTask implements ReasonerTask {
 		NodeSet<OWLClass> superClasses = reasoner.getSuperClasses(cls, true);
 		String source = ontology.getIdentifier(cls);
 		relations = new ArrayList<IRelation>();
+		relations.addAll(knownRelations);
 		for(OWLClass parent : superClasses.getFlattened()) {
 			String target = ontology.getIdentifier(parent);
 			String targetLabel = ontology.getLabel(parent);

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -30,11 +31,16 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLOntologyRenameException;
+import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -44,6 +50,8 @@ import owltools.graph.OWLGraphWrapper.Synonym;
  * Hiding the results in an internal variable, allows type safe retrieval.
  */
 public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
+	
+	private static final Logger logger = Logger.getLogger(TermGenieScriptFunctionsImpl.class);
 
 	private final ReasonerFactory factory;
 	private final TermGenerationInput input;
@@ -54,7 +62,6 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	private int count = 0;
 
 	private List<TermGenerationOutput> result;
-	private boolean modified = false;
 
 	/**
 	 * @param input
@@ -80,20 +87,72 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 	}
 
 	private final class TermGenieObo2Owl extends Obo2Owl {
+		
+		ArrayList<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+		private OWLOntology owlOntology;
+		private final OWLOntologyManager manager;
 	
 		private TermGenieObo2Owl(OWLOntologyManager manager) {
 			super(manager);
+			this.manager = manager;
 		}
 	
 		@Override
-		protected void apply(OWLOntologyChange change) {
+		protected synchronized void apply(OWLOntologyChange change) {
 			super.apply(change);
-			modified = true;
+			changes.add(change);
 		}
 	
 		@Override
 		public void setOwlOntology(OWLOntology owlOntology) {
+			this.owlOntology = owlOntology;
 			super.setOwlOntology(owlOntology);
+		}
+		
+		
+		/**
+		 * @return true if all changes have been reverted.
+		 */
+		synchronized boolean undoChanges() {
+			boolean success = true;
+			if (!changes.isEmpty()) {
+				for (int i = changes.size() - 1; i >= 0 && success ; i--) {
+					OWLOntologyChange change = changes.get(i);
+					if (change instanceof AddAxiom) {
+						AddAxiom addAxiom = (AddAxiom) change;
+						success = applyChange(new RemoveAxiom(owlOntology, addAxiom.getAxiom()));
+					}
+					else if (change instanceof RemoveAxiom) {
+						RemoveAxiom removeAxiom = (RemoveAxiom) change;
+						success = applyChange(new AddAxiom(owlOntology, removeAxiom.getAxiom()));
+					}
+					else if (change instanceof AddOntologyAnnotation) {
+						AddOntologyAnnotation addOntologyAnnotation = (AddOntologyAnnotation) change;
+						success = applyChange(new RemoveOntologyAnnotation(owlOntology, addOntologyAnnotation.getAnnotation()));
+					}
+					else if (change instanceof RemoveOntologyAnnotation) {
+						RemoveOntologyAnnotation removeOntologyAnnotation = (RemoveOntologyAnnotation) change;
+						success = applyChange(new AddOntologyAnnotation(owlOntology, removeOntologyAnnotation.getAnnotation()));
+					}
+					else {
+						success = false;
+					}
+				}
+				if (success) {
+					changes.clear();
+				}
+			}
+			return success;
+		}
+		
+		private boolean applyChange(OWLOntologyChange change) {
+			try {
+				manager.applyChange(change);
+				return true;
+			} catch (OWLOntologyRenameException exception) {
+				logger.warn("Can not apply change", exception);
+				return false;
+			}
 		}
 	}
 
@@ -824,8 +883,7 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 		return result;
 	}
 
-	public boolean hasModifiedOntology() {
-		return modified;
+	public boolean hasChanges() {
+		return !obo2Owl.undoChanges();
 	}
-
 }

@@ -82,6 +82,9 @@ public abstract class GenericTaskManager<T> {
 			if (modified == Modified.reset) {
 				setChanged(true);
 			}
+			else if (modified == Modified.update) {
+				setChanged(false);
+			}
 		}
 	}
 

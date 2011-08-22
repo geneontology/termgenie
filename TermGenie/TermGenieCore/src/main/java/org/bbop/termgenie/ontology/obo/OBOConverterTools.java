@@ -48,7 +48,6 @@ public class OBOConverterTools {
 					cl.addValue(type);
 					cl.addValue(target);
 				}
-				cl.addValue("! "+relation.getTargetLabel());
 				frame.addClause(cl);
 			}
 		}

@@ -197,7 +197,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			} finally {
 				// set the target ontology modified flag
 				if (functionsImpl != null) {
-					if (functionsImpl.hasModifiedOntology()) {
+					if (functionsImpl.hasChanges()) {
 						if (targetOntologyIndex != null) {
 							modified.set(targetOntologyIndex.intValue(), Modified.reset);
 						}
