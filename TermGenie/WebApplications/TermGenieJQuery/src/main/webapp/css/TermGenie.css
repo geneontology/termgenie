@@ -1,0 +1,267 @@
+body {
+	font-family: Verdana,Arial,sans-serif;
+}
+
+h1 {
+	font-size: 2.5em;
+	font-weight: bold;
+	color: #777777;
+	margin: 10px 5px 10px;
+	text-align: left;
+}
+
+.tooldescription {
+	margin-bottom: 10px;
+}
+
+.termgenie-busy-message {
+	padding: 10px;
+	border: 1px solid;
+	margin: 10px;
+}
+
+.termgenie-busy-message img {
+	padding-right: 5px;
+}
+
+.termgenie-busy-message-text {
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+.termgenie-busy-additional-text {
+	margin-top: 5px;
+}
+
+.step1-additional-header {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+#span-step2-additional-header {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+#span-step3-additional-header {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+.ui-state-active {
+	background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #E6E6E6;
+}
+
+.template-list-wrapper {
+	margin-top: 20px;
+}
+
+.termgenie-template-header {
+	font-size: 1.2em;
+	padding-bottom: 10px;
+}
+.termgenie-template-header .more-less-buttons{
+	vertical-align: middle;
+	padding-left: 10px;
+}
+.termgenie-template-header .label-template-name {
+	font-style:italic;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+.termgenie-term-template-description {
+	font-size: 0.8em;
+	margin-left: 10px;
+	padding-bottom: 10px;
+}
+
+.termgenie-term-template-description .description-content {
+	margin-left: 10px;
+}
+
+.termgenie-term-template-hint {
+	font-size: 0.8em;
+	margin-left: 10px;
+	padding-bottom: 10px;
+}
+
+.termgenie-term-template-field-name {
+	font-weight: bold;
+}
+
+.termgenie-term-template-field-ontologies {
+	font-size: 0.8em;
+}
+
+.termgenie-term-template-hint .hint-content {
+	margin-left: 10px;
+	font-style: italic;
+}
+
+.myClickable {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.nobr {
+	white-space: nowrap;
+}
+
+.term-description-content {
+	overflow: auto;
+	margin: 5px;
+	height: 95%;
+	width: 95%;
+}
+
+.term-description-content .termgenie-layout-table td{
+	margin: 5px;
+	padding: 5px;
+}
+
+.div-submit-button {
+	margin-top: 40px;
+}
+
+.termgenie-autocomplete-menu-item {
+	font-size: 0.9em;
+}
+
+.termgenie-layout-table {
+	border: 0px;
+	padding: 0;
+	margin: 0;
+}
+
+.termgenie-layout-table td {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	vertical-align: top;
+}
+
+.more-less-buttons{
+	font-size: 12px;
+}
+
+.termgenie-input-field-error {
+	border-style: solid;
+	border-width: 2px;
+	border-color: red;
+}
+
+.term-generation-general-error {
+	padding: 10px;
+}
+
+.term-generation-general-error-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-general-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}
+
+.term-generation-detailed-errors {
+	padding: 10px;
+}
+
+.term-generation-detailed-errors-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-detailed-errors table {
+	padding: 10px;
+	border: 1px solid;
+	margin: 10px;
+}
+
+.warn-level-warn {
+	color: #FF8000;	
+}
+
+.warn-level-error {
+	color: #FF4000;
+}
+
+.warn-level-fatal {
+	color: #FF0040;
+}
+
+.term-generation-details-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.termgenie-proposed-terms-table {
+	padding: 10px;
+	border: 1px solid;
+	margin: 10px;
+}
+
+.termgenie-proposed-terms-table td {
+	text-align: left;
+	vertical-align: top;
+}
+
+.term-generation-export-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-export-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}
+
+.term-generation-commit-heading {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.term-generation-commit-error-details {
+	padding: 10px;
+	border: 1px solid;
+	margin: 20px;
+}
+
+.termgenie-login-panel-layout-table {
+	margin: 5px;
+}
+
+.termgenie-login-panel-layout-table td {
+	padding: 4px 5px;
+}
+
+.termgenie-review-panel-term-details-frame {
+	border-width: 1px;
+	border-style: solid;
+	padding: 5px;
+}
+
+.termgenie-review-panel-term-details-table td {
+	padding: 2px 5px;
+}
+
+.termgenie-review-panel-term-details-table .header {
+	font-weight: bold;
+}
+
+.termgenie-review-panel-term-details-table div {
+	height: 100%;
+	border: 1px solid;
+}

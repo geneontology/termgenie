@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+ <session-config>  <!--  10 minutes -->
+   <!-- 
+   <session-timeout>10</session-timeout> -->
+ </session-config>
+
+ <servlet>
+   <servlet-name>JsonRPCServlet</servlet-name>
+   <servlet-class>org.bbop.termgenie.servlets.JsonRPCServlet</servlet-class>
+   <!-- <load-on-startup>0</load-on-startup>  -->
+ </servlet>
+
+ <servlet-mapping>
+   <servlet-name>JsonRPCServlet</servlet-name>
+   <url-pattern>/jsonrpc</url-pattern>
+ </servlet-mapping>
+
+ <welcome-file-list>
+   <welcome-file>TermGenie.html</welcome-file>
+ </welcome-file-list>
+
+</web-app>
