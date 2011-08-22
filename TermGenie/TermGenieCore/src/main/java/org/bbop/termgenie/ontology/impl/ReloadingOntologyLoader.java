@@ -42,7 +42,7 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 	protected final static Logger LOGGER = Logger.getLogger(ReloadingOntologyLoader.class);
 
 	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
-	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
+//	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
 
 	private final Map<String, ConfiguredOntology> configurations;
 	private final Set<String> skipOntologies;
@@ -59,7 +59,7 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		this.skipOntologies = skipOntologies;
 		configurations = configuration.getOntologyConfigurations();
 
-		// use invalid settings to deactive the reloading
+		// use invalid settings to de-activate the reloading
 		if (period > 0 && unit != null) {
 			// use java.concurrent to schedule periodic task of reloading the
 			// ontologies.
@@ -76,7 +76,7 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 	}
 
 	private synchronized void reloadOntologies() {
-		ontologies.clear();
+//		ontologies.clear();
 		for (OntologyTaskManager manager : managers.values()) {
 			manager.updateManaged();
 		}
@@ -137,12 +137,12 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 			LOGGER.info("Skipping ontology: " + uniqueName);
 			return null;
 		}
-		if (ontologies.containsKey(uniqueName)) {
-			return ontologies.get(uniqueName);
-		}
+//		if (ontologies.containsKey(uniqueName)) {
+//			return ontologies.get(uniqueName);
+//		}
 		try {
 			OWLGraphWrapper w = getResource(ontology);
-			ontologies.put(uniqueName, w);
+//			ontologies.put(uniqueName, w);
 			return w;
 		} catch (UnknownOWLOntologyException exception) {
 			throw new RuntimeException(exception);

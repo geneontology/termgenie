@@ -15,15 +15,18 @@ public class OntologyChangeEvent {
 
 	private final OntologyTaskManager manager;
 	private final Ontology ontology;
+	private final boolean reset;
 
 	/**
 	 * @param manager
 	 * @param ontology
+	 * @param reset
 	 */
-	public OntologyChangeEvent(OntologyTaskManager manager, Ontology ontology) {
+	public OntologyChangeEvent(OntologyTaskManager manager, Ontology ontology, boolean reset) {
 		super();
 		this.manager = manager;
 		this.ontology = ontology;
+		this.reset = reset;
 	}
 
 	/**
@@ -38,5 +41,12 @@ public class OntologyChangeEvent {
 	 */
 	public Ontology getOntology() {
 		return ontology;
+	}
+	
+	/**
+	 * @return the reset
+	 */
+	public boolean isReset() {
+		return reset;
 	}
 }

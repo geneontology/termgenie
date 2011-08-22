@@ -164,10 +164,13 @@ public class BasicLuceneClient implements
 
 	@Override
 	public void onEvent(OntologyChangeEvent event) {
-		// check if the changed ontology is the one used for this index
-		if (this.name.equals(event.getOntology().getUniqueName())) {
-			LuceneClientSetupTask task = new LuceneClientSetupTask(this);
-			event.getManager().runManagedTask(task);
+		// ignore event, if it's just a reset
+		if (!event.isReset()) {
+			// check if the changed ontology is the one used for this index
+			if (this.name.equals(event.getOntology().getUniqueName())) {
+				LuceneClientSetupTask task = new LuceneClientSetupTask(this);
+				event.getManager().runManagedTask(task);
+			}
 		}
 	}
 

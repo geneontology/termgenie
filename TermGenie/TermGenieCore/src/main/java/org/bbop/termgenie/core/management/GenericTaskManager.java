@@ -75,7 +75,7 @@ public abstract class GenericTaskManager<T> {
 		finally {
 			lock.release();
 			if (modified) {
-				setChanged();
+				setChanged(true);
 			}
 		}
 	}
@@ -117,7 +117,7 @@ public abstract class GenericTaskManager<T> {
 			}
 			else {
 				managed = updateManaged(managed);
-				setChanged();
+				setChanged(false);
 			}
 		} catch (InterruptedException exception) {
 			throw new GenericTaskManagerException("Interrupted during wait.", exception);
@@ -129,7 +129,7 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 
-	protected abstract void setChanged();
+	protected abstract void setChanged(boolean reset);
 
 	/**
 	 * Run a managed task. Encapsulate the wait and return operations for the

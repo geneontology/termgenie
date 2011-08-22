@@ -148,7 +148,7 @@ public class MultiResourceTaskManagerTest {
 		}
 
 		@Override
-		protected void setChanged() {
+		protected void setChanged(boolean reset) {
 			// Do nothing in tests
 		}
 	}

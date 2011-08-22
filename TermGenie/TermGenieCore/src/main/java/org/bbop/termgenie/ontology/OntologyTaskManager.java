@@ -38,8 +38,8 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	}
 
 	@Override
-	protected void setChanged() {
-		EventBus.publish(new OntologyChangeEvent(this, ontology));
+	protected void setChanged(boolean reset) {
+		EventBus.publish(new OntologyChangeEvent(this, ontology, reset));
 	}
 
 	@Override

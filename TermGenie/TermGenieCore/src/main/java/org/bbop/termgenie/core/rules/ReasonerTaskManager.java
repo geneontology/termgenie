@@ -24,7 +24,7 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	}
 
 	@Override
-	protected void setChanged() {
+	protected void setChanged(boolean reset) {
 		// do nothing for now
 	}
 
