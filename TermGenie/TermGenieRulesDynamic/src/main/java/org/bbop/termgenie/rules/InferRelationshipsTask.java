@@ -32,7 +32,7 @@ class InferRelationshipsTask implements ReasonerTask {
 	}
 
 	@Override
-	public boolean run(OWLReasoner reasoner) {
+	public Modified run(OWLReasoner reasoner) {
 		// TODO implement
 		// infer implied relation ships from cross-product and given relation ships
 		
@@ -50,7 +50,7 @@ class InferRelationshipsTask implements ReasonerTask {
 		
 		// have some relations been removed by this?
 		// assume no for now
-		return false;
+		return Modified.no;
 	}
 
 	public List<IRelation> getRelations() {

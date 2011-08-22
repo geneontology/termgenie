@@ -398,7 +398,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		ontology.runManagedTask(new OntologyTask() {
 
 			@Override
-			public boolean run(OWLGraphWrapper managed) {
+			public Modified run(OWLGraphWrapper managed) {
 				try {
 					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, factory);
 					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
@@ -407,7 +407,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 						String label = managed.getLabel(searchResult.hit);
 						System.out.println(id + "  " + searchResult.score + "  " + label);
 					}
-					return false;
+					return Modified.no;
 				} catch (IOException exception) {
 					throw new RuntimeException(exception);
 				}

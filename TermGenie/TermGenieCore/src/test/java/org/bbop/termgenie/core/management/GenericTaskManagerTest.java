@@ -114,11 +114,11 @@ public class GenericTaskManagerTest {
 				manager.runManagedTask(new GenericTaskManager.ManagedTask<String>() {
 
 					@Override
-					public boolean run(String managed) {
+					public Modified run(String managed) {
 						try {
 							result.add(name + managed);
 							sleep(workSleep);
-							return false;
+							return Modified.no;
 						} catch (InterruptedException exception) {
 							throw new RuntimeException(exception);
 						}
@@ -159,11 +159,11 @@ public class GenericTaskManagerTest {
 				manager.runManagedTask(new GenericTaskManager.ManagedTask<String>() {
 
 					@Override
-					public boolean run(String managed) {
+					public Modified run(String managed) {
 						try {
 							result.add(name + managed);
 							sleep(workSleep);
-							return true;
+							return Modified.reset;
 						} catch (InterruptedException exception) {
 							throw new RuntimeException(exception);
 						}

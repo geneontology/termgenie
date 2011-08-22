@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
@@ -121,7 +122,7 @@ public class HardCodedTermGenerationEngine implements TermGenerationEngine {
 			}
 
 			@Override
-			public List<Boolean> run(List<OWLGraphWrapper> requested) {
+			public List<Modified> run(List<OWLGraphWrapper> requested) {
 				try {
 					Constructor<? extends Patterns> constructor = c.getDeclaredConstructor(List.class,
 							DefaultTermTemplates.class,

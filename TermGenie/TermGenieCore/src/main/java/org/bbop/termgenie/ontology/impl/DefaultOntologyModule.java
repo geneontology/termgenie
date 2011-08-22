@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
@@ -97,7 +98,7 @@ public class DefaultOntologyModule extends IOCModule {
 		MultiOntologyTask task = new MultiOntologyTask() {
 
 			@Override
-			public List<Boolean> run(List<OWLGraphWrapper> requested) {
+			public List<Modified> run(List<OWLGraphWrapper> requested) {
 				System.out.println("requested: " + requested.size());
 				return null;
 			}

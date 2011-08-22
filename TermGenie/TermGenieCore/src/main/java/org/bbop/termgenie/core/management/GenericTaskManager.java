@@ -2,6 +2,8 @@ package org.bbop.termgenie.core.management;
 
 import java.util.concurrent.Semaphore;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
+
 /**
  * Provide basic runtime management for an instance. Allow limited concurrent
  * usage of the managed instance.
@@ -61,20 +63,23 @@ public abstract class GenericTaskManager<T> {
 	 * @param managed
 	 * @param modified
 	 */
-	void returnManaged(T managed, boolean modified) {
+	void returnManaged(T managed, Modified modified) {
 		if (this.managed != managed) {
 			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: " + name);
 		}
 		try {
-			if (modified) {
+			if (modified == Modified.reset) {
 				this.managed = resetManaged(managed);
+			}
+			else if (modified == Modified.update) {
+				this.managed = updateManaged(managed);
 			}
 		} catch (GenericTaskManagerException exception) {
 			throw exception;
 		}
 		finally {
 			lock.release();
-			if (modified) {
+			if (modified == Modified.reset) {
 				setChanged(true);
 			}
 		}
@@ -139,7 +144,7 @@ public abstract class GenericTaskManager<T> {
 	 */
 	public void runManagedTask(ManagedTask<T> task) {
 		T managed = null;
-		boolean modified = false;
+		Modified modified = Modified.no;
 		try {
 			managed = getManaged();
 			modified = task.run(managed);
@@ -158,13 +163,17 @@ public abstract class GenericTaskManager<T> {
 	 */
 	public static interface ManagedTask<T> {
 
+		public enum Modified {
+			no, update, reset
+		}
+		
 		/**
 		 * Run the task with a managed instance.
 		 * 
 		 * @param managed
 		 * @return true if the instance was modified
 		 */
-		public boolean run(T managed);
+		public Modified run(T managed);
 	}
 
 	public static class GenericTaskManagerException extends RuntimeException {

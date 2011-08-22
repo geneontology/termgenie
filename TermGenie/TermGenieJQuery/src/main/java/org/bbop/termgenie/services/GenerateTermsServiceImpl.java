@@ -413,7 +413,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 
 		@Override
-		public boolean run(OWLGraphWrapper realInstance) {
+		public Modified run(OWLGraphWrapper realInstance) {
 			String label = null;
 			String definition = null;
 			List<Synonym> synonyms = null;
@@ -454,7 +454,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				}
 			}
 			term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
-			return false;
+			return Modified.no;
 		}
 
 		OntologyTerm getTerm() {

@@ -47,9 +47,9 @@ public class GeneOntologyResonerSpeedTest {
 		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {
 
 			@Override
-			public boolean run(OWLGraphWrapper managed) {
+			public Modified run(OWLGraphWrapper managed) {
 				wrapper = managed;
-				return false;
+				return Modified.no;
 			}
 		});
 		ontology = wrapper.getSourceOntology();
@@ -117,7 +117,7 @@ public class GeneOntologyResonerSpeedTest {
 		manager.runManagedTask(new ReasonerTaskManager.ReasonerTask() {
 
 			@Override
-			public boolean run(OWLReasoner reasoner) {
+			public Modified run(OWLReasoner reasoner) {
 				StopWatch t1 = new StopWatch();
 				t1.start();
 				boolean isConsistent = reasoner.isConsistent();
@@ -164,7 +164,7 @@ public class GeneOntologyResonerSpeedTest {
 				assertTrue(containsIsa);
 				assertFalse(containsPartOf);
 				assertTrue(topClassNode.getSize() > 0);
-				return false;
+				return Modified.no;
 			}
 		});
 

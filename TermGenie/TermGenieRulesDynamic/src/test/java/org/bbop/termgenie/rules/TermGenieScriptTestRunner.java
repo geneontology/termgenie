@@ -96,7 +96,7 @@ public class TermGenieScriptTestRunner {
 		}
 
 		@Override
-		public boolean run(OWLGraphWrapper managed) {
+		public Modified run(OWLGraphWrapper managed) {
 			OWLObject x = managed.getOWLObjectByIdentifier(id);
 			String label = managed.getLabel(x);
 			String definition = managed.getDef(x);
@@ -105,7 +105,7 @@ public class TermGenieScriptTestRunner {
 			Map<String, String> metaData = new HashMap<String, String>();
 			List<IRelation> relations = Collections.emptyList();
 			term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
-			return false;
+			return Modified.no;
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
 import org.junit.Test;
 
@@ -105,7 +106,7 @@ public class MultiResourceTaskManagerTest {
 			}
 
 			@Override
-			public List<Boolean> run(List<String> requested) {
+			public List<Modified> run(List<String> requested) {
 				try {
 					Thread.sleep(100);
 					long current = System.currentTimeMillis() - startTime;

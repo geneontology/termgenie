@@ -26,9 +26,9 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 		runManagedTask(new OntologyTask() {
 
 			@Override
-			public boolean run(OWLGraphWrapper managed) {
+			public Modified run(OWLGraphWrapper managed) {
 				ontologyId = managed.getOntologyId();
-				return false;
+				return Modified.no;
 			}
 		});
 	}

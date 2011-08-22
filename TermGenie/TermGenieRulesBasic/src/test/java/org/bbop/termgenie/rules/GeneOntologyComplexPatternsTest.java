@@ -78,9 +78,9 @@ public class GeneOntologyComplexPatternsTest {
 		OWLGraphWrapper wrapper = null;
 
 		@Override
-		public boolean run(OWLGraphWrapper managed) {
+		public Modified run(OWLGraphWrapper managed) {
 			wrapper = managed;
-			return false;
+			return Modified.no;
 		}
 	}
 

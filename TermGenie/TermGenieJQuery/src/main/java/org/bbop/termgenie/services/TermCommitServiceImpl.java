@@ -176,9 +176,9 @@ public class TermCommitServiceImpl implements TermCommitService {
 		String id = null;
 
 		@Override
-		public boolean run(OWLGraphWrapper managed) {
+		public Modified run(OWLGraphWrapper managed) {
 			id = managed.getOntologyId();
-			return false;
+			return Modified.no;
 		}
 	}
 

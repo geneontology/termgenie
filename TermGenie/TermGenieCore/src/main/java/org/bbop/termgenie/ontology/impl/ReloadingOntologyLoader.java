@@ -162,11 +162,11 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		ontologyTaskManager.runManagedTask(new OntologyTask() {
 
 			@Override
-			public boolean run(OWLGraphWrapper ontology) {
+			public Modified run(OWLGraphWrapper ontology) {
 				OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");
 				System.out.println(owlObject);
 				System.out.println(ontology.getLabel(owlObject));
-				return false;
+				return Modified.no;
 			}
 		});
 

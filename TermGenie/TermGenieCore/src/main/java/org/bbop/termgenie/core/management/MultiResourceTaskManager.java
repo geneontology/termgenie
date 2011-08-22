@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.GenericTaskManagerException;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 
 /**
  * Enable locking of multiple resources for one task. Prevent deadlocks by
@@ -69,7 +70,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 			List<GenericTaskManagerException> innerExceptions = new ArrayList<GenericTaskManagerException>();
 			for (int i = 0; i < resources.size(); i++) {
 				try {
-					managers[i].returnManaged(resources.get(i), false);
+					managers[i].returnManaged(resources.get(i), Modified.no);
 				} catch (GenericTaskManagerException innerException) {
 					// log the exception, but continue releasing
 					innerExceptions.add(innerException);
@@ -88,7 +89,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	}
 
 	private void returnManaged(List<RESOURCETYPE> resources,
-			List<Boolean> modifieds,
+			List<Modified> modifieds,
 			INFOTYPE[] infos)
 	{
 		// no locking required for releasing
@@ -99,7 +100,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		for (int i = 0; i < infos.length; i++) {
 			try {
 				GenericTaskManager<RESOURCETYPE> manager = getResource(infos[i]);
-				boolean modified = false;
+				Modified modified = Modified.no;
 				if (modifieds != null && modifieds.size() > i) {
 					modified = modifieds.get(i);
 				}
@@ -130,7 +131,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 			INFOTYPE...requested)
 	{
 		List<RESOURCETYPE> managed = null;
-		List<Boolean> modifiedList = null;
+		List<Modified> modifiedList = null;
 		try {
 			managed = getManaged(requested);
 			modifiedList = task.run(managed);
@@ -156,7 +157,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		 * @param requested
 		 * @return list of modified flags
 		 */
-		public List<Boolean> run(List<RESOURCETYPE> requested);
+		public List<Modified> run(List<RESOURCETYPE> requested);
 
 	}
 

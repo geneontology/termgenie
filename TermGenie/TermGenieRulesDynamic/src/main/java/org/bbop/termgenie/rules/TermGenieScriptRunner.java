@@ -14,6 +14,7 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
@@ -151,11 +152,11 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		}
 
 		@Override
-		public List<Boolean> run(List<OWLGraphWrapper> requested) {
+		public List<Modified> run(List<OWLGraphWrapper> requested) {
 
-			List<Boolean> modified = new ArrayList<Boolean>(requested.size());
+			List<Modified> modified = new ArrayList<Modified>(requested.size());
 			for (int i = 0; i < requested.size(); i++) {
-				modified.add(Boolean.FALSE);
+				modified.add(Modified.no);
 			}
 			Integer targetOntologyIndex = null;
 			TermGenieScriptFunctionsImpl functionsImpl = null;
@@ -198,7 +199,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				if (functionsImpl != null) {
 					if (functionsImpl.hasModifiedOntology()) {
 						if (targetOntologyIndex != null) {
-							modified.set(targetOntologyIndex.intValue(), Boolean.TRUE);
+							modified.set(targetOntologyIndex.intValue(), Modified.reset);
 						}
 					}
 				}

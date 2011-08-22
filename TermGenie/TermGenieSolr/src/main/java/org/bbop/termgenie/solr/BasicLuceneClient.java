@@ -124,9 +124,9 @@ public class BasicLuceneClient implements
 		}
 
 		@Override
-		public boolean run(OWLGraphWrapper managed) {
+		public Modified run(OWLGraphWrapper managed) {
 			client.setup(managed);
-			return false;
+			return Modified.no;
 		}
 
 	}
