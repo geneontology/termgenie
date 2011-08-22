@@ -787,6 +787,7 @@ function run() {
 			<ontology name="ProteinOntology"/>
 			<ontology name="GeneOntology"/>
 		</external>
+		<obonamespace>cell</obonamespace>
 		<fields>
 			<field name="cell" required="true">
 				<ontology name="CL"/>

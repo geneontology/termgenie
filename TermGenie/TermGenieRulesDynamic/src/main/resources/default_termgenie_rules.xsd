@@ -21,7 +21,7 @@
 				maxOccurs="1" minOccurs="0">
 			</xsd:element>
 			<xsd:element name="obonamespace" type="xsd:string"
-				maxOccurs="1" minOccurs="0" />
+				maxOccurs="1" minOccurs="1" />
 			<xsd:element name="requires" type="xsd:string" maxOccurs="unbounded"
 				minOccurs="0">
 			</xsd:element>
