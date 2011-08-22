@@ -1,5 +1,6 @@
 package org.bbop.termgenie.core.eventbus;
 
+import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventServiceExistsException;
 import org.bushe.swing.event.EventServiceLocator;
 import org.bushe.swing.event.ThreadSafeEventService;
@@ -12,8 +13,12 @@ public class TermGenieEventBus {
 		if (!doneSetup) {
 			// register the implementation for the EventBus
 			try {
-				EventServiceLocator.setEventService(EventServiceLocator.SERVICE_NAME_SWING_EVENT_SERVICE,
-						new ThreadSafeEventService());
+				EventService eventService = EventServiceLocator.getEventService(EventServiceLocator.SERVICE_NAME_SWING_EVENT_SERVICE);
+				if (eventService == null) {
+					eventService = new ThreadSafeEventService();
+					EventServiceLocator.setEventService(EventServiceLocator.SERVICE_NAME_SWING_EVENT_SERVICE,
+							eventService);
+				}
 				doneSetup = true;
 			} catch (EventServiceExistsException exception) {
 				throw new RuntimeException(exception);
