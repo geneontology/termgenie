@@ -376,6 +376,7 @@ public class JsonOntologyTerm {
 					strings[counter] = new String[]{entry.getKey(), entry.getValue()};
 					counter += 1;
 				}
+				jsonRelation.properties = strings;
 			}
 			return jsonRelation;
 		}
