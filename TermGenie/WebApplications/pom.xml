@@ -28,6 +28,11 @@
 					<classesClassifier>classes</classesClassifier>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>7.4.2.v20110526</version>
+			</plugin>
 		</plugins>
 	</build>
 

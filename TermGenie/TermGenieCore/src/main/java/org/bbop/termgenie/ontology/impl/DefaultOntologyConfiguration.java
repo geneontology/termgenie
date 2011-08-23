@@ -55,6 +55,9 @@ public class DefaultOntologyConfiguration extends ResourceLoader implements Onto
 					}
 				}
 			}
+			if (map.isEmpty()) {
+				throw new RuntimeException("No ontology configurations found in resource: "+resource);
+			}
 			return Collections.unmodifiableMap(map);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);

@@ -3,8 +3,8 @@ package org.bbop.termgenie.servlets;
 import org.bbop.termgenie.core.io.XMLTermTemplateModule;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
 
 public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
@@ -22,9 +22,8 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 
 					@Override
 					protected void bindOntologyConfiguration() {
-						bind(OntologyConfiguration.class).to(DefaultOntologyConfiguration.class);
-						bind("DefaultOntologyConfigurationResource",
-								"go-ontology-configuration.xml");
+						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
+						bind("XMLOntologyConfigurationResource", "go-ontology-configuration.xml");
 					}
 				};
 			}

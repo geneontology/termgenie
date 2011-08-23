@@ -81,6 +81,9 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 				}
 			}
 			parser.close();
+			if (map == null || map.isEmpty()) {
+				 throw new RuntimeException("No ontologies found in resource: "+resource);
+			}
 			return Collections.unmodifiableMap(map);
 		} catch (XMLStreamException exception) {
 			throw new RuntimeException(exception);
