@@ -1,5 +1,8 @@
 package org.bbop.termgenie.servlets;
 
+import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
 
 public class JsonRPCServlet extends AbstractJsonRPCServlet {
 
@@ -8,8 +11,17 @@ public class JsonRPCServlet extends AbstractJsonRPCServlet {
 
 	@Override
 	protected ServiceExecutor createServiceExecutor() {
-		return new DefaultServiceExecutor();
+		return new ServiceExecutor() {
+
+			@Override
+			protected IOCModule getOntologyModule() {
+				return new DefaultOntologyModule();
+			}
+
+			@Override
+			protected IOCModule getRulesModule() {
+				return new DefaultXMLDynamicRulesModule();
+			}
+		};
 	}
-
-
 }
