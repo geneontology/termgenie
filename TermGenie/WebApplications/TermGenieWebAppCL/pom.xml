@@ -7,10 +7,10 @@
 		<artifactId>WebApplications</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>TermGenieWebAppGO</artifactId>
+	<artifactId>TermGenieWebAppCL</artifactId>
 	<packaging>war</packaging>
 
-	<name>TermGenieWebAppGO</name>
+	<name>TermGenieWebAppCL</name>
 
 	<build>
 		<plugins>
