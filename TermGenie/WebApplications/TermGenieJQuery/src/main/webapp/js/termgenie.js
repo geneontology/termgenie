@@ -1946,8 +1946,8 @@ function termgenie(){
 						else {
 							sb = 'relationship: '+type + ' ' + relation.target;
 						}
-						sb += '! ' + relation.targetLabel;
-						table.append('<tr><td class="nobr">'+sb+'</td></tr>');
+						sb += ' ! ' + relation.targetLabel;
+						table.append('<tr><td class="termgenie-pre nobr">'+sb+'</td></tr>');
 					}
 				});
 				return {

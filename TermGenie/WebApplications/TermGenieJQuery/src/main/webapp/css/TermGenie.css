@@ -265,3 +265,10 @@ h1 {
 	height: 100%;
 	border: 1px solid;
 }
+
+.termgenie-pre {
+	font-family: courier, "courier new", monospace;
+	font-size: 1em;
+	color: #000;
+	background-color: #fff;
+}
