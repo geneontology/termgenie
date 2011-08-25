@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+
+	<template name="metazoan_location_specific_anatomical_structure">
+		<description>location-specific anatomical structure</description>
+		<ontology name="Uberon"/>
+		<obonamespace>uberon</obonamespace>
+		<fields>
+			<field name="part" required="true">
+				<ontology name="Uberon"/>
+			</field>
+			<field name="whole" required="true">
+				<ontology name="Uberon"/>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var p = termgenie.getSingleTerm("part", Uberon);
+  var w = termgenie.getSingleTerm("whole", Uberon);
+  if (p == null || w == null) {
+    // check branch
+    termgenie.error("The specified terms do not correspond to the pattern");
+    return;
+  }
+  var label = termgenie.name(w, Uberon) + " " + termgenie.name(p, Uberon);
+  var definition = "Any "+termgenie.name(p, Uberon)+" that is part of a "+termgenie.name(w, Uberon)+".";
+  var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
+  var cdef = termgenie.cdef(p);
+  cdef.differentium("part_of", w, Uberon);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+</termgenietemplates>

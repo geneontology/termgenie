@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="Uberon">
+		<source>https://raw.github.com/cmungall/uberon/master/uberon.obo</source>
+		<roots>
+			<root>UBERON:0001062</root>
+		</roots>
+	</ontology>
+</ontologyconfiguration>
