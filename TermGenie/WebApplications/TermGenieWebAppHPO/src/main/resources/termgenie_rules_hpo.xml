@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+
+	<template name="abnormal_morphology">
+		<description>Abnormal X morphology</description>
+		<ontology name="HumanPhenotype" />
+		<external>
+			<ontology name="FMA"/>
+			<ontology name="PATO"/>
+		</external>
+		<obonamespace>medical_genetics</obonamespace>
+		<requires>human-phenotype-ontology_xp.obo</requires>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="FMA"/>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var a = termgenie.getSingleTerm("target", FMA);
+  if (a === null) {
+    termgenie.error("The specified term does not correspond to the pattern");
+    return;
+  }
+  var label = "Abnormal "+termgenie.name(a, FMA) + " morphology";
+  var definition = "Any morphological abnormality of a "+termgenie.name(a, FMA)+".";
+  var synonyms = null; // TODO
+  var cdef = termgenie.cdef('PATO:0000051', PATO);
+  cdef.differentium("OBO_REL:inheres_in", a, FMA);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+
+	<template name="hpo_entity_quality">
+		<description>basic EQ template</description>
+		<ontology name="HumanPhenotype"/>
+		<external>
+			<ontology name="FMA"/>
+			<ontology name="PATO"/>
+		</external>
+		<obonamespace>medical_genetics</obonamespace>
+		<requires>human-phenotype-ontology_xp.obo</requires>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="FMA"/>
+			</field>
+			<field name="quality" required="true">
+				<ontology name="PATO"/>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var e = termgenie.getSingleTerm("entity", FMA);
+  var q = termgenie.getSingleTerm("quality", PATO);
+  if (e === null || q === null) {
+    termgenie.error("The specified terms do not correspond to the pattern");
+    return;
+  }
+  var label = termgenie.name(q, PATO) + " " + termgenie.name(e, FMA);
+  var definition = "Any "+termgenie.name(e, FMA)+" that is "+termgenie.name(q, PATO)+".";
+  var synonyms = null; // TODO
+  var cdef = termgenie.cdef(q, PATO); // TODO check if this the correct genus
+  cdef.differentium("OBO_REL:inheres_in", e, FMA);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+</termgenietemplates>

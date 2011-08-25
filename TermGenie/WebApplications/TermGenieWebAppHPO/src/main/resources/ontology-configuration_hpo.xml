@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="HumanPhenotype">
+		<source>http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology.obo</source>
+		<supports>http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo</supports>
+		<roots>
+			<root>HP:0000001</root>
+		</roots>
+	</ontology>
+	<ontology name="FMA" longName="Foundational Model of Anatomy ontology">
+		<source>http://obo.svn.sourceforge.net/viewvc/*checkout*/obo/fma-conversion/trunk/fma2_obo.obo</source>
+		<roots>
+			<root>FMA:62955</root>
+		</roots>
+	</ontology>
+	<ontology name="PATO" longName="Phenotypic Quality Ontology">
+		<source>http://pato.googlecode.com/svn/trunk/quality.obo</source>
+		<roots>
+			<root>PATO:0000001</root>
+		</roots>
+	</ontology>
+</ontologyconfiguration>
