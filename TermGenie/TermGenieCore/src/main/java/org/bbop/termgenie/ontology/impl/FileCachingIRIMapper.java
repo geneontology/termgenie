@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +21,13 @@ import javax.inject.Singleton;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.IRIMapper;
 
@@ -65,18 +73,53 @@ public class FileCachingIRIMapper implements IRIMapper {
 		validityHelper.setInvalidRecursive(cacheDirectory);
 	}
 
+	protected InputStream getInputStream(URL url) throws IOException {
+		if ("ftp".equals(url.getProtocol().toLowerCase())) {
+			try {
+				return url.openStream();
+			} catch (IOException exception) {
+				return handleError(url, exception);
+			}
+		}
+		DefaultHttpClient client = new DefaultHttpClient();
+		try {
+			DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+			client.setRedirectStrategy(redirectStrategy);
+			HttpGet request = new HttpGet(url.toURI());
+			HttpResponse response = client.execute(request);
+			StatusLine statusLine = response.getStatusLine();
+			if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+				StringBuilder message = new StringBuilder();
+				message.append("Web request failed with status code: ");
+				message.append(statusLine.getStatusCode());
+				String reasonPhrase = statusLine.getReasonPhrase();
+				if (reasonPhrase != null) {
+					message.append(" reason: ");
+					message.append(reasonPhrase);
+				}
+				return handleError(url, new IOException(message.toString()));
+			}
+			HttpEntity entity = response.getEntity();
+			return entity.getContent();
+		} catch (URISyntaxException exception) {
+			// non-recoverable error
+			throw new IOException(exception);
+		}
+	}
+
 	/**
 	 * Overwrite this method to implement more sophisticated methods. E.g.,
 	 * fall-back on local copies, if the URL is not reachable.
 	 * 
 	 * @param url
+	 * @param exception
 	 * @return inputStream
 	 * @throws IOException
 	 */
-	protected InputStream getInputStream(URL url) throws IOException {
-		return url.openStream();
+	protected InputStream handleError(URL url, IOException exception) throws IOException {
+		throw exception;
 	}
-
+	
 	@Override
 	public URL mapUrl(String url) {
 		try {
@@ -85,7 +128,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			if (protocol.equals("file")) {
 				return originalURL;
 			}
-			else if (protocol.startsWith("http")) {
+			else if (protocol.startsWith("http") || protocol.equals("ftp")) {
 				return mapUrl(originalURL);
 			}
 			else {
