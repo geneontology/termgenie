@@ -5,10 +5,10 @@ import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
 
-public class JsonRPCServlet extends AbstractJsonRPCServlet {
+public class TermGenieWebAppAllServlet extends AbstractJsonRPCServlet {
 
 	// generated
-	private static final long serialVersionUID = -3052651034871303985L;
+	private static final long serialVersionUID = 6676166543254873837L;
 
 	@Override
 	protected ServiceExecutor createServiceExecutor() {
@@ -16,18 +16,19 @@ public class JsonRPCServlet extends AbstractJsonRPCServlet {
 
 			@Override
 			protected IOCModule getOntologyModule() {
-				return new XMLReloadingOntologyModule("ontology-configuration_simple.xml");
+				return new XMLReloadingOntologyModule("ontology-configuration_all.xml");
 			}
 
 			@Override
 			protected IOCModule getRulesModule() {
-				return new DefaultXMLDynamicRulesModule("termgenie_rules_simple.xml");
+				return new DefaultXMLDynamicRulesModule("termgenie_rules_all.xml");
 			}
-
+			
 			@Override
 			protected IOCModule getReasoningModule() {
 				return new ReasonerModule("hermit");
 			}
 		};
 	}
+
 }

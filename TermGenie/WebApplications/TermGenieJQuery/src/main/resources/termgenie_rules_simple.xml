@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+	<template name="all_regulation" displayname="regulation: biological_process">
+		<description>Select all three subtemplates to generate terms for
+			regulation, negative regulations and positive regulation (for
+			biological processes). Names, synonyms and definitions are all
+			generated automatically</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+				<prefixes>
+					<prefix>regulation</prefix>
+					<prefix>negative_regulation</prefix>
+					<prefix>positive_regulation</prefix>
+				</prefixes>
+			</field>
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var go = GeneOntology;
+  var x = termgenie.getSingleTerm("target", go);
+  // biological_process
+  var check = termgenie.checkGenus(x, "GO:0008150", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  if (termgenie.genus(x, "GO:0065007", go)) {
+    // biological regulation
+    termgenie.error(
+      "Cannot create 'regulation of regulation of X' terms. The term "+
+      termgenie.getTermShortInfo("GO:0065007", go)+
+      " is a parent of "+
+      termgenie.getTermShortInfo(x, go)+
+      ".");
+    return;
+  }
+  var prefixes = termgenie.getInputs("target");
+  if (!prefixes || prefixes === null || prefixes.length === 0) {
+    termgenie.error("Could not create a term for X, as no prefix was selected");
+    return;
+  }
+  var count = 0;
+  if (termgenie.contains(prefixes, "regulation")) {
+    var label = "regulation of "+ termgenie.name(x, go);
+    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
+    var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
+    var cdef = termgenie.cdef("GO:0065007");
+    cdef.differentium("regulates", x, go);
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (termgenie.contains(prefixes, "negative_regulation")) {
+    var label = "negative regulation of "+ termgenie.name(x, go);
+    var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
+    var synonyms = termgenie.synonyms("negative regulation of ", x, go, null, label);
+    var cdef = termgenie.cdef("GO:0065007");
+    cdef.differentium("negatively_regulates", x, go);
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (termgenie.contains(prefixes, "positive_regulation")) {
+    var label = "positive regulation of "+ termgenie.name(x, go);
+    var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
+    var synonyms = termgenie.synonyms("positive regulation of ", x, go, null, label);
+    var cdef = termgenie.cdef("GO:0065007");
+    cdef.differentium("positively_regulates", x, go);
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (count === 0) {
+    termgenie.error("Could not create a term for X, as no known prefix was selected");
+  }
+};]]>
+		</rule>
+	</template>
+	<template name="occurs_in">
+		<description>processes occurring in parts of the cell</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<requires>biological_process_xp_cellular_component.obo</requires>
+		<fields>
+			<field name="process" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+			</field>
+			<field name="location" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var go = GeneOntology;
+  var p = termgenie.getSingleTerm("process", go);
+  var c = termgenie.getSingleTerm("location", go);
+  var check = termgenie.checkGenus(p, "GO:0008150", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  check = termgenie.checkGenus(c, "GO:0005575", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
+  var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
+  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
+  var cdef = termgenie.cdef(p);
+  cdef.differentium("OBO_REL:occurs_in", c, go);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+</termgenietemplates>

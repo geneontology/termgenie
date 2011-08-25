@@ -9,10 +9,24 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
  */
 public class DefaultXMLDynamicRulesModule extends DefaultDynamicRulesModule {
 
+	private final String ruleFile;
+	
+	/**
+	 * @param ruleFile
+	 */
+	public DefaultXMLDynamicRulesModule(String ruleFile) {
+		super();
+		this.ruleFile = ruleFile;
+	}
+	
+	public DefaultXMLDynamicRulesModule() {
+		this("default_termgenie_rules.xml");
+	}
+
 	@Override
 	protected void bindTemplateIO() {
 		install(new XMLTermTemplateModule());
-		bind("DynamicRulesTemplateResource", "default_termgenie_rules.xml");
+		bind("DynamicRulesTemplateResource", ruleFile);
 	}
 
 }
