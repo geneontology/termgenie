@@ -55,5 +55,6 @@
 		<module>TermGenieWebAppCL</module>
 		<module>TermGenieWebAppHPO</module>
 		<module>TermGenieWebAppUberon</module>
+		<module>TermGenieWebAppOMP</module>
 	</modules>
 </project>
