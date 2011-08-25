@@ -615,7 +615,7 @@ function run() {
   var synonyms = termgenie.synonyms(null, list, pro, "-", " complex", label);
   var cdef = termgenie.cdef("GO:0043234");
   cdef.differentium("has_part", list, pro);
-  termgenie.createTerm(label, definition, synonyms, cdef, pro);
+  termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
 		</rule>
 	</template>
@@ -652,7 +652,7 @@ function run() {
   var synonyms = null; // TODO
   var cdef = termgenie.cdef('PATO:0000051', PATO);
   cdef.differentium("OBO_REL:inheres_in", a, FMA);
-  termgenie.createTerm(label, definition, synonyms, cdef, HumanPhenotype);
+  termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
 		</rule>
 	</template>
@@ -693,7 +693,7 @@ function run() {
   var synonyms = null; // TODO
   var cdef = termgenie.cdef(q, PATO); // TODO check if this the correct genus
   cdef.differentium("OBO_REL:inheres_in", e, FMA);
-  termgenie.createTerm(label, definition, synonyms, cdef, HumanPhenotype);
+  termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
 		</rule>
 	</template>
@@ -735,7 +735,7 @@ function run() {
   var synonyms = null; // TODO
   var cdef = termgenie.cdef(q, PATO);
   cdef.differentium("OBO_REL:inheres_in", e, go);
-  termgenie.createTerm(label, definition, synonyms, cdef, OMP);
+  termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
 		</rule>
 	</template>
@@ -861,7 +861,7 @@ function run() {
   var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
   var cdef = termgenie.cdef(p);
   cdef.differentium("part_of", w, Uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef, Uberon);
+  termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
 		</rule>
 	</template>
