@@ -2,8 +2,10 @@ package org.bbop.termgenie.ontology;
 
 import org.obolibrary.oboformat.model.OBODoc;
 
+import com.google.inject.Singleton;
+
 /**
- * Methods for removing terms and too complexing expressions in ontologies.
+ * Methods for removing terms and too complex expressions in ontologies.
  */
 public interface OntologyCleaner {
 
@@ -15,4 +17,13 @@ public interface OntologyCleaner {
 	 * @param obodoc
 	 */
 	public void cleanOBOOntology(String ontology, OBODoc obodoc);
+	
+	@Singleton
+	public static class NoopOntologyCleaner implements OntologyCleaner {
+
+		@Override
+		public void cleanOBOOntology(String ontology, OBODoc obodoc) {
+			// intentionally empty
+		}
+	}
 }
