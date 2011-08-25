@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="default_termgenie_rules.xsd">
+
+	<template name="metazoan_location_specific_cell">
+		<description>A cell type differentiated by its anatomical location (animals)</description>
+		<ontology name="CL"/>
+		<external>
+			<ontology name="Uberon"/>
+		</external>
+		<obonamespace>cell</obonamespace>
+		<fields>
+			<field name="cell" required="true">
+				<ontology name="CL"/>
+			</field>
+			<field name="location" required="true">
+				<ontology name="Uberon"/>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var c = termgenie.getSingleTerm("cell", CL);
+  var a = termgenie.getSingleTerm("location", Uberon);
+  if (c == null || a == null) {
+    // check branch
+    termgenie.error("The specified terms do not correspond to the pattern");
+    return;
+  }
+  var label = termgenie.name(a, Uberon) + " " + termgenie.name(c, CL);
+  var definition = "Any "+termgenie.name(c, CL)+" that is part of a "+termgenie.name(a, Uberon)+".";
+  var synonyms = null; // TODO
+  var cdef = termgenie.cdef(c);
+  cdef.differentium("part_of", a, Uberon);
+  termgenie.createTerm(label, definition, synonyms, cdef, CL);
+};]]>
+		</rule>
+	</template>
+
+	<template name="cell_by_surface_marker">
+		<description>A cell type differentiated by proteins or complexes on the plasma membrane</description>
+		<ontology name="CL"/>
+		<external>
+			<ontology name="ProteinOntology"/>
+			<ontology name="GeneOntology"/>
+		</external>
+		<obonamespace>cell</obonamespace>
+		<fields>
+			<field name="cell" required="true">
+				<ontology name="CL"/>
+			</field>
+			<field name="membrane_part" required="true">
+				<ontology name="ProteinOntology"/>
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var go = GeneOntology;
+  var pro = ProteinOntology;
+  var c = termgenie.getSingleTerm("cell", CL);
+  var p = termgenie.getSingleTerm("membrane_part", pro, go);
+  if (c == null || p == null || !(genus(p, "GO:0032991", go) || genus(p, null, pro))) {
+    // check branch
+    termgenie.error("The specified terms do not correspond to the pattern");
+    return;
+  }
+  var label = termgenie.name(p, pro, go) + " " + termgenie.name(c, CL);
+  var definition = "Any "+termgenie.name(c, CL)+" that has "+termgenie.name(p, pro, go)+" on the plasma membrane.";
+  var synonyms = null; // TODO
+  var cdef = termgenie.cdef(c);
+  cdef.differentium("has_plasma_membrane_part", p, pro, go);
+  cdef.property("multivalued(has_plasma_membrane_part)");
+  cdef.property("any_cardinality(has_plasma_membrane_part)");
+  termgenie.createTerm(label, definition, synonyms, cdef, CL);
+};]]>
+		</rule>
+	</template>
+</termgenietemplates>
