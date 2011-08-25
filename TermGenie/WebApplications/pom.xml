@@ -52,5 +52,7 @@
 	<modules>
 		<module>TermGenieJQuery</module>
 		<module>TermGenieWebAppGO</module>
+		<module>TermGenieWebAppCL</module>
+		<module>TermGenieWebAppHPO</module>
 	</modules>
 </project>
