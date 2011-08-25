@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+
+	<template name="omp_entity_quality">
+		<description>basic EQ template</description>
+		<ontology name="OMP"/>
+		<external>
+			<ontology name="GeneOntology"/>
+			<ontology name="PATO"/>
+		</external>
+		<obonamespace>omp</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="GeneOntology"/>
+			</field>
+			<field name="quality" required="true">
+				<ontology name="PATO"/>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var go = GeneOntology;
+  var e = termgenie.getSingleTerm("entity", go);
+  var q = termgenie.getSingleTerm("quality", PATO);
+  if (e == null ||  q == null) {
+    // check branch
+    termgenie.error("The specified terms do not correspond to the pattern");
+    return;
+  }
+  var label = termgenie.name(q, PATO) + " of " + termgenie.name(e, go);
+  var definition = "Any "+termgenie.name(q, PATO)+" of "+termgenie.name(e, go)+".";
+  var synonyms = null; // TODO
+  var cdef = termgenie.cdef(q, PATO);
+  cdef.differentium("OBO_REL:inheres_in", e, go);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+</termgenietemplates>

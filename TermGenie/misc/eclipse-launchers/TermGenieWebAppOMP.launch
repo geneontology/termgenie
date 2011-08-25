@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="RunJettyRunWebApp">
+<stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"/>
+<stringAttribute key="org.eclipse.debug.core.source_locator_memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;sourceLookupDirector&gt;&#10;&lt;sourceContainers duplicates=&quot;false&quot;&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;OWLTools&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;oboformat&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;TermGenieJQuery&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;TermGenieRulesDynamic&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;TermGenieSolr&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;TermGenieRulesBasic&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;javaProject name=&amp;quot;TermGenieCore&amp;quot;/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#10;&amp;lt;default/&amp;gt;&amp;#10;&quot; typeId=&quot;org.eclipse.debug.core.containerType.default&quot;/&gt;&#10;&lt;/sourceContainers&gt;&#10;&lt;/sourceLookupDirector&gt;&#10;"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="RunJettyRunWebAppClassPathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="runjettyrun.Bootstrap"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TermGenieWebAppOMP"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2G"/>
+<stringAttribute key="run_jetty_run.CONTEXT_ATTR" value="/termgenie"/>
+<booleanAttribute key="run_jetty_run.ENABLE_JNDI_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_MAVEN_TEST_CLASSES_ATTR" value="true"/>
+<booleanAttribute key="run_jetty_run.ENABLE_NEED_CLIENT_AUTH_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_PARENT_LOADER_PRIORITY_ATTR" value="true"/>
+<booleanAttribute key="run_jetty_run.ENABLE_SCANNER_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_SSL_ATTR" value="false"/>
+<stringAttribute key="run_jetty_run.KEYSTORE_ATTR" value="/home/hdietze/.keystore"/>
+<stringAttribute key="run_jetty_run.KEY_PWD_ATTR" value="changeit"/>
+<stringAttribute key="run_jetty_run.PORT_ATTR" value="8080"/>
+<stringAttribute key="run_jetty_run.PWD_ATTR" value="changeit"/>
+<stringAttribute key="run_jetty_run.SCANINTERVALSECONDS_ATTR" value="5"/>
+<stringAttribute key="run_jetty_run.SSL_PORT_ATTR" value="8443"/>
+<stringAttribute key="run_jetty_run.WEBAPPDIR_ATTR" value="target/TermGenieWebAppOMP-0.0.1-SNAPSHOT"/>
+</launchConfiguration>
