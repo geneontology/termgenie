@@ -9,9 +9,9 @@
 			<root>GO:0003674</root>
 			<root>GO:0005575</root>
 		</roots>
-		<ontologybranch name="cellular_component">
+		<ontologybranch name="macromolecular_complex">
 			<roots>
-				<root>GO:0005575</root>
+				<root>GO:0032991</root>
 			</roots>
 		</ontologybranch>
 	</ontology>

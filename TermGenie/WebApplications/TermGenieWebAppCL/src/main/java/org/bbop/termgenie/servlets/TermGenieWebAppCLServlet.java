@@ -2,6 +2,7 @@ package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.core.io.XMLTermTemplateModule;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ReloadingOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
@@ -38,6 +39,11 @@ public class TermGenieWebAppCLServlet extends AbstractJsonRPCServlet {
 						bind("DynamicRulesTemplateResource", "termgenie_rules_cl.xml");
 					}
 				};
+			}
+			
+			@Override
+			protected IOCModule getReasoningModule() {
+				return new ReasonerModule("hermit");
 			}
 		};
 	}
