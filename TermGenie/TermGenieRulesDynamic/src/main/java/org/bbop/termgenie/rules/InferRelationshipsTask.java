@@ -33,24 +33,22 @@ class InferRelationshipsTask implements ReasonerTask {
 
 	@Override
 	public Modified run(OWLReasoner reasoner) {
-		// TODO implement
+		// TODO implement test
 		// infer implied relation ships from cross-product and given relation ships
 		
-		// only use direct ones
 		NodeSet<OWLClass> superClasses = reasoner.getSuperClasses(cls, true);
 		String source = ontology.getIdentifier(cls);
 		relations = new ArrayList<IRelation>();
-		relations.addAll(knownRelations);
 		for(OWLClass parent : superClasses.getFlattened()) {
 			String target = ontology.getIdentifier(parent);
 			String targetLabel = ontology.getLabel(parent);
-			Map<String, String> properties = new HashMap<String, String>();
-			Relation.setType(properties, OboFormatTag.TAG_IS_A);
-			getRelations().add(new Relation(source, target, targetLabel, properties));
+			if (targetLabel != null) {
+				Map<String, String> properties = new HashMap<String, String>();
+				Relation.setType(properties, OboFormatTag.TAG_IS_A);
+				relations.add(new Relation(source, target, targetLabel, properties));
+			}
 		}
 		
-		// have some relations been removed by this?
-		// assume no for now
 		return Modified.no;
 	}
 
