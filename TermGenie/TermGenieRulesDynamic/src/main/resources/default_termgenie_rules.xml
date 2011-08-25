@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:noNamespaceSchemaLocation="default_termgenie_rules.xsd">
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 	<template name="all_regulation" displayname="regulation: biological_process">
 		<description>Select all three subtemplates to generate terms for
 			regulation, negative regulations and positive regulation (for

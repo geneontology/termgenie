@@ -23,7 +23,7 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 					@Override
 					protected void bindOntologyConfiguration() {
 						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
-						bind("XMLOntologyConfigurationResource", "go-ontology-configuration.xml");
+						bind("XMLOntologyConfigurationResource", "ontology-configuration_go.xml");
 					}
 				};
 			}
@@ -35,7 +35,7 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 					@Override
 					protected void bindTemplateIO() {
 						install(new XMLTermTemplateModule());
-						bind("DynamicRulesTemplateResource", "termgenie_go_rules.xml");
+						bind("DynamicRulesTemplateResource", "termgenie_rules_go.xml");
 					}
 				};
 			}
