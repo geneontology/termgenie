@@ -173,7 +173,9 @@ public class GeneOntologyResonerSpeedTest {
 	private OWLClass get(String id) {
 		OWLObject x = wrapper.getOWLObjectByIdentifier(id);
 		if (x != null) {
-			return wrapper.getOWLClass(x);
+			if(wrapper.getLabel(x) != null) {
+				return wrapper.getOWLClass(x);
+			}
 		}
 		return null;
 	}

@@ -183,7 +183,10 @@ public class TermGenieScriptFunctionsImpl implements TermGenieScriptFunctions {
 
 	private OWLObject getTermSimple(String id, OWLGraphWrapper ontology) {
 		if (ontology != null) {
-			return ontology.getOWLObjectByIdentifier(id);
+			OWLObject x = ontology.getOWLObjectByIdentifier(id);
+			if (ontology.getLabel(x) != null) {
+				return x;
+			}
 		}
 		return null;
 	}

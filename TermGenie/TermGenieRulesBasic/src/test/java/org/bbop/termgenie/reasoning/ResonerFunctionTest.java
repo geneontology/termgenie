@@ -107,8 +107,10 @@ public class ResonerFunctionTest {
 
 		final OWLClass p = wrapper.getOWLClass(wrapper.getOWLObjectByIdentifier(parent));
 		assertNotNull(p);
+		assertNotNull(wrapper.getLabel(p));
 		final OWLClass c = wrapper.getOWLClass(wrapper.getOWLObjectByIdentifier(child));
 		assertNotNull(c);
+		assertNotNull(wrapper.getLabel(c));
 
 		final StopWatch startup = new StopWatch();
 		startup.start();

@@ -425,30 +425,31 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
 				if (owlObject != null) {
 					label = realInstance.getLabel(owlObject);
-					definition = realInstance.getDef(owlObject);
-					synonyms = realInstance.getOBOSynonyms(owlObject);
-					defxref = realInstance.getDefXref(owlObject);
-
-					// meta data
-					put(metadata, "comment", realInstance.getComment(owlObject));
-					put(metadata, "created_by", realInstance.getCreatedBy(owlObject));
-					put(metadata, "resource", realInstance.getNamespace(owlObject));
-
-					// relations
-					Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
-					if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
-						relations = new ArrayList<IRelation>(outgoingEdges.size());
-						for (OWLGraphEdge edge : outgoingEdges) {
-							String source = realInstance.getIdentifier(edge.getSource());
-							OWLObject targetOWLObject = edge.getTarget();
-							String target = realInstance.getIdentifier(targetOWLObject);
-							String targetLabel = realInstance.getLabel(targetOWLObject);
-							Map<String, String> properties = new HashMap<String, String>(); 
-							for (OWLQuantifiedProperty property : edge.getQuantifiedPropertyList()) {
-								properties.put(property.getPropertyId(), property.getQuantifier().name());
+					if (label != null) {
+						definition = realInstance.getDef(owlObject);
+						synonyms = realInstance.getOBOSynonyms(owlObject);
+						defxref = realInstance.getDefXref(owlObject);
+						// meta data
+						put(metadata, "comment", realInstance.getComment(owlObject));
+						put(metadata, "created_by", realInstance.getCreatedBy(owlObject));
+						put(metadata, "resource", realInstance.getNamespace(owlObject));
+						// relations
+						Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
+						if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
+							relations = new ArrayList<IRelation>(outgoingEdges.size());
+							for (OWLGraphEdge edge : outgoingEdges) {
+								String source = realInstance.getIdentifier(edge.getSource());
+								OWLObject targetOWLObject = edge.getTarget();
+								String target = realInstance.getIdentifier(targetOWLObject);
+								String targetLabel = realInstance.getLabel(targetOWLObject);
+								Map<String, String> properties = new HashMap<String, String>();
+								for (OWLQuantifiedProperty property : edge.getQuantifiedPropertyList()) {
+									properties.put(property.getPropertyId(),
+											property.getQuantifier().name());
+								}
+								Relation r = new Relation(source, target, targetLabel, properties);
+								relations.add(r);
 							}
-							Relation r = new Relation(source, target, targetLabel, properties);
-							relations.add(r);
 						}
 					}
 				}

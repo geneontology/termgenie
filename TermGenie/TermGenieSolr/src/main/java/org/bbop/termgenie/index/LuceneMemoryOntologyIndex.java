@@ -280,7 +280,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		Set<OWLObject> result = new HashSet<OWLObject>();
 		for (String id : ids) {
 			OWLObject x = this.ontology.getOWLObjectByIdentifier(id);
-			if (x == null) {
+			if (x == null || this.ontology.getLabel(x) == null) {
 				throw new RuntimeException("Error: could not find term with id: " + id);
 			}
 			result.add(x);
@@ -351,7 +351,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				Document doc = searcher.doc(scoreDoc.doc, FIELD_SELECTOR);
 				String id = doc.get("id");
 				OWLObject owlObject = ontology.getOWLObjectByIdentifier(id);
-				if (owlObject != null) {
+				if (owlObject != null && ontology.getLabel(owlObject) != null) {
 					if (!rerank || fEquals(maxScore, scoreDoc.score)) {
 						results.add(new SearchResult(owlObject, scoreDoc.score));
 					}
