@@ -54,7 +54,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 	private final CommitHistoryStore store;
 
 	@Inject
-	GeneOntologyCommitAdapter(ConfiguredOntology source,
+	GeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
 			IRIMapper iriMapper,
 			OntologyCleaner cleaner,
 			@Named(ReasonerModule.NAMED_DIRECT_REASONER_FACTORY) ReasonerFactory reasonerFactory,

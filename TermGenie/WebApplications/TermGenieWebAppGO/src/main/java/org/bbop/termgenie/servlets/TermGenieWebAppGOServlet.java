@@ -34,7 +34,9 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 
 			@Override
 			protected IOCModule getCommitModule() {
-				return new GeneOntologyCommitModule();
+				String cvsFileName = ""; // TODO fill empty stub
+				String cvsRoot = ""; // TODO fill empty stub
+				return new GeneOntologyCommitModule(cvsFileName, cvsRoot);
 			}
 
 			@Override

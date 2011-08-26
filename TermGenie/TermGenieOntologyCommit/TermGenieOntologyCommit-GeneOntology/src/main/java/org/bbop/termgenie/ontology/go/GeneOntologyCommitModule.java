@@ -4,6 +4,12 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 public class GeneOntologyCommitModule extends IOCModule {
 
@@ -21,10 +27,6 @@ public class GeneOntologyCommitModule extends IOCModule {
 		this.cvsRoot = cvsRoot;
 	}
 
-	public GeneOntologyCommitModule() {
-		this(null, null);
-	}
-
 	@Override
 	protected void configure() {
 		bind(Committer.class).to(GeneOntologyCommitAdapter.class);
@@ -36,4 +38,12 @@ public class GeneOntologyCommitModule extends IOCModule {
 		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
 	}
 	
+	@Singleton
+	@Provides
+	@Named("ConfiguredOntologyGeneOntology")
+	ConfiguredOntology provideGeneOntology(OntologyConfiguration configuration) {
+		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
+		return configuredOntology;
+	}
+
 }
