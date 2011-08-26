@@ -7,6 +7,7 @@ import java.util.List;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
+import org.bbop.termgenie.ontology.NoopCommitModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
@@ -43,6 +44,7 @@ public abstract class ServiceExecutor {
 		modules.add(getOntologyModule());
 		modules.add(getReasoningModule());
 		modules.add(getRulesModule());
+		modules.add(getCommitModule());
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			modules.addAll(additionalModules);
@@ -65,6 +67,10 @@ public abstract class ServiceExecutor {
 	 */
 	protected IOCModule getReasoningModule() {
 		return new ReasonerModule();
+	}
+	
+	protected IOCModule getCommitModule() {
+		return new NoopCommitModule();
 	}
 
 	/**
