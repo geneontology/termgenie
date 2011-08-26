@@ -1,12 +1,9 @@
 package org.bbop.termgenie.servlets;
 
-import org.bbop.termgenie.core.io.XMLTermTemplateModule;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.ReasonerModule;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.ReloadingOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
-import org.bbop.termgenie.rules.DefaultDynamicRulesModule;
+import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
 
 public class TermGenieWebAppOMPServlet extends AbstractJsonRPCServlet {
 
@@ -19,26 +16,12 @@ public class TermGenieWebAppOMPServlet extends AbstractJsonRPCServlet {
 
 			@Override
 			protected IOCModule getOntologyModule() {
-				return new ReloadingOntologyModule() {
-
-					@Override
-					protected void bindOntologyConfiguration() {
-						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
-						bind("XMLOntologyConfigurationResource", "ontology-configuration_omp.xml");
-					}
-				};
+				return new XMLReloadingOntologyModule("ontology-configuration_omp.xml");
 			}
 
 			@Override
 			protected IOCModule getRulesModule() {
-				return new DefaultDynamicRulesModule() {
-
-					@Override
-					protected void bindTemplateIO() {
-						install(new XMLTermTemplateModule());
-						bind("DynamicRulesTemplateResource", "termgenie_rules_omp.xml");
-					}
-				};
+				return new DefaultXMLDynamicRulesModule("termgenie_rules_omp.xml");
 			}
 			
 			@Override
