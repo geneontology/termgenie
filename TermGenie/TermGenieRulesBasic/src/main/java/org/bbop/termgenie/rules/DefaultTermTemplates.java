@@ -16,7 +16,10 @@ import com.google.inject.Singleton;
 
 /**
  * Hard coded templates, may be written to a file as example for new rules.
+ * 
+ * @deprecated
  */
+@Deprecated
 @Singleton
 public class DefaultTermTemplates {
 

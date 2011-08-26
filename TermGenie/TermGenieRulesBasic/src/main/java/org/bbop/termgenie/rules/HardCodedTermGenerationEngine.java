@@ -18,6 +18,7 @@ import owltools.graph.OWLGraphWrapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+@Deprecated
 @Singleton
 public class HardCodedTermGenerationEngine implements TermGenerationEngine {
 
