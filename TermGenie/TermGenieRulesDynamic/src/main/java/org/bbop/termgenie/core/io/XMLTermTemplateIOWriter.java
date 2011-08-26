@@ -38,7 +38,7 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			writer.writeStartDocument();
 			writer.writeStartElement(TAG_termgenietemplates);
 			writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			writer.writeAttribute("xsi:noNamespaceSchemaLocation", "default_termgenie_rules.xsd");
+			writer.writeAttribute("xsi:noNamespaceSchemaLocation", "termgenie_rules.xsd");
 			for (TermTemplate termTemplate : templates) {
 				writer.writeStartElement(TAG_template);
 				writer.writeAttribute(ATTR_name, termTemplate.getName());

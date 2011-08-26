@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:noNamespaceSchemaLocation="default_termgenie_rules.xsd">
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 
 	<template name="metazoan_location_specific_cell">
 		<description>A cell type differentiated by its anatomical location (animals)</description>
