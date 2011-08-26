@@ -1,6 +1,7 @@
 package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.ontology.go.GeneOntologyCommitModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
 
@@ -21,6 +22,11 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 			@Override
 			protected IOCModule getRulesModule() {
 				return new DefaultXMLDynamicRulesModule("termgenie_rules_go.xml");
+			}
+
+			@Override
+			protected IOCModule getCommitModule() {
+				return new GeneOntologyCommitModule();
 			}
 		};
 	}

@@ -11,15 +11,23 @@ import com.google.inject.name.Names;
  */
 public abstract class IOCModule extends AbstractModule {
 
+	String getProperty(String name) {
+		String property = System.getProperty("termgenie."+name, null);
+		if (property == null) {
+			property = System.getProperty("overwrite." + name, null);
+		}
+		return property;
+	}
+
 	/**
-	 * Convinence method for binding a {@link String} parameter. Check system
+	 * Convenience method for binding a {@link String} parameter. Check system
 	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
 	 */
 	protected void bind(String name, String value) {
-		String property = System.getProperty(name, null);
+		String property = getProperty(name);
 		if (property != null) {
 			value = property;
 		}
@@ -27,14 +35,28 @@ public abstract class IOCModule extends AbstractModule {
 	}
 
 	/**
-	 * Convinence method for binding a {@link Long} parameter. Check system
+	 * Convenience method for binding a {@link String} parameter to a system 
+	 * parameter.
+	 * 
+	 * @param name
+	 */
+	protected void bind(String name) {
+		String property = getProperty(name);
+		if (property == null) {
+			throw new RuntimeException("No system property value found for key: "+name);
+		}
+		bind(String.class).annotatedWith(Names.named(name)).toInstance(property);
+	}
+
+	/**
+	 * Convenience method for binding a {@link Long} parameter. Check system
 	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
 	 */
 	protected void bind(String name, Long value) {
-		String property = System.getProperty(name, null);
+		String property = getProperty(name);
 		if (property != null) {
 			value = Long.valueOf(property);
 		}
@@ -42,14 +64,14 @@ public abstract class IOCModule extends AbstractModule {
 	}
 
 	/**
-	 * Convinence method for binding a {@link TimeUnit} parameter. Check system
+	 * Convenience method for binding a {@link TimeUnit} parameter. Check system
 	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
 	 */
 	protected void bind(String name, TimeUnit value) {
-		String property = System.getProperty(name, null);
+		String property = getProperty(name);
 		if (property != null) {
 			value = TimeUnit.valueOf(property);
 		}
@@ -57,14 +79,14 @@ public abstract class IOCModule extends AbstractModule {
 	}
 
 	/**
-	 * Convinence method for binding a {@link Integer} parameter. Check system
+	 * Convenience method for binding a {@link Integer} parameter. Check system
 	 * properties for overwrites.
 	 * 
 	 * @param name
 	 * @param value
 	 */
 	protected void bind(String name, Integer value) {
-		String property = System.getProperty(name, null);
+		String property = getProperty(name);
 		if (property != null) {
 			value = Integer.valueOf(property);
 		}
@@ -72,7 +94,7 @@ public abstract class IOCModule extends AbstractModule {
 	}
 
 	/**
-	 * Convinence method for binding a {@link Boolean} parameter, a flag. Check
+	 * Convenience method for binding a {@link Boolean} parameter, a flag. Check
 	 * system properties for overwrites.
 	 * 
 	 * @param name
@@ -80,7 +102,7 @@ public abstract class IOCModule extends AbstractModule {
 	 */
 	protected void bind(String name, boolean defaultValue) {
 		Boolean value = Boolean.valueOf(defaultValue);
-		String property = System.getProperty(name, null);
+		String property = getProperty(name);
 		if (property != null) {
 			property = property.toLowerCase();
 			if ("true".equals(property)) {
