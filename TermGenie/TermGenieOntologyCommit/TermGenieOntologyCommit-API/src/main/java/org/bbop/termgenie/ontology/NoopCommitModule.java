@@ -19,5 +19,4 @@ public class NoopCommitModule extends IOCModule {
 			return false;
 		}
 	}
-
 }

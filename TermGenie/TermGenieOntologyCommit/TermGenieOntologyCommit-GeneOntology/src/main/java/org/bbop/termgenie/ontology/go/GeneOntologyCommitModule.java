@@ -1,6 +1,8 @@
 package org.bbop.termgenie.ontology.go;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.Committer;
 
 public class GeneOntologyCommitModule extends IOCModule {
@@ -31,7 +33,7 @@ public class GeneOntologyCommitModule extends IOCModule {
 		// bind the password only via a system parameter !
 		// Reason: Do not accidently commit a secret password
 		bind("GeneOntologyCommitAdapterCVSPassword"); 
-		
+		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
 	}
-
+	
 }

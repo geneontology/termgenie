@@ -1,6 +1,9 @@
 package org.bbop.termgenie.core.ioc;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
@@ -31,6 +34,9 @@ public abstract class IOCModule extends AbstractModule {
 		if (property != null) {
 			value = property;
 		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+		}
 		bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 
@@ -60,6 +66,9 @@ public abstract class IOCModule extends AbstractModule {
 		if (property != null) {
 			value = Long.valueOf(property);
 		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+		}
 		bind(Long.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 
@@ -75,6 +84,9 @@ public abstract class IOCModule extends AbstractModule {
 		if (property != null) {
 			value = TimeUnit.valueOf(property);
 		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+		}
 		bind(TimeUnit.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 
@@ -89,6 +101,9 @@ public abstract class IOCModule extends AbstractModule {
 		String property = getProperty(name);
 		if (property != null) {
 			value = Integer.valueOf(property);
+		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
 		}
 		bind(Integer.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
@@ -115,4 +130,21 @@ public abstract class IOCModule extends AbstractModule {
 		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(value);
 	}
 
+	/**
+	 * Convenience method for binding a {@link File} parameter. Check system
+	 * properties for overwrites.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	protected void bind(String name, File value) {
+		String property = getProperty(name);
+		if (property != null) {
+			value = new File(property);
+		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+		}
+		bind(File.class).annotatedWith(Names.named(name)).toInstance(value);
+	}
 }

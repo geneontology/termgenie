@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology;
 
 
 /**
- * Methods for commiting changes to an ontology
+ * Methods for committing changes to an ontology
  */
 public interface Committer {
 

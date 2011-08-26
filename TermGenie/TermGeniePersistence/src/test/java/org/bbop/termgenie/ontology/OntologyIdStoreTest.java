@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,11 +53,6 @@ public class OntologyIdStoreTest {
 	}
 
 	@Test
-	public void testOntologyIdStoreDerby() {
-		testOntologyIdStore(EntityManagerFactoryProvider.DERBY);
-	}
-
-	@Test
 	public void testOntologyIdStoreH2() {
 		testOntologyIdStore(EntityManagerFactoryProvider.H2);
 	}
@@ -74,7 +70,9 @@ public class OntologyIdStoreTest {
 
 		StopWatch watch1 = new StopWatch();
 		watch1.start();
-		OntologyIdStore store = new OntologyIdStore(new StringInputStream(storeConfig), entityManager);
+		InputStream inputStream = new StringInputStream(storeConfig);
+		OntologyIdStoreConfiguration config = new PlainOntologyIdStoreConfiguration(inputStream);
+		OntologyIdStore store = new OntologyIdStore(config, entityManager);
 		watch1.stop();
 
 		Ontology ontology = new Ontology("testOntologyName", null, null) {
@@ -100,7 +98,7 @@ public class OntologyIdStoreTest {
 
 		StopWatch watch3 = new StopWatch();
 		watch3.start();
-		store = new OntologyIdStore(new StringInputStream(storeConfig), entityManager);
+		store = new OntologyIdStore(config, entityManager);
 		assertEquals("foo:000044", store.getNewId(ontology, entityManager));
 		assertEquals("foo:000045", store.getNewId(ontology, entityManager));
 		assertEquals("foo:000046", store.getNewId(ontology, entityManager));
