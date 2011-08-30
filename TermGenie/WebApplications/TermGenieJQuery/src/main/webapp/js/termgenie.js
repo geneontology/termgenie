@@ -662,9 +662,10 @@ function termgenie(){
 	 * @param templates list of term templates
 	 */
 	function createTemplateSelectorMenu(ontology, templates) {
+		var parent = jQuery('#div-template-selector');
+		
 		// create layout
-		jQuery('#div-template-selector')
-			.append('<select id="select-add-template-select"></select>'+
+		parent.append('<select id="select-add-template-select"></select>'+
 				c_button('button-add-template-select', 'Add template'));
 		
 		// select dom element
@@ -678,6 +679,9 @@ function termgenie(){
 			option.val(intIndex);
 			domElement.append(option);
 		});
+		
+		// make it a nice combo box
+		// domElement.combobox();
 		
 		// click handler for adding a selected template
 		jQuery('#button-add-template-select').click(function (){
@@ -2132,7 +2136,7 @@ function termgenie(){
 			});
 			
 			function createPanel(name, maxCount, tabId) {
-				tabTitles.append('<li><a href="'+tabId+'">'+name+'</a></li>');
+				tabTitles.append('<li><a href="#'+tabId+'">'+name+'</a></li>');
 				var container = jQuery('<div id="'+tabId+'"></div>');
 				container.appendTo(popupDiv);
 				var contentContainer = jQuery('<div style="overflow: scroll;position:absolute;height:75%;width:90%"></div>');
