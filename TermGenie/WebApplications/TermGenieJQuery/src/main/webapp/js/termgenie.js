@@ -70,6 +70,120 @@ function termgenie(){
 		}
 	}
 	
+	/*
+	 * Register an alternative implementation of a combo box 
+	 * as jQuery plugin.
+	 * 
+	 * see http://jqueryui.com/demos/autocomplete/ 
+	 * (Combobox example) for details and original source.
+	 */
+	(function( $ ) {
+		jQuery.widget( "ui.combobox", {
+			_create: function() {
+				var self = this;
+				
+				var boxWidth = this.element.width();
+				var select = this.element.hide();
+				var selected = select.children( ":selected" );
+				var value = selected.val() ? selected.text() : "";
+				var input = this.input = jQuery( "<input>" )
+				.insertAfter( select )
+				.val( value )
+				.autocomplete({
+					delay: 0,
+					minLength: 0,
+					source: function( request, response ) {
+						var matcher = new RegExp( jQuery.ui.autocomplete.escapeRegex(request.term), "i" );
+						response( select.children( "option" ).map(function(index, item) {
+							var text = jQuery( this ).text();
+							if ( this.value && ( !request.term || matcher.test(text) ) )
+								return {
+									label: text.replace(
+										new RegExp(
+											"(?![^&;]+;)(?!<[^<>]*)(" +
+											jQuery.ui.autocomplete.escapeRegex(request.term) +
+											")(?![^<>]*>)(?![^&;]+;)", "gi"
+										), "<strong>$1</strong>" ),
+									value: text,
+									option: this
+								};
+						}) );
+					},
+					select: function( event, ui ) {
+						ui.item.option.selected = true;
+						self._trigger( "selected", event, {
+							item: ui.item.option
+						});
+					},
+					change: function( event, ui ) {
+						if ( !ui.item ) {
+							var matcher = new RegExp( "^" + jQuery.ui.autocomplete.escapeRegex( jQuery(this).val() ) + "$", "i" ),
+							valid = false;
+							select.children( "option" ).each(function() {
+								if ( jQuery( this ).text().match( matcher ) ) {
+									this.selected = valid = true;
+									return false;
+								}
+							});
+							if ( !valid ) {
+								// remove invalid value, as it didn't match anything
+								jQuery( this ).val( "" );
+								select.val( "" );
+								input.data( "autocomplete" ).term = "";
+								return false;
+							}
+						}
+					}
+				})
+				.addClass( "ui-widget ui-widget-content ui-corner-left termgenie-select-template-input-field" )
+				.css("width", boxWidth+20);
+
+				input.data( "autocomplete" )._renderItem = function( ul, item ) {
+					return jQuery( "<li></li>" )
+					.data( "item.autocomplete", item )
+					.append( "<a>" + item.label + "</a>" )
+					.appendTo( ul );
+				};
+
+				this.button = jQuery( "<button type='button'>&nbsp;</button>" )
+				.attr( "tabIndex", -1 )
+				.attr( "title", "Show All Items" )
+				.insertAfter( input )
+				.button({
+					icons: {
+						primary: "ui-icon-triangle-1-s"
+					},
+					text: false
+				})
+				.removeClass( "ui-corner-all" )
+				.addClass( "ui-corner-right ui-button-icon termgenie-select-template-input-dropdown-button" )
+				.css("width", "27px")
+				.click(function() {
+					// close if already visible
+					if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+						input.autocomplete( "close" );
+						return;
+					}
+
+					// work around a bug (likely same cause as #5265)
+					jQuery( this ).blur();
+
+					// pass empty string as value to search for, displaying all results
+					input.autocomplete( "search", "" );
+					input.focus();
+				});
+			},
+
+			destroy: function() {
+				this.input.remove();
+				this.button.remove();
+				this.element.show();
+				jQuery.Widget.prototype.destroy.call( this );
+			}
+		});
+	})( jQuery );
+
+	
 	/**
 	 * Provide an Accordion with the additional functionality to 
 	 * enable/disable individual panes for click events.
@@ -102,7 +216,7 @@ function termgenie(){
 			/**
 			 * Active the specified panel.
 			 * 
-			 * @param pos postion to activate (zero-based)
+			 * @param pos position to activate (zero-based)
 			 */
 			activatePane : function(pos) {
 				jQuery(id).accordion("activate", pos);
@@ -111,7 +225,7 @@ function termgenie(){
 			/**
 			 * Set the status of a pane.
 			 * 
-			 * @param pos postion to activate (zero-based)
+			 * @param pos position to activate (zero-based)
 			 * @param state boolean
 			 */
 			setPaneState : function(pos, state) {
@@ -121,7 +235,7 @@ function termgenie(){
 			/**
 			 * Enable a pane for click events.
 			 * 
-			 * @param pos postion to enable (zero-based)
+			 * @param pos position to enable (zero-based)
 			 */
 			enablePane : function(pos) {
 				selections["Pane_" + pos] = true;
@@ -130,7 +244,7 @@ function termgenie(){
 			/**
 			 * Disable a pane for click events.
 			 * 
-			 * @param pos postion to disable (zero-based)
+			 * @param pos position to disable (zero-based)
 			 */
 			disablePane : function(pos) {
 				selections["Pane_" + pos] = false;
@@ -139,7 +253,7 @@ function termgenie(){
 	};
 	
 	/**
-	 * Handle all elements of the login and user managmenent process.
+	 * Handle all elements of the login and user management process.
 	 * 
 	 * @returns methods for the login panel
 	 */
@@ -681,7 +795,7 @@ function termgenie(){
 		});
 		
 		// make it a nice combo box
-		// domElement.combobox();
+		domElement.combobox();
 		
 		// click handler for adding a selected template
 		jQuery('#button-add-template-select').click(function (){
@@ -959,6 +1073,8 @@ function termgenie(){
 			/**
 			 * extract and validate all input fields for this template.
 			 * 
+			 * @param extractionResult {ExtractionResult} status object
+			 * 
 			 * return object {
 			 *    success: boolean
 			 *    input: JsonTermGenerationInput{
@@ -1000,6 +1116,15 @@ function termgenie(){
 			}
 		};
 	
+		/**
+		 * Simple input field widget for text, with an optional validator.
+		 * 
+		 * @param elem {DOM element} parent element
+		 * @param templatePos {int} position in the term template
+		 * @param validator {function} validator function (optional)
+		 * 
+		 * @returns functions for the widget (i.e. extractParameter())
+		 */
 		function TextFieldInput(elem, templatePos, validator) {
 			var inputElement = jQuery('<input type="text"/>'); 
 			elem.append(inputElement);
@@ -1017,6 +1142,17 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * Extract the user input from the input field.
+				 * 
+				 * @param parameter {JsonTermGenerationParameter}
+				 * @param template {JsonTermTemplate} termgeneration template
+				 * @param field {JsonTemplateField}
+				 * @param pos {int}
+				 * @param extractionResult {ExtractionResult} status object
+				 * 
+				 * @returns boolean
+				 */
 				extractParameter : function(parameter, template, field, pos, extractionResult) {
 					var success;
 					clearErrorState();
@@ -1025,7 +1161,7 @@ function termgenie(){
 					}
 					var text = inputElement.val();
 					if (text !== null && text.length > 0) {
-						if (validator) {
+						if (validator && validator !== null) {
 							success = validator(text, template, field, extractionResult);
 							if(success === false) {
 								setErrorState();
@@ -1050,6 +1186,17 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * Input field widget for a list of text fields.
+		 * 
+		 * @param container {DOM element} parent element
+		 * @param templatePos {int} position in the term template
+		 * @param min {int} minimum number of fields
+		 * @param max {int} maximum number of fields
+		 * @param validator {function} validator function (optional)
+		 * 
+		 * @returns functions for the widget (i.e. extractParameter())
+		 */
 		function TextFieldInputList(container, templatePos, min, max, validator) {
 			
 			var list = [];
@@ -1079,6 +1226,17 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * Extract the user input from the input field.
+				 * 
+				 * @param parameter {JsonTermGenerationParameter}
+				 * @param template {JsonTermTemplate} termgeneration template
+				 * @param field {JsonTemplateField}
+				 * @param pos {int}
+				 * @param extractionResult {ExtractionResult} status object
+				 * 
+				 * @returns boolean
+				 */
 				extractParameter : function(parameter, template, field, pos, extractionResult) {
 					var success = true;
 					jQuery.each(list, function(index, inputElem){
@@ -1092,6 +1250,15 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * Input field widget with auto-completion for a single ontology terms. 
+		 * 
+		 * @param elem {DOM element} parent element
+		 * @param templatePos {int} position in the term template
+		 * @param ontologies {String[]} ontologies to be searched
+		 * 
+		 * @returns functions for the widget (i.e. extractParameter())
+		 */
 		function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
 			
 			var term = undefined;
@@ -1107,6 +1274,10 @@ function termgenie(){
 				inputElement.addClass('termgenie-input-field-error');
 			}
 			
+			/**
+			 * update the description div parameters, 
+			 * to fit with the autocomplete box. 
+			 */
 			function updateDescriptionDiv(ofElement) {
 				var w = ofElement.outerWidth();
 				if (w < 400) {
@@ -1142,6 +1313,9 @@ function termgenie(){
 				});
 			}
 			
+			/**
+			 * Remove the description and its div.
+			 */
 			function removeDescriptionDiv() {
 				if (descriptionDiv !== null) {
 					descriptionDiv.removeClass('ui-autocomplete-input');
@@ -1150,6 +1324,11 @@ function termgenie(){
 				}
 			}
 			
+			/**
+			 * Set the description for the current selected item.
+			 * 
+			 * @param item {JsonTermSuggestion} the current item
+			 */
 			function setContentDescriptionDiv(item) {
 				var content = descriptionDiv.children().first();
 				content.empty();
@@ -1176,14 +1355,22 @@ function termgenie(){
 				layout += '</table>'; 
 				content.append(layout);
 			}
+
+			// setup the autocompletion widget, includes an
+			// additional description div for terms
 			
 			// used to prevent race conditions
 			var requestIndex = 0;
 			
 			inputElement.autocomplete({
 				minLength: 3,
+				// create data source
+				// use rpc to retrieve suggestions
 				source: function( request, response ) {
+					// clean up: remove old description div
 					removeDescriptionDiv();
+					
+					// prepare rpc request data
 					var term = request.term;
 					requestIndex += 1;
 					var myRequestIndex = requestIndex;
@@ -1210,6 +1397,7 @@ function termgenie(){
 						});
 					});
 				},
+				// overwrite method to remove the additional description div
 				select : function(event, ui) {
 					clearErrorState();
 					inputElement.val(ui.item.label);
@@ -1217,16 +1405,19 @@ function termgenie(){
 					removeDescriptionDiv();
 					return false;
 				},
+				// over write method to update the descrption div
 				focus : function(event, ui) {
 					inputElement.val(ui.item.label);
 					updateDescriptionDiv(inputElement.autocomplete('widget'));
 					setContentDescriptionDiv(ui.item);
 					return false;
 				},
+				// overwrite method to remove the additional description div
 				close : function(event, ui) {
 					removeDescriptionDiv();
 				} 
 			})
+			// overwrite rendering method for data items
 			.data( 'autocomplete' )._renderItem = function( ul, item ) {
 				return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
 					.data( 'item.autocomplete', item )
@@ -1238,6 +1429,17 @@ function termgenie(){
 			
 			
 			return {
+				/**
+				 * Extract the user input from the input field.
+				 * 
+				 * @param parameter {JsonTermGenerationParameter}
+				 * @param template {JsonTermTemplate} termgeneration template
+				 * @param field {JsonTemplateField}
+				 * @param pos {int}
+				 * @param extractionResult {ExtractionResult} status object
+				 * 
+				 * @returns boolean
+				 */
 				extractParameter : function(parameter, template, field, pos, extractionResult) {
 					clearErrorState();
 					if (!pos) {
@@ -1264,6 +1466,17 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * Input field widget with auto-completion for a list of ontology terms. 
+		 * 
+		 * @param container {DOM element} parent element
+		 * @param templatePos {int} position in the term template
+		 * @param ontologies {String[]} ontologies to be searched
+		 * @param min {int} minimum number of fields
+		 * @param max {int} maximum number of fields
+		 * 
+		 * @returns functions for the widget (i.e. extractParameter())
+		 */
 		function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
 			
 			var list = [];
@@ -1292,6 +1505,17 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * Extract the user input from the input field.
+				 * 
+				 * @param parameter {JsonTermGenerationParameter}
+				 * @param template {JsonTermTemplate} termgeneration template
+				 * @param field {JsonTemplateField}
+				 * @param pos {int}
+				 * @param extractionResult {ExtractionResult} status object
+				 * 
+				 * @returns boolean
+				 */
 				extractParameter : function(parameter, template, field, pos, extractionResult) {
 					var success = true;
 					jQuery.each(list, function(index, inputElem){
@@ -1305,6 +1529,17 @@ function termgenie(){
 			};
 		}
 		
+		/**
+		 * Input field widget with auto-completion for a single ontology term 
+		 * and a list of prefixes. 
+		 * 
+		 * @param elem {DOM element} parent element
+		 * @param templatePos {int} position in the term template
+		 * @param ontologies {String[]} ontologies to be searched
+		 * @param prefixes {String[]} list of prefixes
+		 * 
+		 * @returns functions for the widget (i.e. extractParameter())
+		 */
 		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes) {
 			var checkbox, i, j;
 			
@@ -1334,6 +1569,17 @@ function termgenie(){
 			}
 			
 			return {
+				/**
+				 * Extract the user input from the input field.
+				 * 
+				 * @param parameter {JsonTermGenerationParameter}
+				 * @param template {JsonTermTemplate} termgeneration template
+				 * @param field {JsonTemplateField}
+				 * @param pos {int}
+				 * @param extractionResult {ExtractionResult} status object
+				 * 
+				 * @returns boolean
+				 */
 				extractParameter : function(parameter, template, field, pos, extractionResult) {
 					clearErrorState();
 					if (!pos) {
@@ -1361,11 +1607,29 @@ function termgenie(){
 		}
 	}
 	
+	/**
+	 * Status object for the extraction of term generation parameters 
+	 * from the input widgets.
+	 * 
+	 * @returns Methods for the ExtractionResult 
+	 * {
+	 * 	addError: function(),
+	 *  isSuccessful: function(),
+	 *  getErrors: function()
+	 * }
+	 */
 	function ExtractionResult() {
 		var success = true;
 		var errors = [];
 		
 		return {
+			/**
+			 * add an error to the list of encountered problems.
+			 * 
+			 * @param error {String}
+			 * @param template
+			 * @param field
+			 */
 			addError : function(error, template, field) {
 				success = false;
 				errors.push({
@@ -1374,9 +1638,18 @@ function termgenie(){
 					field: field
 				});
 			},
+			/**
+			 * Check weather the extraction was successful
+			 * 
+			 * @returns {boolean}
+			 */
 			isSuccessful: function() {
 				return success;
 			},
+			
+			/**
+			 * @returns list of errors
+			 */
 			getErrors: function() {
 				return errors;
 			}
@@ -1393,6 +1666,7 @@ function termgenie(){
 				// select mode
 				var isCommit = checkBoxElem.is(':checked');
 				
+				// set header in the accordion
 				var step3AdditionalHeader = jQuery('#span-step3-additional-header');
 				step3AdditionalHeader.empty();
 				
@@ -1410,6 +1684,8 @@ function termgenie(){
 					headerMessage += 'Export';
 				}
 				step3AdditionalHeader.append(headerMessage);
+				
+				// open next tab in the accordion
 				var step4Container = jQuery('#termgenie-step4-content-container');
 				step4Container.empty();
 				myAccordion.enablePane(3);
@@ -1689,6 +1965,14 @@ function termgenie(){
 				}
 			};
 			
+			/**
+			 * Create a review field for a string.
+			 * 
+			 * @param parent {DOM element}
+			 * @param string {String} value
+			 * 
+			 * @returns Methods for the review panel (i.e. getValue())
+			 */
 			function StringFieldReviewPanel(parent, string) {
 				var reviewField = createInputField(string);
 				reviewField.appendTo(parent);
@@ -1700,6 +1984,14 @@ function termgenie(){
 				};
 			}
 			
+			/**
+			 * Create a review field for a string.
+			 * 
+			 * @param parent {DOM element}
+			 * @param strings {String[]} values
+			 * 
+			 * @returns Methods for the review panel (i.e. getValue())
+			 */
 			function StringListFieldReviewPanel(parent, strings) {
 				var listParent = createLayoutTable();
 				var rows = [];
@@ -1959,21 +2251,35 @@ function termgenie(){
 				};
 			}
 			
+			/**
+			 * Create an input field with a default String value
+			 * 
+			 * @param string
+			 * @returns DOM element
+			 */
 			function createInputField(string) {
 				if (!string || typeof string !== 'string') {
+					// empty or unknown: create empty field
 					return jQuery('<input type="text" style="width:350px"/>');
 				}
 				var elem;
 				if (string.length < 42) {
+					// if the text is short use single line
 					elem = jQuery('<input type="text" style="width:350px"/>');
 				}
 				else {
+					//  if the text is long use multi-line input
 					elem = jQuery('<textarea style="width:350px;height:70px"></textarea>');
 				}
 				elem.val(string);
 				return elem;
 			}
 			
+			/**
+			 * Normalize a string in terms of length and whitespaces.
+			 * 
+			 * @returns {String} string or null
+			 */
 			function normalizeString(string) {
 				if (string && string.length > 0) {
 					string = jQuery.trim(string).replace(/\s+/g,' ');
@@ -2383,6 +2689,8 @@ function termgenie(){
 	
 	// HTML wrapper functions
 	/** 
+	 * Create stub for adding and removing elements.
+	 * 
 	 * @param parent DOM element
 	 * @param addfunction function clickhandler for add
 	 * @param removeFunction function clickhandler for remove
