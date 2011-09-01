@@ -12,7 +12,7 @@
  * 
  *   createInfoDiv:  function()    // overwrite to create custom div for wrapping the content.
  *   getLabel:  function( item )   // overwrite to extract a custom the label
- *   onSelect: function()          // overwrite to do work during an select -> consider using an event listener instead 
+ *   onSelect: function(event, ui) // overwrite to do work during an select -> consider using an event listener instead 
  *   renderItem: function( item )  // overwrite to render a custom item
  * 
  * Depends:
@@ -44,7 +44,9 @@
 			renderItem: function( item ) {
 				return item;
 			},
-			onSelect: null
+			onSelect: null,
+			minWidth: 400,
+			minHeight: 200
 		},
 		
 		_create: function() {
@@ -59,12 +61,12 @@
 			 */
 			this._updateDescriptionDiv = function(ofElement) {
 				var w = ofElement.outerWidth();
-				if (w < 400) {
-					w = 400;
+				if (w < self.options.minWidth) {
+					w = self.options.minWidth;
 				}
 				var h = ofElement.outerHeight();
-				if (h < 200) {
-					h = 200;
+				if (h < self.options.minHeight) {
+					h = self.options.minHeight;
 				}
 				if (descriptionDiv === null) {
 					descriptionDiv = jQuery('<div>'+self.options.createInfoDiv()+'</div>')
@@ -126,7 +128,7 @@
 				// overwrite method to remove the additional description div
 				select : function(event, ui) {
 					if (self.options.onSelect && self.options.onSelect !== null) {
-						self.options.onSelect();
+						self.options.onSelect(event, ui);
 					}
 					self.element.val(self.options.getLabel(ui.item));
 					self._selectedItem = ui.item;
