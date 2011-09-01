@@ -57,6 +57,12 @@
 						.data( "item.autocomplete", item )
 						.append( "<a>" + item.label + "</a>" )
 						.appendTo( ul );
+				},
+				onSelect: function( event, ui ) {
+					ui.item.option.selected = true;
+					self._trigger( "selected", event, {
+						item: ui.item.option
+					});
 				}
 			})
 			.addClass( "ui-widget ui-widget-content ui-corner-left termgenie-select-template-input-field" )
