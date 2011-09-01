@@ -5,14 +5,14 @@
  * 
  * Required functions:
  * 
- *   source:  function( request, response ) //  expected to use RPC
+ *   source:  function( request, response ) //  same is for normal auto-complete
  *   createInfoDivContent:  function( item ) // create the info for an item
  *   
  * Optional functions:
  * 
  *   createInfoDiv:  function()    // overwrite to create custom div for wrapping the content.
  *   getLabel:  function( item )   // overwrite to extract a custom the label
- *   onSelect: function()          // overwrite to do work during an select
+ *   onSelect: function()          // overwrite to do work during an select -> consider using an event listener instead 
  *   renderItem: function( item )  // overwrite to render a custom item
  * 
  * Depends:
@@ -117,16 +117,12 @@
 			// setup the auto-completion widget, includes an
 			// additional description div for terms
 			
-			self.element.autocomplete({
+			var autocompleteElem = self.element.autocomplete({
 				autoFocus: self.options.autoFocus,
 				delay: self.options.delay,
 				minLength: self.options.minLength,
 				position: self.options.position,
-				source: function( request, response ) {
-					// clean up: remove old description div
-					self._removeDescriptionDiv();
-					self.options.source(request, response);
-				},
+				source: self.options.source,
 				// overwrite method to remove the additional description div
 				select : function(event, ui) {
 					if (self.options.onSelect && self.options.onSelect !== null) {
@@ -148,9 +144,16 @@
 				close : function(event, ui) {
 					self._removeDescriptionDiv();
 				} 
-			})
+			});
 			// overwrite rendering method for data items
-			.data( 'autocomplete' )._renderItem = self.options.renderItem;
+			autocompleteElem.data( 'autocomplete' )._renderItem = self.options.renderItem;
+			
+			var origSource = autocompleteElem.data( 'autocomplete' ).source;
+			autocompleteElem.data( 'autocomplete' ).source = function( request, response ) {
+				// clean up: remove old description div
+				self._removeDescriptionDiv();
+				origSource(request, response);
+			};
 		},
 		destroy: function() {
 			this._removeDescriptionDiv();
