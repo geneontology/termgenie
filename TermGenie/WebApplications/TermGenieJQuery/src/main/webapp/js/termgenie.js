@@ -680,11 +680,36 @@ function termgenie(){
 			domElement.append(option);
 		});
 		
-		// make it a nice combo box
+		// make it a nice combo box, including an additional description of the template
 		domElement.extendedcombobox({
+			minWidth: 450,
+			minHeight: 250,
+			createInfoDiv: function() {
+				return '<div class="term-description-content"></div>';
+			},
 			createInfoDivContent: function(item) {
 				var template = templates[item.value];
-				return '<div>'+getTemplateName(template)+'<div>';
+				
+				var layout = createLayoutTableOpenTag();
+				layout += '<tr><td>Name</td><td>'+getTemplateName(template)+'</td></tr>';
+				if (template.description && template.description.length > 0) {
+					layout += '<tr><td>Description</td><td>'+template.description+'</td></tr>';
+				}
+				layout += '<tr><td>Ontology Fields:</td></tr>';
+				jQuery.each(template.fields, function(index, field){
+					if(field.ontologies && field.ontologies.length > 0) {
+						var names = '';
+						jQuery.each(field.ontologies, function(index, ontology){
+							if (index > 0) {
+								names += ', ';
+							}
+							names += getOntologyName(ontology);
+						})
+						layout += '<tr><td>'+field.name+'</td><td>'+names+'</td></tr>';
+					}
+				});
+				layout += '</table>';
+				return layout;
 			}
 		});
 		

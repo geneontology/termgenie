@@ -12,7 +12,12 @@
 (function( $, undefined ) {
 	jQuery.widget( "ui.extendedcombobox", {
 		options: {
-			createInfoDivContent: null
+			createInfoDivContent: null,
+			createInfoDiv: function() {
+				return '<div></div>';
+			},
+			minWidth: 400,
+			minHeight: 200
 		},
 		
 		_create: function() {
@@ -26,7 +31,10 @@
 			.insertAfter( select )
 			.val( value )
 			.extendedautocomplete({
+				createInfoDiv: self.options.createInfoDiv,
 				createInfoDivContent: self.options.createInfoDivContent,
+				minWidth: self.options.minWidth,
+				minHeight: self.options.minHeight,
 				delay: 0,
 				minLength: 0,
 				source: function( request, response ) {
