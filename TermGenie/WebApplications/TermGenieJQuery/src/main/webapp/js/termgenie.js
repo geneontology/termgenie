@@ -1261,10 +1261,8 @@ function termgenie(){
 		 */
 		function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
 			
-			var term = undefined;
 			var inputElement = jQuery('<input/>');
 			elem.append(inputElement);
-			var descriptionDiv = null;
 			
 			function clearErrorState() {
 				inputElement.removeClass('termgenie-input-field-error');	
@@ -1274,102 +1272,17 @@ function termgenie(){
 				inputElement.addClass('termgenie-input-field-error');
 			}
 			
-			/**
-			 * update the description div parameters, 
-			 * to fit with the autocomplete box. 
-			 */
-			function updateDescriptionDiv(ofElement) {
-				var w = ofElement.outerWidth();
-				if (w < 400) {
-					w = 400;
-				}
-				var h = ofElement.outerHeight();
-				if (h < 200) {
-					h = 200;
-				}
-				if (descriptionDiv === null) {
-					descriptionDiv = jQuery('<div><div class="term-description-content"></div></div>')
-						.addClass( 'ui-widget-content ui-autocomplete ui-corner-all' )
-						.css({
-							'width': w,
-							'height': h
-						})
-						.appendTo('body');
-					descriptionDiv.resizable({
-						minHeight: h,
-						minWidth: w
-					});
-	//				descriptionDiv.draggable();
-				}
-				else {
-					descriptionDiv.resizable( "option", "minHeight", h );
-					descriptionDiv.resizable( "option", "minWidth", w );
-				}
-				descriptionDiv.position({
-					my: 'left top',
-					at: 'right top',
-					of: inputElement.autocomplete('widget'),
-					collision: 'none none'
-				});
-			}
-			
-			/**
-			 * Remove the description and its div.
-			 */
-			function removeDescriptionDiv() {
-				if (descriptionDiv !== null) {
-					descriptionDiv.removeClass('ui-autocomplete-input');
-					descriptionDiv.remove();
-					descriptionDiv = null;
-				}
-			}
-			
-			/**
-			 * Set the description for the current selected item.
-			 * 
-			 * @param item {JsonTermSuggestion} the current item
-			 */
-			function setContentDescriptionDiv(item) {
-				var content = descriptionDiv.children().first();
-				content.empty();
-				var layout = createLayoutTableOpenTag();
-				layout += '<tr><td>Ontology</td><td>'+getOntologyName(item.identifier.ontology)+'</td></tr>';
-				layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
-				layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
-				if (item.description && item.description.length > 0) {
-					layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
-				}
-				if (item.synonyms && item.synonyms.length > 0) {
-					layout += '<tr><td>Synonyms</td><td>';
-					for ( var i = 0; i < item.synonyms.length; i++) {
-						var synonym = item.synonyms[i];
-						if (synonym && synonym.length > 0) {
-							if (i > 0) {
-								layout += '<br/>';
-							}
-							layout += synonym;
-						}
-					}
-					layout += '</td></tr>';
-				}
-				layout += '</table>'; 
-				content.append(layout);
-			}
-
 			// setup the autocompletion widget, includes an
 			// additional description div for terms
 			
 			// used to prevent race conditions
 			var requestIndex = 0;
 			
-			inputElement.autocomplete({
+			inputElement.extendedautocomplete({
 				minLength: 3,
 				// create data source
 				// use rpc to retrieve suggestions
 				source: function( request, response ) {
-					// clean up: remove old description div
-					removeDescriptionDiv();
-					
 					// prepare rpc request data
 					var term = request.term;
 					requestIndex += 1;
@@ -1397,36 +1310,47 @@ function termgenie(){
 						});
 					});
 				},
-				// overwrite method to remove the additional description div
-				select : function(event, ui) {
+				createInfoDiv: function() {
+					return '<div class="term-description-content"></div>';
+				},
+				createInfoDivContent: function(item){
+					var layout = createLayoutTableOpenTag();
+					layout += '<tr><td>Ontology</td><td>'+getOntologyName(item.identifier.ontology)+'</td></tr>';
+					layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
+					layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
+					if (item.description && item.description.length > 0) {
+						layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
+					}
+					if (item.synonyms && item.synonyms.length > 0) {
+						layout += '<tr><td>Synonyms</td><td>';
+						for ( var i = 0; i < item.synonyms.length; i++) {
+							var synonym = item.synonyms[i];
+							if (synonym && synonym.length > 0) {
+								if (i > 0) {
+									layout += '<br/>';
+								}
+								layout += synonym;
+							}
+						}
+						layout += '</td></tr>';
+					}
+					layout += '</table>';
+					return layout;
+				},
+				getLabel: function(item){
+					return item.label;
+				}, 
+				onSelect : function() {
 					clearErrorState();
-					inputElement.val(ui.item.label);
-					term = ui.item;
-					removeDescriptionDiv();
-					return false;
 				},
-				// over write method to update the descrption div
-				focus : function(event, ui) {
-					inputElement.val(ui.item.label);
-					updateDescriptionDiv(inputElement.autocomplete('widget'));
-					setContentDescriptionDiv(ui.item);
-					return false;
-				},
-				// overwrite method to remove the additional description div
-				close : function(event, ui) {
-					removeDescriptionDiv();
-				} 
+				renderItem: function( ul, item ) {
+					return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
+						.data( 'item.autocomplete', item )
+						.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
+								item.label + '</span></a>' )
+						.appendTo( ul );
+				}
 			})
-			// overwrite rendering method for data items
-			.data( 'autocomplete' )._renderItem = function( ul, item ) {
-				return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
-					.data( 'item.autocomplete', item )
-					.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
-							item.label + '</span></a>' )
-					.appendTo( ul );
-			};
-	
-			
 			
 			return {
 				/**
@@ -1445,6 +1369,7 @@ function termgenie(){
 					if (!pos) {
 						pos = 0;
 					}
+					var term = inputElement.extendedautocomplete( "getSelected" );
 					if (term && term !== null) {
 						var text = inputElement.val();
 						if (term.label == text) {
