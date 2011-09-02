@@ -9,7 +9,6 @@ import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
-import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
@@ -34,16 +33,14 @@ public class TermCommitServiceImpl implements TermCommitService {
 	private static final Logger logger = Logger.getLogger(TermCommitServiceImpl.class);
 
 	private final OntologyTools ontologyTools;
-	private final Committer committer;
 
 	/**
 	 * @param ontologyTools
 	 */
 	@Inject
-	TermCommitServiceImpl(OntologyTools ontologyTools, Committer committer) {
+	protected TermCommitServiceImpl(OntologyTools ontologyTools) {
 		super();
 		this.ontologyTools = ontologyTools;
-		this.committer = committer;
 	}
 
 	@Override
@@ -190,7 +187,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 	{
 		JsonCommitResult result = new JsonCommitResult();
 		result.setSuccess(false);
-		result.setMessage("The commit operation is not yet implemented.");
+		result.setMessage("The commit operation is not enabled.");
 		return result;
 	}
 

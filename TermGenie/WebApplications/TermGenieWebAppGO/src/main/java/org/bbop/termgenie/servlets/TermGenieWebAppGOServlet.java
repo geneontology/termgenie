@@ -12,6 +12,9 @@ import org.bbop.termgenie.ontology.go.GeneOntologyCommitModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
+import org.bbop.termgenie.services.GoTermCommitServiceImpl;
+import org.bbop.termgenie.services.TermCommitService;
+import org.bbop.termgenie.services.TermGenieServiceModule;
 
 public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 
@@ -21,6 +24,17 @@ public class TermGenieWebAppGOServlet extends AbstractJsonRPCServlet {
 	@Override
 	protected ServiceExecutor createServiceExecutor() {
 		return new ServiceExecutor() {
+
+			@Override
+			protected TermGenieServiceModule getServiceModule() {
+				return new TermGenieServiceModule() {
+
+					@Override
+					protected void bindTermCommitService() {
+						bind(TermCommitService.class).to(GoTermCommitServiceImpl.class);
+					}
+				};
+			}
 
 			@Override
 			protected IOCModule getOntologyModule() {

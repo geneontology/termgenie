@@ -7,7 +7,6 @@ import java.util.List;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
-import org.bbop.termgenie.ontology.NoopCommitModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
@@ -40,16 +39,38 @@ public abstract class ServiceExecutor {
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		modules.add(new TermGenieToolsModule());
-		modules.add(new TermGenieServiceModule());
-		modules.add(getOntologyModule());
-		modules.add(getReasoningModule());
-		modules.add(getRulesModule());
-		modules.add(getCommitModule());
+		add(modules, getServiceModule(), true, "ServiceModule");
+		add(modules, getOntologyModule(), true, "OntologyModule");
+		add(modules, getReasoningModule(), true, "ReasoningModule");
+		add(modules, getRulesModule(), true, "RulesModule");
+		add(modules, getCommitModule(), false, "CommitModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
-			modules.addAll(additionalModules);
+			for (IOCModule module : additionalModules) {
+				if (module != null) {
+					modules.add(module);
+				}
+			}
 		}
 		return modules.toArray(new IOCModule[modules.size()]);
+	}
+	
+	private void add(List<IOCModule> modules, IOCModule module, boolean required, String moduleName) {
+		if (module == null) {
+			if (required) {
+				throw new RuntimeException("Missing an required module: "+moduleName);
+			}
+		}
+		else {
+			modules.add(module);
+		}
+	}
+
+	/**
+	 * @return module handling the TermGenie service implementations
+	 */
+	protected TermGenieServiceModule getServiceModule() {
+		return new TermGenieServiceModule();
 	}
 
 	/**
@@ -69,8 +90,11 @@ public abstract class ServiceExecutor {
 		return new ReasonerModule();
 	}
 	
+	/**
+	 * @return module providing the commit operations
+	 */
 	protected IOCModule getCommitModule() {
-		return new NoopCommitModule();
+		return null;
 	}
 
 	/**
