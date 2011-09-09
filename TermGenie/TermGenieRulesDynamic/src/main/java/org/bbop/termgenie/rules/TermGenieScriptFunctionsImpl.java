@@ -30,16 +30,17 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 	/**
 	 * @param input
 	 * @param targetOntology
-	 * @param targetOntologyId
+	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
 	 */
 	TermGenieScriptFunctionsImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
-		super(input, targetOntology, patternID, factory);
+		super(input, targetOntology, tempIdPrefix, patternID, factory);
 	}
 
 	@Override

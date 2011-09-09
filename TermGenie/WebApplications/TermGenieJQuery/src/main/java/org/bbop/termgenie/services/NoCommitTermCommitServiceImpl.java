@@ -28,9 +28,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TermCommitServiceImpl implements TermCommitService {
+public class NoCommitTermCommitServiceImpl implements TermCommitService {
 
-	private static final Logger logger = Logger.getLogger(TermCommitServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(NoCommitTermCommitServiceImpl.class);
 
 	private final OntologyTools ontologyTools;
 
@@ -38,7 +38,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 	 * @param ontologyTools
 	 */
 	@Inject
-	protected TermCommitServiceImpl(OntologyTools ontologyTools) {
+	protected NoCommitTermCommitServiceImpl(OntologyTools ontologyTools) {
 		super();
 		this.ontologyTools = ontologyTools;
 	}
@@ -50,7 +50,7 @@ public class TermCommitServiceImpl implements TermCommitService {
 	{
 		JsonExportResult result = new JsonExportResult();
 
-		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
+		OntologyTaskManager manager = getOntologyManager(ontologyName);
 		if (manager == null) {
 			result.setSuccess(false);
 			result.setMessage("Unknown ontology: " + ontologyName);
@@ -140,6 +140,10 @@ public class TermCommitServiceImpl implements TermCommitService {
 			result.setMessage("Could not write OBO export: " + exception.getMessage());
 			return result;
 		}
+	}
+
+	protected OntologyTaskManager getOntologyManager(String ontologyName) {
+		return ontologyTools.getManager(ontologyName);
 	}
 
 	private void addClause(Frame frame, OboFormatTag tag, String value) {

@@ -2,6 +2,7 @@ package org.bbop.termgenie.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.ioc.IOCModule;
@@ -20,16 +21,46 @@ import com.google.inject.Singleton;
  */
 public class TermGenieServiceModule extends IOCModule {
 
+	private final long defaultSessionHandlerImplTimeout;
+	private final TimeUnit defaultSessionHandlerImplTimeUnit;
+	
+	/**
+	 * @param defaultSessionHandlerImplTimeout
+	 * @param defaultSessionHandlerImplTimeUnit
+	 */
+	public TermGenieServiceModule(long defaultSessionHandlerImplTimeout,
+			TimeUnit defaultSessionHandlerImplTimeUnit)
+	{
+		super();
+		this.defaultSessionHandlerImplTimeout = defaultSessionHandlerImplTimeout;
+		this.defaultSessionHandlerImplTimeUnit = defaultSessionHandlerImplTimeUnit;
+	}
+	
+	
+	public TermGenieServiceModule() {
+		this(90L, TimeUnit.MINUTES);
+	}
+
 	@Override
 	protected void configure() {
 		bind(GenerateTermsService.class).to(GenerateTermsServiceImpl.class);
 		bind(OntologyService.class).to(OntologyServiceImpl.class);
-		bind(SessionHandler.class).to(SessionHandlerImpl.class);
+		bindSessionHandler();
 		bindTermCommitService();
 	}
 
+	protected void bindSessionHandler() {
+		bind(SessionHandler.class).to(SessionHandlerImpl.class);
+		bindSessionHandlerParameters();
+	}
+	
+	protected void bindSessionHandlerParameters() {
+		bind("SessionHandlerImplTimeout", defaultSessionHandlerImplTimeout);
+		bind("SessionHandlerImplTimeUnit", defaultSessionHandlerImplTimeUnit);
+	}
+
 	protected void bindTermCommitService() {
-		bind(TermCommitService.class).to(TermCommitServiceImpl.class);
+		bind(TermCommitService.class).to(NoCommitTermCommitServiceImpl.class);
 	}
 
 	@Provides

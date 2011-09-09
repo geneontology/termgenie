@@ -10,15 +10,12 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.entities.OntologyIdInfo;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import org.bbop.termgenie.tools.Pair;
 
 /**
  * Store of ontology identifiers and corresponding patterns.
  */
-@Singleton
-public class OntologyIdStore {
+class OntologyIdStore {
 
 	private static final Logger logger = Logger.getLogger(OntologyIdStore.class);
 
@@ -29,7 +26,6 @@ public class OntologyIdStore {
 	 * @param configuration the configuration
 	 * @param entityManager the entity manager for persistence
 	 */
-	@Inject
 	OntologyIdStore(OntologyIdStoreConfiguration configuration, EntityManager entityManager) {
 		super();
 		entityManager.getTransaction().begin();
@@ -62,7 +58,7 @@ public class OntologyIdStore {
 	 * @param entityManager
 	 * @return newId
 	 */
-	String getNewId(Ontology ontology, EntityManager entityManager) {
+	Pair<String, Integer> getNewId(Ontology ontology, EntityManager entityManager) {
 		entityManager.getTransaction().begin();
 		OntologyIdInfo info = getInfo(ontology, entityManager);
 		int current = info.getCurrent();
@@ -75,7 +71,27 @@ public class OntologyIdStore {
 		String pattern = info.getPattern();
 		DecimalFormat nf = new DecimalFormat(pattern);
 		entityManager.getTransaction().commit();
-		return nf.format(current);
+		return new Pair<String, Integer>(nf.format(current), next);
+	}
+
+	/**
+	 * Set the next id to the indicated id to rollback.
+	 * 
+	 * @param ontology
+	 * @param id
+	 * @param entityManager
+	 * @return
+	 */
+	boolean rollbackId(Ontology ontology, Integer id, EntityManager entityManager) {
+		entityManager.getTransaction().begin();
+		OntologyIdInfo info = getInfo(ontology, entityManager);
+		int current = info.getCurrent();
+		if (current > id) {
+			info.setCurrent(id);
+			entityManager.getTransaction().commit();
+			return true;
+		}
+		return false;
 	}
 
 	private OntologyIdInfo getInfo(Ontology ontology, EntityManager entityManager) {

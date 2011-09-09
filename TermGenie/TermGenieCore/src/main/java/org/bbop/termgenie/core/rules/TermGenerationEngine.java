@@ -27,6 +27,14 @@ public interface TermGenerationEngine {
 	 */
 	public List<TermTemplate> getAvailableTemplates();
 
+	/**
+	 * Retrieve the prefix for temporary identifiers. Used during the commit to
+	 * replace them with new valid identifiers.
+	 * 
+	 * @return prefix
+	 */
+	public String getTempIdPrefix(Ontology ontology);
+
 	public final class TermGenerationInput {
 
 		private final TermTemplate termTemplate;

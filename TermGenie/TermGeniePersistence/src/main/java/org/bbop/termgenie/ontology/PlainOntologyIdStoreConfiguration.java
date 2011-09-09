@@ -12,39 +12,63 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.io.ListHelper;
 import org.bbop.termgenie.ontology.entities.OntologyIdInfo;
+import org.bbop.termgenie.tools.ResourceLoader;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
- * Configuration for an {@link OntologyIdStore} using a line based configuration.
+ * Configuration for an {@link OntologyIdStore} using a line based
+ * configuration. The configuration is expected to be in the following format:
+ * <ul>
+ * <li>Each line represents one ontology</li>
+ * <li>Each line has for fields, separated by tabulators</li>
+ * <li>Field 1: ontology name</li>
+ * <li>Field 2: id pattern</li>
+ * <li>Field 3: ID range start</li>
+ * <li>Field 4: ID range end</li>
+ * </ul>
  */
 @Singleton
-public class PlainOntologyIdStoreConfiguration implements OntologyIdStoreConfiguration {
+public class PlainOntologyIdStoreConfiguration extends ResourceLoader implements
+		OntologyIdStoreConfiguration
+{
 
 	private static final Logger logger = Logger.getLogger(PlainOntologyIdStoreConfiguration.class);
-	
+
 	private final Map<String, OntologyIdInfo> infos;
-	
+
 	/**
-	 * Create a new configuration for an {@link OntologyIdStore}.
-	 * The configuration is expected to be in the following format:
-	 * <ul>
-	 * <li>Each line represents one ontology</li>
-	 * <li>A line a for fields, separated by tabulators</li>
-	 * <li>Field 1: ontology name</li>
-	 * <li>Field 2: id pattern</li>
-	 * <li>Field 3: ID range start</li>
-	 * <li>Field 4: ID range end</li>
-	 * </ul>
+	 * Create a new configuration for an {@link OntologyIdStore}. Load the
+	 * configuration from the given resource.
+	 * 
+	 * @param resource
+	 * @param tryLoadAsFiles
+	 */
+	@Inject
+	PlainOntologyIdStoreConfiguration(@Named("PlainOntologyIdStoreConfigurationResource") String resource,
+			@Named("TryResourceLoadAsFiles") boolean tryLoadAsFiles)
+	{
+		super(tryLoadAsFiles);
+		infos = new HashMap<String, OntologyIdInfo>();
+		InputStream inputStream = null;
+		loadResource(inputStream, infos);
+	}
+
+	/**
+	 * Create a new configuration for an {@link OntologyIdStore}. This
+	 * constructor is only used for testing purposes.
 	 * 
 	 * @param inputStream stream containing the configuration
 	 */
-	@Inject
-	PlainOntologyIdStoreConfiguration(@Named("PlainOntologyIdStoreConfigurationInput") InputStream inputStream) {
-		super();
+	PlainOntologyIdStoreConfiguration(InputStream inputStream) {
+		super(false);
 		infos = new HashMap<String, OntologyIdInfo>();
+		loadResource(inputStream, infos);
+	}
+
+	static void loadResource(InputStream inputStream, Map<String, OntologyIdInfo> infos) {
 		try {
 			int lineCount = 0;
 			LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
@@ -72,7 +96,7 @@ public class PlainOntologyIdStoreConfiguration implements OntologyIdStoreConfigu
 
 					OntologyIdInfo info = infos.get(ontologyName);
 					if (info != null) {
-						error("Multiple configuration lines for ontology: "+ontologyName+" found at line: "+lineCount);
+						error("Multiple configuration lines for ontology: " + ontologyName + " found at line: " + lineCount);
 					}
 					else {
 						// create a new entry
@@ -91,17 +115,17 @@ public class PlainOntologyIdStoreConfiguration implements OntologyIdStoreConfigu
 			}
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
-		} 
+		}
 		finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
-	
+
 	@Override
 	public Map<String, OntologyIdInfo> getInfos() {
 		return Collections.unmodifiableMap(infos);
 	}
-	
+
 	// --------------------- Helper methods and classes ---------------------
 
 	/**
@@ -127,18 +151,18 @@ public class PlainOntologyIdStoreConfiguration implements OntologyIdStoreConfigu
 		}
 		return sb.toString();
 	}
-	
+
 	/*
 	 * helper to increase readability of the code
 	 */
-	private void warn(String message) {
+	private static void warn(String message) {
 		logger.warn(message);
 	}
 
 	/*
 	 * helper to increase readability of the code
 	 */
-	private void error(String message) {
+	private static void error(String message) {
 		throw new RuntimeException(message);
 	}
 }

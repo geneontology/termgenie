@@ -63,11 +63,13 @@ public class TermCreationTools {
 	/**
 	 * @param input
 	 * @param targetOntology
+	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
 	 */
 	TermCreationTools(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
@@ -75,7 +77,7 @@ public class TermCreationTools {
 		this.input = input;
 		this.targetOntology = targetOntology;
 		this.targetOntologyId = targetOntology.getOntologyId();
-		this.patternID = targetOntology.getOntologyId().toUpperCase() + ":" + patternID;
+		this.patternID = tempIdPrefix + patternID;
 		this.factory = factory;
 		this.obo2Owl = new TermGenieObo2Owl(targetOntology.getManager());
 		obo2Owl.setObodoc(new OBODoc());

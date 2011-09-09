@@ -15,7 +15,7 @@ public class PersistenceBasicModule extends IOCModule {
 	private final EntityManagerFactoryProvider provider = new EntityManagerFactoryProvider();
 	private final File dbFolder;
 	private final String dbType;
-	
+
 	/**
 	 * @param dbFolder
 	 * @param dbType
@@ -25,7 +25,7 @@ public class PersistenceBasicModule extends IOCModule {
 		this.dbFolder = dbFolder;
 		this.dbType = dbType;
 	}
-	
+
 	/**
 	 * @param dbFolder
 	 */
@@ -41,7 +41,7 @@ public class PersistenceBasicModule extends IOCModule {
 
 	@Provides
 	@Singleton
-	public EntityManager provideEntityManagerFactory(@Named("PersistenceDatabaseFolder") File folder,
+	public EntityManager provideEntityManager(@Named("PersistenceDatabaseFolder") File folder,
 			@Named("PersistenceDatabaseType") String type)
 	{
 		try {

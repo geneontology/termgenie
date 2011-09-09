@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology;
 import javax.persistence.EntityManager;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,8 +27,13 @@ public class OntologyIdProviderImpl implements OntologyIdProvider {
 	}
 
 	@Override
-	public String getNewId(Ontology ontology) {
+	public Pair<String, Integer> getNewId(Ontology ontology) {
 		return store.getNewId(ontology, entityManager);
+	}
+
+	@Override
+	public boolean rollbackId(Ontology ontology, Integer id) {
+		return store.rollbackId(ontology, id, entityManager);
 	}
 
 }

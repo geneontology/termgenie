@@ -90,7 +90,8 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			if (ontologies != null && ontologies.length > 0) {
 				String templateId = getTemplateId(termTemplate, count);
 				String script = termTemplate.getRules();
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId, factory);
+				String tempIdPrefix = getTempIdPrefix(targetOntology);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, tempIdPrefix, templateId, factory);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
@@ -105,7 +106,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	}
 
 	/**
-	 * Create an id for a templat which is unique for this input during a single
+	 * Create an id for a template which is unique for this input during a single
 	 * {@link #generateTerms(Ontology, List)} request.
 	 * 
 	 * @param template
@@ -131,6 +132,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		private final Ontology targetOntology;
 		private final String script;
 		private final TermGenerationInput input;
+		private final String tempIdPrefix;
 		private final String templateId;
 		private final ReasonerFactory factory;
 
@@ -140,6 +142,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				Ontology targetOntology,
 				TermGenerationInput input,
 				String script,
+				String tempIdPrefix,
 				String templateId,
 				ReasonerFactory factory)
 		{
@@ -147,6 +150,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			this.targetOntology = targetOntology;
 			this.input = input;
 			this.script = script;
+			this.tempIdPrefix = tempIdPrefix;
 			this.templateId = templateId;
 			this.factory = factory;
 		}
@@ -176,7 +180,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					return modified;
 				}
 				
-				functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, templateId, factory);
+				functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, tempIdPrefix, templateId, factory);
 				engine.put("termgenie", functionsImpl);
 				if (printScript) {
 					PrintWriter writer = new PrintWriter(System.out);
@@ -258,4 +262,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	public List<TermTemplate> getAvailableTemplates() {
 		return templates;
 	}
+
+	@Override
+	public String getTempIdPrefix(Ontology ontology) {
+		return "TEMP-"+ontology.getUniqueName() + ":";
+	}
+	
 }

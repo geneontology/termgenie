@@ -79,14 +79,14 @@ public class GeneOntologyCommitAdapter implements Committer {
 		if (terms != null && !terms.isEmpty()) {
 			if (commitInfo.getCommitMode() == CommitMode.explicit) {
 				if (commitInfo.getUsername() == null) {
-					throw new CommitException("If explicit mode is selected, an username is required.");
+					throw new CommitException("If explicit mode is selected, an username is required.", true);
 				}
 				if (commitInfo.getPassword() == null) {
-					throw new CommitException("If explicit mode is selected, a password is required.");
+					throw new CommitException("If explicit mode is selected, a password is required.", true);
 				}
 			}
 			else if (commitInfo.getCommitMode() == CommitMode.anonymus) {
-				throw new CommitException("Anonymus mode is not supported for the GeneOntology commit.");
+				throw new CommitException("Anonymus mode is not supported for the GeneOntology commit.", true);
 			}
 			return commitInternal(commitInfo);
 		}
@@ -99,7 +99,9 @@ public class GeneOntologyCommitAdapter implements Committer {
 
 		CVSTools cvs = null;
 		
-		File tempDirectory = FileUtils.getTempDirectory();
+		// TODO this does not create a proper temp dir, 
+		// TODO use locking and create a unique tempdir using a timestamp
+		File tempDirectory = FileUtils.getTempDirectory();  
 		try {
 			File cvsFolder;
 			try {
@@ -107,7 +109,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				FileUtils.forceMkdir(cvsFolder);
 			} catch (IOException exception) {
 				String message = "Could not create working directories for the commit";
-				throw new CommitException(message, exception);
+				throw new CommitException(message, exception, true);
 			}
 			
 			cvs = createCVS(commitInfo, cvsFolder);
@@ -118,7 +120,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				FileUtils.forceMkdir(oboFolder);
 			} catch (IOException exception) {
 				String message = "Could not create working directories for the commit";
-				throw new CommitException(message, exception);
+				throw new CommitException(message, exception, true);
 			}
 			
 			try {
@@ -126,7 +128,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				cvs.checkout(cvsOntologyFileName);
 			} catch (IOException exception) {
 				String message = "Could not checkout recent copy of the ontology";
-				throw new CommitException(message, exception);
+				throw new CommitException(message, exception, true);
 			}
 			
 			File cvsGoFile = new File(cvsFolder, cvsOntologyFileName);
@@ -134,7 +136,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 			
 			// apply changes
 
-			// TOODO
+			// TODO
 			
 			// reason and check validity
 			// only throw error if there is an inconsistency,
@@ -162,7 +164,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				store.store(history);
 			} catch (CommitHistoryStoreException exception) {
 				String message = "Problems handling commit history for ontology: "+ontology;
-				throw new CommitException(message, exception);
+				throw new CommitException(message, exception, true);
 			}
 			
 
@@ -172,7 +174,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				// commit cvs changes
 				cvs.commit("TermGenie commit for user: " + commitInfo.getTermgenieUser());
 			} catch (IOException exception) {
-				throw new CommitException("", exception);
+				throw new CommitException("Error during CVS commit", exception, false);
 			}
 
 			try {
@@ -181,7 +183,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				store.store(history);
 			} catch (CommitHistoryStoreException exception) {
 				String message = "Problems handling commit history for ontology: "+ontology;
-				throw new CommitException(message, exception);
+				throw new CommitException(message, exception, false);
 			}
 			return true;
 		}
@@ -202,7 +204,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 			FileUtils.copyFile(oboFile, cvsGoFile);
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to commit file";
-			throw new CommitException(message, exception);
+			throw new CommitException(message, exception, true);
 		}
 	}
 
@@ -218,10 +220,10 @@ public class GeneOntologyCommitAdapter implements Committer {
 			writer.write(oboDoc, new BufferedWriter(new FileWriter(oboFile)));
 		} catch (OWLOntologyCreationException exception) {
 			String message = "Could not convert ontology to OBO";
-			throw new CommitException(message, exception);
+			throw new CommitException(message, exception, true);
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
-			throw new CommitException(message, exception);
+			throw new CommitException(message, exception, true);
 		}
 		return oboFile;
 	}
@@ -235,10 +237,10 @@ public class GeneOntologyCommitAdapter implements Committer {
 			ontology = loader.load(config);
 		} catch (OWLOntologyCreationException exception) {
 			String message = "Could load recent copy of the ontology";
-			throw new CommitException(message, exception);
+			throw new CommitException(message, exception, true);
 		} catch (IOException exception) {
 			String message = "Could load recent copy of the ontology";
-			throw new CommitException(message, exception);
+			throw new CommitException(message, exception, true);
 		}
 		return ontology;
 	}

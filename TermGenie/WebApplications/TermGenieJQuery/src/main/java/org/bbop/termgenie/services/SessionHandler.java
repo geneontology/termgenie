@@ -3,12 +3,25 @@ package org.bbop.termgenie.services;
 public interface SessionHandler {
 
 	/**
+	 * Default entry for a user name after a the session has been logged-in.
+	 */
+	public static final String USER_NAME = "TermGenieUserName";
+	
+	/**
 	 * Create a new session.
 	 * 
 	 * @return sessionId
 	 */
 	public String createSession();
 
+	/**
+	 * Check if the session for the given sessionId is valid.
+	 * 
+	 * @param sessionId
+	 * @return true, if the current session exists and has not timed out.
+	 */
+	public boolean isValidSession(String sessionId);
+	
 	/**
 	 * Try to authenticate the session.
 	 * 
@@ -26,6 +39,14 @@ public interface SessionHandler {
 	 */
 	public void logout(String sessionId);
 
+	/**
+	 * Check if the session for the given sessionId is authenticated.
+	 * 
+	 * @param sessionId
+	 * @return true, if the current session exists and has not timed out.
+	 */
+	public boolean isAuthenticated(String sessionId);
+	
 	/**
 	 * Ping the current session to keep it alive.
 	 * 
@@ -49,8 +70,9 @@ public interface SessionHandler {
 	 * @param sessionId
 	 * @param key
 	 * @param value
+	 * @return true, if operation was successful. May fail, if session timed out.
 	 */
-	public void setValue(String sessionId, String key, String value);
+	public boolean setValue(String sessionId, String key, String value);
 
 	/**
 	 * Retrieve a list of values for a given keyset.
@@ -67,6 +89,8 @@ public interface SessionHandler {
 	 * @param sessionId
 	 * @param keys
 	 * @param values
+	 * @return true, if operation was successful. May fail, if session timed out.
 	 */
-	public void setValues(String sessionId, String keys[], String[] values);
+	public boolean setValues(String sessionId, String keys[], String[] values);
+
 }

@@ -12,4 +12,5 @@ public interface Committer {
 	 * @throws CommitException
 	 */
 	public boolean commit(CommitInfo commitInfo) throws CommitException;
+	
 }

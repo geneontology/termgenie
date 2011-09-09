@@ -403,6 +403,21 @@ public class JsonOntologyTerm {
 			this.resource = metaData.get("resource");
 			this.comment = metaData.get("comment");
 		}
+		
+		public static Map<String, String> getMap(JsonTermMetaData metaData) {
+			Map<String, String> map = new HashMap<String, String>();
+			setValue(map, "created_by", metaData.getCreated_by());
+			setValue(map, "creation_date", metaData.getCreation_date());
+			setValue(map, "resource", metaData.getResource());
+			setValue(map, "comment", metaData.getComment());
+			return map;
+		}
+		
+		private static void setValue(Map<String, String> map, String key, String value) {
+			if (value != null) {
+				map.put(key, value);
+			}
+		}
 
 		/**
 		 * @return the created_by
