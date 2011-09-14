@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology;
 
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -43,5 +44,20 @@ public class OntologyIdManager extends GenericTaskManager<OntologyIdProvider> {
 	@Override
 	protected OntologyIdProvider createManaged() {
 		return idProvider;
+	}
+
+	/**
+	 * Convenience class to simplify the implementation of {@link ManagedTask}
+	 * for {@link OntologyIdManager}.
+	 */
+	public static abstract class OntologyIdManagerTask implements ManagedTask<OntologyIdProvider> {
+
+		@Override
+		final public Modified run(OntologyIdProvider managed) {
+			runSimple(managed);
+			return Modified.no;
+		}
+
+		protected abstract void runSimple(OntologyIdProvider managed);
 	}
 }

@@ -31,6 +31,8 @@ public interface TermGenerationEngine {
 	 * Retrieve the prefix for temporary identifiers. Used during the commit to
 	 * replace them with new valid identifiers.
 	 * 
+	 * @param ontology 
+	 * 
 	 * @return prefix
 	 */
 	public String getTempIdPrefix(Ontology ontology);
