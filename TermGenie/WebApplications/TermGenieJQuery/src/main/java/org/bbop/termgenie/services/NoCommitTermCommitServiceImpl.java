@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.data.JsonCommitResult;
+import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;

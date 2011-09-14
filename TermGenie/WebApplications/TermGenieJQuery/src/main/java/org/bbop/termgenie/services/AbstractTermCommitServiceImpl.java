@@ -15,6 +15,7 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
@@ -23,6 +24,7 @@ import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
@@ -139,15 +141,20 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			CommitInfo commitInfo = createCommitInfo(commitTerms, null, termgenieUser);
 			try {
 				// commit
-				boolean success = committer.commit(commitInfo);
+				CommitResult commitResult = committer.commit(commitInfo);
 
 				// check commit status
-				if (!success) {
+				if (!commitResult.isSuccess()) {
 					error("Commit operation did not succeed.");
 				}
 
 				// create result
-				// TODO create a result.
+				result = new JsonCommitResult();
+				result.setMessage("Commit operation finished successfully.");
+				result.setTerms(terms);
+				result.setSuccess(true);
+				result.setDiff(commitResult.getDiff());
+				
 			} catch (CommitException exception) {
 				if (exception.isRollback()) {
 					idProvider.rollbackId(manager.getOntology(), base);

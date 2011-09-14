@@ -74,7 +74,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 	}
 
 	@Override
-	public boolean commit(CommitInfo commitInfo) throws CommitException {
+	public CommitResult commit(CommitInfo commitInfo) throws CommitException {
 		List<CommitObject<OntologyTerm>> terms = commitInfo.getTerms();
 		if (terms != null && !terms.isEmpty()) {
 			if (commitInfo.getCommitMode() == CommitMode.explicit) {
@@ -90,10 +90,10 @@ public class GeneOntologyCommitAdapter implements Committer {
 			}
 			return commitInternal(commitInfo);
 		}
-		return false;
+		return CommitResult.ERROR;
 	}
 
-	private boolean commitInternal(CommitInfo commitInfo) throws CommitException {
+	private CommitResult commitInternal(CommitInfo commitInfo) throws CommitException {
 		List<CommitObject<OntologyTerm>> terms = commitInfo.getTerms();
 		List<CommitObject<Relation>> relations = commitInfo.getRelations();
 
@@ -167,7 +167,8 @@ public class GeneOntologyCommitAdapter implements Committer {
 				throw new CommitException(message, exception, true);
 			}
 			
-
+			// TODO get diff from the two files
+			String cvsDiff = null;
 			copyOBOFileForCommit(cvsGoFile, oboFile);
 
 			try {
@@ -185,7 +186,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 				String message = "Problems handling commit history for ontology: "+ontology;
 				throw new CommitException(message, exception, false);
 			}
-			return true;
+			return new CommitResult(true, cvsDiff);
 		}
 		finally {
 			try {
