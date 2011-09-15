@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -14,8 +16,8 @@ import org.apache.openjpa.persistence.PersistentMap;
 @Entity
 public class CommitedOntologyTerm {
 
+	private int uuid;
 	private String id;
-	private String ontology;
 	private String label;
 	private String definition;
 	private List<CommitedOntologyTermSynonym> synonyms;
@@ -26,9 +28,25 @@ public class CommitedOntologyTerm {
 	private int operation;
 
 	/**
-	 * @return the id
+	 * @return the uuid
 	 */
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public int getUuid() {
+		return uuid;
+	}
+
+	/**
+	 * @param uuid the uuid to set
+	 */
+	public void setUuid(int uuid) {
+		this.uuid = uuid;
+	}
+
+	/**
+	 * @return the id
+	 */
+	@Column
 	@Basic(optional = false)
 	public String getId() {
 		return id;
@@ -41,22 +59,6 @@ public class CommitedOntologyTerm {
 		this.id = id;
 	}
 	
-	/**
-	 * @return the ontology
-	 */
-	@Column
-	@Basic(optional = false)
-	public String getOntology() {
-		return ontology;
-	}
-	
-	/**
-	 * @param ontology the ontology to set
-	 */
-	public void setOntology(String ontology) {
-		this.ontology = ontology;
-	}
-
 	/**
 	 * @return the label
 	 */

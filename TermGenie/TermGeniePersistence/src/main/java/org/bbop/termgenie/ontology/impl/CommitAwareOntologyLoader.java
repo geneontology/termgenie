@@ -10,10 +10,13 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.entities.CommitHistory;
+import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
@@ -34,6 +37,8 @@ import com.google.inject.name.Named;
 @Singleton
 public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 
+	private final static Logger logger = Logger.getLogger(CommitAwareOntologyLoader.class);
+	
 	private final EntityManager entityManager;
 
 	@Inject
@@ -58,13 +63,42 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 	@Override
 	protected void postProcessOBOOntology(String ontology, OBODoc obodoc) {
 		super.postProcessOBOOntology(ontology, obodoc);
-		TypedQuery<CommitedOntologyTerm> query = entityManager.createQuery("select t from CommitedOntologyTerm as t where t.ontology = ?1",
-				CommitedOntologyTerm.class);
+		
+		// apply history to ontology
+		// try to detect, whether the changes have been 
+		// committed to the loaded ontology version, or if conflicts exist.
+		TypedQuery<CommitHistory> query = entityManager.createQuery("select h from CommitHistory as h where h.ontology = ?1",
+				CommitHistory.class);
 		query.setParameter(1, ontology);
-		List<CommitedOntologyTerm> terms = query.getResultList();
-		for (CommitedOntologyTerm term : terms) {
-			handleTerm(term, obodoc);
+		List<CommitHistory> histories = query.getResultList();
+		if (!histories.isEmpty()) {
+			if (histories.size() != 1) {
+				logger.error("Multiple histories ("+histories.size()+") found for ontology: "+ontology);
+			}
+			CommitHistory history = histories.get(0);
+			List<CommitHistoryItem> items = history.getItems();
+			for (CommitHistoryItem item : items) {
+				if (item.isCommitted()) {
+					List<CommitedOntologyTerm> terms = item.getTerms();
+					if (terms != null) {
+						for (CommitedOntologyTerm term : terms) {
+							handleTerm(term, obodoc);
+						}
+					}
+					List<CommitedOntologyTermRelation> relations = item.getRelations();
+					if (relations != null) {
+						for (CommitedOntologyTermRelation relation : relations) {
+							handleRelation(relation, obodoc);
+						}
+					}
+				}
+			}
 		}
+	}
+
+	private void handleRelation(CommitedOntologyTermRelation relation, OBODoc obodoc) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private boolean handleTerm(CommitedOntologyTerm term, OBODoc obodoc) {

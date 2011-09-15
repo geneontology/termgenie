@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
@@ -26,12 +25,11 @@ public class CommitHistoryTools {
 			List<CommitObject<OntologyTerm>> terms,
 			List<CommitObject<Relation>> relations,
 			String user,
-			Date date,
-			Ontology ontology)
+			Date date)
 	{
 		CommitHistoryItem item = new CommitHistoryItem();
 
-		item.setTerms(translateTerms(terms, ontology));
+		item.setTerms(translateTerms(terms));
 		item.setRelations(translateCommitRelations(relations));
 		item.setUser(user);
 		item.setDate(date);
@@ -50,12 +48,11 @@ public class CommitHistoryTools {
 	public static CommitHistory create(List<CommitObject<OntologyTerm>> terms,
 			List<CommitObject<Relation>> relations,
 			String user,
-			Date date,
-			Ontology ontology)
+			Date date)
 	{
 		CommitHistoryItem item = new CommitHistoryItem();
 
-		item.setTerms(translateTerms(terms, ontology));
+		item.setTerms(translateTerms(terms));
 		item.setRelations(translateCommitRelations(relations));
 		item.setUser(user);
 		item.setDate(date);
@@ -71,7 +68,7 @@ public class CommitHistoryTools {
 
 	}
 
-	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm>> terms, Ontology ontology)
+	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm>> terms)
 	{
 		List<CommitedOntologyTerm> result = null;
 		if (terms != null && !terms.isEmpty()) {
@@ -80,7 +77,6 @@ public class CommitHistoryTools {
 				CommitedOntologyTerm term = new CommitedOntologyTerm();
 
 				term.setId(commitObject.getObject().getId());
-				term.setOntology(ontology.getUniqueName());
 				term.setLabel(commitObject.getObject().getLabel());
 				term.setDefinition(commitObject.getObject().getDefinition());
 				term.setDefXRef(commitObject.getObject().getDefXRef());
