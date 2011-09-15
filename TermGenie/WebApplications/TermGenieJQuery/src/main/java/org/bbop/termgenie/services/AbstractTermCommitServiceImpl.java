@@ -365,6 +365,12 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	}
 
 	private static JsonCommitResult error(CommitException exception) {
-		return error("The commit operation did not succeed, exception: " + exception.getMessage());
+		StringBuilder message = new StringBuilder("The commit operation did not succeed, exception: ");
+		message.append(exception.getMessage());
+		if (exception.getCause() != null) {
+			message.append("\nCause: ");
+			message.append(exception.getCause().getMessage());
+		}
+		return error(message.toString());
 	}
 }
