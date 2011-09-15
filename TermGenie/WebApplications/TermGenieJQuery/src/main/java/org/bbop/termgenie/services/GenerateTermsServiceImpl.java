@@ -39,7 +39,6 @@ import org.bbop.termgenie.data.JsonValidationHint;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
-import org.bbop.termgenie.tools.OntologyCommitTool;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -59,23 +58,19 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
 	private final OntologyTools ontologyTools;
 	private final TermGenerationEngine termGeneration;
-	private final OntologyCommitTool committer;
 	private final JsonTemplateTools jsonTools;
 
 	/**
 	 * @param ontologyTools
 	 * @param termGeneration
-	 * @param committer
 	 */
 	@Inject
 	GenerateTermsServiceImpl(OntologyTools ontologyTools,
-			TermGenerationEngine termGeneration,
-			OntologyCommitTool committer)
+			TermGenerationEngine termGeneration)
 	{
 		super();
 		this.ontologyTools = ontologyTools;
 		this.termGeneration = termGeneration;
-		this.committer = committer;
 		this.jsonTools = new JsonTemplateTools();
 	}
 
@@ -97,13 +92,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		for (TermTemplate template : templates) {
 			jsonTemplates.add(jsonTools.createJsonTermTemplate(template));
 		}
-		Collections.sort(jsonTemplates, new Comparator<JsonTermTemplate>() {
-
-			@Override
-			public int compare(JsonTermTemplate o1, JsonTermTemplate o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
+		Collections.sort(jsonTemplates, JsonTermTempleSorter.instance);
 		return jsonTemplates.toArray(new JsonTermTemplate[jsonTemplates.size()]);
 	}
 
@@ -165,8 +154,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			// generate term candidates
 			List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName,
 					allParameters);
-			List<TermGenerationOutput> candidates = generateTermsInternal(manager.getOntology(),
-					generationTasks);
+			List<TermGenerationOutput> candidates = termGeneration.generateTerms(manager.getOntology(), generationTasks);
 
 			// validate candidates
 			if (candidates == null || candidates.isEmpty()) {
@@ -298,14 +286,14 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		return templates;
 	}
 
-	protected List<TermGenerationOutput> generateTermsInternal(Ontology ontology,
-			List<TermGenerationInput> generationTasks)
-	{
-		return termGeneration.generateTerms(ontology, generationTasks);
-	}
+	private static final class JsonTermTempleSorter implements Comparator<JsonTermTemplate> {
 
-	protected boolean executeCommit(Ontology ontology, List<TermGenerationOutput> candidates) {
-		return committer.commitCandidates(ontology, candidates);
+		private static final JsonTermTempleSorter instance = new JsonTermTempleSorter();
+		
+		@Override
+		public int compare(JsonTermTemplate o1, JsonTermTemplate o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
 	}
 
 	/**

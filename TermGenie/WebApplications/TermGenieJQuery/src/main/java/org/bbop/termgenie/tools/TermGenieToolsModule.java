@@ -29,12 +29,6 @@ public class TermGenieToolsModule extends IOCModule {
 
 	@Provides
 	@Singleton
-	OntologyCommitTool provideOntologyCommitTool() {
-		return new OntologyCommitTool();
-	}
-
-	@Provides
-	@Singleton
 	UserCredentialValidatorTools provideUserCredentialValidatorTools() {
 		return new UserCredentialValidatorTools();
 	}
