@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -30,6 +31,7 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	static final String PELLET = "pellet";
 	static final String HERMIT = "hermit";
 	static final String JCEL = "jcel";
+	static final String ELK = "elk";
 
 	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, PELLET)));
 
@@ -79,6 +81,9 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 		}
 		else if (PELLET.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), PelletReasonerFactory.getInstance());
+		}
+		else if (ELK.equals(reasonerName)) {
+			return createManager(ontology.getSourceOntology(), new ElkReasonerFactory());
 		}
 		return null;
 	}
