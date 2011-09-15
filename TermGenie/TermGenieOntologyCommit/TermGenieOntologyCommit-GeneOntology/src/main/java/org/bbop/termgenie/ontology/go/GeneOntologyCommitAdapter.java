@@ -40,6 +40,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import difflib.DiffUtils;
+import difflib.Patch;
+
 @Singleton
 public class GeneOntologyCommitAdapter implements Committer {
 
@@ -99,13 +102,11 @@ public class GeneOntologyCommitAdapter implements Committer {
 
 		CVSTools cvs = null;
 		
-		// TODO this does not create a proper temp dir, 
-		// TODO use locking and create a unique tempdir using a timestamp
-		File tempDirectory = FileUtils.getTempDirectory();  
+		WorkFolders workFolders = createTempDir();  
 		try {
 			File cvsFolder;
 			try {
-				cvsFolder = new File(tempDirectory, "cvs");
+				cvsFolder = new File(workFolders.workFolder, "cvs");
 				FileUtils.forceMkdir(cvsFolder);
 			} catch (IOException exception) {
 				String message = "Could not create working directories for the commit";
@@ -116,7 +117,7 @@ public class GeneOntologyCommitAdapter implements Committer {
 			
 			File oboFolder;
 			try {
-				oboFolder = new File(tempDirectory, "obo");
+				oboFolder = new File(workFolders.workFolder, "obo");
 				FileUtils.forceMkdir(oboFolder);
 			} catch (IOException exception) {
 				String message = "Could not create working directories for the commit";
@@ -125,25 +126,31 @@ public class GeneOntologyCommitAdapter implements Committer {
 			
 			try {
 				// cvs checkout
+				cvs.connect();
 				cvs.checkout(cvsOntologyFileName);
 			} catch (IOException exception) {
 				String message = "Could not checkout recent copy of the ontology";
 				throw new CommitException(message, exception, true);
 			}
+			finally {
+				try {
+					cvs.close();
+				} catch (IOException exception) {
+					logger.error("Could not close CVS tool.", exception);
+				}
+			}
 			
 			File cvsGoFile = new File(cvsFolder, cvsOntologyFileName);
 			OWLGraphWrapper ontology = loadOntology(cvsGoFile);
 			
-			// apply changes
+			// TODO apply changes
 
-			// TODO
-			
 			// reason and check validity
 			// only throw error if there is an inconsistency,
 			// which can not be recovered silently!
 			ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(ontology);
 			
-			// TODO
+			// TODO do reasoning over created ontology to find errors and inconsistencies
 			
 			File oboFile = createOBOFile(oboFolder, ontology);
 			
@@ -167,15 +174,23 @@ public class GeneOntologyCommitAdapter implements Committer {
 				throw new CommitException(message, exception, true);
 			}
 			
-			// TODO get diff from the two files
-			String cvsDiff = null;
+			// get diff from the two files
+			String cvsDiff = createUnifiedDiff(cvsGoFile, oboFile, cvsOntologyFileName, "termgenie-changes");
 			copyOBOFileForCommit(cvsGoFile, oboFile);
 
 			try {
 				// commit cvs changes
+				cvs.connect();
 				cvs.commit("TermGenie commit for user: " + commitInfo.getTermgenieUser());
 			} catch (IOException exception) {
 				throw new CommitException("Error during CVS commit", exception, false);
+			}
+			finally {
+				try {
+					cvs.close();
+				} catch (IOException exception) {
+					logger.error("Could not close CVS tool.", exception);
+				}
 			}
 
 			try {
@@ -189,13 +204,64 @@ public class GeneOntologyCommitAdapter implements Committer {
 			return new CommitResult(true, cvsDiff);
 		}
 		finally {
-			try {
-				// clean up
-				FileUtils.deleteDirectory(tempDirectory);
-			} catch (IOException exception) {
-				logger.warn("Could not clear temp directory: " + tempDirectory.getAbsolutePath(),
-						exception);
+			FileUtils.deleteQuietly(workFolders.workFolder);
+			FileUtils.deleteQuietly(workFolders.lockFile);
+		}
+	}
+
+	private String createUnifiedDiff(File originalFile, File revisedFile, String originalName, String revisedName) throws CommitException {
+		try {
+			List<String> originalLines = FileUtils.readLines(originalFile);
+			List<String> revisedLines = FileUtils.readLines(revisedFile);
+			Patch patch = DiffUtils.diff(originalLines, revisedLines);
+			if (patch != null) {
+				List<String> diff = DiffUtils.generateUnifiedDiff(originalName, revisedName, originalLines, patch, 0);
+				StringBuilder sb = new StringBuilder();
+				for (String line : diff) {
+					sb.append(line).append('\n');
+				}
+				return sb.toString();
 			}
+		} catch (IOException exception) {
+			throw new CommitException("Could not create diff for commit.", exception, true);
+		}
+		return null;
+	}
+
+	private WorkFolders createTempDir() throws CommitException {
+		File tempFile = null;
+		File workFolder = null;
+		try {
+			String suffix = ".lock";
+			tempFile = File.createTempFile("gocommit-", suffix);
+			String tempFolderName = tempFile.getName().replace(suffix, "-folder");
+			workFolder = new File(tempFile.getParentFile(), tempFolderName);
+			FileUtils.forceMkdir(workFolder);
+			return new WorkFolders(tempFile, workFolder);
+		} catch (Exception exception) {
+			if (tempFile != null) {
+				FileUtils.deleteQuietly(tempFile);
+			}
+			if (workFolder != null) {
+				FileUtils.deleteQuietly(workFolder);
+			}
+			throw new CommitException("Could not create temporary work dir.", exception, true);
+		}
+	}
+	
+	private static class WorkFolders {
+		
+		private final File lockFile;
+		private final File workFolder;
+		
+		/**
+		 * @param lockFile
+		 * @param workFolder
+		 */
+		WorkFolders(File lockFile, File workFolder) {
+			super();
+			this.lockFile = lockFile;
+			this.workFolder = workFolder;
 		}
 	}
 
