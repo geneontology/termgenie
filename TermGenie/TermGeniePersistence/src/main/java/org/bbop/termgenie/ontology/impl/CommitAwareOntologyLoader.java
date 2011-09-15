@@ -93,6 +93,14 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 						LOGGER.warn("Skipping modification of non-existing term from history: "+id);
 						return false;
 					}
+					try {
+						Frame modFrame = new Frame(FrameType.TERM);
+						fillOBO(frame, term);
+						frame.merge(modFrame);
+					} catch (FrameMergeException exception) {
+						LOGGER.warn("Could not apply chages to frame.", exception);
+						return false;
+					}
 					break;
 					
 				case remove:
