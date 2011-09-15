@@ -52,8 +52,8 @@ public class PlainOntologyIdStoreConfiguration extends ResourceLoader implements
 	{
 		super(tryLoadAsFiles);
 		infos = new HashMap<String, OntologyIdInfo>();
-		InputStream inputStream = null;
-		loadResource(inputStream, infos);
+		InputStream inputStream = loadResource(resource);
+		loadConfigurationResource(inputStream, infos);
 	}
 
 	/**
@@ -65,10 +65,10 @@ public class PlainOntologyIdStoreConfiguration extends ResourceLoader implements
 	PlainOntologyIdStoreConfiguration(InputStream inputStream) {
 		super(false);
 		infos = new HashMap<String, OntologyIdInfo>();
-		loadResource(inputStream, infos);
+		loadConfigurationResource(inputStream, infos);
 	}
 
-	static void loadResource(InputStream inputStream, Map<String, OntologyIdInfo> infos) {
+	static void loadConfigurationResource(InputStream inputStream, Map<String, OntologyIdInfo> infos) {
 		try {
 			int lineCount = 0;
 			LineIterator lineIterator = IOUtils.lineIterator(inputStream, "UTF-8");
