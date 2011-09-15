@@ -15,6 +15,7 @@ import org.apache.openjpa.persistence.PersistentMap;
 public class CommitedOntologyTerm {
 
 	private String id;
+	private String ontology;
 	private String label;
 	private String definition;
 	private List<CommitedOntologyTermSynonym> synonyms;
@@ -38,6 +39,22 @@ public class CommitedOntologyTerm {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	/**
+	 * @return the ontology
+	 */
+	@Column
+	@Basic(optional = false)
+	public String getOntology() {
+		return ontology;
+	}
+	
+	/**
+	 * @param ontology the ontology to set
+	 */
+	public void setOntology(String ontology) {
+		this.ontology = ontology;
 	}
 
 	/**

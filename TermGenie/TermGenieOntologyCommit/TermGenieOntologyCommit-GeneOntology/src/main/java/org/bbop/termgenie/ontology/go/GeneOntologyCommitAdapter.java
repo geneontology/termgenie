@@ -155,11 +155,11 @@ public class GeneOntologyCommitAdapter implements Committer {
 				Date date = new Date();
 				String user = commitInfo.getUsername();
 				if (history == null) {
-					history = CommitHistoryTools.create(terms, relations, user, date);
+					history = CommitHistoryTools.create(terms, relations, user, date, go);
 					historyItem = history.getItems().get(0);
 				}
 				else {
-					historyItem = CommitHistoryTools.add(history, terms, relations, user, date);
+					historyItem = CommitHistoryTools.add(history, terms, relations, user, date, go);
 				}
 				store.store(history);
 			} catch (CommitHistoryStoreException exception) {
