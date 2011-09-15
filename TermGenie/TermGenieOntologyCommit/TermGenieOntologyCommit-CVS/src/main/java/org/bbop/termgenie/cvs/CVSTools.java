@@ -22,16 +22,27 @@ import org.netbeans.lib.cvsclient.connection.StandardScrambler;
 import org.netbeans.lib.cvsclient.event.CVSAdapter;
 import org.netbeans.lib.cvsclient.event.MessageEvent;
 
+/**
+ * Tools for connecting to a CVS repository. This class is not ThreadSafe, each
+ * thread must have its own instance.
+ */
 public class CVSTools implements Closeable {
 
 	private static final Logger logger = Logger.getLogger(CVSTools.class);
-	
+
 	private final File targetFolder;
 	private final GlobalOptions options;
 
 	private final PServerConnection connection;
 	private Client client;
 
+	/**
+	 * Create a new instance, for the given parameters.
+	 * 
+	 * @param cvsRoot cvsRoot
+	 * @param cvsPassword unscrambled password
+	 * @param targetFolder the target folder
+	 */
 	public CVSTools(String cvsRoot, String cvsPassword, File targetFolder) {
 		super();
 		this.targetFolder = targetFolder;
@@ -43,9 +54,21 @@ public class CVSTools implements Closeable {
 			connection.setEncodedPassword(password);
 		}
 		options = new GlobalOptions();
+		client = null;
 	}
-	
+
+	/**
+	 * Open the connection to the given CVS repository. Expects that there no
+	 * open connections.
+	 * 
+	 * @see #close()
+	 * @throws IOException in case of connection problems
+	 * @throws IllegalStateException in case the connection is already open
+	 */
 	public void connect() throws IOException {
+		if (client != null) {
+			throw new IllegalStateException("You need to close() the current connection before you can create a new one.");
+		}
 		try {
 			connection.open();
 			AdminHandler adminHandler = new StandardAdminHandler();
@@ -59,14 +82,35 @@ public class CVSTools implements Closeable {
 		}
 	}
 
+	/**
+	 * Close the connection to the CVS repository. Can be called multiple times.
+	 * 
+	 * @see #connect()
+	 */
 	@Override
 	public void close() throws IOException {
-		if (connection != null && connection.isOpen()) {
+		if (client != null) {
+			client = null;
+		}
+		if (connection.isOpen()) {
 			connection.close();
 		}
 	}
 
+	/**
+	 * Checkout the given file from the CVS repository. 
+	 * 
+	 * @see #connect()
+	 * @see #close()
+	 * @param cvsFile
+	 * @return true, if the CVS check out operation successfully finished
+	 * @throws IOException in case of connection problems
+	 * @throws IllegalStateException in case the connection is not open
+	 */
 	public boolean checkout(String cvsFile) throws IOException {
+		if (client == null) {
+			throw new IllegalStateException("You need to call connect() before you can use this method");
+		}
 		CheckoutCommand co = new CheckoutCommand();
 		co.setModule(cvsFile);
 		co.setRecursive(true);
@@ -84,7 +128,18 @@ public class CVSTools implements Closeable {
 		}
 	}
 
+	/**
+	 * Commit the current checkout with the given message. 
+	 * 
+	 * @param message the commit message
+	 * @return true, if the CVS commit operation successfully finished
+	 * @throws IOException in case of connection problems
+	 * @throws IllegalStateException in case the connection is not open
+	 */
 	public boolean commit(String message) throws IOException {
+		if (client == null) {
+			throw new IllegalStateException("You need to call connect() before you can use this method");
+		}
 		CommitCommand commit = new CommitCommand();
 		commit.setMessage(message);
 		try {
@@ -98,7 +153,7 @@ public class CVSTools implements Closeable {
 		}
 	}
 
-	public class BasicListener extends CVSAdapter {
+	class BasicListener extends CVSAdapter {
 
 		/**
 		 * Stores a tagged line
