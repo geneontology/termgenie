@@ -168,7 +168,7 @@ function run() {
 		<hint>[part] involved in [whole]</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_self.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -215,7 +215,7 @@ function run(){
 		<description>processes occurring in parts of the cell</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_cellular_component.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -263,7 +263,7 @@ function run() {
 		</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_self.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -381,7 +381,7 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>molecular_function_xp_protein.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="ProteinOntology" />
@@ -420,7 +420,7 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_uber_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon" />
@@ -447,7 +447,7 @@ function run() {
                    termgenie.refname(x, uberon)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, uberon, " development", label);
-  var cdef = termgenie.cdef("GO:0032502";
+  var cdef = termgenie.cdef("GO:0032502");
   cdef.differentium("OBO_REL:results_in_complete_development_of", x, uberon);
   termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
@@ -461,7 +461,7 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_uber_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon"/>
@@ -500,7 +500,7 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_plant_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -541,7 +541,7 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_plant_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -580,7 +580,7 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>cellular_component</obonamespace>
-		<!-- <requires>cellular_component_xp_protein.obo</requires>  -->
+		<!-- <requires>http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo</requires>  -->
 		<fields>
 			<field name="unit" required="true">
 				<ontology name="ProteinOntology" />
@@ -628,7 +628,7 @@ function run() {
 			<ontology name="PATO"/>
 		</external>
 		<obonamespace>medical_genetics</obonamespace>
-		<requires>human-phenotype-ontology_xp.obo</requires>
+		<requires>http://compbio.charite.de/svn/hpo/trunk/human-phenotype-ontology_xp.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="FMA"/>
@@ -665,7 +665,7 @@ function run() {
 			<ontology name="PATO"/>
 		</external>
 		<obonamespace>medical_genetics</obonamespace>
-		<requires>human-phenotype-ontology_xp.obo</requires>
+		<requires>http://compbio.charite.de/svn/hpo/trunk/human-phenotype-ontology_xp.obo</requires>
 		<fields>
 			<field name="entity" required="true">
 				<ontology name="FMA"/>

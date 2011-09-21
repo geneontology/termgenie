@@ -145,7 +145,7 @@ public interface TermGenieScriptFunctions {
 
 	/**
 	 * Create new synonyms for a given term with a prefix and suffix. The new
-	 * label is required as it is used to prevent accidential creation of a
+	 * label is required as it is used to prevent accidental creation of a
 	 * synonym with the same label.
 	 * 
 	 * @param prefix the prefix, may be null
@@ -163,7 +163,7 @@ public interface TermGenieScriptFunctions {
 
 	/**
 	 * Create new synonyms for two terms with a prefix, infix, and suffix. The
-	 * new label is required as it is used to prevent accidential creation of a
+	 * new label is required as it is used to prevent accidental creation of a
 	 * synonym with the same label.
 	 * 
 	 * @param prefix
@@ -384,6 +384,18 @@ public interface TermGenieScriptFunctions {
 	 */
 	public boolean contains(String[] array, String value);
 
+
+	/**
+	 * Concatenate two lists of the same type. Checks for null 
+	 * values and ignores them.
+	 * 
+	 * @param <T>
+	 * @param l1
+	 * @param l2
+	 * @return list
+	 */
+	public <T> List<T> concat(List<T> l1, List<T> l2);
+	
 	/**
 	 * Create an error in the expected return format.
 	 * 

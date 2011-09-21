@@ -11,6 +11,7 @@
 			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</support> 
 			<!-- <support>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</support> -->
 			<support>http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo</support>
+			<support>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
@@ -21,6 +22,7 @@
 			<name>ProteinOntology</name>
 			<name>Uberon</name>
 			<name>PO</name> <!-- Plant ontology -->
+			<name>GOCHE</name>
 		</requires>
 		<ontologybranch name="biological_process">
 			<roots>
@@ -55,6 +57,21 @@
 		<roots>
 			<root>PO:0025131</root>
 			<root>PO:0009012</root>
+		</roots>
+	</ontology>
+	<ontology name="CHEBI" longName="Chemical Entities of Biological Interest">
+		<source>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/chemical/chebi.obo</source>
+		<roots>
+			<root>CHEBI:24431</root> <!-- chemical entity -->
+		</roots>
+	</ontology>
+	<ontology name="GOCHE">
+		<source>http://www.geneontology.org/ontology/editors/goche.obo</source>
+		<requires>
+			<name>CHEBI</name>
+		</requires>
+		<roots>
+			<root>CHEBI:24431</root> <!-- chemical entity -->
 		</roots>
 	</ontology>
 </ontologyconfiguration>

@@ -10,7 +10,7 @@
 			<ontology name="PATO"/>
 		</external>
 		<obonamespace>medical_genetics</obonamespace>
-		<requires>human-phenotype-ontology_xp.obo</requires>
+		<requires>http://compbio.charite.de/svn/hpo/trunk/human-phenotype-ontology_xp.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="FMA"/>
@@ -47,7 +47,7 @@ function run() {
 			<ontology name="PATO"/>
 		</external>
 		<obonamespace>medical_genetics</obonamespace>
-		<requires>human-phenotype-ontology_xp.obo</requires>
+		<requires>http://compbio.charite.de/svn/hpo/trunk/human-phenotype-ontology_xp.obo</requires>
 		<fields>
 			<field name="entity" required="true">
 				<ontology name="FMA"/>

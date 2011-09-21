@@ -168,7 +168,7 @@ function run() {
 		<hint>[part] involved in [whole]</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_self.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -215,7 +215,7 @@ function run(){
 		<description>processes occurring in parts of the cell</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_cellular_component.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -263,7 +263,7 @@ function run() {
 		</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_self.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -381,7 +381,7 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>molecular_function_xp_protein.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="ProteinOntology" />
@@ -413,6 +413,169 @@ function run() {
 		</rule>
 	</template>
 
+	<template name="chemical_transport">
+		<description>transport of a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<external>
+			<ontology name="GOCHE"></ontology>
+			<ontology name="CHEBI"></ontology>
+		</external>
+		<obonamespace>biological_process</obonamespace>
+		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="CHEBI"></ontology>
+			</field>
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var x = termgenie.getSingleTerm("target", CHEBI);
+  var label = termgenie.name(x, CHEBI) + " transport";
+  var definition = "The directed movement of "+
+                   termgenie.refname(x, CHEBI)+
+                   " acetate into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
+  var synonyms = null; // No synonyms
+  var cdef = termgenie.cdef("GO:0006810");
+  cdef.differentium("OBO_REL:results_in_transport_of", x, CHEBI);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+	<template name="chemical_binding">
+		<description>binding to a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<external>
+			<ontology name="GOCHE"></ontology>
+			<ontology name="CHEBI"></ontology>
+		</external>
+		<obonamespace>molecular_function</obonamespace>
+		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="CHEBI"></ontology>
+			</field>
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var x = termgenie.getSingleTerm("target", CHEBI);
+  var label = termgenie.name(x, CHEBI) + " binding";
+  var definition = "Interacting selectively and non-covalently with "+
+                   termgenie.name(x, CHEBI)+
+                   ".";
+  var synonyms = null; // No synonyms
+  var cdef = termgenie.cdef("GO:0005488");
+  cdef.differentium("OBO_REL:has_input", x, CHEBI);
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+	<template name="metabolism_catabolism_biosynthesis">
+		<description>Select all three subtemplates to generate
+terms for the "metabolic triad". Names, synonyms and definitions are all
+generated automatically</description>
+		<ontology name="GeneOntology"></ontology>
+		<external>
+			<ontology name="GOCHE"></ontology>
+			<ontology name="CHEBI"></ontology>
+		</external>
+		<obonamespace>biological_process</obonamespace>
+		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="CHEBI"></ontology>
+				<prefixes>
+					<prefix>metabolism</prefix>
+					<prefix>catabolism</prefix>
+					<prefix>biosynthesis</prefix>
+				</prefixes>
+			</field>
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var x = termgenie.getSingleTerm("target", CHEBI);
+  var prefixes = termgenie.getInputs("target");
+  if (!prefixes || prefixes === null || prefixes.length === 0) {
+    termgenie.error("Could not create a term for X, as no subtemplate was selected");
+    return;
+  }
+  var count = 0;
+  if (termgenie.contains(prefixes, "metabolism")) {
+    var label = termgenie.name(x, CHEBI) + " metabolic process";
+    var definition = "The chemical reactions and pathways involving "+termgenie.name(x, CHEBI)+".";
+    
+    var synonyms = termgenie.synonyms(null, x, CHEBI, " metabolism", label);
+    synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " metabolic process", label));
+    
+    var cdef = termgenie.cdef("GO:0008152");
+    cdef.differentium("OBO_REL:has_participant", x, CHEBI);
+    
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (termgenie.contains(prefixes, "catabolism")) {
+    var label = termgenie.name(x, CHEBI) + " catabolic process";
+    var definition = "The chemical reactions and pathways resulting in the breakdown of "+termgenie.name(x, CHEBI)+".";
+    
+    var synonyms = termgenie.synonyms(null, x, CHEBI, " catabolism", label);
+    synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " catabolic process", label));
+    
+    var cdef = termgenie.cdef("GO:0009056");
+    cdef.differentium("OBO_REL:has_input", x, CHEBI);
+    
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (termgenie.contains(prefixes, "biosynthesis")) {
+    var label = termgenie.name(x, CHEBI) + " biosynthetic process";
+    var definition = "The chemical reactions and pathways resulting in the formation of "+termgenie.name(x, CHEBI)+".";
+    
+    var synonyms = termgenie.synonyms(null, x, CHEBI, " biosynthesis", label);
+    synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " biosynthetic process", label));
+    
+    var cdef = termgenie.cdef("'GO:0009058");
+    cdef.differentium("OBO_REL:has_output", x, CHEBI);
+    
+    termgenie.createTerm(label, definition, synonyms, cdef);
+    count += 1;
+  }
+  if (count === 0) {
+    termgenie.error("Could not create a term for X, as no known subtemplate was selected");
+  }
+};]]>
+		</rule>
+	</template>
+	<template name="biosynthesis_from">
+		<description>biosynthetic process</description>
+		<ontology name="GeneOntology"></ontology>
+		<external>
+			<ontology name="GOCHE"></ontology>
+			<ontology name="CHEBI"></ontology>
+		</external>
+		<obonamespace>biological_process</obonamespace>
+		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="CHEBI"></ontology>
+			</field>
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var x = termgenie.getSingleTerm("target", CHEBI);
+  var label = termgenie.name(x, CHEBI) + " biosynthetic process";
+  var definition = "The chemical reactions and pathways resulting in the formation of "+
+                   termgenie.name(x, CHEBI)+
+                   ".";
+  var synonyms = termgenie.synonyms(null, x, CHEBI, " biosynthesis", label);
+  synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " biosynthetic process", label));
+    
+  var cdef = termgenie.cdef("'GO:0009058");
+  cdef.differentium("OBO_REL:has_output", x, CHEBI);
+  
+  termgenie.createTerm(label, definition, synonyms, cdef);
+};]]>
+		</rule>
+	</template>
+
 	<template name="metazoan_development">
 		<description>development of an animal anatomical structure</description>
 		<ontology name="GeneOntology" />
@@ -420,7 +583,7 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_uber_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon" />
@@ -447,7 +610,7 @@ function run() {
                    termgenie.refname(x, uberon)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, uberon, " development", label);
-  var cdef = termgenie.cdef("GO:0032502";
+  var cdef = termgenie.cdef("GO:0032502");
   cdef.differentium("OBO_REL:results_in_complete_development_of", x, uberon);
   termgenie.createTerm(label, definition, synonyms, cdef);
 };]]>
@@ -461,7 +624,7 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_uber_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon"/>
@@ -500,7 +663,7 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_plant_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -541,7 +704,7 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>biological_process_xp_plant_anatomy.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -580,7 +743,7 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>cellular_component</obonamespace>
-		<!-- <requires>cellular_component_xp_protein.obo</requires>  -->
+		<!-- <requires>http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo</requires>  -->
 		<fields>
 			<field name="unit" required="true">
 				<ontology name="ProteinOntology" />

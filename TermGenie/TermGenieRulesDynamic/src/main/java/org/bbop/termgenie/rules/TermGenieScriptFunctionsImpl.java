@@ -541,4 +541,18 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 		return result;
 	}
 
+	@Override
+	public <T> List<T> concat(List<T> l1, List<T> l2) {
+		if (l1 == null || l1.isEmpty()) {
+			return l2;
+		}
+		if (l2 == null || l2.isEmpty()) {
+			return l1;
+		}
+		List<T> resultList = new ArrayList<T>(l1.size()+l2.size());
+		resultList.addAll(l1);
+		resultList.addAll(l2);
+		return resultList;
+	}
+	
 }
