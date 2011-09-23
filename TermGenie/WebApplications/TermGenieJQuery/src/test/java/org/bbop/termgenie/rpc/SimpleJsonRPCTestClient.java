@@ -8,6 +8,7 @@ import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.services.OntologyService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
+import org.json.rpc.server.InjectingGsonTypeChecker;
 
 public class SimpleJsonRPCTestClient {
 
@@ -17,7 +18,7 @@ public class SimpleJsonRPCTestClient {
 
 		HttpJsonRpcClientTransport transport = new HttpJsonRpcClientTransport(new URL(url));
 
-		JsonRpcInvoker invoker = new JsonRpcInvoker();
+		JsonRpcInvoker invoker = new JsonRpcInvoker(new InjectingGsonTypeChecker());
 		OntologyService service = invoker.get(transport, "ontology", OntologyService.class);
 
 		String[] availableOntologies = service.availableOntologies(null);

@@ -1,236 +1,100 @@
 package org.bbop.termgenie.services;
 
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
+/**
+ * Manage sessions and session data using the servlet API.
+ */
 @Singleton
 public class SessionHandlerImpl implements SessionHandler {
 
+	private static final String TERM_GENIE_SESSION_OBJECT = "TERM_GENIE_SESSION_OBJECT";
 	private static final Logger logger = Logger.getLogger(SessionHandlerImpl.class);
 
-	// TODO replace this with a proper session key generation
-	private static final Random random = new Random(System.currentTimeMillis());
+	private static class SessionObject {
 
-	private final Map<Long, SessionObject<String, String>> sessions;
-	private final long timeoutMilliSeconds;
-	private final long gracePeriodMilliSeconds;
-
-	@Inject
-	public SessionHandlerImpl(@Named("SessionHandlerImplTimeout") long timeout,
-			@Named("SessionHandlerImplTimeUnit") TimeUnit unit)
-	{
-		super();
-		timeoutMilliSeconds = TimeUnit.MILLISECONDS.convert(timeout, unit);
-		gracePeriodMilliSeconds = TimeUnit.MILLISECONDS.convert(5L, TimeUnit.MINUTES);
-		sessions = new ConcurrentHashMap<Long, SessionObject<String, String>>();
-		Runnable command = new Runnable() {
-
-			@Override
-			public void run() {
-				cleanSessions();
-			}
-		};
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		long period = timeout / 4; // do checks 4-times as often as the timeout.
-		scheduler.scheduleWithFixedDelay(command, period, period, unit);
-	}
-
-	private static class SessionObject<K, V> {
-
-		private Date lastUse;
 		private boolean authenticated = false;
-		private final Map<K, V> values = new ConcurrentHashMap<K, V>();
+		private String username = null;
+		private final Map<String, String> values = new ConcurrentHashMap<String, String>();
 
-		SessionObject() {
-			lastUse = new Date();
-		}
-
-		V put(K key, V value) {
-			updateDate();
+		String put(String key, String value) {
 			return values.put(key, value);
 		}
 
-		V get(K key) {
-			updateDate();
+		String get(String key) {
 			return values.get(key);
 		}
-		
-		V remove(K key) {
-			updateDate();
-			return values.remove(key);
-		}
-
-		synchronized void updateDate() {
-			lastUse = new Date();
-		}
-
-		synchronized Date getLastUse() {
-			return lastUse;
-		}
 	}
 
-	private void cleanSessions() {
-		synchronized (sessions) {
-			if (!sessions.isEmpty()) {
-				Set<Long> keys = new HashSet<Long>(sessions.keySet());
-				Date timeout = new Date(System.currentTimeMillis() - (timeoutMilliSeconds + gracePeriodMilliSeconds));
-				for (Long key : keys) {
-					SessionObject<String, String> sessionObject = sessions.get(key);
-					if (sessionObject == null) {
-						sessions.remove(key);
-					}
-					else {
-						Date lastUse = sessionObject.getLastUse();
-						if (lastUse.before(timeout)) {
-							logger.info("Removing session after timeout: " + toSessionId(key));
-							sessions.remove(key);
-						}
-					}
+	@Override
+	public String createSession(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession(true);
+		String id = session.getId();
+		if (session.isNew()) {
+			session.setAttribute(TERM_GENIE_SESSION_OBJECT, new SessionObject());
+			logger.info("Created new session with id: " + id);
+		}
+		else {
+			logger.info("Re-using session with id: " + id);
+		}
+		return id;
+	}
+
+	@Override
+	public boolean isValidSession(String sessionId, HttpSession session) {
+		if (session != null) {
+			return sessionId.equals(session.getId()) && session.getAttribute(TERM_GENIE_SESSION_OBJECT) != null;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean login(String sessionId, String username, String password, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			// TODO add a proper authentication check
+			logger.info("Trying to login.");
+			if ("test".equals(username) && "123456".equals(password)) {
+				SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+				synchronized (sessionObject) {
+					sessionObject.authenticated = true;
+					sessionObject.username = username;
 				}
+				return true;
 			}
-		}
-	}
-
-	@Override
-	public String createSession() {
-		Long key = Long.valueOf(random.nextLong());
-
-		synchronized (sessions) {
-			while ((sessions.get(key)) != null) {
-				logger.warn("Key collision for session creation.");
-				key = Long.valueOf(random.nextLong());
-			}
-			String sessionId = createSession(key);
-			return sessionId;
-		}
-	}
-
-	private String createSession(Long key) {
-		String sessionId = toSessionId(key);
-		logger.info("Creating new session: " + sessionId);
-		SessionObject<String, String> sessionObject = new SessionObject<String, String>();
-		sessions.put(key, sessionObject);
-		return sessionId;
-	}
-
-	private String toSessionId(Long key) {
-		return Long.toString(key.longValue(), Character.MAX_RADIX);
-	}
-
-	private Long toKey(String sessionId) {
-		try {
-			return Long.parseLong(sessionId, Character.MAX_RADIX);
-		} catch (NumberFormatException exception) {
-			logger.info("Could not parse sessionId: " + sessionId, exception);
-			return null;
-		}
-	}
-
-	@Override
-	public boolean isValidSession(String sessionId) {
-		Long key = toKey(sessionId);
-		return isVaidSession(key);
-	}
-
-	private boolean isVaidSession(Long key) {
-		if (key != null) {
-			SessionObject<String, String> sessionObject = sessions.get(key);
-			return sessionObject != null;
 		}
 		return false;
 	}
 
-	private boolean updateSession(Long key) {
-		if (key != null) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(key);
-				if (sessionObject == null) {
-					createSession(key);
+	@Override
+	public void logout(String sessionId, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				if (sessionObject.authenticated) {
+					// TODO add a proper logout to user management.
 				}
-				else {
-					sessionObject.updateDate();
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean login(String sessionId, String username, String password) {
-		Long key = toKey(sessionId);
-		if (!updateSession(key)) {
-			return false;
-		}
-		// TODO add a proper user management to this.
-		logger.info("Trying to login.");
-		if ("test".equals(username) && "123456".equals(password)) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(key);
-				sessionObject.authenticated = true;
-				sessionObject.put(USER_NAME, username);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void logout(String sessionId) {
-		Long key = toKey(sessionId);
-		if (!updateSession(key)) {
-			return;
-		}
-		synchronized (sessions) {
-			SessionObject<String, String> sessionObject = sessions.get(key);
-			sessionObject.authenticated = false;
-			sessionObject.remove(USER_NAME);
-		}
-	}
-
-	@Override
-	public boolean isAuthenticated(String sessionId) {
-		Long key = toKey(sessionId);
-		if (!updateSession(key)) {
-			return false;
-		}
-		synchronized (sessions) {
-			SessionObject<String, String> sessionObject = sessions.get(key);
-			if(sessionObject.authenticated) {
-				return sessionObject.get(USER_NAME) != null;
+				sessionObject.authenticated = false;
+				sessionObject.username = null;
 			}
 		}
-		return false;
 	}
 
 	@Override
-	public boolean keepSessionAlive(String sessionId) {
-		Long key = toKey(sessionId);
-		return updateSession(key);
-	}
-
-	@Override
-	public String getValue(String sessionId, String key) {
-		Long sessionKey = toKey(sessionId);
-		if (sessionKey != null) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(sessionKey);
-				if (sessionObject != null) {
-					String value = sessionObject.get(key);
-					return value;
+	public String isAuthenticated(String sessionId, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				if (sessionObject.authenticated) {
+					return sessionObject.username;
 				}
 			}
 		}
@@ -238,51 +102,60 @@ public class SessionHandlerImpl implements SessionHandler {
 	}
 
 	@Override
-	public String[] getValues(String sessionId, String[] keys) {
-		Long sessionKey = toKey(sessionId);
-		if (sessionKey != null) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(sessionKey);
-				if (sessionObject != null) {
-					String[] results = new String[keys.length];
-					for (int i = 0; i < keys.length; i++) {
-						String key = keys[i];
-						results[i] = sessionObject.get(key);
-					}
-					return results;
-				}
+	public boolean keepSessionAlive(String sessionId, HttpSession session) {
+		return isValidSession(sessionId, session);
+	}
+
+	@Override
+	public String getValue(String sessionId, String key, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				String value = sessionObject.get(key);
+				return value;
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public boolean setValue(String sessionId, String key, String value) {
-		Long sessionKey = toKey(sessionId);
-		if (sessionKey != null) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(sessionKey);
-				if (sessionObject != null) {
-					sessionObject.put(key, value);
-					return true;
+	public String[] getValues(String sessionId, String[] keys, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				String[] results = new String[keys.length];
+				for (int i = 0; i < keys.length; i++) {
+					String key = keys[i];
+					results[i] = sessionObject.get(key);
 				}
+				return results;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(String sessionId, String key, String value, HttpSession session) {
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				sessionObject.put(key, value);
+				return true;
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean setValues(String sessionId, String[] keys, String[] values) {
-		Long sessionKey = toKey(sessionId);
-		if (sessionKey != null) {
-			synchronized (sessions) {
-				SessionObject<String, String> sessionObject = sessions.get(sessionKey);
-				if (sessionObject != null) {
-					for (int i = 0; i < keys.length; i++) {
-						sessionObject.put(keys[i], values[i]);
-					}
-					return true;
+	public boolean setValues(String sessionId, String[] keys, String[] values, HttpSession session)
+	{
+		if (isValidSession(sessionId, session)) {
+			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			synchronized (sessionObject) {
+				for (int i = 0; i < keys.length; i++) {
+					sessionObject.put(keys[i], values[i]);
 				}
+				return true;
 			}
 		}
 		return false;

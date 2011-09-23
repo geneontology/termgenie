@@ -1,9 +1,11 @@
 package org.bbop.termgenie.services;
 
+import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.json.rpc.server.SessionAware;
 
 public interface TermCommitService {
 
@@ -24,7 +26,13 @@ public interface TermCommitService {
 	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
 	 * @param ontology
+	 * @param session introduced via {@link SessionAware}, do not send in rpc
+	 *            call.
 	 * @return {@link JsonCommitResult}
 	 */
-	public JsonCommitResult commitTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
+	@SessionAware
+	public JsonCommitResult commitTerms(String sessionId,
+			JsonOntologyTerm[] terms,
+			String ontology,
+			HttpSession session);
 }

@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.rpc.server.JsonRpcServletTransport;
-
 public abstract class AbstractJsonRPCServlet extends HttpServlet {
 
 	// generated
@@ -39,7 +37,7 @@ public abstract class AbstractJsonRPCServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
-		executor.execute(new JsonRpcServletTransport(request, response));
+		executor.execute(request, response);
 	}
 
 }

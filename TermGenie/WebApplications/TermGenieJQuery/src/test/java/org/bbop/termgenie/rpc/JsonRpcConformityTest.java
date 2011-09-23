@@ -6,15 +6,15 @@ import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
-import org.json.rpc.commons.GsonTypeChecker;
 import org.json.rpc.commons.TypeChecker;
+import org.json.rpc.server.InjectingGsonTypeChecker;
 import org.junit.Test;
 
 public class JsonRpcConformityTest {
 
 	@Test
 	public void testMethodInterfaces() {
-		TypeChecker checker = new GsonTypeChecker();
+		TypeChecker checker = new InjectingGsonTypeChecker();
 
 		assertTrue(checker.isValidInterface(GenerateTermsService.class, true));
 

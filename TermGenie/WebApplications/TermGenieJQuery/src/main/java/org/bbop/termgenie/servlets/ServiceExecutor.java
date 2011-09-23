@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -13,21 +16,21 @@ import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
-import org.json.rpc.server.JsonRpcExecutor;
-import org.json.rpc.server.JsonRpcServerTransport;
+import org.json.rpc.server.JsonRpcServletTransport;
+import org.json.rpc.server.InjectingJsonRpcExecutor;
 
 import com.google.inject.Injector;
 
 /**
- * Tool for registering the implementations for the TermGenie web application.
+ * Registry of implementations for the TermGenie web application.
  */
 public abstract class ServiceExecutor {
 
-	private final JsonRpcExecutor executor;
+	private final InjectingJsonRpcExecutor executor;
 
 	protected ServiceExecutor() {
 		super();
-		executor = new JsonRpcExecutor();
+		executor = new InjectingJsonRpcExecutor();
 		Injector injector = TermGenieGuice.createInjector(getConfiguration());
 
 		add("generate", injector, GenerateTermsService.class);
@@ -109,8 +112,8 @@ public abstract class ServiceExecutor {
 		executor.addHandler(path, injector.getInstance(c), c);
 	}
 
-	public void execute(JsonRpcServerTransport transport) {
-		executor.execute(transport);
+	public void execute(HttpServletRequest request, HttpServletResponse response) {
+		executor.execute(new JsonRpcServletTransport(request, response), request, response);
 	}
 
 }

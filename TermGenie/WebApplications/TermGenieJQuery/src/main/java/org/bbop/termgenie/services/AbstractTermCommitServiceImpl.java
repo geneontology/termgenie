@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -58,7 +60,8 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	@Override
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
-			String ontologyName)
+			String ontologyName,
+			HttpSession session)
 	{
 		// check if its the correct ontology
 		OntologyTaskManager manager = getOntologyManager(ontologyName);
@@ -70,21 +73,14 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		}
 
 		// check if session is valid, get user name
-		boolean validSession = sessionHandler.isValidSession(sessionId);
+		boolean validSession = sessionHandler.isValidSession(sessionId, session);
 		if (!validSession) {
 			return error("Could not commit as the session is not valid.");
 		}
 
-		boolean isAuthenticated = sessionHandler.isAuthenticated(sessionId);
-		if (!isAuthenticated) {
-			return error("Could not commit as the user is not logged.");
-		}
-
-		String termgenieUser = sessionHandler.getValue(sessionId, "TermGenieUserName");
+		String termgenieUser = sessionHandler.isAuthenticated(sessionId, session);
 		if (termgenieUser == null) {
-			// this should never happen, as a valid user name is required for
-			// authentication
-			return error("Internal error. The session has no valid username.");
+			return error("Could not commit as the user is not logged.");
 		}
 
 		// TODO check if user has permissions for trying a commit
