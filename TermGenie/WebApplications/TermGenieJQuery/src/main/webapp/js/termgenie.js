@@ -6,38 +6,16 @@ function termgenie(){
 		var waitForInit = [];
 		var sessionId = null;
 		
-		// TODO check if there is already a sessionId in the url 
-		// if yes check if it is valid, if not get a new session id
-		
-		// default create a new session
+		// default create a new session or re-use existing one
 		createSession();
 		
-		/* 
-		 * Goal: Minimize the number of new sessions.
-		 * Requirement: Try to keep the sessionId somewhere else 
-		 * and that survives a site reload.
-		 * (permanent bookmarking is not a goal!)
-		 * 
-		 * TODO Decide: do we always want the session Id in the url?
-		 * this would mean every new page is loaded twice.
-		 * 
-		 * (semi-)alternative: cookies
-		 *   jQuery cookie plugin makes it easy to use them,
-		 *   but cookie can be deactivated. 
-		 *   --> In this case it will revert to the original question.
-		 *   
-		 *   Open questions for cookies: 
-		 *     What happens to if there is more than one 
-		 *     window/tab with termgenie in one browser open?
-		 *     Would they influence each other via the cookie?
-		 */
 		return {
 			getSessionId: function(callback) {
 				if (hasSession) {
 					// use this manadory call for the session id 
 					// to keep track of the last time the 
 					// session was updated.
-					// Use this to reset counters for automatic keep alive pings to the server
+					// TODO Use this to reset counters for automatic keep alive pings to the server
 					// updatelastcall
 					callback(sessionId);
 					
@@ -148,6 +126,16 @@ function termgenie(){
 		var panel = createLoginPanel();
 		var userInfo = null;
 		
+		function setUserInfo(username) {
+			userinfo = {
+				username: username,
+			};
+		}
+		
+		function clearUserInfo() {
+			userInfo = null;
+		}
+		
 		function login(username, password, onSuccess, onException) {
 			
 			// request sessionId and then start a login on server
@@ -159,15 +147,22 @@ function termgenie(){
 					onException: onException
 				});	
 			});
-			
-			userinfo = {
-				username: username,
-				password: password
-			}
+		}
+		
+		function isAuthenticated(onSuccess, onException) {
+			// request sessionId and then check for login status on server
+			mySession.getSessionId(function(sessionId){
+				// use json-rpc for checking authentication status
+				jsonService.user.isAuthenticated({
+					params: [sessionId],
+					onSuccess: onSuccess,
+					onException: onException
+				});	
+			});
 		}
 		
 		function logout() {
-			userInfo = null;
+			clearUserInfo();
 		}
 		
 		return {
@@ -181,19 +176,16 @@ function termgenie(){
 			},
 			
 			/**
-			 * Retrieve the username and password for commiting.
+			 * Retrieve the username.
 			 * Only defined, if the user is logged in.
 			 * 
-			 * @returns { username, password }
+			 * @returns {String} username or null
 			 */
 			getCredentials: function() {
 				if (userInfo !== null) {
-					return {
-						username : userInfo.username,
-						password : userInfo.password
-					}
+					return userInfo.username;
 				}
-				return {};
+				return null;
 			}
 		};
 		
@@ -215,83 +207,10 @@ function termgenie(){
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			var displayUsernameElem = jQuery('<div class="termgenie-username"></div>');
 			
-			var loginPanel = jQuery('<div></div>');
-			loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
-			var table = createLayoutTable();
-			table.addClass('termgenie-login-panel-layout-table');
-			table.appendTo(loginPanel);
-			
-			// username
-			var row1 = jQuery('<tr></tr>');
-			row1.appendTo(table);
-			row1.append('<td>Username:</td>');
-			var tablecell1 = jQuery('<td></td>');
-			tablecell1.appendTo(row1);
-			var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "Username", 4);
-			
-			// password
-			var row2 = jQuery('<tr></tr>');
-			row2.appendTo(table);
-			row2.append('<td>Password:</td>');
-			var tablecell2 = jQuery('<td></td>');
-			tablecell2.appendTo(row2);
-			var passwordInput = ParameterizedTextFieldInput(tablecell2, 'password', "Password", 6);
-			
-			loginPanel.appendTo('body');
-			
-			var loginMessagePanel = jQuery('<div></div>');
-			loginMessagePanel.appendTo(loginPanel);
-			
-			loginPanel.dialog({
-				title: 'Login for TermGenie',
-				autoOpen: false,
-				width: 350,
-				modal: true,
-				buttons: {
-					"Log In": function() {
-						loginMessagePanel.empty();
-						var usernameCheck = usernameInput.check();
-						var passwordCheck = passwordInput.check();
-						if (!(usernameCheck.success === true) || !(passwordCheck.success === true)) {
-							renderLoginErrors(usernameCheck.message, passwordCheck.message);
-							return;
-						}
-						
-						var username = usernameCheck.value;
-						var password = passwordCheck.value;
-						loginMessagePanel.append(createBusyMessage('Verifying the username and password.'));
-						login(username, password, 
-							function(result){ // onSuccess
-								loginMessagePanel.empty();
-								if (result === true) {
-									// on success replace with username and logout button
-									loginClickElem.detach();
-									elem.append(displayUsernameElem);
-									elem.append(logoutClickElem);
-									displayUsernameElem.text('Logged in as: '+username);
-									passwordInput.clear(); // clear the password for security reasons
-									closeLoginDialog();	
-								}
-								else {
-									// set error message
-									loginMessagePanel.append('<div>Login not successful, please check your username and password.</div>');
-								}
-								
-							},
-							function(e){ // onException
-								loginMessagePanel.empty();
-								loggingSystem.logSystemError('Login service call failed',e);
-							});
-						
-					},
-					"Cancel": function() {
-						closeLoginDialog();
-					}
-				}
-			});
+			var loginDialog = createLoginDialog(loginClickElem, logoutClickElem);
 			
 			loginClickElem.click(function(){
-				loginPanel.dialog('open');
+				loginDialog.loginPanel.dialog('open');
 			});
 			
 			logoutClickElem.click(function(){
@@ -301,11 +220,107 @@ function termgenie(){
 				elem.append(loginClickElem);
 			});
 			
+			// TODO check if session is already authenticated
+			isAuthenticated(function(username){ // onSuccess
+				if (username && username !== null) {
+					setSuccessfulLogin(username);
+				}
+			}, function(e){ // onError
+				loggingSystem.logSystemError('Could not check for authentication status', e, true);
+			});
+			
 			return elem;
 			
+			function setSuccessfulLogin(username) {
+				setUserInfo(username);
+				// on success replace with username and logout button
+				loginClickElem.detach();
+				elem.append(displayUsernameElem);
+				elem.append(logoutClickElem);
+				displayUsernameElem.text('Logged in as: '+username);
+			}
+			
 			function closeLoginDialog() {
-				loginPanel.dialog( "close" );
-				loginMessagePanel.empty();
+				loginDialog.loginPanel.dialog( "close" );
+				loginDialog.loginMessagePanel.empty();
+			}
+			
+			function createLoginDialog(loginClickElem, logoutClickElem) {
+				var loginPanel = jQuery('<div></div>');
+				loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
+				var table = createLayoutTable();
+				table.addClass('termgenie-login-panel-layout-table');
+				table.appendTo(loginPanel);
+				
+				// username
+				var row1 = jQuery('<tr></tr>');
+				row1.appendTo(table);
+				row1.append('<td>Username:</td>');
+				var tablecell1 = jQuery('<td></td>');
+				tablecell1.appendTo(row1);
+				var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "Username", 4);
+				
+				// password
+				var row2 = jQuery('<tr></tr>');
+				row2.appendTo(table);
+				row2.append('<td>Password:</td>');
+				var tablecell2 = jQuery('<td></td>');
+				tablecell2.appendTo(row2);
+				var passwordInput = ParameterizedTextFieldInput(tablecell2, 'password', "Password", 6);
+				
+				loginPanel.appendTo('body');
+				
+				var loginMessagePanel = jQuery('<div></div>');
+				loginMessagePanel.appendTo(loginPanel);
+				
+				loginPanel.dialog({
+					title: 'Login for TermGenie',
+					autoOpen: false,
+					width: 350,
+					modal: true,
+					buttons: {
+						"Log In": function() {
+							loginMessagePanel.empty();
+							var usernameCheck = usernameInput.check();
+							var passwordCheck = passwordInput.check();
+							if (!(usernameCheck.success === true) || !(passwordCheck.success === true)) {
+								renderLoginErrors(usernameCheck.message, passwordCheck.message);
+								return;
+							}
+							
+							var username = usernameCheck.value;
+							var password = passwordCheck.value;
+							loginMessagePanel.append(createBusyMessage('Verifying the username and password.'));
+							login(username, password, 
+								function(result){ // onSuccess
+									loginMessagePanel.empty();
+									if (result === true) {
+										setSuccessfulLogin(username);
+										passwordInput.clear(); // clear the password for security reasons
+										closeLoginDialog();	
+									}
+									else {
+										// set error message
+										loginMessagePanel.append('<div>Login not successful, please check your username and password.</div>');
+									}
+									
+								},
+								function(e){ // onException
+									loginMessagePanel.empty();
+									loggingSystem.logSystemError('Login service call failed',e);
+								});
+							
+						},
+						"Cancel": function() {
+							closeLoginDialog();
+						}
+					}
+				});
+				
+				return {
+					loginPanel: loginPanel,
+					loginMessagePanel: loginMessagePanel
+				};
 			}
 			
 			function renderLoginErrors(message1, message2) {
@@ -404,6 +419,7 @@ function termgenie(){
 	              'user.createSession',
 	              'user.login',
 	              'user.logout',
+	              'user.isAuthenticated',
 	              'user.keepSessionAlive',
 	              'user.getValue',
 	              'user.setValue',
