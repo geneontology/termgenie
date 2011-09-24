@@ -5,9 +5,9 @@
 		<artifactId>TermGenie</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>TermGenieSolr</artifactId>
-	<name>TermGenieSolr</name>
-	<description>Solr and Lucene Adaptors for TermGenie</description>
+	<artifactId>TermGenieAutocomplete</artifactId>
+	<name>TermGenieAutocomplete</name>
+	<description>Autocomplete with Solr and Lucene Adaptors for TermGenie</description>
 	<dependencies>
 		<dependency>
 			<artifactId>solr-solrj</artifactId>
