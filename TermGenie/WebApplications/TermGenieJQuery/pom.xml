@@ -22,7 +22,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieSolr</artifactId>
+			<artifactId>TermGenieAutocomplete</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
