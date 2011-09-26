@@ -192,9 +192,9 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 		List<String> roots = null;
 		String dlQuery = null;
 		while (true) {
-			String element = parser.getLocalName();
 			switch (parser.next()) {
-				case XMLStreamConstants.END_ELEMENT:
+				case XMLStreamConstants.END_ELEMENT: {
+					String element = parser.getLocalName();
 					if (TAG_ontologybranch.equals(element)) {
 						boolean added = false;
 						if (dlQuery != null) {
@@ -210,8 +210,10 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 						}
 						return;
 					}
-					break;
-				case XMLStreamConstants.START_ELEMENT:
+					break; 
+				}
+				case XMLStreamConstants.START_ELEMENT: {
+					String element = parser.getLocalName();
 					if (TAG_roots.equals(element)) {
 						roots = parseList(parser, TAG_roots, TAG_root);
 					}
@@ -226,6 +228,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 						error("Unexpected element: " + element, parser);
 					}
 					break;
+				}
 			}
 		}
 	}
