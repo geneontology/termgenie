@@ -40,7 +40,7 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new DefaultDynamicRulesModule(),
+		Injector injector = TermGenieGuice.createInjector(new DefaultXMLDynamicRulesModule(),
 				new DefaultOntologyModule(),
 				new ReasonerModule());
 
