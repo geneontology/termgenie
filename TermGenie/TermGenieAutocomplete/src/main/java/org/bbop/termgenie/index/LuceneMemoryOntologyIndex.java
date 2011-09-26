@@ -43,7 +43,6 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -93,16 +92,79 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	private final Analyzer analyzer;
 	private final IndexSearcher searcher;
 
+	public static class BranchDetails {
+		
+		private String name;
+		private List<String> roots;
+		private String dlQuery;
+		
+		/**
+		 * @param name
+		 * @param roots
+		 * @param dlQuery
+		 */
+		public BranchDetails(String name, List<String> roots, String dlQuery) {
+			super();
+			this.name = name;
+			this.roots = roots;
+			this.dlQuery = dlQuery;
+		}
+
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		/**
+		 * @return the roots
+		 */
+		public List<String> getRoots() {
+			return roots;
+		}
+		
+		/**
+		 * @param roots the roots to set
+		 */
+		public void setRoots(List<String> roots) {
+			this.roots = roots;
+		}
+
+		/**
+		 * @return the dlQuery
+		 */
+		public String getDlQuery() {
+			return dlQuery;
+		}
+
+		/**
+		 * @param dlQuery the dlQuery to set
+		 */
+		public void setDlQuery(String dlQuery) {
+			this.dlQuery = dlQuery;
+		}
+	}
+	
 	/**
 	 * @param ontology
 	 * @param roots
+	 * @param dlQuery
 	 * @param branches
 	 * @param reasonerFactory
 	 * @throws IOException
 	 */
 	public LuceneMemoryOntologyIndex(OWLGraphWrapper ontology,
 			List<String> roots,
-			List<Pair<String, List<String>>> branches,
+			String dlQuery,
+			List<BranchDetails> branches,
 			ReasonerFactory reasonerFactory) throws IOException
 	{
 		super();
@@ -116,11 +178,17 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			if (branches != null && !branches.isEmpty()) {
 				message.append(" Branches: ");
-				for (Pair<String, List<String>> branch : branches) {
+				for (BranchDetails branch : branches) {
 					message.append(" (");
-					message.append(branch.getOne());
-					message.append(",");
-					message.append(branch.getTwo());
+					message.append(branch.getName());
+					if (branch.getRoots() != null) {
+						message.append(",");
+						message.append(branch.getRoots());
+					}
+					else if (branch.getDlQuery() != null) {
+						message.append(",");
+						message.append(branch.getDlQuery());
+					}
 					message.append(") ");
 				}
 			}
@@ -141,21 +209,29 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
 		ReasonerTaskManager taskManager = getReasonerManager(ontology, reasonerFactory);
-		if (roots == null || roots.isEmpty()) {
-			allOWLObjects = this.ontology.getAllOWLObjects();
+		if (dlQuery != null) {
+			allOWLObjects = taskManager.executeDLQuery(dlQuery, ontology);
 		}
 		else {
-			allOWLObjects = getDecendantsReflexive(roots, taskManager);
+			if (roots == null || roots.isEmpty()) {
+				allOWLObjects = this.ontology.getAllOWLObjects();
+			}
+			else {
+				allOWLObjects = getDecendantsReflexive(roots, taskManager);
+			}
 		}
-
 		BranchInfos branchInfos = null;
 		if (branches != null) {
 			branchInfos = new BranchInfos();
-			for (Pair<String, List<String>> branch : branches) {
-				String name = branch.getOne();
-				List<String> ids = branch.getTwo();
+			for (BranchDetails branch : branches) {
+				String name = branch.getName();
+				String branchDLQuery = branch.getDlQuery();
+				List<String> ids = branch.getRoots();
 				if (ids != null && !ids.isEmpty()) {
 					branchInfos.add(name, getDecendantsReflexive(ids, taskManager));
+				}
+				else if (branchDLQuery != null) {
+					branchInfos.add(name, taskManager.executeDLQuery(branchDLQuery, ontology));
 				}
 			}
 			branchInfos.setup();
@@ -291,7 +367,6 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 						result.add(owlObject);
 					}
 				}
-
 			}
 		}
 		return result;
@@ -400,7 +475,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			@Override
 			public Modified run(OWLGraphWrapper managed) {
 				try {
-					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, factory);
+					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
 					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
 					for (SearchResult searchResult : results) {
 						String id = managed.getIdentifier(searchResult.hit);

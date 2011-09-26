@@ -16,6 +16,7 @@ public class Ontology {
 	protected String name;
 	protected String subOntologyName;
 	protected List<String> roots;
+	protected String dlQuery;
 
 	/**
 	 * @param name
@@ -40,10 +41,19 @@ public class Ontology {
 	public List<String> getRoots() {
 		return roots;
 	}
+	
+	public String getDLQuery() {
+		return dlQuery;
+	}
 
 	protected void setBranch(String subOntologyName, List<String> roots) {
 		this.subOntologyName = subOntologyName;
 		this.roots = roots;
+	}
+	
+	protected void setBranch(String subOntologyName, String dlQuery) {
+		this.subOntologyName = subOntologyName;
+		this.dlQuery = dlQuery;
 	}
 
 	/**

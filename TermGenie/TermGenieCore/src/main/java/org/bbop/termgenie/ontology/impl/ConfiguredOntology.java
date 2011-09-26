@@ -19,6 +19,10 @@ public class ConfiguredOntology extends Ontology {
 	void setRoots(List<String> roots) {
 		this.roots = roots;
 	}
+	
+	void setDLQuery(String dlQuery) {
+		this.dlQuery = dlQuery;
+	}
 
 	void addSupport(String support) {
 		if (support == null) {
@@ -74,6 +78,15 @@ public class ConfiguredOntology extends Ontology {
 		branch.source = source;
 		branch.supports = supports;
 		branch.setBranch(subOntologyName, roots);
+		return branch;
+	}
+	
+	protected ConfiguredOntology createBranch(String subOntologyName, String dlQuery) {
+		ConfiguredOntology branch = new ConfiguredOntology(name);
+		branch.requires = requires;
+		branch.source = source;
+		branch.supports = supports;
+		branch.setBranch(subOntologyName, dlQuery);
 		return branch;
 	}
 

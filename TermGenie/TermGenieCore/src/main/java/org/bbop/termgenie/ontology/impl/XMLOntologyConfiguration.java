@@ -35,6 +35,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	private static final String TAG_name = "name";
 	private static final String TAG_roots = "roots";
 	private static final String TAG_root = "root";
+	private static final String TAG_dlquery = "dlquery";
 	private static final String TAG_ontologybranch = "ontologybranch";
 
 	private static final String ATTR_name = "name";
@@ -139,6 +140,13 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 				else if (TAG_roots.equals(element)) {
 					parseRoots(parser, current);
 				}
+				else if (TAG_dlquery.equals(element)) {
+					String text = parseElement(parser, TAG_dlquery);
+					if (current.getDLQuery() != null) {
+						error("Multiple " + TAG_dlquery + " tags found", parser);
+					}
+					current.setDLQuery(text);
+				}
 				else if (TAG_ontologybranch.equals(element)) {
 					parseOntologyBranch(parser, current, ontologies);
 				}
@@ -182,20 +190,40 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	{
 		String name = getAttribute(parser, ATTR_name);
 		List<String> roots = null;
+		String dlQuery = null;
 		while (true) {
+			String element = parser.getLocalName();
 			switch (parser.next()) {
 				case XMLStreamConstants.END_ELEMENT:
-					if (TAG_ontologybranch.equals(parser.getLocalName())) {
-						addOntology(current.createBranch(name, roots), ontologies, parser);
+					if (TAG_ontologybranch.equals(element)) {
+						boolean added = false;
+						if (dlQuery != null) {
+							added = true;
+							addOntology(current.createBranch(name, dlQuery), ontologies, parser);
+						}
+						else if (roots != null && !roots.isEmpty()) {
+							addOntology(current.createBranch(name, roots), ontologies, parser);
+							added = true;
+						}
+						if (!added) {
+							error("No valid roots or DL-Query found for ontology branch", parser);
+						}
 						return;
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:
-					if (TAG_roots.equals(parser.getLocalName())) {
+					if (TAG_roots.equals(element)) {
 						roots = parseList(parser, TAG_roots, TAG_root);
 					}
+					else if (TAG_dlquery.equals(element)) {
+						String text = parseElement(parser, TAG_dlquery);
+						if (dlQuery != null) {
+							error("Multiple " + TAG_dlquery + " tags found", parser);
+						}
+						dlQuery = text;
+					}
 					else {
-						error("Unexpected element: " + parser.getLocalName(), parser);
+						error("Unexpected element: " + element, parser);
 					}
 					break;
 			}
@@ -208,6 +236,11 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	{
 		if (ontology.source == null) {
 			error("Missing tag: " + TAG_source, parser);
+		}
+		List<String> roots = ontology.getRoots();
+		boolean hasNoRoots = roots == null || roots.isEmpty();
+		if (ontology.getDLQuery() == null && hasNoRoots) {
+			error("Missing roots or DL-Query.", parser);
 		}
 		String name = ontology.getUniqueName();
 		String branch = ontology.getBranch();
@@ -261,6 +294,7 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 					}
 					break;
 				case XMLStreamConstants.CHARACTERS:
+				case XMLStreamConstants.CDATA:
 					text = parser.getText();
 					break;
 				case XMLStreamConstants.START_ELEMENT:

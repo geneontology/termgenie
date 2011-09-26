@@ -12,10 +12,10 @@ import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
+import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.BranchDetails;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.tools.Pair;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -30,7 +30,8 @@ public class BasicLuceneClient implements
 
 	private final String name;
 	private final List<String> roots;
-	private final List<Pair<String, List<String>>> branches;
+	private final String dlQuery;
+	private final List<BranchDetails> branches;
 	private final ReasonerFactory factory;
 
 	private LuceneMemoryOntologyIndex index;
@@ -40,21 +41,23 @@ public class BasicLuceneClient implements
 	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene
 	 * memory index.
 	 * 
-	 * @param ontology
+	 * @param ontologyManager
 	 * @param factory
 	 * @return new Instance of {@link BasicLuceneClient}
 	 */
-	public static BasicLuceneClient create(OntologyTaskManager ontology, ReasonerFactory factory) {
-		List<String> roots = ontology.getOntology().getRoots();
-		List<Pair<String, List<String>>> branches = Collections.emptyList();
-		String branchName = ontology.getOntology().getBranch();
-		if (branchName != null & roots != null) {
-			Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, roots);
-			branches = Collections.singletonList(pair);
+	public static BasicLuceneClient create(OntologyTaskManager ontologyManager, ReasonerFactory factory) {
+		Ontology ontology = ontologyManager.getOntology();
+		List<String> roots = ontology.getRoots();
+		List<BranchDetails> branches = Collections.emptyList();
+		String branchName = ontology.getBranch();
+		String dlQuery = ontology.getDLQuery();
+		if (branchName != null && (roots != null || dlQuery != null)) {
+			BranchDetails detail = new BranchDetails(branchName, roots, dlQuery);
+			branches = Collections.singletonList(detail);
 			roots = null;
 		}
-		String name = ontology.getOntology().getUniqueName();
-		return create(ontology, name, roots, branches, factory);
+		String name = ontology.getUniqueName();
+		return create(ontologyManager, name, roots, dlQuery, branches, factory);
 	}
 
 	/**
@@ -75,10 +78,12 @@ public class BasicLuceneClient implements
 		}
 		List<String> roots = null;
 		String name = null;
-		List<Pair<String, List<String>>> branches = new ArrayList<Pair<String, List<String>>>();
+		List<BranchDetails> branches = new ArrayList<BranchDetails>();
+		String dlQuery = null;
 		for (Ontology ontology : ontologies) {
 			if (name == null) {
 				name = ontology.getUniqueName();
+				dlQuery = ontology.getDLQuery();
 			}
 			else {
 				String cname = ontology.getUniqueName();
@@ -88,24 +93,27 @@ public class BasicLuceneClient implements
 			}
 			String branchName = ontology.getBranch();
 			List<String> cRoots = ontology.getRoots();
+			String branchDLQuery = ontology.getDLQuery();
 			if (branchName == null) {
 				roots = cRoots;
+				dlQuery = branchDLQuery;
 			}
-			else if (cRoots != null) {
-				Pair<String, List<String>> pair = new Pair<String, List<String>>(branchName, cRoots);
-				branches.add(pair);
+			else if (cRoots != null || branchDLQuery != null) {
+				BranchDetails detail = new BranchDetails(branchName, cRoots, branchDLQuery);
+				branches.add(detail);
 			}
 		}
-		return create(manager, name, roots, branches, factory);
+		return create(manager, name, roots, dlQuery, branches, factory);
 	}
 
 	private static BasicLuceneClient create(OntologyTaskManager ontology,
 			String name,
 			List<String> roots,
-			List<Pair<String, List<String>>> branches,
+			String dlQuery,
+			List<BranchDetails> branches,
 			ReasonerFactory factory)
 	{
-		BasicLuceneClient client = new BasicLuceneClient(name, roots, branches, factory);
+		BasicLuceneClient client = new BasicLuceneClient(name, roots, dlQuery, branches, factory);
 		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
 		ontology.runManagedTask(task);
 		return task.client;
@@ -134,16 +142,19 @@ public class BasicLuceneClient implements
 	/**
 	 * @param name
 	 * @param roots
+	 * @param dlQuery
 	 * @param branches
 	 */
 	protected BasicLuceneClient(String name,
 			List<String> roots,
-			List<Pair<String, List<String>>> branches,
+			String dlQuery,
+			List<BranchDetails> branches,
 			ReasonerFactory factory)
 	{
 		super();
 		this.name = name;
 		this.roots = roots;
+		this.dlQuery = dlQuery;
 		this.branches = branches;
 		this.factory = factory;
 		EventBus.subscribe(OntologyChangeEvent.class, this);
@@ -153,7 +164,7 @@ public class BasicLuceneClient implements
 		this.ontology = ontology;
 		LuceneMemoryOntologyIndex old = index;
 		try {
-			index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory);
+			index = new LuceneMemoryOntologyIndex(ontology, roots, dlQuery, branches, factory);
 			if (old != null) {
 				old.close();
 			}

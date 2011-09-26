@@ -16,7 +16,6 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,8 +61,7 @@ public class PlantOntologyIndexTest {
 
 	protected LuceneMemoryOntologyIndex createIndex(OWLGraphWrapper ontology) throws IOException {
 		List<String> roots = plant.getRoots();
-		List<Pair<String, List<String>>> branches = null;
-		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, branches, factory)
+		LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(ontology, roots, null, null, factory)
 		{
 
 			@Override
