@@ -20,7 +20,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	private static final String TERM_GENIE_SESSION_OBJECT = "TERM_GENIE_SESSION_OBJECT";
 	private static final Logger logger = Logger.getLogger(SessionHandlerImpl.class);
 
-	private static class SessionObject {
+	protected static class SessionObject {
 
 		private boolean authenticated = false;
 		private String username = null;
@@ -33,6 +33,11 @@ public class SessionHandlerImpl implements SessionHandler {
 		String get(String key) {
 			return values.get(key);
 		}
+		
+		void authenticated(String username) {
+			authenticated = true;
+			this.username = username;
+		}
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class SessionHandlerImpl implements SessionHandler {
 		HttpSession session = request.getSession(true);
 		String id = session.getId();
 		if (session.isNew()) {
-			session.setAttribute(TERM_GENIE_SESSION_OBJECT, new SessionObject());
+			session.setAttribute(TERM_GENIE_SESSION_OBJECT, createSessionObject());
 			logger.info("Created new session with id: " + id);
 		}
 		else {
@@ -49,10 +54,22 @@ public class SessionHandlerImpl implements SessionHandler {
 		return id;
 	}
 
+	protected SessionObject createSessionObject() {
+		return new SessionObject();
+	}
+
+	protected SessionObject getSessionObject(HttpSession session) {
+		Object object = session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+		if (object == null) {
+			return null;
+		}
+		return (SessionObject) object;
+	}
+
 	@Override
 	public boolean isValidSession(String sessionId, HttpSession session) {
 		if (session != null) {
-			return sessionId.equals(session.getId()) && session.getAttribute(TERM_GENIE_SESSION_OBJECT) != null;
+			return sessionId.equals(session.getId()) && getSessionObject(session) != null;
 		}
 		return false;
 	}
@@ -63,7 +80,7 @@ public class SessionHandlerImpl implements SessionHandler {
 			// TODO add a proper authentication check
 			logger.info("Trying to login.");
 			if ("test".equals(username) && "123456".equals(password)) {
-				SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+				SessionObject sessionObject = getSessionObject(session);
 				synchronized (sessionObject) {
 					sessionObject.authenticated = true;
 					sessionObject.username = username;
@@ -77,10 +94,10 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public void logout(String sessionId, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				if (sessionObject.authenticated) {
-					// TODO add a proper logout to user management.
+					processLogout(sessionObject);
 				}
 				sessionObject.authenticated = false;
 				sessionObject.username = null;
@@ -88,10 +105,17 @@ public class SessionHandlerImpl implements SessionHandler {
 		}
 	}
 
+	/**
+	 * @param sessionObject
+	 */
+	protected void processLogout(SessionObject sessionObject) {
+		// Do nothing
+	}
+
 	@Override
 	public String isAuthenticated(String sessionId, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				if (sessionObject.authenticated) {
 					return sessionObject.username;
@@ -109,7 +133,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public String getValue(String sessionId, String key, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				String value = sessionObject.get(key);
 				return value;
@@ -121,7 +145,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public String[] getValues(String sessionId, String[] keys, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				String[] results = new String[keys.length];
 				for (int i = 0; i < keys.length; i++) {
@@ -137,7 +161,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public boolean setValue(String sessionId, String key, String value, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				sessionObject.put(key, value);
 				return true;
@@ -150,7 +174,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	public boolean setValues(String sessionId, String[] keys, String[] values, HttpSession session)
 	{
 		if (isValidSession(sessionId, session)) {
-			SessionObject sessionObject = (SessionObject) session.getAttribute(TERM_GENIE_SESSION_OBJECT);
+			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
 				for (int i = 0; i < keys.length; i++) {
 					sessionObject.put(keys[i], values[i]);

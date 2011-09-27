@@ -28,8 +28,14 @@ public class TermGenieServiceModule extends IOCModule {
 		bindTermCommitService();
 	}
 
+	@Singleton
+	@Provides
+	protected SessionHandler providesSessionHandler(InternalSessionHandler sessionHandler) {
+		return sessionHandler;
+	}
+	
 	protected void bindSessionHandler() {
-		bind(SessionHandler.class).to(SessionHandlerImpl.class);
+		bind(InternalSessionHandler.class).to(InteralSessionHandlerImpl.class);
 	}
 	
 	protected void bindTermCommitService() {

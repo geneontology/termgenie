@@ -78,6 +78,11 @@
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>com.google.inject.extensions</groupId>
+				<artifactId>guice-servlet</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
 				<groupId>owlapi</groupId>
 				<artifactId>owlapi</artifactId>
 				<version>3.2.4</version>
@@ -163,6 +168,22 @@
 				<groupId>com.googlecode.java-diff-utils</groupId>
 				<artifactId>diffutils</artifactId>
 				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+	        	<groupId>org.openid4java</groupId>
+	        	<artifactId>openid4java-consumer</artifactId>
+	        	<version>0.9.6</version>
+	        	<type>pom</type>
+	        	<exclusions>
+	        		<exclusion>
+	        			<artifactId>guice</artifactId>
+	        			<groupId>com.google.code.guice</groupId>
+	        		</exclusion>
+	        		<exclusion>
+	        			<artifactId>commons-logging</artifactId>
+	        			<groupId>commons-logging</groupId>
+	        		</exclusion>
+	        	</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

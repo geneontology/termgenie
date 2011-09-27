@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -95,7 +96,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         }
     }
 
-    public void execute(JsonRpcServerTransport transport, HttpServletRequest httpReq, HttpServletResponse httpResp) {
+    public void execute(JsonRpcServerTransport transport, HttpServletRequest httpReq, HttpServletResponse httpResp, ServletContext servletContext) {
         if (!locked) {
             synchronized (handlers) {
                 locked = true;
@@ -152,7 +153,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         }
 
         try {
-            JsonElement result = executeMethod(methodName, params, httpReq, httpResp);
+            JsonElement result = executeMethod(methodName, params, httpReq, httpResp, servletContext);
             resp.add("result", result);
         } catch (Throwable t) {
             LOG.warn("exception occured while executing : " + methodName, t);
@@ -214,7 +215,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         return str.toString();
     }
 
-    private JsonElement executeMethod(String methodName, JsonArray params, HttpServletRequest req, HttpServletResponse resp) throws Throwable {
+    private JsonElement executeMethod(String methodName, JsonArray params, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) throws Throwable {
         try {
             Matcher mat = METHOD_PATTERN.matcher(methodName);
             if (!mat.find()) {
@@ -246,7 +247,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
             }
 
             Object result = executableMethod.invoke(
-                    handleEntry.getHandler(), getParameters(executableMethod, params, req, resp));
+                    handleEntry.getHandler(), getParameters(executableMethod, params, req, resp, servletContext));
 
             return new Gson().toJsonTree(result);
         } catch (Throwable t) {
@@ -268,9 +269,16 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
     	if (isSessionAwareMethod(method)) {
     		parameterLength += SessionAware.parameterTypes.length;
 		}
+    	if (isServletContextAwareMethod(method)) {
+    		parameterLength += ServletContextAware.parameterTypes.length;
+		}
         return method.getParameterTypes().length == parameterLength;
     }
 
+    static boolean isServletContextAwareMethod(Method method) {
+    	return isInjectMethod(method, ServletContextAware.class);
+    }
+    
 	static boolean isServletAwareMethod(Method method) {
 		return isInjectMethod(method, ServletAware.class);
 	}
@@ -283,7 +291,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		return method.getAnnotation(annotationClass) != null;
 	}
 
-    public Object[] getParameters(Method method, JsonArray params, HttpServletRequest req, HttpServletResponse resp) {
+    public Object[] getParameters(Method method, JsonArray params, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
         List<Object> list = new ArrayList<Object>();
         Gson gson = new Gson();
         Class<?>[] types = method.getParameterTypes();
@@ -291,11 +299,15 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         int length = types.length;
         final boolean isSessionAware = isSessionAwareMethod(method);
         final boolean isServletAware = isServletAwareMethod(method);
+        final boolean isServletContextAware = isServletContextAwareMethod(method);
         if (isSessionAware) {
 			length = length - SessionAware.parameterTypes.length;
 		}
 		if (isServletAware) {
         	length = length - ServletAware.parameterTypes.length;
+		}
+		if (isServletContextAware) {
+        	length = length - ServletContextAware.parameterTypes.length;
 		}
 		
 		for (int i = 0; i < length; i++) {
@@ -310,6 +322,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		}
         if (isSessionAware) {
 			list.add(req.getSession(false));
+		}
+        if (isServletContextAware) {
+			list.add(servletContext);
 		}
         return list.toArray();
     }

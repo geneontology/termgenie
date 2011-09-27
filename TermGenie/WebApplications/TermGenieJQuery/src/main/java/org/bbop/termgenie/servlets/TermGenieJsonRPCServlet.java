@@ -7,24 +7,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class AbstractJsonRPCServlet extends HttpServlet {
+import org.json.rpc.server.InjectingJsonRpcExecutor;
+import org.json.rpc.server.JsonRpcServletTransport;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+@Singleton
+public class TermGenieJsonRPCServlet extends HttpServlet {
 
 	// generated
 	private static final long serialVersionUID = -3251117884213830675L;
 
-	private static volatile ServiceExecutor executor = null;
-
-	public AbstractJsonRPCServlet() {
+	private final InjectingJsonRpcExecutor executor;
+	
+	@Inject
+	public TermGenieJsonRPCServlet(InjectingJsonRpcExecutor executor)
+	{
 		super();
-		synchronized (AbstractJsonRPCServlet.class) {
-			if (executor == null) {
-				executor = createServiceExecutor();
-			}
-		}
+		this.executor = executor;
 	}
 	
-	protected abstract ServiceExecutor createServiceExecutor();
-
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
@@ -37,7 +40,7 @@ public abstract class AbstractJsonRPCServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
-		executor.execute(request, response);
+		executor.execute(new JsonRpcServletTransport(request, response), request, response, getServletContext());
 	}
 
 }

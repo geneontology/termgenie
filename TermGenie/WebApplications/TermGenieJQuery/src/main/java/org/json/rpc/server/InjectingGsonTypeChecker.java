@@ -9,7 +9,8 @@ import org.json.rpc.commons.TypeChecker;
 
 /**
  * {@link TypeChecker} for JSON-RPC compatibility, which is aware of the Inject
- * and its annotations ({@link ServletAware} and {@link SessionAware}).
+ * and its annotations ({@link ServletAware}, {@link SessionAware}, and 
+ * {@link ServletContextAware}).
  */
 public class InjectingGsonTypeChecker extends GsonTypeChecker {
 
@@ -43,8 +44,14 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 		length = checkInjectAnnotation(parameterTypes,
 				length,
 				method,
+				ServletContextAware.class,
+				ServletContextAware.parameterTypes);
+		length = checkInjectAnnotation(parameterTypes,
+				length,
+				method,
 				ServletAware.class,
 				ServletAware.parameterTypes);
+		
 
 		for (int i = 0; i < length; i++) {
 			Class<?> paramType = parameterTypes[i];
@@ -96,7 +103,7 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 				missing = checkAllParameters == false;
 			}
 			if (missing) {
-				throw new IllegalArgumentException("Missing HttpSession parameter for SessionAware method signature: " + method);
+				throw new IllegalArgumentException("Missing parameter for "+annotationClass.getSimpleName()+" method signature: " + method);
 			}
 			length = diff;
 		}

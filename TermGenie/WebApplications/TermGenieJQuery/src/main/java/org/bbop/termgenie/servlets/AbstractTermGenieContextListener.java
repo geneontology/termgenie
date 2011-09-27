@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -15,34 +12,60 @@ import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.authenticate.OpenIdModule;
+import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
-import org.json.rpc.server.JsonRpcServletTransport;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
 import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.servlet.GuiceServletContextListener;
+import com.google.inject.servlet.ServletModule;
 
-/**
- * Registry of implementations for the TermGenie web application.
- */
-public abstract class ServiceExecutor {
 
-	private final InjectingJsonRpcExecutor executor;
+public abstract class AbstractTermGenieContextListener extends GuiceServletContextListener {
 
-	protected ServiceExecutor() {
-		super();
-		executor = new InjectingJsonRpcExecutor();
-		Injector injector = TermGenieGuice.createInjector(getConfiguration());
+	protected final class TermGenieServletModule extends ServletModule {
 
-		add("generate", injector, GenerateTermsService.class);
-		add("ontology", injector, OntologyService.class);
-		add("commit", injector, TermCommitService.class);
-		add("user", injector, SessionHandler.class);
+		static final String OPENID_SERVLET_PATH = "/openid";
+
+		@Override
+		protected void configureServlets() {
+			serve("/jsonrpc").with(TermGenieJsonRPCServlet.class);
+			serve(OPENID_SERVLET_PATH).with(OpenIdResponseServlet.class);
+		}
+
+		@Provides
+		@Singleton
+		@SuppressWarnings("unchecked")
+		protected InjectingJsonRpcExecutor providesInjectingJsonRpcExecutor(GenerateTermsService generate,
+				OntologyService ontology,
+				TermCommitService commit,
+				SessionHandler user,
+				OpenIdRequestHandler openId) {
+			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor();
+			executor.addHandler("generate", generate, GenerateTermsService.class);
+			executor.addHandler("ontology", ontology, OntologyService.class);
+			executor.addHandler("commit", commit, TermCommitService.class);
+			executor.addHandler("user", user, SessionHandler.class);
+			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
+			
+			return executor;
+		}
+	}
+
+	@Override
+	protected Injector getInjector() {
+		ServletModule module = new TermGenieServletModule();
+		return TermGenieGuice.createWebInjector(module, getConfiguration());
 	}
 
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		modules.add(new TermGenieToolsModule());
 		add(modules, getServiceModule(), true, "ServiceModule");
+		add(modules, getAuthenticationModule(), true, "Authentication");
 		add(modules, getOntologyModule(), true, "OntologyModule");
 		add(modules, getReasoningModule(), true, "ReasoningModule");
 		add(modules, getRulesModule(), true, "RulesModule");
@@ -75,6 +98,17 @@ public abstract class ServiceExecutor {
 	protected TermGenieServiceModule getServiceModule() {
 		return new TermGenieServiceModule();
 	}
+	
+	/**
+	 * @return module handling the authentication
+	 */
+	protected IOCModule getAuthenticationModule() {
+		return new OpenIdModule(getTermGenieURL(), TermGenieServletModule.OPENID_SERVLET_PATH);
+	}
+	
+	protected String getTermGenieURL() {
+		return "http://localhost:8080/termgenie";
+	}
 
 	/**
 	 * @return module handling loading of ontologies
@@ -105,15 +139,6 @@ public abstract class ServiceExecutor {
 	 */
 	protected Collection<IOCModule> getAdditionalModules() {
 		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> void add(String path, Injector injector, Class<T> c) {
-		executor.addHandler(path, injector.getInstance(c), c);
-	}
-
-	public void execute(HttpServletRequest request, HttpServletResponse response) {
-		executor.execute(new JsonRpcServletTransport(request, response), request, response);
 	}
 
 }
