@@ -172,7 +172,12 @@
 			<dependency>
 	        	<groupId>org.openid4java</groupId>
 	        	<artifactId>openid4java-consumer</artifactId>
-	        	<version>0.9.6</version>
+	        	<version>0.9.5</version>
+	        	<!-- 
+	        	  Do NOT upgrade to 0.9.6 until the bug
+	        	  http://code.google.com/p/openid4java/issues/detail?id=162
+	        	  is resolved. 
+	        	 -->
 	        	<type>pom</type>
 	        	<exclusions>
 	        		<exclusion>
