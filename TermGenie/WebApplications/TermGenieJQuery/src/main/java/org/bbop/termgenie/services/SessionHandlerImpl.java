@@ -23,7 +23,8 @@ public class SessionHandlerImpl implements SessionHandler {
 	protected static class SessionObject {
 
 		private boolean authenticated = false;
-		private String username = null;
+		private String guid = null;
+		private String screename = null;
 		private final Map<String, String> values = new ConcurrentHashMap<String, String>();
 
 		String put(String key, String value) {
@@ -34,9 +35,10 @@ public class SessionHandlerImpl implements SessionHandler {
 			return values.get(key);
 		}
 		
-		void authenticated(String username) {
+		void authenticated(String screenname, String guid) {
 			authenticated = true;
-			this.username = username;
+			this.screename = screenname;
+			this.guid = guid;
 		}
 	}
 
@@ -83,7 +85,8 @@ public class SessionHandlerImpl implements SessionHandler {
 				SessionObject sessionObject = getSessionObject(session);
 				synchronized (sessionObject) {
 					sessionObject.authenticated = true;
-					sessionObject.username = username;
+					sessionObject.screename = username;
+					sessionObject.guid = "termgenie/test-users/"+username;
 				}
 				return true;
 			}
@@ -100,7 +103,8 @@ public class SessionHandlerImpl implements SessionHandler {
 					processLogout(sessionObject);
 				}
 				sessionObject.authenticated = false;
-				sessionObject.username = null;
+				sessionObject.screename = null;
+				sessionObject.guid = null;
 			}
 		}
 	}
@@ -117,8 +121,8 @@ public class SessionHandlerImpl implements SessionHandler {
 		if (isValidSession(sessionId, session)) {
 			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
-				if (sessionObject.authenticated) {
-					return sessionObject.username;
+				if (sessionObject.authenticated && sessionObject.guid != null) {
+					return sessionObject.screename;
 				}
 			}
 		}

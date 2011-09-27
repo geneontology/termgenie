@@ -8,9 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdHandler;
-import org.openid4java.discovery.Identifier;
+import org.bbop.termgenie.services.authenticate.OpenIdResponseHandler.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,6 +19,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class OpenIdResponseServlet extends HttpServlet {
 
+	private final static Logger logger = Logger.getLogger(OpenIdResponseServlet.class);
+	
 	// generated
 	private static final long serialVersionUID = 4776195215868823440L;
 
@@ -46,14 +49,15 @@ public class OpenIdResponseServlet extends HttpServlet {
 	}
 
 	private void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		Identifier identifier = openIdHandler.verifyResponse(req);
-		if (identifier != null) {
-			HttpSession session = req.getSession(false);
-			if (session != null) {
-				String username = identifier.getIdentifier();
-				sessionHandler.setAuthenticated(username, session);
+		logger.info("Processing OpenId response");
+		HttpSession session = req.getSession(false);
+		if (session != null) {
+			UserData userData = openIdHandler.verifyResponse(req, session);
+			if (userData != null) {
+				logger.info("Successful authentication via OpenId.");
+				sessionHandler.setAuthenticated(userData.getScreenname(), userData.getGuid(), session);
 			}
 		}
-		resp.sendRedirect("../");
+		resp.sendRedirect("http://localhost:8080/termgenie/");
 	}
 }

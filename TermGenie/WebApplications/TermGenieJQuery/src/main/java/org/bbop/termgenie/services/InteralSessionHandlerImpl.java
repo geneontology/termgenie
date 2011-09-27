@@ -13,12 +13,12 @@ public class InteralSessionHandlerImpl extends SessionHandlerImpl implements Int
 {
 
 	@Override
-	public void setAuthenticated(String username, HttpSession session) {
+	public void setAuthenticated(String screenname, String guid, HttpSession session) {
 		if (session != null) {
 			SessionObject sessionObject = getSessionObject(session);
 			if (sessionObject != null) {
 				synchronized (sessionObject) {
-					sessionObject.authenticated(username);
+					sessionObject.authenticated(screenname, guid);
 				}
 			}
 		}

@@ -61,7 +61,7 @@ public interface SessionHandler {
 	 * @param sessionId
 	 * @param session introduced via {@link SessionAware}, do not send in rpc
 	 *            call.
-	 * @return username, if the current session exists and has not timed out and
+	 * @return screenname, if the current session exists and has not timed out and
 	 *         is authenticated, otherwise null.
 	 */
 	@SessionAware

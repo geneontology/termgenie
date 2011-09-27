@@ -136,6 +136,20 @@ function termgenie(){
 			userInfo = null;
 		}
 		
+		function loginOpenId(username, onSuccess, onException) {
+			// openid.authRequest
+			
+			// request sessionId and then start a login via openId on server
+			mySession.getSessionId(function(sessionId){
+				// use json-rpc for authentication of the session
+				jsonService.openid.authRequest({
+					params: [sessionId, username],
+					onSuccess: onSuccess,
+					onException: onException
+				});	
+			});
+		}
+		
 		function login(username, password, onSuccess, onException) {
 			
 			// request sessionId and then start a login on server
@@ -162,6 +176,16 @@ function termgenie(){
 		}
 		
 		function logout() {
+			// request sessionId and then try to logout on server
+			mySession.getSessionId(function(sessionId){
+				jsonService.user.logout({
+					params: [sessionId],
+					onSuccess: function(){},
+					onException: function(e) {
+						
+					}
+				});	
+			});
 			clearUserInfo();
 		}
 		
@@ -209,8 +233,11 @@ function termgenie(){
 			
 			var loginDialog = createLoginDialog(loginClickElem, logoutClickElem);
 			
+			var loginOpenIdDialog = createOpenIdLoginDialog(loginClickElem, logoutClickElem);
+			
 			loginClickElem.click(function(){
-				loginDialog.loginPanel.dialog('open');
+				//loginDialog.loginPanel.dialog('open');
+				loginOpenIdDialog.loginPanel.dialog('open');
 			});
 			
 			logoutClickElem.click(function(){
@@ -220,7 +247,7 @@ function termgenie(){
 				elem.append(loginClickElem);
 			});
 			
-			// TODO check if session is already authenticated
+			// check if session is already authenticated
 			isAuthenticated(function(username){ // onSuccess
 				if (username && username !== null) {
 					setSuccessfulLogin(username);
@@ -243,6 +270,11 @@ function termgenie(){
 			function closeLoginDialog() {
 				loginDialog.loginPanel.dialog( "close" );
 				loginDialog.loginMessagePanel.empty();
+			}
+			
+			function closeOpenIdDialog() {
+				loginOpenIdDialog.loginPanel.dialog( "close" );
+				loginOpenIdDialog.loginMessagePanel.empty();
 			}
 			
 			function createLoginDialog(loginClickElem, logoutClickElem) {
@@ -313,6 +345,91 @@ function termgenie(){
 						},
 						"Cancel": function() {
 							closeLoginDialog();
+						}
+					}
+				});
+				
+				return {
+					loginPanel: loginPanel,
+					loginMessagePanel: loginMessagePanel
+				};
+			}
+			
+			function createOpenIdLoginDialog(loginClickElem, logoutClickElem) {
+				var loginPanel = jQuery('<div></div>');
+				loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
+				var table = createLayoutTable();
+				table.addClass('termgenie-login-panel-layout-table');
+				table.appendTo(loginPanel);
+				
+				// openid
+				var row1 = jQuery('<tr></tr>');
+				row1.appendTo(table);
+				row1.append('<td>OpenId:</td>');
+				var tablecell1 = jQuery('<td></td>');
+				tablecell1.appendTo(row1);
+				var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "OpenId", 4);
+				
+				loginPanel.appendTo('body');
+				
+				var loginMessagePanel = jQuery('<div></div>');
+				loginMessagePanel.appendTo(loginPanel);
+				
+				loginPanel.dialog({
+					title: 'Login for TermGenie with an OpenId',
+					autoOpen: false,
+					width: 350,
+					modal: true,
+					buttons: {
+						"Log In": function() {
+							loginMessagePanel.empty();
+							var usernameCheck = usernameInput.check();
+							if (usernameCheck.success !== true) {
+								renderLoginErrors(usernameCheck.message);
+								return;
+							}
+							
+							var username = usernameCheck.value;
+							loginMessagePanel.append(createBusyMessage('Calling OpenId'));
+							loginOpenId(username, 
+								function(result){ // onSuccess
+									loginMessagePanel.empty();
+									if (result && result !== null) {
+										closeOpenIdDialog();
+										if(result.error && result.error !== null) {
+											// set error message
+											loggingSystem.logSystemError('Login service call failed', result.error);
+										}
+										else if (result.url && result.url !== null) {
+//											window.location.href = result.url;
+											if (result.parameters === null) {
+												window.location.href = result.url;
+											}
+											else {
+												// use form to create post request
+												var redirectForm = jQuery('<form action="'+result.url+'" method="post" accept-charset="utf-8"></form>');
+												jQuery.each(result.parameters, function(index, value){
+													redirectForm.append('<input type="hidden" name="'+value[0]+'" value="'+value[1]+'"/>');	
+												});
+												redirectForm.appendTo(loginMessagePanel);
+												redirectForm.submit();
+											}
+										}
+									}
+									else {
+										// set error message
+										loginMessagePanel.append('<div>Login via OpenId not successful, please check the specified openId.</div>');
+									}
+									
+								},
+								function(e){ // onException
+									loginMessagePanel.empty();
+									loggingSystem.logSystemError('OpenId login service call failed',e);
+								});
+							
+						},
+						"Cancel": function() {
+							closeOpenIdDialog();
 						}
 					}
 				});
@@ -424,7 +541,8 @@ function termgenie(){
 	              'user.getValue',
 	              'user.setValue',
 	              'user.getValues',
-	              'user.setValues']
+	              'user.setValues',
+	              'openid.authRequest']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
