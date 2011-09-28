@@ -15,23 +15,29 @@ import org.bbop.termgenie.services.authenticate.OpenIdResponseHandler.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 @Singleton
 public class OpenIdResponseServlet extends HttpServlet {
 
 	private final static Logger logger = Logger.getLogger(OpenIdResponseServlet.class);
-	
+
 	// generated
 	private static final long serialVersionUID = 4776195215868823440L;
 
 	private final OpenIdHandler openIdHandler;
 	private final InternalSessionHandler sessionHandler;
+	private final String defaultTermGenieUrl;
 
 	@Inject
-	public OpenIdResponseServlet(OpenIdHandler openIdHandler, InternalSessionHandler sessionHandler) {
+	public OpenIdResponseServlet(OpenIdHandler openIdHandler,
+			InternalSessionHandler sessionHandler,
+			@Named("DefaultTermGenieUrl") String defaultTermGenieUrl)
+	{
 		super();
 		this.openIdHandler = openIdHandler;
 		this.sessionHandler = sessionHandler;
+		this.defaultTermGenieUrl = defaultTermGenieUrl;
 	}
 
 	@Override
@@ -55,9 +61,11 @@ public class OpenIdResponseServlet extends HttpServlet {
 			UserData userData = openIdHandler.verifyResponse(req, session);
 			if (userData != null) {
 				logger.info("Successful authentication via OpenId.");
-				sessionHandler.setAuthenticated(userData.getScreenname(), userData.getGuid(), session);
+				sessionHandler.setAuthenticated(userData.getScreenname(),
+						userData.getGuid(),
+						session);
 			}
 		}
-		resp.sendRedirect("http://localhost:8080/termgenie/");
+		resp.sendRedirect(defaultTermGenieUrl);
 	}
 }

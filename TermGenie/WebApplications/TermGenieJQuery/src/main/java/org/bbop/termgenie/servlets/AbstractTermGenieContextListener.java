@@ -28,7 +28,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 	protected final class TermGenieServletModule extends ServletModule {
 
-		static final String OPENID_SERVLET_PATH = "/openid";
+		public static final String OPENID_SERVLET_PATH = "/openid";
 
 		@Override
 		protected void configureServlets() {
@@ -103,13 +103,9 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 * @return module handling the authentication
 	 */
 	protected IOCModule getAuthenticationModule() {
-		return new OpenIdModule(getTermGenieURL(), TermGenieServletModule.OPENID_SERVLET_PATH);
+		return new OpenIdModule(TermGenieServletModule.OPENID_SERVLET_PATH);
 	}
 	
-	protected String getTermGenieURL() {
-		return "http://localhost:8080/termgenie";
-	}
-
 	/**
 	 * @return module handling loading of ontologies
 	 */

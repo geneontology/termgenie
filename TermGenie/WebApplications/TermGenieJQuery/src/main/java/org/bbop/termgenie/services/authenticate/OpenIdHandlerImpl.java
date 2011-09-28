@@ -140,7 +140,7 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 					}
 				}
 				UserData userData = new UserData(guid, screenname);
-				logger.info("Successful openId login: "+userData);
+				logger.info("Successful openId login: " + userData);
 				return userData;
 			}
 		} catch (Exception exception) {
