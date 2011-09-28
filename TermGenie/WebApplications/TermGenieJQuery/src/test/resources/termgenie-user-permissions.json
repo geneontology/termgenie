@@ -1,0 +1,10 @@
+{
+	guid: {
+		termgenie: {
+			test-ontology: {
+				allowWrite: false,
+				screenname: foo
+			}
+		}
+	}
+}

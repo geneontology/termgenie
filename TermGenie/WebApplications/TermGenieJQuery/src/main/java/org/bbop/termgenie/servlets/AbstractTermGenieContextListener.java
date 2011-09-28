@@ -12,7 +12,8 @@ import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
-import org.bbop.termgenie.services.authenticate.OpenIdModule;
+import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
+import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
@@ -44,13 +45,15 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				OntologyService ontology,
 				TermCommitService commit,
 				SessionHandler user,
-				OpenIdRequestHandler openId) {
+				OpenIdRequestHandler openId,
+				BrowserIdHandler browserId) {
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor();
 			executor.addHandler("generate", generate, GenerateTermsService.class);
 			executor.addHandler("ontology", ontology, OntologyService.class);
 			executor.addHandler("commit", commit, TermCommitService.class);
 			executor.addHandler("user", user, SessionHandler.class);
 			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
+			executor.addHandler("browserid", browserId, BrowserIdHandler.class);
 			
 			return executor;
 		}
@@ -105,7 +108,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 * @return module handling the authentication
 	 */
 	protected IOCModule getAuthenticationModule() {
-		return new OpenIdModule(TermGenieServletModule.OPENID_SERVLET_PATH);
+		return new AuthenticationModule(TermGenieServletModule.OPENID_SERVLET_PATH);
 	}
 	
 	/**

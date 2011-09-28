@@ -137,8 +137,6 @@ function termgenie(){
 		}
 		
 		function loginOpenId(username, onSuccess, onException) {
-			// openid.authRequest
-			
 			// request sessionId and then start a login via openId on server
 			mySession.getSessionId(function(sessionId){
 				// use json-rpc for authentication of the session
@@ -150,13 +148,11 @@ function termgenie(){
 			});
 		}
 		
-		function login(username, password, onSuccess, onException) {
-			
-			// request sessionId and then start a login on server
+		function authenticateBrowserId(assertion, onSuccess, onException) {
 			mySession.getSessionId(function(sessionId){
-				// use json-rpc for authentication of the session
-				jsonService.user.login({
-					params: [sessionId, username, password],
+				// use json-rpc for the browserID verification
+				jsonService.browserid.verifyAssertion({
+					params: [sessionId, assertion],
 					onSuccess: onSuccess,
 					onException: onException
 				});	
@@ -231,12 +227,9 @@ function termgenie(){
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			var displayUsernameElem = jQuery('<div class="termgenie-username"></div>');
 			
-			var loginDialog = createLoginDialog(loginClickElem, logoutClickElem);
-			
 			var loginOpenIdDialog = createOpenIdLoginDialog(loginClickElem, logoutClickElem);
 			
 			loginClickElem.click(function(){
-				//loginDialog.loginPanel.dialog('open');
 				loginOpenIdDialog.loginPanel.dialog('open');
 			});
 			
@@ -266,39 +259,66 @@ function termgenie(){
 				elem.append(logoutClickElem);
 				displayUsernameElem.text('Logged in as: '+username);
 			}
-			
-			function closeLoginDialog() {
-				loginDialog.loginPanel.dialog( "close" );
-				loginDialog.loginMessagePanel.empty();
-			}
-			
+						
 			function closeOpenIdDialog() {
 				loginOpenIdDialog.loginPanel.dialog( "close" );
 				loginOpenIdDialog.loginMessagePanel.empty();
 			}
 			
-			function createLoginDialog(loginClickElem, logoutClickElem) {
+
+			function createOpenIdLoginDialog(loginClickElem, logoutClickElem) {
 				var loginPanel = jQuery('<div></div>');
 				loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
-				var table = createLayoutTable();
-				table.addClass('termgenie-login-panel-layout-table');
-				table.appendTo(loginPanel);
+				// Browser Id
+				var browserIdDiv = jQuery('<div><div>Option 1: BrowserID</div></div>');
+				var browserDivButton = jQuery('<img src="icon/browserid_sign_in_blue.png" />');
+				browserIdDiv.append(browserDivButton);
+				browserDivButton.click(function(event){
+					event.preventDefault();
+					loginMessagePanel.append('<div>Calling for BrowserID in new Window.</div>');
+					// This function comes from https://browserid.org/include.js.
+				    // If the user successfully supplies an email address (and thus)
+				    // an assertion, we'll send it to our server so we can check it
+				    // out and get user data out of it if it's okay.
+				    navigator.id.getVerifiedEmail(function(assertion) {
+				    	loginMessagePanel.empty();
+				    	if(assertion){
+				    		loginMessagePanel.append('<div>Verifying BrowserID on Server.</div>');
+				    		authenticateBrowserId(assertion, function(userdata){ // on success
+				    			loginMessagePanel.empty();
+								if (userdata && userdata !== null) {
+									closeOpenIdDialog();
+									if(userdata.error && userdata.error !== null) {
+										// set error message
+										loggingSystem.logSystemError('Login service call failed', userdata.error);
+									}
+									else {
+										setSuccessfulLogin(userdata.screenname);
+									}
+								}
+								else {
+									loggingSystem.logSystemError('BrowserID verification failed.');
+								}
+				    		},
+				    		function(e){ // on error
+				    			loginMessagePanel.empty();
+								loggingSystem.logSystemError('BrowserID login service call failed',e);
+				    		});
+				    	}else{
+				    		// set error message
+							loginMessagePanel.append('<div>Login via BrowserID not successful.</div>');
+				    	}
+				    });
+				});
+				browserIdDiv.append("<div>Clicking on the 'Sign in' symbol will open a new window for the login process.</div>");
+				browserIdDiv.appendTo(loginPanel);
 				
-				// username
-				var row1 = jQuery('<tr></tr>');
-				row1.appendTo(table);
-				row1.append('<td>Username:</td>');
-				var tablecell1 = jQuery('<td></td>');
-				tablecell1.appendTo(row1);
-				var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "Username", 4);
+				// openid
+				var openIdDiv = jQuery('<div><div>Option 2: OpenID</div></div>');
+				openIdDiv.appendTo(loginPanel);
 				
-				// password
-				var row2 = jQuery('<tr></tr>');
-				row2.appendTo(table);
-				row2.append('<td>Password:</td>');
-				var tablecell2 = jQuery('<td></td>');
-				tablecell2.appendTo(row2);
-				var passwordInput = ParameterizedTextFieldInput(tablecell2, 'password', "Password", 6);
+				openIdDiv.append('<span>OpenId:</span>');
+				var usernameInput = ParameterizedTextFieldInput(openIdDiv, 'text', "OpenId", 4);
 				
 				loginPanel.appendTo('body');
 				
@@ -307,76 +327,6 @@ function termgenie(){
 				
 				loginPanel.dialog({
 					title: 'Login for TermGenie',
-					autoOpen: false,
-					width: 350,
-					modal: true,
-					buttons: {
-						"Log In": function() {
-							loginMessagePanel.empty();
-							var usernameCheck = usernameInput.check();
-							var passwordCheck = passwordInput.check();
-							if (!(usernameCheck.success === true) || !(passwordCheck.success === true)) {
-								renderLoginErrors(usernameCheck.message, passwordCheck.message);
-								return;
-							}
-							
-							var username = usernameCheck.value;
-							var password = passwordCheck.value;
-							loginMessagePanel.append(createBusyMessage('Verifying the username and password.'));
-							login(username, password, 
-								function(result){ // onSuccess
-									loginMessagePanel.empty();
-									if (result === true) {
-										setSuccessfulLogin(username);
-										passwordInput.clear(); // clear the password for security reasons
-										closeLoginDialog();	
-									}
-									else {
-										// set error message
-										loginMessagePanel.append('<div>Login not successful, please check your username and password.</div>');
-									}
-									
-								},
-								function(e){ // onException
-									loginMessagePanel.empty();
-									loggingSystem.logSystemError('Login service call failed',e);
-								});
-							
-						},
-						"Cancel": function() {
-							closeLoginDialog();
-						}
-					}
-				});
-				
-				return {
-					loginPanel: loginPanel,
-					loginMessagePanel: loginMessagePanel
-				};
-			}
-			
-			function createOpenIdLoginDialog(loginClickElem, logoutClickElem) {
-				var loginPanel = jQuery('<div></div>');
-				loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
-				var table = createLayoutTable();
-				table.addClass('termgenie-login-panel-layout-table');
-				table.appendTo(loginPanel);
-				
-				// openid
-				var row1 = jQuery('<tr></tr>');
-				row1.appendTo(table);
-				row1.append('<td>OpenId:</td>');
-				var tablecell1 = jQuery('<td></td>');
-				tablecell1.appendTo(row1);
-				var usernameInput = ParameterizedTextFieldInput(tablecell1, 'text', "OpenId", 4);
-				
-				loginPanel.appendTo('body');
-				
-				var loginMessagePanel = jQuery('<div></div>');
-				loginMessagePanel.appendTo(loginPanel);
-				
-				loginPanel.dialog({
-					title: 'Login for TermGenie with an OpenId',
 					autoOpen: false,
 					width: 350,
 					modal: true,
@@ -542,7 +492,8 @@ function termgenie(){
 	              'user.setValue',
 	              'user.getValues',
 	              'user.setValues',
-	              'openid.authRequest']
+	              'openid.authRequest',
+	              'browserid.verifyAssertion']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
