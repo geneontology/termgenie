@@ -14,6 +14,7 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.OpenIdModule;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
@@ -66,6 +67,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		modules.add(new TermGenieToolsModule());
 		add(modules, getServiceModule(), true, "ServiceModule");
 		add(modules, getAuthenticationModule(), true, "Authentication");
+		add(modules, getUserPermissionModule(), true, "UserPermission");
 		add(modules, getOntologyModule(), true, "OntologyModule");
 		add(modules, getReasoningModule(), true, "ReasoningModule");
 		add(modules, getRulesModule(), true, "RulesModule");
@@ -106,6 +108,13 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		return new OpenIdModule(TermGenieServletModule.OPENID_SERVLET_PATH);
 	}
 	
+	/**
+	 * @return module handling the user permissions
+	 */
+	protected IOCModule getUserPermissionModule() {
+		return new UserPermissionsModule();
+	}
+
 	/**
 	 * @return module handling loading of ontologies
 	 */

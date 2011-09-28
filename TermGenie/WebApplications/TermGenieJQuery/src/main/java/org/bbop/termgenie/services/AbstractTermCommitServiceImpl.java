@@ -31,6 +31,8 @@ import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.services.permissions.UserPermissions;
+import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
 
@@ -38,19 +40,22 @@ import owltools.graph.OWLGraphWrapper.Synonym;
 
 public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
 
-	private final SessionHandler sessionHandler;
+	private final InternalSessionHandler sessionHandler;
 	private final Committer committer;
 	private final OntologyIdManager idProvider;
+	protected final UserPermissions permissions;
 
 	protected AbstractTermCommitServiceImpl(OntologyTools ontologyTools,
-			SessionHandler sessionHandler,
+			InternalSessionHandler sessionHandler,
 			Committer committer,
-			OntologyIdManager idProvider)
+			OntologyIdManager idProvider,
+			UserPermissions permissions)
 	{
 		super(ontologyTools);
 		this.sessionHandler = sessionHandler;
 		this.committer = committer;
 		this.idProvider = idProvider;
+		this.permissions = permissions;
 	}
 
 	protected abstract Ontology getTargetOntology();
@@ -83,9 +88,15 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			return error("Could not commit as the user is not logged.");
 		}
 
-		// TODO check if user has permissions for trying a commit
+		String guid = sessionHandler.getGUID(session);
+		boolean allowCommit = permissions.allowCommit(guid, manager.getOntology());
+		if (!allowCommit) {
+			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + guid);
+			return error("Could not commit, the user is not authorized to login..");
+		}
 
-		CommitTask task = new CommitTask(manager, terms, termgenieUser);
+		CommitTask task = new CommitTask(manager, terms, termgenieUser, permissions.getCommitUserData(guid,
+				manager.getOntology()));
 		this.idProvider.runManagedTask(task);
 		return task.result;
 	}
@@ -107,17 +118,24 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		 * @param manager
 		 * @param terms
 		 * @param termgenieUser
+		 * @param commitUserData
 		 */
-		CommitTask(OntologyTaskManager manager, JsonOntologyTerm[] terms, String termgenieUser) {
+		CommitTask(OntologyTaskManager manager,
+				JsonOntologyTerm[] terms,
+				String termgenieUser,
+				CommitUserData commitUserData)
+		{
 			super();
 			this.manager = manager;
 			this.terms = terms;
 			this.termgenieUser = termgenieUser;
+			this.commitUserData = commitUserData;
 		}
 
 		private final OntologyTaskManager manager;
 		private final JsonOntologyTerm[] terms;
 		private final String termgenieUser;
+		private final CommitUserData commitUserData;
 
 		private JsonCommitResult result = error("The commit operation is not enabled.");
 
@@ -134,7 +152,10 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			Integer base = pair.getTwo();
 			List<CommitObject<OntologyTerm>> commitTerms = pair.getOne();
 
-			CommitInfo commitInfo = createCommitInfo(commitTerms, null, termgenieUser);
+			CommitInfo commitInfo = createCommitInfo(commitTerms,
+					null,
+					termgenieUser,
+					commitUserData);
 			try {
 				// commit
 				CommitResult commitResult = committer.commit(commitInfo);
@@ -150,7 +171,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				result.setTerms(terms);
 				result.setSuccess(true);
 				result.setDiff(commitResult.getDiff());
-				
+
 			} catch (CommitException exception) {
 				if (exception.isRollback()) {
 					idProvider.rollbackId(manager.getOntology(), base);
@@ -175,12 +196,12 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				List<String> defXRef = extractDefXRef(jsonTerm);
 				Map<String, String> metaData = extractMetaData(jsonTerm);
 				List<IRelation> relations = extractRelations(jsonTerm, idHandler);
-		
+
 				OntologyTerm term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
-		
+
 				commits.add(CommitObject.add(term));
 			}
-		
+
 			// Check that all mapped temporary ids are also created!
 			Collection<String> missingIds = idHandler.getMissingIds();
 			if (!missingIds.isEmpty()) {
@@ -255,11 +276,13 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	 * @param terms
 	 * @param relations
 	 * @param termgenieUser
+	 * @param commitUserData
 	 * @return CommitInfo
 	 */
 	protected abstract CommitInfo createCommitInfo(List<CommitObject<OntologyTerm>> terms,
 			List<CommitObject<Relation>> relations,
-			String termgenieUser);
+			String termgenieUser,
+			CommitUserData commitUserData);
 
 	// ---------------- Helper ----------------
 

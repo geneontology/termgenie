@@ -40,6 +40,10 @@ public class SessionHandlerImpl implements SessionHandler {
 			this.screename = screenname;
 			this.guid = guid;
 		}
+		
+		String getGUID() {
+			return guid;
+		}
 	}
 
 	@Override

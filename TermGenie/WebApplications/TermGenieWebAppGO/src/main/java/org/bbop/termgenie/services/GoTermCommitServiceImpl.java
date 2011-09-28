@@ -12,6 +12,8 @@ import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.go.GoCommitInfo;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.bbop.termgenie.services.permissions.UserPermissions;
+import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 
 import com.google.inject.Inject;
@@ -26,13 +28,14 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 
 	@Inject
 	protected GoTermCommitServiceImpl(OntologyTools ontologyTools,
-			SessionHandler sessionHandler,
+			InternalSessionHandler sessionHandler,
 			Committer committer,
 			@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
 			OntologyIdManager idProvider,
-			TermGenerationEngine generationEngine)
+			TermGenerationEngine generationEngine,
+			UserPermissions permissions)
 	{
-		super(ontologyTools, sessionHandler, committer, idProvider);
+		super(ontologyTools, sessionHandler, committer, idProvider, permissions);
 		geneOntology = source;
 		tempIdPrefix = generationEngine.getTempIdPrefix(source);
 	}
@@ -50,7 +53,12 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 	@Override
 	protected CommitInfo createCommitInfo(List<CommitObject<OntologyTerm>> terms,
 			List<CommitObject<Relation>> relations,
-			String termgenieUser) {
-		return new GoCommitInfo(terms, null, termgenieUser);
+			String termgenieUser,
+			CommitUserData commitUserData) {
+		String screenname = commitUserData.getScreenname();
+		if (screenname == null) {
+			screenname = termgenieUser;
+		}
+		return new GoCommitInfo(terms, null, screenname);
 	}
 }

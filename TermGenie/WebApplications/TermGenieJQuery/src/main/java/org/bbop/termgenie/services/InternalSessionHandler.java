@@ -15,4 +15,12 @@ public interface InternalSessionHandler extends SessionHandler {
 	 * @param session
 	 */
 	public void setAuthenticated(String screenname, String guid, HttpSession session);
+	
+	/**
+	 * Retrieve the GUID for an authenticated session.
+	 * 
+	 * @param session
+	 * @return guid
+	 */
+	public String getGUID(HttpSession session);
 }

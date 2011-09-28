@@ -24,4 +24,17 @@ public class InteralSessionHandlerImpl extends SessionHandlerImpl implements Int
 		}
 
 	}
+
+	@Override
+	public String getGUID(HttpSession session) {
+		if (session != null) {
+			SessionObject sessionObject = getSessionObject(session);
+			if (sessionObject != null) {
+				synchronized (sessionObject) {
+					return sessionObject.getGUID();
+				}
+			}
+		}
+		return null;
+	}
 }
