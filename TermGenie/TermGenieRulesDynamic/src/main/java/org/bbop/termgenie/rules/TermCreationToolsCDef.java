@@ -19,6 +19,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -84,6 +85,7 @@ public class TermCreationToolsCDef extends AbstractTermCreationTools<CDef> {
 
 		if (logicalDefinition != null) {
 			TObo2Owl obo2Owl = new TObo2Owl(targetOntology.getManager(), changeTracker);
+			obo2Owl.setObodoc(new OBODoc());
 			obo2Owl.setOwlOntology(targetOntology.getSourceOntology());
 
 			OWLClassExpression cls = createClass(newId, obo2Owl);

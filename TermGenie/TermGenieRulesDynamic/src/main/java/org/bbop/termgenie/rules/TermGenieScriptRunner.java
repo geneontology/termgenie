@@ -33,8 +33,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	private final Map<TermTemplate, Ontology[]> templateOntologyManagers;
 	private final MultiOntologyTaskManager multiOntologyTaskManager;
 
-	// set to true, for debugging
-	private boolean printScript = false;
 	private final ReasonerFactory factory;
 
 	@Inject
@@ -195,10 +193,13 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				}
 			} catch (ScriptException exception) {
 				result = createError("Error during script execution:\n" + exception.getMessage());
+				printScript(script);
 				logger.error("Error during script execution", exception);
 			} catch (ClassCastException exception) {
+				printScript(script);
 				result = createError("Error, script did not return expected type:\n" + exception.getMessage());
 			} catch (NoSuchMethodException exception) {
+				printScript(script);
 				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
 			} finally {
 				// set the target ontology modified flag
@@ -217,11 +218,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				throws ScriptException, NoSuchMethodException
 		{
 			engine.put("termgenie", functionsImpl);
-			if (printScript) {
-				PrintWriter writer = new PrintWriter(System.out);
-				printScript(writer, script);
-				writer.flush();
-			}
 			engine.eval(script);
 			Invocable invocableEngine = (Invocable) engine;
 			invocableEngine.invokeFunction("run");
@@ -243,7 +239,8 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	 * @param writer
 	 * @param script
 	 */
-	private static void printScript(PrintWriter writer, String script) {
+	private static void printScript(String script) {
+		PrintWriter writer = new PrintWriter(System.out);
 		writer.println();
 		writer.println("Script:");
 		int pos;
@@ -276,6 +273,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		}
 		writer.println();
 		writer.println();
+		writer.flush();
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -40,8 +41,15 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new DefaultXMLDynamicRulesModule(),
-				new DefaultOntologyModule(),
+		Injector injector = TermGenieGuice.createInjector(new DefaultXMLDynamicRulesModule("termgenie_rules_simple.xml"),
+				new DefaultOntologyModule() {
+
+					@Override
+					protected void bindOntologyConfiguration() {
+						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
+						bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
+					}
+				},
 				new ReasonerModule());
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

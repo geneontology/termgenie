@@ -34,6 +34,23 @@ import com.google.inject.name.Named;
  */
 public class DefaultOntologyModule extends IOCModule {
 
+	protected final String defaultOntologyConfigurationResource;
+	protected final String defaultOntologyCleanerResource;
+	protected final String localFileIRIMapperResource;
+
+	public DefaultOntologyModule() {
+		this(DefaultOntologyConfiguration.SETTINGS_FILE, DefaultOntologyCleaner.SETTINGS_FILE, LocalFileIRIMapper.SETTINGS_FILE);
+	}
+
+	public DefaultOntologyModule(String ontologyConfigurationResource,
+			String ontologyCleanerResource,
+			String localFileIRIMapperResource)
+	{
+		this.defaultOntologyConfigurationResource = ontologyConfigurationResource;
+		this.defaultOntologyCleanerResource = ontologyCleanerResource;
+		this.localFileIRIMapperResource = localFileIRIMapperResource;
+	}
+
 	@Override
 	protected void configure() {
 		bindOntologyLoader();
@@ -58,17 +75,17 @@ public class DefaultOntologyModule extends IOCModule {
 
 	protected void bindOntologyConfiguration() {
 		bind(OntologyConfiguration.class).to(DefaultOntologyConfiguration.class);
-		bind("DefaultOntologyConfigurationResource", DefaultOntologyConfiguration.SETTINGS_FILE);
+		bind("DefaultOntologyConfigurationResource", defaultOntologyConfigurationResource);
 	}
 
 	protected void bindOntologyCleaner() {
 		bind(OntologyCleaner.class).to(DefaultOntologyCleaner.class);
-		bind("DefaultOntologyCleanerResource", DefaultOntologyCleaner.SETTINGS_FILE);
+		bind("DefaultOntologyCleanerResource", defaultOntologyCleanerResource);
 	}
 
 	protected void bindIRIMapper() {
 		bind(IRIMapper.class).to(LocalFileIRIMapper.class);
-		bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
+		bind("LocalFileIRIMapperResource", localFileIRIMapperResource);
 	}
 
 	@Provides
