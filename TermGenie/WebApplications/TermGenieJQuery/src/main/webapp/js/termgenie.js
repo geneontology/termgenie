@@ -263,26 +263,28 @@ function termgenie(){
 				var loginPanel = jQuery('<div></div>');
 				loginPanel.append('<div style="padding-bottom:10px">Committing generated terms requires an authorized user. Please log-in using one of the following options:</div>');
 				
-				var loginMessagePanel = jQuery('<div></div>');
+				var loginMessagePanel = jQuery('<div style="padding-left:20px;padding-top: 10px;"></div>');
 				
 				// create the two options
 				var browserIdPanel = createBrowserIDPanel(loginMessagePanel);
-				var openIdPanel = createOpenIdPanel(loginMessagePanel);
+				var openIDPanel = createOpenIDPanel(loginMessagePanel);
 				
 				// use change events to hide details 
 				browserIdPanel.inputElem.change(function(){
-					openIdPanel.hide();
+					openIDPanel.hide();
 					browserIdPanel.show();
+					loginMessagePanel.empty();
 				});
 				
-				openIdPanel.inputElem.change(function(){
+				openIDPanel.inputElem.change(function(){
 					browserIdPanel.hide();
-					openIdPanel.show();
+					openIDPanel.show();
+					loginMessagePanel.empty();
 				});
 				
 				// append components to dialog
 				loginPanel.append(browserIdPanel.elem);
-				loginPanel.append(openIdPanel.elem);
+				loginPanel.append(openIDPanel.elem);
 				loginPanel.append(loginMessagePanel);
 				
 				loginPanel.appendTo('body');
@@ -301,8 +303,8 @@ function termgenie(){
 							if (browserIdPanel.inputElem.is(':checked')) {
 								browserIdPanel.login(successCallback);
 							}
-							else if (openIdPanel.inputElem.is(':checked')) {
-								openIdPanel.login(successCallback);
+							else if (openIDPanel.inputElem.is(':checked')) {
+								openIDPanel.login(successCallback);
 							}
 						},
 						"Cancel": function() {
@@ -418,25 +420,26 @@ function termgenie(){
 				 * 
 				 * @param reporter div appending messages for the user
 				 */
-				function createOpenIdPanel(reporter) {
+				function createOpenIDPanel(reporter) {
 					var elem = jQuery('<div></div>');
-					var inputElem = jQuery('<input type="radio" name="LoginDialogPanelInput" value="openId" />')
+					var inputElem = jQuery('<input type="radio" name="LoginDialogPanelInput" value="openID" />')
 					var inputElemDiv = jQuery('<div></div>');
 					elem.append(inputElemDiv);
 					inputElemDiv.append(inputElem);
-					inputElemDiv.append(jQuery('<label>OpenId</label>'));
+					inputElemDiv.append(jQuery('<label>OpenID</label>'));
 					
 					var detailsDiv = jQuery('<div style="padding-left: 20px;padding-top: 5px;"></div>');
 					elem.append(detailsDiv);
-					detailsDiv.append('<div>Enter OpenId:</div>');
-					var openIdInput = ParameterizedTextFieldInput(detailsDiv, 'text', "OpenId", 4);
+					detailsDiv.append('<div style="padding-bottom: 5px;>Enter your OpenID:</div>');
+					var openIDInput = ParameterizedTextFieldInput(detailsDiv, 'text', "OpenID", 4);
+					detailsDiv.append('<div style="padding-top: 5px;">Warning: As the login process with OpenID involves a redirect to the OpenID server, your current state of termgenie will be lost in this process.</div>');
 				
 					detailsDiv.hide();
 					
 					return {
 						elem: elem,
 						inputElem: inputElem,
-						login: callOpenIdLogin,
+						login: callOpenIDLogin,
 						hide: function(){
 							detailsDiv.hide();
 						},
@@ -447,21 +450,21 @@ function termgenie(){
 					
 					/**
 					 * Request the OpenID via RPC method call. Will redirect the page to the 
-					 * OpenID server, if an OpenId server has been discovered from the given 
-					 * openId.
+					 * OpenID server, if an OpenID server has been discovered from the given 
+					 * openID.
 					 * 
 					 * @param successCallback function called after successful authentication
 					 */
-					function callOpenIdLogin(successCallback) {
+					function callOpenIDLogin(successCallback) {
 						reporter.empty();
-						var openIdCheck = openIdInput.check();
-						if (openIdCheck.success !== true) {
-							renderLoginErrors(openIdCheck.message);
+						var openIDCheck = openIDInput.check();
+						if (openIDCheck.success !== true) {
+							renderLoginErrors(openIDCheck.message);
 							return success;
 						}
-						var openId = openIdCheck.value;
-						reporter.append(createBusyMessage('Calling OpenId'));
-						loginOpenId(username, function(result){ // onSuccess
+						var openID = openIDCheck.value;
+						reporter.append(createBusyMessage('Calling OpenID'));
+						loginOpenID(username, function(result){ // onSuccess
 							reporter.empty();
 							if (result && result !== null) {
 								if(result.error && result.error !== null) {
@@ -470,11 +473,11 @@ function termgenie(){
 									return;
 								}
 								else if (result.url && result.url !== null) {
-									// successfull discovery of OpenId authority
+									// successfull discovery of OpenID authority
 									// redirect page for authentication
-									// The openId server will redirect the user to the 
-									// termgenie site (stage two of OpenId protocoll handled in a servlet) 
-									// after a successfull authentication for the given openId.
+									// The openID server will redirect the user to the 
+									// termgenie site (stage two of OpenID protocoll handled in a servlet) 
+									// after a successfull authentication for the given openID.
 									if (result.parameters === null) {
 										window.location.href = result.url;
 									}
@@ -492,24 +495,24 @@ function termgenie(){
 							}
 							else {
 								// set error message
-								loginMessagePanel.append('<div>Login via OpenId not successful, please check the specified openId.</div>');
+								loginMessagePanel.append('<div>Login via OpenID not successful, please check the specified openID.</div>');
 							}
 						},
 						function(e){ // onException
 							reporter.empty();
-							loggingSystem.logSystemError('OpenId login service call failed', e);
+							loggingSystem.logSystemError('OpenID login service call failed', e);
 						});
 					}
 					
 					/**
-					 * Execute RPC call to server for stage one of OpenId protocoll.
+					 * Execute RPC call to server for stage one of OpenID protocoll.
 					 * 
 					 * @param username
 					 * @param onSuccess
 					 * @param onException
 					 */
-					function loginOpenId(username, onSuccess, onException) {
-						// request sessionId and then start a login via openId on server
+					function loginOpenID(username, onSuccess, onException) {
+						// request sessionId and then start a login via openID on server
 						mySession.getSessionId(function(sessionId){
 							// use json-rpc for authentication of the session
 							jsonService.openid.authRequest({
