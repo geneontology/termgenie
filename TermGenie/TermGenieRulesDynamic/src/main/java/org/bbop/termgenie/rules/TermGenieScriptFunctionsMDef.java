@@ -1,13 +1,14 @@
 package org.bbop.termgenie.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-public interface TermGenieScriptFunctionsMDef {
+public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 
 	/**
 	 * Create a new MDef instance for the given definition in Manchester OWLs
@@ -50,6 +51,8 @@ public interface TermGenieScriptFunctionsMDef {
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies);
 
 		public String getDefinition();
+		
+		public Map<String, String> getParameters();
 	}
 
 	/**

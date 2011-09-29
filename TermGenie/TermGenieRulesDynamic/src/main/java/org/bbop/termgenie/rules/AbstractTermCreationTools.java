@@ -36,7 +36,7 @@ import owltools.graph.OWLGraphWrapper.Synonym;
  * 
  * @param <T> Logical definition class 
  */
-public abstract class AbstractTermCreationTools<T> {
+public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	
 	private static final Logger logger = Logger.getLogger(AbstractTermCreationTools.class);
 
@@ -69,7 +69,7 @@ public abstract class AbstractTermCreationTools<T> {
 		changeTracker = new OWLChangeTracker(targetOntology.getSourceOntology());
 	}
 
-	protected final class OWLChangeTracker {
+	protected static final class OWLChangeTracker {
 		
 		ArrayList<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 		private final OWLOntology owlOntology;
@@ -273,6 +273,7 @@ public abstract class AbstractTermCreationTools<T> {
 		return new TermGenerationOutput(term, input, true, null);
 	}
 	
+	@Override
 	public boolean hasChanges() {
 		return changeTracker.undoChanges();
 	}

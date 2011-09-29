@@ -8,7 +8,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-public interface TermGenieScriptFunctionsCDef {
+public interface TermGenieScriptFunctionsCDef extends TermGenieScriptFunctions {
 
 	/**
 	 * Create a logical definition for a term in form of a {@link CDef}.

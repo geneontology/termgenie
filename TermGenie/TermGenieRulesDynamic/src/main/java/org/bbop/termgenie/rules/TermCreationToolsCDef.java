@@ -32,9 +32,9 @@ import owltools.graph.OWLGraphWrapper;
 /**
  * Implementation of the term creation, including relations from {@link CDef}.
  */
-public class TermCreationTools extends AbstractTermCreationTools<CDef> {
+public class TermCreationToolsCDef extends AbstractTermCreationTools<CDef> {
 
-	private static final Logger logger = Logger.getLogger(TermCreationTools.class);
+	private static final Logger logger = Logger.getLogger(TermCreationToolsCDef.class);
 
 	private final String targetOntologyId;
 
@@ -45,7 +45,7 @@ public class TermCreationTools extends AbstractTermCreationTools<CDef> {
 	 * @param patternID
 	 * @param factory
 	 */
-	TermCreationTools(TermGenerationInput input,
+	TermCreationToolsCDef(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			String tempIdPrefix,
 			String patternID,

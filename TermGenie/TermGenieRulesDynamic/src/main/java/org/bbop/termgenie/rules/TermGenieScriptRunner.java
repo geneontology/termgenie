@@ -163,7 +163,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				modified.add(Modified.no);
 			}
 			Integer targetOntologyIndex = null;
-			TermGenieScriptFunctionsImpl functionsImpl = null;
+			ChangeTracker changeTracker = null;
 			try {
 				OWLGraphWrapper targetOntology = null;
 				ScriptEngine engine = jsEngineManager.getEngine();
@@ -180,17 +180,19 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					return modified;
 				}
 				
-				functionsImpl = new TermGenieScriptFunctionsImpl(input, targetOntology, tempIdPrefix, templateId, factory);
-				engine.put("termgenie", functionsImpl);
-				if (printScript) {
-					PrintWriter writer = new PrintWriter(System.out);
-					printScript(writer, script);
-					writer.flush();
+				boolean isCDef = !usesMDef(script);
+				if (isCDef) {
+					TermGenieScriptFunctionsCDefImpl functionsImpl = new TermGenieScriptFunctionsCDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
+					changeTracker = functionsImpl;
+					run(engine, functionsImpl);
+					result = functionsImpl.getResult();
 				}
-				engine.eval(script);
-				Invocable invocableEngine = (Invocable) engine;
-				invocableEngine.invokeFunction("run");
-				result = functionsImpl.getResult();
+				else {
+					TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
+					changeTracker = functionsImpl;
+					run(engine, functionsImpl);
+					result = functionsImpl.getResult();
+				}
 			} catch (ScriptException exception) {
 				result = createError("Error during script execution:\n" + exception.getMessage());
 				logger.error("Error during script execution", exception);
@@ -200,8 +202,8 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
 			} finally {
 				// set the target ontology modified flag
-				if (functionsImpl != null) {
-					if (functionsImpl.hasChanges()) {
+				if (changeTracker != null) {
+					if (changeTracker.hasChanges()) {
 						if (targetOntologyIndex != null) {
 							modified.set(targetOntologyIndex.intValue(), Modified.reset);
 						}
@@ -209,6 +211,24 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				}
 			}
 			return modified;
+		}
+
+		private void run(ScriptEngine engine, TermGenieScriptFunctions functionsImpl)
+				throws ScriptException, NoSuchMethodException
+		{
+			engine.put("termgenie", functionsImpl);
+			if (printScript) {
+				PrintWriter writer = new PrintWriter(System.out);
+				printScript(writer, script);
+				writer.flush();
+			}
+			engine.eval(script);
+			Invocable invocableEngine = (Invocable) engine;
+			invocableEngine.invokeFunction("run");
+		}
+		
+		private boolean usesMDef(String script) {
+			return script.contains("termgenie.createMDef(");
 		}
 
 		protected List<TermGenerationOutput> createError(String message) {

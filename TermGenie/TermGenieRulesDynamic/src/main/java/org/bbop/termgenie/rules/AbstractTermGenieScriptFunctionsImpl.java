@@ -1,9 +1,7 @@
 package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,11 +18,17 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
- * An implementation of functions for the TermGenie scripting environment.
+ * Abstract implementation of functions for the TermGenie scripting environment.
  * Hiding the results in an internal variable, allows type safe retrieval.
+ * 
+ * @param <T>
  */
-public class TermGenieScriptFunctionsImpl extends TermCreationTools implements TermGenieScriptFunctions {
-	
+public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
+		TermGenieScriptFunctions,
+		ChangeTracker
+{
+
+	protected final AbstractTermCreationTools<T> tools;
 	private List<TermGenerationOutput> result;
 
 	/**
@@ -34,13 +38,27 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 	 * @param patternID
 	 * @param factory
 	 */
-	TermGenieScriptFunctionsImpl(TermGenerationInput input,
+	AbstractTermGenieScriptFunctionsImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
-		super(input, targetOntology, tempIdPrefix, patternID, factory);
+		super();
+		tools = createTermCreationTool(input, targetOntology, tempIdPrefix, patternID, factory);
+	}
+
+	protected abstract AbstractTermCreationTools<T> createTermCreationTool(TermGenerationInput input,
+			OWLGraphWrapper targetOntology,
+			String tempIdPrefix,
+			String patternID,
+			ReasonerFactory factory);
+
+	protected synchronized List<TermGenerationOutput> getResultList() {
+		if (result == null) {
+			result = new ArrayList<TermGenerationOutput>(3);
+		}
+		return result;
 	}
 
 	@Override
@@ -81,11 +99,11 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 	}
 
 	private OntologyTerm[] getFieldTerms(String name) {
-		int pos = getFieldPos(name);
+		int pos = tools.getFieldPos(name);
 		if (pos < 0) {
 			return null;
 		}
-		OntologyTerm[][] matrix = input.getParameters().getTerms();
+		OntologyTerm[][] matrix = tools.input.getParameters().getTerms();
 		if (matrix.length <= pos) {
 			return null;
 		}
@@ -175,7 +193,7 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 			return true;
 		}
 		if (ontology != null) {
-			ReasonerTaskManager manager = factory.getDefaultTaskManager(ontology);
+			ReasonerTaskManager manager = tools.factory.getDefaultTaskManager(ontology);
 			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
 			if (ancestors != null) {
 				return ancestors.contains(parent);
@@ -190,14 +208,13 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 
 	@Override
 	public String[] getInputs(String name) {
-		return super.getInputs(name);
+		return tools.getInputs(name);
 	}
 
 	@Override
 	public String getInput(String name) {
-		return super.getInput(name);
+		return tools.getInput(name);
 	}
-
 
 	@Override
 	public String name(OWLObject x, OWLGraphWrapper ontology) {
@@ -406,106 +423,6 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 		return null;
 	}
 
-	private static class CDefImpl implements CDef {
-
-		final OWLObject genus;
-		final OWLGraphWrapper ontology;
-
-		final List<Differentium> differentia = new ArrayList<Differentium>();
-
-		final List<String> properties = new ArrayList<String>();
-
-		/**
-		 * @param genus
-		 * @param ontology
-		 */
-		protected CDefImpl(OWLObject genus, OWLGraphWrapper ontology) {
-			super();
-			this.genus = genus;
-			this.ontology = ontology;
-		}
-
-		@Override
-		public void differentium(String rel, OWLObject term, OWLGraphWrapper[] ontologies) {
-			differentium(rel, Collections.singletonList(term), Arrays.asList(ontologies));
-		}
-
-		@Override
-		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper[] ontologies) {
-			differentium(rel, Arrays.asList(terms), Arrays.asList(ontologies));
-		}
-
-		private void differentium(String rel,
-				List<OWLObject> terms,
-				List<OWLGraphWrapper> ontologies)
-		{
-			differentia.add(new Differentium(rel, terms, ontologies));
-		}
-
-		@Override
-		public void differentium(String rel, OWLObject term, OWLGraphWrapper ontology) {
-			differentium(rel, new OWLObject[] { term }, new OWLGraphWrapper[] { ontology });
-		}
-
-		@Override
-		public void differentium(String rel, OWLObject[] terms, OWLGraphWrapper ontology) {
-			differentium(rel, terms, new OWLGraphWrapper[] { ontology });
-		}
-
-		@Override
-		public void property(String property) {
-			properties.add(property);
-		}
-
-		@Override
-		public Pair<OWLObject, OWLGraphWrapper> getBase() {
-			return new Pair<OWLObject, OWLGraphWrapper>(genus, ontology);
-		}
-
-		@Override
-		public List<String> getProperties() {
-			return Collections.unmodifiableList(properties);
-		}
-
-		@Override
-		public List<Differentium> getDifferentia() {
-			return Collections.unmodifiableList(differentia);
-		}
-	}
-
-	@Override
-	public CDef cdef(OWLObject genus) {
-		return cdef(genus, targetOntology);
-	}
-
-	@Override
-	public CDef cdef(String id) {
-		return cdef(id, targetOntology);
-	}
-
-	@Override
-	public CDef cdef(OWLObject genus, OWLGraphWrapper ontology) {
-		return new CDefImpl(genus, ontology);
-	}
-
-	@Override
-	public CDef cdef(String id, OWLGraphWrapper ontology) {
-		OWLObject genus = ontology.getOWLObjectByIdentifier(id);
-		return cdef(genus);
-	}
-
-	@Override
-	public synchronized void createTerm(String label,
-			String definition,
-			List<Synonym> synonyms,
-			CDef logicalDefinition)
-	{
-		if (result == null) {
-			result = new ArrayList<TermGenerationOutput>(1);
-		}
-		addTerm(label, definition, synonyms, logicalDefinition, result);
-	}
-
 	@Override
 	public boolean contains(String[] array, String value) {
 		if (array != null && array.length > 0) {
@@ -522,37 +439,39 @@ public class TermGenieScriptFunctionsImpl extends TermCreationTools implements T
 		}
 		return false;
 	}
-	
+
 	@Override
 	public synchronized void error(String message) {
 		TermGenerationOutput error = createError(message);
-		if (result == null) {
-			result = new ArrayList<TermGenerationOutput>(1);
-		}
-		result.add(error);
+		getResultList().add(error);
 	}
 
 	protected TermGenerationOutput createError(String message) {
-		TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
+		TermGenerationOutput error = new TermGenerationOutput(null, tools.input, false, message);
 		return error;
 	}
 
 	public List<TermGenerationOutput> getResult() {
-		return result;
+		return getResultList();
 	}
 
 	@Override
-	public <T> List<T> concat(List<T> l1, List<T> l2) {
+	public <A> List<A> concat(List<A> l1, List<A> l2) {
 		if (l1 == null || l1.isEmpty()) {
 			return l2;
 		}
 		if (l2 == null || l2.isEmpty()) {
 			return l1;
 		}
-		List<T> resultList = new ArrayList<T>(l1.size()+l2.size());
+		List<A> resultList = new ArrayList<A>(l1.size() + l2.size());
 		resultList.addAll(l1);
 		resultList.addAll(l2);
 		return resultList;
 	}
-	
+
+	@Override
+	public boolean hasChanges() {
+		return tools.hasChanges();
+	}
+
 }
