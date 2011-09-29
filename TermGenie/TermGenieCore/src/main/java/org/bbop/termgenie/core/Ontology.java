@@ -1,5 +1,6 @@
 package org.bbop.termgenie.core;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -226,6 +227,66 @@ public class Ontology {
 		 */
 		public Map<String, String> getProperties();
 
+		
+		public static final Comparator<IRelation> RELATION_SORT_COMPARATOR = new RelationSortComparator();
+	}
+	
+	private static final class RelationSortComparator implements Comparator<IRelation> {
+		
+		@Override
+		public int compare(IRelation r1, IRelation r2) {
+			// compare type
+			String t1 = Relation.getType(r1.getProperties());
+			String t2 = Relation.getType(r2.getProperties());
+			int tv1 = value(t1);
+			int tv2 = value(t2);
+			if (tv1 == tv2) {
+				if (tv1 == 4 || tv1 == 2 || tv1 == 1) {
+					return r1.getTarget().compareTo(r2.getTarget());
+				}
+				if (tv1 == 3) {
+					String rs1 = Relation.getRelationShip(r1.getProperties());
+					String rs2 = Relation.getRelationShip(r2.getProperties());
+					if (rs1 == null && rs2 == null) {
+						return r1.getTarget().compareTo(r2.getTarget());
+					}
+					if (rs1 == null) {
+						return -1;
+					}
+					if (rs2 == null) {
+						return 1;
+					}
+					if (rs1.equals(rs2)) {
+						return r1.getTarget().compareTo(r2.getTarget());
+					}
+					return rs1.compareTo(rs2);
+				}
+				if (tv1 == 0) {
+					if (t1.equals(t2)) {
+						return r1.getTarget().compareTo(r2.getTarget());
+					}
+					return t1.compareTo(t2);
+				}
+				return 0;
+			}
+			return tv2 - tv1;
+		}
+	
+		private int value(String type) {
+			if (type.equals(OboFormatTag.TAG_IS_A.getTag())) {
+				return 4;
+			}
+			if (type.equals(OboFormatTag.TAG_INTERSECTION_OF.getTag())) {
+				return 3;
+			}
+			if (type.equals(OboFormatTag.TAG_UNION_OF.getTag())) {
+				return 2;
+			}
+			if (type.equals(OboFormatTag.TAG_DISJOINT_FROM.getTag())) {
+				return 1;
+			}
+			return 0;
+		}
 	}
 
 	public static class Relation implements IRelation {
@@ -286,7 +347,11 @@ public class Ontology {
 		}
 		
 		public static void setType(Map<String, String> properties, OboFormatTag tag, String relationshipType) {
-			setType(properties, tag.getTag());
+			setType(properties, tag.getTag(), relationshipType);
+		}
+		
+		public static void setType(Map<String, String> properties, String type, String relationshipType) {
+			setType(properties, type);
 			if (relationshipType != null) {
 				properties.put("relationship", relationshipType);
 			}

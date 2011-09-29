@@ -48,15 +48,15 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	
 	private class MDefImpl implements MDef {
 		
-		private final String owlStatement;
+		private final String expression;
 		private final Map<String, String> parameters;
 		
 		/**
-		 * @param owlStatement
+		 * @param expression
 		 */
-		private MDefImpl(String owlStatement) {
+		private MDefImpl(String expression) {
 			super();
-			this.owlStatement = owlStatement;
+			this.expression = expression;
 			this.parameters = Collections.synchronizedMap(new HashMap<String, String>());
 		}
 
@@ -67,17 +67,23 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology) {
-			// TODO Auto-generated method stub
+			parameters.put(name, ontology.getIdentifier(x));
 		}
 
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies) {
-			// TODO Auto-generated method stub
+			for (OWLGraphWrapper ontology : ontologies) {
+				String identifier = ontology.getIdentifier(x);
+				if (identifier != null) {
+					parameters.put(name, identifier);
+					break;
+				}
+			}
 		}
 
 		@Override
-		public String getDefinition() {
-			return owlStatement;
+		public String getExpression() {
+			return expression;
 		}
 		
 		@Override

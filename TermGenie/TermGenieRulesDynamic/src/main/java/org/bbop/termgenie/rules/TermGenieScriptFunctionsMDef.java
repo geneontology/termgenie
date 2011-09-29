@@ -20,7 +20,7 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 	public MDef createMDef(String string);
 
 	/**
-	 * Data container for OWL statements in Manchester OWL syntax.
+	 * Data container for OWL expression in Manchester OWL syntax.
 	 */
 	public static interface MDef {
 
@@ -50,7 +50,7 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 		 */
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies);
 
-		public String getDefinition();
+		public String getExpression();
 		
 		public Map<String, String> getParameters();
 	}

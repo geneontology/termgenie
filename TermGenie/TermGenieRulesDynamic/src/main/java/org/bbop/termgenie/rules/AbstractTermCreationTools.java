@@ -81,8 +81,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		}
 	
 		protected synchronized void apply(OWLOntologyChange change) {
-			changes.add(change);
-			manager.applyChange(change);
+			List<OWLOntologyChange> changes = manager.applyChange(change);
+			if (changes != null && !changes.isEmpty()) {
+				changes.addAll(changes);
+			}
 		}
 	
 		/**
@@ -244,12 +246,40 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 		String newId = getNewId();
 
-		List<IRelation> relations = createRelations(logicalDefinition, newId, changeTracker);
-		DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
-		output.add(success(term, input));
+		try {
+			List<IRelation> relations = createRelations(logicalDefinition, newId, changeTracker);
+			if (relations != null && !relations.isEmpty()) {
+				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
+			}
+			DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
+			output.add(success(term, input));
+		} catch (RelationCreationException exception) {
+			output.add(singleError(exception.getMessage(), input));
+		}
 	}
 
-	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, OWLChangeTracker changeTracker);
+	protected static class RelationCreationException extends Exception {
+
+		// generated
+		private static final long serialVersionUID = -1460767598044524094L;
+
+		/**
+		 * @param message
+		 * @param cause
+		 */
+		public RelationCreationException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		/**
+		 * @param message
+		 */
+		public RelationCreationException(String message) {
+			super(message);
+		}
+	}
+	
+	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, OWLChangeTracker changeTracker) throws RelationCreationException;
 
 	private List<String> getDefXref() {
 		String[] strings = getInputs("DefX_Ref");

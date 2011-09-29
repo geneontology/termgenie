@@ -16,14 +16,14 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
 
-class InferRelationshipsTask implements ReasonerTask {
+class InferIsARelationshipsTask implements ReasonerTask {
 	
 	private final OWLGraphWrapper ontology;
 	private final OWLClassExpression cls;
 	
 	private List<IRelation> relations = null;
 
-	InferRelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls) {
+	InferIsARelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls) {
 		super();
 		this.ontology = ontology;
 		this.cls = cls;

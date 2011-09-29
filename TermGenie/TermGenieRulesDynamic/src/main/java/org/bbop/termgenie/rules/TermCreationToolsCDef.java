@@ -2,7 +2,6 @@ package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,64 +119,6 @@ public class TermCreationToolsCDef extends AbstractTermCreationTools<CDef> {
 			if (inferred != null && !inferred.isEmpty()) {
 				relations.addAll(inferred);
 			}
-			Collections.sort(relations, new Comparator<IRelation>() {
-
-				@Override
-				public int compare(IRelation r1, IRelation r2) {
-					// compare type
-					String t1 = Relation.getType(r1.getProperties());
-					String t2 = Relation.getType(r2.getProperties());
-					int tv1 = value(t1);
-					int tv2 = value(t2);
-					if (tv1 == tv2) {
-						if (tv1 == 4 || tv1 == 2 || tv1 == 1) {
-							return r1.getTarget().compareTo(r2.getTarget());
-						}
-						if (tv1 == 3) {
-							String rs1 = Relation.getRelationShip(r1.getProperties());
-							String rs2 = Relation.getRelationShip(r2.getProperties());
-							if (rs1 == null && rs2 == null) {
-								return r1.getTarget().compareTo(r2.getTarget());
-							}
-							if (rs1 == null) {
-								return -1;
-							}
-							if (rs2 == null) {
-								return 1;
-							}
-							if (rs1.equals(rs2)) {
-								return r1.getTarget().compareTo(r2.getTarget());
-							}
-							return rs1.compareTo(rs2);
-						}
-						if (tv1 == 0) {
-							if (t1.equals(t2)) {
-								return r1.getTarget().compareTo(r2.getTarget());
-							}
-							return t1.compareTo(t2);
-						}
-						return 0;
-					}
-					return tv2 - tv1;
-				}
-
-				private int value(String type) {
-					if (type.equals(OboFormatTag.TAG_IS_A.getTag())) {
-						return 4;
-					}
-					if (type.equals(OboFormatTag.TAG_INTERSECTION_OF.getTag())) {
-						return 3;
-					}
-					if (type.equals(OboFormatTag.TAG_UNION_OF.getTag())) {
-						return 2;
-					}
-					if (type.equals(OboFormatTag.TAG_DISJOINT_FROM.getTag())) {
-						return 1;
-					}
-					return 0;
-				}
-
-			});
 		}
 		return relations;
 	}
@@ -208,31 +149,9 @@ public class TermCreationToolsCDef extends AbstractTermCreationTools<CDef> {
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
-		InferRelationshipsTask task = new InferRelationshipsTask(targetOntology, cls);
+		InferIsARelationshipsTask task = new InferIsARelationshipsTask(targetOntology, cls);
 		reasonerManager.runManagedTask(task);
 		return task.getRelations();
-	}
-
-	private void addRelation(List<IRelation> relations,
-			String source,
-			String relationship,
-			OWLObject x,
-			List<OWLGraphWrapper> ontologies)
-	{
-		String id = null;
-		String label = null;
-		for (OWLGraphWrapper ontology : ontologies) {
-			id = ontology.getIdentifier(x);
-			if (id != null) {
-				label = ontology.getLabel(x);
-				break;
-			}
-		}
-		if (id != null) {
-			Map<String, String> properties = new HashMap<String, String>();
-			Relation.setType(properties, relationship);
-			relations.add(new Relation(source, id, label, properties));
-		}
 	}
 
 	private void addIntersection(List<IRelation> relations,
