@@ -20,15 +20,13 @@ class InferRelationshipsTask implements ReasonerTask {
 	
 	private final OWLGraphWrapper ontology;
 	private final OWLClassExpression cls;
-	private final List<IRelation> knownRelations;
 	
 	private List<IRelation> relations = null;
 
-	InferRelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls, List<IRelation> knownRelations) {
+	InferRelationshipsTask(OWLGraphWrapper ontology, OWLClassExpression cls) {
 		super();
 		this.ontology = ontology;
 		this.cls = cls;
-		this.knownRelations = knownRelations;
 	}
 
 	@Override
