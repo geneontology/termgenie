@@ -117,7 +117,7 @@ function termgenie(){
 	};
 	
 	/**
-	 * Handle all elements of the login and user management process.
+	 * Handle all elements of the login process.
 	 * 
 	 * @returns methods for the login panel
 	 */
@@ -125,65 +125,6 @@ function termgenie(){
 		
 		var panel = createLoginPanel();
 		var userInfo = null;
-		
-		function setUserInfo(username) {
-			userinfo = {
-				username: username,
-			};
-		}
-		
-		function clearUserInfo() {
-			userInfo = null;
-		}
-		
-		function loginOpenId(username, onSuccess, onException) {
-			// request sessionId and then start a login via openId on server
-			mySession.getSessionId(function(sessionId){
-				// use json-rpc for authentication of the session
-				jsonService.openid.authRequest({
-					params: [sessionId, username],
-					onSuccess: onSuccess,
-					onException: onException
-				});	
-			});
-		}
-		
-		function authenticateBrowserId(assertion, onSuccess, onException) {
-			mySession.getSessionId(function(sessionId){
-				// use json-rpc for the browserID verification
-				jsonService.browserid.verifyAssertion({
-					params: [sessionId, assertion],
-					onSuccess: onSuccess,
-					onException: onException
-				});	
-			});
-		}
-		
-		function isAuthenticated(onSuccess, onException) {
-			// request sessionId and then check for login status on server
-			mySession.getSessionId(function(sessionId){
-				// use json-rpc for checking authentication status
-				jsonService.user.isAuthenticated({
-					params: [sessionId],
-					onSuccess: onSuccess,
-					onException: onException
-				});	
-			});
-		}
-		
-		function logout() {
-			// request sessionId and then try to logout on server
-			mySession.getSessionId(function(sessionId){
-				jsonService.user.logout({
-					params: [sessionId],
-					onSuccess: function(){},
-					onException: function(e) {
-						
-					}
-				});	
-			});
-			clearUserInfo();
-		}
 		
 		return {
 			/**
@@ -209,6 +150,38 @@ function termgenie(){
 			}
 		};
 		
+		function setUserInfo(username) {
+			userinfo = {
+				username: username,
+			};
+		}
+		
+		function clearUserInfo() {
+			userInfo = null;
+		}
+		
+		/**
+		 * send the server the logout RPC call and clear JavaScript of user 
+		 * information.
+		 */
+		function logout() {
+			// request sessionId and then try to logout on server
+			mySession.getSessionId(function(sessionId){
+				jsonService.user.logout({
+					params: [sessionId],
+					onSuccess: function(){},
+					onException: function(e) {
+						
+					}
+				});	
+			});
+			clearUserInfo();
+		}
+		
+		/**
+		 * Create the panel for the user information, login and logout 
+		 * buttons to the site.
+		 */
 		function createLoginPanel() {
 			var elem = jQuery('<div style="width: 200px"></div>');
 			elem.appendTo('body');
@@ -227,10 +200,10 @@ function termgenie(){
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			var displayUsernameElem = jQuery('<div class="termgenie-username"></div>');
 			
-			var loginOpenIdDialog = createOpenIdLoginDialog(loginClickElem, logoutClickElem);
+			var loginDialogPanel = LoginDialogPanel();
 			
 			loginClickElem.click(function(){
-				loginOpenIdDialog.loginPanel.dialog('open');
+				loginDialogPanel.open();
 			});
 			
 			logoutClickElem.click(function(){
@@ -251,6 +224,27 @@ function termgenie(){
 			
 			return elem;
 			
+			/**
+			 * Check if the current session is already authenticated.
+			 */
+			function isAuthenticated(onSuccess, onException) {
+				// request sessionId and then check for login status on server
+				mySession.getSessionId(function(sessionId){
+					// use json-rpc for checking authentication status
+					jsonService.user.isAuthenticated({
+						params: [sessionId],
+						onSuccess: onSuccess,
+						onException: onException
+					});	
+				});
+			}
+			
+			/**
+			 * After a successful authentication call this method to update the 
+			 * displayed information and provide the logout button.
+			 * 
+			 * @param username string
+			 */
 			function setSuccessfulLogin(username) {
 				setUserInfo(username);
 				// on success replace with username and logout button
@@ -259,216 +253,361 @@ function termgenie(){
 				elem.append(logoutClickElem);
 				displayUsernameElem.text('Logged in as: '+username);
 			}
-						
-			function closeOpenIdDialog() {
-				loginOpenIdDialog.loginPanel.dialog( "close" );
-				loginOpenIdDialog.loginMessagePanel.empty();
-			}
 			
-
-			function createOpenIdLoginDialog(loginClickElem, logoutClickElem) {
+			/**
+			 * Create a dialog for the login process.
+			 * 
+			 * @returns functions { open() }
+			 */
+			function LoginDialogPanel() {
 				var loginPanel = jQuery('<div></div>');
-				loginPanel.append('<div style="padding-bottom:5px">To commit terms a login is required.</div>');
-				// Browser Id
-				var browserIdDiv = jQuery('<div><div>Option 1: BrowserID</div></div>');
-				var browserDivButton = jQuery('<img src="icon/browserid_sign_in_blue.png" />');
-				browserIdDiv.append(browserDivButton);
-				browserDivButton.click(function(event){
-					event.preventDefault();
-					loginMessagePanel.append('<div>Calling for BrowserID in new Window.</div>');
-					// This function comes from https://browserid.org/include.js.
-				    // If the user successfully supplies an email address (and thus)
-				    // an assertion, we'll send it to our server so we can check it
-				    // out and get user data out of it if it's okay.
-				    navigator.id.getVerifiedEmail(function(assertion) {
-				    	loginMessagePanel.empty();
-				    	if(assertion){
-				    		loginMessagePanel.append('<div>Verifying BrowserID on Server.</div>');
-				    		authenticateBrowserId(assertion, function(userdata){ // on success
-				    			loginMessagePanel.empty();
-								if (userdata && userdata !== null) {
-									closeOpenIdDialog();
-									if(userdata.error && userdata.error !== null) {
-										// set error message
-										loggingSystem.logSystemError('Login service call failed', userdata.error);
-									}
-									else {
-										setSuccessfulLogin(userdata.screenname);
-									}
-								}
-								else {
-									loggingSystem.logSystemError('BrowserID verification failed.');
-								}
-				    		},
-				    		function(e){ // on error
-				    			loginMessagePanel.empty();
-								loggingSystem.logSystemError('BrowserID login service call failed',e);
-				    		});
-				    	}else{
-				    		// set error message
-							loginMessagePanel.append('<div>Login via BrowserID not successful.</div>');
-				    	}
-				    });
+				loginPanel.append('<div style="padding-bottom:10px">Committing generated terms requires an authorized user. Please log-in using one of the following options:</div>');
+				
+				var loginMessagePanel = jQuery('<div></div>');
+				
+				// create the two options
+				var browserIdPanel = createBrowserIDPanel(loginMessagePanel);
+				var openIdPanel = createOpenIdPanel(loginMessagePanel);
+				
+				// use change events to hide details 
+				browserIdPanel.inputElem.change(function(){
+					openIdPanel.hide();
+					browserIdPanel.show();
 				});
-				browserIdDiv.append("<div>Clicking on the 'Sign in' symbol will open a new window for the login process.</div>");
-				browserIdDiv.appendTo(loginPanel);
 				
-				// openid
-				var openIdDiv = jQuery('<div><div>Option 2: OpenID</div></div>');
-				openIdDiv.appendTo(loginPanel);
+				openIdPanel.inputElem.change(function(){
+					browserIdPanel.hide();
+					openIdPanel.show();
+				});
 				
-				openIdDiv.append('<span>OpenId:</span>');
-				var usernameInput = ParameterizedTextFieldInput(openIdDiv, 'text', "OpenId", 4);
+				// append components to dialog
+				loginPanel.append(browserIdPanel.elem);
+				loginPanel.append(openIdPanel.elem);
+				loginPanel.append(loginMessagePanel);
 				
 				loginPanel.appendTo('body');
 				
-				var loginMessagePanel = jQuery('<div></div>');
-				loginMessagePanel.appendTo(loginPanel);
-				
+				// create modal dialog using jQuery
 				loginPanel.dialog({
 					title: 'Login for TermGenie',
 					autoOpen: false,
-					width: 350,
+					width: 450,
 					modal: true,
 					buttons: {
 						"Log In": function() {
-							loginMessagePanel.empty();
-							var usernameCheck = usernameInput.check();
-							if (usernameCheck.success !== true) {
-								renderLoginErrors(usernameCheck.message);
-								return;
+							var successCallback = function() {
+								closeLoginPanel();
 							}
-							
-							var username = usernameCheck.value;
-							loginMessagePanel.append(createBusyMessage('Calling OpenId'));
-							loginOpenId(username, 
-								function(result){ // onSuccess
-									loginMessagePanel.empty();
-									if (result && result !== null) {
-										closeOpenIdDialog();
-										if(result.error && result.error !== null) {
-											// set error message
-											loggingSystem.logSystemError('Login service call failed', result.error);
-										}
-										else if (result.url && result.url !== null) {
-//											window.location.href = result.url;
-											if (result.parameters === null) {
-												window.location.href = result.url;
-											}
-											else {
-												// use form to create post request
-												var redirectForm = jQuery('<form action="'+result.url+'" method="post" accept-charset="utf-8"></form>');
-												jQuery.each(result.parameters, function(index, value){
-													redirectForm.append('<input type="hidden" name="'+value[0]+'" value="'+value[1]+'"/>');	
-												});
-												redirectForm.appendTo(loginMessagePanel);
-												redirectForm.submit();
-											}
-										}
-									}
-									else {
-										// set error message
-										loginMessagePanel.append('<div>Login via OpenId not successful, please check the specified openId.</div>');
-									}
-									
-								},
-								function(e){ // onException
-									loginMessagePanel.empty();
-									loggingSystem.logSystemError('OpenId login service call failed',e);
-								});
-							
+							if (browserIdPanel.inputElem.is(':checked')) {
+								browserIdPanel.login(successCallback);
+							}
+							else if (openIdPanel.inputElem.is(':checked')) {
+								openIdPanel.login(successCallback);
+							}
 						},
 						"Cancel": function() {
-							closeOpenIdDialog();
+							closeLoginPanel();
 						}
 					}
 				});
 				
 				return {
-					loginPanel: loginPanel,
-					loginMessagePanel: loginMessagePanel
-				};
-			}
-			
-			function renderLoginErrors(message1, message2) {
-				var details =[]
-				if(message1 && message1.length > 0) {
-					details.push(message1);
-				}
-				if(message2 && message2.length > 0) {
-					details.push(message2);
-				}
-				loggingSystem.logUserMessage("Unable to login", details);
-			}
-			
-			/**
-			 * Wrapper around an input field with minimalistic validation and error state.
-			 * 
-			 * @param elem parent DOM element
-			 * @param type type of the input field, e.g., text or password
-			 * @param name the name of the input field. To be used in messages. 
-			 * @param minchars number of chars to present to be seen as valid input
-			 * @returns methods for checking and retrieving the input field
-			 */
-			function ParameterizedTextFieldInput(elem, type, name, minchars) {
-				var inputElement = jQuery('<input type="'+type+'"/>'); 
-				elem.append(inputElement);
-				
-				inputElement.change(function(){
-					clearErrorState();
-				});
-				
-				function clearErrorState(){
-					inputElement.removeClass('termgenie-input-field-error');	
+					open: function() {
+						loginPanel.dialog('open');
+					}
 				}
 				
-				function setErrorState() {
-					inputElement.addClass('termgenie-input-field-error');
+				function closeLoginPanel() {
+					loginPanel.dialog( "close" );
+					loginMessagePanel.empty();
 				}
 				
-				return {
+				/**
+				 * Create the DOM elements and functions for BrowserID authentication. 
+				 * 
+				 * @param reporter div appending messages for the user
+				 */
+				function createBrowserIDPanel(reporter) {
+					var elem = jQuery('<div style="padding-bottom:10px"></div>');
+					var inputElem = jQuery('<input type="radio" name="LoginDialogPanelInput" value="browserID" checked="checked" />')
+					var inputElemDiv = jQuery('<div></div>');
+					elem.append(inputElemDiv);
+					inputElemDiv.append(inputElem);
+					inputElemDiv.append(jQuery('<label>BrowserID</label>'));
+					
+					var detailsDiv = jQuery('<div style="padding-left: 20px;padding-top: 5px;"></div>');
+					detailsDiv.append("Clicking on the 'Log In' button will open a new window for the login process using BrowserID.");
+					elem.append(detailsDiv);
+					
+					return {
+						elem: elem,
+						inputElem: inputElem,
+						login: callBrowserID,
+						hide: function(){
+							detailsDiv.hide();
+						},
+						show: function() {
+							detailsDiv.show();
+						}
+					};
+					
 					/**
-					 * check the current value of the input field.
+					 * Execute RPC call for assertion verification on the server.
 					 * 
-					 * @returns {
-					 * 		success: boolean,
-					 * 		message: String,
-					 * 		value: String
-					 * }
+					 * @param assertion {String}
+					 * @param onSuccess function
+					 * @param onException function
 					 */
-					check : function() {
-						var success = false;
-						var message = undefined;
-						var value = undefined;
-						clearErrorState();
-						var text = inputElement.val();
-						if (text && text.length > 0) {
-							if (text.length >= minchars) {
-								success = true;
-								value = text;
+					function authenticateBrowserId(assertion, onSuccess, onException) {
+						mySession.getSessionId(function(sessionId){
+							// use json-rpc for the browserID verification
+							jsonService.browserid.verifyAssertion({
+								params: [sessionId, assertion],
+								onSuccess: onSuccess,
+								onException: onException
+							});	
+						});
+					}
+					
+					/**
+					 * Request the BrowserID via JavaScript method call.
+					 * 
+					 * @param successCallback function called after successful authentication
+					 */
+					function callBrowserID(successCallback) {
+						reporter.empty();
+						reporter.append(createBusyMessage('Calling for BrowserID in new Window.'));
+						// This function comes from https://browserid.org/include.js.
+					    // If the user successfully supplies an email address (and thus)
+					    // an assertion, we'll send it to our server so we can check it
+					    // out and get user data out of it if it's okay.
+					    navigator.id.getVerifiedEmail(function(assertion) {
+					    	reporter.empty();
+					    	if(assertion){
+					    		reporter.append(createBusyMessage('Verifying BrowserID on Server.'));
+					    		authenticateBrowserId(assertion, function(userdata){ // on success
+					    			reporter.empty();
+									if (userdata && userdata !== null) {
+										if(userdata.error && userdata.error !== null) {
+											// set error message
+											loggingSystem.logSystemError('Login service call failed', userdata.error);
+										}
+										else {
+											setSuccessfulLogin(userdata.screenname);
+										}
+										successCallback();
+									}
+									else {
+										loggingSystem.logSystemError('BrowserID verification failed.');
+									}
+					    		},
+					    		function(e){ // on error
+					    			reporter.empty();
+									loggingSystem.logSystemError('BrowserID login service call failed',e);
+					    		});
+					    	}else{
+					    		// set error message
+					    		reporter.append('<div>Login via BrowserID not successful.</div>');
+					    	}
+					    });
+					}
+				}
+				
+				/**
+				 * Create the DOM elements and functions for OpenID authentication. 
+				 * 
+				 * @param reporter div appending messages for the user
+				 */
+				function createOpenIdPanel(reporter) {
+					var elem = jQuery('<div></div>');
+					var inputElem = jQuery('<input type="radio" name="LoginDialogPanelInput" value="openId" />')
+					var inputElemDiv = jQuery('<div></div>');
+					elem.append(inputElemDiv);
+					inputElemDiv.append(inputElem);
+					inputElemDiv.append(jQuery('<label>OpenId</label>'));
+					
+					var detailsDiv = jQuery('<div style="padding-left: 20px;padding-top: 5px;"></div>');
+					elem.append(detailsDiv);
+					detailsDiv.append('<div>Enter OpenId:</div>');
+					var openIdInput = ParameterizedTextFieldInput(detailsDiv, 'text', "OpenId", 4);
+				
+					detailsDiv.hide();
+					
+					return {
+						elem: elem,
+						inputElem: inputElem,
+						login: callOpenIdLogin,
+						hide: function(){
+							detailsDiv.hide();
+						},
+						show: function() {
+							detailsDiv.show();
+						}
+					};
+					
+					/**
+					 * Request the OpenID via RPC method call. Will redirect the page to the 
+					 * OpenID server, if an OpenId server has been discovered from the given 
+					 * openId.
+					 * 
+					 * @param successCallback function called after successful authentication
+					 */
+					function callOpenIdLogin(successCallback) {
+						reporter.empty();
+						var openIdCheck = openIdInput.check();
+						if (openIdCheck.success !== true) {
+							renderLoginErrors(openIdCheck.message);
+							return success;
+						}
+						var openId = openIdCheck.value;
+						reporter.append(createBusyMessage('Calling OpenId'));
+						loginOpenId(username, function(result){ // onSuccess
+							reporter.empty();
+							if (result && result !== null) {
+								if(result.error && result.error !== null) {
+									// set error message
+									loggingSystem.logSystemError('Login service call failed', result.error);
+									return;
+								}
+								else if (result.url && result.url !== null) {
+									// successfull discovery of OpenId authority
+									// redirect page for authentication
+									// The openId server will redirect the user to the 
+									// termgenie site (stage two of OpenId protocoll handled in a servlet) 
+									// after a successfull authentication for the given openId.
+									if (result.parameters === null) {
+										window.location.href = result.url;
+									}
+									else {
+										// use form to create post request
+										var redirectForm = jQuery('<form action="'+result.url+'" method="post" accept-charset="utf-8"></form>');
+										jQuery.each(result.parameters, function(index, value){
+											redirectForm.append('<input type="hidden" name="'+value[0]+'" value="'+value[1]+'"/>');	
+										});
+										redirectForm.appendTo(loginMessagePanel);
+										redirectForm.submit();
+									}
+								}
+								successCallback();
 							}
 							else {
-								setErrorState();
-								message = name+' is too short. The '+name+' consits of at least '+minchars+' characters';
+								// set error message
+								loginMessagePanel.append('<div>Login via OpenId not successful, please check the specified openId.</div>');
 							}
-						}
-						else {
-							setErrorState();
-							message = name+' is empty. Please specifiy the '+name+' to login.';
-						}
-						return {
-							success: success,
-							message: message,
-							value: value
-						};
-					},
-					/**
-					 * allow to clear the value
-					 */
-					clear: function() {
-						inputElement.val('');
+						},
+						function(e){ // onException
+							reporter.empty();
+							loggingSystem.logSystemError('OpenId login service call failed', e);
+						});
 					}
-				};
+					
+					/**
+					 * Execute RPC call to server for stage one of OpenId protocoll.
+					 * 
+					 * @param username
+					 * @param onSuccess
+					 * @param onException
+					 */
+					function loginOpenId(username, onSuccess, onException) {
+						// request sessionId and then start a login via openId on server
+						mySession.getSessionId(function(sessionId){
+							// use json-rpc for authentication of the session
+							jsonService.openid.authRequest({
+								params: [sessionId, username],
+								onSuccess: onSuccess,
+								onException: onException
+							});	
+						});
+					}
+					
+					/**
+					 * Helper function to render an login error message popup.
+					 * 
+					 * @param message1
+					 * @param message2
+					 */
+					function renderLoginErrors(message1, message2) {
+						var details =[]
+						if(message1 && message1.length > 0) {
+							details.push(message1);
+						}
+						if(message2 && message2.length > 0) {
+							details.push(message2);
+						}
+						loggingSystem.logUserMessage("Unable to login", details);
+					}
+					
+					/**
+					 * Wrapper around an input field with minimalistic validation and error state.
+					 * 
+					 * @param elem parent DOM element
+					 * @param type type of the input field, e.g., text or password
+					 * @param name the name of the input field. To be used in messages. 
+					 * @param minchars number of chars to present to be seen as valid input
+					 * @returns methods for checking and retrieving the input field
+					 */
+					function ParameterizedTextFieldInput(elem, type, name, minchars) {
+						var inputElement = jQuery('<input type="'+type+'"/>');
+						inputElement.css('width','350');
+						elem.append(inputElement);
+						
+						inputElement.change(function(){
+							clearErrorState();
+						});
+						
+						function clearErrorState(){
+							inputElement.removeClass('termgenie-input-field-error');	
+						}
+						
+						function setErrorState() {
+							inputElement.addClass('termgenie-input-field-error');
+						}
+						
+						return {
+							/**
+							 * check the current value of the input field.
+							 * 
+							 * @returns {
+							 * 		success: boolean,
+							 * 		message: String,
+							 * 		value: String
+							 * }
+							 */
+							check : function() {
+								var success = false;
+								var message = undefined;
+								var value = undefined;
+								clearErrorState();
+								var text = inputElement.val();
+								if (text && text.length > 0) {
+									if (text.length >= minchars) {
+										success = true;
+										value = text;
+									}
+									else {
+										setErrorState();
+										message = name+' is too short. The '+name+' consits of at least '+minchars+' characters';
+									}
+								}
+								else {
+									setErrorState();
+									message = name+' is empty. Please specifiy the '+name+' to login.';
+								}
+								return {
+									success: success,
+									message: message,
+									value: value
+								};
+							},
+							/**
+							 * allow to clear the value
+							 */
+							clear: function() {
+								inputElement.val('');
+							}
+						};
+					}
+				}
 			}
 		}
 	}
