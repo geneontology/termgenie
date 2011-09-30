@@ -19,13 +19,15 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 
 public class TermGenieScriptRunner implements TermGenerationEngine {
-	
+
 	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
 	private final JSEngineManager jsEngineManager;
@@ -35,13 +37,17 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 
 	private final ReasonerFactory factory;
 
+	private final OntologyConfiguration ontologyConfiguration;
+
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates,
 			MultiOntologyTaskManager multiOntologyTaskManager,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			OntologyConfiguration ontologyConfiguration)
 	{
 		super();
 		this.factory = factory;
+		this.ontologyConfiguration = ontologyConfiguration;
 		this.jsEngineManager = new JSEngineManager();
 		this.multiOntologyTaskManager = multiOntologyTaskManager;
 		this.templateOntologyManagers = new HashMap<TermTemplate, Ontology[]>();
@@ -84,6 +90,30 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				generationOutputs.add(new TermGenerationOutput(null, input, false, sb.toString()));
 				continue;
 			}
+			
+			List<String> missing = checkRequired(termTemplate, targetOntology);
+			if (missing != null && !missing.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Configuration error: For template '");
+				sb.append(termTemplate.getDisplayName());
+				sb.append("' the following required ontology ");
+				if (missing.size() == 1) {
+					sb.append("file is not configured: ");
+					sb.append(missing.get(0));
+				}
+				else {
+					sb.append("files are not configured: ");
+					for (int i = 0; i < missing.size(); i++) {
+						if (i > 0) {
+							sb.append(", ");
+						}
+						sb.append(missing.get(i));
+					}
+				}
+				generationOutputs.add(new TermGenerationOutput(null, input, false, sb.toString()));
+				continue;
+			}
+			
 			final Ontology[] ontologies = templateOntologyManagers.get(termTemplate);
 			if (ontologies != null && ontologies.length > 0) {
 				String templateId = getTemplateId(termTemplate, count);
@@ -102,10 +132,26 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		}
 		return null;
 	}
+	
+	private List<String> checkRequired(TermTemplate termTemplate, Ontology targetOntology) {
+		List<String> requires = termTemplate.getRequires();
+		if (requires != null && !requires.isEmpty()) {
+			ConfiguredOntology configuredOntology = ontologyConfiguration.getOntologyConfigurations().get(targetOntology.getUniqueName());
+			List<String> targetRequires = configuredOntology.getRequires();
+			List<String> missing = new ArrayList<String>();
+			for(String require : requires) {
+				if (!targetRequires.contains(require)) {
+					missing.add(require);
+				}
+			}
+			return missing;
+		}
+		return null;
+	}
 
 	/**
-	 * Create an id for a template which is unique for this input during a single
-	 * {@link #generateTerms(Ontology, List)} request.
+	 * Create an id for a template which is unique for this input during a
+	 * single {@link #generateTerms(Ontology, List)} request.
 	 * 
 	 * @param template
 	 * @param count
@@ -174,10 +220,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					}
 				}
 				if (targetOntology == null || targetOntologyIndex == null) {
-					result = createError("Could not find requested ontology: "+this.targetOntology.getUniqueName());
+					result = createError("Could not find requested ontology: " + this.targetOntology.getUniqueName());
 					return modified;
 				}
-				
+
 				boolean isCDef = !usesMDef(script);
 				if (isCDef) {
 					TermGenieScriptFunctionsCDefImpl functionsImpl = new TermGenieScriptFunctionsCDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
@@ -201,7 +247,8 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			} catch (NoSuchMethodException exception) {
 				printScript(script);
 				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
-			} finally {
+			}
+			finally {
 				// set the target ontology modified flag
 				if (changeTracker != null) {
 					if (changeTracker.hasChanges()) {
@@ -222,7 +269,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			Invocable invocableEngine = (Invocable) engine;
 			invocableEngine.invokeFunction("run");
 		}
-		
+
 		private boolean usesMDef(String script) {
 			return script.contains("termgenie.createMDef(");
 		}
@@ -283,7 +330,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 
 	@Override
 	public String getTempIdPrefix(Ontology ontology) {
-		return "TEMP-"+ontology.getUniqueName() + ":";
+		return "TEMP-" + ontology.getUniqueName() + ":";
 	}
-	
+
 }
