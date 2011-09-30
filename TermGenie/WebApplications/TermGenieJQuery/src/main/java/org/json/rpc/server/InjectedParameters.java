@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
  * Thus this class holds the references to the parameter types injected during
  * the RPC. If it was not for this bug, they would be listed in the annotation
  * itself.
+ * 
+ * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6982543
  */
 class InjectedParameters {
 
