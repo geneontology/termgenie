@@ -65,7 +65,7 @@ public class ConfiguredOntology extends Ontology {
 	/**
 	 * @return the requires
 	 */
-	List<String> getRequires() {
+	public List<String> getRequires() {
 		if (requires == null) {
 			return Collections.emptyList();
 		}
