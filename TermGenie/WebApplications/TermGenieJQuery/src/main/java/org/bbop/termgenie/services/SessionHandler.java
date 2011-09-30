@@ -33,19 +33,6 @@ public interface SessionHandler {
 	public boolean isValidSession(String sessionId, HttpSession session);
 
 	/**
-	 * Try to authenticate the session.
-	 * 
-	 * @param sessionId
-	 * @param username
-	 * @param password
-	 * @param session introduced via {@link SessionAware}, do not send in rpc
-	 *            call.
-	 * @return boolean, true if the login was successful
-	 */
-	@SessionAware
-	public boolean login(String sessionId, String username, String password, HttpSession session);
-
-	/**
 	 * Invalidate the authentication of this session and associated data
 	 * 
 	 * @param sessionId

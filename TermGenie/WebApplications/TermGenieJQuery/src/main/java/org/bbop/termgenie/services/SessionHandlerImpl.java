@@ -81,24 +81,6 @@ public class SessionHandlerImpl implements SessionHandler {
 	}
 
 	@Override
-	public boolean login(String sessionId, String username, String password, HttpSession session) {
-		if (isValidSession(sessionId, session)) {
-			// TODO add a proper authentication check
-			logger.info("Trying to login.");
-			if ("test".equals(username) && "123456".equals(password)) {
-				SessionObject sessionObject = getSessionObject(session);
-				synchronized (sessionObject) {
-					sessionObject.authenticated = true;
-					sessionObject.screename = username;
-					sessionObject.guid = "termgenie/test-users/"+username;
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public void logout(String sessionId, HttpSession session) {
 		if (isValidSession(sessionId, session)) {
 			SessionObject sessionObject = getSessionObject(session);

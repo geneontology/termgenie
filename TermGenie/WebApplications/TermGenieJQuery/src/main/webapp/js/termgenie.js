@@ -626,7 +626,6 @@ function termgenie(){
 	              'commit.exportTerms',
 	              'commit.commitTerms',
 	              'user.createSession',
-	              'user.login',
 	              'user.logout',
 	              'user.isAuthenticated',
 	              'user.keepSessionAlive',
