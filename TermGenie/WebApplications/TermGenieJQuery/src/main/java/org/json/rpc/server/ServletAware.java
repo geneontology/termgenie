@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Annotation indicating an injection dependency on two additional parameters:
  * {@link HttpServletRequest} and {@link HttpServletResponse}.
+ * 
+ * @see InjectedParameters for definition of the parameters
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface ServletAware {
-
-	final Class<?>[] parameterTypes = { HttpServletRequest.class, HttpServletResponse.class };
+	// intentionally empty
 }

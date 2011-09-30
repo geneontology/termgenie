@@ -10,10 +10,11 @@ import javax.servlet.ServletContext;
 /**
  * Annotation indicating an injection dependency on one additional parameter:
  * {@link ServletContext}.
+ * 
+ * @see InjectedParameters for definition of the parameters
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface ServletContextAware {
-
-	final Class<?>[] parameterTypes = { ServletContext.class };
+	// intentionally empty
 }

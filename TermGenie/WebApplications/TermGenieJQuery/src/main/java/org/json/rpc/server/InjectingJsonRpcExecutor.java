@@ -264,13 +264,13 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
     public boolean canExecute(Method method, JsonArray params) {
         int parameterLength = params.size(); 
     	if (isServletAwareMethod(method)) {
-			parameterLength += ServletAware.parameterTypes.length;
+			parameterLength += InjectedParameters.getParameterCount(ServletAware.class);
 		}
     	if (isSessionAwareMethod(method)) {
-    		parameterLength += SessionAware.parameterTypes.length;
+    		parameterLength += InjectedParameters.getParameterCount(SessionAware.class);
 		}
     	if (isServletContextAwareMethod(method)) {
-    		parameterLength += ServletContextAware.parameterTypes.length;
+    		parameterLength += InjectedParameters.getParameterCount(ServletContextAware.class);
 		}
         return method.getParameterTypes().length == parameterLength;
     }
@@ -301,13 +301,13 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         final boolean isServletAware = isServletAwareMethod(method);
         final boolean isServletContextAware = isServletContextAwareMethod(method);
         if (isSessionAware) {
-			length = length - SessionAware.parameterTypes.length;
+			length = length - InjectedParameters.getParameterCount(SessionAware.class);
 		}
 		if (isServletAware) {
-        	length = length - ServletAware.parameterTypes.length;
+        	length = length - InjectedParameters.getParameterCount(ServletAware.class);
 		}
 		if (isServletContextAware) {
-        	length = length - ServletContextAware.parameterTypes.length;
+        	length = length - InjectedParameters.getParameterCount(ServletContextAware.class);
 		}
 		
 		for (int i = 0; i < length; i++) {

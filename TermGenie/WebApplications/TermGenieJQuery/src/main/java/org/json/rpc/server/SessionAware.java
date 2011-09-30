@@ -10,10 +10,11 @@ import javax.servlet.http.HttpSession;
 /**
  *  Annotation indicating an injection dependency on one additional parameter:
  *  {@link HttpSession}.
+ *  
+ *  @see InjectedParameters for definition of the parameters
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface SessionAware {
-
-	final Class<?>[] parameterTypes = {HttpSession.class};
+	// intentionally empty
 }

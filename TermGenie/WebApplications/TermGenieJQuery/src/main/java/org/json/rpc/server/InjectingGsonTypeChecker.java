@@ -39,18 +39,15 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 		int length = checkInjectAnnotation(parameterTypes,
 				parameterTypes.length,
 				method,
-				SessionAware.class,
-				SessionAware.parameterTypes);
+				SessionAware.class);
 		length = checkInjectAnnotation(parameterTypes,
 				length,
 				method,
-				ServletContextAware.class,
-				ServletContextAware.parameterTypes);
+				ServletContextAware.class);
 		length = checkInjectAnnotation(parameterTypes,
 				length,
 				method,
-				ServletAware.class,
-				ServletAware.parameterTypes);
+				ServletAware.class);
 		
 
 		for (int i = 0; i < length; i++) {
@@ -80,10 +77,10 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 	private int checkInjectAnnotation(Class<?>[] parameterTypes,
 			int length,
 			Method method,
-			Class<? extends Annotation> annotationClass,
-			Class<?>[] injectedParamters)
+			Class<? extends Annotation> annotationClass)
 	{
 		if (InjectingJsonRpcExecutor.isInjectMethod(method, annotationClass)) {
+			Class<?>[] injectedParamters = InjectedParameters.parameters.get(annotationClass);
 			boolean missing = true;
 			final int injectedLength = injectedParamters.length;
 			final int diff = length - injectedLength;
