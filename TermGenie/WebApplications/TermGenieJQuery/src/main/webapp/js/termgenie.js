@@ -464,7 +464,7 @@ function termgenie(){
 						}
 						var openID = openIDCheck.value;
 						reporter.append(createBusyMessage('Calling OpenID'));
-						loginOpenID(username, function(result){ // onSuccess
+						loginOpenID(openID, function(result){ // onSuccess
 							reporter.empty();
 							if (result && result !== null) {
 								if(result.error && result.error !== null) {
