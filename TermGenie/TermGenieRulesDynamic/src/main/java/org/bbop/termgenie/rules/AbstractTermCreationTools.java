@@ -83,7 +83,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		protected synchronized void apply(OWLOntologyChange change) {
 			List<OWLOntologyChange> changes = manager.applyChange(change);
 			if (changes != null && !changes.isEmpty()) {
-				changes.addAll(changes);
+				this.changes.addAll(changes);
 			}
 		}
 	
@@ -305,6 +305,6 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	
 	@Override
 	public boolean hasChanges() {
-		return changeTracker.undoChanges();
+		return changeTracker.undoChanges() == false;
 	}
 }
