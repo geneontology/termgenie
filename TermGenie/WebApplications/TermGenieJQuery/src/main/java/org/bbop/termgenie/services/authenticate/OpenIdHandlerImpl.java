@@ -36,6 +36,7 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 	public OpenIdHandlerImpl(@Named("OpenIdHandlerReturnToUrl") String returnToUrl) {
 		super();
 		this.returnToUrl = returnToUrl;
+		logger.info("Configuring OpenID: OpenIdHandlerReturnToUrl="+returnToUrl);
 		try {
 			manager = new ConsumerManager();
 		} catch (ConsumerException exception) {

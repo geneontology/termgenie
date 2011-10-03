@@ -41,6 +41,7 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 		super();
 		this.browserIdVerificationUrl = browserIdVerificationUrl;
 		this.termgenieBrowserIdAudience = termgenieBrowserIdAudience;
+		logger.info("Configuring BrowserID: verificationURL="+browserIdVerificationUrl+" termgenieBrowserIdAudience="+termgenieBrowserIdAudience);
 	}
 
 	@Override
