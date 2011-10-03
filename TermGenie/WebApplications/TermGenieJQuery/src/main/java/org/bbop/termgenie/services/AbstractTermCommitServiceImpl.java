@@ -12,9 +12,9 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonCommitResult;
@@ -142,7 +142,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		@Override
 		protected void runSimple(OntologyIdProvider idProvider) {
 			// create terms with new termIds
-			Pair<List<CommitObject<OntologyTerm>>, Integer> pair;
+			Pair<List<CommitObject<OntologyTerm<Synonym, IRelation>>>, Integer> pair;
 			try {
 				pair = createCommitTerms(terms, manager.getOntology(), idProvider);
 			} catch (CommitException exception) {
@@ -150,7 +150,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				return;
 			}
 			Integer base = pair.getTwo();
-			List<CommitObject<OntologyTerm>> commitTerms = pair.getOne();
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> commitTerms = pair.getOne();
 
 			CommitInfo commitInfo = createCommitInfo(commitTerms,
 					null,
@@ -182,11 +182,11 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			return;
 		}
 
-		private Pair<List<CommitObject<OntologyTerm>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
+		private Pair<List<CommitObject<OntologyTerm<Synonym, IRelation>>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
 				Ontology ontology,
 				OntologyIdProvider idProvider) throws CommitException
 		{
-			List<CommitObject<OntologyTerm>> commits = new ArrayList<CommitObject<OntologyTerm>>();
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> commits = new ArrayList<CommitObject<OntologyTerm<Synonym, IRelation>>>();
 			IdHandler idHandler = new IdHandler(idProvider, ontology, getTempIdPrefix());
 			for (JsonOntologyTerm jsonTerm : terms) {
 				String id = idHandler.create(jsonTerm.getTempId());
@@ -197,7 +197,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				Map<String, String> metaData = extractMetaData(jsonTerm);
 				List<IRelation> relations = extractRelations(jsonTerm, idHandler);
 
-				OntologyTerm term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
+				OntologyTerm<Synonym, IRelation> term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
 
 				commits.add(CommitObject.add(term));
 			}
@@ -209,7 +209,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				idProvider.rollbackId(ontology, idHandler.base);
 				throw new CommitException("Missing terms with tempIds: " + missingIds, true);
 			}
-			return new Pair<List<CommitObject<OntologyTerm>>, Integer>(commits, idHandler.base);
+			return new Pair<List<CommitObject<OntologyTerm<Synonym, IRelation>>>, Integer>(commits, idHandler.base);
 		}
 
 		private List<IRelation> extractRelations(JsonOntologyTerm jsonTerm, IdHandler idHandler) {
@@ -279,7 +279,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	 * @param commitUserData
 	 * @return CommitInfo
 	 */
-	protected abstract CommitInfo createCommitInfo(List<CommitObject<OntologyTerm>> terms,
+	protected abstract CommitInfo createCommitInfo(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			String termgenieUser,
 			CommitUserData commitUserData);

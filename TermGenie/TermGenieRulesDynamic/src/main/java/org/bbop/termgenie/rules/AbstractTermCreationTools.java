@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -299,7 +299,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return new TermGenerationOutput(null, input, false, message);
 	}
 
-	protected TermGenerationOutput success(OntologyTerm term, TermGenerationInput input) {
+	protected TermGenerationOutput success(OntologyTerm<Synonym, IRelation> term, TermGenerationInput input) {
 		return new TermGenerationOutput(term, input, true, null);
 	}
 	

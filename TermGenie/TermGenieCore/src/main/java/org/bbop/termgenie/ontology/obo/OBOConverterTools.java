@@ -6,17 +6,71 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
+import owltools.graph.OWLGraphWrapper.ISynonym;
+
 public class OBOConverterTools {
 
+	public static void fillOBO(Frame frame, OntologyTerm<? extends ISynonym, ? extends IRelation> term) {
+		String id = term.getId();
+		frame.addClause(new Clause(OboFormatTag.TAG_ID.getTag(), id));
+		frame.addClause(new Clause(OboFormatTag.TAG_NAME.getTag(), term.getLabel()));
+		String definition = term.getDefinition();
+		if (definition != null) {
+			Clause cl = new Clause(OboFormatTag.TAG_DEF.getTag(), definition);
+			List<String> defXRef = term.getDefXRef();
+			if (defXRef != null && !defXRef.isEmpty()) {
+				for (String xref : defXRef) {
+					cl.addXref(new Xref(xref));
+				}
+			}
+			frame.addClause(cl);
+		}
+		Map<String, String> metaData = term.getMetaData();
+		if (metaData != null && !metaData.isEmpty()) {
+			for (Entry<String, String> entry : metaData.entrySet()) {
+				frame.addClause(new Clause(entry.getKey(), entry.getValue()));
+			}
+		}
+		fillSynonyms(frame, term.getSynonyms());
+		fillRelations(frame, term.getRelations(), id);
+	}
+
+	public static void fillSynonyms(Frame frame, List<? extends ISynonym> synonyms) {
+		if (synonyms != null && !synonyms.isEmpty()) {
+			for (ISynonym termSynonym : synonyms) {
+				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM.getTag(), termSynonym.getLabel());
+				Set<String> defXRef = termSynonym.getXrefs();
+				if (defXRef != null && !defXRef.isEmpty()) {
+					for (String xref : defXRef) {
+						cl.addXref(new Xref(xref));
+					}
+				}
+				String scope = termSynonym.getScope();
+				if (scope != null) {
+					cl.addValue(scope);
+				}
+				String category = termSynonym.getCategory();
+				if (category != null) {
+					cl.addValue(category);
+				}
+				frame.addClause(cl);
+			}
+		}
+	}
+	
 	public static void fillRelations(Frame frame, List<? extends IRelation> relations, String id) {
 		if (relations != null && !relations.isEmpty()) {
 			for (IRelation relation : relations) {

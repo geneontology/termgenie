@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
@@ -366,14 +367,15 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new String[] {};
 		}
 
-		private OntologyTerm[] getTerms(JsonTermGenerationParameter json, int pos) {
+		@SuppressWarnings("unchecked")
+		private OntologyTerm<Synonym, IRelation>[] getTerms(JsonTermGenerationParameter json, int pos) {
 			JsonOntologyTermIdentifier[][] allTerms = json.getTerms();
 			if (allTerms.length > pos) {
 				JsonOntologyTermIdentifier[] jsonTerms = allTerms[pos];
 				if (jsonTerms.length > 0) {
-					List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
+					List<OntologyTerm<Synonym, IRelation>> terms = new ArrayList<OntologyTerm<Synonym, IRelation>>();
 					for (int i = 0; i < jsonTerms.length; i++) {
-						OntologyTerm term = getOntologyTerm(jsonTerms[i]);
+						OntologyTerm<Synonym, IRelation> term = getOntologyTerm(jsonTerms[i]);
 						terms.add(term);
 					}
 					return terms.toArray(new OntologyTerm[terms.size()]);
@@ -382,7 +384,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new OntologyTerm[] {};
 		}
 
-		private OntologyTerm getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
+		private OntologyTerm<Synonym, IRelation> getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
 			String ontologyName = jsonOntologyTerm.getOntology();
 			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
 			OntologyTermTask task = new OntologyTermTask(jsonOntologyTerm.getTermId());
@@ -394,7 +396,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private static class OntologyTermTask implements OntologyTask {
 
 		private final String id;
-		private OntologyTerm term = null;
+		private OntologyTerm<Synonym, IRelation> term = null;
 
 		OntologyTermTask(String id) {
 			this.id = id;
@@ -442,11 +444,11 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					}
 				}
 			}
-			term = new OntologyTerm.DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
+			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
 			return Modified.no;
 		}
 
-		OntologyTerm getTerm() {
+		OntologyTerm<Synonym, IRelation> getTerm() {
 			return term;
 		}
 

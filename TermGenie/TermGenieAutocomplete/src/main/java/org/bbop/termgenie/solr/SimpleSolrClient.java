@@ -13,9 +13,13 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.index.AutoCompletionTools;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class SimpleSolrClient implements OntologyTermSuggestor {
 
@@ -51,14 +55,14 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 	}
 
 	@Override
-	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<OntologyTerm<Synonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if ("GeneOntology".equals(ontology.getUniqueName())) {
 			return searchGeneOntologyTerms(query, ontology.getBranch(), maxCount);
 		}
 		return null;
 	}
 
-	protected List<OntologyTerm> searchGeneOntologyTerms(String query, String branch, int maxCount)
+	protected List<OntologyTerm<Synonym, IRelation>> searchGeneOntologyTerms(String query, String branch, int maxCount)
 	{
 		CommonsHttpSolrServer server = SolrClientFactory.getServer(baseUrl);
 		// escape query string of solr/lucene query syntax and create query
@@ -83,9 +87,9 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 					solrDocuments = solrDocuments.subList(0, maxCount);
 				}
 			}
-			List<OntologyTerm> terms = new ArrayList<OntologyTerm>(solrDocuments.size());
+			List<OntologyTerm<Synonym, IRelation>> terms = new ArrayList<OntologyTerm<Synonym, IRelation>>(solrDocuments.size());
 			for (SolrDocument solrDocument : solrDocuments) {
-				OntologyTerm term = getOntologyTerm(solrDocument);
+				OntologyTerm<Synonym, IRelation> term = getOntologyTerm(solrDocument);
 				if (term != null) {
 					terms.add(term);
 				}
@@ -146,12 +150,12 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		return results;
 	}
 
-	static OntologyTerm getOntologyTerm(SolrDocument solrDocument) {
+	static OntologyTerm<Synonym, IRelation> getOntologyTerm(SolrDocument solrDocument) {
 		final String id = solrDocument.getFieldValue("id").toString();
 		final String label = solrDocument.getFieldValue("label").toString();
 		Object descObj = solrDocument.getFieldValue("description");
 		final String def = descObj != null ? descObj.toString() : null;
-		return new OntologyTerm.DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String> emptyMap(), null);
+		return new DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String> emptyMap(), null);
 	}
 
 	/**
@@ -160,13 +164,13 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		SimpleSolrClient client = new SimpleSolrClient();
-		List<OntologyTerm> terms = client.searchGeneOntologyTerms("pig", "biological_process", 10);
-		for (OntologyTerm term : terms) {
+		List<OntologyTerm<Synonym, IRelation>> terms = client.searchGeneOntologyTerms("pig", "biological_process", 10);
+		for (OntologyTerm<Synonym, IRelation> term : terms) {
 			System.out.println(term);
 		}
 		System.out.println("-----------------------------");
-		List<OntologyTerm> terms2 = client.searchGeneOntologyTerms("pigm", null, 10);
-		for (OntologyTerm term : terms2) {
+		List<OntologyTerm<Synonym, IRelation>> terms2 = client.searchGeneOntologyTerms("pigm", null, 10);
+		for (OntologyTerm<Synonym, IRelation> term : terms2) {
 			System.out.println(term);
 		}
 	}

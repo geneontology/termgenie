@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
@@ -90,20 +91,20 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 		return null;
 	}
 
-	private OntologyTerm getFieldSingleTerm(String name) {
-		OntologyTerm[] terms = getFieldTerms(name);
+	private OntologyTerm<Synonym, IRelation> getFieldSingleTerm(String name) {
+		OntologyTerm<Synonym, IRelation>[] terms = getFieldTerms(name);
 		if (terms == null || terms.length < 1) {
 			return null;
 		}
 		return terms[0];
 	}
 
-	private OntologyTerm[] getFieldTerms(String name) {
+	private OntologyTerm<Synonym, IRelation>[] getFieldTerms(String name) {
 		int pos = tools.getFieldPos(name);
 		if (pos < 0) {
 			return null;
 		}
-		OntologyTerm[][] matrix = tools.input.getParameters().getTerms();
+		OntologyTerm<Synonym, IRelation>[][] matrix = tools.input.getParameters().getTerms();
 		if (matrix.length <= pos) {
 			return null;
 		}
@@ -112,12 +113,12 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 
 	@Override
 	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology) {
-		OntologyTerm[] terms = getFieldTerms(name);
+		OntologyTerm<Synonym, IRelation>[] terms = getFieldTerms(name);
 		if (terms == null || terms.length == 0) {
 			return new OWLObject[0];
 		}
 		List<OWLObject> result = new ArrayList<OWLObject>();
-		for (OntologyTerm term : terms) {
+		for (OntologyTerm<Synonym, IRelation> term : terms) {
 			if (term != null) {
 				OWLObject x = getTermSimple(term.getId(), ontology);
 				if (x != null) {

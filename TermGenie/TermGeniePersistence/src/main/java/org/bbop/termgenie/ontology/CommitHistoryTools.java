@@ -22,7 +22,7 @@ public class CommitHistoryTools {
 	}
 
 	public static CommitHistoryItem add(CommitHistory history,
-			List<CommitObject<OntologyTerm>> terms,
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			String user,
 			Date date)
@@ -45,7 +45,7 @@ public class CommitHistoryTools {
 		return item;
 	}
 
-	public static CommitHistory create(List<CommitObject<OntologyTerm>> terms,
+	public static CommitHistory create(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			String user,
 			Date date)
@@ -68,12 +68,12 @@ public class CommitHistoryTools {
 
 	}
 
-	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm>> terms)
+	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms)
 	{
 		List<CommitedOntologyTerm> result = null;
 		if (terms != null && !terms.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTerm>(terms.size());
-			for (CommitObject<OntologyTerm> commitObject : terms) {
+			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
 				CommitedOntologyTerm term = new CommitedOntologyTerm();
 
 				term.setId(commitObject.getObject().getId());

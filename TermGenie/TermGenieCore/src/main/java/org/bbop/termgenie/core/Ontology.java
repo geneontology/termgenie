@@ -57,25 +57,28 @@ public class Ontology {
 		this.dlQuery = dlQuery;
 	}
 
+	public static interface OntologyTerm<SynonymType, R extends IRelation> {
+		
+		public String getId();
+
+		public String getLabel();
+
+		public String getDefinition();
+
+		public List<SynonymType> getSynonyms();
+
+		public List<String> getDefXRef();
+
+		public List<R> getRelations();
+
+		public Map<String, String> getMetaData();
+	}
+	
 	/**
 	 * Wrapper of an ontology term. Intended to be used during rule-based term
 	 * generation.
 	 */
-	public abstract static class OntologyTerm {
-
-		public abstract String getId();
-
-		public abstract String getLabel();
-
-		public abstract String getDefinition();
-
-		public abstract List<Synonym> getSynonyms();
-
-		public abstract List<String> getDefXRef();
-
-		public abstract List<IRelation> getRelations();
-
-		public abstract Map<String, String> getMetaData();
+	public abstract static class AbstractOntologyTerm implements OntologyTerm<Synonym, IRelation> {
 
 		@Override
 		public String toString() {
@@ -119,7 +122,7 @@ public class Ontology {
 			return builder.toString();
 		}
 
-		public static class DefaultOntologyTerm extends OntologyTerm {
+		public static class DefaultOntologyTerm extends AbstractOntologyTerm {
 
 			private final String id;
 			private final String label;

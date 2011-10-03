@@ -8,10 +8,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
  * Term suggestor using only an in-memory lucene index.
@@ -69,7 +72,7 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 	}
 
 	@Override
-	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<OntologyTerm<Synonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
 		BasicLuceneClient index = luceneIndices.get(ontology.getUniqueName());
 		if (index != null) {
 			return index.suggestTerms(query, ontology, maxCount);

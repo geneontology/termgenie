@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
@@ -186,13 +188,13 @@ public class BasicLuceneClient implements
 	}
 
 	@Override
-	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<OntologyTerm<Synonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if (this.name.equals(ontology.getUniqueName())) {
 			Collection<SearchResult> searchResults = index.search(query,
 					maxCount,
 					ontology.getBranch());
 			if (searchResults != null && !searchResults.isEmpty()) {
-				List<OntologyTerm> suggestions = new ArrayList<OntologyTerm>(searchResults.size());
+				List<OntologyTerm<Synonym, IRelation>> suggestions = new ArrayList<OntologyTerm<Synonym, IRelation>>(searchResults.size());
 				for (SearchResult searchResult : searchResults) {
 					suggestions.add(createTerm(searchResult.hit));
 				}
@@ -202,12 +204,12 @@ public class BasicLuceneClient implements
 		return null;
 	}
 
-	private OntologyTerm createTerm(OWLObject hit) {
+	private OntologyTerm<Synonym, IRelation> createTerm(OWLObject hit) {
 		final String identifier = ontology.getIdentifier(hit);
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
 		List<Synonym> synonyms = ontology.getOBOSynonyms(hit);
-		OntologyTerm term = new OntologyTerm.DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
+		OntologyTerm<Synonym, IRelation> term = new DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
 		return term;
 	}
 

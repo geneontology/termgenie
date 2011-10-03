@@ -7,11 +7,14 @@ import java.util.List;
 
 import org.apache.solr.common.SolrDocument;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.index.AutoCompletionTools;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
  * Tests for {@link SimpleSolrClient}.
@@ -33,7 +36,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	public void testSuggestTerms() {
 		String query = "pig";
 		int maxCount = 10;
-		List<OntologyTerm> terms = client.suggestTerms(query, go, maxCount);
+		List<OntologyTerm<Synonym, IRelation>> terms = client.suggestTerms(query, go, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
@@ -49,7 +52,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 		String query = "nucl";
 		String branch = "cellular_component";
 		int maxCount = 5;
-		List<OntologyTerm> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
+		List<OntologyTerm<Synonym, IRelation>> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
 		assertEquals(maxCount, terms.size());
 		assertEquals("nucleus", terms.get(0).getLabel());
 	}

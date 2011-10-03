@@ -12,9 +12,10 @@ import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.PersistentMap;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 
 @Entity
-public class CommitedOntologyTerm {
+public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSynonym, CommitedOntologyTermRelation> {
 
 	private int uuid;
 	private String id;
@@ -46,6 +47,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the id
 	 */
+	@Override
 	@Column
 	@Basic(optional = false)
 	public String getId() {
@@ -62,6 +64,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the label
 	 */
+	@Override
 	@Column
 	@Basic(optional = false)
 	public String getLabel() {
@@ -78,6 +81,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the definition
 	 */
+	@Override
 	@Column
 	@Basic
 	public String getDefinition() {
@@ -94,6 +98,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the synonyms
 	 */
+	@Override
 	@PersistentCollection
 	public List<CommitedOntologyTermSynonym> getSynonyms() {
 		return synonyms;
@@ -109,6 +114,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the defXRef
 	 */
+	@Override
 	@PersistentCollection
 	public List<String> getDefXRef() {
 		return defXRef;
@@ -124,6 +130,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the relations
 	 */
+	@Override
 	@PersistentCollection
 	public List<CommitedOntologyTermRelation> getRelations() {
 		return relations;
@@ -139,6 +146,7 @@ public class CommitedOntologyTerm {
 	/**
 	 * @return the metaData
 	 */
+	@Override
 	@PersistentMap
 	public Map<String, String> getMetaData() {
 		return metaData;

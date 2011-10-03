@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class HybridLuceneSolrClient extends SimpleSolrClient {
 
@@ -57,7 +60,7 @@ public class HybridLuceneSolrClient extends SimpleSolrClient {
 	}
 
 	@Override
-	public List<OntologyTerm> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<OntologyTerm<Synonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if ("GeneOntology".equals(ontology.getUniqueName())) {
 			return searchGeneOntologyTerms(query, ontology.getBranch(), maxCount);
 		}

@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public interface TermGenerationEngine {
 
@@ -86,7 +89,7 @@ public interface TermGenerationEngine {
 
 	public class TermGenerationOutput {
 
-		private final OntologyTerm term;
+		private final OntologyTerm<Synonym, IRelation> term;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
@@ -97,7 +100,7 @@ public interface TermGenerationEngine {
 		 * @param success
 		 * @param message
 		 */
-		public TermGenerationOutput(OntologyTerm term,
+		public TermGenerationOutput(OntologyTerm<Synonym, IRelation> term,
 				TermGenerationInput input,
 				boolean success,
 				String message)
@@ -112,7 +115,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the term
 		 */
-		public OntologyTerm getTerm() {
+		public OntologyTerm<Synonym, IRelation> getTerm() {
 			return term;
 		}
 
@@ -166,14 +169,14 @@ public interface TermGenerationEngine {
 
 	public final class TermGenerationParameters {
 
-		private final OntologyTerm[][] terms;
+		private final OntologyTerm<Synonym, IRelation>[][] terms;
 		private final String[][] strings;
 
 		/**
 		 * @param terms
 		 * @param strings
 		 */
-		public TermGenerationParameters(OntologyTerm[][] terms, String[][] strings) {
+		public TermGenerationParameters(OntologyTerm<Synonym, IRelation>[][] terms, String[][] strings) {
 			super();
 			this.terms = terms;
 			this.strings = strings;
@@ -182,6 +185,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @param fieldCount
 		 */
+		@SuppressWarnings("unchecked")
 		public TermGenerationParameters(int fieldCount) {
 			this(new OntologyTerm[fieldCount][], new String[fieldCount][]);
 		}
@@ -189,7 +193,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the terms
 		 */
-		public OntologyTerm[][] getTerms() {
+		public OntologyTerm<Synonym, IRelation>[][] getTerms() {
 			return terms;
 		}
 
@@ -223,7 +227,7 @@ public interface TermGenerationEngine {
 		 * @param field
 		 * @param values
 		 */
-		public void setTermValues(TermTemplate template, String field, OntologyTerm...values) {
+		public void setTermValues(TermTemplate template, String field, OntologyTerm<Synonym, IRelation>...values) {
 			setValues(terms, template, field, values);
 		}
 
@@ -232,7 +236,7 @@ public interface TermGenerationEngine {
 		 * @param pos
 		 * @param values
 		 */
-		public void setTermValues(TermTemplate template, int pos, OntologyTerm...values) {
+		public void setTermValues(TermTemplate template, int pos, OntologyTerm<Synonym, IRelation>...values) {
 			setValues(terms, template, pos, values);
 		}
 

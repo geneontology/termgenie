@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.OntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -57,6 +57,7 @@ public class TermGenieScriptTestRunner {
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test1() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
@@ -84,7 +85,7 @@ public class TermGenieScriptTestRunner {
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getLabel());
 	}
 
-	private OntologyTerm getTerm(String id, OntologyTaskManager ontologyManager) {
+	private OntologyTerm<Synonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager) {
 		OntologyTaskImplementation task = new OntologyTaskImplementation(id);
 		ontologyManager.runManagedTask(task);
 		return task.term;

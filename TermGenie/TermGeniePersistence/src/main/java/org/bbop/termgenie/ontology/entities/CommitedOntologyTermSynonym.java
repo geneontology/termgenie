@@ -11,8 +11,10 @@ import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
 
+import owltools.graph.OWLGraphWrapper.ISynonym;
+
 @Entity
-public class CommitedOntologyTermSynonym {
+public class CommitedOntologyTermSynonym implements ISynonym {
 
 	private int id;
 	private String label;
@@ -39,6 +41,7 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the label
 	 */
+	@Override
 	@Column
 	@Basic(optional = false)
 	public String getLabel() {
@@ -55,6 +58,7 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the scope
 	 */
+	@Override
 	@Column
 	@Basic(optional = true)
 	public String getScope() {
@@ -71,6 +75,7 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the category
 	 */
+	@Override
 	@Column
 	@Basic(optional = true)
 	public String getCategory() {
@@ -87,6 +92,7 @@ public class CommitedOntologyTermSynonym {
 	/**
 	 * @return the xrefs
 	 */
+	@Override
 	@PersistentCollection
 	public Set<String> getXrefs() {
 		return xrefs;
