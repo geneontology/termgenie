@@ -86,97 +86,10 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
 		List<CommitObject<Relation>> relations = commitInfo.getRelations();
 
-		CVSTools cvs = null;
-		
-		final WorkFolders workFolders = createTempDir();  
+		final WorkFolders workFolders = createTempDir();
+
 		try {
-			final File cvsFolder;
-			try {
-				cvsFolder = new File(workFolders.workFolder, "cvs");
-				FileUtils.forceMkdir(cvsFolder);
-			} catch (IOException exception) {
-				String message = "Could not create working directories for the commit";
-				throw error(message, exception, true);
-			}
-			
-			cvs = createCVS(commitInfo, cvsFolder);
-			
-			final File oboFolder;
-			try {
-				oboFolder = new File(workFolders.workFolder, "obo");
-				FileUtils.forceMkdir(oboFolder);
-			} catch (IOException exception) {
-				String message = "Could not create working directories for the commit";
-				throw error(message, exception, true);
-			}
-			
-			try {
-				// cvs checkout
-				cvs.connect();
-				cvs.checkout(cvsOntologyFileName);
-			} catch (IOException exception) {
-				String message = "Could not checkout recent copy of the ontology";
-				throw error(message, exception, true);
-			}
-			finally {
-				try {
-					cvs.close();
-				} catch (IOException exception) {
-					Logger.getLogger(getClass()).error("Could not close CVS tool.", exception);
-				}
-			}
-			
-			final File cvsFile = new File(cvsFolder, cvsOntologyFileName);
-			OWLGraphWrapper ontology = loadOntology(cvsFile);
-
-			final OBODoc oboDoc = createOBODoc(ontology);
-			if (terms != null && !terms.isEmpty()) {
-				for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
-					ComitAwareOBOConverterTools.handleTerm(commitObject.getObject(), commitObject.getType(), oboDoc);
-				}
-			}
-			if (relations != null && !relations.isEmpty()) {
-				for (CommitObject<Relation> commitObject : relations) {
-					ComitAwareOBOConverterTools.handleRelation(commitObject.getObject(), commitObject.getType(), oboDoc);
-				}
-			}
-
-			final File oboFile = createOBOFile(oboFolder, oboDoc);
-			
-			CommitHistory history;
-			CommitHistoryItem historyItem;
-			try {
-				// add terms to local commit log
-				history = store.loadAll(source.getUniqueName());
-				Date date = new Date();
-				String user = commitInfo.getUsername();
-				if (history == null) {
-					history = CommitHistoryTools.create(terms, relations, user, date);
-					historyItem = history.getItems().get(0);
-				}
-				else {
-					historyItem = CommitHistoryTools.add(history, terms, relations, user, date);
-				}
-				store.store(history);
-			} catch (CommitHistoryStoreException exception) {
-				String message = "Problems handling commit history for ontology: "+ontology;
-				throw error(message, exception, true);
-			}
-			
-			// get diff from the two files
-			String cvsDiff = createUnifiedDiff(cvsFile, oboFile, cvsOntologyFileName, "termgenie-changes");
-			
-			commitToRepository(commitInfo, cvs, cvsFile, oboFile, cvsDiff);
-
-			try {
-				// set terms in commit log as committed
-				historyItem.setCommitted(true);
-				store.store(history);
-			} catch (CommitHistoryStoreException exception) {
-				String message = "Problems handling commit history for ontology: "+ontology;
-				throw error(message, exception, false);
-			}
-			return new CommitResult(true, cvsDiff);
+			return commitInternal(commitInfo, terms, relations, workFolders);
 		}
 		finally {
 			FileUtils.deleteQuietly(workFolders.workFolder);
@@ -184,29 +97,20 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		}
 	}
 
-	protected abstract void commitToRepository(CommitInfo commitInfo,
-			CVSTools cvs,
-			File cvsFile,
-			File oboFile,
-			String cvsDiff) throws CommitException;
+	private static class WorkFolders {
 
-	private String createUnifiedDiff(File originalFile, File revisedFile, String originalName, String revisedName) throws CommitException {
-		try {
-			List<String> originalLines = FileUtils.readLines(originalFile);
-			List<String> revisedLines = FileUtils.readLines(revisedFile);
-			Patch patch = DiffUtils.diff(originalLines, revisedLines);
-			if (patch != null) {
-				List<String> diff = DiffUtils.generateUnifiedDiff(originalName, revisedName, originalLines, patch, 0);
-				StringBuilder sb = new StringBuilder();
-				for (String line : diff) {
-					sb.append(line).append('\n');
-				}
-				return sb.toString();
-			}
-		} catch (IOException exception) {
-			throw error("Could not create diff for commit.", exception, true);
+		private final File lockFile;
+		private final File workFolder;
+
+		/**
+		 * @param lockFile
+		 * @param workFolder
+		 */
+		WorkFolders(File lockFile, File workFolder) {
+			super();
+			this.lockFile = lockFile;
+			this.workFolder = workFolder;
 		}
-		return null;
 	}
 
 	private WorkFolders createTempDir() throws CommitException {
@@ -214,7 +118,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		File workFolder = null;
 		try {
 			String suffix = ".lock";
-			tempFile = File.createTempFile(source.getUniqueName()+"commit-", suffix);
+			tempFile = File.createTempFile(source.getUniqueName() + "commit-", suffix);
 			String tempFolderName = tempFile.getName().replace(suffix, "-folder");
 			workFolder = new File(tempFile.getParentFile(), tempFolderName);
 			FileUtils.forceMkdir(workFolder);
@@ -229,20 +133,187 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			throw error("Could not create temporary work dir.", exception, true);
 		}
 	}
+
+	private CommitResult commitInternal(CommitInfo commitInfo,
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+			List<CommitObject<Relation>> relations,
+			final WorkFolders workFolders) throws CommitException
+	{
+		final File cvsFolder = createCVSFolder(workFolders);
+		final CVSTools cvs = createCVS(commitInfo, cvsFolder);
+		final File oboFolder = createOBOFolder(workFolders);
+
+		cvsCheckout(cvs);
+
+		final File cvsFile = new File(cvsFolder, cvsOntologyFileName);
+		OWLGraphWrapper ontology = loadOntology(cvsFile);
+
+		final OBODoc oboDoc = createOBODoc(ontology);
+		applyChanges(terms, relations, oboDoc);
+
+		final File oboFile = createOBOFile(oboFolder, oboDoc);
+
+		final CommitHistoryData commitHistoryData = updateCommitHistory(commitInfo,
+				terms,
+				relations,
+				ontology);
+
+		// get diff from the two files
+		String cvsDiff = createUnifiedDiff(cvsFile,
+				oboFile,
+				cvsOntologyFileName,
+				"termgenie-changes");
+
+		commitToRepository(commitInfo, cvs, cvsFile, oboFile, cvsDiff);
+
+		finalizeCommitHistory(ontology, commitHistoryData);
+		return new CommitResult(true, cvsDiff);
+	}
+
+	protected File createCVSFolder(final WorkFolders workFolders) throws CommitException {
+		final File cvsFolder;
+		try {
+			cvsFolder = new File(workFolders.workFolder, "cvs");
+			FileUtils.forceMkdir(cvsFolder);
+		} catch (IOException exception) {
+			String message = "Could not create working directories for the commit";
+			throw error(message, exception, true);
+		}
+		return cvsFolder;
+	}
+
+	protected File createOBOFolder(final WorkFolders workFolders) throws CommitException {
+		final File oboFolder;
+		try {
+			oboFolder = new File(workFolders.workFolder, "obo");
+			FileUtils.forceMkdir(oboFolder);
+		} catch (IOException exception) {
+			String message = "Could not create working directories for the commit";
+			throw error(message, exception, true);
+		}
+		return oboFolder;
+	}
+
+	protected void cvsCheckout(CVSTools cvs) throws CommitException {
+		try {
+			// cvs checkout
+			cvs.connect();
+			cvs.checkout(cvsOntologyFileName);
+		} catch (IOException exception) {
+			String message = "Could not checkout recent copy of the ontology";
+			throw error(message, exception, true);
+		}
+		finally {
+			try {
+				cvs.close();
+			} catch (IOException exception) {
+				Logger.getLogger(getClass()).error("Could not close CVS tool.", exception);
+			}
+		}
+	}
+
+	protected void applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+			List<CommitObject<Relation>> relations,
+			final OBODoc oboDoc)
+	{
+		if (terms != null && !terms.isEmpty()) {
+			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
+				ComitAwareOBOConverterTools.handleTerm(commitObject.getObject(),
+						commitObject.getType(),
+						oboDoc);
+			}
+		}
+		if (relations != null && !relations.isEmpty()) {
+			for (CommitObject<Relation> commitObject : relations) {
+				ComitAwareOBOConverterTools.handleRelation(commitObject.getObject(),
+						commitObject.getType(),
+						oboDoc);
+			}
+		}
+	}
+
+	protected CommitHistoryData updateCommitHistory(CommitInfo commitInfo,
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+			List<CommitObject<Relation>> relations,
+			OWLGraphWrapper ontology) throws CommitException
+	{
+		final CommitHistoryData commitHistoryData;
+		try {
+			// add terms to local commit log
+			CommitHistory history = store.loadAll(source.getUniqueName());
+			Date date = new Date();
+			String user = commitInfo.getUsername();
+			CommitHistoryItem historyItem;
+			if (history == null) {
+				history = CommitHistoryTools.create(terms, relations, user, date);
+				historyItem = history.getItems().get(0);
+			}
+			else {
+				historyItem = CommitHistoryTools.add(history, terms, relations, user, date);
+			}
+			store.store(history);
+			commitHistoryData = new CommitHistoryData(history, historyItem);
+		} catch (CommitHistoryStoreException exception) {
+			String message = "Problems handling commit history for ontology: " + ontology;
+			throw error(message, exception, true);
+		}
+		return commitHistoryData;
+	}
+
+	private static class CommitHistoryData {
 	
-	private static class WorkFolders {
-		
-		private final File lockFile;
-		private final File workFolder;
-		
-		/**
-		 * @param lockFile
-		 * @param workFolder
-		 */
-		WorkFolders(File lockFile, File workFolder) {
-			super();
-			this.lockFile = lockFile;
-			this.workFolder = workFolder;
+		CommitHistory history;
+		CommitHistoryItem historyItem;
+	
+		CommitHistoryData(CommitHistory history, CommitHistoryItem historyItem) {
+			this.history = history;
+			this.historyItem = historyItem;
+		}
+	}
+
+	protected abstract void commitToRepository(CommitInfo commitInfo,
+			CVSTools cvs,
+			File cvsFile,
+			File oboFile,
+			String cvsDiff) throws CommitException;
+
+	private String createUnifiedDiff(File originalFile,
+			File revisedFile,
+			String originalName,
+			String revisedName) throws CommitException
+	{
+		try {
+			List<String> originalLines = FileUtils.readLines(originalFile);
+			List<String> revisedLines = FileUtils.readLines(revisedFile);
+			Patch patch = DiffUtils.diff(originalLines, revisedLines);
+			if (patch != null) {
+				List<String> diff = DiffUtils.generateUnifiedDiff(originalName,
+						revisedName,
+						originalLines,
+						patch,
+						0);
+				StringBuilder sb = new StringBuilder();
+				for (String line : diff) {
+					sb.append(line).append('\n');
+				}
+				return sb.toString();
+			}
+		} catch (IOException exception) {
+			throw error("Could not create diff for commit.", exception, true);
+		}
+		return null;
+	}
+
+	protected void finalizeCommitHistory(OWLGraphWrapper ontology,
+			CommitHistoryData commitHistoryData) throws CommitException
+	{
+		try {
+			// set terms in commit log as committed
+			commitHistoryData.historyItem.setCommitted(true);
+			store.store(commitHistoryData.history);
+		} catch (CommitHistoryStoreException exception) {
+			String message = "Problems handling commit history for ontology: " + ontology;
+			throw error(message, exception, false);
 		}
 	}
 
@@ -255,7 +326,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			throw new CommitException(message, exception, true);
 		}
 	}
-	
+
 	private OBODoc createOBODoc(OWLGraphWrapper ontology) throws CommitException {
 		try {
 			// write OBO file to temp
@@ -273,8 +344,8 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		try {
 			// write OBO file to temp
 			OBOFormatWriter writer = new OBOFormatWriter();
-			
-			oboFile = new File(oboFolder, source.getUniqueName()+".obo");
+
+			oboFile = new File(oboFolder, source.getUniqueName() + ".obo");
 			writer.write(oboDoc, new BufferedWriter(new FileWriter(oboFile)));
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
@@ -314,7 +385,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			return getResource(ontology);
 		}
 	}
-	
+
 	protected CommitException error(String message, Throwable exception, boolean rollback) {
 		Logger.getLogger(getClass()).warn(message, exception);
 		return new CommitException(message, exception, rollback);
