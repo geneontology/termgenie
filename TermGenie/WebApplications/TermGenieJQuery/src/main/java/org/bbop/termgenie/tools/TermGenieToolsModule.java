@@ -27,9 +27,4 @@ public class TermGenieToolsModule extends IOCModule {
 		return new OntologyTools(engine, loader, configuration);
 	}
 
-	@Provides
-	@Singleton
-	UserCredentialValidatorTools provideUserCredentialValidatorTools() {
-		return new UserCredentialValidatorTools();
-	}
 }
