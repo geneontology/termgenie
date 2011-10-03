@@ -66,7 +66,7 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 						}
 					}
 					else {
-						return new UserData("BrowserID could not be verified: "+ details.reason); 
+						return new UserData("BrowserID could not be verified status: "+details.status+" reason: "+ details.reason); 
 					}
 				}
 			}
