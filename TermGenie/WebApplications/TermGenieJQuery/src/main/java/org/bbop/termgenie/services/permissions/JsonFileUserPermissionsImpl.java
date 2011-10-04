@@ -27,13 +27,13 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		if (!jsonPermissionsFile.isFile() || !jsonPermissionsFile.canRead()) {
 			throw new RuntimeException("Invalid permissions file: "+jsonPermissionsFile);
 		}
-		PermissionsData permissionsData = loadFile();
+		PermissionsData permissionsData = loadFile(jsonPermissionsFile);
 		if (permissionsData == null) {
 			throw new RuntimeException("Empty permissions: "+jsonPermissionsFile);
 		}
 	}
 	
-	PermissionsData loadFile() {
+	static PermissionsData loadFile(File jsonPermissionsFile) {
 		try {
 			String configString = FileUtils.readFileToString(jsonPermissionsFile);
 			PermissionsData permissionsData = PermissionsData.loadFromJson(configString);
@@ -45,7 +45,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public boolean allowCommit(String guid, Ontology ontology) {
-		PermissionsData permissions = loadFile();
+		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
 			if (termgeniePermissions != null) {
@@ -63,7 +63,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public CommitUserData getCommitUserData(String guid, Ontology ontology) {
-		PermissionsData permissions = loadFile();
+		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
 			if (termgeniePermissions != null) {

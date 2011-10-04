@@ -14,10 +14,13 @@ public class PermissionsDataTest {
 	@Test
 	public void testPermissionsDataIO() {
 		PermissionsData data1 = new PermissionsData();
-		PermissionsData.TermGeniePermissions details = new PermissionsData.TermGeniePermissions();
-		details.ontologyPermissions.put("GeneOntology", Collections.singletonMap("allowWrite", "true"));
-		data1.userPermissions.put("user1", Collections.singletonMap("termgenie", details));
-		data1.userPermissions.put("user2", Collections.singletonMap("termgenie", details));
+		PermissionsData.TermGeniePermissions details11 = new PermissionsData.TermGeniePermissions();
+		details11.addPermissions("GeneOntology", "allowWrite", "true");
+		PermissionsData.TermGeniePermissions details12 = new PermissionsData.TermGeniePermissions();
+		details12.addPermissions("test-ontology", "allowWrite", "true");
+		details12.addPermissions("test-ontology", "screenname", "tt_P-:\")(*;");
+		data1.userPermissions.put("user1", Collections.singletonMap("termgenie", details11));
+		data1.userPermissions.put("user2", Collections.singletonMap("termgenie", details12));
 		
 		String json1 = PermissionsData.writeToJson(data1);
 		assertNotNull(json1);
