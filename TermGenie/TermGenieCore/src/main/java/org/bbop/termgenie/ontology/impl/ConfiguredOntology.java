@@ -55,7 +55,7 @@ public class ConfiguredOntology extends Ontology {
 	/**
 	 * @return the supports
 	 */
-	List<String> getSupports() {
+	public List<String> getSupports() {
 		if (supports == null) {
 			return Collections.emptyList();
 		}
@@ -65,7 +65,7 @@ public class ConfiguredOntology extends Ontology {
 	/**
 	 * @return the requires
 	 */
-	public List<String> getRequires() {
+	List<String> getRequires() {
 		if (requires == null) {
 			return Collections.emptyList();
 		}

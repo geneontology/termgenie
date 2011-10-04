@@ -95,7 +95,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			if (missing != null && !missing.isEmpty()) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Configuration error: For template '");
-				sb.append(termTemplate.getDisplayName());
+				sb.append(termTemplate.getName());
 				sb.append("' the following required ontology ");
 				if (missing.size() == 1) {
 					sb.append("file is not configured: ");
@@ -137,10 +137,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		List<String> requires = termTemplate.getRequires();
 		if (requires != null && !requires.isEmpty()) {
 			ConfiguredOntology configuredOntology = ontologyConfiguration.getOntologyConfigurations().get(targetOntology.getUniqueName());
-			List<String> targetRequires = configuredOntology.getRequires();
+			List<String> supports = configuredOntology.getSupports();
 			List<String> missing = new ArrayList<String>();
 			for(String require : requires) {
-				if (!targetRequires.contains(require)) {
+				if (!supports.contains(require)) {
 					missing.add(require);
 				}
 			}
