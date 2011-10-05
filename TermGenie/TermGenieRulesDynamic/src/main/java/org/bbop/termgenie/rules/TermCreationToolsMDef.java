@@ -15,9 +15,11 @@ import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
+import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
@@ -67,7 +69,8 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			}
 			try {
 				OWLClassExpression owlClassExpression = syntaxTool.parseManchesterExpression(expression);
-				owlDataFactory.getOWLEquivalentClassesAxiom(newOwlClass, owlClassExpression);
+				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(newOwlClass, owlClassExpression);
+				changeTracker.apply(new AddAxiom(targetOntology.getSourceOntology(), axiom));
 				
 			} catch (ParserException exception) {
 				throw new RelationCreationException("Could not create OWL class expressions from expression: "+expression, exception);

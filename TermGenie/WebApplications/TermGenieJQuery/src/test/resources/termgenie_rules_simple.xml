@@ -82,20 +82,21 @@ function run() {
 };]]>
 		</rule>
 	</template>
-	<template name="occurs_in">
-		<description>processes occurring in parts of the cell</description>
+	<template name="involved_in">
+		<description>processes involved in other processes</description>
+		<hint>[part] involved in [whole]</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
-			<field name="process" required="true">
+			<field name="part" required="true">
 				<ontology name="GeneOntology">
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="location" required="true">
+			<field name="whole" required="true">
 				<ontology name="GeneOntology">
-					<branch>cellular_component</branch>
+					<branch>biological_process</branch>
 				</ontology>
 			</field>
 			<field name="Name" />
@@ -106,26 +107,27 @@ function run() {
 			<field name="Comment" />
 		</fields>
 		<rule> <![CDATA[
-function run() {
+function run(){
   var go = GeneOntology;
-  var p = termgenie.getSingleTerm("process", go);
-  var c = termgenie.getSingleTerm("location", go);
+  var p = termgenie.getSingleTerm("part", go);
+  var w = termgenie.getSingleTerm("whole", go);
   var check = termgenie.checkGenus(p, "GO:0008150", go);
   if (check.isGenus() !== true) {
     termgenie.error(check.error());
     return;
   }
-  check = termgenie.checkGenus(c, "GO:0005575", go);
+  var check = termgenie.checkGenus(w, "GO:0008150", go);
   if (check.isGenus() !== true) {
     termgenie.error(check.error());
     return;
   }
-  var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
-  var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
-  var cdef = termgenie.cdef(p);
-  cdef.differentium("OBO_REL:occurs_in", c, go);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var label = termgenie.name(p, go) + " involved in " + termgenie.name(w, go);
+  var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
+  var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
+  var mdef = termgenie.createMDef('?P and part_of some ?W');
+  mdef.addParameter('P', p, go)
+  mdef.addParameter('W', w, go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>

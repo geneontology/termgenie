@@ -57,7 +57,8 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		try {
 			Owl2Obo owl2Obo = new Owl2Obo();
 			OBODoc oboDoc = owl2Obo.convert(ontology.getSourceOntology());
-			Frame frame = oboDoc.getTermFrame(id);
+			String frameId = Owl2Obo.getIdentifierFromObject(cls, ontology.getSourceOntology());
+			Frame frame = oboDoc.getTermFrame(frameId);
 			relations = OBOConverterTools.extractRelations(frame, oboDoc);
 			
 		} catch (OWLOntologyCreationException exception) {

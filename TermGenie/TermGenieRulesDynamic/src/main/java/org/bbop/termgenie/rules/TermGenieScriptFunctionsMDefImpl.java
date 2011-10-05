@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -58,6 +62,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			super();
 			this.expression = expression;
 			this.parameters = Collections.synchronizedMap(new HashMap<String, String>());
+			
 		}
 
 		@Override
@@ -67,20 +72,23 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology) {
-			parameters.put(name, ontology.getIdentifier(x));
+			String identifier = ontology.getIdentifier(x);
+			identifier = identifier.replace(':', '_');
+			parameters.put(name, identifier);	
 		}
-
+		
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies) {
+			// find corresponding ontology via label.
 			for (OWLGraphWrapper ontology : ontologies) {
-				String identifier = ontology.getIdentifier(x);
-				if (identifier != null) {
-					parameters.put(name, identifier);
+				String label = ontology.getLabel(x);
+				if (label != null) {
+					addParameter(name, x, ontology);
 					break;
 				}
 			}
 		}
-
+		
 		@Override
 		public String getExpression() {
 			return expression;
@@ -112,8 +120,13 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			List<Synonym> synonyms,
 			MDef[] logicalDefinitions)
 	{
-		List<MDef> logicalDefinitionList = Arrays.asList(logicalDefinitions);
-		tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
+		try {
+			List<MDef> logicalDefinitionList = Arrays.asList(logicalDefinitions);
+			tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
+		} catch (NullPointerException exception) {
+			Logger.getLogger(getClass()).error("NPE", exception);
+			throw exception;
+		}
 	}
 
 }
