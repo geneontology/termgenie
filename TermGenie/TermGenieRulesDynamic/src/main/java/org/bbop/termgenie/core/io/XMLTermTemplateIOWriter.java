@@ -18,6 +18,9 @@ import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
 
+/**
+ * Write term templates into XML format.
+ */
 class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 
 	private final XMLOutputFactory factory;

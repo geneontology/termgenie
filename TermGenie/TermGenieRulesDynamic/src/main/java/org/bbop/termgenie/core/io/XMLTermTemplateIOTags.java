@@ -1,5 +1,8 @@
 package org.bbop.termgenie.core.io;
 
+/**
+ * Tags used in the XML based {@link TermTemplateIO}.
+ */
 interface XMLTermTemplateIOTags {
 
 	static final String TAG_termgenietemplates = "termgenietemplates";

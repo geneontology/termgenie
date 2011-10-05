@@ -224,19 +224,10 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					return modified;
 				}
 
-				boolean isCDef = !usesMDef(script);
-				if (isCDef) {
-					TermGenieScriptFunctionsCDefImpl functionsImpl = new TermGenieScriptFunctionsCDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
-					changeTracker = functionsImpl;
-					run(engine, functionsImpl);
-					result = functionsImpl.getResult();
-				}
-				else {
-					TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
-					changeTracker = functionsImpl;
-					run(engine, functionsImpl);
-					result = functionsImpl.getResult();
-				}
+				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
+				changeTracker = functionsImpl;
+				run(engine, functionsImpl);
+				result = functionsImpl.getResult();
 			} catch (ScriptException exception) {
 				result = createError("Error during script execution:\n" + exception.getMessage());
 				printScript(script);
@@ -268,10 +259,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			engine.eval(script);
 			Invocable invocableEngine = (Invocable) engine;
 			invocableEngine.invokeFunction("run");
-		}
-
-		private boolean usesMDef(String script) {
-			return script.contains("termgenie.createMDef(");
 		}
 
 		protected List<TermGenerationOutput> createError(String message) {

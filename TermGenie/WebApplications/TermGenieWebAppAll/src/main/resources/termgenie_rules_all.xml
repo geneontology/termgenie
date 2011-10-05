@@ -53,27 +53,27 @@ function run() {
     var label = "regulation of "+ termgenie.name(x, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "negative_regulation")) {
     var label = "negative regulation of "+ termgenie.name(x, go);
     var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("negative regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("negatively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and negatively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "positive_regulation")) {
     var label = "positive regulation of "+ termgenie.name(x, go);
     var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("positive regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("positively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and positively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (count === 0) {
@@ -134,27 +134,27 @@ function run() {
     var label = "regulation of "+ termgenie.name(x, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "negative_regulation")) {
     var label = "negative regulation of "+ termgenie.name(x, go);
     var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("negative regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("negatively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and negatively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "positive_regulation")) {
     var label = "positive regulation of "+ termgenie.name(x, go);
     var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("positive regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("positively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and positively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (count === 0) {
@@ -205,9 +205,10 @@ function run(){
   var label = termgenie.name(p, go) + " involved in " + termgenie.name(w, go);
   var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
   var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
-  var cdef = termgenie.cdef(p);
-  cdef.differentium("part_of", w, go);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?P and part_of some ?W');
+  mdef.addParameter('P', p, go);
+  mdef.addParameter('W', w, go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -252,9 +253,10 @@ function run() {
   var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
   var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
   var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
-  var cdef = termgenie.cdef(p);
-  cdef.differentium("OBO_REL:occurs_in", c, go);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?P and OBO_REL:occurs_in some ?C');
+  mdef.addParameter('P', p, go);
+  mdef.addParameter('C', c, go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -316,11 +318,11 @@ function run() {
     
     // intentionally null, as the intended relations do not fit the pattern
     // but the synonyms, might be of some use
-    var cdef = null;
-    // var cdef = termgenie.cdef("GO:0065007");
-    // cdef.differentium("is_a", p, go);
-    // cdef.differentium("is_a", regulator, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = null;
+    // var mdef = termgenie.createMDef('GO_0065007 and is_a some ?P and is_a some ?R');
+    // mdef.addParameter('P', p, go);
+    // mdef.addParameter('P', regulator, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
   };
 };]]>
 		</rule>
@@ -367,9 +369,10 @@ function run() {
   var label = termgenie.name(p, go) + " " + termgenie.name(w, go);
   var definition = "Any "+termgenie.name(p, go)+" that is part of a "+termgenie.name(w, go)+".";
   var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
-  var cdef = termgenie.cdef(p);
-  cdef.differentium("part_of", w, go);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?P and part_of some ?W');
+  mdef.addParameter('P', p, go);
+  mdef.addParameter('W', w, go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -406,9 +409,9 @@ function run() {
   var label = termgenie.name(x, pro) + " binding";
   var definition = "Interacting selectively and non-covalently with  "+termgenie.name(x, pro)+".";
   var synonyms = termgenie.synonyms(null, x, pro, " binding", label);
-  var cdef = termgenie.cdef("GO:0005488");
-  cdef.differentium("OBO_REL:results_in_binding_of", x, pro);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('GO_0005488 and OBO_REL:results_in_binding_of some ?X');
+  mdef.addParameter('X', x, pro);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -447,9 +450,9 @@ function run() {
                    termgenie.refname(x, uberon)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, uberon, " development", label);
-  var cdef = termgenie.cdef("GO:0032502");
-  cdef.differentium("OBO_REL:results_in_complete_development_of", x, uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('GO_0032502 and OBO_REL:results_in_complete_development_of some ?X');
+  mdef.addParameter('X', x, uberon);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -486,9 +489,9 @@ function run() {
   var label = termgenie.name(x, uberon) + " morphogenesis";
   var definition = "The developmental process by which "+termgenie.refname(x, uberon)+" is generated and organized.";
   var synonyms = termgenie.synonyms(null, x, uberon, " morphogenesis", label);
-  var cdef = termgenie.cdef("GO:0009653");
-  cdef.differentium("OBO_REL:results_in_morphogenesis_of", x, uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('GO_0009653 and OBO_REL:results_in_morphogenesis_of some ?X');
+  mdef.addParameter('X', x, uberon);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -527,9 +530,9 @@ function run() {
                    termgenie.refname(x, plant)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, plant, " development", label);
-  var cdef = termgenie.cdef("GO:0032502");
-  cdef.differentium("OBO_REL:results_in_complete_development_of", x, plant);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('GO_0032502 and OBO_REL:results_in_complete_development_of some ?X');
+  mdef.addParameter('X', x, plant);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -566,9 +569,9 @@ function run() {
   var label = termgenie.name(x, plant) + " morphogenesis";
   var definition = "The developmental process by which "+termgenie.refname(x, plant)+" is generated and organized.";
   var synonyms = termgenie.synonyms(null, x, plant, " morphogenesis", label);
-  var cdef = termgenie.cdef("GO:0009653");
-  cdef.differentium("OBO_REL:results_in_morphogenesis_of", x, plant);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('GO_0009653 and OBO_REL:results_in_morphogenesis_of some ?X');
+  mdef.addParameter('X', x, plant);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -599,6 +602,7 @@ function run() {
   var pro = ProteinOntology;
   var terms = getTerms("unit", pro);
   var label = "";
+  var mdefString = 'GO_0043234';
   for(var i=0; i<terms.length; i+= 1) {
     var check = termgenie.checkGenus(terms[i], "PR:000000001", pro);
     if (check.isGenus() !== true) {
@@ -609,13 +613,16 @@ function run() {
       label += "-"
     }
     label += termgenie.name(terms[i]);
+    mdefString += ' and (has_part some ?P )'+i;
   }
   label += " complex";
-  var definition = termgenie.definition("Any protein complex consisting of ",list, pro, ", ",".");
-  var synonyms = termgenie.synonyms(null, list, pro, "-", " complex", label);
-  var cdef = termgenie.cdef("GO:0043234");
-  cdef.differentium("has_part", list, pro);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var definition = termgenie.definition("Any protein complex consisting of ",terms, pro, ", ",".");
+  var synonyms = termgenie.synonyms(null, terms, pro, "-", " complex", label);
+  var mdef = termgenie.createMDef(mdefString);
+  for(i=0; i<terms.length; i+= 1) {
+    mdef.addParameter('P'+i, terms[i], pro);
+  }
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -647,12 +654,12 @@ function run() {
     termgenie.error("The specified term does not correspond to the pattern");
     return;
   }
-  var label = "Abnormal "+termgenie.name(a, FMA) + "  morphology";
+  var label = "Abnormal "+termgenie.name(a, FMA) + " morphology";
   var definition = "Any morphological abnormality of a "+termgenie.name(a, FMA)+".";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef('PATO:0000051', PATO);
-  cdef.differentium("OBO_REL:inheres_in", a, FMA);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('PATO_0000051 and OBO_REL:inheres_in some ?X');
+  mdef.addParameter('X', a, FMA);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -689,11 +696,12 @@ function run() {
     return;
   }
   var label = termgenie.name(q, PATO) + " " + termgenie.name(e, FMA);
-  var definition = "Any "+termgenie.name(e, FMA)+" that is  "+termgenie.name(q, PATO)+".";
+  var definition = "Any "+termgenie.name(e, FMA)+" that is "+termgenie.name(q, PATO)+".";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(q, PATO); // TODO check if this the correct genus
-  cdef.differentium("OBO_REL:inheres_in", e, FMA);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?Q and OBO_REL:inheres_in some ?E');
+  mdef.addParameter('Q', q, PATO);
+  mdef.addParameter('E', e, FMA);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -733,9 +741,10 @@ function run() {
   var label = termgenie.name(q, PATO) + " of " + termgenie.name(e, go);
   var definition = "Any "+termgenie.name(q, PATO)+" of "+termgenie.name(e, go)+".";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(q, PATO);
-  cdef.differentium("OBO_REL:inheres_in", e, go);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?Q and OBO_REL:inheres_in some ?E');
+  mdef.addParameter('Q', q, PATO);
+  mdef.addParameter('E', e, go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -773,9 +782,10 @@ function run() {
   var label = termgenie.name(a, Uberon) + " " + termgenie.name(c, CL);
   var definition = "Any "+termgenie.name(c, CL)+" that is part of a "+termgenie.name(a, Uberon)+".";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(c);
-  cdef.differentium("part_of", a, Uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?C and part_of some ?A');
+  mdef.addParameter('C', c, CL);
+  mdef.addParameter('A', a, Uberon);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -820,11 +830,12 @@ function run() {
   var label = termgenie.name(p, two) + " " + termgenie.name(c, CL);
   var definition = "Any "+termgenie.name(c, CL)+" that has "+termgenie.name(p, two)+" on the plasma membrane.";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(c);
-  cdef.differentium("has_plasma_membrane_part", p, two);
-  cdef.property("multivalued(has_plasma_membrane_part)");
-  cdef.property("any_cardinality(has_plasma_membrane_part)");
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?C and has_plasma_membrane_part some ?P');
+  mdef.addParameter('C', c, CL);
+  mdef.addParameter('P', p, two);
+  // cdef.property("multivalued(has_plasma_membrane_part)");
+  // cdef.property("any_cardinality(has_plasma_membrane_part)");
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -859,9 +870,10 @@ function run() {
   var label = termgenie.name(w, Uberon) + " " + termgenie.name(p, Uberon);
   var definition = "Any "+termgenie.name(p, Uberon)+" that is part of a "+termgenie.name(w, Uberon)+".";
   var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
-  var cdef = termgenie.cdef(p);
-  cdef.differentium("part_of", w, Uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?P and part_of some ?W');
+  mdef.addParameter('P', c, Uberon);
+  mdef.addParameter('W', w, Uberon);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>

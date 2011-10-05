@@ -20,6 +20,9 @@ import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
+/**
+ * Parse term templates from an XML stream.
+ */
 class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 
 	private final Map<String, ConfiguredOntology> configurations;

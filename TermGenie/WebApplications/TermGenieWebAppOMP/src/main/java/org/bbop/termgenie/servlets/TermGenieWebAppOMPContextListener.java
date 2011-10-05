@@ -3,7 +3,7 @@ package org.bbop.termgenie.servlets;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
-import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
+import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 
 public class TermGenieWebAppOMPContextListener extends AbstractTermGenieContextListener {
 
@@ -14,7 +14,7 @@ public class TermGenieWebAppOMPContextListener extends AbstractTermGenieContextL
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new DefaultXMLDynamicRulesModule("termgenie_rules_omp.xml");
+		return new XMLDynamicRulesModule("termgenie_rules_omp.xml");
 	}
 
 	@Override

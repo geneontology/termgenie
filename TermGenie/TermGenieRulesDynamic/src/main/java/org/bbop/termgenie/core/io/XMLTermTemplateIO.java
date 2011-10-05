@@ -11,6 +11,10 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 
 import com.google.inject.Inject;
 
+/**
+ * Read and write TermGenie templates from an XML file. Use the
+ * termgenie_rules.xsd to verify the syntax of the XML file.
+ */
 public class XMLTermTemplateIO implements TermTemplateIO {
 
 	private final XMLTermTemplateIOReader reader;

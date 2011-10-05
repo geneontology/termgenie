@@ -15,7 +15,7 @@ import org.bbop.termgenie.ontology.go.GeneOntologyFileOnlyCommitModule;
 import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
-import org.bbop.termgenie.rules.DefaultXMLDynamicRulesModule;
+import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.GoTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
@@ -48,7 +48,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new DefaultXMLDynamicRulesModule("termgenie_rules_go.xml");
+		return new XMLDynamicRulesModule("termgenie_rules_go.xml");
 	}
 
 	@Override

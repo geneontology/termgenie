@@ -53,27 +53,27 @@ function run() {
     var label = "regulation of "+ termgenie.name(x, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "negative_regulation")) {
     var label = "negative regulation of "+ termgenie.name(x, go);
     var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("negative regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("negatively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and negatively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (termgenie.contains(prefixes, "positive_regulation")) {
     var label = "positive regulation of "+ termgenie.name(x, go);
     var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
     var synonyms = termgenie.synonyms("positive regulation of ", x, go, null, label);
-    var cdef = termgenie.cdef("GO:0065007");
-    cdef.differentium("positively_regulates", x, go);
-    termgenie.createTerm(label, definition, synonyms, cdef);
+    var mdef = termgenie.createMDef('GO_0065007 and positively_regulates some ?X');
+    mdef.addParameter('X', x, go);
+    termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
   }
   if (count === 0) {
@@ -125,7 +125,7 @@ function run(){
   var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
   var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
   var mdef = termgenie.createMDef('?P and part_of some ?W');
-  mdef.addParameter('P', p, go)
+  mdef.addParameter('P', p, go);
   mdef.addParameter('W', w, go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>

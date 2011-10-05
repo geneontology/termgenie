@@ -35,9 +35,10 @@ function run() {
   var label = termgenie.name(a, Uberon) + " " + termgenie.name(c, CL);
   var definition = "Any "+termgenie.name(c, CL)+" that is part of a "+termgenie.name(a, Uberon)+".";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(c);
-  cdef.differentium("part_of", a, Uberon);
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?C and part_of some ?A');
+  mdef.addParameter('C', c, CL);
+  mdef.addParameter('A', a, Uberon);
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
@@ -82,11 +83,12 @@ function run() {
   var label = termgenie.name(p, two) + " " + termgenie.name(c, CL);
   var definition = "Any "+termgenie.name(c, CL)+" that has "+termgenie.name(p, two)+" on the plasma membrane.";
   var synonyms = null; // TODO
-  var cdef = termgenie.cdef(c);
-  cdef.differentium("has_plasma_membrane_part", p, two);
-  cdef.property("multivalued(has_plasma_membrane_part)");
-  cdef.property("any_cardinality(has_plasma_membrane_part)");
-  termgenie.createTerm(label, definition, synonyms, cdef);
+  var mdef = termgenie.createMDef('?C and has_plasma_membrane_part some ?P');
+  mdef.addParameter('C', c, CL);
+  mdef.addParameter('P', p, two);
+  // cdef.property("multivalued(has_plasma_membrane_part)");
+  // cdef.property("any_cardinality(has_plasma_membrane_part)");
+  termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>

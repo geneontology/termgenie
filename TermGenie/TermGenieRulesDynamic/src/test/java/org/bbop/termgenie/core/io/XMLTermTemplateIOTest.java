@@ -27,7 +27,6 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 		super(false);
 	}
 
-	private static FlatFileTermTemplateIO flatfile;
 	private static XMLTermTemplateIO instance;
 
 	@BeforeClass
@@ -40,14 +39,12 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 						bind(TemplateOntologyHelper.class).to(TemplateOntologyHelperImpl.class);
 					}
 				});
-		TemplateOntologyHelper helper = injector.getInstance(TemplateOntologyHelper.class);
-		flatfile = new FlatFileTermTemplateIO(helper);
 		instance = new XMLTermTemplateIO(injector.getInstance(OntologyConfiguration.class));
 	}
 
 	@Test
 	public void testTemplateIO() throws IOException {
-		List<TermTemplate> templates0 = flatfile.readTemplates(loadResource("default_termgenie_rules.txt"));
+		List<TermTemplate> templates0 = instance.readTemplates(loadResource("termgenie_rules_simple.xml"));
 
 		String xmlString1 = write(templates0);
 		List<TermTemplate> templates1 = read(xmlString1);

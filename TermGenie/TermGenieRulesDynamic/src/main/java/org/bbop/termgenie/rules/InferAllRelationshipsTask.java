@@ -27,16 +27,14 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private static final Logger logger = Logger.getLogger(InferAllRelationshipsTask.class);
 	
 	private final OWLGraphWrapper ontology;
-	private final String id;
 	private final OWLClassExpression cls;
 	private final OWLChangeTracker changeTracker;
 	
 	private List<IRelation> relations = Collections.emptyList();
 
-	InferAllRelationshipsTask(OWLGraphWrapper ontology, String id, OWLClassExpression cls, OWLChangeTracker changeTracker) {
+	InferAllRelationshipsTask(OWLGraphWrapper ontology,OWLClassExpression cls, OWLChangeTracker changeTracker) {
 		super();
 		this.ontology = ontology;
-		this.id = id;
 		this.cls = cls;
 		this.changeTracker = changeTracker;
 	}
