@@ -371,6 +371,20 @@ public class Ontology {
 		public static String getRelationShip(Map<String, String> properties) {
 			return properties.get("relationship");
 		}
-		
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("Relation [source=");
+			builder.append(source);
+			builder.append(", target=");
+			builder.append(target);
+			builder.append(", targetLabel=");
+			builder.append(targetLabel);
+			builder.append(", properties=");
+			builder.append(properties);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 }

@@ -80,37 +80,64 @@ public class OBOConverterTools {
 	}
 
 	public static void fillRelation(Frame frame, IRelation relation, String id) {
+		Clause clause = translateRelation(relation, id);
+		if (clause != null) {
+			frame.addClause(clause);
+		}
+	}
+	
+	public static List<Clause> translateRelations(List<IRelation> relations, String id) {
+		List<Clause> result = new ArrayList<Clause>(relations.size());
+		for(IRelation relation : relations) {
+			Clause clause = translateRelation(relation, id);
+			if (clause != null) {
+				result.add(clause);
+			}
+		}
+		return result;
+	}
+	
+	public static Clause translateRelation(IRelation relation, String id) {
+		Clause result = null;
 		if (id == null || id.equals(relation.getSource())) {
 			String target = relation.getTarget();
 			Map<String, String> properties = relation.getProperties();
 			if (properties != null && !properties.isEmpty()) {
 				String type = Relation.getType(properties);
-				Clause cl;
-				if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
-					cl = new Clause(type, target);
-				}
-				else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
-					cl = new Clause(type);
-					String relationShip = Relation.getRelationShip(properties);
-					if (relationShip != null) {
-						cl.addValue(relationShip);
-					}
-					cl.addValue(target);
-				}
-				else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
-					cl = new Clause(type, target);
-				}
-				else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
-					cl = new Clause(type, target);
-				}
-				else {
-					cl = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
-					cl.addValue(type);
-					cl.addValue(target);
-				}
-				frame.addClause(cl);
+				result = createRelationClause(target, properties, type);
 			}
 		}
+		return result;
+	}
+
+	private static Clause createRelationClause(String target,
+			Map<String, String> properties,
+			String type)
+	{
+		Clause cl = null;
+		if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
+			cl = new Clause(type, target);
+		}
+		else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
+			cl = new Clause(type);
+			String relationShip = Relation.getRelationShip(properties);
+			if (relationShip != null) {
+				cl.addValue(relationShip);
+			}
+			cl.addValue(target);
+		}
+		else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
+			cl = new Clause(type, target);
+		}
+		else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
+			cl = new Clause(type, target);
+		}
+		else  if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(type)){
+			cl = new Clause(type);
+			cl.addValue(Relation.getRelationShip(properties));
+			cl.addValue(target);
+		}
+		return cl;
 	}
 	
 	public static List<IRelation> extractRelations(Frame termFrame, OBODoc oboDoc) {
