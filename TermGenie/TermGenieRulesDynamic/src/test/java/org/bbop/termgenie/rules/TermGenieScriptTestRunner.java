@@ -24,8 +24,11 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -85,6 +88,47 @@ public class TermGenieScriptTestRunner {
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getLabel());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
+		TermGenerationParameters parameters = new TermGenerationParameters(termTemplate.getFieldCount());
+
+		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		parameters.setTermValues(termTemplate, 0, getTerm("GO:0046836", ontologyManager)); // glycolipid transport
+		parameters.setTermValues(termTemplate, 1, getTerm("GO:0006915", ontologyManager)); // apoptosis
+		
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+		
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		OntologyTerm<Synonym, IRelation> term = output.getTerm();
+		
+		List<Clause> clauses = OBOConverterTools.translateRelations(term.getRelations(), null);
+		assertEquals(4, clauses.size());
+		Clause clause0 = clauses.get(0);
+		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());
+		assertEquals("GO:0046836", clause0.getValue());
+		
+		Clause clause1 = clauses.get(1);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause1.getTag());
+		assertEquals("GO:0046836", clause1.getValue());
+		
+		Clause clause2 = clauses.get(2);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause2.getTag());
+		assertEquals("part_of", clause2.getValue());
+		assertEquals("GO:0006915", clause2.getValue2());
+		
+		Clause clause3 = clauses.get(3);
+		assertEquals(OboFormatTag.TAG_RELATIONSHIP.getTag(), clause3.getTag());
+		assertEquals("part_of", clause3.getValue());
+		assertEquals("GO:0006915", clause3.getValue2());
+	}
+	
 	private OntologyTerm<Synonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager) {
 		OntologyTaskImplementation task = new OntologyTaskImplementation(id);
 		ontologyManager.runManagedTask(task);

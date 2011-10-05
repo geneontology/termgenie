@@ -6,7 +6,6 @@
 		</source>
 		<supports>
 			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</support>
-			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
@@ -16,16 +15,6 @@
 		<ontologybranch name="biological_process">
 			<roots>
 				<root>GO:0008150</root>
-			</roots>
-		</ontologybranch>
-		<ontologybranch name="molecular_function">
-			<roots>
-				<root>GO:0003674</root>
-			</roots>
-		</ontologybranch>
-		<ontologybranch name="cellular_component">
-			<roots>
-				<root>GO:0005575</root>
 			</roots>
 		</ontologybranch>
 	</ontology>
