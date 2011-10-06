@@ -14,7 +14,6 @@ import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.obolibrary.oboformat.model.Clause;
@@ -25,8 +24,6 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
-
-import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,15 +57,13 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 			result.setMessage("Unknown ontology: " + ontologyName);
 			return result;
 		}
-		String ontologyIdPrefix = getOntologyIdPrefix(manager);
-		int count = 0;
 		OBODoc doc = new OBODoc();
 		doc.setHeaderFrame(new Frame(FrameType.HEADER));
 		for (JsonOntologyTerm term : terms) {
 			final Frame frame = new Frame(FrameType.TERM);
 
 			// id
-			frame.setId(createFakeId(ontologyIdPrefix, count));
+			frame.setId(term.getTempId());
 
 			// name
 			addClause(frame, OboFormatTag.TAG_NAME, term.getLabel());
@@ -124,7 +119,6 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				result.setMessage("Could not create OBO export: " + exception.getMessage());
 				return result;
 			}
-			count += 1;
 		}
 
 		OBOFormatWriter writer = new OBOFormatWriter();
@@ -158,36 +152,6 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 
 	private Clause create(OboFormatTag tag, String value) {
 		return new Clause(tag.toString(), value);
-	}
-
-	private String createFakeId(String prefix, int count) {
-		StringBuilder sb = new StringBuilder(prefix);
-		sb.append(":fake");
-		if (count < 100) {
-			sb.append('0');
-		}
-		if (count < 10) {
-			sb.append('0');
-		}
-		sb.append(count);
-		return sb.toString();
-	}
-
-	private String getOntologyIdPrefix(OntologyTaskManager manager) {
-		LocalTask task = new LocalTask();
-		manager.runManagedTask(task);
-		return task.id;
-	}
-
-	private final class LocalTask implements OntologyTask {
-
-		String id = null;
-
-		@Override
-		public Modified run(OWLGraphWrapper managed) {
-			id = managed.getOntologyId();
-			return Modified.no;
-		}
 	}
 
 	@Override
