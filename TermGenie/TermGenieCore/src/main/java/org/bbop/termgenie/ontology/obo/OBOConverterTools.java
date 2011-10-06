@@ -25,7 +25,7 @@ public class OBOConverterTools {
 
 	public static void fillOBO(Frame frame, OntologyTerm<? extends ISynonym, ? extends IRelation> term) {
 		String id = term.getId();
-		frame.addClause(new Clause(OboFormatTag.TAG_ID.getTag(), id));
+		frame.setId(id);
 		frame.addClause(new Clause(OboFormatTag.TAG_NAME.getTag(), term.getLabel()));
 		String definition = term.getDefinition();
 		if (definition != null) {

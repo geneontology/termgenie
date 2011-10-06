@@ -57,7 +57,7 @@ public class CommitObject<T> {
 	 * @param object
 	 * @param type
 	 */
-	CommitObject(T object, CommitObject.Modification type) {
+	public CommitObject(T object, CommitObject.Modification type) {
 		super();
 		this.object = object;
 		this.type = type;

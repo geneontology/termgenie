@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -92,12 +93,11 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			return commitInternal(commitInfo, terms, relations, workFolders);
 		}
 		finally {
-			FileUtils.deleteQuietly(workFolders.workFolder);
-			FileUtils.deleteQuietly(workFolders.lockFile);
+			workFolders.clean();
 		}
 	}
 
-	private static class WorkFolders {
+	static class WorkFolders {
 
 		private final File lockFile;
 		private final File workFolder;
@@ -111,9 +111,14 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			this.lockFile = lockFile;
 			this.workFolder = workFolder;
 		}
+		
+		void clean() {
+			FileUtils.deleteQuietly(workFolder);
+			FileUtils.deleteQuietly(lockFile);
+		}
 	}
 
-	private WorkFolders createTempDir() throws CommitException {
+	WorkFolders createTempDir() throws CommitException {
 		File tempFile = null;
 		File workFolder = null;
 		try {
@@ -282,6 +287,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			String originalName,
 			String revisedName) throws CommitException
 	{
+		Logger.getLogger(getClass()).info("Create Diff");
 		try {
 			List<String> originalLines = FileUtils.readLines(originalFile);
 			List<String> revisedLines = FileUtils.readLines(revisedFile);
@@ -340,25 +346,29 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 	}
 
 	private File createOBOFile(File oboFolder, OBODoc oboDoc) throws CommitException {
-		File oboFile;
+		BufferedWriter bufferedWriter = null;
 		try {
 			// write OBO file to temp
 			OBOFormatWriter writer = new OBOFormatWriter();
 
-			oboFile = new File(oboFolder, source.getUniqueName() + ".obo");
-			writer.write(oboDoc, new BufferedWriter(new FileWriter(oboFile)));
+			File oboFile = new File(oboFolder, source.getUniqueName() + ".obo");
+			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
+			writer.write(oboDoc, bufferedWriter);
+			return oboFile;			
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
 			throw error(message, exception, true);
 		}
-		return oboFile;
+		finally {
+			IOUtils.closeQuietly(bufferedWriter);
+		}
 	}
 
 	private OWLGraphWrapper loadOntology(File cvsFile) throws CommitException {
 		OWLGraphWrapper ontology;
 		try {
 			// load OBO
-			String localSource = cvsFile.getAbsolutePath();
+			String localSource = cvsFile.getAbsoluteFile().toURI().toURL().toString();
 			ConfiguredOntology config = ConfiguredOntology.createCopy(source, localSource);
 			ontology = loader.load(config);
 		} catch (OWLOntologyCreationException exception) {
