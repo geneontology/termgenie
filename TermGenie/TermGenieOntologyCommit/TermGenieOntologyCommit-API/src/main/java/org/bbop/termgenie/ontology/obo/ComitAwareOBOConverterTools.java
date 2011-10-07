@@ -21,25 +21,24 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 
 	private static final Logger logger = Logger.getLogger(ComitAwareOBOConverterTools.class);
 
-	public static void handleRelation(IRelation relation, Modification mode, OBODoc obodoc) {
+	public static boolean handleRelation(IRelation relation, Modification mode, OBODoc obodoc) {
 		String source = relation.getSource();
 		Frame frame = obodoc.getTermFrame(source);
 		switch (mode) {
 			case add:
 				if (frame == null) {
 					logger.warn("Cannot add a relation for an unknown term: " + source);
+					return false;
 				}
-				else {
-					fillRelation(frame, relation, source);
-				}
+				fillRelation(frame, relation, source);
 				break;
 			case modify:
 				if (frame == null) {
 					logger.error("Cannot modify a relation for an unknown term: " + source);
-				} else {
-					removeRelation(frame, relation);
-					fillRelation(frame, relation, source);
+					return false;
 				}
+				removeRelation(frame, relation);
+				fillRelation(frame, relation, source);
 				break;
 			case remove:
 				if (frame == null) {
@@ -49,8 +48,9 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 				}
 				break;
 			default:
-				break;
+				return false;
 		}
+		return true;
 	}
 	
 	static void removeRelation(Frame frame, IRelation relation) {
@@ -103,10 +103,11 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 		switch (mode) {
 			case add:
 				if (frame != null) {
-					logger.warn("Skipping already existing term from history: " + id);
-					return false;
+					logger.warn("Merging already existing term from history: " + id);
 				}
-				frame = new Frame(FrameType.TERM);
+				else {
+					frame = new Frame(FrameType.TERM);	
+				}
 				fillOBO(frame, term);
 				try {
 					obodoc.addFrame(frame);
@@ -118,32 +119,33 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 			case modify:
 				if (frame == null) {
 					logger.warn("Skipping modification of non-existing term from history: " + id);
-					return false;
 				}
-				try {
-					Frame modFrame = new Frame(FrameType.TERM);
-					fillOBO(frame, term);
-					frame.merge(modFrame);
-				} catch (FrameMergeException exception) {
-					logger.warn("Could not apply chages to frame.", exception);
-					return false;
+				else {
+					try {
+						Frame modFrame = new Frame(FrameType.TERM);
+						fillOBO(frame, term);
+						frame.merge(modFrame);
+					} catch (FrameMergeException exception) {
+						logger.warn("Could not apply changes to frame.", exception);
+						return false;
+					}
 				}
 				break;
 
 			case remove:
 				if (frame == null) {
 					logger.warn("Skipping removal of non-existing term from history: " + id);
-					return false;
 				}
-				Collection<Frame> frames = obodoc.getTermFrames();
-				frames.remove(frame);
+				else {
+					Collection<Frame> frames = obodoc.getTermFrames();
+					frames.remove(frame);
+				}
 				break;
 
 			default:
-				// do nothing
-				break;
+				return false;
 		}
-		return false;
+		return true;
 	}
 
 }

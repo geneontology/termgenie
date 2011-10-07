@@ -111,7 +111,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			this.lockFile = lockFile;
 			this.workFolder = workFolder;
 		}
-		
+
 		void clean() {
 			FileUtils.deleteQuietly(workFolder);
 			FileUtils.deleteQuietly(lockFile);
@@ -154,7 +154,11 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		OWLGraphWrapper ontology = loadOntology(cvsFile);
 
 		final OBODoc oboDoc = createOBODoc(ontology);
-		applyChanges(terms, relations, oboDoc);
+		final boolean success = applyChanges(terms, relations, oboDoc);
+		if (!success) {
+			String message = "Could not apply changes to ontology.";
+			throw new CommitException(message, true);
+		}
 
 		final File oboFile = createOBOFile(oboFolder, oboDoc);
 
@@ -217,24 +221,28 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		}
 	}
 
-	protected void applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			final OBODoc oboDoc)
 	{
+		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
-				ComitAwareOBOConverterTools.handleTerm(commitObject.getObject(),
+				boolean csuccess = ComitAwareOBOConverterTools.handleTerm(commitObject.getObject(),
 						commitObject.getType(),
 						oboDoc);
+				success = success && csuccess;
 			}
 		}
 		if (relations != null && !relations.isEmpty()) {
 			for (CommitObject<Relation> commitObject : relations) {
-				ComitAwareOBOConverterTools.handleRelation(commitObject.getObject(),
+				boolean csuccess = ComitAwareOBOConverterTools.handleRelation(commitObject.getObject(),
 						commitObject.getType(),
 						oboDoc);
+				success = success && csuccess;
 			}
 		}
+		return success;
 	}
 
 	protected CommitHistoryData updateCommitHistory(CommitInfo commitInfo,
@@ -266,10 +274,10 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 	}
 
 	private static class CommitHistoryData {
-	
+
 		CommitHistory history;
 		CommitHistoryItem historyItem;
-	
+
 		CommitHistoryData(CommitHistory history, CommitHistoryItem historyItem) {
 			this.history = history;
 			this.historyItem = historyItem;
@@ -354,7 +362,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			File oboFile = new File(oboFolder, source.getUniqueName() + ".obo");
 			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
 			writer.write(oboDoc, bufferedWriter);
-			return oboFile;			
+			return oboFile;
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
 			throw error(message, exception, true);
