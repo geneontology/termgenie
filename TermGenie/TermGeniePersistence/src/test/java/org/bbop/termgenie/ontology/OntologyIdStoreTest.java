@@ -85,9 +85,9 @@ public class OntologyIdStoreTest {
 
 		StopWatch watch2 = new StopWatch();
 		watch2.start();
-		assertEquals("foo:000041", store.getNewId(ontology, entityManager));
-		assertEquals("foo:000042", store.getNewId(ontology, entityManager));
-		assertEquals("foo:000043", store.getNewId(ontology, entityManager));
+		assertEquals("foo:000041", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("foo:000042", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("foo:000043", store.getNewId(ontology, entityManager).getOne());
 		watch2.stop();
 
 		entityManager.close();
@@ -99,10 +99,10 @@ public class OntologyIdStoreTest {
 		StopWatch watch3 = new StopWatch();
 		watch3.start();
 		store = new OntologyIdStore(config, entityManager);
-		assertEquals("foo:000044", store.getNewId(ontology, entityManager));
-		assertEquals("foo:000045", store.getNewId(ontology, entityManager));
-		assertEquals("foo:000046", store.getNewId(ontology, entityManager));
-		assertEquals("long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009000", store.getNewId(longOntology, entityManager));
+		assertEquals("foo:000044", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("foo:000045", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("foo:000046", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009000", store.getNewId(longOntology, entityManager).getOne());
 		watch3.stop();
 
 		System.out.println(label + " Loading :" + watch1);
