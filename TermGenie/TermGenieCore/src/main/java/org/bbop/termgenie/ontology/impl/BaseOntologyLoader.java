@@ -119,6 +119,16 @@ public class BaseOntologyLoader {
 	protected OWLOntology loadOBO2OWL(String ontology, URL realUrl)
 			throws IOException, OWLOntologyCreationException
 	{
+		OBODoc obodoc = loadOBO(ontology, realUrl);
+		
+		Obo2Owl obo2Owl = new Obo2Owl();
+		LOGGER.info("Convert ontology " + ontology + " to owl.");
+		OWLOntology owlOntology = obo2Owl.convert(obodoc);
+		LOGGER.info("Finished loading ontology: " + ontology);
+		return owlOntology;
+	}
+
+	protected OBODoc loadOBO(String ontology, URL realUrl) throws IOException {
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc;
 		try {
@@ -132,12 +142,7 @@ public class BaseOntologyLoader {
 			LOGGER.warn("Error parsing input: " + realUrl);
 			throw exception;
 		}
-		
-		Obo2Owl obo2Owl = new Obo2Owl();
-		LOGGER.info("Convert ontology " + ontology + " to owl.");
-		OWLOntology owlOntology = obo2Owl.convert(obodoc);
-		LOGGER.info("Finished loading ontology: " + ontology);
-		return owlOntology;
+		return obodoc;
 	}
 	
 	/**

@@ -11,7 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.OntologyLoader;
-import org.bbop.termgenie.ontology.go.GeneOntologyFileOnlyCommitModule;
+import org.bbop.termgenie.ontology.go.GeneOntologyCommitModule;
 import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
@@ -55,9 +55,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getCommitModule() {
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		File userDirectory = FileUtils.getUserDirectory();
-		String localFile = new File(new File(userDirectory, "termgenie"), "geneontology-cvs").getAbsolutePath();
-		return new GeneOntologyFileOnlyCommitModule(cvsFileName, cvsRoot, localFile );
+		return new GeneOntologyCommitModule(cvsFileName, cvsRoot);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -29,17 +30,19 @@ import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
-import org.obolibrary.obo2owl.Owl2Obo;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
-import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 import difflib.DiffUtils;
 import difflib.Patch;
 
+/**
+ * Main steps for committing ontology changes to an OBO file in an CVS
+ * repository.
+ */
 abstract class AbstractOntologyCommitAdapter implements Committer {
 
 	private final ConfiguredOntology source;
@@ -87,12 +90,14 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
 		List<CommitObject<Relation>> relations = commitInfo.getRelations();
 
+		// setup temporary work folder
 		final WorkFolders workFolders = createTempDir();
 
 		try {
 			return commitInternal(commitInfo, terms, relations, workFolders);
 		}
 		finally {
+			// delete temp folder
 			workFolders.clean();
 		}
 	}
@@ -144,39 +149,63 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			List<CommitObject<Relation>> relations,
 			final WorkFolders workFolders) throws CommitException
 	{
+		// create sub folders in work directory
 		final File cvsFolder = createCVSFolder(workFolders);
 		final CVSTools cvs = createCVS(commitInfo, cvsFolder);
 		final File oboFolder = createOBOFolder(workFolders);
 
+		// check-out ontology from cvs repository
 		cvsCheckout(cvs);
 
 		final File cvsFile = new File(cvsFolder, cvsOntologyFileName);
-		OWLGraphWrapper ontology = loadOntology(cvsFile);
 
-		final OBODoc oboDoc = createOBODoc(ontology);
+		// load ontology
+		final OBODoc oboDoc = loadOntology(cvsFile);
+
+		// round trip ontology
+		// This step is required to create a minimal patch.
+		final File roundtripOboFile = roundtripObo(workFolders, oboDoc);
+
+		// check that the round trip leads to major changes
+		// This is a requirement for applying the diff to the original cvs file
+		boolean noMajorChanges = compareRoundTripFile(cvsFile, roundtripOboFile);
+		if (noMajorChanges == false) {
+			String message = "Can write ontology for commit. Too many format changes cannot create diff.";
+			throw new CommitException(message, true);
+		}
+
+		// apply changes to ontology in memory
 		final boolean success = applyChanges(terms, relations, oboDoc);
 		if (!success) {
 			String message = "Could not apply changes to ontology.";
 			throw new CommitException(message, true);
 		}
 
+		// write changed ontology to a file
 		final File oboFile = createOBOFile(oboFolder, oboDoc);
 
+		// store the changes in the local commit history,
+		// mark them as unfinished
 		final CommitHistoryData commitHistoryData = updateCommitHistory(commitInfo,
 				terms,
-				relations,
-				ontology);
+				relations);
 
-		// get diff from the two files
-		String cvsDiff = createUnifiedDiff(cvsFile,
+		// create the diff from the written and round-trip file
+		Pair<String, Patch> pair = createUnifiedDiff(roundtripOboFile,
 				oboFile,
 				cvsOntologyFileName,
 				"termgenie-changes");
 
-		commitToRepository(commitInfo, cvs, cvsFile, oboFile, cvsDiff);
+		// apply the patch to the original file, write to a new temp file
+		File patchedFile = createPatchedFile(workFolders, cvsFile, pair.getTwo());
 
-		finalizeCommitHistory(ontology, commitHistoryData);
-		return new CommitResult(true, cvsDiff);
+		// commit the changes to the repository
+		String diff = pair.getOne();
+		commitToRepository(commitInfo, cvs, cvsFile, patchedFile, diff);
+
+		// set the commit also to success in the commit history
+		finalizeCommitHistory(commitHistoryData);
+		return new CommitResult(true, diff);
 	}
 
 	protected File createCVSFolder(final WorkFolders workFolders) throws CommitException {
@@ -201,6 +230,44 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			throw error(message, exception, true);
 		}
 		return oboFolder;
+	}
+
+	private File roundtripObo(final WorkFolders workFolders, OBODoc oboDoc) throws CommitException {
+		File roundTripFolder = new File(workFolders.workFolder, "obo-roundtrip");
+		try {
+			FileUtils.forceMkdir(roundTripFolder);
+			File roundTripFile = createOBOFile(roundTripFolder, oboDoc);
+			return roundTripFile;
+		} catch (IOException exception) {
+			String message = "Could not create working directoriy for the commit: " + roundTripFolder;
+			throw error(message, exception, true);
+		}
+	}
+
+	private boolean compareRoundTripFile(File cvsFile, File roundtripOboFile)
+			throws CommitException
+	{
+		int sourceCount = countLines(cvsFile);
+		int roundTripCount = countLines(roundtripOboFile);
+
+		// check that the round trip does not modify
+		// the overall structure of the document
+		return Math.abs(sourceCount - roundTripCount) <= 1;
+	}
+
+	private int countLines(File file) throws CommitException {
+		try {
+			LineIterator iterator = FileUtils.lineIterator(file);
+			int count = 0;
+			while (iterator.hasNext()) {
+				iterator.next();
+				count += 1;
+			}
+			return count;
+		} catch (IOException exception) {
+			String message = "Could not create read file during commit: " + file.getAbsolutePath();
+			throw error(message, exception, true);
+		}
 	}
 
 	protected void cvsCheckout(CVSTools cvs) throws CommitException {
@@ -247,8 +314,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 
 	protected CommitHistoryData updateCommitHistory(CommitInfo commitInfo,
 			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
-			OWLGraphWrapper ontology) throws CommitException
+			List<CommitObject<Relation>> relations) throws CommitException
 	{
 		final CommitHistoryData commitHistoryData;
 		try {
@@ -267,7 +333,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			store.store(history);
 			commitHistoryData = new CommitHistoryData(history, historyItem);
 		} catch (CommitHistoryStoreException exception) {
-			String message = "Problems handling commit history for ontology: " + ontology;
+			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
 			throw error(message, exception, true);
 		}
 		return commitHistoryData;
@@ -290,7 +356,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			File oboFile,
 			String cvsDiff) throws CommitException;
 
-	private String createUnifiedDiff(File originalFile,
+	private Pair<String, Patch> createUnifiedDiff(File originalFile,
 			File revisedFile,
 			String originalName,
 			String revisedName) throws CommitException
@@ -310,7 +376,7 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 				for (String line : diff) {
 					sb.append(line).append('\n');
 				}
-				return sb.toString();
+				return new Pair<String, Patch>(sb.toString(), patch);
 			}
 		} catch (IOException exception) {
 			throw error("Could not create diff for commit.", exception, true);
@@ -318,15 +384,32 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		return null;
 	}
 
-	protected void finalizeCommitHistory(OWLGraphWrapper ontology,
-			CommitHistoryData commitHistoryData) throws CommitException
+	private File createPatchedFile(WorkFolders workFolders, File cvsFile, Patch patch)
+			throws CommitException
+	{
+		File patchedFolder = new File(workFolders.workFolder, "obo-patched");
+		try {
+			FileUtils.forceMkdir(patchedFolder);
+			List<String> originalLines = FileUtils.readLines(cvsFile);
+			List<?> patched = DiffUtils.patch(originalLines, patch);
+			File patchedFile = new File(patchedFolder, source.getUniqueName() + ".obo");
+			FileUtils.writeLines(patchedFile, patched);
+			return patchedFile;
+		} catch (Exception exception) {
+			String message = "Could not create patched file for commit";
+			throw error(message, exception, true);
+		}
+	}
+
+	protected void finalizeCommitHistory(CommitHistoryData commitHistoryData)
+			throws CommitException
 	{
 		try {
 			// set terms in commit log as committed
 			commitHistoryData.historyItem.setCommitted(true);
 			store.store(commitHistoryData.history);
 		} catch (CommitHistoryStoreException exception) {
-			String message = "Problems handling commit history for ontology: " + ontology;
+			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
 			throw error(message, exception, false);
 		}
 	}
@@ -338,18 +421,6 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to commit file";
 			throw new CommitException(message, exception, true);
-		}
-	}
-
-	private OBODoc createOBODoc(OWLGraphWrapper ontology) throws CommitException {
-		try {
-			// write OBO file to temp
-			Owl2Obo converter = new Owl2Obo();
-			OBODoc oboDoc = converter.convert(ontology.getSourceOntology());
-			return oboDoc;
-		} catch (OWLOntologyCreationException exception) {
-			String message = "Could not convert ontology to OBO";
-			throw error(message, exception, true);
 		}
 	}
 
@@ -372,16 +443,11 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 		}
 	}
 
-	private OWLGraphWrapper loadOntology(File cvsFile) throws CommitException {
-		OWLGraphWrapper ontology;
+	private OBODoc loadOntology(File cvsFile) throws CommitException {
+		OBODoc ontology;
 		try {
 			// load OBO
-			String localSource = cvsFile.getAbsoluteFile().toURI().toURL().toString();
-			ConfiguredOntology config = ConfiguredOntology.createCopy(source, localSource);
-			ontology = loader.load(config);
-		} catch (OWLOntologyCreationException exception) {
-			String message = "Could load recent copy of the ontology";
-			throw error(message, exception, true);
+			ontology = loader.loadOBO(cvsFile, source.getUniqueName());
 		} catch (IOException exception) {
 			String message = "Could load recent copy of the ontology";
 			throw error(message, exception, true);
@@ -397,10 +463,8 @@ abstract class AbstractOntologyCommitAdapter implements Committer {
 			super(iriMapper, cleaner);
 		}
 
-		OWLGraphWrapper load(ConfiguredOntology ontology)
-				throws OWLOntologyCreationException, IOException
-		{
-			return getResource(ontology);
+		OBODoc loadOBO(File file, String ontology) throws IOException {
+			return loadOBO(ontology, file.toURI().toURL());
 		}
 	}
 

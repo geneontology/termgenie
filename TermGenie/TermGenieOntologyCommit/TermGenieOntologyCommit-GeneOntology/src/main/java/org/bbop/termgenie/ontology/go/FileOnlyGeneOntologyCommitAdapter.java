@@ -14,6 +14,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+/**
+ * Instead of committing to the CVS repository, write the changed ontology to a
+ * local file. <br/>
+ * WARNING: This adapter is NOT to be used in production. Any
+ * commit overwrites the previous one. There is no merge support in this class.
+ */
 @Singleton
 public class FileOnlyGeneOntologyCommitAdapter extends AbstractOntologyCommitAdapter {
 
