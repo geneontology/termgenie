@@ -19,6 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.services.InternalSessionHandler;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -36,14 +37,17 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 
 	private final String browserIdVerificationUrl;
 	private final String termgenieBrowserIdAudience;
+	private final InternalSessionHandler sessionHandler;
 
 	@Inject
 	public BrowserIdHandlerImpl(@Named("BrowserIdVerificationUrl") String browserIdVerificationUrl,
-			@Named("TermGenieBrowserIdAudience") String termgenieBrowserIdAudience)
+			@Named("TermGenieBrowserIdAudience") String termgenieBrowserIdAudience,
+			InternalSessionHandler sessionHandler)
 	{
 		super();
 		this.browserIdVerificationUrl = browserIdVerificationUrl;
 		this.termgenieBrowserIdAudience = termgenieBrowserIdAudience;
+		this.sessionHandler = sessionHandler;
 		logger.info("Configuring BrowserID: verificationURL=" + browserIdVerificationUrl + " termgenieBrowserIdAudience=" + termgenieBrowserIdAudience);
 	}
 
@@ -77,6 +81,7 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 						if (details.email != null) {
 							// TODO verify 'details.issuer' and
 							// 'details.validUntil'
+							sessionHandler.setAuthenticated(details.email, details.email, httpSession);
 							return new UserData(details.email, details.email);
 						}
 					}

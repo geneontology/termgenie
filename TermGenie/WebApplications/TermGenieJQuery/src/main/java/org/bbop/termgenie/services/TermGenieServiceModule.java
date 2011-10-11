@@ -35,7 +35,7 @@ public class TermGenieServiceModule extends IOCModule {
 	}
 	
 	protected void bindSessionHandler() {
-		bind(InternalSessionHandler.class).to(InteralSessionHandlerImpl.class);
+		bind(InternalSessionHandler.class).to(InternalSessionHandlerImpl.class);
 	}
 	
 	protected void bindTermCommitService() {

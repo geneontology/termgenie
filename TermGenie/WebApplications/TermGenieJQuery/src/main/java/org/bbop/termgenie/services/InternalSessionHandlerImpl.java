@@ -9,7 +9,7 @@ import com.google.inject.Singleton;
  * methods of {@link InternalSessionHandler}.
  */
 @Singleton
-public class InteralSessionHandlerImpl extends SessionHandlerImpl implements InternalSessionHandler
+public class InternalSessionHandlerImpl extends SessionHandlerImpl implements InternalSessionHandler
 {
 
 	@Override
