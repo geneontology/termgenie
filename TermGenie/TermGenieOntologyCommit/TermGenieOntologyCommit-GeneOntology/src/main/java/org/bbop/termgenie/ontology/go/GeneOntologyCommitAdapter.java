@@ -41,22 +41,21 @@ public class GeneOntologyCommitAdapter extends AbstractOntologyCommitAdapter {
 
 	@Override
 	protected void commitToRepository(CommitInfo commitInfo,
-			CVSTools cvs,
-			File cvsGoFile,
-			File oboFile,
-			String cvsDiff) throws CommitException
+			CVSTools scm,
+			OboCommitData data,
+			String diff) throws CommitException
 	{
-		copyOBOFileForCommit(cvsGoFile, oboFile);
+		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
 
 		try {
-			cvs.connect();
-			cvs.commit("TermGenie commit for user: " + commitInfo.getTermgenieUser());
+			scm.connect();
+			scm.commit("TermGenie commit for user: " + commitInfo.getTermgenieUser());
 		} catch (IOException exception) {
 			throw error("Error during CVS commit", exception, false);
 		}
 		finally {
 			try {
-				cvs.close();
+				scm.close();
 			} catch (IOException exception) {
 				logger.error("Could not close CVS tool.", exception);
 			}

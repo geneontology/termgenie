@@ -11,12 +11,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieOntologyCommit-CVS</artifactId>
+			<artifactId>TermGenieOntologyCommit-Core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGeniePersistence</artifactId>
+			<artifactId>TermGenieOntologyCommit-CVS</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
@@ -25,10 +25,6 @@
 			<version>${project.parent.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.java-diff-utils</groupId>
-			<artifactId>diffutils</artifactId>
 		</dependency>
 	</dependencies>
 </project>

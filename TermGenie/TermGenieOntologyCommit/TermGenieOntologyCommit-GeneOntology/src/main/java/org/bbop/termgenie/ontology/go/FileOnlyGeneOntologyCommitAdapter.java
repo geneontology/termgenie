@@ -42,12 +42,11 @@ public class FileOnlyGeneOntologyCommitAdapter extends AbstractOntologyCommitAda
 
 	@Override
 	protected void commitToRepository(CommitInfo commitInfo,
-			CVSTools cvs,
-			File cvsGoFile,
-			File oboFile,
-			String cvsDiff) throws CommitException
+			CVSTools scm,
+			OboCommitData data,
+			String diff) throws CommitException
 	{
-		copyOBOFileForCommit(localFile, oboFile);
+		copyFileForCommit(data.getModifiedSCMTargetFile(), localFile);
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 				return new WorkFolders(cvsLockFile, cvsFolder) {
 
 					@Override
-					void clean() {
+					protected void clean() {
 						// do nothing
 					}
 				};
