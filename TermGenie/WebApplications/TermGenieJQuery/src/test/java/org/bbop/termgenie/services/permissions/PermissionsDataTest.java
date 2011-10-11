@@ -19,8 +19,11 @@ public class PermissionsDataTest {
 		PermissionsData.TermGeniePermissions details12 = new PermissionsData.TermGeniePermissions();
 		details12.addPermissions("test-ontology", "allowWrite", "true");
 		details12.addPermissions("test-ontology", "screenname", "tt_P-:\")(*;");
+		PermissionsData.TermGeniePermissions details13 = new PermissionsData.TermGeniePermissions();
+		details13.addPermissions("globalPermissions", "allowCommitReview", "true");
 		data1.userPermissions.put("user1", Collections.singletonMap("termgenie", details11));
 		data1.userPermissions.put("user2", Collections.singletonMap("termgenie", details12));
+		data1.userPermissions.put("user3@host.tld", Collections.singletonMap("termgenie", details13));
 		
 		String json1 = PermissionsData.writeToJson(data1);
 		assertNotNull(json1);

@@ -35,22 +35,30 @@ function termgenieReview(){
 	function onLogin() {
 		mainMessagePanel.empty();
 		// request sessionId and then check if the review feature is enabled
-		mySession.getSessionId(function(sessionId){
-			jsonService.review.isEnabled({
-				onSuccess: function(result) {
-					if (result === true) {
-						
-					}
-					else {
-						mainMessagePanel.append('The review feature is not enabled for this TermGenie server.');
-					}
-				},
-				onException: function(e) {
-					jQuery.logSystemError('Could not check review feature on server',e);
-					return true;
+		jsonService.review.isEnabled({
+			onSuccess: function(result) {
+				if (result === true) {
+					checkUserPermissions(function(hasPermission){ // on success
+						if (hasPermission === true) {
+							startLoadingReviewEntries();
+						}
+						else {
+							setInsufficientUserRightsMessage(mySession.getCredentials());
+						}
+					}, function(e) { // on error
+						jQuery.logSystemError('Could not check user permissions on server',e);
+						return true;
+					});
 				}
-			});	
-		});
+				else {
+					setReviewDisabledMessage();
+				}
+			},
+			onException: function(e) {
+				jQuery.logSystemError('Could not check review feature on server',e);
+				return true;
+			}
+		});	
 	}
 	
 	function onLogout() {
@@ -58,6 +66,62 @@ function termgenieReview(){
 		mainReviewPanel.empty();
 		mainControlPanel.empty();
 		mainMessagePanel.append(defaultErrorMessage);
+	}
+	
+	function setReviewDisabledMessage() {
+		mainMessagePanel.append('The review feature is not enabled for this TermGenie server.');
+	}
+	
+	function setInsufficientUserRightsMessage(username) {
+		mainMessagePanel.append('The current user ('+username+') is not allowed to use this review feature.');
+	}
+	
+	function setNoCommitsForReviewFoundMessage() {
+		mainMessagePanel.append('There are currently no commits waiting to be approved.');
+	}
+	
+	function checkUserPermissions(onSuccess, onError) {
+		// request sessionId and then check user permissions
+		mySession.getSessionId(function(sessionId){
+			jsonService.review.isAuthorized({
+				params: [sessionId],
+				onSuccess: onSuccess,
+				onException: onError
+			});	
+		});
+	}
+	
+	function startLoadingReviewEntries() {
+		// request sessionId and then try to load commits for review
+		mySession.getSessionId(function(sessionId){
+			jsonService.review.getPendingCommits({
+				params: [sessionId],
+				onSuccess: function(entries){
+					if (entries && entries.length > 0 && jQuery.isArray(entries)) {
+						createCommitReviewPanel(entries);
+					}
+					else {
+						setNoCommitsForReviewFoundMessage();
+					}
+				},
+				onException: function(e) {
+					jQuery.logSystemError('Could not retrieve commits for review from server',e);
+					return true;
+				}
+			});	
+		});
+	}
+	
+	function createCommitReviewPanel(entries) {
+		
+		
+		addCommitButton(function(){ // onClick
+			// retrieved marked entries
+			
+			// create array
+			
+			// make rpc call
+		});
 	}
 	
 	function addCommitButton(onclick) {

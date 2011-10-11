@@ -17,6 +17,8 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	private static final String FLAG_SCREEN_NAME = "screenname";
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
+	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
+	private static final String GROUP_GLOBAL_PERMISSIONS = "globalPermissions";
 	private static final String APPLICATION_NAME = "termgenie";
 	
 	private final File jsonPermissionsFile;
@@ -44,14 +46,23 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	@Override
+	public boolean allowCommitReview(String guid) {
+		return checkPermissions(guid, GROUP_GLOBAL_PERMISSIONS, FLAG_ALLOW_COMMIT_REVIEW);
+	}
+
+	@Override
 	public boolean allowCommit(String guid, Ontology ontology) {
+		return checkPermissions(guid, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
+	}
+	
+	private boolean checkPermissions(String guid, String group, String flag) {
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
 			if (termgeniePermissions != null) {
-				Map<String, String> flags = termgeniePermissions.getPermissionFlags(ontology.getUniqueName());
-				if (flags != null) {
-					String value = flags.get(FLAG_ALLOW_WRITE);
+				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
+				if (groupFlags != null) {
+					String value = groupFlags.get(flag);
 					if (value != null) {
 						return "true".equals(value.toLowerCase());
 					}
@@ -62,17 +73,29 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	@Override
+	public CommitUserData getCommitReviewUserData(String guid, Ontology ontology) {
+		return retrieveCommitUserData(guid, GROUP_GLOBAL_PERMISSIONS, ontology, FLAG_ALLOW_COMMIT_REVIEW);
+	}
+
+	@Override
 	public CommitUserData getCommitUserData(String guid, Ontology ontology) {
+		return retrieveCommitUserData(guid, ontology.getUniqueName(), ontology, FLAG_ALLOW_WRITE);
+	}
+
+	private CommitUserData retrieveCommitUserData(String guid, String group, Ontology ontology, String flag) {
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
 			if (termgeniePermissions != null) {
-				Map<String, String> flags = termgeniePermissions.getPermissionFlags(ontology.getUniqueName());
-				if (flags != null) {
-					String value = flags.get(FLAG_ALLOW_WRITE);
-					if (value != null && "true".equals(value.toLowerCase())) {
-						String screenname = flags.get(FLAG_SCREEN_NAME);
-						return new CommitUserDataImpl(null, null, screenname);
+				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
+				if (groupFlags != null) {
+					String groupValue = groupFlags.get(flag);
+					if (groupValue != null && "true".equals(groupValue.toLowerCase())) {
+						Map<String, String> ontologyFlags = termgeniePermissions.getPermissionFlags(ontology.getUniqueName());
+						if (ontologyFlags != null) {
+							String screenname = ontologyFlags.get(FLAG_SCREEN_NAME);
+							return new CommitUserDataImpl(null, null, screenname);
+						}
 					}
 				}
 			}
