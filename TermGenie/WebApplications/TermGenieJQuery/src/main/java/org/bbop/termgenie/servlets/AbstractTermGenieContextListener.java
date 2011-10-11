@@ -12,10 +12,12 @@ import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
-import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
+import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
+import org.bbop.termgenie.services.review.DisabledTermCommitReviewServiceImpl;
+import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
@@ -24,7 +26,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
-
 
 public abstract class AbstractTermGenieContextListener extends GuiceServletContextListener {
 
@@ -46,7 +47,9 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				TermCommitService commit,
 				SessionHandler user,
 				OpenIdRequestHandler openId,
-				BrowserIdHandler browserId) {
+				BrowserIdHandler browserId,
+				TermCommitReviewService review)
+		{
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor();
 			executor.addHandler("generate", generate, GenerateTermsService.class);
 			executor.addHandler("ontology", ontology, OntologyService.class);
@@ -54,7 +57,8 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("user", user, SessionHandler.class);
 			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
 			executor.addHandler("browserid", browserId, BrowserIdHandler.class);
-			
+			executor.addHandler("review", review, TermCommitReviewService.class);
+
 			return executor;
 		}
 	}
@@ -75,6 +79,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getReasoningModule(), true, "ReasoningModule");
 		add(modules, getRulesModule(), true, "RulesModule");
 		add(modules, getCommitModule(), false, "CommitModule");
+		add(modules, getCommitReviewModule(), true, "CommitReviewModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -85,11 +90,12 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		}
 		return modules.toArray(new IOCModule[modules.size()]);
 	}
-	
-	private void add(List<IOCModule> modules, IOCModule module, boolean required, String moduleName) {
+
+	private void add(List<IOCModule> modules, IOCModule module, boolean required, String moduleName)
+	{
 		if (module == null) {
 			if (required) {
-				throw new RuntimeException("Missing an required module: "+moduleName);
+				throw new RuntimeException("Missing an required module: " + moduleName);
 			}
 		}
 		else {
@@ -103,14 +109,14 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	protected TermGenieServiceModule getServiceModule() {
 		return new TermGenieServiceModule();
 	}
-	
+
 	/**
 	 * @return module handling the authentication
 	 */
 	protected IOCModule getAuthenticationModule() {
 		return new AuthenticationModule(TermGenieServletModule.OPENID_SERVLET_PATH);
 	}
-	
+
 	/**
 	 * @return module handling the user permissions
 	 */
@@ -134,12 +140,23 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	protected IOCModule getReasoningModule() {
 		return new ReasonerModule();
 	}
-	
+
 	/**
 	 * @return module providing the commit operations
 	 */
 	protected IOCModule getCommitModule() {
 		return null;
+	}
+	
+	protected IOCModule getCommitReviewModule() {
+		return new IOCModule() {
+			
+			@Override
+			protected void configure() {
+				bind(TermCommitReviewService.class).to(DisabledTermCommitReviewServiceImpl.class);
+				
+			}
+		};
 	}
 
 	/**

@@ -20,7 +20,7 @@
 	 * 
 	 * @returns methods for the login panel
 	 */
-	$.extend({"LoginPanel" : function(jsonService, mySession) {
+	$.extend({"LoginPanel" : function(jsonService, mySession, globalLoginCallback, globalLogoutCallback) {
 		
 		var panel = createLoginPanel();
 		var userInfo = null;
@@ -68,9 +68,13 @@
 			mySession.getSessionId(function(sessionId){
 				jsonService.user.logout({
 					params: [sessionId],
-					onSuccess: function(){},
+					onSuccess: function(){
+						if (globalLogoutCallback && jQuery.isFunction(globalLogoutCallback)) {
+							globalLogoutCallback();
+						}
+					},
 					onException: function(e) {
-						
+						jQuery.logSystemError('Could not logout session', e, true);
 					}
 				});	
 			});
@@ -151,6 +155,9 @@
 				elem.append(displayUsernameElem);
 				elem.append(logoutClickElem);
 				displayUsernameElem.text('Logged in as: '+username);
+				if(globalLoginCallback && jQuery.isFunction(globalLoginCallback)) {
+					globalLoginCallback();
+				}
 			}
 			
 			/**
