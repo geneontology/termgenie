@@ -73,12 +73,14 @@ public class FieldValidatorTool {
 			if (isRequired) {
 				Object[] values = hasOntologies ? terms : strings;
 				int realObjects = 0;
-				for (Object value : values) {
-					if (value == null) {
-						errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
-					}
-					else {
-						realObjects++;
+				if (values != null && values.length > 0) {
+					for (Object value : values) {
+						if (value == null) {
+							errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
+						}
+						else {
+							realObjects++;
+						}
 					}
 				}
 				if (realObjects == 0) {
