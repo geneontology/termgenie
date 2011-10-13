@@ -16,8 +16,8 @@ import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
-import org.bbop.termgenie.services.review.DisabledTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
+import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
@@ -79,7 +79,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getReasoningModule(), true, "ReasoningModule");
 		add(modules, getRulesModule(), true, "RulesModule");
 		add(modules, getCommitModule(), false, "CommitModule");
-		add(modules, getCommitReviewModule(), true, "CommitReviewModule");
+		add(modules, getCommitReviewWebModule(), true, "CommitReviewModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -148,15 +148,8 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		return null;
 	}
 	
-	protected IOCModule getCommitReviewModule() {
-		return new IOCModule() {
-			
-			@Override
-			protected void configure() {
-				bind(TermCommitReviewService.class).to(DisabledTermCommitReviewServiceImpl.class);
-				
-			}
-		};
+	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
+		return new TermCommitReviewServiceModule(false);
 	}
 
 	/**

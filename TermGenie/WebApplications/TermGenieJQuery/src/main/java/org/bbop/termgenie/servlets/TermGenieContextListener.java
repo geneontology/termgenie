@@ -4,9 +4,6 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
-import org.bbop.termgenie.services.review.DisabledTermCommitReviewServiceImpl;
-import org.bbop.termgenie.services.review.TermCommitReviewService;
-
 
 public class TermGenieContextListener extends AbstractTermGenieContextListener {
 
@@ -25,16 +22,4 @@ public class TermGenieContextListener extends AbstractTermGenieContextListener {
 		return new ReasonerModule("hermit");
 	}
 
-	@Override
-	protected IOCModule getCommitReviewModule() {
-		return new DefaultCommitReviewModule();
-	}
-
-	static final class DefaultCommitReviewModule extends IOCModule {
-	
-		@Override
-		protected void configure() {
-			bind(TermCommitReviewService.class).to(DisabledTermCommitReviewServiceImpl.class);
-		}
-	}
 }

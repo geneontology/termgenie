@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
-import org.bbop.termgenie.ontology.go.GeneOntologyCommitModule;
+import org.bbop.termgenie.ontology.go.GeneOntologyCommitReviewModule;
 import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
@@ -19,6 +21,9 @@ import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.GoTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+
+import com.google.inject.Singleton;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
 
@@ -55,7 +60,23 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getCommitModule() {
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		return new GeneOntologyCommitModule(cvsFileName, cvsRoot);
+		return new GeneOntologyCommitReviewModule(cvsFileName, cvsRoot);
+	}
+	
+	
+
+	@Override
+	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
+		return new TermCommitReviewServiceModule(true) {
+
+			@Override
+			@Singleton
+			protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration)
+			{
+				return configuration.getOntologyConfigurations().get("GeneOntology");
+			}
+			
+		};
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 @Singleton
 public class TermCommitReviewServiceImpl implements TermCommitReviewService {
@@ -25,7 +26,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			Ontology ontology,
+			@Named("TermCommitReviewServiceOntology") Ontology ontology,
 			OntologyCommitReviewPipelineStages stages)
 	{
 		super();

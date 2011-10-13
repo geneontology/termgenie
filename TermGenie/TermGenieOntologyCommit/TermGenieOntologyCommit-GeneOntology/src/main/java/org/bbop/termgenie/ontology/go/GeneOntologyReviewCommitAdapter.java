@@ -39,10 +39,9 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	@Inject
 	GeneOntologyReviewCommitAdapter(@Named("GeneOntologyTaskManager") OntologyTaskManager source,
 			CommitHistoryStore store,
-			boolean supportAnonymus,
 			GoCvsHelper helper)
 	{
-		super(source, store, supportAnonymus);
+		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
 	}
 

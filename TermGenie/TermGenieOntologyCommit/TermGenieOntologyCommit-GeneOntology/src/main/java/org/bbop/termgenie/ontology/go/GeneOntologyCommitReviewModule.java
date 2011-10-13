@@ -3,6 +3,8 @@ package org.bbop.termgenie.ontology.go;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
+import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -31,10 +33,19 @@ public class GeneOntologyCommitReviewModule extends IOCModule {
 	protected void configure() {
 		bind("GeneOntologyCommitAdapterCVSOntologyFileName", cvsOntologyFileName);
 		bind("GeneOntologyCommitAdapterCVSRoot", cvsRoot);
+		bindCVSPassword();
+		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
+		bindGoCvsHelper();
+		bind(OntologyCommitReviewPipelineStages.class).to(GeneOntologyReviewCommitAdapter.class);
+	}
+
+	protected void bindCVSPassword() {
 		// bind the password only via a system parameter !
 		// Reason: Do not accidently commit a secret password
 		bind("GeneOntologyCommitAdapterCVSPassword");
-		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
+	}
+
+	protected void bindGoCvsHelper() {
 		bind(GoCvsHelper.class).to(GoCvsHelper.GoCvsHelperPassword.class);
 	}
 
@@ -55,5 +66,10 @@ public class GeneOntologyCommitReviewModule extends IOCModule {
 		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
 		return configuredOntology;
 	}
-
+	
+	@Singleton
+	@Provides
+	Committer provideReviewCommitter(OntologyCommitReviewPipelineStages pipeline) {
+		return pipeline.getReviewCommitter();
+	}
 }
