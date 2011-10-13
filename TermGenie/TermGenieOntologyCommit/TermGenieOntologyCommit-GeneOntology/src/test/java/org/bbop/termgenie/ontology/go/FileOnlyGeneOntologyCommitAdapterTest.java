@@ -70,8 +70,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		String localFile = cvslocalFile.getAbsolutePath();
 		CommitHistoryStore store = injector.getInstance(CommitHistoryStore.class);
 		
+		GoCvsHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(source, iriMapper, cleaner, cvsFileName, cvsRoot);
 		/// create adapter instance, which writes to test-local resource
-		instance = new FileOnlyGeneOntologyCommitAdapter(source, iriMapper, cleaner, cvsFileName, cvsRoot, localFile, store) {
+		instance = new FileOnlyGeneOntologyCommitAdapter(source, store, helper, localFile) {
 
 			@Override
 			protected WorkFolders createTempDir() throws CommitException {

@@ -15,19 +15,26 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo;
+import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
-import org.bbop.termgenie.ontology.OntologyCommitPipeline.OntologyCommitPipelineData;
-import org.bbop.termgenie.ontology.go.AbstractOntologyCommitAdapter.OboCommitData;
+import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
+import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
 
@@ -35,23 +42,94 @@ import owltools.graph.OWLGraphWrapper.Synonym;
  * Main steps for committing ontology changes to an OBO file in an CVS
  * repository.
  */
-abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, OboCommitData, OBODoc>
+abstract class GoCvsHelper
 {
+	@Singleton
+	static final class GoCvsHelperPassword extends GoCvsHelper {
 
+		private final String cvsPassword;
+		private final String cvsRoot;
+
+		@Inject
+		GoCvsHelperPassword(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
+				IRIMapper iriMapper,
+				OntologyCleaner cleaner,
+				@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
+				@Named("GeneOntologyCommitAdapterCVSPassword") String cvsPassword,
+				@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot)
+		{
+			super(source, iriMapper, cleaner, cvsOntologyFileName);
+			this.cvsPassword = cvsPassword;
+			this.cvsRoot = cvsRoot;
+		}
+
+		@Override
+		protected CVSTools createCVS(CommitMode commitMode,
+				String username,
+				String password,
+				File cvsFolder) {
+			String realPassword;
+			if (commitMode == CommitMode.internal) {
+				realPassword = cvsPassword;
+			}
+			else {
+				realPassword = password;
+			}
+			CVSTools cvs = new CVSTools(cvsRoot, realPassword, cvsFolder);
+			return cvs;
+		}
+		
+		@Override
+		protected boolean isSupportAnonymus() {
+			return false;
+		}
+	}
+	
+	static final class GoCvsHelperAnonymous extends GoCvsHelper {
+
+		private final String cvsRoot;
+
+		GoCvsHelperAnonymous(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
+				IRIMapper iriMapper,
+				OntologyCleaner cleaner,
+				@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") String cvsOntologyFileName,
+				@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot)
+		{
+			super(source, iriMapper, cleaner, cvsOntologyFileName);
+			this.cvsRoot = cvsRoot;
+		}
+
+		@Override
+		protected CVSTools createCVS(CommitMode commitMode,
+				String username,
+				String password,
+				File cvsFolder)
+				throws CommitException
+		{
+			return new CVSTools(cvsRoot, null, cvsFolder);
+		}
+
+		@Override
+		protected boolean isSupportAnonymus() {
+			return true;
+		}
+	}
+	
+	private final ConfiguredOntology source;
 	private final DirectOntologyLoader loader;
 	private final String cvsOntologyFileName;
 
-	AbstractOntologyCommitAdapter(ConfiguredOntology source,
+	GoCvsHelper(ConfiguredOntology source,
 			IRIMapper iriMapper,
 			OntologyCleaner cleaner,
-			String cvsOntologyFileName,
-			CommitHistoryStore store,
-			boolean supportAnonymus)
+			String cvsOntologyFileName)
 	{
-		super(source, store, supportAnonymus);
+		this.source = source;
 		this.cvsOntologyFileName = cvsOntologyFileName;
 		loader = new DirectOntologyLoader(iriMapper, cleaner);
 	}
+	
+	protected abstract boolean isSupportAnonymus();
 
 	static class OboCommitData implements OntologyCommitPipelineData {
 
@@ -86,7 +164,6 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 
 	}
 
-	@Override
 	protected OboCommitData prepareWorkflow(File workFolder) throws CommitException {
 		OboCommitData data = new OboCommitData();
 
@@ -99,16 +176,17 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		return data;
 	}
 
-	@Override
 	protected CVSTools prepareSCM(CommitInfo commitInfo, OboCommitData data) throws CommitException
 	{
-		final CVSTools cvs = createCVS(commitInfo, data.cvsFolder);
+		final CVSTools cvs = createCVS(commitInfo.getCommitMode(), commitInfo.getUsername(), commitInfo.getPassword(), data.cvsFolder);
 		return cvs;
 	}
+	
+	protected abstract CVSTools createCVS(CommitMode commitMode,
+			String username,
+			String password,
+			File cvsFolder) throws CommitException;
 
-	protected abstract CVSTools createCVS(CommitInfo commitInfo, File cvsFolder);
-
-	@Override
 	protected OBODoc retrieveTargetOntology(CVSTools cvs, OboCommitData data)
 			throws CommitException
 	{
@@ -120,7 +198,6 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		return loadOntology(data.scmTargetOntology);
 	}
 
-	@Override
 	protected void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
 			throws CommitException
 	{
@@ -137,7 +214,6 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		}
 	}
 
-	@Override
 	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			final OBODoc oboDoc)
@@ -161,8 +237,40 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		}
 		return success;
 	}
+	
+	/**
+	 * @param terms
+	 * @param relations
+	 * @param oboDoc
+	 * @return true, if changes have been apply successfully
+	 * @throws CommitException
+	 */
+	protected boolean applyHistoryChanges(List<CommitedOntologyTerm> terms,
+			List<CommitedOntologyTermRelation> relations,
+			OBODoc oboDoc) throws CommitException
+	{
+		boolean success = true;
+		if (terms != null && !terms.isEmpty()) {
+			for (CommitedOntologyTerm term : terms) {
+				Modification mode = CommitHistoryTools.getModification(term.getOperation());
+				boolean csuccess = ComitAwareOBOConverterTools.handleTerm(term,
+						mode,
+						oboDoc);
+				success = success && csuccess;
+			}
+		}
+		if (relations != null && !relations.isEmpty()) {
+			for (CommitedOntologyTermRelation relation : relations) {
+				Modification mode = CommitHistoryTools.getModification(relation.getOperation());
+				boolean csuccess = ComitAwareOBOConverterTools.handleRelation(relation,
+						mode,
+						oboDoc);
+				success = success && csuccess;
+			}
+		}
+		return success;
+	}
 
-	@Override
 	protected void createModifiedTargetFile(OboCommitData data, OBODoc ontology)
 			throws CommitException
 	{
@@ -170,12 +278,35 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		data.modifiedTargetOntology = createOBOFile(data.oboFolder, ontology);
 	}
 
-	@Override
-	protected abstract void commitToRepository(CommitInfo commitInfo,
+	/**
+	 * @param username
+	 * @param scm
+	 * @param data
+	 * @param diff
+	 * @throws CommitException
+	 */
+	protected void commitToRepository(String username,
 			CVSTools scm,
 			OboCommitData data,
-			String diff) throws CommitException;
+			String diff) throws CommitException
+	{
+		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
 
+		try {
+			scm.connect();
+			scm.commit("TermGenie commit for user: " + username);
+		} catch (IOException exception) {
+			throw error("Error during CVS commit", exception, false);
+		}
+		finally {
+			try {
+				scm.close();
+			} catch (IOException exception) {
+				Logger.getLogger(getClass()).error("Could not close CVS tool.", exception);
+			}
+		}
+	}
+	
 	private boolean compareRoundTripFile(File cvsFile, File roundtripOboFile)
 			throws CommitException
 	{
@@ -243,7 +374,7 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		OBODoc ontology;
 		try {
 			// load OBO
-			ontology = loader.loadOBO(cvsFile, source.getUniqueName());
+			ontology = loader.loadOBO(cvsFile, null);
 		} catch (IOException exception) {
 			String message = "Could load recent copy of the ontology";
 			throw error(message, exception, true);
@@ -260,5 +391,34 @@ abstract class AbstractOntologyCommitAdapter extends OntologyCommitPipeline<CVST
 		OBODoc loadOBO(File file, String ontology) throws IOException {
 			return loadOBO(ontology, file.toURI().toURL());
 		}
+	}
+	
+	protected File createFolder(final File workFolder, String name) throws CommitException {
+		final File folder;
+		try {
+			folder = new File(workFolder, name);
+			FileUtils.forceMkdir(folder);
+		} catch (IOException exception) {
+			String message = "Could not create working directory " + name + " for the commit";
+			throw error(message, exception, true);
+		}
+		return folder;
+	}
+
+	protected void copyFileForCommit(File source, File target) throws CommitException {
+		try {
+			FileUtils.copyFile(source, target);
+		} catch (IOException exception) {
+			String message = "Could not write ontology changes to commit file";
+			throw error(message, exception, true);
+		}
+	}
+	
+	protected CommitException error(String message, Throwable exception, boolean rollback) {
+		return OntologyCommitPipeline.error(message, exception, rollback, getClass());
+	}
+
+	protected CommitException error(String message, boolean rollback) {
+		return  OntologyCommitPipeline.error(message, rollback, getClass());
 	}
 }

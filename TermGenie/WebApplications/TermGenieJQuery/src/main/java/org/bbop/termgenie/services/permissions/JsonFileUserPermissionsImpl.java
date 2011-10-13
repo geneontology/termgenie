@@ -18,7 +18,6 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	private static final String FLAG_SCREEN_NAME = "screenname";
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
-	private static final String GROUP_GLOBAL_PERMISSIONS = "globalPermissions";
 	private static final String APPLICATION_NAME = "termgenie";
 	
 	private final File jsonPermissionsFile;
@@ -46,8 +45,8 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	@Override
-	public boolean allowCommitReview(String guid) {
-		return checkPermissions(guid, GROUP_GLOBAL_PERMISSIONS, FLAG_ALLOW_COMMIT_REVIEW);
+	public boolean allowCommitReview(String guid, Ontology ontology) {
+		return checkPermissions(guid, ontology.getUniqueName(), FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public CommitUserData getCommitReviewUserData(String guid, Ontology ontology) {
-		return retrieveCommitUserData(guid, GROUP_GLOBAL_PERMISSIONS, ontology, FLAG_ALLOW_COMMIT_REVIEW);
+		return retrieveCommitUserData(guid, ontology.getUniqueName(), ontology, FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.List;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
-import org.bbop.termgenie.ontology.entities.CommitHistory;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
@@ -21,8 +21,7 @@ public class CommitHistoryTools {
 		// no instances allowed
 	}
 
-	public static CommitHistoryItem add(CommitHistory history,
-			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	public static CommitHistoryItem create(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			String user,
 			Date date)
@@ -34,38 +33,14 @@ public class CommitHistoryTools {
 		item.setUser(user);
 		item.setDate(date);
 
-		synchronized (history) {
-			List<CommitHistoryItem> items = history.getItems();
-			if (items == null) {
-				items = new ArrayList<CommitHistoryItem>();
-			}
-			items.add(item);
-			history.setItems(items);
-		}
 		return item;
 	}
-
-	public static CommitHistory create(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
-			String user,
-			Date date)
-	{
-		CommitHistoryItem item = new CommitHistoryItem();
-
-		item.setTerms(translateTerms(terms));
-		item.setRelations(translateCommitRelations(relations));
-		item.setUser(user);
-		item.setDate(date);
-
-		CommitHistory history = new CommitHistory();
-		List<CommitHistoryItem> items = history.getItems();
-		if (items == null) {
-			items = new ArrayList<CommitHistoryItem>();
+	
+	public static Modification getModification(int type) {
+		if (type >= 0 && type < Modification.values().length) {
+			return Modification.values()[type];
 		}
-		items.add(item);
-		history.setItems(items);
-		return history;
-
+		return null;
 	}
 
 	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms)

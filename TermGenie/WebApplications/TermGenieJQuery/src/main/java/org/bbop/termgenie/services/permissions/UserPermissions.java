@@ -5,7 +5,7 @@ import org.bbop.termgenie.core.Ontology;
 
 public interface UserPermissions {
 
-	public boolean allowCommitReview(String guid);
+	public boolean allowCommitReview(String guid, Ontology ontology);
 	
 	/**
 	 * Retrieve the commit user information for a user and ontology during commit review.

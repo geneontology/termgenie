@@ -167,7 +167,11 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 				// create result
 				result = new JsonCommitResult();
-				result.setMessage("Commit operation finished successfully.");
+				String message = commitResult.getMessage();
+				if (message == null) {
+					message = "Commit operation finished successfully.";
+				}
+				result.setMessage(message);
 				result.setTerms(terms);
 				result.setSuccess(true);
 				result.setDiff(commitResult.getDiff());

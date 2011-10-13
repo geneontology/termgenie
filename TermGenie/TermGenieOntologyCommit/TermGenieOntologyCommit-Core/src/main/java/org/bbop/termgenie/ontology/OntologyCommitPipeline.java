@@ -12,8 +12,6 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
-import org.bbop.termgenie.ontology.OntologyCommitPipeline.OntologyCommitPipelineData;
-import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.tools.Pair;
@@ -23,7 +21,7 @@ import difflib.DiffUtils;
 import difflib.Patch;
 
 /**
- * Main steps for committing ontology changes to an ontology file in an SCM
+ * Main steps for directly committing ontology changes to an ontology file in an SCM
  * repository.
  * 
  * @param <SCM> the tool to access and modify the ontology repository
@@ -33,18 +31,6 @@ import difflib.Patch;
 public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyCommitPipelineData, ONTOLOGY> implements
 		Committer
 {
-
-	public static interface OntologyCommitPipelineData {
-
-		public File getSCMTargetFile();
-
-		public File getTargetFile();
-
-		public File getModifiedTargetFile();
-
-		public File getModifiedSCMTargetFile();
-	}
-
 	protected final ConfiguredOntology source;
 	private final CommitHistoryStore store;
 	private final boolean supportAnonymus;
@@ -58,7 +44,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		this.supportAnonymus = supportAnonymus;
 		this.store = store;
 	}
-
+	
 	@Override
 	public CommitResult commit(CommitInfo commitInfo) throws CommitException {
 		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
@@ -179,9 +165,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		
 		// store the changes in the local commit history,
 		// mark them as unfinished
-		final CommitHistoryData commitHistoryData = updateCommitHistory(commitInfo,
-				terms,
-				relations);
+		final CommitHistoryItem item = updateCommitHistory(commitInfo, terms, relations);
 
 		// create the diff from the written and round-trip file
 		Pair<String, Patch> pair = createUnifiedDiff(targetFile,
@@ -194,11 +178,11 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 
 		// commit the changes to the repository
 		String diff = pair.getOne();
-		commitToRepository(commitInfo, scm, data, diff);
+		commitToRepository(commitInfo.getTermgenieUser(), scm, data, diff);
 
 		// set the commit also to success in the commit history
-		finalizeCommitHistory(commitHistoryData);
-		return new CommitResult(true, diff);
+		finalizeCommitHistory(item);
+		return new CommitResult(true, null, diff);
 	}
 
 	/**
@@ -273,46 +257,25 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	 * @param diff
 	 * @throws CommitException
 	 */
-	protected abstract void commitToRepository(CommitInfo commitInfo,
+	protected abstract void commitToRepository(String username,
 			SCM scm,
 			WORKFLOWDATA data,
 			String diff) throws CommitException;
 
-	private CommitHistoryData updateCommitHistory(CommitInfo commitInfo,
+	private CommitHistoryItem updateCommitHistory(CommitInfo commitInfo,
 			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations) throws CommitException
 	{
-		final CommitHistoryData commitHistoryData;
 		try {
 			// add terms to local commit log
-			CommitHistory history = store.loadAll(source.getUniqueName());
 			Date date = new Date();
 			String user = commitInfo.getUsername();
-			CommitHistoryItem historyItem;
-			if (history == null) {
-				history = CommitHistoryTools.create(terms, relations, user, date);
-				historyItem = history.getItems().get(0);
-			}
-			else {
-				historyItem = CommitHistoryTools.add(history, terms, relations, user, date);
-			}
-			store.store(history);
-			commitHistoryData = new CommitHistoryData(history, historyItem);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, relations, user, date);
+			store.add(historyItem, source.getUniqueName());
+			return historyItem;
 		} catch (CommitHistoryStoreException exception) {
 			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
 			throw error(message, exception, true);
-		}
-		return commitHistoryData;
-	}
-
-	private static class CommitHistoryData {
-
-		CommitHistory history;
-		CommitHistoryItem historyItem;
-
-		CommitHistoryData(CommitHistory history, CommitHistoryItem historyItem) {
-			this.history = history;
-			this.historyItem = historyItem;
 		}
 	}
 
@@ -355,11 +318,11 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		}
 	}
 
-	private void finalizeCommitHistory(CommitHistoryData commitHistoryData) throws CommitException {
+	private void finalizeCommitHistory(CommitHistoryItem item) throws CommitException {
 		try {
 			// set terms in commit log as committed
-			commitHistoryData.historyItem.setCommitted(true);
-			store.store(commitHistoryData.history);
+			item.setCommitted(true);
+			store.update(item, source.getUniqueName());
 		} catch (CommitHistoryStoreException exception) {
 			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
 			throw error(message, exception, false);
@@ -367,33 +330,21 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	}
 
 	protected CommitException error(String message, Throwable exception, boolean rollback) {
-		Logger.getLogger(getClass()).warn(message, exception);
-		return new CommitException(message, exception, rollback);
+		return error(message, exception, rollback, getClass());
 	}
 
 	protected CommitException error(String message, boolean rollback) {
-		Logger.getLogger(getClass()).warn(message);
+		return error(message, rollback, getClass());
+	}
+	
+	public static CommitException error(String message, Throwable exception, boolean rollback, Class<?> cls) {
+		Logger.getLogger(cls).warn(message, exception);
+		return new CommitException(message, exception, rollback);
+	}
+
+	public static CommitException error(String message, boolean rollback, Class<?> cls) {
+		Logger.getLogger(cls).warn(message);
 		return new CommitException(message, rollback);
 	}
 
-	protected File createFolder(final File workFolder, String name) throws CommitException {
-		final File folder;
-		try {
-			folder = new File(workFolder, name);
-			FileUtils.forceMkdir(folder);
-		} catch (IOException exception) {
-			String message = "Could not create working directory " + name + " for the commit";
-			throw error(message, exception, true);
-		}
-		return folder;
-	}
-
-	protected void copyFileForCommit(File source, File target) throws CommitException {
-		try {
-			FileUtils.copyFile(source, target);
-		} catch (IOException exception) {
-			String message = "Could not write ontology changes to commit file";
-			throw new CommitException(message, exception, true);
-		}
-	}
 }

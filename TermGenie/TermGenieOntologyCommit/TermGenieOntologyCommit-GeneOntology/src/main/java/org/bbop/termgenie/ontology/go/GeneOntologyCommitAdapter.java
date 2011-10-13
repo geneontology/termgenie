@@ -1,78 +1,87 @@
 package org.bbop.termgenie.ontology.go;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.Ontology.IRelation;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
-import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.CommitObject;
+import org.bbop.termgenie.ontology.OntologyCommitPipeline;
+import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.obolibrary.oboformat.model.OBODoc;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class GeneOntologyCommitAdapter extends AbstractOntologyCommitAdapter {
+public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, OboCommitData, OBODoc> {
 
-	private static final Logger logger = Logger.getLogger(GeneOntologyCommitAdapter.class);
-
-	private final String cvsRoot;
-	private final String cvsPassword;
-
+	protected final GoCvsHelper helper;
+	
 	@Inject
-	GeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
-			IRIMapper iriMapper,
-			OntologyCleaner cleaner,
-			@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
-			@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot,
-			@Named("GeneOntologyCommitAdapterCVSPassword") String cvsPassword,
-			CommitHistoryStore store)
+	GeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") final ConfiguredOntology source,
+			final CommitHistoryStore store,
+			final GoCvsHelper helper)
 	{
-		super(source, iriMapper, cleaner, cvsOntologyFileName, store, false);
-		this.cvsRoot = cvsRoot;
-		this.cvsPassword = cvsPassword;
+		super(source, store, helper.isSupportAnonymus());
+		this.helper = helper;
+	}
+	
+	@Override
+	protected OboCommitData prepareWorkflow(File workFolder) throws CommitException {
+		return helper.prepareWorkflow(workFolder);
 	}
 
 	@Override
-	protected void commitToRepository(CommitInfo commitInfo,
+	protected CVSTools prepareSCM(CommitInfo commitInfo, OboCommitData data) throws CommitException
+	{
+		return helper.prepareSCM(commitInfo, data);
+	}
+
+	@Override
+	protected OBODoc retrieveTargetOntology(CVSTools cvs, OboCommitData data)
+			throws CommitException
+	{
+		return helper.retrieveTargetOntology(cvs, data);
+	}
+
+	@Override
+	protected void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
+			throws CommitException
+	{
+		helper.checkTargetOntology(data, targetOntology);
+	}
+
+	@Override
+	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+			List<CommitObject<Relation>> relations,
+			final OBODoc oboDoc)
+	{
+		return helper.applyChanges(terms, relations, oboDoc);
+	}
+
+	@Override
+	protected void createModifiedTargetFile(OboCommitData data, OBODoc ontology)
+			throws CommitException
+	{
+		helper.createModifiedTargetFile(data, ontology);
+	}
+
+	@Override
+	protected void commitToRepository(String username,
 			CVSTools scm,
 			OboCommitData data,
 			String diff) throws CommitException
 	{
-		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
-
-		try {
-			scm.connect();
-			scm.commit("TermGenie commit for user: " + commitInfo.getTermgenieUser());
-		} catch (IOException exception) {
-			throw error("Error during CVS commit", exception, false);
-		}
-		finally {
-			try {
-				scm.close();
-			} catch (IOException exception) {
-				logger.error("Could not close CVS tool.", exception);
-			}
-		}
+		helper.commitToRepository(username, scm, data, diff);
 	}
-
-	@Override
-	protected CVSTools createCVS(CommitInfo commitInfo, File cvsFolder) {
-		String realPassword;
-		if (commitInfo.getCommitMode() == CommitMode.internal) {
-			realPassword = cvsPassword;
-		}
-		else {
-			realPassword = commitInfo.getPassword();
-		}
-		CVSTools cvs = new CVSTools(cvsRoot, realPassword, cvsFolder);
-		return cvs;
-	}
-
 }

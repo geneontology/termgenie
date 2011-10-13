@@ -2,7 +2,12 @@ package org.bbop.termgenie.services.review;
 
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.data.JsonCommitResult;
+import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
+import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
+import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 
@@ -12,25 +17,28 @@ import com.google.inject.Singleton;
 @Singleton
 public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
-	private InternalSessionHandler sessionHandler;
-	private UserPermissions permissions;
+	private final InternalSessionHandler sessionHandler;
+	private final UserPermissions permissions;
+	private final OntologyCommitReviewPipelineStages stages;
+	private final Ontology ontology;
 	
-	/**
-	 * @param sessionHandler
-	 * @param permissions
-	 */
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
-			UserPermissions permissions)
+			UserPermissions permissions,
+			Ontology ontology,
+			OntologyCommitReviewPipelineStages stages)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
+		this.ontology = ontology;
+		this.stages = stages;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		Committer reviewCommitter = stages.getReviewCommitter();
+		return reviewCommitter != null;
 	}
 
 	@Override
@@ -39,7 +47,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		if (screenname != null) {
 			String guid = sessionHandler.getGUID(session);
 			if (guid != null) {
-				boolean allowCommitReview = permissions.allowCommitReview(guid);
+				boolean allowCommitReview = permissions.allowCommitReview(guid, ontology);
 				return allowCommitReview;
 			}
 		}
@@ -48,7 +56,10 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 	@Override
 	public JsonCommitReviewEntry[] getPendingCommits(String sessionId, HttpSession session) {
-		// TODO Auto-generated method stub
+		if (isAuthorized(sessionId, session)) {
+			BeforeReview beforeReview = stages.getBeforeReview();
+//			List<CommitHistoryItem> items = beforeReview.getItemsForReview();
+		}
 		return null;
 	}
 
@@ -57,7 +68,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			JsonCommitReviewEntry[] entries,
 			HttpSession session)
 	{
-		// TODO Auto-generated method stub
+		if (isAuthorized(sessionId, session)) {
+			// apply changes by the reviewer and store them in the history
+			// TODO
+			
+			// write changes to repository
+			AfterReview afterReview = stages.getAfterReview();
+//			afterReview.commit(historyIds, mode, username, password);
+		}
 		return null;
 	}
 

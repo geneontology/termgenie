@@ -5,9 +5,7 @@ import java.io.File;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
-import org.bbop.termgenie.ontology.CommitInfo;
-import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 import com.google.inject.Inject;
@@ -21,37 +19,26 @@ import com.google.inject.name.Named;
  * commit overwrites the previous one. There is no merge support in this class.
  */
 @Singleton
-public class FileOnlyGeneOntologyCommitAdapter extends AbstractOntologyCommitAdapter {
+public class FileOnlyGeneOntologyCommitAdapter extends GeneOntologyCommitAdapter {
 
 	private final File localFile;
-	private final String cvsRoot;
 
 	@Inject
-	FileOnlyGeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
-			IRIMapper iriMapper,
-			OntologyCleaner cleaner,
-			@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
-			@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot,
-			@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") String localFile,
-			CommitHistoryStore store)
+	FileOnlyGeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") final ConfiguredOntology source,
+			final CommitHistoryStore store,
+			final GoCvsHelper helper,
+			@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") final String localFile)
 	{
-		super(source, iriMapper, cleaner, cvsOntologyFileName, store, true);
-		this.cvsRoot = cvsRoot;
+		super(source, store, helper);
 		this.localFile = new File(localFile);
 	}
 
 	@Override
-	protected void commitToRepository(CommitInfo commitInfo,
+	protected void commitToRepository(String username,
 			CVSTools scm,
 			OboCommitData data,
 			String diff) throws CommitException
 	{
-		copyFileForCommit(data.getModifiedSCMTargetFile(), localFile);
+		helper.copyFileForCommit(data.getModifiedSCMTargetFile(), localFile);
 	}
-
-	@Override
-	protected CVSTools createCVS(CommitInfo commitInfo, File cvsFolder) {
-		return new CVSTools(cvsRoot, null, cvsFolder);
-	}
-
 }
