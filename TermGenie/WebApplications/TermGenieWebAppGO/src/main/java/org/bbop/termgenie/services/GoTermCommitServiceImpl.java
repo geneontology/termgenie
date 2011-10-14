@@ -62,6 +62,6 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 		if (screenname == null) {
 			screenname = termgenieUser;
 		}
-		return new GoCommitInfo(terms, null, screenname);
+		return new GoCommitInfo(terms, screenname);
 	}
 }

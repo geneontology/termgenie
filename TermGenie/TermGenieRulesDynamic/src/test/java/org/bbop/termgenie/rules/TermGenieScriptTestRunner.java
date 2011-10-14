@@ -135,7 +135,7 @@ public class TermGenieScriptTestRunner {
 		return task.term;
 	}
 
-	private final class OntologyTaskImplementation implements OntologyTask {
+	private final class OntologyTaskImplementation extends OntologyTask {
 
 		private DefaultOntologyTerm term = null;
 		private final String id;
@@ -149,7 +149,7 @@ public class TermGenieScriptTestRunner {
 		}
 
 		@Override
-		public Modified run(OWLGraphWrapper managed) {
+		protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 			OWLObject x = managed.getOWLObjectByIdentifier(id);
 			String label = managed.getLabel(x);
 			String definition = managed.getDef(x);
@@ -158,7 +158,6 @@ public class TermGenieScriptTestRunner {
 			Map<String, String> metaData = new HashMap<String, String>();
 			List<IRelation> relations = Collections.emptyList();
 			term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
-			return Modified.no;
 		}
 	}
 }

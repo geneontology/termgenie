@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -67,13 +66,12 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 
 	private CommitResult commitInternal(CommitInfo commitInfo) throws CommitException {
 		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
-		List<CommitObject<Relation>> relations = commitInfo.getRelations();
 
 		// setup temporary work folder
 		final WorkFolders workFolders = createTempDir();
 
 		try {
-			return commitInternal(commitInfo, terms, relations, workFolders);
+			return commitInternal(commitInfo, terms, workFolders);
 		}
 		finally {
 			// delete temp folder
@@ -125,7 +123,6 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 
 	private CommitResult commitInternal(CommitInfo commitInfo,
 			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			final WorkFolders workFolders) throws CommitException
 	{
 		WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
@@ -141,7 +138,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		checkTargetOntology(data, targetOntology);
 
 		// apply changes to ontology in memory
-		final boolean success = applyChanges(terms, relations, targetOntology);
+		final boolean success = applyChanges(terms, targetOntology);
 		if (!success) {
 			String message = "Could not apply changes to ontology.";
 			throw new CommitException(message, true);
@@ -165,7 +162,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		
 		// store the changes in the local commit history,
 		// mark them as unfinished
-		final CommitHistoryItem item = updateCommitHistory(commitInfo, terms, relations);
+		final CommitHistoryItem item = updateCommitHistory(commitInfo, terms);
 
 		// create the diff from the written and round-trip file
 		Pair<String, Patch> pair = createUnifiedDiff(targetFile,
@@ -235,7 +232,6 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	 * @throws CommitException
 	 */
 	protected abstract boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			ONTOLOGY ontology) throws CommitException;
 
 	/**
@@ -263,14 +259,13 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 			String diff) throws CommitException;
 
 	private CommitHistoryItem updateCommitHistory(CommitInfo commitInfo,
-			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations) throws CommitException
+			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms) throws CommitException
 	{
 		try {
 			// add terms to local commit log
 			Date date = new Date();
 			String user = commitInfo.getUsername();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, relations, user, date);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, user, date);
 			store.add(historyItem, source.getUniqueName());
 			return historyItem;
 		} catch (CommitHistoryStoreException exception) {

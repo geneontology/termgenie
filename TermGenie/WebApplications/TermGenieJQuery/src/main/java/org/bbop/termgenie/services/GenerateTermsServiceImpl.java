@@ -393,7 +393,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 	}
 
-	private static class OntologyTermTask implements OntologyTask {
+	private static class OntologyTermTask extends OntologyTask {
 
 		private final String id;
 		private OntologyTerm<Synonym, IRelation> term = null;
@@ -402,8 +402,10 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			this.id = id;
 		}
 
+		
+		
 		@Override
-		public Modified run(OWLGraphWrapper realInstance) {
+		protected void runCatching(OWLGraphWrapper realInstance) throws Exception {
 			String label = null;
 			String definition = null;
 			List<Synonym> synonyms = null;
@@ -445,7 +447,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				}
 			}
 			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
-			return Modified.no;
 		}
 
 		OntologyTerm<Synonym, IRelation> getTerm() {

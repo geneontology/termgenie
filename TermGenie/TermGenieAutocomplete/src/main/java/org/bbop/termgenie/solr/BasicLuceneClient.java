@@ -118,10 +118,13 @@ public class BasicLuceneClient implements
 		BasicLuceneClient client = new BasicLuceneClient(name, roots, dlQuery, branches, factory);
 		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
 		ontology.runManagedTask(task);
+		if (task.getException() != null) {
+			throw new RuntimeException(task.getException());
+		}
 		return task.client;
 	}
 
-	static class LuceneClientSetupTask implements OntologyTask {
+	static class LuceneClientSetupTask extends OntologyTask {
 
 		BasicLuceneClient client = null;
 
@@ -134,11 +137,9 @@ public class BasicLuceneClient implements
 		}
 
 		@Override
-		public Modified run(OWLGraphWrapper managed) {
+		protected void runCatching(OWLGraphWrapper managed) throws Exception {
 			client.setup(managed);
-			return Modified.no;
 		}
-
 	}
 
 	/**

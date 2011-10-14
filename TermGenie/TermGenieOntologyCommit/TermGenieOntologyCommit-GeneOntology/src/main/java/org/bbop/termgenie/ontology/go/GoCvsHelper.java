@@ -12,7 +12,6 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
@@ -25,18 +24,17 @@ import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
+import owltools.graph.OWLGraphWrapper.Synonym;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-
-import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
  * Main steps for committing ontology changes to an OBO file in an CVS
@@ -83,12 +81,29 @@ abstract class GoCvsHelper
 		protected boolean isSupportAnonymus() {
 			return false;
 		}
+		
+		@Override
+		protected CommitMode getCommitMode() {
+			return CommitMode.explicit;
+		}
+		
+		@Override
+		protected String getCommitUserName() {
+			return null; // encoded in the cvs root
+		}
+		
+		@Override
+		protected String getCommitPassword() {
+			return cvsPassword;
+		}
 	}
 	
+	@Singleton
 	static final class GoCvsHelperAnonymous extends GoCvsHelper {
 
 		private final String cvsRoot;
 
+		@Inject
 		GoCvsHelperAnonymous(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
@@ -113,6 +128,21 @@ abstract class GoCvsHelper
 		protected boolean isSupportAnonymus() {
 			return true;
 		}
+		
+		@Override
+		protected CommitMode getCommitMode() {
+			return CommitMode.anonymus;
+		}
+		
+		@Override
+		protected String getCommitUserName() {
+			return null; // encoded in the cvs root
+		}
+		
+		@Override
+		protected String getCommitPassword() {
+			return null; // no password
+		}
 	}
 	
 	private final ConfiguredOntology source;
@@ -130,6 +160,12 @@ abstract class GoCvsHelper
 	}
 	
 	protected abstract boolean isSupportAnonymus();
+	
+	protected abstract CommitMode getCommitMode();
+	
+	protected abstract String getCommitUserName();
+	
+	protected abstract String getCommitPassword();
 
 	static class OboCommitData implements OntologyCommitPipelineData {
 
@@ -215,7 +251,6 @@ abstract class GoCvsHelper
 	}
 
 	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			final OBODoc oboDoc)
 	{
 		boolean success = true;
@@ -227,26 +262,16 @@ abstract class GoCvsHelper
 				success = success && csuccess;
 			}
 		}
-		if (relations != null && !relations.isEmpty()) {
-			for (CommitObject<Relation> commitObject : relations) {
-				boolean csuccess = ComitAwareOBOConverterTools.handleRelation(commitObject.getObject(),
-						commitObject.getType(),
-						oboDoc);
-				success = success && csuccess;
-			}
-		}
 		return success;
 	}
 	
 	/**
 	 * @param terms
-	 * @param relations
 	 * @param oboDoc
 	 * @return true, if changes have been apply successfully
 	 * @throws CommitException
 	 */
 	protected boolean applyHistoryChanges(List<CommitedOntologyTerm> terms,
-			List<CommitedOntologyTermRelation> relations,
 			OBODoc oboDoc) throws CommitException
 	{
 		boolean success = true;
@@ -254,15 +279,6 @@ abstract class GoCvsHelper
 			for (CommitedOntologyTerm term : terms) {
 				Modification mode = CommitHistoryTools.getModification(term.getOperation());
 				boolean csuccess = ComitAwareOBOConverterTools.handleTerm(term,
-						mode,
-						oboDoc);
-				success = success && csuccess;
-			}
-		}
-		if (relations != null && !relations.isEmpty()) {
-			for (CommitedOntologyTermRelation relation : relations) {
-				Modification mode = CommitHistoryTools.getModification(relation.getOperation());
-				boolean csuccess = ComitAwareOBOConverterTools.handleRelation(relation,
 						mode,
 						oboDoc);
 				success = success && csuccess;

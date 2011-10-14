@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
 
@@ -12,7 +11,6 @@ import owltools.graph.OWLGraphWrapper.Synonym;
 public class CommitInfo {
 
 	private final List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms;
-	private final List<CommitObject<Relation>> relations;
 	
 	public enum CommitMode {
 		anonymus, internal, explicit
@@ -26,14 +24,12 @@ public class CommitInfo {
 	
 	/**
 	 * @param terms
-	 * @param relations
 	 * @param termgenieUser
 	 * @param commitMode
 	 * @param username
 	 * @param password
 	 */
 	public CommitInfo(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			String termgenieUser,
 			CommitMode commitMode,
 			String username,
@@ -41,7 +37,6 @@ public class CommitInfo {
 	{
 		super();
 		this.terms = terms;
-		this.relations = relations;
 		this.termgenieUser = termgenieUser;
 		this.commitMode = commitMode;
 		this.username = username;
@@ -55,13 +50,6 @@ public class CommitInfo {
 		return terms;
 	}
 
-	/**
-	 * @return the relations
-	 */
-	public List<CommitObject<Relation>> getRelations() {
-		return relations;
-	}
-	
 	/**
 	 * @return the termgenieUser
 	 */

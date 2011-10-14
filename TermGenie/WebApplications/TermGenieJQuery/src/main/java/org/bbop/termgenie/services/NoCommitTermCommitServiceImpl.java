@@ -1,7 +1,7 @@
 package org.bbop.termgenie.services;
 
-import java.io.BufferedWriter;
-import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,17 +15,15 @@ import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
-import org.obolibrary.oboformat.model.FrameMergeException;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-import org.obolibrary.oboformat.writer.OBOFormatWriter;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -63,9 +61,9 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		}
 		CreateExportDiffTask task = new CreateExportDiffTask(terms);
 		manager.runManagedTask(task);
-		if (task.exception != null) {
+		if (task.getException() != null) {
 			result.setSuccess(false);
-			result.setMessage("Could not create OBO export: " + task.exception.getMessage());
+			result.setMessage("Could not create OBO export: " + task.getException().getMessage());
 			return result;
 		}
 		if (task.oboDiff == null) {
@@ -82,11 +80,10 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	}
 
 	
-	private class CreateExportDiffTask implements OntologyTask {
+	private class CreateExportDiffTask extends OntologyTask {
 
 		private final JsonOntologyTerm[] terms;
 
-		private Throwable exception = null;
 		private String oboDiff = null;
 
 		public CreateExportDiffTask(JsonOntologyTerm[] terms) {
@@ -94,16 +91,11 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		}
 
 		@Override
-		public Modified run(OWLGraphWrapper managed) {
+		protected void runCatching(OWLGraphWrapper managed) throws Exception {
 			
 			OBODoc oboDoc;
-			try {
-				Owl2Obo owl2Obo = new Owl2Obo();
-				oboDoc = owl2Obo.convert(managed.getSourceOntology());
-			} catch (OWLOntologyCreationException exception) {
-				this.exception = exception;
-				return Modified.no;
-			}
+			Owl2Obo owl2Obo = new Owl2Obo();
+			oboDoc = owl2Obo.convert(managed.getSourceOntology());
 			
 			for (JsonOntologyTerm term : terms) {
 				final Frame frame = new Frame(FrameType.TERM);
@@ -158,29 +150,14 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				addClause(frame, OboFormatTag.TAG_CREATED_BY, metaData.getCreated_by());
 				addClause(frame, OboFormatTag.TAG_CREATION_DATE, metaData.getCreation_date());
 
-				try {
-					oboDoc.addTermFrame(frame);
-				} catch (FrameMergeException exception) {
-					this.exception = exception;
-					return Modified.no;
-				}
+				oboDoc.addTermFrame(frame);
 			}
 			
-			try {
-				OBOFormatWriter oboWriter = new OBOFormatWriter();
-				StringWriter stringWriter = new StringWriter();
-				BufferedWriter writer = new BufferedWriter(stringWriter);
-				for (JsonOntologyTerm term : terms) {
-					Frame termFrame = oboDoc.getTermFrame(term.getTempId());
-					oboWriter.write(termFrame, writer, oboDoc);
-					writer.append('\n');
-				}
-				writer.close();
-				oboDiff = stringWriter.getBuffer().toString();
-			} catch (Exception exception) {
-				this.exception = exception;
+			List<String> ids = new ArrayList<String>(terms.length);
+			for (JsonOntologyTerm term : terms) {
+				ids.add(term.getTempId());
 			}
-			return Modified.no;
+			oboDiff = OBOWriterTools.writeTerms(ids, oboDoc);
 		}
 
 	}

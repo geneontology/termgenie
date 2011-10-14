@@ -13,7 +13,6 @@ import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreExceptio
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.tools.Pair;
 
 import difflib.DiffUtils;
@@ -53,7 +52,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			// add terms to local commit log
 			Date date = new Date();
 			String user = commitInfo.getUsername();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getRelations(), user, date);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), user, date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
 			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", diff);
@@ -72,13 +71,13 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	}
 
 	@Override
-	public List<CommitResult> commit(List<Integer> historyIds,
-			CommitMode mode,
-			String username,
-			String password) throws CommitException
+	public List<CommitResult> commit(List<Integer> historyIds) throws CommitException
 	{
 		// check commit info mode
 		if (historyIds != null && !historyIds.isEmpty()) {
+			CommitMode mode = getCommitMode();
+			String username = getCommitUserName();
+			String password = getCommitPassword();
 			if (mode == CommitMode.explicit) {
 				if (username == null) {
 					throw new CommitException("If explicit mode is selected, an username is required.", true);
@@ -95,6 +94,12 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		return Collections.singletonList(CommitResult.ERROR);
 	}
 
+	protected abstract CommitMode getCommitMode();
+	
+	protected abstract String getCommitUserName();
+	
+	protected abstract String getCommitPassword();
+	
 	private List<CommitResult> commitInternal(List<Integer> historyIds,
 			CommitMode mode,
 			String username,
@@ -179,9 +184,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			checkTargetOntology(data, targetOntology);
 
 			// apply changes to ontology in memory
-			final boolean success = applyChanges(item.getTerms(),
-					item.getRelations(),
-					targetOntology);
+			final boolean success = applyChanges(item.getTerms(), targetOntology);
 			if (!success) {
 				String message = "Could not apply changes to ontology.";
 				throw new CommitException(message, true);
@@ -303,7 +306,6 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	 * @throws CommitException
 	 */
 	protected abstract boolean applyChanges(List<CommitedOntologyTerm> terms,
-			List<CommitedOntologyTermRelation> relations,
 			ONTOLOGY ontology) throws CommitException;
 
 	/**

@@ -15,7 +15,6 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -76,16 +75,6 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 							if (operation >= 0) {
 								Modification mode = Modification.values()[operation];
 								ComitAwareOBOConverterTools.handleTerm(term, mode, obodoc);
-							}
-						}
-					}
-					List<CommitedOntologyTermRelation> relations = item.getRelations();
-					if (relations != null) {
-						for (CommitedOntologyTermRelation relation : relations) {
-							int operation = relation.getOperation();
-							if (operation >= 0) {
-								Modification mode = Modification.values()[operation];
-								ComitAwareOBOConverterTools.handleRelation(relation, mode, obodoc);
 							}
 						}
 					}

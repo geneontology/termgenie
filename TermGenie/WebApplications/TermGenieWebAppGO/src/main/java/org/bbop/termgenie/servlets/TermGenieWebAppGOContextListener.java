@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.GeneOntologyCommitReviewModule;
 import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
+import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -71,9 +72,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 			@Override
 			@Singleton
-			protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration)
+			protected OntologyTaskManager getTermCommitReviewServiceOntology(OntologyConfiguration configuration,  OntologyLoader ontologyLoader)
 			{
-				return configuration.getOntologyConfigurations().get("GeneOntology");
+				ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
+				return ontologyLoader.getOntology(configuredOntology);
 			}
 			
 		};

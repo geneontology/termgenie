@@ -21,7 +21,6 @@ public class CommitHistoryItem {
 	private boolean committed = false;
 
 	private List<CommitedOntologyTerm> terms = null;
-	private List<CommitedOntologyTermRelation> relations = null;
 
 	/**
 	 * @return the id
@@ -100,19 +99,4 @@ public class CommitHistoryItem {
 		this.terms = terms;
 	}
 	
-	/**
-	 * @return the relations
-	 */
-	@PersistentCollection
-	public List<CommitedOntologyTermRelation> getRelations() {
-		return relations;
-	}
-
-	/**
-	 * @param relations the relations to set
-	 */
-	public void setRelations(List<CommitedOntologyTermRelation> relations) {
-		this.relations = relations;
-	}
-
 }

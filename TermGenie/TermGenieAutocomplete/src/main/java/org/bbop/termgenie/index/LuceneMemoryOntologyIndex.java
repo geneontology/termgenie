@@ -470,25 +470,23 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
 		final ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
 
-		ontology.runManagedTask(new OntologyTask() {
+		OntologyTask task = new OntologyTask() {
 
 			@Override
-			public Modified run(OWLGraphWrapper managed) {
-				try {
-					LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
-					Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
-					for (SearchResult searchResult : results) {
-						String id = managed.getIdentifier(searchResult.hit);
-						String label = managed.getLabel(searchResult.hit);
-						System.out.println(id + "  " + searchResult.score + "  " + label);
-					}
-					return Modified.no;
-				} catch (IOException exception) {
-					throw new RuntimeException(exception);
+			protected void runCatching(OWLGraphWrapper managed) throws Exception {
+				LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
+				Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
+				for (SearchResult searchResult : results) {
+					String id = managed.getIdentifier(searchResult.hit);
+					String label = managed.getLabel(searchResult.hit);
+					System.out.println(id + "  " + searchResult.score + "  " + label);
 				}
 			}
-
-		});
+		};
+		ontology.runManagedTask(task);
+		if (task.getException() != null) {
+			throw new RuntimeException(task.getException());
+		}
 	}
 
 	@Override

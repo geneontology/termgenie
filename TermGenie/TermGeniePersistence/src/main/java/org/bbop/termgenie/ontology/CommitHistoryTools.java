@@ -22,14 +22,12 @@ public class CommitHistoryTools {
 	}
 
 	public static CommitHistoryItem create(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			String user,
 			Date date)
 	{
 		CommitHistoryItem item = new CommitHistoryItem();
 
 		item.setTerms(translateTerms(terms));
-		item.setRelations(translateCommitRelations(relations));
 		item.setUser(user);
 		item.setDate(date);
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -63,10 +62,9 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 
 	@Override
 	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
 			final OBODoc oboDoc)
 	{
-		return helper.applyChanges(terms, relations, oboDoc);
+		return helper.applyChanges(terms, oboDoc);
 	}
 
 	@Override

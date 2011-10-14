@@ -1,8 +1,9 @@
 package org.bbop.termgenie.services.review;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -35,7 +36,7 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	@Named("TermCommitReviewServiceOntology")
 	@Provides
 	@Singleton
-	protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration){
+	protected OntologyTaskManager getTermCommitReviewServiceOntology(OntologyConfiguration configuration, OntologyLoader ontologyLoader){
 		throw new RuntimeException("This method must be overwritten, if reviews are enabled");
 	}
 

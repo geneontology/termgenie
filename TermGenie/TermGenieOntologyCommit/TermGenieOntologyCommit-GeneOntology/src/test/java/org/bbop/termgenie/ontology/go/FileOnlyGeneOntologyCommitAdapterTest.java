@@ -95,7 +95,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 	@Test
 	public void testCommit() throws CommitException {
 		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = createCommitTerms();
-		CommitInfo commitInfo = new CommitInfo(terms , null, "junit-test", CommitMode.anonymus, null, null);
+		CommitInfo commitInfo = new CommitInfo(terms, "junit-test", CommitMode.anonymus, null, null);
 		CommitResult commitResult = instance.commit(commitInfo);
 		assertTrue(commitResult.isSuccess());
 		System.out.println(commitResult.getDiff());

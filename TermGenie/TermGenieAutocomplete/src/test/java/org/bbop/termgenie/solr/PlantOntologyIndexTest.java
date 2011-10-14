@@ -44,19 +44,18 @@ public class PlantOntologyIndexTest {
 
 	@Test
 	public void testPlantOntologyIndex() {
-		plantManager.runManagedTask(new OntologyTask() {
+		OntologyTask task = new OntologyTask() {
 
 			@Override
-			public Modified run(OWLGraphWrapper managed) {
-				try {
-					LuceneMemoryOntologyIndex index = createIndex(managed);
-					index.search("trunk", 10, null);
-				} catch (IOException exception) {
-					throw new RuntimeException(exception);
-				}
-				return Modified.no;
+			protected void runCatching(OWLGraphWrapper managed) throws Exception {
+				LuceneMemoryOntologyIndex index = createIndex(managed);
+				index.search("trunk", 10, null);
 			}
-		});
+		};
+		plantManager.runManagedTask(task);
+		if (task.getException() != null) {
+			throw new RuntimeException(task.getException());
+		}
 	}
 
 	protected LuceneMemoryOntologyIndex createIndex(OWLGraphWrapper ontology) throws IOException {
