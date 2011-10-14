@@ -16,6 +16,7 @@ import org.netbeans.lib.cvsclient.command.CommandException;
 import org.netbeans.lib.cvsclient.command.GlobalOptions;
 import org.netbeans.lib.cvsclient.command.checkout.CheckoutCommand;
 import org.netbeans.lib.cvsclient.command.commit.CommitCommand;
+import org.netbeans.lib.cvsclient.command.update.UpdateCommand;
 import org.netbeans.lib.cvsclient.connection.AuthenticationException;
 import org.netbeans.lib.cvsclient.connection.PServerConnection;
 import org.netbeans.lib.cvsclient.connection.StandardScrambler;
@@ -144,6 +145,24 @@ public class CVSTools implements Closeable {
 		commit.setMessage(message);
 		try {
 			return client.executeCommand(commit, options);
+		} catch (CommandAbortedException exception) {
+			throw new IOException(exception);
+		} catch (CommandException exception) {
+			throw new IOException(exception);
+		} catch (AuthenticationException exception) {
+			throw new IOException(exception);
+		}
+	}
+	
+	public boolean update() throws IOException {
+		if (client == null) {
+			throw new IllegalStateException("You need to call connect() before you can use this method");
+		}
+		UpdateCommand update = new UpdateCommand();
+		update.setCleanCopy(true);
+		update.setRecursive(true);
+		try {
+			return client.executeCommand(update, options);
 		} catch (CommandAbortedException exception) {
 			throw new IOException(exception);
 		} catch (CommandException exception) {

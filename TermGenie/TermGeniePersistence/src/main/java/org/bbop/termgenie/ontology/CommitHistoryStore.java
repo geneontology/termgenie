@@ -69,12 +69,22 @@ public interface CommitHistoryStore {
 			throws CommitHistoryStoreException;
 
 	/**
-	 * Retrieve the {@link CommitHistoryItem} for a given ontology and date
-	 * range
+	 * Retrieve the {@link CommitHistoryItem} for a given set of identifiers
 	 * 
 	 * @param itemIds identifiers of the items to retrieve
 	 * @return list of {@link CommitHistoryItem}
 	 * @throws CommitHistoryStoreException
 	 */
 	public List<CommitHistoryItem> load(List<Integer> itemIds) throws CommitHistoryStoreException;
+
+	/**
+	 * Retrieve the {@link CommitHistoryItem} for a which need to be reviewed.
+	 * 
+	 * @param ontology
+	 * @return list of {@link CommitHistoryItem}
+	 * @throws CommitHistoryStoreException
+	 */
+	public List<CommitHistoryItem> getItemsForReview(String ontology)
+			throws CommitHistoryStoreException;
+
 }

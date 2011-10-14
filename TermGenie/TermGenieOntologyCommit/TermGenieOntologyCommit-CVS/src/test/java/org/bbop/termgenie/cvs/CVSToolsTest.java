@@ -35,6 +35,11 @@ public class CVSToolsTest {
 		assertTrue(checkout);
 		String content = FileUtils.readFileToString(new File(testFolder,"go/ontology/obo_format_1_2/README"));
 		assertNotNull(content);
+		
+		tools.connect();
+		boolean update = tools.update();
+		tools.close();
+		assertTrue(update);
 	}
 
 }

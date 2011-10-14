@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology.go;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,8 +104,11 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	protected void updateSCM(CVSTools scm, OBODoc targetOntology, OboCommitData data)
 			throws CommitException
 	{
-		// TODO Auto-generated method stub
-
+		try {
+			scm.update();
+		} catch (IOException exception) {
+			throw error("Could not update cvs repository", exception);
+		}
 	}
 
 	@Override

@@ -189,4 +189,34 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		}
 	}
+
+	@Override
+	public List<CommitHistoryItem> getItemsForReview(String ontology)
+			throws CommitHistoryStoreException
+	{
+		String queryString = "SELECT history.items FROM CommitHistory history, IN(history.items) items WHERE (history.ontology = ?1) AND (items.committed=false)";
+		try {
+			TypedQuery<CommitHistoryItem> query = entityManager.createQuery(queryString, CommitHistoryItem.class);
+			query.setParameter(1, ontology);
+			List<CommitHistoryItem> resultList = query.getResultList();
+			if (resultList != null && !resultList.isEmpty()) {
+				return new ArrayList<CommitHistoryItem>(resultList);
+			}
+			return null;
+		} catch (IllegalArgumentException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (IllegalStateException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (QueryTimeoutException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (TransactionRequiredException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (PessimisticLockException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (LockTimeoutException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (PersistenceException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		}
+	}
 }

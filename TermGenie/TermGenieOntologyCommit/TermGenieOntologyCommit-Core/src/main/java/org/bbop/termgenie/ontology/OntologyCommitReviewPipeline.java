@@ -66,8 +66,11 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 
 	@Override
 	public List<CommitHistoryItem> getItemsForReview() throws CommitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return store.getItemsForReview(source.getOntology().getUniqueName());
+		} catch (CommitHistoryStoreException exception) {
+			throw error("Could not retrieve history items from db.", exception);
+		}
 	}
 
 	@Override
