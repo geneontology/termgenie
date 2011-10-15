@@ -2,11 +2,12 @@ package org.bbop.termgenie.ontology.entities;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
-
 
 /**
  * Wrapper for a commit history for an ontology.
@@ -36,7 +37,7 @@ public class CommitHistory {
 	/**
 	 * @return the items
 	 */
-	@PersistentCollection
+	@PersistentCollection(elementCascade = { CascadeType.ALL })
 	public List<CommitHistoryItem> getItems() {
 		return items;
 	}

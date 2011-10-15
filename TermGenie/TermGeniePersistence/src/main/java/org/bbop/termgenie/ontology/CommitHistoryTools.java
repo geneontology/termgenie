@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -85,34 +84,20 @@ public class CommitHistoryTools {
 		if (relations != null && !relations.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTermRelation>(relations.size());
 			for (IRelation relation : relations) {
-				result.add(translateRelation(relation, null));
+				result.add(translateRelation(relation));
 			}
 		}
 		return result;
 	}
 
-	protected static CommitedOntologyTermRelation translateRelation(IRelation relation,
-			CommitObject.Modification type)
+	protected static CommitedOntologyTermRelation translateRelation(IRelation relation)
 	{
 		CommitedOntologyTermRelation rel = new CommitedOntologyTermRelation();
-		rel.setOperation(translateOperation(type));
 		rel.setProperties(relation.getProperties());
 		rel.setSource(relation.getSource());
 		rel.setTarget(relation.getTarget());
 		rel.setTargetLabel(relation.getTargetLabel());
 		return rel;
-	}
-
-	protected static List<CommitedOntologyTermRelation> translateCommitRelations(List<CommitObject<Relation>> relations)
-	{
-		List<CommitedOntologyTermRelation> result = null;
-		if (relations != null && !relations.isEmpty()) {
-			result = new ArrayList<CommitedOntologyTermRelation>(relations.size());
-			for (CommitObject<Relation> commitObj : relations) {
-				result.add(translateRelation(commitObj.getObject(), commitObj.getType()));
-			}
-		}
-		return result;
 	}
 
 	protected static int translateOperation(CommitObject.Modification type) {

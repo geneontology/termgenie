@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.tools.Pair;
@@ -16,24 +16,24 @@ import com.google.inject.Singleton;
 public class OntologyIdProviderImpl implements OntologyIdProvider {
 
 	private final OntologyIdStore store;
-	private final EntityManager entityManager;
+	private final EntityManagerFactory entityManagerFactory;
 
 	@Inject
-	OntologyIdProviderImpl(OntologyIdStoreConfiguration configuration, EntityManager entityManager)
+	OntologyIdProviderImpl(OntologyIdStoreConfiguration configuration, EntityManagerFactory entityManagerFactory)
 	{
 		super();
-		this.entityManager = entityManager;
-		store = new OntologyIdStore(configuration, entityManager);
+		this.entityManagerFactory = entityManagerFactory;
+		store = new OntologyIdStore(configuration, entityManagerFactory);
 	}
 
 	@Override
 	public Pair<String, Integer> getNewId(Ontology ontology) {
-		return store.getNewId(ontology, entityManager);
+		return store.getNewId(ontology, entityManagerFactory);
 	}
 
 	@Override
 	public boolean rollbackId(Ontology ontology, Integer id) {
-		return store.rollbackId(ontology, id, entityManager);
+		return store.rollbackId(ontology, id, entityManagerFactory);
 	}
 
 }

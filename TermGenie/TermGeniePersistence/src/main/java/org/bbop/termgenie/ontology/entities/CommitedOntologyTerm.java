@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,7 +17,9 @@ import org.apache.openjpa.persistence.PersistentMap;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 
 @Entity
-public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSynonym, CommitedOntologyTermRelation> {
+public class CommitedOntologyTerm implements
+		OntologyTerm<CommitedOntologyTermSynonym, CommitedOntologyTermRelation>
+{
 
 	private int uuid;
 	private String id;
@@ -60,7 +64,7 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @return the label
 	 */
@@ -99,7 +103,7 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	 * @return the synonyms
 	 */
 	@Override
-	@PersistentCollection
+	@PersistentCollection(elementCascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	public List<CommitedOntologyTermSynonym> getSynonyms() {
 		return synonyms;
 	}
@@ -115,7 +119,7 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	 * @return the defXRef
 	 */
 	@Override
-	@PersistentCollection
+	@PersistentCollection(elementCascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	public List<String> getDefXRef() {
 		return defXRef;
 	}
@@ -131,7 +135,7 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	 * @return the relations
 	 */
 	@Override
-	@PersistentCollection
+	@PersistentCollection(elementCascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	public List<CommitedOntologyTermRelation> getRelations() {
 		return relations;
 	}
@@ -147,7 +151,9 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	 * @return the metaData
 	 */
 	@Override
-	@PersistentMap
+	@PersistentMap(elementCascade = { CascadeType.ALL },
+			keyCascade = { CascadeType.ALL },
+			fetch = FetchType.EAGER)
 	public Map<String, String> getMetaData() {
 		return metaData;
 	}
@@ -166,7 +172,7 @@ public class CommitedOntologyTerm implements OntologyTerm<CommitedOntologyTermSy
 	public int getOperation() {
 		return operation;
 	}
-	
+
 	/**
 	 * @param operation the operation to set
 	 */

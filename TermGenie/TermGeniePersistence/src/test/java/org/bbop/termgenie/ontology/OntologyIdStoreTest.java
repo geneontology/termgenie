@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.io.FileUtils;
@@ -47,10 +46,10 @@ public class OntologyIdStoreTest {
 		testOntologyIdStore(EntityManagerFactoryProvider.HSQLDB);
 	}
 
-	@Test
-	public void testOntologyIdStoreSqlite() {
-		testOntologyIdStore(EntityManagerFactoryProvider.SQLITE);
-	}
+//	@Test
+//	public void testOntologyIdStoreSqlite() {
+//		testOntologyIdStore(EntityManagerFactoryProvider.SQLITE);
+//	}
 
 	@Test
 	public void testOntologyIdStoreH2() {
@@ -61,8 +60,6 @@ public class OntologyIdStoreTest {
 	private void testOntologyIdStore(String label) {
 		EntityManagerFactory emf = provider.createFactory(testFolder, label, "OntologyIdStore");
 		assertNotNull(emf);
-		EntityManager entityManager = emf.createEntityManager();
-		assertNotNull(entityManager);
 
 		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + //
 		"barOntology \t bar:000000 \t 9000 \t 10000 \n" + //
@@ -72,7 +69,7 @@ public class OntologyIdStoreTest {
 		watch1.start();
 		InputStream inputStream = new StringInputStream(storeConfig);
 		OntologyIdStoreConfiguration config = new PlainOntologyIdStoreConfiguration(inputStream);
-		OntologyIdStore store = new OntologyIdStore(config, entityManager);
+		OntologyIdStore store = new OntologyIdStore(config, emf);
 		watch1.stop();
 
 		Ontology ontology = new Ontology("testOntologyName", null, null) {
@@ -85,24 +82,18 @@ public class OntologyIdStoreTest {
 
 		StopWatch watch2 = new StopWatch();
 		watch2.start();
-		assertEquals("foo:000041", store.getNewId(ontology, entityManager).getOne());
-		assertEquals("foo:000042", store.getNewId(ontology, entityManager).getOne());
-		assertEquals("foo:000043", store.getNewId(ontology, entityManager).getOne());
+		assertEquals("foo:000041", store.getNewId(ontology, emf).getOne());
+		assertEquals("foo:000042", store.getNewId(ontology, emf).getOne());
+		assertEquals("foo:000043", store.getNewId(ontology, emf).getOne());
 		watch2.stop();
-
-		entityManager.close();
-		entityManager = null;
-
-		entityManager = emf.createEntityManager();
-		assertNotNull(entityManager);
 
 		StopWatch watch3 = new StopWatch();
 		watch3.start();
-		store = new OntologyIdStore(config, entityManager);
-		assertEquals("foo:000044", store.getNewId(ontology, entityManager).getOne());
-		assertEquals("foo:000045", store.getNewId(ontology, entityManager).getOne());
-		assertEquals("foo:000046", store.getNewId(ontology, entityManager).getOne());
-		assertEquals("long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009000", store.getNewId(longOntology, entityManager).getOne());
+		store = new OntologyIdStore(config, emf);
+		assertEquals("foo:000044", store.getNewId(ontology, emf).getOne());
+		assertEquals("foo:000045", store.getNewId(ontology, emf).getOne());
+		assertEquals("foo:000046", store.getNewId(ontology, emf).getOne());
+		assertEquals("long:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009000", store.getNewId(longOntology, emf).getOne());
 		watch3.stop();
 
 		System.out.println(label + " Loading :" + watch1);
@@ -111,7 +102,7 @@ public class OntologyIdStoreTest {
 
 		OntologyIdStoreException expected = null;
 		try {
-			store.getNewId(ontology, entityManager);
+			store.getNewId(ontology, emf);
 		} catch (OntologyIdStoreException exception) {
 			expected = exception;
 		}

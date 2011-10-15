@@ -1,11 +1,10 @@
 package org.bbop.termgenie.ontology;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
@@ -21,36 +20,41 @@ class OntologyIdStore {
 
 	/**
 	 * Create a new store with a given {@link OntologyIdStoreConfiguration} and
-	 * {@link EntityManager}.
+	 * {@link EntityManagerFactory}.
 	 * 
 	 * @param configuration the configuration
 	 * @param entityManager the entity manager for persistence
 	 */
-	OntologyIdStore(OntologyIdStoreConfiguration configuration, EntityManager entityManager) {
+	OntologyIdStore(OntologyIdStoreConfiguration configuration, EntityManagerFactory entityManagerFactory) {
 		super();
-		entityManager.getTransaction().begin();
-		Map<String, OntologyIdInfo> infos = configuration.getInfos();
-		for (String ontologyName : infos.keySet()) {
-			OntologyIdInfo info = infos.get(ontologyName);
-			OntologyIdInfo infoPersitent = getInfo(ontologyName, entityManager);
-			if (infoPersitent != null) {
-				if (info.getMaximum() != infoPersitent.getMaximum()) {
-					// if different log message and update
-					warn("Contradicting configuration: current ID range end (" + infoPersitent.getMaximum() + ") is different than the new configured one: " + desc(info));
-					infoPersitent.setMaximum(info.getMaximum());
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			Map<String, OntologyIdInfo> infos = configuration.getInfos();
+			for (String ontologyName : infos.keySet()) {
+				OntologyIdInfo info = infos.get(ontologyName);
+				OntologyIdInfo infoPersitent = getInfo(ontologyName, entityManager);
+				if (infoPersitent != null) {
+					if (info.getMaximum() != infoPersitent.getMaximum()) {
+						// if different log message and update
+						warn("Contradicting configuration: current ID range end (" + infoPersitent.getMaximum() + ") is different than the new configured one: " + desc(info));
+						infoPersitent.setMaximum(info.getMaximum());
+					}
+					if (!info.getPattern().equals(infoPersitent.getPattern())) {
+						warn("Contradicting configuration: current ID pattern (" + infoPersitent.getPattern() + ") is different than the new configured one: " + desc(info));
+						infoPersitent.setPattern(info.getPattern());
+					}
+					entityManager.persist(infoPersitent);
 				}
-				if (!info.getPattern().equals(infoPersitent.getPattern())) {
-					warn("Contradicting configuration: current ID pattern (" + infoPersitent.getPattern() + ") is different than the new configured one: " + desc(info));
-					infoPersitent.setPattern(info.getPattern());
+				else {
+					// create a new entry
+					entityManager.persist(info);
 				}
-				entityManager.persist(infoPersitent);
 			}
-			else {
-				// create a new entry
-				entityManager.persist(info);
-			}
+			entityManager.getTransaction().commit();
+		} finally {
+			entityManager.close();
 		}
-		entityManager.getTransaction().commit();
 	}
 
 	/**
@@ -58,20 +62,27 @@ class OntologyIdStore {
 	 * @param entityManager
 	 * @return newId
 	 */
-	Pair<String, Integer> getNewId(Ontology ontology, EntityManager entityManager) {
-		entityManager.getTransaction().begin();
-		OntologyIdInfo info = getInfo(ontology, entityManager);
-		int current = info.getCurrent();
-		int maximum = info.getMaximum();
-		int next = current + 1;
-		if (next >= maximum) {
-			error("Upper limit (" + Integer.toString(maximum) + ") of the ID range reached for ontology: " + ontology.getUniqueName());
+	Pair<String, Integer> getNewId(Ontology ontology, EntityManagerFactory entityManagerFactory) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			OntologyIdInfo info = getInfo(ontology, entityManager);
+			int current = info.getCurrent();
+			int maximum = info.getMaximum();
+			int next = current + 1;
+			if (next >= maximum) {
+				entityManager.getTransaction().rollback();
+				error("Upper limit (" + Integer.toString(maximum) + ") of the ID range reached for ontology: " + ontology.getUniqueName());
+			}
+			info.setCurrent(next);
+			String pattern = info.getPattern();
+			DecimalFormat nf = new DecimalFormat(pattern);
+			entityManager.merge(info);
+			entityManager.getTransaction().commit();
+			return new Pair<String, Integer>(nf.format(current), next);
+		} finally {
+			entityManager.close();
 		}
-		info.setCurrent(next);
-		String pattern = info.getPattern();
-		DecimalFormat nf = new DecimalFormat(pattern);
-		entityManager.getTransaction().commit();
-		return new Pair<String, Integer>(nf.format(current), next);
 	}
 
 	/**
@@ -82,16 +93,21 @@ class OntologyIdStore {
 	 * @param entityManager
 	 * @return
 	 */
-	boolean rollbackId(Ontology ontology, Integer id, EntityManager entityManager) {
-		entityManager.getTransaction().begin();
-		OntologyIdInfo info = getInfo(ontology, entityManager);
-		int current = info.getCurrent();
-		if (current > id) {
-			info.setCurrent(id);
-			entityManager.getTransaction().commit();
-			return true;
+	boolean rollbackId(Ontology ontology, Integer id, EntityManagerFactory entityManagerFactory) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			OntologyIdInfo info = getInfo(ontology, entityManager);
+			int current = info.getCurrent();
+			if (current > id) {
+				info.setCurrent(id);
+				entityManager.getTransaction().commit();
+				return true;
+			}
+			return false;
+		} finally {
+			entityManager.close();
 		}
-		return false;
 	}
 
 	private OntologyIdInfo getInfo(Ontology ontology, EntityManager entityManager) {
@@ -99,16 +115,7 @@ class OntologyIdStore {
 	}
 
 	private OntologyIdInfo getInfo(String ontologyName, EntityManager entityManager) {
-
-		TypedQuery<OntologyIdInfo> query = entityManager.createQuery("SELECT info FROM OntologyIdInfo info " + "WHERE info.ontologyName = ?1",
-				OntologyIdInfo.class);
-		query.setParameter(1, ontologyName);
-		List<OntologyIdInfo> results = query.getResultList();
-		if (results != null && !results.isEmpty()) {
-			OntologyIdInfo info = results.get(0);
-			return info;
-		}
-		return null;
+		return entityManager.find(OntologyIdInfo.class, ontologyName);
 	}
 
 	// --------------------- Helper methods and classes ---------------------

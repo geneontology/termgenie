@@ -3,8 +3,10 @@ package org.bbop.termgenie.ontology.entities;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,8 +22,6 @@ public class CommitedOntologyTermRelation implements IRelation {
 	private String target;
 	private String targetLabel;
 	private Map<String, String> properties;
-	
-	private int operation;
 
 	/**
 	 * @return the id
@@ -72,7 +72,7 @@ public class CommitedOntologyTermRelation implements IRelation {
 	public void setTarget(String target) {
 		this.target = target;
 	}
-	
+
 	/**
 	 * @return the targetLabel
 	 */
@@ -82,7 +82,7 @@ public class CommitedOntologyTermRelation implements IRelation {
 	public String getTargetLabel() {
 		return targetLabel;
 	}
-	
+
 	/**
 	 * @param targetLabel the targetLabel to set
 	 */
@@ -94,7 +94,9 @@ public class CommitedOntologyTermRelation implements IRelation {
 	 * @return the properties
 	 */
 	@Override
-	@PersistentMap
+	@PersistentMap(elementCascade = { CascadeType.ALL },
+			keyCascade = { CascadeType.ALL },
+			fetch = FetchType.EAGER)
 	public Map<String, String> getProperties() {
 		return properties;
 	}
@@ -104,20 +106,5 @@ public class CommitedOntologyTermRelation implements IRelation {
 	 */
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
-	}
-
-	/**
-	 * @return the operation
-	 */
-	@Column
-	public int getOperation() {
-		return operation;
-	}
-	
-	/**
-	 * @param operation the operation to set
-	 */
-	public void setOperation(int operation) {
-		this.operation = operation;
 	}
 }

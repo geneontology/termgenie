@@ -2,7 +2,7 @@ package org.bbop.termgenie.presistence;
 
 import java.io.File;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 
@@ -41,11 +41,11 @@ public class PersistenceBasicModule extends IOCModule {
 
 	@Provides
 	@Singleton
-	public EntityManager provideEntityManager(@Named("PersistenceDatabaseFolder") File folder,
+	public EntityManagerFactory provideEntityManager(@Named("PersistenceDatabaseFolder") File folder,
 			@Named("PersistenceDatabaseType") String type)
 	{
 		try {
-			return provider.createFactory(folder, type, "TermGenie").createEntityManager();
+			return provider.createFactory(folder, type, "TermGenie");
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

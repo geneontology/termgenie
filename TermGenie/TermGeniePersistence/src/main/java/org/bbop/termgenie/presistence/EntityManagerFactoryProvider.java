@@ -27,13 +27,11 @@ import javax.persistence.Persistence;
 public class EntityManagerFactoryProvider {
 
 	public static final String HSQLDB = "hslqdb";
-	public static final String SQLITE = "sqlite";
 	public static final String H2 = "h2";
 
 	/**
-	 * Create a new factory for a given type (i.e. {@link #HSQLDB},
-	 * {@link #SQLITE}, and {@link #H2}), a folder with write access, and a
-	 * database name.
+	 * Create a new factory for a given type (i.e. {@link #HSQLDB} and
+	 * {@link #H2}), a folder with write access, and a database name.
 	 * 
 	 * @param folder
 	 * @param type
@@ -45,9 +43,6 @@ public class EntityManagerFactoryProvider {
 	public EntityManagerFactory createFactory(File folder, String type, String db) {
 		if (HSQLDB.equals(type)) {
 			return createHsqlDBFile(folder, db);
-		}
-		else if (SQLITE.equals(type)) {
-			return createSqlite(folder, db);
 		}
 		else if (H2.equals(type)) {
 			return createH2(folder, db);
@@ -63,16 +58,6 @@ public class EntityManagerFactoryProvider {
 		String connectionURL = "jdbc:hsqldb:file:" + dbFolder.getAbsolutePath() + "/" + unique;
 		properties.put("openjpa.ConnectionURL", connectionURL);
 		return Persistence.createEntityManagerFactory(HSQLDB, properties);
-	}
-
-	protected EntityManagerFactory createSqlite(File folder, String unique) {
-		Map<String, String> properties = new HashMap<String, String>();
-		File dbFolder = new File(folder, SQLITE);
-		dbFolder.mkdir();
-		properties.put("openjpa.ConnectionDriverName", org.sqlite.JDBC.class.getName());
-		String connectionURL = "jdbc:sqlite:" + dbFolder.getAbsolutePath() + "/" + unique;
-		properties.put("openjpa.ConnectionURL", connectionURL);
-		return Persistence.createEntityManagerFactory(SQLITE, properties);
 	}
 
 	protected EntityManagerFactory createH2(File folder, String unique) {
