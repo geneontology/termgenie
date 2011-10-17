@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
@@ -28,8 +27,8 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 
 	private final static Logger logger = Logger.getLogger(CommitAwareOntologyLoader.class);
 	
-	private final EntityManager entityManager;
-
+	private final CommitHistoryStore commitHistoryStore;
+	
 	@Inject
 	CommitAwareOntologyLoader(OntologyConfiguration configuration,
 			IRIMapper iriMapper,
@@ -37,10 +36,10 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 			@Named("DefaultOntologyLoaderSkipOntologies") Set<String> skipOntologies,
 			@Named("ReloadingOntologyLoaderPeriod") long period,
 			@Named("ReloadingOntologyLoaderTimeUnit") TimeUnit unit,
-			EntityManager entityManager)
+			CommitHistoryStore commitHistoryStore)
 	{
 		super(configuration, iriMapper, cleaner, skipOntologies, period, unit);
-		this.entityManager = entityManager;
+		this.commitHistoryStore = commitHistoryStore;
 	}
 
 	@Override
@@ -56,15 +55,12 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 		// apply history to ontology
 		// try to detect, whether the changes have been 
 		// committed to the loaded ontology version, or if conflicts exist.
-		TypedQuery<CommitHistory> query = entityManager.createQuery("select h from CommitHistory as h where h.ontology = ?1",
-				CommitHistory.class);
-		query.setParameter(1, ontology);
-		List<CommitHistory> histories = query.getResultList();
-		if (!histories.isEmpty()) {
-			if (histories.size() != 1) {
-				logger.error("Multiple histories ("+histories.size()+") found for ontology: "+ontology);
+		try {
+			CommitHistory history = commitHistoryStore.loadHistory(ontology);
+			if (history == null) {
+				// do nothing
+				return;
 			}
-			CommitHistory history = histories.get(0);
 			List<CommitHistoryItem> items = history.getItems();
 			for (CommitHistoryItem item : items) {
 				if (item.isCommitted()) {
@@ -80,6 +76,9 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 					}
 				}
 			}
+		} catch (CommitHistoryStoreException exception) {
+			logger.error("Could not apply commit history to ontology: "+ontology, exception);
+			throw new RuntimeException(exception);
 		}
 	}
 

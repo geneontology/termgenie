@@ -116,7 +116,8 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 		}
 	}
 
-	CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException {
+	@Override
+	public CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			CommitHistory find = loadHistory(ontology, entityManager);

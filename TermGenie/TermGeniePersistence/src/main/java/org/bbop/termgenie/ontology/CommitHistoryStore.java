@@ -87,4 +87,12 @@ public interface CommitHistoryStore {
 	public List<CommitHistoryItem> getItemsForReview(String ontology)
 			throws CommitHistoryStoreException;
 
+	/**
+	 * Retrieve the history for the given ontology. 
+	 * 
+	 * @param ontology
+	 * @return history or null
+	 * @throws CommitHistoryStoreException
+	 */
+	public CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException;
 }
