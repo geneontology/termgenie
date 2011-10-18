@@ -12,6 +12,10 @@ import com.google.inject.Module;
  * the {@link GlobalConfigModule}.
  */
 public class TermGenieGuice {
+	
+	private TermGenieGuice() {
+		// no instance, use static methods only
+	}
 
 	/**
 	 * Create a new {@link Injector} for the given modules.

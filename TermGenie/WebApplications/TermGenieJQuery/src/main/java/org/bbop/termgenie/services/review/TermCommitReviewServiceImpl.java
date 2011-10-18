@@ -23,6 +23,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
+import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
@@ -122,7 +123,6 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			Owl2Obo owl2Obo = new Owl2Obo();
 			result = owl2Obo.convert(managed.getSourceOntology());
 		}
-		
 	}
 	
 	private JsonDiff[] createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) {
@@ -133,8 +133,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setOperation(term.getOperation());
 			
 			Modification mode = CommitHistoryTools.getModification(term.getOperation());
-			boolean success = ComitAwareOBOConverterTools.handleTerm(term, mode, oboDoc);
-			if (success) {
+			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, mode, oboDoc);
+			if (LoadState.isSuccess(state)) {
 				try {
 					jsonDiff.setDiff(OBOWriterTools.writeTerm(term.getId(), oboDoc));
 					result.add(jsonDiff);
@@ -177,8 +177,6 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		List<Integer> historyIds = new ArrayList<Integer>(entries.length);
 		for (JsonCommitReviewEntry entry : entries) {
 			historyIds.add(entry.getHistoryId());
-			// TODO apply changes by the reviewer and store them in the history
-			
 		}
 			
 		// commit changes to repository

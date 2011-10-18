@@ -1,5 +1,7 @@
 package org.bbop.termgenie.ontology.go;
 
+import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.*;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,7 +28,7 @@ import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
+import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
@@ -40,8 +42,8 @@ import com.google.inject.name.Named;
  * Main steps for committing ontology changes to an OBO file in an CVS
  * repository.
  */
-abstract class GoCvsHelper
-{
+abstract class GoCvsHelper {
+
 	@Singleton
 	static final class GoCvsHelperPassword extends GoCvsHelper {
 
@@ -65,7 +67,8 @@ abstract class GoCvsHelper
 		protected CVSTools createCVS(CommitMode commitMode,
 				String username,
 				String password,
-				File cvsFolder) {
+				File cvsFolder)
+		{
 			String realPassword;
 			if (commitMode == CommitMode.internal) {
 				realPassword = cvsPassword;
@@ -76,28 +79,28 @@ abstract class GoCvsHelper
 			CVSTools cvs = new CVSTools(cvsRoot, realPassword, cvsFolder);
 			return cvs;
 		}
-		
+
 		@Override
 		protected boolean isSupportAnonymus() {
 			return false;
 		}
-		
+
 		@Override
 		protected CommitMode getCommitMode() {
 			return CommitMode.explicit;
 		}
-		
+
 		@Override
 		protected String getCommitUserName() {
 			return null; // encoded in the cvs root
 		}
-		
+
 		@Override
 		protected String getCommitPassword() {
 			return cvsPassword;
 		}
 	}
-	
+
 	@Singleton
 	static final class GoCvsHelperAnonymous extends GoCvsHelper {
 
@@ -118,8 +121,7 @@ abstract class GoCvsHelper
 		protected CVSTools createCVS(CommitMode commitMode,
 				String username,
 				String password,
-				File cvsFolder)
-				throws CommitException
+				File cvsFolder) throws CommitException
 		{
 			return new CVSTools(cvsRoot, null, cvsFolder);
 		}
@@ -128,23 +130,23 @@ abstract class GoCvsHelper
 		protected boolean isSupportAnonymus() {
 			return true;
 		}
-		
+
 		@Override
 		protected CommitMode getCommitMode() {
 			return CommitMode.anonymus;
 		}
-		
+
 		@Override
 		protected String getCommitUserName() {
 			return null; // encoded in the cvs root
 		}
-		
+
 		@Override
 		protected String getCommitPassword() {
 			return null; // no password
 		}
 	}
-	
+
 	private final ConfiguredOntology source;
 	private final DirectOntologyLoader loader;
 	private final String cvsOntologyFileName;
@@ -158,13 +160,13 @@ abstract class GoCvsHelper
 		this.cvsOntologyFileName = cvsOntologyFileName;
 		loader = new DirectOntologyLoader(iriMapper, cleaner);
 	}
-	
+
 	protected abstract boolean isSupportAnonymus();
-	
+
 	protected abstract CommitMode getCommitMode();
-	
+
 	protected abstract String getCommitUserName();
-	
+
 	protected abstract String getCommitPassword();
 
 	static class OboCommitData implements OntologyCommitPipelineData {
@@ -172,7 +174,7 @@ abstract class GoCvsHelper
 		File cvsFolder = null;
 		File oboFolder = null;
 		File oboRoundTripFolder = null;
-		
+
 		File scmTargetOntology = null;
 		File targetOntology = null;
 		File modifiedTargetOntology = null;
@@ -214,10 +216,13 @@ abstract class GoCvsHelper
 
 	protected CVSTools prepareSCM(CommitInfo commitInfo, OboCommitData data) throws CommitException
 	{
-		final CVSTools cvs = createCVS(commitInfo.getCommitMode(), commitInfo.getUsername(), commitInfo.getPassword(), data.cvsFolder);
+		final CVSTools cvs = createCVS(commitInfo.getCommitMode(),
+				commitInfo.getUsername(),
+				commitInfo.getPassword(),
+				data.cvsFolder);
 		return cvs;
 	}
-	
+
 	protected abstract CVSTools createCVS(CommitMode commitMode,
 			String username,
 			String password,
@@ -229,7 +234,7 @@ abstract class GoCvsHelper
 		// check-out ontology from cvs repository
 		cvsCheckout(cvs);
 		data.scmTargetOntology = new File(data.cvsFolder, cvsOntologyFileName);
-		
+
 		// load ontology
 		return loadOntology(data.scmTargetOntology);
 	}
@@ -237,7 +242,7 @@ abstract class GoCvsHelper
 	protected void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
 			throws CommitException
 	{
-		
+
 		// round trip ontology
 		// This step is required to create a minimal patch.
 		data.targetOntology = createOBOFile(data.oboRoundTripFolder, targetOntology);
@@ -256,31 +261,29 @@ abstract class GoCvsHelper
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
-				boolean csuccess = ComitAwareOBOConverterTools.handleTerm(commitObject.getObject(),
+				boolean csuccess = LoadState.isSuccess(handleTerm(commitObject.getObject(),
 						commitObject.getType(),
-						oboDoc);
+						oboDoc));
 				success = success && csuccess;
 			}
 		}
 		return success;
 	}
-	
+
 	/**
 	 * @param terms
 	 * @param oboDoc
 	 * @return true, if changes have been apply successfully
 	 * @throws CommitException
 	 */
-	protected boolean applyHistoryChanges(List<CommitedOntologyTerm> terms,
-			OBODoc oboDoc) throws CommitException
+	protected boolean applyHistoryChanges(List<CommitedOntologyTerm> terms, OBODoc oboDoc)
+			throws CommitException
 	{
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
 				Modification mode = CommitHistoryTools.getModification(term.getOperation());
-				boolean csuccess = ComitAwareOBOConverterTools.handleTerm(term,
-						mode,
-						oboDoc);
+				boolean csuccess = LoadState.isSuccess(handleTerm(term, mode, oboDoc));
 				success = success && csuccess;
 			}
 		}
@@ -301,10 +304,8 @@ abstract class GoCvsHelper
 	 * @param diff
 	 * @throws CommitException
 	 */
-	protected void commitToRepository(String username,
-			CVSTools scm,
-			OboCommitData data,
-			String diff) throws CommitException
+	protected void commitToRepository(String username, CVSTools scm, OboCommitData data, String diff)
+			throws CommitException
 	{
 		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
 
@@ -322,7 +323,7 @@ abstract class GoCvsHelper
 			}
 		}
 	}
-	
+
 	private boolean compareRoundTripFile(File cvsFile, File roundtripOboFile)
 			throws CommitException
 	{
@@ -408,7 +409,7 @@ abstract class GoCvsHelper
 			return loadOBO(ontology, file.toURI().toURL());
 		}
 	}
-	
+
 	protected File createFolder(final File workFolder, String name) throws CommitException {
 		final File folder;
 		try {
@@ -429,12 +430,12 @@ abstract class GoCvsHelper
 			throw error(message, exception, true);
 		}
 	}
-	
+
 	protected CommitException error(String message, Throwable exception, boolean rollback) {
 		return OntologyCommitPipeline.error(message, exception, rollback, getClass());
 	}
 
 	protected CommitException error(String message, boolean rollback) {
-		return  OntologyCommitPipeline.error(message, rollback, getClass());
+		return OntologyCommitPipeline.error(message, rollback, getClass());
 	}
 }

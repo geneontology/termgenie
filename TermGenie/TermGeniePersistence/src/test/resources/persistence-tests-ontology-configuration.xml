@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="CL" longName="Cell (Type) Ontology">
+		<source>http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo</source>
+		<roots>
+			<root>CL:0000000</root>
+		</roots>
+	</ontology>
+</ontologyconfiguration>

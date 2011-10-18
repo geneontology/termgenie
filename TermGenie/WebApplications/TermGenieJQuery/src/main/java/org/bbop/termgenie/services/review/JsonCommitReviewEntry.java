@@ -73,8 +73,6 @@ public class JsonCommitReviewEntry {
 
 		private String diff;
 
-		private boolean changedByUser = false;
-
 		/**
 		 * @return the id
 		 */
@@ -116,20 +114,5 @@ public class JsonCommitReviewEntry {
 		public void setDiff(String diff) {
 			this.diff = diff;
 		}
-
-		/**
-		 * @return the changedByUser
-		 */
-		public boolean isChangedByUser() {
-			return changedByUser;
-		}
-
-		/**
-		 * @param changedByUser the changedByUser to set
-		 */
-		public void setChangedByUser(boolean changedByUser) {
-			this.changedByUser = changedByUser;
-		}
-
 	}
 }
