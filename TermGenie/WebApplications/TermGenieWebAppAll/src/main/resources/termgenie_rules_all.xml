@@ -318,7 +318,7 @@ function run() {
     
     // intentionally null, as the intended relations do not fit the pattern
     // but the synonyms, might be of some use
-    var mdef = null;
+    var mdef = [];
     // var mdef = termgenie.createMDef('GO_0065007 and is_a some ?P and is_a some ?R');
     // mdef.addParameter('P', p, go);
     // mdef.addParameter('P', regulator, go);

@@ -108,7 +108,14 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			List<Synonym> synonyms,
 			MDef logicalDefinition)
 	{
-		tools.addTerm(label, definition, synonyms, Collections.singletonList(logicalDefinition), getResultList());
+		List<MDef> defs;
+		if (logicalDefinition != null) {
+			defs = Collections.singletonList(logicalDefinition);
+		}
+		else {
+			defs = Collections.emptyList();
+		}
+		tools.addTerm(label, definition, synonyms, defs, getResultList());
 	}
 
 	@Override
@@ -118,7 +125,13 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			MDef[] logicalDefinitions)
 	{
 		try {
-			List<MDef> logicalDefinitionList = Arrays.asList(logicalDefinitions);
+			List<MDef> logicalDefinitionList;
+			if (logicalDefinitions != null && logicalDefinitions.length > 0) {
+				logicalDefinitionList = Arrays.asList(logicalDefinitions);
+			}
+			else {
+				logicalDefinitionList = Collections.emptyList();
+			}
 			tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
 		} catch (NullPointerException exception) {
 			Logger.getLogger(getClass()).error("NPE", exception);
