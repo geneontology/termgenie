@@ -122,6 +122,9 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 		try {
 			CommitHistory find = loadHistory(ontology, entityManager);
 			if (find != null) {
+				// the items are loaded lazy
+				// before detach, access the list to ensure that the items are loaded.
+				find.getItems(); 
 				entityManager.detach(find);
 			}
 			return find;
