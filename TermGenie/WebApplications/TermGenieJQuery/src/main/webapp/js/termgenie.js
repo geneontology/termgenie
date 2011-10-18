@@ -1855,7 +1855,17 @@ function termgenie(){
 	function renderCommitResult(commitResults, container) {
 		container.append('<div class="term-generation-commit-heading">Commit<div>');
 		if (commitResults.success === true) {
-			// TODO
+			if(commitResults.message && commitResults.message.length > 0) {
+				container.append('<div>'+commitResults.message+'</div>');
+			}
+			if (commitResults.terms && commitResults.terms.length > 0) {
+				container.append('<div>The following terms have been created:</div>');
+				var termList = jQuery('<ul></ul>');
+				jQuery.each(commitResults.terms, function(index, term){
+					termList.append('<li>'+term.label+'</li>');
+				});
+				container.append(termList);
+			}
 		}
 		else {
 			container.append('<div>The commit of the generated terms did not complete normally with the following reason:</div>');
