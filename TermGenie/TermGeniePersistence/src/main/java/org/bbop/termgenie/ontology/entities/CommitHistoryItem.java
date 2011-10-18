@@ -59,7 +59,7 @@ public class CommitHistoryItem {
 	/**
 	 * @return the user
 	 */
-	@Column(length = Integer.MAX_VALUE)
+	@Column(length = Integer.MAX_VALUE, name="termgenieuser")
 	public String getUser() {
 		return user;
 	}
