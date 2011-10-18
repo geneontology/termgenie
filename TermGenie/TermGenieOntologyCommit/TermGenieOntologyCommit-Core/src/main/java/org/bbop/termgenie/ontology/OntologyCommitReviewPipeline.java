@@ -182,6 +182,10 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		List<CommitResult> results = new ArrayList<Committer.CommitResult>(items.size());
 
 		for (CommitHistoryItem item : items) {
+			if (item.isCommitted()) {
+				results.add(new CommitResult(false, "The item has already been marked as committed", null));
+				continue;
+			}
 			updateSCM(scm, targetOntology, data);
 
 			checkTargetOntology(data, targetOntology);

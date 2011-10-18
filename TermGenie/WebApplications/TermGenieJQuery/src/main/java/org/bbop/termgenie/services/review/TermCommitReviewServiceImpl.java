@@ -10,11 +10,13 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.data.JsonResult;
+import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
@@ -163,31 +165,54 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	}
 
 	@Override
-	public JsonResult commit(String sessionId,
+	public JsonCommitReviewCommitResult commit(String sessionId,
 			JsonCommitReviewEntry[] entries,
 			HttpSession session)
 	{
 		if (!isAuthorized(sessionId, session)) {
-			return new JsonResult(false, "Error: This commit is not authorized.");
+			return JsonCommitReviewCommitResult.error("Error: This commit is not authorized.");
 		}
 		if (entries == null || entries.length == 0) {
-			return new JsonResult(false, "Error: No entires to commit in the request.");
+			return JsonCommitReviewCommitResult.error("Error: No entires to commit in the request.");
 		}
 		
-		List<Integer> historyIds = new ArrayList<Integer>(entries.length);
+		final List<Integer> historyIds = new ArrayList<Integer>(entries.length);
 		for (JsonCommitReviewEntry entry : entries) {
 			historyIds.add(entry.getHistoryId());
 		}
 			
 		// commit changes to repository
-		AfterReview afterReview = stages.getAfterReview();
-			
-		try {
-			afterReview.commit(historyIds);
-			return new JsonResult(true);
-		} catch (CommitException exception) {
-			logger.error("Error during commit", exception);
-			return new JsonResult(false, "Error during commit: "+exception.getMessage());
+		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
+		
+		CommitTask task = new CommitTask(historyIds);
+		afterReviewTaskManager.runManagedTask(task);
+		if (task.exception != null) {
+			logger.error("Error during commit", task.exception);
+			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
+		}
+		return JsonCommitReviewCommitResult.success(task.commits);
+	}
+
+	private static final class CommitTask implements ManagedTask<AfterReview> {
+	
+		private final List<Integer> historyIds;
+		private List<CommitResult> commits;
+		private CommitException exception;
+	
+		private CommitTask(List<Integer> historyIds) {
+			this.historyIds = historyIds;
+		}
+	
+		@Override
+		public Modified run(AfterReview afterReview)
+		{
+			try {
+				commits = afterReview.commit(historyIds);
+				return Modified.no;
+			} catch (CommitException exception) {
+				this.exception = exception;
+				return Modified.no;
+			}
 		}
 	}
 

@@ -2,8 +2,6 @@ package org.bbop.termgenie.services.review;
 
 import javax.servlet.http.HttpSession;
 
-import org.bbop.termgenie.data.JsonCommitResult;
-
 /**
  * Disabled default implementation for {@link TermCommitReviewService}.
  */
@@ -25,7 +23,7 @@ public class DisabledTermCommitReviewServiceImpl implements TermCommitReviewServ
 	}
 
 	@Override
-	public JsonCommitResult commit(String sessionId,
+	public JsonCommitReviewCommitResult commit(String sessionId,
 			JsonCommitReviewEntry[] entries,
 			HttpSession session)
 	{

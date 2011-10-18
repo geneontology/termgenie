@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
+import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 
@@ -14,7 +15,7 @@ public interface OntologyCommitReviewPipelineStages {
 
 	public BeforeReview getBeforeReview();
 
-	public AfterReview getAfterReview();
+	public GenericTaskManager<AfterReview> getAfterReview();
 
 	public interface BeforeReview {
 

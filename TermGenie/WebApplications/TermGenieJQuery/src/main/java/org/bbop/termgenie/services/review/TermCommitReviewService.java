@@ -2,7 +2,6 @@ package org.bbop.termgenie.services.review;
 
 import javax.servlet.http.HttpSession;
 
-import org.bbop.termgenie.data.JsonResult;
 import org.json.rpc.server.SessionAware;
 
 public interface TermCommitReviewService {
@@ -45,5 +44,5 @@ public interface TermCommitReviewService {
 	 * @return commitResult
 	 */
 	@SessionAware
-	public JsonResult commit(String sessionId, JsonCommitReviewEntry[] entries, HttpSession session);
+	public JsonCommitReviewCommitResult commit(String sessionId, JsonCommitReviewEntry[] entries, HttpSession session);
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -33,6 +34,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 {
 
 	private final GoCvsHelper helper;
+	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	@Inject
 	GeneOntologyReviewCommitAdapter(@Named("GeneOntologyTaskManager") OntologyTaskManager source,
@@ -41,6 +43,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	{
 		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
+		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
 	}
 
 	@Override
@@ -172,8 +175,42 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	}
 
 	@Override
-	public AfterReview getAfterReview() {
-		return this;
+	public GenericTaskManager<AfterReview> getAfterReview() {
+		return afterReviewTaskManager;
 	}
 
+	
+	private static class AfterReviewTaskManager extends GenericTaskManager<AfterReview> {
+
+		private final AfterReview instance;
+		
+		/**
+		 * @param name
+		 * @param instance
+		 */
+		private AfterReviewTaskManager(String name, AfterReview instance) {
+			super(name);
+			this.instance = instance;
+		}
+
+		@Override
+		protected AfterReview createManaged() {
+			return instance;
+		}
+
+		@Override
+		protected AfterReview updateManaged(AfterReview managed) {
+			return instance;
+		}
+
+		@Override
+		protected AfterReview resetManaged(AfterReview managed) {
+			return instance;
+		}
+
+		@Override
+		protected void setChanged(boolean reset) {
+			// do nothing
+		}
+	}
 }
