@@ -42,10 +42,10 @@ import com.google.inject.name.Named;
  * Main steps for committing ontology changes to an OBO file in an CVS
  * repository.
  */
-abstract class GoCvsHelper {
+public abstract class GoCvsHelper {
 
 	@Singleton
-	static final class GoCvsHelperPassword extends GoCvsHelper {
+	public static final class GoCvsHelperPassword extends GoCvsHelper {
 
 		private final String cvsPassword;
 		private final String cvsRoot;
@@ -102,7 +102,7 @@ abstract class GoCvsHelper {
 	}
 
 	@Singleton
-	static final class GoCvsHelperAnonymous extends GoCvsHelper {
+	public static final class GoCvsHelperAnonymous extends GoCvsHelper {
 
 		private final String cvsRoot;
 
@@ -110,7 +110,7 @@ abstract class GoCvsHelper {
 		GoCvsHelperAnonymous(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
-				@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") String cvsOntologyFileName,
+				@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 				@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot)
 		{
 			super(source, iriMapper, cleaner, cvsOntologyFileName);

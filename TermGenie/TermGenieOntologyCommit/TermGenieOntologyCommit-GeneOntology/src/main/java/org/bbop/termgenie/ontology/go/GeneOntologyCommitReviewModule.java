@@ -36,6 +36,10 @@ public class GeneOntologyCommitReviewModule extends IOCModule {
 		bindCVSPassword();
 		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
 		bindGoCvsHelper();
+		bindReviewStages();
+	}
+
+	protected void bindReviewStages() {
 		bind(OntologyCommitReviewPipelineStages.class).to(GeneOntologyReviewCommitAdapter.class);
 	}
 

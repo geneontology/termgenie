@@ -33,7 +33,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 		OntologyCommitReviewPipelineStages
 {
 
-	private final GoCvsHelper helper;
+	protected final GoCvsHelper helper;
 	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	@Inject
