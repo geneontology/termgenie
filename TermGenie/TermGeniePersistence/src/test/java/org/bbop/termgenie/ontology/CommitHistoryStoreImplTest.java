@@ -40,7 +40,7 @@ public class CommitHistoryStoreImplTest {
 
 	@AfterClass
 	public static void afterClass() {
-//		TempTestFolderTools.deleteTestFolder(testFolder);
+		TempTestFolderTools.deleteTestFolder(testFolder);
 	}
 
 	@Test

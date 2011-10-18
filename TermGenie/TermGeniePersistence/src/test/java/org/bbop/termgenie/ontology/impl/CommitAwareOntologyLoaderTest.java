@@ -19,6 +19,7 @@ import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
@@ -44,7 +45,7 @@ public class CommitAwareOntologyLoaderTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-//		TempTestFolderTools.deleteTestFolder(testFolder);
+		TempTestFolderTools.deleteTestFolder(testFolder);
 	}
 
 	@Test
@@ -78,8 +79,13 @@ public class CommitAwareOntologyLoaderTest {
 		term.setLabel("Test term label");
 		terms.add(term);
 		item.setTerms(terms);
+		item.setCommitted(true);
 		commitHistoryStore.add(item, ontology);
 
+		CommitHistory history = commitHistoryStore.loadHistory(ontology);
+		assertNotNull(history);
+		assertNotNull(history.getItems());
+		
 		// setup ontology loader
 		CommitAwareOntologyLoader loader = new CommitAwareOntologyLoader(configuration, iriMapper, cleaner, Collections.<String> emptySet(), 1L, TimeUnit.DAYS, commitHistoryStore);
 		assertNotNull(loader);
