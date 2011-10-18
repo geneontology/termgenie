@@ -51,8 +51,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		try {
 			// add terms to local commit log
 			Date date = new Date();
-			String user = commitInfo.getUsername();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), user, date);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getTermgenieUser(), date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
 			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", diff);
