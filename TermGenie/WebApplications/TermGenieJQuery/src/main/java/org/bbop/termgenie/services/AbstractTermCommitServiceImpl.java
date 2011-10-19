@@ -35,6 +35,8 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.obo2owl.Owl2Obo;
+import org.semanticweb.owlapi.model.IRI;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
 
@@ -318,7 +320,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			super();
 			this.idProvider = idProvider;
 			this.ontology = ontology;
-			this.tempIdPrefix = tempIdPrefix.toLowerCase();
+			this.tempIdPrefix = Owl2Obo.getIdentifier(IRI.create(tempIdPrefix.toLowerCase())).toLowerCase();
 			tempIdMap = new HashMap<String, String>();
 			used = new HashSet<String>();
 			base = null;
