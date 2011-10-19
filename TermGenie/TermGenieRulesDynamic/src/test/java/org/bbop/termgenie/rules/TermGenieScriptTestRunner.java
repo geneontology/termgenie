@@ -50,10 +50,11 @@ public class TermGenieScriptTestRunner {
 					@Override
 					protected void bindOntologyConfiguration() {
 						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
-						bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
+						bind("XMLOntologyConfigurationResource",
+								"ontology-configuration_simple.xml");
 					}
 				},
-				new ReasonerModule());
+				new ReasonerModule("hermit"));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);
@@ -83,9 +84,21 @@ public class TermGenieScriptTestRunner {
 		assertNotNull(list);
 		assertEquals(3, list.size());
 
-		assertEquals("regulation of pigmentation", list.get(0).getTerm().getLabel());
-		assertEquals("negative regulation of pigmentation", list.get(1).getTerm().getLabel());
+		OntologyTerm<Synonym, IRelation> term1 = list.get(0).getTerm();
+		assertEquals("regulation of pigmentation", term1.getLabel());
+
+		OntologyTerm<Synonym, IRelation> term2 = list.get(1).getTerm();
+		assertEquals("negative regulation of pigmentation", term2.getLabel());
+		List<IRelation> relations = term2.getRelations();
+		boolean found = false;
+		for (IRelation relation : relations) {
+			if (relation.getTarget().equals(term1.getId())) {
+				assertEquals(term1.getLabel(), relation.getTargetLabel());
+				found = true;
+			}
+		}
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getLabel());
+		assertTrue(found);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,40 +109,42 @@ public class TermGenieScriptTestRunner {
 		TermGenerationParameters parameters = new TermGenerationParameters(termTemplate.getFieldCount());
 
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
-		parameters.setTermValues(termTemplate, 0, getTerm("GO:0046836", ontologyManager)); // glycolipid transport
+		parameters.setTermValues(termTemplate, 0, getTerm("GO:0046836", ontologyManager)); // glycolipid
+																							// transport
 		parameters.setTermValues(termTemplate, 1, getTerm("GO:0006915", ontologyManager)); // apoptosis
-		
+
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
-		
+
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		OntologyTerm<Synonym, IRelation> term = output.getTerm();
-		
+
 		List<Clause> clauses = OBOConverterTools.translateRelations(term.getRelations(), null);
 		assertEquals(4, clauses.size());
 		Clause clause0 = clauses.get(0);
 		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());
 		assertEquals("GO:0046836", clause0.getValue());
-		
+
 		Clause clause1 = clauses.get(1);
 		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause1.getTag());
 		assertEquals("GO:0046836", clause1.getValue());
-		
+
 		Clause clause2 = clauses.get(2);
 		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause2.getTag());
 		assertEquals("part_of", clause2.getValue());
 		assertEquals("GO:0006915", clause2.getValue2());
-		
+
 		Clause clause3 = clauses.get(3);
 		assertEquals(OboFormatTag.TAG_RELATIONSHIP.getTag(), clause3.getTag());
 		assertEquals("part_of", clause3.getValue());
 		assertEquals("GO:0006915", clause3.getValue2());
 	}
-	
-	private OntologyTerm<Synonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager) {
+
+	private OntologyTerm<Synonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager)
+	{
 		OntologyTaskImplementation task = new OntologyTaskImplementation(id);
 		ontologyManager.runManagedTask(task);
 		return task.term;

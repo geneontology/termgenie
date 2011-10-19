@@ -21,6 +21,7 @@ import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.obolibrary.obo2owl.Obo2OWLConstants;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -118,8 +119,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			if (ontologies != null && ontologies.length > 0) {
 				String templateId = getTemplateId(termTemplate, count);
 				String script = termTemplate.getRules();
-				String tempIdPrefix = getTempIdPrefix(targetOntology);
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, tempIdPrefix, templateId, factory);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId, factory);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
@@ -176,7 +176,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		private final Ontology targetOntology;
 		private final String script;
 		private final TermGenerationInput input;
-		private final String tempIdPrefix;
 		private final String templateId;
 		private final ReasonerFactory factory;
 
@@ -186,7 +185,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				Ontology targetOntology,
 				TermGenerationInput input,
 				String script,
-				String tempIdPrefix,
 				String templateId,
 				ReasonerFactory factory)
 		{
@@ -194,7 +192,6 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			this.targetOntology = targetOntology;
 			this.input = input;
 			this.script = script;
-			this.tempIdPrefix = tempIdPrefix;
 			this.templateId = templateId;
 			this.factory = factory;
 		}
@@ -224,7 +221,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					return modified;
 				}
 
-				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, tempIdPrefix, templateId, factory);
+				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, getTempIdPrefix(targetOntology), templateId, factory);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();
@@ -316,8 +313,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 	}
 
 	@Override
-	public String getTempIdPrefix(Ontology ontology) {
-		return "TEMP-" + ontology.getUniqueName() + ":";
+	public String getTempIdPrefix(OWLGraphWrapper ontology) {
+		return Obo2OWLConstants.DEFAULT_IRI_PREFIX + ontology.getOntologyId().toUpperCase()+"_"+"TEMP-";
 	}
-
 }

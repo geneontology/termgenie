@@ -11,19 +11,22 @@ import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
 import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
-import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
+import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -31,7 +34,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 
 	private final ManchesterSyntaxTool syntaxTool;
 	private final String targetOntologyId;
-	
+
 	/**
 	 * @param input
 	 * @param targetOntology
@@ -53,31 +56,35 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	@Override
 	protected List<IRelation> createRelations(List<MDef> logicalDefinitions,
 			String newId,
-			OWLChangeTracker changeTracker)  throws RelationCreationException
+			String label,
+			OWLChangeTracker changeTracker) throws RelationCreationException
 	{
 		if (logicalDefinitions == null || logicalDefinitions.isEmpty()) {
 			return Collections.emptyList();
 		}
 		OWLOntologyManager owlManager = targetOntology.getManager();
 		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
-		OWLClassExpression newOwlClass = createOWLClass(newId, targetOntology, owlDataFactory);
+		IRI iri = IRI.create(newId);
+		OWLClass owlClass = addClass(iri, changeTracker);
+		addLabel(iri, label, changeTracker);
 		for (MDef def : logicalDefinitions) {
 			String expression = def.getExpression();
 			Map<String, String> parameters = def.getParameters();
 			for (Entry<String, String> parameter : parameters.entrySet()) {
-				expression = expression.replaceAll("\\?"+parameter.getKey(), parameter.getValue());
+				expression = expression.replaceAll("\\?" + parameter.getKey(), parameter.getValue());
 			}
 			try {
 				OWLClassExpression owlClassExpression = syntaxTool.parseManchesterExpression(expression);
-				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(newOwlClass, owlClassExpression);
+				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(owlClass,
+						owlClassExpression);
 				changeTracker.apply(new AddAxiom(targetOntology.getSourceOntology(), axiom));
-				
+
 			} catch (ParserException exception) {
-				throw new RelationCreationException("Could not create OWL class expressions from expression: "+expression, exception);
+				throw new RelationCreationException("Could not create OWL class expressions from expression: " + expression, exception);
 			}
 		}
-		
-		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, newOwlClass, changeTracker);
+
+		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker);
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
@@ -85,13 +92,23 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		return task.getRelations();
 	}
 
-	private OWLClassExpression createOWLClass(String newId,
-			OWLGraphWrapper ontology,
-			OWLDataFactory owlDataFactory)
+	static OWLClass addClass(IRI iri, OWLChangeTracker changeTracker) {
+		OWLDataFactory factory = changeTracker.getTarget().getOWLOntologyManager().getOWLDataFactory();
+		OWLClass owlClass = factory.getOWLClass(iri);
+		OWLDeclarationAxiom owlDeclarationAxiom = factory.getOWLDeclarationAxiom(owlClass);
+		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), owlDeclarationAxiom));
+		return owlClass;
+	}
+	
+	static void addLabel(IRI iri,
+			String label,
+			OWLChangeTracker changeTracker)
 	{
-		// TODO is this good enough for a temp id?
-		IRI iri = IRI.create(Obo2OWLConstants.DEFAULT_IRI_PREFIX + ontology.getOntologyId()+"/"+newId);
-		return owlDataFactory.getOWLClass(iri);
+		OWLDataFactory owlDataFactory = changeTracker.getTarget().getOWLOntologyManager().getOWLDataFactory();
+		OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(owlDataFactory.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()),
+				iri,
+				owlDataFactory.getOWLLiteral(label));
+		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), axiom));
 	}
 
 	private class ManchesterSyntaxTool {

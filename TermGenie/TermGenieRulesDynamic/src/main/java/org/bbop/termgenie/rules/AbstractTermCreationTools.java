@@ -18,8 +18,10 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.obolibrary.obo2owl.Owl2Obo;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -75,7 +77,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		private final OWLOntology owlOntology;
 		private final OWLOntologyManager manager;
 	
-		private OWLChangeTracker(OWLOntology owlOntology) {
+		OWLChangeTracker(OWLOntology owlOntology) {
 			this.owlOntology = owlOntology;
 			this.manager = owlOntology.getOWLOntologyManager();
 		}
@@ -130,6 +132,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 				logger.warn("Can not apply change", exception);
 				return false;
 			}
+		}
+		
+		protected OWLOntology getTarget() {
+			return owlOntology;
 		}
 	}
 
@@ -244,14 +250,15 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		metaData.put("resource", targetOntology.getOntologyId());
 		metaData.put("comment", getInput("Comment"));
 
-		String newId = getNewId();
+		String owlNewId = getNewId();
 
 		try {
-			List<IRelation> relations = createRelations(logicalDefinition, newId, changeTracker);
+			List<IRelation> relations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
 			if (relations != null && !relations.isEmpty()) {
 				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
 			}
-			DefaultOntologyTerm term = new DefaultOntologyTerm(newId, label, definition, synonyms, defxrefs, metaData, relations);
+			String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
+			DefaultOntologyTerm term = new DefaultOntologyTerm(oboNewId, label, definition, synonyms, defxrefs, metaData, relations);
 			output.add(success(term, input));
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
@@ -279,7 +286,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		}
 	}
 	
-	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, OWLChangeTracker changeTracker) throws RelationCreationException;
+	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
 	private List<String> getDefXref() {
 		String[] strings = getInputs("DefX_Ref");

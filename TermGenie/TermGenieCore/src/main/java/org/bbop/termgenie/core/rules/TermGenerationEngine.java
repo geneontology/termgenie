@@ -8,6 +8,7 @@ import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
 
+import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 public interface TermGenerationEngine {
@@ -38,7 +39,7 @@ public interface TermGenerationEngine {
 	 * 
 	 * @return prefix
 	 */
-	public String getTempIdPrefix(Ontology ontology);
+	public String getTempIdPrefix(OWLGraphWrapper ontology);
 
 	public final class TermGenerationInput {
 
