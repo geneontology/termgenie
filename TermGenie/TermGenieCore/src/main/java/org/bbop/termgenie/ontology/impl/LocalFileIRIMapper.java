@@ -12,13 +12,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.ResourceLoader;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
@@ -137,20 +135,8 @@ public class LocalFileIRIMapper extends ResourceLoader implements IRIMapper {
 	}
 
 	protected InputStream loadRemote(String url) throws MalformedURLException, IOException {
-		InputStream inputStream;
 		URL u = new URL(url);
-		inputStream = u.openStream();
+		InputStream inputStream = u.openStream();
 		return inputStream;
-	}
-
-	public static void main(String[] args) {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
-		IRIMapper mapper = injector.getInstance(IRIMapper.class);
-		System.out.println(((LocalFileIRIMapper) mapper).mappings.size());
-
-		System.out.println(mapper == injector.getInstance(IRIMapper.class));
-
-		URL mapUrl = mapper.mapUrl("http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo");
-		System.out.println(mapUrl);
 	}
 }
