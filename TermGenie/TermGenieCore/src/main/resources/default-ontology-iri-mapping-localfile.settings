@@ -15,7 +15,7 @@ http://github.com/cmungall/uberon/raw/master/uberon.obo	ontologies/uberon-2011-0
 
 # HPO
 http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology.obo	ontologies/human-phenotype-ontology-2011-05-16.obo	termgenie-ontologies/human-phenotype-ontology.obo
-http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo	human-phenotype-ontology_xp-2011-05-16.obo	termgenie-ontologies/human-phenotype-ontology_xp.obo
+http://compbio.charite.de/svn/hpo/trunk/src/ontology/human-phenotype-ontology_xp.obo	ontologies/human-phenotype-ontology_xp-2011-05-16.obo	termgenie-ontologies/human-phenotype-ontology_xp.obo
 
 # FMA
 http://obo.svn.sourceforge.net/viewvc/*checkout*/obo/fma-conversion/trunk/fma2_obo.obo	ontologies/fma2_obo-2011-05-16.obo	termgenie-ontologies/fma2_obo.obo
@@ -24,7 +24,7 @@ http://obo.svn.sourceforge.net/viewvc/*checkout*/obo/fma-conversion/trunk/fma2_o
 http://pato.googlecode.com/svn/trunk/quality.obo	ontologies/quality-2011-05-16.obo	termgenie-ontologies/quality.obo
 
 # OMP
-http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/mammalian_phenotype.obo	mammalian_phenotype-2011-05-16.obo	termgenie-ontologies/mammalian_phenotype.obo
+http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/mammalian_phenotype.obo	ontologies/mammalian_phenotype-2011-05-16.obo	termgenie-ontologies/mammalian_phenotype.obo
 
 # CELL
 http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo	ontologies/cell-2011-05-16.obo	termgenie-ontologies/cell.obo
