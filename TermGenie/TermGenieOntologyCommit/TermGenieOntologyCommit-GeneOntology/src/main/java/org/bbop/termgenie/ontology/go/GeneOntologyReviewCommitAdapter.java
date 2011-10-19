@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
@@ -37,7 +38,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	@Inject
-	GeneOntologyReviewCommitAdapter(@Named("GeneOntologyTaskManager") OntologyTaskManager source,
+	GeneOntologyReviewCommitAdapter(@Named("GeneOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
 			GoCvsHelper helper)
 	{
@@ -108,9 +109,16 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 			throws CommitException
 	{
 		try {
+			scm.connect();
 			scm.update();
 		} catch (IOException exception) {
 			throw error("Could not update cvs repository", exception);
+		} finally {
+			try {
+				scm.close();
+			} catch (IOException exception) {
+				Logger.getLogger(getClass()).error("Could not close CVS tool.", exception);
+			}
 		}
 	}
 

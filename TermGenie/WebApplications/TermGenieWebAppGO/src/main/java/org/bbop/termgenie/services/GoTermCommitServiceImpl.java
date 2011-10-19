@@ -11,11 +11,9 @@ import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyIdManager;
-import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.go.GoCommitInfo;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
@@ -30,23 +28,21 @@ import com.google.inject.name.Named;
 @Singleton
 public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 
-	private final ConfiguredOntology geneOntology;
+	private final OntologyTaskManager source;
 	private String tempIdPrefix;
 
 	@Inject
 	protected GoTermCommitServiceImpl(OntologyTools ontologyTools,
 			InternalSessionHandler sessionHandler,
 			Committer committer,
-			final @Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
-			OntologyLoader loader,
+			final @Named("GeneOntology") OntologyTaskManager source,
 			OntologyIdManager idProvider,
 			final TermGenerationEngine generationEngine,
 			UserPermissions permissions)
 	{
 		super(ontologyTools, sessionHandler, committer, idProvider, permissions);
-		geneOntology = source;
-		OntologyTaskManager taskManager = loader.getOntology(source);
-		taskManager.runManagedTask(new OntologyTask() {
+		this.source = source;
+		source.runManagedTask(new OntologyTask() {
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
@@ -58,7 +54,7 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 
 	@Override
 	protected Ontology getTargetOntology() {
-		return geneOntology;
+		return source.getOntology();
 	}
 
 	@Override

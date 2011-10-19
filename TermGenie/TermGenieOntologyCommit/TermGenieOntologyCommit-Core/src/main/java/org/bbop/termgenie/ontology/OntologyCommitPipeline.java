@@ -12,7 +12,6 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.tools.Pair;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -30,11 +29,11 @@ import difflib.Patch;
 public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyCommitPipelineData, ONTOLOGY> implements
 		Committer
 {
-	protected final ConfiguredOntology source;
+	protected final OntologyTaskManager source;
 	private final CommitHistoryStore store;
 	private final boolean supportAnonymus;
 
-	protected OntologyCommitPipeline(ConfiguredOntology source,
+	protected OntologyCommitPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			boolean supportAnonymus)
 	{
@@ -105,7 +104,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		File workFolder = null;
 		try {
 			String suffix = ".lock";
-			tempFile = File.createTempFile(source.getUniqueName() + "commit-", suffix);
+			tempFile = File.createTempFile(source.getOntology().getUniqueName() + "commit-", suffix);
 			String tempFolderName = tempFile.getName().replace(suffix, "-folder");
 			workFolder = new File(tempFile.getParentFile(), tempFolderName);
 			FileUtils.forceMkdir(workFolder);
@@ -179,6 +178,9 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 
 		// set the commit also to success in the commit history
 		finalizeCommitHistory(item);
+		
+		// update ontology
+		source.updateManaged();
 		return new CommitResult(true, null, diff);
 	}
 
@@ -266,10 +268,10 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 			Date date = new Date();
 			String user = commitInfo.getUsername();
 			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, user, date);
-			store.add(historyItem, source.getUniqueName());
+			store.add(historyItem, source.getOntology().getUniqueName());
 			return historyItem;
 		} catch (CommitHistoryStoreException exception) {
-			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
+			String message = "Problems handling commit history for ontology: " + source.getOntology().getUniqueName();
 			throw error(message, exception, true);
 		}
 	}
@@ -317,9 +319,9 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		try {
 			// set terms in commit log as committed
 			item.setCommitted(true);
-			store.update(item, source.getUniqueName());
+			store.update(item, source.getOntology().getUniqueName());
 		} catch (CommitHistoryStoreException exception) {
-			String message = "Problems handling commit history for ontology: " + source.getUniqueName();
+			String message = "Problems handling commit history for ontology: " + source.getOntology().getUniqueName();
 			throw error(message, exception, false);
 		}
 	}

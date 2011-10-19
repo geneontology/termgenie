@@ -24,6 +24,8 @@ import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
@@ -63,6 +65,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		
 		// retrieve components (via injector) and set parameters
 		ConfiguredOntology source = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
+		OntologyTaskManager goManager = injector.getInstance(OntologyLoader.class).getOntology(source);
 		IRIMapper iriMapper = injector.getInstance(IRIMapper.class);
 		OntologyCleaner cleaner = injector.getInstance(OntologyCleaner.class);
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
@@ -70,9 +73,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		String localFile = cvslocalFile.getAbsolutePath();
 		CommitHistoryStore store = injector.getInstance(CommitHistoryStore.class);
 		
-		GoCvsHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(source, iriMapper, cleaner, cvsFileName, cvsRoot);
+		GoCvsHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(goManager, iriMapper, cleaner, cvsFileName, cvsRoot);
 		/// create adapter instance, which writes to test-local resource
-		instance = new FileOnlyGeneOntologyCommitAdapter(source, store, helper, localFile) {
+		instance = new FileOnlyGeneOntologyCommitAdapter(goManager, store, helper, localFile) {
 
 			@Override
 			protected WorkFolders createTempDir() throws CommitException {

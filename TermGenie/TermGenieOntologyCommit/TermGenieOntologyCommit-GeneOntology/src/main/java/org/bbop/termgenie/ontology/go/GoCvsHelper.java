@@ -25,9 +25,9 @@ import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
@@ -51,7 +51,7 @@ public abstract class GoCvsHelper {
 		private final String cvsRoot;
 
 		@Inject
-		GoCvsHelperPassword(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
+		GoCvsHelperPassword(@Named("GeneOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
 				@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
@@ -107,7 +107,7 @@ public abstract class GoCvsHelper {
 		private final String cvsRoot;
 
 		@Inject
-		GoCvsHelperAnonymous(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology source,
+		GoCvsHelperAnonymous(@Named("GeneOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
 				@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
@@ -147,11 +147,11 @@ public abstract class GoCvsHelper {
 		}
 	}
 
-	private final ConfiguredOntology source;
+	private final OntologyTaskManager source;
 	private final DirectOntologyLoader loader;
 	private final String cvsOntologyFileName;
 
-	GoCvsHelper(ConfiguredOntology source,
+	GoCvsHelper(OntologyTaskManager source,
 			IRIMapper iriMapper,
 			OntologyCleaner cleaner,
 			String cvsOntologyFileName)
@@ -209,7 +209,7 @@ public abstract class GoCvsHelper {
 		data.oboFolder = createFolder(workFolder, "obo");
 		data.oboRoundTripFolder = createFolder(workFolder, "obo-roundtrip");
 		final File patchedFolder = createFolder(workFolder, "obo-patched");
-		data.modifiedSCMTargetOntology = new File(patchedFolder, source.getUniqueName() + ".obo");
+		data.modifiedSCMTargetOntology = new File(patchedFolder, source.getOntology().getUniqueName() + ".obo");
 
 		return data;
 	}
@@ -374,7 +374,7 @@ public abstract class GoCvsHelper {
 			// write OBO file to temp
 			OBOFormatWriter writer = new OBOFormatWriter();
 
-			File oboFile = new File(oboFolder, source.getUniqueName() + ".obo");
+			File oboFile = new File(oboFolder, source.getOntology().getUniqueName() + ".obo");
 			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
 			writer.write(oboDoc, bufferedWriter);
 			return oboFile;

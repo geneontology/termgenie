@@ -11,8 +11,8 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.obolibrary.oboformat.model.OBODoc;
 
 import owltools.graph.OWLGraphWrapper.Synonym;
@@ -27,7 +27,7 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 	protected final GoCvsHelper helper;
 	
 	@Inject
-	GeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") final ConfiguredOntology source,
+	GeneOntologyCommitAdapter(@Named("GeneOntology") final OntologyTaskManager source,
 			final CommitHistoryStore store,
 			final GoCvsHelper helper)
 	{

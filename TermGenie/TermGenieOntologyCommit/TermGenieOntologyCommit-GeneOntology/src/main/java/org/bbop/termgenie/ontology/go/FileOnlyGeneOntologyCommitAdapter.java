@@ -5,8 +5,8 @@ import java.io.File;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -24,7 +24,7 @@ public class FileOnlyGeneOntologyCommitAdapter extends GeneOntologyCommitAdapter
 	private final File localFile;
 
 	@Inject
-	FileOnlyGeneOntologyCommitAdapter(@Named("ConfiguredOntologyGeneOntology") final ConfiguredOntology source,
+	FileOnlyGeneOntologyCommitAdapter(@Named("GeneOntology") final OntologyTaskManager source,
 			final CommitHistoryStore store,
 			final GoCvsHelper helper,
 			@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") final String localFile)

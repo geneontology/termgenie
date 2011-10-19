@@ -55,22 +55,15 @@ public class GeneOntologyCommitReviewModule extends IOCModule {
 
 	@Singleton
 	@Provides
-	@Named("GeneOntologyTaskManager")
-	OntologyTaskManager provideGeneOntologyManager(@Named("ConfiguredOntologyGeneOntology") ConfiguredOntology configuration,
+	@Named("GeneOntology")
+	OntologyTaskManager provideGeneOntologyManager(OntologyConfiguration configuration,
 			OntologyLoader loader)
 	{
-		OntologyTaskManager manager = loader.getOntology(configuration);
+		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
+		OntologyTaskManager manager = loader.getOntology(configuredOntology);
 		return manager;
 	}
 
-	@Singleton
-	@Provides
-	@Named("ConfiguredOntologyGeneOntology")
-	ConfiguredOntology provideGeneOntologyConfiguration(OntologyConfiguration configuration) {
-		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
-		return configuredOntology;
-	}
-	
 	@Singleton
 	@Provides
 	Committer provideReviewCommitter(OntologyCommitReviewPipelineStages pipeline) {

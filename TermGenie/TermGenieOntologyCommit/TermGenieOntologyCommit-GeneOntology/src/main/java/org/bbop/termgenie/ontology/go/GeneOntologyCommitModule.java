@@ -5,6 +5,8 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
+import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 import com.google.inject.Provides;
@@ -40,10 +42,10 @@ public class GeneOntologyCommitModule extends IOCModule {
 	
 	@Singleton
 	@Provides
-	@Named("ConfiguredOntologyGeneOntology")
-	ConfiguredOntology provideGeneOntology(OntologyConfiguration configuration) {
+	@Named("GeneOntology")
+	OntologyTaskManager provideGeneOntology(OntologyConfiguration configuration, OntologyLoader loader) {
 		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
-		return configuredOntology;
+		return loader.getOntology(configuredOntology);
 	}
 
 }

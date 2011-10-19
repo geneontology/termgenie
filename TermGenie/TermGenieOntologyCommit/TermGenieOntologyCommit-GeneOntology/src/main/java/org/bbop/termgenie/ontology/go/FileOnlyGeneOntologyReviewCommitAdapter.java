@@ -24,7 +24,7 @@ public class FileOnlyGeneOntologyReviewCommitAdapter extends GeneOntologyReviewC
 	private final File localFile;
 
 	@Inject
-	FileOnlyGeneOntologyReviewCommitAdapter(@Named("GeneOntologyTaskManager") OntologyTaskManager source,
+	FileOnlyGeneOntologyReviewCommitAdapter(@Named("GeneOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
 			GoCvsHelper helper,
 			@Named("FileOnlyGeneOntologyReviewCommitAdapterLocalFile") final String localFile)

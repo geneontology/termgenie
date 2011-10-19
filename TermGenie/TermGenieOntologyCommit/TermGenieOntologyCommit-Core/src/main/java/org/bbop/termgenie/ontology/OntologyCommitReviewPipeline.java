@@ -180,6 +180,8 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		List<CommitHistoryItem> items = retrieveItems(historyIds);
 		List<CommitResult> results = new ArrayList<Committer.CommitResult>(items.size());
 
+		boolean changed = false;
+		
 		for (CommitHistoryItem item : items) {
 			if (item.isCommitted()) {
 				results.add(new CommitResult(false, "The item has already been marked as committed", null));
@@ -229,6 +231,12 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			finalizeCommitHistory(item);
 
 			results.add(new CommitResult(true, null, diff));
+			changed = true;
+		}
+		
+		// Reload ontology after committing the changes
+		if (changed) {
+			source.updateManaged();
 		}
 		return results;
 	}
