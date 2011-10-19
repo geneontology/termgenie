@@ -27,9 +27,6 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonOntologyTerm;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermGenerationParameter;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
@@ -166,7 +163,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			Collection<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = createJsonCandidate(candidate);
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.convert(candidate.getTerm());
 					jsonCandidates.add(jsonCandidate);
 				}
 				else {
@@ -184,50 +181,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					exception);
 			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null);
 		}
-	}
-
-	private JsonOntologyTerm createJsonCandidate(TermGenerationOutput candidate) {
-
-		JsonOntologyTerm term = new JsonOntologyTerm();
-		term.setDefinition(candidate.getTerm().getDefinition());
-		List<String> defXRef = candidate.getTerm().getDefXRef();
-		if (defXRef != null && !defXRef.isEmpty()) {
-			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
-		}
-		term.setTempId(candidate.getTerm().getId());
-		term.setLabel(candidate.getTerm().getLabel());
-		term.setSynonyms(createJsonSynonyms(candidate.getTerm().getSynonyms()));
-		term.setMetaData(new JsonTermMetaData(candidate.getTerm().getMetaData()));
-		List<IRelation> relations = candidate.getTerm().getRelations();
-		if (relations != null && !relations.isEmpty()) {
-			JsonTermRelation[] jsonRelations = new JsonTermRelation[relations.size()];
-			for (int i = 0; i < jsonRelations.length; i++) {
-				jsonRelations[i] = JsonTermRelation.convert(relations.get(i));
-			}
-			term.setRelations(jsonRelations);
-		}
-		return term;
-	}
-
-	private JsonSynonym[] createJsonSynonyms(List<Synonym> synonyms) {
-		if (synonyms != null && !synonyms.isEmpty()) {
-			List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
-			for (Synonym synonym : synonyms) {
-				JsonSynonym jsonSynonym = new JsonSynonym();
-				jsonSynonym.setLabel(synonym.getLabel());
-				jsonSynonym.setScope(synonym.getScope());
-				jsonSynonym.setCategory(synonym.getCategory());
-				String[] axrefs = null;
-				Set<String> xrefs = synonym.getXrefs();
-				if (xrefs != null && !xrefs.isEmpty()) {
-					axrefs = xrefs.toArray(new String[xrefs.size()]);
-				}
-				jsonSynonym.setXrefs(axrefs);
-				jsonSynonyms.add(jsonSynonym);
-			}
-			return jsonSynonyms.toArray(new JsonSynonym[jsonSynonyms.size()]);
-		}
-		return null;
 	}
 
 	private List<TermGenerationInput> createGenerationTasks(String ontologyName,

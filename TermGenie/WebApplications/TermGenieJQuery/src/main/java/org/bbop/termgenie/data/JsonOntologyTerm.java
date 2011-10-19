@@ -1,12 +1,19 @@
 package org.bbop.termgenie.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
+
+import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class JsonOntologyTerm {
 
@@ -164,6 +171,28 @@ public class JsonOntologyTerm {
 		return builder.toString();
 	}
 
+	public static JsonOntologyTerm convert(OntologyTerm<? extends Synonym, ? extends IRelation> source) {
+		JsonOntologyTerm term = new JsonOntologyTerm();
+		term.setDefinition(source.getDefinition());
+		List<String> defXRef = source.getDefXRef();
+		if (defXRef != null && !defXRef.isEmpty()) {
+			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
+		}
+		term.setTempId(source.getId());
+		term.setLabel(source.getLabel());
+		term.setSynonyms(JsonSynonym.convert(source.getSynonyms()));
+		term.setMetaData(new JsonTermMetaData(source.getMetaData()));
+		List<? extends IRelation> relations = source.getRelations();
+		if (relations != null && !relations.isEmpty()) {
+			JsonTermRelation[] jsonRelations = new JsonTermRelation[relations.size()];
+			for (int i = 0; i < jsonRelations.length; i++) {
+				jsonRelations[i] = JsonTermRelation.convert(relations.get(i));
+			}
+			term.setRelations(jsonRelations);
+		}
+		return term;
+	}
+	
 	public static class JsonSynonym {
 
 		private String label;
@@ -252,6 +281,27 @@ public class JsonOntologyTerm {
 			}
 			builder.append("]");
 			return builder.toString();
+		}
+		
+		public static JsonSynonym[] convert(Collection<? extends Synonym> synonyms) {
+			if (synonyms != null && !synonyms.isEmpty()) {
+				List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
+				for (Synonym synonym : synonyms) {
+					JsonSynonym jsonSynonym = new JsonSynonym();
+					jsonSynonym.setLabel(synonym.getLabel());
+					jsonSynonym.setScope(synonym.getScope());
+					jsonSynonym.setCategory(synonym.getCategory());
+					String[] axrefs = null;
+					Set<String> xrefs = synonym.getXrefs();
+					if (xrefs != null && !xrefs.isEmpty()) {
+						axrefs = xrefs.toArray(new String[xrefs.size()]);
+					}
+					jsonSynonym.setXrefs(axrefs);
+					jsonSynonyms.add(jsonSynonym);
+				}
+				return jsonSynonyms.toArray(new JsonSynonym[jsonSynonyms.size()]);
+			}
+			return null;
 		}
 	}
 

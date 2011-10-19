@@ -25,6 +25,7 @@ import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitObject;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyIdManager;
@@ -174,7 +175,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 					message = "Commit operation finished successfully.";
 				}
 				result.setMessage(message);
-				result.setTerms(terms);
+				result.setTerms(createTerms(commitTerms));
 				result.setSuccess(true);
 				result.setDiff(commitResult.getDiff());
 
@@ -186,6 +187,17 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				return;
 			}
 			return;
+		}
+
+		private JsonOntologyTerm[] createTerms(List<CommitObject<OntologyTerm<Synonym, IRelation>>> commitTerms)
+		{
+			List<JsonOntologyTerm> terms = new ArrayList<JsonOntologyTerm>();
+			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : commitTerms) {
+				if (commitObject.getType() == Modification.add) {
+					terms.add(JsonOntologyTerm.convert(commitObject.getObject()));
+				}
+			}
+			return terms.toArray(new JsonOntologyTerm[terms.size()]);
 		}
 
 		private Pair<List<CommitObject<OntologyTerm<Synonym, IRelation>>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
