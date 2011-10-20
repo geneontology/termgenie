@@ -20,6 +20,7 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
@@ -246,10 +247,9 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		}
 
 		Map<String, String> metaData = new HashMap<String, String>();
-		metaData.put("creation_date", getDate());
-		metaData.put("created_by", "TermGenie");
-		metaData.put("resource", targetOntology.getOntologyId());
-		metaData.put("comment", getInput("Comment"));
+		metaData.put(OboFormatTag.TAG_CREATION_DATE.getTag(), getDate());
+		metaData.put(OboFormatTag.TAG_CREATED_BY.getTag(), "TermGenie");
+		metaData.put(OboFormatTag.TAG_COMMENT.getTag(), getInput("Comment"));
 
 		String owlNewId = getNewId();
 
