@@ -1,6 +1,7 @@
 package org.bbop.termgenie.rules;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,10 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -296,10 +297,18 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return Arrays.asList(strings);
 	}
 
-	private final static DateFormat df = new ISO8601DateFormat();
+	private final static ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>(){
+
+		@Override
+		protected DateFormat initialValue() {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return sdf;
+		}
+	};
 
 	private String getDate() {
-		return df.format(new Date());
+		return df.get().format(new Date());
 	}
 
 	protected TermGenerationOutput singleError(String message, TermGenerationInput input) {
