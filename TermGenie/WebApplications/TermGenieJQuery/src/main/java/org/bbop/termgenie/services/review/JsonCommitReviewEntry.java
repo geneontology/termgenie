@@ -73,6 +73,8 @@ public class JsonCommitReviewEntry {
 
 		private String diff;
 
+		private boolean modified = false;
+
 		/**
 		 * @return the id
 		 */
@@ -113,6 +115,20 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setDiff(String diff) {
 			this.diff = diff;
+		}
+
+		/**
+		 * @return the modified
+		 */
+		public boolean isModified() {
+			return modified;
+		}
+
+		/**
+		 * @param modified the modified to set
+		 */
+		public void setModified(boolean modified) {
+			this.modified = modified;
 		}
 	}
 }

@@ -133,6 +133,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		for (CommitedOntologyTerm term : terms) {
 			JsonDiff jsonDiff = new JsonDiff();
 			jsonDiff.setOperation(term.getOperation());
+			jsonDiff.setId(term.getId());
 			
 			Modification mode = CommitHistoryTools.getModification(term.getOperation());
 			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, mode, oboDoc);
@@ -178,6 +179,13 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		
 		final List<Integer> historyIds = new ArrayList<Integer>(entries.length);
 		for (JsonCommitReviewEntry entry : entries) {
+			JsonDiff[] jsonDiffs = entry.getDiffs();
+			for (JsonDiff jsonDiff : jsonDiffs) {
+				if (jsonDiff.isModified()) {
+					updateHistoryItem(entry);
+					break;
+				}
+			}
 			historyIds.add(entry.getHistoryId());
 		}
 			
@@ -191,6 +199,15 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
 		return JsonCommitReviewCommitResult.success(historyIds, task.commits);
+	}
+
+	private void updateHistoryItem(JsonCommitReviewEntry entry) {
+		// TODO Auto-generated method stub
+		
+		// TODO check that only uncommitted items are changed
+		// TODO add a time stamp/version to history item to detect conflicting updates
+		
+		// TODO move this into after review??
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

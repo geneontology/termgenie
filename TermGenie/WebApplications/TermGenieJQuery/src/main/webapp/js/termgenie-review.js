@@ -176,7 +176,34 @@ function TermGenieReview(){
 				var operation = null;
 				if (diff.operation === 0) {
 					// add
-					operation = 'Add';
+					operation = jQuery('<div></div>');
+					operation.append('<div>Add</div>');
+					var editButton = jQuery('<button>Edit term</button>');
+					operation.append(editButton);
+					editButton.click(function(){
+						var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+						var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
+						editDialog.append(editField);
+						editDialog.dialog({
+							title: "Editor",
+							resizable: true,
+							height:450,
+							width: 600,
+							minHeight: 200,
+							minWidth: 200,
+							modal: true,
+							buttons: {
+								"Change": function() {
+									diff.modified = true;
+									diff.diff = editField.val();
+									$( this ).dialog( "close" );
+								},
+								"Cancel": function() {
+									$( this ).dialog( "close" );
+								}
+							}
+						});
+					});
 				}
 				else if (diff.operation === 1) {
 					// modify
