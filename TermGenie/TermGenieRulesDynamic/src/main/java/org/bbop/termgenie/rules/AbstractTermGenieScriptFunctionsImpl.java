@@ -13,6 +13,7 @@ import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -361,17 +362,33 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 	protected Pair<Boolean, String> matchScopes(ISynonym s1, ISynonym s2) {
 		String scope1 = s1.getScope();
 		String scope2 = s2.getScope();
-		if (scope1 == scope2) {
-			// intented: true if both are null
-			return new Pair<Boolean, String>(true, scope1);
+		if (scope1 == null) {
+			scope1 = OboFormatTag.TAG_RELATED.getTag();
 		}
-		if (scope1 == null || scope2 == null) {
-			return new Pair<Boolean, String>(true, null);
+		if (scope2 == null) {
+			scope2 = OboFormatTag.TAG_RELATED.getTag();
 		}
 		if (scope1.equals(scope2)) {
 			return new Pair<Boolean, String>(true, scope1);
 		}
-		return MISMATCH;
+		if (scope1.equals(OboFormatTag.TAG_BROAD.getTag())
+				|| scope2.equals(OboFormatTag.TAG_BROAD.getTag())) {
+			// this is the only case for a miss match
+			return MISMATCH;	
+		}
+		if (scope1.equals(OboFormatTag.TAG_EXACT.getTag())) {
+			return new Pair<Boolean, String>(true, scope2);
+		}
+		if (scope2.equals(OboFormatTag.TAG_EXACT.getTag())) {
+			return new Pair<Boolean, String>(true, scope1);
+		}
+		if (scope1.equals(OboFormatTag.TAG_NARROW.getTag())){
+			return new Pair<Boolean, String>(true, scope2);
+		}
+		if (scope2.equals(OboFormatTag.TAG_NARROW.getTag())) {
+			return new Pair<Boolean, String>(true, scope1);
+		}
+		return new Pair<Boolean, String>(true, OboFormatTag.TAG_RELATED.getTag());
 	}
 
 	private List<ISynonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<ISynonym> synonyms) {
@@ -393,6 +410,9 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 			// if by any chance a synonym has the same label, it is ignored
 			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
 			// TODO what to to with categories if creating a compound synonym?
+			if (scope == null) {
+				scope = OboFormatTag.TAG_RELATED.getTag();
+			}
 			results.add(new Synonym(newLabel, scope, null, xrefs));
 		}
 	}
