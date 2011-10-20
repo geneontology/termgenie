@@ -1,5 +1,5 @@
 {
 	guid: {
-		termgenie: "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
+		termgenie-go: "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
 	}
 }

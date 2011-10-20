@@ -15,7 +15,6 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
-import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
@@ -120,9 +119,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	/**
 	 * @return module handling the user permissions
 	 */
-	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule();
-	}
+	protected abstract IOCModule getUserPermissionModule();
 
 	/**
 	 * @return module handling loading of ontologies
@@ -147,7 +144,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	protected IOCModule getCommitModule() {
 		return null;
 	}
-	
+
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
 		return new TermCommitReviewServiceModule(false);
 	}

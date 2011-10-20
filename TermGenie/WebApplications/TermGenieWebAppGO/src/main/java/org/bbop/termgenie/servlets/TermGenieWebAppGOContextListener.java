@@ -22,12 +22,18 @@ import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.GoTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 
 import com.google.inject.Singleton;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
 
+	@Override
+	protected IOCModule getUserPermissionModule() {
+		return new UserPermissionsModule("termgenie-go");
+	}
+	
 	@Override
 	protected TermGenieServiceModule getServiceModule() {
 		return new TermGenieServiceModule() {

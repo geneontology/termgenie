@@ -18,22 +18,25 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	private static final String FLAG_SCREEN_NAME = "screenname";
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
-	private static final String APPLICATION_NAME = "termgenie";
-	
+
+	private final String applicationName;
 	private final File jsonPermissionsFile;
 
 	@Inject
-	JsonFileUserPermissionsImpl(@Named("JsonUserPermissionsFileName") String jsonPermissionsFileName) {
+	JsonFileUserPermissionsImpl(@Named("JsonUserPermissionsFileName") String jsonPermissionsFileName,
+			@Named("JsonUserPermissionsApplicationName") String applicationName)
+	{
+		this.applicationName = applicationName;
 		jsonPermissionsFile = new File(jsonPermissionsFileName);
 		if (!jsonPermissionsFile.isFile() || !jsonPermissionsFile.canRead()) {
-			throw new RuntimeException("Invalid permissions file: "+jsonPermissionsFile);
+			throw new RuntimeException("Invalid permissions file: " + jsonPermissionsFile);
 		}
 		PermissionsData permissionsData = loadFile(jsonPermissionsFile);
 		if (permissionsData == null) {
-			throw new RuntimeException("Empty permissions: "+jsonPermissionsFile);
+			throw new RuntimeException("Empty permissions: " + jsonPermissionsFile);
 		}
 	}
-	
+
 	static PermissionsData loadFile(File jsonPermissionsFile) {
 		try {
 			String configString = FileUtils.readFileToString(jsonPermissionsFile);
@@ -53,11 +56,12 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	public boolean allowCommit(String guid, Ontology ontology) {
 		return checkPermissions(guid, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
 	}
-	
+
 	private boolean checkPermissions(String guid, String group, String flag) {
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
-			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
+			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
+					applicationName);
 			if (termgeniePermissions != null) {
 				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
 				if (groupFlags != null) {
@@ -73,7 +77,10 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public CommitUserData getCommitReviewUserData(String guid, Ontology ontology) {
-		return retrieveCommitUserData(guid, ontology.getUniqueName(), ontology, FLAG_ALLOW_COMMIT_REVIEW);
+		return retrieveCommitUserData(guid,
+				ontology.getUniqueName(),
+				ontology,
+				FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
@@ -81,10 +88,15 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		return retrieveCommitUserData(guid, ontology.getUniqueName(), ontology, FLAG_ALLOW_WRITE);
 	}
 
-	private CommitUserData retrieveCommitUserData(String guid, String group, Ontology ontology, String flag) {
+	private CommitUserData retrieveCommitUserData(String guid,
+			String group,
+			Ontology ontology,
+			String flag)
+	{
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null) {
-			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid, APPLICATION_NAME);
+			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
+					applicationName);
 			if (termgeniePermissions != null) {
 				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
 				if (groupFlags != null) {
