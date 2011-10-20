@@ -285,3 +285,12 @@ h1 {
 #button-add-template-select {
 	margin-left: 10px;	
 }
+
+.termgenie-commit-review-main-table {
+	margin: 5px;
+}
+
+.termgenie-commit-review-main-table td {
+	padding-left: 10px;
+	padding-top: 2px;
+}

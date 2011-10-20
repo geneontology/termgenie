@@ -1,5 +1,11 @@
-function termgenieReview(){
+/**
+ * Setup term review page.
+ * 
+ * @returns empty object
+ */
+function TermGenieReview(){
 	
+	// main elements from the static html page
 	var mainMessagePanel = jQuery('#MainMessagePanel');
 	var mainReviewPanel = jQuery('#MainReviewPanel');
 	var mainControlPanel = jQuery('#MainControlPanel');
@@ -91,7 +97,12 @@ function termgenieReview(){
 		});
 	}
 	
+	/**
+	 * Start loading the available review entries from server.
+	 */
 	function startLoadingReviewEntries() {
+		// add busy message
+		mainReviewPanel.append(createBusyMessage('Retrieving commits from server.'));
 		// request sessionId and then try to load commits for review
 		mySession.getSessionId(function(sessionId){
 			jsonService.review.getPendingCommits({
@@ -112,67 +123,76 @@ function termgenieReview(){
 		});
 	}
 	
+	/**
+	 * Create a styled busy message div with and additional text for details. 
+	 * 
+	 * @param additionalText
+	 * @returns String
+	 */
+	function createBusyMessage(additionalText) {
+		return '<div class="termgenie-busy-message">'+
+			'<img src="icon/wait26trans.gif" alt="Busy Icon"/>'+
+			'<span class="termgenie-busy-message-text">Please wait.</span>'+
+			'<div class="termgenie-busy-additional-text">'+additionalText+'</div><div>';
+	}
+	
+	/**
+	 * Create the review panel for the given list of entries. 
+	 * 
+	 * @param entries JsonCommitReviewEntry[]
+	 */
 	function createCommitReviewPanel(entries) {
 		// empty the current content
 		mainReviewPanel.empty();
 		
+		if (entries.length > 1) {
+			mainReviewPanel.append('<div>There are '+entries.length+' pending commits to review.</div>');
+		}
+		else  {
+			mainReviewPanel.append('<div>There is one pending commit to review.</div>');
+		}
+		
 		var checkboxes = [];
 		
-		var table = jQuery('<table></table>');
+		var table = jQuery('<table class="termgenie-layout-table termgenie-commit-review-main-table" cellSpacing="0" cellPadding="0"></table>');
 		
 		// setup list of entries
 		jQuery.each(entries, function(index, entry){
-			var tr = jQuery('<tr></tr>');
 			
-			// checkbox
-			var td1 = jQuery('<td></td>');
-			tr.append(td1);
 			var checkbox = jQuery('<input type="checkbox" />');
-			td1.append(checkbox);
 			checkboxes.push(checkbox);
-			
-			// details
-			var td2 = jQuery('<td></td>');
-			tr.append(td2);
+			addRow(table, checkbox, 'Details for commit #'+(entry.historyId), null);
 			
 			// user and date
 			if (entry.user && entry.user.length > 0) {
-				td.append('<div><span>User</span><span>'+entry.user+'</span></div>');
+				addRow(table, null, 'User', '<span>'+entry.user+'</span>');
 			}
 			if (entry.date && entry.date.length > 0) {
-				td.append('<div><span>Date</span><span>'+entry.date+'</span></div>');
+				addRow(table, null, 'Date', '<span>'+entry.date+'</span>');
 			}
 			
-			// diffs
-			var diffTable = jQuery('<table></table>');
-			
 			jQuery.each(entry.diffs, function(diffIndex, diff){
-				var diffTr = jQuery('<tr></tr>');
-				diffTable.append(diffTr);
-				var diffTd = jQuery('<td></td>');
-				diffTr.append(diffTd);
+				var operation = null;
 				if (diff.operation === 0) {
 					// add
-					diffTd.append('<span>Add</span>');
+					operation = 'Add';
 				}
 				else if (diff.operation === 1) {
 					// modify
-					diffTd.append('<span>Modify</span>');
+					operation = 'Modify';
 				}
 				else if (diff.operation === 2) {
 					// remove
-					diffTd.append('<span>Remove</span>');
+					operation = 'Remove';
 				}
-				diffTr.append(jQuery('<td><pre>'+diff.diff+'</pre></td>'));
+				if(operation !== null) {
+					addRow(table, null, operation, '<pre>'+diff.diff+'</pre>');
+				}
 			});
-			
-			else {
-				
-			}	td.append(diffTable);
-			
-			table.append(tr);
 		});
+		mainReviewPanel.append(table);
 		
+		// add commit button
 		addCommitButton(function(){ // onClick
 			var reviewedEntries = [];
 			
@@ -191,34 +211,156 @@ function termgenieReview(){
 			}
 			else {
 				// set error message
+				jQuery.logUserMessage('Please select at least one pending commit to proceed.');
 			}
 		});
+		
+		/**
+		 * Add a new row to the table.
+		 * 
+		 * @param table target table
+		 * @param col1 elem in col1
+		 * @param col2 elem in col2
+		 * @param col3 elem in col3
+		 */
+		function addRow(table, col1, col2, col3) {
+			var tr = jQuery('<tr></tr>');
+			var td;
+			table.append(tr);
+			// add column one 
+			if (col1 && col1 !== null) {
+				td = jQuery('<td></td>');
+				td.append(col1);
+				tr.append(td);
+			}
+			else {
+				tr.append('<td></td>');
+			}
+			// add column two
+			if (col2 && col2 !== null) {
+				// make col2 spanning two columns, 
+				// if col3 is null (not undefined)
+				if (col3 === null) {
+					td = jQuery('<td colspan="2"></td>'); 
+				}
+				else {
+					td = jQuery('<td></td>');
+				}
+				td.append(col2);
+				tr.append(td);
+			}
+			else {
+				tr.append('<td></td>');
+			}
+			// add column three
+			if (col3 && col3 !== null) {
+				td = jQuery('<td></td>');
+				td.append(col3);
+				tr.append(td);
+			}
+		}
 	}
 	
+	/**
+	 * Internal flag for commit button.
+	 * 
+	 * #addCommitButton
+	 * #disableCommitButton
+	 */
+	var commitEnabled = false;
+	
+	/**
+	 * Add a commit button with a given onclick function.
+	 * 
+	 * @param onclick function to be executed on click
+	 */
 	function addCommitButton(onclick) {
 		var commitButton = jQuery('<button>Commit</button>');
-		commitButton.click(onclick);
+		commitButton.click(function(event){
+			if (commitEnabled === true) {
+				onclick(event);
+			}
+		});
 		mainControlPanel.append(commitButton);
+		commitEnabled = true;
 	}
 	
+	/**
+	 * Disable the commit button, via internal flag (commitEnabled).
+	 */
+	function disableCommitButton() {
+		commitEnabled = false;
+	}
+	
+	/**
+	 * Execute the commit for the selected list of entries.
+	 * 
+	 * @param entries JsonCommitReviewEntry[]
+	 */
 	function executeCommitOnServer(entries) {
+		// disable submit button
+		disableCommitButton();
+		
+		// set busy message
+		mainReviewPanel.empty();
+		mainReviewPanel.append(createBusyMessage('Executing commit on server.'));
+		
 		// make rpc call
 		mySession.getSessionId(function(sessionId){
 			jsonService.review.commit({
 				params: [sessionId, entries],
 				onSuccess: function(result){
+					mainReviewPanel.empty();
+					mainControlPanel.empty();
 					if (result && result.success && result.success === true) {
-						// set success message
+						renderCommitReviewSuccess(result.details);
 					}
 					else {
-						// set error message
+						jQuery.logSystemError('Could not commit terms.', result.message);
 					}
+					mainReviewPanel.append('<div>Reload page to restart commit review process.</div>');
 				},
 				onException: function(e) {
+					mainControlPanel.empty();
+					mainReviewPanel.empty();
+					mainReviewPanel.append('Reload page to restart commit review process.');
 					jQuery.logSystemError('Could not commit terms.',e);
 					return true;
 				}
 			});	
+		});
+	}
+	
+	/**
+	 * Render the success part of the review commit result.
+	 * 
+	 * @param details JsonCommitDetails[]
+	 */
+	function renderCommitReviewSuccess(details) {
+		if (details.length > 1) {
+			mainReviewPanel.append('<div>There have been '+details.length+' separate commit operations:</div>');
+		}
+		jQuery.each(details, function(index, detail){
+			var elem = '<div>Status for commit #' + detail.historyId + ': ';
+			if (detail.success === true) {
+				elem += 'Success';
+			}
+			else {
+				elem += 'Failure';
+			}
+			if (detail.message && detail.message.length > 0) {
+				elem += '<br/>Message:';
+				elem += details.message; 
+			}
+			if (detail.terms && detail.terms.length > 0) {
+				elem += '<ul>';
+				jQuery.each(detail.terms, function(termIndex, term){
+					elem += '<li style="font-family:monospace;">ID: '+ term.tempId + ' Label: ' + term.label +'</li>';
+				});
+				elem += '</ul>';
+			}
+			elem += '</div>';
+			mainReviewPanel.append(elem);
 		});
 	}
 	
@@ -230,5 +372,5 @@ function termgenieReview(){
 // after the document is ready
 jQuery(document).ready(function(){
 	// start term genie.
-	termgenieReview();
+	TermGenieReview();
 });

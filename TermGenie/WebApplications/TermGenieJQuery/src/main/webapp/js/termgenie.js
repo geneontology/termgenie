@@ -1862,7 +1862,7 @@ function termgenie(){
 				container.append('<div>The following terms have been created:</div>');
 				var termList = jQuery('<ul></ul>');
 				jQuery.each(commitResults.terms, function(index, term){
-					termList.append('<li>'+term.label+'</li>');
+					termList.append('<li style="font-family:monospace;">ID: '+term.tempId+' Label: '+term.label+'</li>');
 				});
 				container.append(termList);
 			}
