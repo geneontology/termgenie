@@ -108,6 +108,8 @@ function TermGenieReview(){
 			jsonService.review.getPendingCommits({
 				params: [sessionId],
 				onSuccess: function(entries){
+					// empty the current content
+					mainReviewPanel.empty();
 					if (entries && entries.length > 0 && jQuery.isArray(entries)) {
 						createCommitReviewPanel(entries);
 					}
@@ -116,6 +118,8 @@ function TermGenieReview(){
 					}
 				},
 				onException: function(e) {
+					// empty the current content
+					mainReviewPanel.empty();
 					jQuery.logSystemError('Could not retrieve commits for review from server',e);
 					return true;
 				}
@@ -142,9 +146,6 @@ function TermGenieReview(){
 	 * @param entries JsonCommitReviewEntry[]
 	 */
 	function createCommitReviewPanel(entries) {
-		// empty the current content
-		mainReviewPanel.empty();
-		
 		if (entries.length > 1) {
 			mainReviewPanel.append('<div>There are '+entries.length+' pending commits to review.</div>');
 		}
