@@ -180,7 +180,15 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		finalizeCommitHistory(item);
 		
 		// update ontology
-		source.updateManaged();
+		Thread thread = new Thread() {
+
+			@Override
+			public void run() {
+				source.updateManaged();
+			}
+		};
+		thread.start();
+		
 		return new CommitResult(true, null, terms, diff);
 	}
 

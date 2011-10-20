@@ -240,7 +240,14 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		
 		// Reload ontology after committing the changes
 		if (changed) {
-			source.updateManaged();
+			Thread thread = new Thread() {
+
+				@Override
+				public void run() {
+					source.updateManaged();
+				}
+			};
+			thread.start();
 		}
 		return results;
 	}
