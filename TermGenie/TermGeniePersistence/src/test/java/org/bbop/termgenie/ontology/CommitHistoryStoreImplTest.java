@@ -22,6 +22,7 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -73,6 +74,10 @@ public class CommitHistoryStoreImplTest {
 		assertEqualsItem(item1, itemsForReview.get(0));
 		assertEqualsItem(item2, itemsForReview.get(1));
 		assertEqualsItem(item3, itemsForReview.get(2));
+		
+		List<Pair<String, String>> existing = store.checkRecentCommits("Test", Arrays.asList("Term label 1", "Term label -1"));
+		assertEquals(1, existing.size());
+		assertEquals("t:01", existing.get(0).getOne());
 	}
 
 	private CommitHistoryItem createTestItem(int i, int childrenStart, int childrenCount) {

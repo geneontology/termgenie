@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
+import org.bbop.termgenie.tools.Pair;
 
 /**
  * Define methods relevant for storing and retrieving commits.
@@ -88,11 +89,22 @@ public interface CommitHistoryStore {
 			throws CommitHistoryStoreException;
 
 	/**
-	 * Retrieve the history for the given ontology. 
+	 * Retrieve the history for the given ontology.
 	 * 
 	 * @param ontology
 	 * @return history or null
 	 * @throws CommitHistoryStoreException
 	 */
 	public CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException;
+
+	/**
+	 * Check the history for term commits with the same label;
+	 * 
+	 * @param ontology
+	 * @param labels
+	 * @return list of id, label pairs for already existing items
+	 * @throws CommitHistoryStoreException
+	 */
+	public List<Pair<String, String>> checkRecentCommits(String ontology, List<String> labels)
+			throws CommitHistoryStoreException;
 }

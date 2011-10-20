@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,8 @@ import javax.persistence.TypedQuery;
 
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
+import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.Inject;
 
@@ -251,6 +254,42 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 				return new ArrayList<CommitHistoryItem>(resultList);
 			}
 			return null;
+		} catch (IllegalArgumentException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (IllegalStateException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (QueryTimeoutException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (TransactionRequiredException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (PessimisticLockException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (LockTimeoutException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} catch (PersistenceException exception) {
+			throw new CommitHistoryStoreException("Could not execute db load", exception);
+		} finally {
+			entityManager.close();
+		}
+	}
+
+	@Override
+	public List<Pair<String, String>> checkRecentCommits(String ontology, List<String> labels) throws CommitHistoryStoreException {
+		String queryString = "SELECT terms FROM CommitHistory history, IN(history.items) items, IN(items.terms) terms WHERE (history.ontology = ?1) AND (items.committed=false) AND (terms.label IN ?2)";
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			TypedQuery<CommitedOntologyTerm> query = entityManager.createQuery(queryString, CommitedOntologyTerm.class);
+			query.setParameter(1, ontology);
+			query.setParameter(2, labels);
+			List<CommitedOntologyTerm> resultList = query.getResultList();
+			if (resultList != null && !resultList.isEmpty()) {
+				List<Pair<String, String>> pairs = new ArrayList<Pair<String,String>>();
+				for (CommitedOntologyTerm term : resultList) {
+					pairs.add(new Pair<String, String>(term.getId(), term.getLabel()));
+				}
+				return pairs;
+			}
+			return Collections.emptyList();
 		} catch (IllegalArgumentException exception) {
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (IllegalStateException exception) {

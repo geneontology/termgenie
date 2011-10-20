@@ -32,13 +32,16 @@ import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLObject;
 
+import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
@@ -96,15 +99,102 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		boolean allowCommit = permissions.allowCommit(guid, manager.getOntology());
 		if (!allowCommit) {
 			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + guid);
-			return error("Could not commit, the user is not authorized to login..");
+			return error("Could not commit, the user is not authorized to login.");
 		}
-
+		
 		CommitTask task = new CommitTask(manager, terms, termgenieUser, permissions.getCommitUserData(guid,
 				manager.getOntology()));
-		this.idProvider.runManagedTask(task);
+		idProvider.runManagedTask(task);
 		return task.result;
 	}
 
+	private class CheckTermsTask extends OntologyTask {
+
+		private final JsonOntologyTerm[] terms;
+		
+		/**
+		 * @param terms
+		 */
+		CheckTermsTask(JsonOntologyTerm[] terms) {
+			super();
+			this.terms = terms;
+		}
+
+		@Override
+		protected void runCatching(OWLGraphWrapper managed) throws Exception {
+			int missingRelations = 0;
+			List<String> existing = new ArrayList<String>();
+			List<String> labels = new ArrayList<String>(terms.length);
+			for (JsonOntologyTerm term : terms) {
+				JsonTermRelation[] relations = term.getRelations();
+				if (relations == null || relations.length == 0) {
+					missingRelations += 1;
+				}
+				String label = term.getLabel();
+				labels.add(label);
+				OWLObject owlObject = managed.getOWLObjectByLabel(label);
+				if (owlObject != null) {
+					String identifier = managed.getIdentifier(owlObject);
+					existing.add(identifier+" "+label);
+				}
+			}
+			if (!existing.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Could not commit, ");
+				if (existing.size() == 1) {
+					sb.append("a term with the same label already exists: ");
+					sb.append(existing.get(0));
+				}
+				else {
+					sb.append("the following terms with the same label already exist: ");
+					for (int i = 0; i < existing.size(); i++) {
+						if (i > 0) {
+							sb.append(", ");
+						}
+						sb.append(existing.get(i));
+					}
+				}
+				setMessage(sb.toString());
+				return;
+			}
+			if (missingRelations > 0) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Could not commit, there ");
+				if (missingRelations == 1) {
+					sb.append("is one term with no relations.");
+				}
+				else {
+					sb.append("are ");
+					sb.append(missingRelations);
+					sb.append(" terms with no relations.");
+				}
+				setMessage(sb.toString());
+				return;
+			}
+			List<Pair<String, String>> matchingCommits = committer.checkRecentCommits(labels);
+			if (matchingCommits != null && !matchingCommits.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Could not commit, ");
+				if (existing.size() == 1) {
+					sb.append("a term with the same label was recently committed: ");
+					sb.append(matchingCommits.get(0));
+				}
+				else {
+					sb.append("the following terms with the same label were recently committed: ");
+					for (int i = 0; i < matchingCommits.size(); i++) {
+						if (i > 0) {
+							sb.append(", ");
+						}
+						sb.append(matchingCommits.get(i));
+					}
+				}
+				setMessage(sb.toString());
+				return;
+			}
+		}
+		
+	}
+	
 	/**
 	 * <p>
 	 * This task encapsulates the commit operation and the required creation of
@@ -145,6 +235,19 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 		@Override
 		protected void runSimple(OntologyIdProvider idProvider) {
+			
+			// check terms in the commit 
+			CheckTermsTask checkTermsTask = new CheckTermsTask(terms);
+			manager.runManagedTask(checkTermsTask);
+			if (checkTermsTask.getException() != null) {
+				result = error("Could not check terms due to an error: "+checkTermsTask.getException().getMessage());
+				return;
+			}
+			else if (checkTermsTask.getMessage() != null) {
+				result = error(checkTermsTask.getMessage());
+				return;
+			}
+			
 			// create terms with new termIds
 			Pair<List<CommitObject<OntologyTerm<ISynonym, IRelation>>>, Integer> pair;
 			try {

@@ -100,6 +100,16 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		return Collections.singletonList(CommitResult.ERROR);
 	}
 
+	@Override
+	public List<Pair<String, String>> checkRecentCommits(List<String> labels) {
+		try {
+			return store.checkRecentCommits(source.getOntology().getUniqueName(), labels);
+		} catch (CommitHistoryStoreException exception) {
+			Logger.getLogger(getClass()).error("Could not check for existing term labels due to db error.", exception);
+			return Collections.emptyList();
+		}
+	}
+
 	protected abstract CommitMode getCommitMode();
 	
 	protected abstract String getCommitUserName();

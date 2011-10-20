@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.tools.Pair;
 
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -18,6 +19,14 @@ public interface Committer {
 	 * @throws CommitException
 	 */
 	public CommitResult commit(CommitInfo commitInfo) throws CommitException;
+	
+	/**
+	 * Check if the labels are in recent commits;
+	 * 
+	 * @param labels
+	 * @return matching id,label pairs
+	 */
+	public List<Pair<String, String>> checkRecentCommits(List<String> labels);
 
 	public static class CommitResult {
 

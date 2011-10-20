@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,16 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		this.source = source;
 		this.supportAnonymus = supportAnonymus;
 		this.store = store;
+	}
+	
+	@Override
+	public List<Pair<String, String>> checkRecentCommits(List<String> labels) {
+		try {
+			return store.checkRecentCommits(source.getOntology().getUniqueName(), labels);
+		} catch (CommitHistoryStoreException exception) {
+			Logger.getLogger(getClass()).error("Could not check for existing term labels due to db error.", exception);
+			return Collections.emptyList();
+		}
 	}
 	
 	@Override
