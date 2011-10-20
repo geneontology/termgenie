@@ -253,7 +253,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			try {
 				pair = createCommitTerms(terms, manager.getOntology(), idProvider);
 			} catch (CommitException exception) {
-				error(exception.getMessage());
+				result = error(exception.getMessage());
 				return;
 			}
 			Integer base = pair.getTwo();
@@ -413,7 +413,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	 * specific new identifiers. Also used to check that all identifiers used in
 	 * Relations are mapped.
 	 */
-	private static class IdHandler {
+	static class IdHandler {
 
 		private final OntologyIdProvider idProvider;
 		private final Ontology ontology;
@@ -492,8 +492,8 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		 * @return collection of missing Identifiers.
 		 */
 		Collection<String> getMissingIds() {
-			Set<String> missingIds = new HashSet<String>(used);
-			missingIds.removeAll(tempIdMap.keySet());
+			Set<String> missingIds = new HashSet<String>(tempIdMap.keySet());
+			missingIds.removeAll(used);
 			return missingIds;
 		}
 	}
