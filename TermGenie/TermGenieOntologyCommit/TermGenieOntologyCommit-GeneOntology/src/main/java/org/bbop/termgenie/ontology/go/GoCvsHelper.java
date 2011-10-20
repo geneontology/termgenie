@@ -32,7 +32,7 @@ import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -255,12 +255,12 @@ public abstract class GoCvsHelper {
 		}
 	}
 
-	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	protected boolean applyChanges(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			final OBODoc oboDoc)
 	{
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
-			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
+			for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : terms) {
 				boolean csuccess = LoadState.isSuccess(handleTerm(commitObject.getObject(),
 						commitObject.getType(),
 						oboDoc));

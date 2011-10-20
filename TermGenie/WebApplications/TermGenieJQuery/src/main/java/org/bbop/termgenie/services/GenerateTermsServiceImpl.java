@@ -42,7 +42,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphEdge;
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 import owltools.graph.OWLQuantifiedProperty;
 
 import com.google.inject.Inject;
@@ -321,14 +321,14 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 
 		@SuppressWarnings("unchecked")
-		private OntologyTerm<Synonym, IRelation>[] getTerms(JsonTermGenerationParameter json, int pos) {
+		private OntologyTerm<ISynonym, IRelation>[] getTerms(JsonTermGenerationParameter json, int pos) {
 			JsonOntologyTermIdentifier[][] allTerms = json.getTerms();
 			if (allTerms.length > pos) {
 				JsonOntologyTermIdentifier[] jsonTerms = allTerms[pos];
 				if (jsonTerms.length > 0) {
-					List<OntologyTerm<Synonym, IRelation>> terms = new ArrayList<OntologyTerm<Synonym, IRelation>>();
+					List<OntologyTerm<ISynonym, IRelation>> terms = new ArrayList<OntologyTerm<ISynonym, IRelation>>();
 					for (int i = 0; i < jsonTerms.length; i++) {
-						OntologyTerm<Synonym, IRelation> term = getOntologyTerm(jsonTerms[i]);
+						OntologyTerm<ISynonym, IRelation> term = getOntologyTerm(jsonTerms[i]);
 						terms.add(term);
 					}
 					return terms.toArray(new OntologyTerm[terms.size()]);
@@ -337,7 +337,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return new OntologyTerm[] {};
 		}
 
-		private OntologyTerm<Synonym, IRelation> getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
+		private OntologyTerm<ISynonym, IRelation> getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
 			String ontologyName = jsonOntologyTerm.getOntology();
 			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
 			OntologyTermTask task = new OntologyTermTask(jsonOntologyTerm.getTermId());
@@ -349,7 +349,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private static class OntologyTermTask extends OntologyTask {
 
 		private final String id;
-		private OntologyTerm<Synonym, IRelation> term = null;
+		private OntologyTerm<ISynonym, IRelation> term = null;
 
 		OntologyTermTask(String id) {
 			this.id = id;
@@ -361,7 +361,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		protected void runCatching(OWLGraphWrapper realInstance) throws Exception {
 			String label = null;
 			String definition = null;
-			List<Synonym> synonyms = null;
+			List<ISynonym> synonyms = null;
 			List<String> defxref = null;
 			Map<String, String> metadata = new HashMap<String, String>();
 			List<IRelation> relations = null;
@@ -402,7 +402,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
 		}
 
-		OntologyTerm<Synonym, IRelation> getTerm() {
+		OntologyTerm<ISynonym, IRelation> getTerm() {
 			return term;
 		}
 

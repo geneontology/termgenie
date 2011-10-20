@@ -12,7 +12,7 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class CommitHistoryTools {
 
@@ -20,7 +20,7 @@ public class CommitHistoryTools {
 		// no instances allowed
 	}
 
-	public static CommitHistoryItem create(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	public static CommitHistoryItem create(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			String user,
 			Date date)
 	{
@@ -40,12 +40,12 @@ public class CommitHistoryTools {
 		return null;
 	}
 
-	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms)
+	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms)
 	{
 		List<CommitedOntologyTerm> result = null;
 		if (terms != null && !terms.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTerm>(terms.size());
-			for (CommitObject<OntologyTerm<Synonym, IRelation>> commitObject : terms) {
+			for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : terms) {
 				CommitedOntologyTerm term = new CommitedOntologyTerm();
 
 				term.setId(commitObject.getObject().getId());
@@ -63,11 +63,11 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	private static List<CommitedOntologyTermSynonym> translateSynonyms(List<Synonym> synonyms) {
+	private static List<CommitedOntologyTermSynonym> translateSynonyms(List<ISynonym> synonyms) {
 		List<CommitedOntologyTermSynonym> result = null;
 		if (synonyms != null && !synonyms.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTermSynonym>(synonyms.size());
-			for (Synonym synonym : synonyms) {
+			for (ISynonym synonym : synonyms) {
 				CommitedOntologyTermSynonym syn = new CommitedOntologyTermSynonym();
 				syn.setCategory(synonym.getCategory());
 				syn.setLabel(synonym.getLabel());

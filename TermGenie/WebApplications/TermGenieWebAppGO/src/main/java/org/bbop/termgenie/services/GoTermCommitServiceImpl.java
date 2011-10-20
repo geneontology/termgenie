@@ -19,7 +19,7 @@ import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -63,7 +63,7 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 	}
 
 	@Override
-	protected CommitInfo createCommitInfo(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	protected CommitInfo createCommitInfo(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			List<CommitObject<Relation>> relations,
 			String termgenieUser,
 			CommitUserData commitUserData) {

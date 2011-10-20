@@ -14,7 +14,7 @@ import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.tools.Pair;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 import difflib.DiffUtils;
 import difflib.Patch;
 
@@ -45,7 +45,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	
 	@Override
 	public CommitResult commit(CommitInfo commitInfo) throws CommitException {
-		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
+		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = commitInfo.getTerms();
 		if (terms != null && !terms.isEmpty()) {
 			if (commitInfo.getCommitMode() == CommitMode.explicit) {
 				if (commitInfo.getUsername() == null) {
@@ -64,7 +64,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	}
 
 	private CommitResult commitInternal(CommitInfo commitInfo) throws CommitException {
-		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = commitInfo.getTerms();
+		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = commitInfo.getTerms();
 
 		// setup temporary work folder
 		final WorkFolders workFolders = createTempDir();
@@ -121,7 +121,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	}
 
 	private CommitResult commitInternal(CommitInfo commitInfo,
-			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+			List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			final WorkFolders workFolders) throws CommitException
 	{
 		WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
@@ -181,7 +181,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 		
 		// update ontology
 		source.updateManaged();
-		return new CommitResult(true, null, diff);
+		return new CommitResult(true, null, terms, diff);
 	}
 
 	/**
@@ -233,7 +233,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 	 * @return true, if the changes have been applied successfully
 	 * @throws CommitException
 	 */
-	protected abstract boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	protected abstract boolean applyChanges(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			ONTOLOGY ontology) throws CommitException;
 
 	/**
@@ -261,7 +261,7 @@ public abstract class OntologyCommitPipeline<SCM, WORKFLOWDATA extends OntologyC
 			String diff) throws CommitException;
 
 	private CommitHistoryItem updateCommitHistory(CommitInfo commitInfo,
-			List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms) throws CommitException
+			List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms) throws CommitException
 	{
 		try {
 			// add terms to local commit log

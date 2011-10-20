@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Wrapper of an ontology, provides additional methods for identifying the
@@ -57,7 +57,7 @@ public class Ontology {
 		this.dlQuery = dlQuery;
 	}
 
-	public static interface OntologyTerm<SynonymType, R extends IRelation> {
+	public static interface OntologyTerm<S extends ISynonym, R extends IRelation> {
 		
 		public String getId();
 
@@ -65,7 +65,7 @@ public class Ontology {
 
 		public String getDefinition();
 
-		public List<SynonymType> getSynonyms();
+		public List<S> getSynonyms();
 
 		public List<String> getDefXRef();
 
@@ -78,7 +78,7 @@ public class Ontology {
 	 * Wrapper of an ontology term. Intended to be used during rule-based term
 	 * generation.
 	 */
-	public abstract static class AbstractOntologyTerm implements OntologyTerm<Synonym, IRelation> {
+	public abstract static class AbstractOntologyTerm implements OntologyTerm<ISynonym, IRelation> {
 
 		@Override
 		public String toString() {
@@ -127,7 +127,7 @@ public class Ontology {
 			private final String id;
 			private final String label;
 			private final String definition;
-			private final List<Synonym> synonyms;
+			private final List<ISynonym> synonyms;
 			private final List<String> defXRef;
 			private final List<IRelation> relations;
 			private final Map<String, String> metaData;
@@ -135,7 +135,7 @@ public class Ontology {
 			public DefaultOntologyTerm(String id,
 					String label,
 					String definition,
-					List<Synonym> synonyms,
+					List<ISynonym> synonyms,
 					List<String> defXRef,
 					Map<String, String> metaData,
 					List<IRelation> relations)
@@ -178,7 +178,7 @@ public class Ontology {
 			 * @return the synonyms
 			 */
 			@Override
-			public List<Synonym> getSynonyms() {
+			public List<ISynonym> getSynonyms() {
 				return synonyms;
 			}
 

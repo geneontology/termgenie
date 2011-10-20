@@ -9,7 +9,7 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public interface TermGenerationEngine {
 
@@ -90,7 +90,7 @@ public interface TermGenerationEngine {
 
 	public class TermGenerationOutput {
 
-		private final OntologyTerm<Synonym, IRelation> term;
+		private final OntologyTerm<ISynonym, IRelation> term;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
@@ -101,7 +101,7 @@ public interface TermGenerationEngine {
 		 * @param success
 		 * @param message
 		 */
-		public TermGenerationOutput(OntologyTerm<Synonym, IRelation> term,
+		public TermGenerationOutput(OntologyTerm<ISynonym, IRelation> term,
 				TermGenerationInput input,
 				boolean success,
 				String message)
@@ -116,7 +116,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the term
 		 */
-		public OntologyTerm<Synonym, IRelation> getTerm() {
+		public OntologyTerm<ISynonym, IRelation> getTerm() {
 			return term;
 		}
 
@@ -170,14 +170,14 @@ public interface TermGenerationEngine {
 
 	public final class TermGenerationParameters {
 
-		private final OntologyTerm<Synonym, IRelation>[][] terms;
+		private final OntologyTerm<ISynonym, IRelation>[][] terms;
 		private final String[][] strings;
 
 		/**
 		 * @param terms
 		 * @param strings
 		 */
-		public TermGenerationParameters(OntologyTerm<Synonym, IRelation>[][] terms, String[][] strings) {
+		public TermGenerationParameters(OntologyTerm<ISynonym, IRelation>[][] terms, String[][] strings) {
 			super();
 			this.terms = terms;
 			this.strings = strings;
@@ -194,7 +194,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the terms
 		 */
-		public OntologyTerm<Synonym, IRelation>[][] getTerms() {
+		public OntologyTerm<ISynonym, IRelation>[][] getTerms() {
 			return terms;
 		}
 
@@ -228,7 +228,7 @@ public interface TermGenerationEngine {
 		 * @param field
 		 * @param values
 		 */
-		public void setTermValues(TermTemplate template, String field, OntologyTerm<Synonym, IRelation>...values) {
+		public void setTermValues(TermTemplate template, String field, OntologyTerm<ISynonym, IRelation>...values) {
 			setValues(terms, template, field, values);
 		}
 
@@ -237,7 +237,7 @@ public interface TermGenerationEngine {
 		 * @param pos
 		 * @param values
 		 */
-		public void setTermValues(TermTemplate template, int pos, OntologyTerm<Synonym, IRelation>...values) {
+		public void setTermValues(TermTemplate template, int pos, OntologyTerm<ISynonym, IRelation>...values) {
 			setValues(terms, template, pos, values);
 		}
 

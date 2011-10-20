@@ -7,7 +7,7 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitObject;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 
 public class GoCommitInfo extends CommitInfo {
@@ -18,7 +18,7 @@ public class GoCommitInfo extends CommitInfo {
 	 * @param terms
 	 * @param termgenieUser
 	 */
-	public GoCommitInfo(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	public GoCommitInfo(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			String termgenieUser)
 	{
 		super(terms, termgenieUser, CommitMode.internal, null, null);

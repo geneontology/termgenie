@@ -23,7 +23,7 @@ import org.bushe.swing.event.EventSubscriber;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class BasicLuceneClient implements
 		OntologyTermSuggestor,
@@ -189,13 +189,13 @@ public class BasicLuceneClient implements
 	}
 
 	@Override
-	public List<OntologyTerm<Synonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<OntologyTerm<ISynonym, IRelation>> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if (this.name.equals(ontology.getUniqueName())) {
 			Collection<SearchResult> searchResults = index.search(query,
 					maxCount,
 					ontology.getBranch());
 			if (searchResults != null && !searchResults.isEmpty()) {
-				List<OntologyTerm<Synonym, IRelation>> suggestions = new ArrayList<OntologyTerm<Synonym, IRelation>>(searchResults.size());
+				List<OntologyTerm<ISynonym, IRelation>> suggestions = new ArrayList<OntologyTerm<ISynonym, IRelation>>(searchResults.size());
 				for (SearchResult searchResult : searchResults) {
 					suggestions.add(createTerm(searchResult.hit));
 				}
@@ -205,12 +205,12 @@ public class BasicLuceneClient implements
 		return null;
 	}
 
-	private OntologyTerm<Synonym, IRelation> createTerm(OWLObject hit) {
+	private OntologyTerm<ISynonym, IRelation> createTerm(OWLObject hit) {
 		final String identifier = ontology.getIdentifier(hit);
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
-		List<Synonym> synonyms = ontology.getOBOSynonyms(hit);
-		OntologyTerm<Synonym, IRelation> term = new DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
+		List<ISynonym> synonyms = ontology.getOBOSynonyms(hit);
+		OntologyTerm<ISynonym, IRelation> term = new DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
 		return term;
 	}
 

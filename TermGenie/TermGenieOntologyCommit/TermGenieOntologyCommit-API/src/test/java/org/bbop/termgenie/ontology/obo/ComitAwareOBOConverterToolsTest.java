@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology.obo;
 
-import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.handleTerm;
+import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.*;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -24,6 +24,7 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 
+import owltools.graph.OWLGraphWrapper.ISynonym;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 
@@ -49,7 +50,7 @@ public class ComitAwareOBOConverterToolsTest extends ResourceLoader {
 		assertEquals(LoadState.modifyRedundant, handleTerm(term, Modification.modify, obodoc));
 		assertClauseCount(2, "CARO:0001002", obodoc);
 		
-		List<Synonym> synonyms = Collections.singletonList(new Synonym("Test merge synonym", "TEST", null, Collections.<String>emptySet()));
+		List<ISynonym> synonyms = Collections.<ISynonym>singletonList(new Synonym("Test merge synonym", "TEST", null, Collections.<String>emptySet()));
 		DefaultOntologyTerm termMod = new DefaultOntologyTerm("CARO:0001001", "neuron projection bundle", null, synonyms, null, null, null);
 		assertEquals(LoadState.modifySuccess, handleTerm(termMod, Modification.modify, obodoc));
 		assertClauseCount(6, "CARO:0001001", obodoc);

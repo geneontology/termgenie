@@ -190,7 +190,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		return JsonCommitReviewCommitResult.success(task.commits);
+		return JsonCommitReviewCommitResult.success(historyIds, task.commits);
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

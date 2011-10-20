@@ -3,7 +3,7 @@ package org.bbop.termgenie.ontology;
 /**
  * Information about a single entry for a commit.
  * 
- * @param <T> the type of the entry to be commited.
+ * @param <T> the type of the entry to be committed.
  */
 public class CommitObject<T> {
 
@@ -21,7 +21,7 @@ public class CommitObject<T> {
 	 * Mark a new object of type <T> as added for the commit.
 	 * 
 	 * @param <T> type
-	 * @param object the object to be commited
+	 * @param object the object to be committed
 	 * @return commit object
 	 */
 	public static <T> CommitObject<T> add(T object) {
@@ -32,7 +32,7 @@ public class CommitObject<T> {
 	 * Mark a new object of type <T> as modified for the commit.
 	 * 
 	 * @param <T> type
-	 * @param object the object to be commited
+	 * @param object the object to be committed
 	 * @return commit object
 	 */
 	public static <T> CommitObject<T> modify(T object) {
@@ -43,7 +43,7 @@ public class CommitObject<T> {
 	 * Mark a new object of type <T> as to be deleted for the commit.
 	 * 
 	 * @param <T> type
-	 * @param object the object to be commited
+	 * @param object the object to be committed
 	 * @return commit object
 	 */
 	public static <T> CommitObject<T> del(T object) {

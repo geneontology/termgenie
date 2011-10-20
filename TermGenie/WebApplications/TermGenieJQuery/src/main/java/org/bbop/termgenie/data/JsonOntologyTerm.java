@@ -6,14 +6,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class JsonOntologyTerm {
 
@@ -171,7 +171,7 @@ public class JsonOntologyTerm {
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm convert(OntologyTerm<? extends Synonym, ? extends IRelation> source) {
+	public static JsonOntologyTerm convert(OntologyTerm<? extends ISynonym, ? extends IRelation> source) {
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setDefinition(source.getDefinition());
 		List<String> defXRef = source.getDefXRef();
@@ -283,10 +283,10 @@ public class JsonOntologyTerm {
 			return builder.toString();
 		}
 		
-		public static JsonSynonym[] convert(Collection<? extends Synonym> synonyms) {
+		public static JsonSynonym[] convert(Collection<? extends ISynonym> synonyms) {
 			if (synonyms != null && !synonyms.isEmpty()) {
 				List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
-				for (Synonym synonym : synonyms) {
+				for (ISynonym synonym : synonyms) {
 					JsonSynonym jsonSynonym = new JsonSynonym();
 					jsonSynonym.setLabel(synonym.getLabel());
 					jsonSynonym.setScope(synonym.getScope());

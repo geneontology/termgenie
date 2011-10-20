@@ -32,7 +32,7 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Injector;
 
@@ -84,10 +84,10 @@ public class TermGenieScriptTestRunner {
 		assertNotNull(list);
 		assertEquals(3, list.size());
 
-		OntologyTerm<Synonym, IRelation> term1 = list.get(0).getTerm();
+		OntologyTerm<ISynonym, IRelation> term1 = list.get(0).getTerm();
 		assertEquals("regulation of pigmentation", term1.getLabel());
 
-		OntologyTerm<Synonym, IRelation> term2 = list.get(1).getTerm();
+		OntologyTerm<ISynonym, IRelation> term2 = list.get(1).getTerm();
 		assertEquals("negative regulation of pigmentation", term2.getLabel());
 		List<IRelation> relations = term2.getRelations();
 		boolean found = false;
@@ -120,7 +120,7 @@ public class TermGenieScriptTestRunner {
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		OntologyTerm<Synonym, IRelation> term = output.getTerm();
+		OntologyTerm<ISynonym, IRelation> term = output.getTerm();
 
 		List<Clause> clauses = OBOConverterTools.translateRelations(term.getRelations(), null);
 		assertEquals(4, clauses.size());
@@ -143,7 +143,7 @@ public class TermGenieScriptTestRunner {
 		assertEquals("GO:0006915", clause3.getValue2());
 	}
 
-	private OntologyTerm<Synonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager)
+	private OntologyTerm<ISynonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager)
 	{
 		OntologyTaskImplementation task = new OntologyTaskImplementation(id);
 		ontologyManager.runManagedTask(task);
@@ -168,7 +168,7 @@ public class TermGenieScriptTestRunner {
 			OWLObject x = managed.getOWLObjectByIdentifier(id);
 			String label = managed.getLabel(x);
 			String definition = managed.getDef(x);
-			List<Synonym> synonyms = managed.getOBOSynonyms(x);
+			List<ISynonym> synonyms = managed.getOBOSynonyms(x);
 			List<String> defXRef = managed.getDefXref(x);
 			Map<String, String> metaData = new HashMap<String, String>();
 			List<IRelation> relations = Collections.emptyList();

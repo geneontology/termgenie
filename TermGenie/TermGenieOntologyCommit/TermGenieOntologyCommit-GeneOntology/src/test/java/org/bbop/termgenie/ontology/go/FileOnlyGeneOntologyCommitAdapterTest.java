@@ -35,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
+import owltools.graph.OWLGraphWrapper.ISynonym;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
 import com.google.inject.Injector;
@@ -97,26 +98,26 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 
 	@Test
 	public void testCommit() throws CommitException {
-		List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms = createCommitTerms();
+		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = createCommitTerms();
 		CommitInfo commitInfo = new CommitInfo(terms, "junit-test", CommitMode.anonymus, null, null);
 		CommitResult commitResult = instance.commit(commitInfo);
 		assertTrue(commitResult.isSuccess());
 		System.out.println(commitResult.getDiff());
 	}
 
-	private List<CommitObject<OntologyTerm<Synonym, IRelation>>> createCommitTerms() {
-		List<CommitObject<OntologyTerm<Synonym, IRelation>>> list = new ArrayList<CommitObject<OntologyTerm<Synonym,IRelation>>>(2);
+	private List<CommitObject<OntologyTerm<ISynonym, IRelation>>> createCommitTerms() {
+		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> list = new ArrayList<CommitObject<OntologyTerm<ISynonym,IRelation>>>(2);
 		
-		OntologyTerm<Synonym, IRelation> term1 = createTerm(1, "GO:0003332", "Biological Process");
-		OntologyTerm<Synonym, IRelation> term2 = createTerm(2, term1.getId(), term1.getLabel());
-		list.add(new CommitObject<OntologyTerm<Synonym,IRelation>>(term2, Modification.add));
-		list.add(new CommitObject<OntologyTerm<Synonym,IRelation>>(term1, Modification.add));
+		OntologyTerm<ISynonym, IRelation> term1 = createTerm(1, "GO:0003332", "Biological Process");
+		OntologyTerm<ISynonym, IRelation> term2 = createTerm(2, term1.getId(), term1.getLabel());
+		list.add(new CommitObject<OntologyTerm<ISynonym,IRelation>>(term2, Modification.add));
+		list.add(new CommitObject<OntologyTerm<ISynonym,IRelation>>(term1, Modification.add));
 		
 		return list;
 	}
 
-	private OntologyTerm<Synonym, IRelation> createTerm(final int count, final String parent, final String parentLabel) {
-		List<Synonym> synonyms = Collections.singletonList(new Synonym("term syn"+count, "EXACT", null, Collections.singleton("test:syn_xref")));
+	private OntologyTerm<ISynonym, IRelation> createTerm(final int count, final String parent, final String parentLabel) {
+		List<ISynonym> synonyms = Collections.<ISynonym>singletonList(new Synonym("term syn"+count, "EXACT", null, Collections.singleton("test:syn_xref")));
 		List<String> defXRef = Collections.singletonList("test:term_xref");
 		Map<String, String> metaData = Collections.emptyMap();
 		List<IRelation> relations = Collections.<IRelation>singletonList(new IRelation() {
@@ -141,7 +142,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 				return Collections.singletonMap("type", OboFormatTag.TAG_IS_A.getTag());
 			}
 		});
-		OntologyTerm<Synonym, IRelation> term1 = new DefaultOntologyTerm("GO:faketest00"+count, "term"+count, "def term"+count, synonyms, defXRef, metaData, relations);
+		OntologyTerm<ISynonym, IRelation> term1 = new DefaultOntologyTerm("GO:faketest00"+count, "term"+count, "def term"+count, synonyms, defXRef, metaData, relations);
 		return term1;
 	}
 

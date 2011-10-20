@@ -6,7 +6,7 @@ import java.util.Map;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 
@@ -65,7 +65,7 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 	 */
 	public void createTerm(String label,
 			String definition,
-			List<Synonym> synonyms,
+			List<ISynonym> synonyms,
 			MDef logicalDefinition);
 	
 	/**
@@ -78,7 +78,7 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 	 */
 	public void createTerm(String label,
 			String definition,
-			List<Synonym> synonyms,
+			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions);
 
 }

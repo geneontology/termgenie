@@ -15,7 +15,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
 import org.obolibrary.oboformat.model.OBODoc;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -61,7 +61,7 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 	}
 
 	@Override
-	protected boolean applyChanges(List<CommitObject<OntologyTerm<Synonym, IRelation>>> terms,
+	protected boolean applyChanges(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
 			final OBODoc oboDoc)
 	{
 		return helper.applyChanges(terms, oboDoc);

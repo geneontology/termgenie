@@ -12,7 +12,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class LuceneOnlyClientTest extends OntologyProvider {
 
@@ -27,14 +27,14 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 
 	@Test
 	public void testSuggestTermsPro() {
-		List<OntologyTerm<Synonym, IRelation>> terms = index.suggestTerms("exportin-T", pro, 1);
+		List<OntologyTerm<ISynonym, IRelation>> terms = index.suggestTerms("exportin-T", pro, 1);
 		assertNotNull(terms);
 		assertEquals("PR:000017502", terms.get(0).getId());
 	}
 
 	@Test
 	public void testSuggestTermsProID() {
-		List<OntologyTerm<Synonym, IRelation>> terms = index.suggestTerms("PR:000017502", pro, 1);
+		List<OntologyTerm<ISynonym, IRelation>> terms = index.suggestTerms("PR:000017502", pro, 1);
 		assertNotNull(terms);
 		assertEquals(1, terms.size());
 		assertEquals("PR:000017502", terms.get(0).getId());
@@ -42,7 +42,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 
 	@Test
 	public void testSuggestTermsGO() {
-		List<OntologyTerm<Synonym, IRelation>> terms = index.suggestTerms("exportin-T", go, 1);
+		List<OntologyTerm<ISynonym, IRelation>> terms = index.suggestTerms("exportin-T", go, 1);
 		assertNull(terms);
 
 		int maxCount = 10;
@@ -62,7 +62,7 @@ public class LuceneOnlyClientTest extends OntologyProvider {
 
 	@Test
 	public void testSuggestTermsGOID() {
-		List<OntologyTerm<Synonym, IRelation>> terms = index.suggestTerms("GO:0048770", cc, 10);
+		List<OntologyTerm<ISynonym, IRelation>> terms = index.suggestTerms("GO:0048770", cc, 10);
 		assertNotNull(terms);
 		assertEquals(1, terms.size());
 		assertEquals("GO:0048770", terms.get(0).getId());

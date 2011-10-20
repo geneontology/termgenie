@@ -31,7 +31,7 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Implementation of the term creation for given parameters.
@@ -181,7 +181,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 	protected void addTerm(String label,
 			String definition,
-			List<Synonym> synonyms,
+			List<ISynonym> synonyms,
 			T logicalDefinition,
 			List<TermGenerationOutput> output)
 	{
@@ -306,7 +306,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return new TermGenerationOutput(null, input, false, message);
 	}
 
-	protected TermGenerationOutput success(OntologyTerm<Synonym, IRelation> term, TermGenerationInput input) {
+	protected TermGenerationOutput success(OntologyTerm<ISynonym, IRelation> term, TermGenerationInput input) {
 		return new TermGenerationOutput(term, input, true, null);
 	}
 	

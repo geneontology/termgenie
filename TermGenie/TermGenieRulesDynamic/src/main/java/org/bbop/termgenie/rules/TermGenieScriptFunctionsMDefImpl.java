@@ -13,7 +13,7 @@ import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 
 public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFunctionsImpl<List<MDef>> implements
@@ -105,7 +105,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	@Override
 	public void createTerm(String label,
 			String definition,
-			List<Synonym> synonyms,
+			List<ISynonym> synonyms,
 			MDef logicalDefinition)
 	{
 		List<MDef> defs;
@@ -121,7 +121,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	@Override
 	public void createTerm(String label,
 			String definition,
-			List<Synonym> synonyms,
+			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions)
 	{
 		try {

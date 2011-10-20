@@ -11,7 +11,7 @@ import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdent
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.tools.OntologyTools;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -62,7 +62,7 @@ public class OntologyServiceImpl implements OntologyService {
 				continue;
 			}
 			// query for terms
-			List<OntologyTerm<Synonym, IRelation>> autocompleteList = suggestor.suggestTerms(query, ontology, max);
+			List<OntologyTerm<ISynonym, IRelation>> autocompleteList = suggestor.suggestTerms(query, ontology, max);
 			if (autocompleteList == null || autocompleteList.isEmpty()) {
 				// no terms found, do nothing
 				continue;
@@ -83,14 +83,14 @@ public class OntologyServiceImpl implements OntologyService {
 		return suggestions.toArray(new JsonTermSuggestion[suggestions.size()]);
 	}
 
-	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm<Synonym, IRelation> term) {
+	private JsonTermSuggestion createSuggestion(Ontology ontology, OntologyTerm<ISynonym, IRelation> term) {
 		String ontologyName = ontologyTools.getOntologyName(ontology);
 		JsonOntologyTermIdentifier identifier = new JsonOntologyTermIdentifier(ontologyName, term.getId());
 		return new JsonTermSuggestion(term.getLabel(), identifier, term.getDefinition(), getSynonyms(term));
 	}
 
-	private String[] getSynonyms(OntologyTerm<Synonym, IRelation> term) {
-		List<Synonym> synonyms = term.getSynonyms();
+	private String[] getSynonyms(OntologyTerm<ISynonym, IRelation> term) {
+		List<ISynonym> synonyms = term.getSynonyms();
 		if (synonyms != null && !synonyms.isEmpty()) {
 			String[] strings = new String[synonyms.size()];
 			for (int i = 0; i < strings.length; i++) {

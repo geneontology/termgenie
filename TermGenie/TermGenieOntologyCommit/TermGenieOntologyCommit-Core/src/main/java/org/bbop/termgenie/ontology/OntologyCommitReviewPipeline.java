@@ -9,12 +9,16 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.Ontology.IRelation;
+import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.tools.Pair;
 
+import owltools.graph.OWLGraphWrapper.ISynonym;
 import difflib.DiffUtils;
 import difflib.Patch;
 
@@ -54,7 +58,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getTermgenieUser(), date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
-			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", diff);
+			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
 		} catch (CommitHistoryStoreException exception) {
 			String message = "Problems handling commit history for ontology: " + source.getOntology().getUniqueName();
 			throw error(message, exception);
@@ -184,7 +188,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		
 		for (CommitHistoryItem item : items) {
 			if (item.isCommitted()) {
-				results.add(new CommitResult(false, "The item has already been marked as committed", null));
+				results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
 				continue;
 			}
 			updateSCM(scm, targetOntology, data);
@@ -230,7 +234,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			// set the commit also to success in the commit history
 			finalizeCommitHistory(item);
 
-			results.add(new CommitResult(true, null, diff));
+			results.add(new CommitResult(true, null, createResultTerms(item), diff));
 			changed = true;
 		}
 		
@@ -239,6 +243,18 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			source.updateManaged();
 		}
 		return results;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<CommitObject<OntologyTerm<ISynonym, IRelation>>> createResultTerms(CommitHistoryItem item)
+	{
+		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = new ArrayList<CommitObject<OntologyTerm<ISynonym, IRelation>>>();
+		for(CommitedOntologyTerm term: item.getTerms()) {
+			OntologyTerm<ISynonym, IRelation> t = (OntologyTerm) term;
+			Modification mod = CommitHistoryTools.getModification(term.getOperation());
+			terms.add(new CommitObject<OntologyTerm<ISynonym, IRelation>>(t, mod));
+		}
+		return terms;
 	}
 
 	private List<CommitHistoryItem> retrieveItems(List<Integer> historyIds) throws CommitException {

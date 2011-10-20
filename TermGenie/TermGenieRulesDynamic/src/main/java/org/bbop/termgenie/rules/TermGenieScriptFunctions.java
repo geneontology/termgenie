@@ -5,7 +5,7 @@ import java.util.List;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public interface TermGenieScriptFunctions {
 
@@ -154,7 +154,7 @@ public interface TermGenieScriptFunctions {
 	 * @param label the label of the new term
 	 * @return synonyms
 	 */
-	public List<Synonym> synonyms(String prefix,
+	public List<ISynonym> synonyms(String prefix,
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String suffix,
@@ -175,7 +175,7 @@ public interface TermGenieScriptFunctions {
 	 * @param label
 	 * @return synonyms
 	 */
-	public List<Synonym> synonyms(String prefix,
+	public List<ISynonym> synonyms(String prefix,
 			OWLObject x1,
 			OWLGraphWrapper ontology1,
 			String infix,

@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import owltools.graph.OWLGraphWrapper.Synonym;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Tests for {@link SimpleSolrClient}.
@@ -36,7 +36,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	public void testSuggestTerms() {
 		String query = "pig";
 		int maxCount = 10;
-		List<OntologyTerm<Synonym, IRelation>> terms = client.suggestTerms(query, go, maxCount);
+		List<OntologyTerm<ISynonym, IRelation>> terms = client.suggestTerms(query, go, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
 		assertEquals("pigmentation", terms.get(0).getLabel());
@@ -52,7 +52,7 @@ public class SimpleSolrClientTest extends OntologyProvider {
 		String query = "nucl";
 		String branch = "cellular_component";
 		int maxCount = 5;
-		List<OntologyTerm<Synonym, IRelation>> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
+		List<OntologyTerm<ISynonym, IRelation>> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
 		assertEquals(maxCount, terms.size());
 		assertEquals("nucleus", terms.get(0).getLabel());
 	}
