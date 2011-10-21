@@ -17,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.Ontology.Relation;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
@@ -96,7 +97,7 @@ public class CommitHistoryStoreImplTest {
 		CommitedOntologyTerm t = new CommitedOntologyTerm();
 		t.setId("t:0" + i);
 		t.setLabel("Term label " + i);
-		t.setOperation(0); // add
+		t.setOperation(Modification.add);
 		t.setDefinition("Term Def " + i);
 		t.setDefXRef(Arrays.asList("DefXref " + i + "_1", "DefXref " + i + "_2"));
 		t.setMetaData(Collections.singletonMap("Committer", "TestCommitter " + i));

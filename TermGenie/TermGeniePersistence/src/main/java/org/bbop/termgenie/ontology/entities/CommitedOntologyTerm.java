@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.PersistentMap;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 
 @Entity
 public class CommitedOntologyTerm implements
@@ -30,7 +31,7 @@ public class CommitedOntologyTerm implements
 	private List<CommitedOntologyTermRelation> relations;
 	private Map<String, String> metaData;
 
-	private int operation;
+	private Modification operation;
 
 	/**
 	 * @return the uuid
@@ -169,14 +170,14 @@ public class CommitedOntologyTerm implements
 	 * @return the operation
 	 */
 	@Column
-	public int getOperation() {
+	public Modification getOperation() {
 		return operation;
 	}
 
 	/**
 	 * @param operation the operation to set
 	 */
-	public void setOperation(int operation) {
+	public void setOperation(Modification operation) {
 		this.operation = operation;
 	}
 

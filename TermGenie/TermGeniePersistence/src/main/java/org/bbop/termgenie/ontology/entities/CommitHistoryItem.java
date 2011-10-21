@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import org.apache.openjpa.persistence.PersistentCollection;
 
@@ -18,6 +19,7 @@ import org.apache.openjpa.persistence.PersistentCollection;
 public class CommitHistoryItem {
 
 	private int id;
+	private int version; // used to detect conflicting updates, do not modify
 	private Date date = null;
 	private String user;
 	private boolean committed = false;
@@ -40,6 +42,17 @@ public class CommitHistoryItem {
 		this.id = id;
 	}
 
+	
+	/**
+	 *  Used to detect conflicting updates, do not modify.
+	 * 
+	 * @return the version
+	 */
+	@Version
+	public int getVersion() {
+		return version;
+	}
+	
 	/**
 	 * @return the date
 	 */

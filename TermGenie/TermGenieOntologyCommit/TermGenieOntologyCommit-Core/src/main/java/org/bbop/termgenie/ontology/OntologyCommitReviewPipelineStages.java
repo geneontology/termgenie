@@ -23,6 +23,10 @@ public interface OntologyCommitReviewPipelineStages {
 	}
 
 	public interface AfterReview {
+		
+		public CommitHistoryItem getItem(String id) throws CommitException;
+		
+		public void updateItem(CommitHistoryItem item) throws CommitException;
 
 		public List<CommitResult> commit(List<Integer> historyIds) throws CommitException;
 	}

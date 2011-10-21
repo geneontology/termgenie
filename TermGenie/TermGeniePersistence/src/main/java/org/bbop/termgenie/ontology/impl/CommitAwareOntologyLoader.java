@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
-import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -67,11 +66,7 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 					List<CommitedOntologyTerm> terms = item.getTerms();
 					if (terms != null) {
 						for (CommitedOntologyTerm term : terms) {
-							int operation = term.getOperation();
-							if (operation >= 0) {
-								Modification mode = Modification.values()[operation];
-								ComitAwareOBOConverterTools.handleTerm(term, mode, obodoc);
-							}
+							ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), obodoc);
 						}
 					}
 				}

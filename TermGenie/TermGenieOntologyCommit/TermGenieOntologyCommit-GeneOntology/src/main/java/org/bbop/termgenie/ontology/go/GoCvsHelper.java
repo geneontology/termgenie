@@ -16,11 +16,9 @@ import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject;
-import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
@@ -282,8 +280,7 @@ public abstract class GoCvsHelper {
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
-				Modification mode = CommitHistoryTools.getModification(term.getOperation());
-				boolean csuccess = LoadState.isSuccess(handleTerm(term, mode, oboDoc));
+				boolean csuccess = LoadState.isSuccess(handleTerm(term, term.getOperation(), oboDoc));
 				success = success && csuccess;
 			}
 		}

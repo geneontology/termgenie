@@ -110,6 +110,29 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		}
 	}
 
+	@Override
+	public CommitHistoryItem getItem(String itemId) throws CommitException {
+		try {
+			List<CommitHistoryItem> items = store.load(Collections.singletonList(Integer.getInteger(itemId)));
+			if (items.size() == 1) {
+				return items.get(0);
+			}
+			return null;
+		} catch (CommitHistoryStoreException exception) {
+			throw new CommitException("Could not retrieve item with id: '"+itemId+"' from store", exception, false);
+		}
+	}
+
+	@Override
+	public void updateItem(CommitHistoryItem item) throws CommitException {
+		try {
+			store.update(item, source.getOntology().getUniqueName());
+		} catch (CommitHistoryStoreException exception) {
+			throw new CommitException("Could not update item in db", exception, false);
+		}
+		
+	}
+
 	protected abstract CommitMode getCommitMode();
 	
 	protected abstract String getCommitUserName();
@@ -268,7 +291,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = new ArrayList<CommitObject<OntologyTerm<ISynonym, IRelation>>>();
 		for(CommitedOntologyTerm term: item.getTerms()) {
 			OntologyTerm<ISynonym, IRelation> t = (OntologyTerm) term;
-			Modification mod = CommitHistoryTools.getModification(term.getOperation());
+			Modification mod = term.getOperation();
 			terms.add(new CommitObject<OntologyTerm<ISynonym, IRelation>>(t, mod));
 		}
 		return terms;

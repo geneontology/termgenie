@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.CommitHistoryTools;
-import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
@@ -135,8 +133,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setOperation(term.getOperation());
 			jsonDiff.setId(term.getId());
 			
-			Modification mode = CommitHistoryTools.getModification(term.getOperation());
-			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, mode, oboDoc);
+			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
 				try {
 					jsonDiff.setDiff(OBOWriterTools.writeTerm(term.getId(), oboDoc));
@@ -177,59 +174,59 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			return JsonCommitReviewCommitResult.error("Error: No entires to commit in the request.");
 		}
 		
-		final List<Integer> historyIds = new ArrayList<Integer>(entries.length);
-		for (JsonCommitReviewEntry entry : entries) {
-			JsonDiff[] jsonDiffs = entry.getDiffs();
-			for (JsonDiff jsonDiff : jsonDiffs) {
-				if (jsonDiff.isModified()) {
-					updateHistoryItem(entry);
-					break;
-				}
-			}
-			historyIds.add(entry.getHistoryId());
-		}
-			
 		// commit changes to repository
 		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
 		
-		CommitTask task = new CommitTask(historyIds);
+		CommitTask task = new CommitTask(entries);
 		afterReviewTaskManager.runManagedTask(task);
 		if (task.exception != null) {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		return JsonCommitReviewCommitResult.success(historyIds, task.commits);
-	}
-
-	private void updateHistoryItem(JsonCommitReviewEntry entry) {
-		// TODO Auto-generated method stub
-		
-		// TODO check that only uncommitted items are changed
-		// TODO add a time stamp/version to history item to detect conflicting updates
-		
-		// TODO move this into after review??
+		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits);
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {
 	
-		private final List<Integer> historyIds;
+		private final JsonCommitReviewEntry[] entries;
+		private List<Integer> historyIds;
 		private List<CommitResult> commits;
 		private CommitException exception;
 	
-		private CommitTask(List<Integer> historyIds) {
-			this.historyIds = historyIds;
+		private CommitTask(JsonCommitReviewEntry[] entries) {
+			this.entries = entries;
 		}
 	
 		@Override
 		public Modified run(AfterReview afterReview)
 		{
 			try {
+				historyIds = new ArrayList<Integer>(entries.length);
+				for (JsonCommitReviewEntry entry : entries) {
+					JsonDiff[] jsonDiffs = entry.getDiffs();
+					for (JsonDiff jsonDiff : jsonDiffs) {
+						if (jsonDiff.isModified()) {
+							updateHistoryItem(entry, afterReview);
+							break;
+						}
+					}
+					historyIds.add(entry.getHistoryId());
+				}
+				
 				commits = afterReview.commit(historyIds);
 				return Modified.no;
 			} catch (CommitException exception) {
 				this.exception = exception;
 				return Modified.no;
 			}
+		}
+		
+		private void updateHistoryItem(JsonCommitReviewEntry entry, AfterReview afterReview) {
+			
+			
+			// TODO check that only uncommitted items are changed
+			// TODO add a time stamp/version to history item to detect conflicting updates
+			
 		}
 	}
 

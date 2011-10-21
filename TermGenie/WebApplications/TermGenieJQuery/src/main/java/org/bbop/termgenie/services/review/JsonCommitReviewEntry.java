@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services.review;
 
+import org.bbop.termgenie.ontology.CommitObject.Modification;
+
 public class JsonCommitReviewEntry {
 
 	private int historyId;
@@ -101,6 +103,21 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setOperation(int operation) {
 			this.operation = operation;
+		}
+		
+		/**
+		 * @param operation the {@link Modification} to set
+		 */
+		public void setOperation(Modification operation) {
+			this.operation = operation.ordinal();
+		}
+		
+		public static Modification getModification(JsonDiff diff) {
+			int operation = diff.getOperation();
+			if (operation >= 0 && operation < Modification.values().length) {
+				return Modification.values()[operation];
+			}
+			return null;
 		}
 
 		/**
