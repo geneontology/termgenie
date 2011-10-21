@@ -174,6 +174,7 @@ function TermGenieReview(){
 			
 			jQuery.each(entry.diffs, function(diffIndex, diff){
 				var operation = null;
+				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
 				if (diff.operation === 0) {
 					// add
 					operation = jQuery('<div></div>');
@@ -185,7 +186,7 @@ function TermGenieReview(){
 						var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
 						editDialog.append(editField);
 						editDialog.dialog({
-							title: "Editor",
+							title: "Term Editor",
 							resizable: true,
 							height:450,
 							width: 600,
@@ -196,6 +197,8 @@ function TermGenieReview(){
 								"Change": function() {
 									diff.modified = true;
 									diff.diff = editField.val();
+									preDiff.empty();
+									preDiff.append(diff.diff);
 									$( this ).dialog( "close" );
 								},
 								"Cancel": function() {
@@ -214,7 +217,7 @@ function TermGenieReview(){
 					operation = 'Remove';
 				}
 				if(operation !== null) {
-					addRow(table, null, operation, '<pre>'+diff.diff+'</pre>');
+					addRow(table, null, operation, preDiff);
 				}
 			});
 		});
