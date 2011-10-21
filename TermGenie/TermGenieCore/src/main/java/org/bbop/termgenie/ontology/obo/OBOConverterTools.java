@@ -26,10 +26,10 @@ public class OBOConverterTools {
 	public static void fillOBO(Frame frame, OntologyTerm<? extends ISynonym, ? extends IRelation> term) {
 		String id = term.getId();
 		frame.setId(id);
-		frame.addClause(new Clause(OboFormatTag.TAG_NAME.getTag(), term.getLabel()));
+		frame.addClause(new Clause(OboFormatTag.TAG_NAME, term.getLabel()));
 		String definition = term.getDefinition();
 		if (definition != null) {
-			Clause cl = new Clause(OboFormatTag.TAG_DEF.getTag(), definition);
+			Clause cl = new Clause(OboFormatTag.TAG_DEF, definition);
 			List<String> defXRef = term.getDefXRef();
 			if (defXRef != null && !defXRef.isEmpty()) {
 				for (String xref : defXRef) {
@@ -51,7 +51,7 @@ public class OBOConverterTools {
 	public static void fillSynonyms(Frame frame, List<? extends ISynonym> synonyms) {
 		if (synonyms != null && !synonyms.isEmpty()) {
 			for (ISynonym termSynonym : synonyms) {
-				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM.getTag(), termSynonym.getLabel());
+				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM, termSynonym.getLabel());
 				Set<String> defXRef = termSynonym.getXrefs();
 				if (defXRef != null && !defXRef.isEmpty()) {
 					for (String xref : defXRef) {
@@ -201,7 +201,7 @@ public class OBOConverterTools {
 			Clause clause,
 			OBODoc oboDoc)
 	{
-		String target = clause.getValue().toString();
+		String target = clause.getValue(String.class);
 		Map<String, String> properties = new HashMap<String, String>();
 		Relation.setType(properties, clause.getTag());
 		Relation rel = new Relation(source, target, getLabel(target, oboDoc), properties);
@@ -210,10 +210,10 @@ public class OBOConverterTools {
 	
 	private static void addLong(List<IRelation> list, String source, OBODoc oboDoc, Clause clause)
 	{
-		String target = clause.getValue2().toString();
+		String target = clause.getValue2(String.class);
 		String label = getLabel(target, oboDoc);
 		Map<String, String> properties = new HashMap<String, String>();
-		Relation.setType(properties, clause.getTag(), clause.getValue().toString());
+		Relation.setType(properties, clause.getTag(), clause.getValue(String.class));
 		Relation rel = new Relation(source, target, label, properties);
 		list.add(rel);
 	}
@@ -225,10 +225,7 @@ public class OBOConverterTools {
 			if (termFrame != null) {
 				Clause clause = termFrame.getClause(OboFormatTag.TAG_NAME);
 				if (clause != null) {
-					Object obj = clause.getValue();
-					if (obj != null) {
-						label = obj.toString();
-					}
+					label = clause.getValue(String.class);
 				}
 			}
 		}

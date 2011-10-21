@@ -107,7 +107,7 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				addClause(frame, OboFormatTag.TAG_NAME, term.getLabel());
 
 				// definition
-				Clause defClause = create(OboFormatTag.TAG_DEF, term.getDefinition());
+				Clause defClause = new Clause(OboFormatTag.TAG_DEF, term.getDefinition());
 				frame.addClause(defClause);
 				String[] defxRefs = term.getDefxRef();
 				if (defxRefs != null && defxRefs.length > 0) {
@@ -121,7 +121,7 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				JsonSynonym[] synonyms = term.getSynonyms();
 				if (synonyms != null) {
 					for (JsonSynonym jsonSynonym : synonyms) {
-						Clause synClause = create(OboFormatTag.TAG_SYNONYM, jsonSynonym.getLabel());
+						Clause synClause = new Clause(OboFormatTag.TAG_SYNONYM, jsonSynonym.getLabel());
 						String[] xrefs = jsonSynonym.getXrefs();
 						if (xrefs != null) {
 							for (String xref : xrefs) {
@@ -168,12 +168,8 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 
 	private void addClause(Frame frame, OboFormatTag tag, String value) {
 		if (value != null && !value.isEmpty()) {
-			frame.addClause(create(tag, value));
+			frame.addClause(new Clause(tag, value));
 		}
-	}
-
-	private Clause create(OboFormatTag tag, String value) {
-		return new Clause(tag.toString(), value);
 	}
 
 	@Override

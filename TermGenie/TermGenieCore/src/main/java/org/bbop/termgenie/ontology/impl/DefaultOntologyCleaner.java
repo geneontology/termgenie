@@ -92,7 +92,7 @@ public class DefaultOntologyCleaner extends ResourceLoader implements OntologyCl
 			return true;
 		}
 		else {
-			String value = clause.getValue().toString();
+			String value = clause.getValue(String.class);
 			return details.types.contains(value);
 		}
 	}

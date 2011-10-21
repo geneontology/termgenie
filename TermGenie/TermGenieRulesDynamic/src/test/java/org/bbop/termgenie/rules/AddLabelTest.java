@@ -40,11 +40,11 @@ public class AddLabelTest {
 		Owl2Obo owl2Obo = new Owl2Obo();
 		OBODoc oboDoc2 = owl2Obo.convert(owlOntology);
 		Frame frame2 = oboDoc2.getTermFrame(frame.getId());
-		assertEquals("Test-Label", frame2.getTagValue(OboFormatTag.TAG_NAME.getTag()));
+		assertEquals("Test-Label", frame2.getTagValue(OboFormatTag.TAG_NAME));
 		
 		
 		Frame frame3 = oboDoc2.getTermFrame(Owl2Obo.getIdentifier(iri));
-		assertEquals("Test-Label2", frame3.getTagValue(OboFormatTag.TAG_NAME.getTag()));
+		assertEquals("Test-Label2", frame3.getTagValue(OboFormatTag.TAG_NAME));
 	}
 
 }

@@ -1,6 +1,8 @@
 package org.bbop.termgenie.services.review;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.ontology.CommitException;
+import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
@@ -29,7 +32,9 @@ import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -106,6 +111,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		for (CommitHistoryItem item : items) {
 			JsonCommitReviewEntry entry = new JsonCommitReviewEntry();
 			entry.setHistoryId(item.getId());
+			entry.setVersion(item.getVersion());
 			entry.setDate(formatDate(item.getDate()));
 			entry.setUser(item.getUser());
 			entry.setDiffs(createJsonDiffs(item, task.result));
@@ -132,6 +138,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			JsonDiff jsonDiff = new JsonDiff();
 			jsonDiff.setOperation(term.getOperation());
 			jsonDiff.setId(term.getId());
+			jsonDiff.setUuid(term.getUuid());
 			
 			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
@@ -221,12 +228,47 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 		}
 		
-		private void updateHistoryItem(JsonCommitReviewEntry entry, AfterReview afterReview) {
-			
-			
-			// TODO check that only uncommitted items are changed
-			// TODO add a time stamp/version to history item to detect conflicting updates
-			
+		private void updateHistoryItem(JsonCommitReviewEntry entry, AfterReview afterReview) throws CommitException {
+			int historyId = entry.getHistoryId();
+			CommitHistoryItem historyItem = afterReview.getItem(historyId);
+			if (entry.getVersion() != historyItem.getVersion()) {
+				throw new CommitException("Could not change item, due to conflicting updates.", false);
+			}
+			if (historyItem.isCommitted()) {
+				throw new CommitException("Trying to change an already committed item.", false);
+			}
+			JsonDiff[] diffs = entry.getDiffs();
+			for (JsonDiff jsonDiff : diffs) {
+				if (jsonDiff.isModified()) {
+					Frame termFrame = parseDiff(jsonDiff);
+					CommitedOntologyTerm term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
+					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
+				}
+			}
+			afterReview.updateItem(historyItem);
+		}
+
+		private Frame parseDiff(JsonDiff jsonDiff) {
+			OBOFormatParser p = new OBOFormatParser();
+			p.setReader(new BufferedReader(new StringReader(jsonDiff.getDiff())));
+			OBODoc obodoc = new OBODoc();
+			p.parseTermFrame(obodoc);
+			Frame termFrame = obodoc.getTermFrame(jsonDiff.getId());
+			return termFrame;
+		}
+
+		private void updateMatchingTerm(CommitHistoryItem historyItem,
+				int uuid,
+				CommitedOntologyTerm updatedTerm) throws CommitException
+		{
+			List<CommitedOntologyTerm> terms = historyItem.getTerms();
+			for (int i = 0; i < terms.size(); i++) {
+				if (uuid == terms.get(i).getUuid()) {
+					terms.set(i, updatedTerm);
+					return;
+				}
+			}
+			throw new CommitException("Could not find the modified term in the history", false);
 		}
 	}
 
