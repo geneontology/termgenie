@@ -220,7 +220,7 @@ public class OBOConverterTools {
 
 	private static String getLabel(String id, OBODoc oboDoc) {
 		String label = null;
-		if (id != null) {
+		if (id != null && oboDoc != null) {
 			Frame termFrame = oboDoc.getTermFrame(id);
 			if (termFrame != null) {
 				Clause clause = termFrame.getClause(OboFormatTag.TAG_NAME);
