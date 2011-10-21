@@ -111,9 +111,9 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	}
 
 	@Override
-	public CommitHistoryItem getItem(String itemId) throws CommitException {
+	public CommitHistoryItem getItem(int itemId) throws CommitException {
 		try {
-			List<CommitHistoryItem> items = store.load(Collections.singletonList(Integer.getInteger(itemId)));
+			List<CommitHistoryItem> items = store.load(Collections.singletonList(Integer.valueOf(itemId)));
 			if (items.size() == 1) {
 				return items.get(0);
 			}

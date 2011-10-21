@@ -12,6 +12,7 @@ import java.util.Set;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.Ontology.Relation;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -436,7 +437,6 @@ public class JsonOntologyTerm {
 
 		private String created_by;
 		private String creation_date;
-		private String resource;
 		private String comment;
 
 		/**
@@ -448,18 +448,16 @@ public class JsonOntologyTerm {
 
 		public JsonTermMetaData(Map<String, String> metaData) {
 			this();
-			this.created_by = metaData.get("created_by");
-			this.creation_date = metaData.get("creation_date");
-			this.resource = metaData.get("resource");
-			this.comment = metaData.get("comment");
+			this.created_by = metaData.get(OboFormatTag.TAG_CREATED_BY.getTag());
+			this.creation_date = metaData.get(OboFormatTag.TAG_CREATION_DATE.getTag());
+			this.comment = metaData.get(OboFormatTag.TAG_COMMENT.getTag());
 		}
 		
 		public static Map<String, String> getMap(JsonTermMetaData metaData) {
 			Map<String, String> map = new HashMap<String, String>();
-			setValue(map, "created_by", metaData.getCreated_by());
-			setValue(map, "creation_date", metaData.getCreation_date());
-			setValue(map, "resource", metaData.getResource());
-			setValue(map, "comment", metaData.getComment());
+			setValue(map, OboFormatTag.TAG_CREATED_BY.getTag(), metaData.getCreated_by());
+			setValue(map, OboFormatTag.TAG_CREATION_DATE.getTag(), metaData.getCreation_date());
+			setValue(map, OboFormatTag.TAG_COMMENT.getTag(), metaData.getComment());
 			return map;
 		}
 		
@@ -498,20 +496,6 @@ public class JsonOntologyTerm {
 		}
 
 		/**
-		 * @return the resource
-		 */
-		public String getResource() {
-			return resource;
-		}
-
-		/**
-		 * @param resource the resource to set
-		 */
-		public void setResource(String resource) {
-			this.resource = resource;
-		}
-
-		/**
 		 * @return the comment
 		 */
 		public String getComment() {
@@ -546,11 +530,6 @@ public class JsonOntologyTerm {
 			if (comment != null) {
 				builder.append("comment=");
 				builder.append(comment);
-				builder.append(", ");
-			}
-			if (resource != null) {
-				builder.append("resource=");
-				builder.append(resource);
 			}
 			builder.append("]");
 			return builder.toString();

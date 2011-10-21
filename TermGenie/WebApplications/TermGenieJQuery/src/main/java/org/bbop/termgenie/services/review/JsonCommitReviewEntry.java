@@ -5,6 +5,7 @@ import org.bbop.termgenie.ontology.CommitObject.Modification;
 public class JsonCommitReviewEntry {
 
 	private int historyId;
+	private int version;
 
 	private String user;
 	private String date;
@@ -23,6 +24,20 @@ public class JsonCommitReviewEntry {
 	 */
 	public void setHistoryId(int historyId) {
 		this.historyId = historyId;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public int getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	/**
@@ -69,6 +84,7 @@ public class JsonCommitReviewEntry {
 
 	public static class JsonDiff {
 
+		private int uuid;
 		private String id;
 
 		private int operation;
@@ -76,6 +92,20 @@ public class JsonCommitReviewEntry {
 		private String diff;
 
 		private boolean modified = false;
+
+		/**
+		 * @return the uuid
+		 */
+		public int getUuid() {
+			return uuid;
+		}
+
+		/**
+		 * @param uuid the uuid to set
+		 */
+		public void setUuid(int uuid) {
+			this.uuid = uuid;
+		}
 
 		/**
 		 * @return the id
@@ -104,14 +134,14 @@ public class JsonCommitReviewEntry {
 		public void setOperation(int operation) {
 			this.operation = operation;
 		}
-		
+
 		/**
 		 * @param operation the {@link Modification} to set
 		 */
 		public void setOperation(Modification operation) {
 			this.operation = operation.ordinal();
 		}
-		
+
 		public static Modification getModification(JsonDiff diff) {
 			int operation = diff.getOperation();
 			if (operation >= 0 && operation < Modification.values().length) {

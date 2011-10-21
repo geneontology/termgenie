@@ -78,7 +78,7 @@ public class CommitedOntologyTermRelation implements IRelation {
 	 */
 	@Override
 	@Column
-	@Basic(optional = false)
+	@Basic(optional = true)
 	public String getTargetLabel() {
 		return targetLabel;
 	}

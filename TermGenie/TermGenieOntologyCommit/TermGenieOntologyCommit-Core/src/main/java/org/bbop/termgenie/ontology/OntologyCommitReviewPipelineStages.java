@@ -24,7 +24,7 @@ public interface OntologyCommitReviewPipelineStages {
 
 	public interface AfterReview {
 		
-		public CommitHistoryItem getItem(String id) throws CommitException;
+		public CommitHistoryItem getItem(int id) throws CommitException;
 		
 		public void updateItem(CommitHistoryItem item) throws CommitException;
 
