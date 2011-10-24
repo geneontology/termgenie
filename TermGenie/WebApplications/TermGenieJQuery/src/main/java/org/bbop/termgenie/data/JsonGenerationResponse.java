@@ -1,13 +1,12 @@
 package org.bbop.termgenie.data;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 public class JsonGenerationResponse {
 
 	private String generalError;
-	private JsonValidationHint[] errors;
-	private JsonOntologyTerm[] generatedTerms;
+	private List<JsonValidationHint> errors;
+	private List<JsonOntologyTerm> generatedTerms;
 
 	/**
 	 * Default constructor.
@@ -17,14 +16,14 @@ public class JsonGenerationResponse {
 	}
 
 	public JsonGenerationResponse(String generalError,
-			Collection<JsonValidationHint> errors,
-			Collection<JsonOntologyTerm> terms)
+			List<JsonValidationHint> errors,
+			List<JsonOntologyTerm> terms)
 	{
 		if (errors != null) {
-			this.errors = errors.toArray(new JsonValidationHint[errors.size()]);
+			this.errors = errors;
 		}
 		if (terms != null) {
-			this.generatedTerms = terms.toArray(new JsonOntologyTerm[terms.size()]);
+			this.generatedTerms = terms;
 		}
 		this.generalError = generalError;
 	}
@@ -32,28 +31,28 @@ public class JsonGenerationResponse {
 	/**
 	 * @return the errors
 	 */
-	public JsonValidationHint[] getErrors() {
+	public List<JsonValidationHint> getErrors() {
 		return errors;
 	}
 
 	/**
 	 * @param errors the errors to set
 	 */
-	public void setErrors(JsonValidationHint[] errors) {
+	public void setErrors(List<JsonValidationHint> errors) {
 		this.errors = errors;
 	}
 
 	/**
 	 * @return the generatedTerms
 	 */
-	public JsonOntologyTerm[] getGeneratedTerms() {
+	public List<JsonOntologyTerm> getGeneratedTerms() {
 		return generatedTerms;
 	}
 
 	/**
 	 * @param generatedTerms the generatedTerms to set
 	 */
-	public void setGeneratedTerms(JsonOntologyTerm[] generatedTerms) {
+	public void setGeneratedTerms(List<JsonOntologyTerm> generatedTerms) {
 		this.generatedTerms = generatedTerms;
 	}
 
@@ -86,12 +85,12 @@ public class JsonGenerationResponse {
 		}
 		if (errors != null) {
 			builder.append("errors:");
-			builder.append(Arrays.toString(errors));
+			builder.append(errors);
 			builder.append(", ");
 		}
 		if (generatedTerms != null) {
 			builder.append("generatedTerms:");
-			builder.append(Arrays.toString(generatedTerms));
+			builder.append(generatedTerms);
 		}
 		builder.append("}");
 		return builder.toString();

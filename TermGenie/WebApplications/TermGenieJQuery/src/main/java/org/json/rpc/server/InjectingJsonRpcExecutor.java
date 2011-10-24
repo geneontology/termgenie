@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -61,7 +63,9 @@ import com.google.gson.JsonParser;
  */
 public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InjectingJsonRpcExecutor.class);
+    private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
+
+	private static final Logger LOG = LoggerFactory.getLogger(InjectingJsonRpcExecutor.class);
 
     private static final Pattern METHOD_PATTERN = Pattern
             .compile("([_a-zA-Z][_a-zA-Z0-9]*)\\.([_a-zA-Z][_a-zA-Z0-9]*)");
@@ -293,8 +297,8 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 
     public Object[] getParameters(Method method, JsonArray params, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
         List<Object> list = new ArrayList<Object>();
-        Gson gson = new Gson();
-        Class<?>[] types = method.getParameterTypes();
+        Gson gson = GSON_BUILDER.create();
+        Type[] types = method.getGenericParameterTypes();
         
         int length = types.length;
         final boolean isSessionAware = isSessionAwareMethod(method);
@@ -312,7 +316,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		
 		for (int i = 0; i < length; i++) {
             JsonElement p = params.get(i);
-            Object o = gson.fromJson(p.toString(), types[i]);
+            Object o = gson.fromJson(p, types[i]);
             list.add(o);
         }
         

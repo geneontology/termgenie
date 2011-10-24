@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services.review;
 
+import java.util.List;
+
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 
 public class JsonCommitReviewEntry {
@@ -10,7 +12,7 @@ public class JsonCommitReviewEntry {
 	private String user;
 	private String date;
 
-	private JsonDiff[] diffs;
+	private List<JsonDiff> diffs;
 
 	/**
 	 * @return the historyId
@@ -71,14 +73,14 @@ public class JsonCommitReviewEntry {
 	/**
 	 * @return the diffs
 	 */
-	public JsonDiff[] getDiffs() {
+	public List<JsonDiff> getDiffs() {
 		return diffs;
 	}
 
 	/**
 	 * @param diffs the diffs to set
 	 */
-	public void setDiffs(JsonDiff[] diffs) {
+	public void setDiffs(List<JsonDiff> diffs) {
 		this.diffs = diffs;
 	}
 

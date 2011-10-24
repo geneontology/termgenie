@@ -2,6 +2,10 @@ package org.bbop.termgenie.rpc;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.SessionHandler;
@@ -32,5 +36,30 @@ public class JsonRpcConformityTest {
 		assertTrue(checker.isValidInterface(BrowserIdHandler.class, true));
 		
 		assertTrue(checker.isValidInterface(TermCommitReviewService.class, true));
+	}
+	
+	@Test
+	public void testGenericCollectionsAndMap() {
+		TypeChecker checker = new InjectingGsonTypeChecker();
+		
+		boolean validType = checker.isValidInterface(TestGenericInterface.class, true);
+		assertTrue(validType);
+	}
+	
+	public static interface TestGenericInterface {
+
+		public String getSimple();
+		
+		public List<String> getList();
+		
+		public void setList(List<String> list);
+		
+		public Set<String> getSet();
+		
+		public void setSet(Set<String> list);
+		
+		public Map<String, String> getMap();
+		
+		public void setMap(Map<String, String> map);
 	}
 }

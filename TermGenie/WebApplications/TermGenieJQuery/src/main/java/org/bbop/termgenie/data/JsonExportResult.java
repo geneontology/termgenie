@@ -1,45 +1,38 @@
 package org.bbop.termgenie.data;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Result after an export request.
  */
 public class JsonExportResult extends JsonResult {
 
-	private String[] formats;
-	private String[] contents;
+	private Map<String, String> exports;
 
 	public JsonExportResult() {
 		super();
 	}
 
 	/**
-	 * @return the formats
+	 * @return the exports
 	 */
-	public String[] getFormats() {
-		return formats;
+	public Map<String, String> getExports() {
+		return exports;
 	}
 
 	/**
-	 * @param formats the formats to set
+	 * @param exports the exports to set
 	 */
-	public void setFormats(String[] formats) {
-		this.formats = formats;
+	public void setExports(Map<String, String> exports) {
+		this.exports = exports;
 	}
-
-	/**
-	 * @return the contents
-	 */
-	public String[] getContents() {
-		return contents;
-	}
-
-	/**
-	 * @param contents the contents to set
-	 */
-	public void setContents(String[] contents) {
-		this.contents = contents;
+	
+	public synchronized void addExport(String format, String content) {
+		if (exports == null) {
+			exports = new HashMap<String, String>();
+		}
+		exports.put(format, content);
 	}
 
 	@Override
@@ -47,20 +40,15 @@ public class JsonExportResult extends JsonResult {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JsonExportResult [success=");
 		builder.append(success);
-		builder.append(", ");
 		if (message != null) {
+			builder.append(", ");
 			builder.append("message=");
 			builder.append(message);
-			builder.append(", ");
 		}
-		if (formats != null) {
-			builder.append("formats=");
-			builder.append(Arrays.toString(formats));
+		if (exports != null) {
 			builder.append(", ");
-		}
-		if (contents != null) {
-			builder.append("contents=");
-			builder.append(Arrays.toString(contents));
+			builder.append("exports=");
+			builder.append(exports);
 		}
 		builder.append("]");
 		return builder.toString();

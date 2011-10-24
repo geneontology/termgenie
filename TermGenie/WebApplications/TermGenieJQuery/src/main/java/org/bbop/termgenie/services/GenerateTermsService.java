@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services;
 
+import java.util.List;
+
 import org.bbop.termgenie.data.JsonGenerationResponse;
 import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermTemplate;
@@ -13,7 +15,7 @@ public interface GenerateTermsService {
 	 * @param ontology
 	 * @return gwtTermTemplates
 	 */
-	public JsonTermTemplate[] availableTermTemplates(String sessionId, String ontology);
+	public List<JsonTermTemplate> availableTermTemplates(String sessionId, String ontology);
 
 	/**
 	 * Generate terms and return the proposed terms for review.
@@ -25,5 +27,5 @@ public interface GenerateTermsService {
 	 */
 	public JsonGenerationResponse generateTerms(String sessionId,
 			String ontology,
-			JsonTermGenerationInput[] allParameters);
+			List<JsonTermGenerationInput> allParameters);
 }

@@ -1,7 +1,6 @@
 package org.bbop.termgenie.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
@@ -43,7 +41,6 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
-import owltools.graph.OWLGraphWrapper.Synonym;
 
 public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
 
@@ -126,8 +123,8 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			List<String> existing = new ArrayList<String>();
 			List<String> labels = new ArrayList<String>(terms.length);
 			for (JsonOntologyTerm term : terms) {
-				JsonTermRelation[] relations = term.getRelations();
-				if (relations == null || relations.length == 0) {
+				List<JsonTermRelation> relations = term.getRelations();
+				if (relations == null || relations.isEmpty()) {
 					missingRelations += 1;
 				}
 				String label = term.getLabel();
@@ -293,7 +290,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			return;
 		}
 
-		private JsonOntologyTerm[] createTerms(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> commitTerms)
+		private List<JsonOntologyTerm> createTerms(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> commitTerms)
 		{
 			List<JsonOntologyTerm> terms = new ArrayList<JsonOntologyTerm>();
 			for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : commitTerms) {
@@ -301,7 +298,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 					terms.add(JsonOntologyTerm.convert(commitObject.getObject()));
 				}
 			}
-			return terms.toArray(new JsonOntologyTerm[terms.size()]);
+			return terms;
 		}
 
 		private Pair<List<CommitObject<OntologyTerm<ISynonym, IRelation>>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
@@ -315,7 +312,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				String label = jsonTerm.getLabel();
 				String definition = jsonTerm.getDefinition();
 				List<ISynonym> synonyms = extractSynonyms(jsonTerm);
-				List<String> defXRef = extractDefXRef(jsonTerm);
+				List<String> defXRef = jsonTerm.getDefXRef();
 				Map<String, String> metaData = extractMetaData(jsonTerm);
 				List<IRelation> relations = extractRelations(jsonTerm, idHandler);
 
@@ -335,23 +332,14 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		}
 
 		private List<IRelation> extractRelations(JsonOntologyTerm jsonTerm, IdHandler idHandler) {
-			JsonTermRelation[] relations = jsonTerm.getRelations();
+			List<JsonTermRelation> relations = jsonTerm.getRelations();
 			if (relations != null) {
-				List<IRelation> result = new ArrayList<IRelation>(relations.length);
+				List<IRelation> result = new ArrayList<IRelation>(relations.size());
 				for (JsonTermRelation jsonTermRelation : relations) {
 					String source = idHandler.map(jsonTermRelation.getSource());
 					String target = idHandler.map(jsonTermRelation.getTarget());
 					String targetLabel = jsonTermRelation.getTargetLabel();
-					Map<String, String> properties = new HashMap<String, String>();
-					String[][] jsonProperties = jsonTermRelation.getProperties();
-					if (jsonProperties != null && jsonProperties.length > 0) {
-						for (String[] pair : jsonProperties) {
-							if (pair != null && pair.length == 2) {
-								properties.put(pair[0], pair[1]);
-							}
-						}
-					}
-					result.add(new Relation(source, target, targetLabel, properties));
+					result.add(new Relation(source, target, targetLabel, jsonTermRelation.getProperties()));
 				}
 				return result;
 			}
@@ -359,33 +347,13 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		}
 
 		private Map<String, String> extractMetaData(JsonOntologyTerm jsonTerm) {
-			return JsonTermMetaData.getMap(jsonTerm.getMetaData());
-		}
-
-		private List<String> extractDefXRef(JsonOntologyTerm jsonTerm) {
-			String[] refs = jsonTerm.getDefxRef();
-			if (refs.length > 0) {
-				return Arrays.asList(refs);
-			}
-			return null;
+			return jsonTerm.getMetaData();
 		}
 
 		private List<ISynonym> extractSynonyms(JsonOntologyTerm jsonTerm) {
-			JsonSynonym[] synonyms = jsonTerm.getSynonyms();
-			if (synonyms != null && synonyms.length > 0) {
-				List<ISynonym> result = new ArrayList<ISynonym>(synonyms.length);
-				for (JsonSynonym synonym : synonyms) {
-					String label = synonym.getLabel();
-					String scope = synonym.getScope();
-					String category = synonym.getCategory();
-					Set<String> xrefs = null;
-					String[] jsonXRefs = synonym.getXrefs();
-					if (jsonXRefs != null && jsonXRefs.length > 0) {
-						xrefs = new HashSet<String>(Arrays.asList(jsonXRefs));
-					}
-					result.add(new Synonym(label, scope, category, xrefs));
-				}
-				return result;
+			List<JsonSynonym> synonyms = jsonTerm.getSynonyms();
+			if (synonyms != null && synonyms.isEmpty()) {
+				return new ArrayList<ISynonym>(jsonTerm.getSynonyms());
 			}
 			return null;
 		}

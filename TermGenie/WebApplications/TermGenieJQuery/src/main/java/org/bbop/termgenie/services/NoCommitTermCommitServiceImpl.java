@@ -2,6 +2,8 @@ package org.bbop.termgenie.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,7 +12,6 @@ import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermMetaData;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
@@ -73,8 +74,7 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		}
 
 		result.setSuccess(true);
-		result.setFormats(new String[] { "OBO" });
-		result.setContents(new String[] { task.oboDiff });
+		result.addExport("OBO", task.oboDiff);
 		// TODO add OWL export support
 		return result;
 	}
@@ -109,8 +109,8 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				// definition
 				Clause defClause = new Clause(OboFormatTag.TAG_DEF, term.getDefinition());
 				frame.addClause(defClause);
-				String[] defxRefs = term.getDefxRef();
-				if (defxRefs != null && defxRefs.length > 0) {
+				List<String> defxRefs = term.getDefXRef();
+				if (defxRefs != null && !defxRefs.isEmpty()) {
 					for (String defxRef : defxRefs) {
 						Xref xref = new Xref(defxRef);
 						defClause.addXref(xref);
@@ -118,11 +118,11 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				}
 
 				// synonyms
-				JsonSynonym[] synonyms = term.getSynonyms();
+				List<JsonSynonym> synonyms = term.getSynonyms();
 				if (synonyms != null) {
 					for (JsonSynonym jsonSynonym : synonyms) {
 						Clause synClause = new Clause(OboFormatTag.TAG_SYNONYM, jsonSynonym.getLabel());
-						String[] xrefs = jsonSynonym.getXrefs();
+						Set<String> xrefs = jsonSynonym.getXrefs();
 						if (xrefs != null) {
 							for (String xref : xrefs) {
 								synClause.addXref(new Xref(xref));
@@ -137,18 +137,16 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				}
 
 				// relations
-				JsonTermRelation[] relations = term.getRelations();
+				List<JsonTermRelation> relations = term.getRelations();
 				if (relations != null) {
-					for (JsonTermRelation relation : relations) {
-						OBOConverterTools.fillRelation(frame, JsonTermRelation.convert(relation), null);
-					}
+					OBOConverterTools.fillRelations(frame, relations, null);
 				}
 
 				// meta data
-				JsonTermMetaData metaData = term.getMetaData();
-				addClause(frame, OboFormatTag.TAG_COMMENT, metaData.getComment());
-				addClause(frame, OboFormatTag.TAG_CREATED_BY, metaData.getCreated_by());
-				addClause(frame, OboFormatTag.TAG_CREATION_DATE, metaData.getCreation_date());
+				Map<String, String> metaData = term.getMetaData();
+				addClause(frame, OboFormatTag.TAG_COMMENT, metaData);
+				addClause(frame, OboFormatTag.TAG_CREATED_BY, metaData);
+				addClause(frame, OboFormatTag.TAG_CREATION_DATE, metaData);
 
 				oboDoc.addTermFrame(frame);
 			}
@@ -166,6 +164,10 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		return ontologyTools.getManager(ontologyName);
 	}
 
+	private void addClause(Frame frame, OboFormatTag tag, Map<String, String> map) {
+		addClause(frame, tag, map.get(tag.getTag()));
+	}
+	
 	private void addClause(Frame frame, OboFormatTag tag, String value) {
 		if (value != null && !value.isEmpty()) {
 			frame.addClause(new Clause(tag, value));

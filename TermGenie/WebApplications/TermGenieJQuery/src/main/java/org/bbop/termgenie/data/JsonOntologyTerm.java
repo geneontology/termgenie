@@ -1,30 +1,27 @@
 package org.bbop.termgenie.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
-import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
 
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
-public class JsonOntologyTerm {
+public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelation>{
 
 	private String tempId;
 	private String label;
 	private String definition;
-	private JsonSynonym[] synonyms;
-	private String[] defxRef;
-	private JsonTermRelation[] relations;
-	private JsonTermMetaData metaData;
+	private List<JsonSynonym> synonyms;
+	private List<String> defXRef;
+	private List<JsonTermRelation> relations;
+	private Map<String, String> metaData;
 
 	public JsonOntologyTerm() {
 		super();
@@ -34,6 +31,11 @@ public class JsonOntologyTerm {
 	 * @return the tempId
 	 */
 	public String getTempId() {
+		return tempId;
+	}
+
+	@Override
+	public String getId() {
 		return tempId;
 	}
 
@@ -47,6 +49,7 @@ public class JsonOntologyTerm {
 	/**
 	 * @return the label
 	 */
+	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -61,6 +64,7 @@ public class JsonOntologyTerm {
 	/**
 	 * @return the definition
 	 */
+	@Override
 	public String getDefinition() {
 		return definition;
 	}
@@ -75,56 +79,60 @@ public class JsonOntologyTerm {
 	/**
 	 * @return the defxRef
 	 */
-	public String[] getDefxRef() {
-		return defxRef;
+	@Override
+	public List<String> getDefXRef() {
+		return defXRef;
 	}
 
 	/**
-	 * @param defxRef the defxRef to set
+	 * @param defXRef the defxRef to set
 	 */
-	public void setDefxRef(String[] defxRef) {
-		this.defxRef = defxRef;
+	public void setDefXRef(List<String> defXRef) {
+		this.defXRef = defXRef;
 	}
 
 	/**
 	 * @return the relations
 	 */
-	public JsonTermRelation[] getRelations() {
+	@Override
+	public List<JsonTermRelation> getRelations() {
 		return relations;
 	}
 
 	/**
 	 * @param relations the relations to set
 	 */
-	public void setRelations(JsonTermRelation[] relations) {
+	public void setRelations(List<JsonTermRelation> relations) {
 		this.relations = relations;
 	}
 
 	/**
 	 * @return the synonyms
 	 */
-	public JsonSynonym[] getSynonyms() {
+	@Override
+	public List<JsonSynonym> getSynonyms() {
 		return synonyms;
 	}
 
 	/**
 	 * @param synonyms the synonyms to set
 	 */
-	public void setSynonyms(JsonSynonym[] synonyms) {
+	public void setSynonyms(List<JsonSynonym> synonyms) {
 		this.synonyms = synonyms;
 	}
 
 	/**
 	 * @return the metaData
 	 */
-	public JsonTermMetaData getMetaData() {
+	@Override
+	public Map<String, String> getMetaData() {
 		return metaData;
 	}
 
 	/**
 	 * @param metaData the metaData to set
 	 */
-	public void setMetaData(JsonTermMetaData metaData) {
+	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
 	}
 
@@ -151,17 +159,17 @@ public class JsonOntologyTerm {
 		if (synonyms != null) {
 			builder.append(", ");
 			builder.append("synonyms=");
-			builder.append(Arrays.toString(synonyms));
+			builder.append(synonyms);
 		}
-		if (defxRef != null) {
+		if (defXRef != null) {
 			builder.append(", ");
-			builder.append("defxRef=");
-			builder.append(Arrays.toString(defxRef));
+			builder.append("defXRef=");
+			builder.append(defXRef);
 		}
 		if (relations != null) {
 			builder.append(", ");
 			builder.append("relations=");
-			builder.append(Arrays.toString(relations));
+			builder.append(relations);
 		}
 		if (metaData != null) {
 			builder.append(", ");
@@ -175,35 +183,33 @@ public class JsonOntologyTerm {
 	public static JsonOntologyTerm convert(OntologyTerm<? extends ISynonym, ? extends IRelation> source) {
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setDefinition(source.getDefinition());
-		List<String> defXRef = source.getDefXRef();
-		if (defXRef != null && !defXRef.isEmpty()) {
-			term.setDefxRef(defXRef.toArray(new String[defXRef.size()]));
-		}
+		term.setDefXRef(source.getDefXRef());
 		term.setTempId(source.getId());
 		term.setLabel(source.getLabel());
 		term.setSynonyms(JsonSynonym.convert(source.getSynonyms()));
-		term.setMetaData(new JsonTermMetaData(source.getMetaData()));
+		term.setMetaData(source.getMetaData());
 		List<? extends IRelation> relations = source.getRelations();
 		if (relations != null && !relations.isEmpty()) {
-			JsonTermRelation[] jsonRelations = new JsonTermRelation[relations.size()];
-			for (int i = 0; i < jsonRelations.length; i++) {
-				jsonRelations[i] = JsonTermRelation.convert(relations.get(i));
+			List<JsonTermRelation> jsonRelations = new ArrayList<JsonTermRelation>(relations.size());
+			for (IRelation relation : relations) {
+				jsonRelations.add(JsonTermRelation.convert(relation));
 			}
 			term.setRelations(jsonRelations);
 		}
 		return term;
 	}
 	
-	public static class JsonSynonym {
+	public static class JsonSynonym implements ISynonym {
 
 		private String label;
 		private String scope;
 		private String category;
-		private String[] xrefs;
+		private Set<String> xrefs;
 
 		/**
 		 * @return the label
 		 */
+		@Override
 		public String getLabel() {
 			return label;
 		}
@@ -218,6 +224,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the scope
 		 */
+		@Override
 		public String getScope() {
 			return scope;
 		}
@@ -232,20 +239,22 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the xrefs
 		 */
-		public String[] getXrefs() {
+		@Override
+		public Set<String> getXrefs() {
 			return xrefs;
 		}
 
 		/**
 		 * @param xrefs the xrefs to set
 		 */
-		public void setXrefs(String[] xrefs) {
+		public void setXrefs(Set<String> xrefs) {
 			this.xrefs = xrefs;
 		}
 
 		/**
 		 * @return the category
 		 */
+		@Override
 		public String getCategory() {
 			return category;
 		}
@@ -278,40 +287,39 @@ public class JsonOntologyTerm {
 			}
 			if (xrefs != null) {
 				builder.append("xrefs=");
-				builder.append(Arrays.toString(xrefs));
+				builder.append(xrefs);
 			}
 			builder.append("]");
 			return builder.toString();
 		}
 		
-		public static JsonSynonym[] convert(Collection<? extends ISynonym> synonyms) {
+		static List<JsonSynonym> convert(Collection<? extends ISynonym> synonyms) {
 			if (synonyms != null && !synonyms.isEmpty()) {
 				List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
 				for (ISynonym synonym : synonyms) {
-					JsonSynonym jsonSynonym = new JsonSynonym();
-					jsonSynonym.setLabel(synonym.getLabel());
-					jsonSynonym.setScope(synonym.getScope());
-					jsonSynonym.setCategory(synonym.getCategory());
-					String[] axrefs = null;
-					Set<String> xrefs = synonym.getXrefs();
-					if (xrefs != null && !xrefs.isEmpty()) {
-						axrefs = xrefs.toArray(new String[xrefs.size()]);
+					if (synonym instanceof JsonSynonym) {
+						jsonSynonyms.add((JsonSynonym) synonym);
+					}else {
+						JsonSynonym jsonSynonym = new JsonSynonym();
+						jsonSynonym.setLabel(synonym.getLabel());
+						jsonSynonym.setScope(synonym.getScope());
+						jsonSynonym.setCategory(synonym.getCategory());
+						jsonSynonym.setXrefs(synonym.getXrefs());
+						jsonSynonyms.add(jsonSynonym);
 					}
-					jsonSynonym.setXrefs(axrefs);
-					jsonSynonyms.add(jsonSynonym);
 				}
-				return jsonSynonyms.toArray(new JsonSynonym[jsonSynonyms.size()]);
+				return jsonSynonyms;
 			}
 			return null;
 		}
 	}
 
-	public static class JsonTermRelation {
+	public static class JsonTermRelation implements IRelation {
 
 		private String source;
 		private String target;
 		private String targetLabel;
-		private String[][] properties;
+		private Map<String, String> properties;
 
 		public JsonTermRelation() {
 			super();
@@ -320,6 +328,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the source
 		 */
+		@Override
 		public String getSource() {
 			return source;
 		}
@@ -334,6 +343,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the target
 		 */
+		@Override
 		public String getTarget() {
 			return target;
 		}
@@ -348,6 +358,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the targetLabel
 		 */
+		@Override
 		public String getTargetLabel() {
 			return targetLabel;
 		}
@@ -362,14 +373,15 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the properties
 		 */
-		public String[][] getProperties() {
+		@Override
+		public Map<String, String> getProperties() {
 			return properties;
 		}
 
 		/**
 		 * @param properties the properties to set
 		 */
-		public void setProperties(String[][] properties) {
+		public void setProperties(Map<String, String> properties) {
 			this.properties = properties;
 		}
 
@@ -393,146 +405,22 @@ public class JsonOntologyTerm {
 			}
 			if (properties != null) {
 				builder.append("properties=");
-				builder.append(Arrays.toString(properties));
+				builder.append(properties);
 			}
 			builder.append("]");
 			return builder.toString();
 		}
 		
-		public static IRelation convert(JsonTermRelation jsonRelation) {
-			final Map<String, String> properties = new HashMap<String, String>();
-			
-			String[][] strings = jsonRelation.getProperties();
-			if (strings != null) {
-				for (int i = 0; i < strings.length; i++) {
-					String[] pair = strings[i];
-					if (pair != null && pair.length == 2) {
-						properties.put(pair[0], pair[1]);
-					}
-				}
+		static JsonTermRelation convert(IRelation relation) {
+			if (relation instanceof JsonTermRelation) {
+				return (JsonTermRelation) relation;
 			}
-			return new Relation(jsonRelation.source, jsonRelation.target, jsonRelation.targetLabel, properties);
-		}
-		
-		public static JsonTermRelation convert(IRelation relation) {
 			JsonTermRelation jsonRelation = new JsonTermRelation();
 			jsonRelation.source = relation.getSource();
 			jsonRelation.target = relation.getTarget();
 			jsonRelation.targetLabel = relation.getTargetLabel();
-			Map<String, String> properties = relation.getProperties();
-			if (properties != null && !properties.isEmpty()) {
-				String[][] strings = new String[properties.size()][];
-				int counter = 0;
-				for (Entry<String, String> entry : properties.entrySet()) {
-					strings[counter] = new String[]{entry.getKey(), entry.getValue()};
-					counter += 1;
-				}
-				jsonRelation.properties = strings;
-			}
+			jsonRelation.properties = relation.getProperties();
 			return jsonRelation;
-		}
-	}
-
-	public static class JsonTermMetaData {
-
-		private String created_by;
-		private String creation_date;
-		private String comment;
-
-		/**
-		 * Default constructor
-		 */
-		public JsonTermMetaData() {
-			super();
-		}
-
-		public JsonTermMetaData(Map<String, String> metaData) {
-			this();
-			this.created_by = metaData.get(OboFormatTag.TAG_CREATED_BY.getTag());
-			this.creation_date = metaData.get(OboFormatTag.TAG_CREATION_DATE.getTag());
-			this.comment = metaData.get(OboFormatTag.TAG_COMMENT.getTag());
-		}
-		
-		public static Map<String, String> getMap(JsonTermMetaData metaData) {
-			Map<String, String> map = new HashMap<String, String>();
-			setValue(map, OboFormatTag.TAG_CREATED_BY.getTag(), metaData.getCreated_by());
-			setValue(map, OboFormatTag.TAG_CREATION_DATE.getTag(), metaData.getCreation_date());
-			setValue(map, OboFormatTag.TAG_COMMENT.getTag(), metaData.getComment());
-			return map;
-		}
-		
-		private static void setValue(Map<String, String> map, String key, String value) {
-			if (value != null) {
-				map.put(key, value);
-			}
-		}
-
-		/**
-		 * @return the created_by
-		 */
-		public String getCreated_by() {
-			return created_by;
-		}
-
-		/**
-		 * @param created_by the created_by to set
-		 */
-		public void setCreated_by(String created_by) {
-			this.created_by = created_by;
-		}
-
-		/**
-		 * @return the creation_date
-		 */
-		public String getCreation_date() {
-			return creation_date;
-		}
-
-		/**
-		 * @param creation_date the creation_date to set
-		 */
-		public void setCreation_date(String creation_date) {
-			this.creation_date = creation_date;
-		}
-
-		/**
-		 * @return the comment
-		 */
-		public String getComment() {
-			return comment;
-		}
-
-		/**
-		 * @param comment the comment to set
-		 */
-		public void setComment(String comment) {
-			this.comment = comment;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("JsonTermMetaData [");
-			if (created_by != null) {
-				builder.append("created_by=");
-				builder.append(created_by);
-				builder.append(", ");
-			}
-			if (creation_date != null) {
-				builder.append("creation_date=");
-				builder.append(creation_date);
-				builder.append(", ");
-			}
-			if (comment != null) {
-				builder.append("comment=");
-				builder.append(comment);
-			}
-			builder.append("]");
-			return builder.toString();
 		}
 	}
 }

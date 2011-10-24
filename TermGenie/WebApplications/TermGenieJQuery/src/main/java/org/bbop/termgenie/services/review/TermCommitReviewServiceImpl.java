@@ -131,7 +131,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 	}
 	
-	private JsonDiff[] createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) {
+	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {
@@ -151,7 +151,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 		}
 		if (!result.isEmpty()) {
-			return result.toArray(new JsonDiff[result.size()]);
+			return result;
 		}
 		return null;
 	}
@@ -210,7 +210,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			try {
 				historyIds = new ArrayList<Integer>(entries.length);
 				for (JsonCommitReviewEntry entry : entries) {
-					JsonDiff[] jsonDiffs = entry.getDiffs();
+					List<JsonDiff> jsonDiffs = entry.getDiffs();
 					for (JsonDiff jsonDiff : jsonDiffs) {
 						if (jsonDiff.isModified()) {
 							updateHistoryItem(entry, afterReview);
@@ -237,7 +237,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			if (historyItem.isCommitted()) {
 				throw new CommitException("Trying to change an already committed item.", false);
 			}
-			JsonDiff[] diffs = entry.getDiffs();
+			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
 				if (jsonDiff.isModified()) {
 					Frame termFrame = parseDiff(jsonDiff);

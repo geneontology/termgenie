@@ -1268,7 +1268,7 @@ function termgenie(){
 	 *     	   definition: String,
 	 *     	   logDef: String,
 	 *     	   comment: String,
-	 *     	   defxRef: String[],
+	 *     	   defXRef: String[],
 	 *     	   relations: JsonTermRelation {
 	 *     			source: String,
 	 *     			target: String,
@@ -1445,7 +1445,7 @@ function termgenie(){
 			// Def_XRefs
 			tdElement  = jQuery('<td></td>');
 			trElement.append(tdElement);
-			fieldPanels.defxRef = StringListFieldReviewPanel(tdElement, term.defxRef);
+			fieldPanels.defXRef = StringListFieldReviewPanel(tdElement, term.defXRef);
 			
 			// new header and row
 			interalLayoutTable.append('<tr class="header"><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr>')
@@ -1733,10 +1733,7 @@ function termgenie(){
 				if(relations && relations.length > 0) {
 					jQuery.each(relations, function(index, relation){
 						// create map from array based objects
-						var relProperties = {};
-						jQuery.each(relation.properties, function(propIndex, pair){
-							relProperties[pair[0]] = pair[1];
-						});
+						var relProperties = relation.properties;
 						
 						// check type
 						var type = relProperties.type;
@@ -1877,8 +1874,7 @@ function termgenie(){
 	 * @param exportResult JsonExportResult {
 	 * 		success: boolean,
 	 * 		message: String,
-	 * 		formats: String[],
-	 * 		contents: String[]
+	 * 		exports: Map/Object{format, content}
 	 * }
 	 * @param container target DOM element
 	 */
@@ -1890,15 +1886,11 @@ function termgenie(){
 		var exportsContainer = jQuery('<div class="term-generation-exports"></div>');
 		exportsContainer.appendTo(container);
 		if (exportResult.success === true) {
-			for( i = 0; i < exportResult.formats.length; i += 1) {
-				name = exportResult.formats[i];
-				if (name && name.length > 0 && exportResult.contents.length > i) {
-					content = exportResult.contents[i];
-					if (content && content.length > 0) {
-						renderExport(name, content, exportsContainer);
-					}
+			jQuery.each(exportResult.exports, function(format, content){
+				if (content.length > 0) {
+					renderExport(format, content, exportsContainer);
 				}
-			}
+			});
 		}
 		else {
 			container.append('<div>The export of the generated terms did not complete normally with the following reason:</div>');

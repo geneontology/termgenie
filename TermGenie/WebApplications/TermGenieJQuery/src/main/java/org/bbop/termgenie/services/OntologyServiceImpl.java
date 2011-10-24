@@ -89,12 +89,12 @@ public class OntologyServiceImpl implements OntologyService {
 		return new JsonTermSuggestion(term.getLabel(), identifier, term.getDefinition(), getSynonyms(term));
 	}
 
-	private String[] getSynonyms(OntologyTerm<ISynonym, IRelation> term) {
+	private List<String> getSynonyms(OntologyTerm<ISynonym, IRelation> term) {
 		List<ISynonym> synonyms = term.getSynonyms();
 		if (synonyms != null && !synonyms.isEmpty()) {
-			String[] strings = new String[synonyms.size()];
-			for (int i = 0; i < strings.length; i++) {
-				strings[i] = synonyms.get(i).getLabel();
+			List<String> strings = new ArrayList<String>(synonyms.size());
+			for (ISynonym synonym : synonyms) {
+				strings.add(synonym.getLabel());
 			}
 			return strings;
 		}

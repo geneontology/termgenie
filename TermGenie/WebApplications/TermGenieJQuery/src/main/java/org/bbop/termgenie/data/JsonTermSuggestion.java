@@ -1,6 +1,6 @@
 package org.bbop.termgenie.data;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 
@@ -9,7 +9,7 @@ public class JsonTermSuggestion {
 	private String label;
 	private JsonOntologyTermIdentifier identifier;
 	private String description;
-	private String[] synonyms;
+	private List<String> synonyms;
 
 	public JsonTermSuggestion() {
 		super();
@@ -24,7 +24,7 @@ public class JsonTermSuggestion {
 	public JsonTermSuggestion(String label,
 			JsonOntologyTermIdentifier identifier,
 			String description,
-			String[] synonyms)
+			List<String> synonyms)
 	{
 		super();
 		this.label = label;
@@ -78,14 +78,14 @@ public class JsonTermSuggestion {
 	/**
 	 * @return the synonyms
 	 */
-	public String[] getSynonyms() {
+	public List<String> getSynonyms() {
 		return synonyms;
 	}
 
 	/**
 	 * @param synonyms the synonyms to set
 	 */
-	public void setSynonyms(String[] synonyms) {
+	public void setSynonyms(List<String> synonyms) {
 		this.synonyms = synonyms;
 	}
 
@@ -114,7 +114,7 @@ public class JsonTermSuggestion {
 		}
 		if (synonyms != null) {
 			builder.append("synonyms:");
-			builder.append(Arrays.toString(synonyms));
+			builder.append(synonyms);
 		}
 		builder.append("}");
 		return builder.toString();

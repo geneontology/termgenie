@@ -1,13 +1,13 @@
 package org.bbop.termgenie.data;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Result after a commit request.
  */
 public class JsonCommitResult extends JsonResult {
 
-	private JsonOntologyTerm[] terms;
+	private List<JsonOntologyTerm> terms;
 	private String diff;
 
 	public JsonCommitResult() {
@@ -17,14 +17,14 @@ public class JsonCommitResult extends JsonResult {
 	/**
 	 * @return the terms
 	 */
-	public JsonOntologyTerm[] getTerms() {
+	public List<JsonOntologyTerm> getTerms() {
 		return terms;
 	}
 
 	/**
 	 * @param terms the terms to set
 	 */
-	public void setTerms(JsonOntologyTerm[] terms) {
+	public void setTerms(List<JsonOntologyTerm> terms) {
 		this.terms = terms;
 	}
 	
@@ -55,7 +55,7 @@ public class JsonCommitResult extends JsonResult {
 		if (terms != null) {
 			builder.append(", ");
 			builder.append("terms=");
-			builder.append(Arrays.toString(terms));
+			builder.append(terms);
 		}
 		if (diff != null) {
 			builder.append(", ");

@@ -1,6 +1,7 @@
 package org.bbop.termgenie.data;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class is required to map the internal representation of fields to an
@@ -12,7 +13,7 @@ public class JsonTermTemplate {
 	private String display;
 	private String description;
 	private String hint;
-	private JsonTemplateField[] fields;
+	private List<JsonTemplateField> fields;
 
 	public JsonTermTemplate() {
 		super();
@@ -35,14 +36,14 @@ public class JsonTermTemplate {
 	/**
 	 * @return the fields
 	 */
-	public JsonTemplateField[] getFields() {
+	public List<JsonTemplateField> getFields() {
 		return fields;
 	}
 
 	/**
 	 * @param fields the fields to set
 	 */
-	public void setFields(JsonTemplateField[] fields) {
+	public void setFields(List<JsonTemplateField> fields) {
 		this.fields = fields;
 	}
 
@@ -113,7 +114,7 @@ public class JsonTermTemplate {
 		}
 		if (fields != null) {
 			builder.append("fields:");
-			builder.append(Arrays.toString(fields));
+			builder.append(fields);
 			builder.append(", ");
 		}
 		if (hint != null) {

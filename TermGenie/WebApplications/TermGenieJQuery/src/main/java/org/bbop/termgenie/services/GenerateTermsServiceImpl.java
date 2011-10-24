@@ -73,16 +73,16 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	}
 
 	@Override
-	public JsonTermTemplate[] availableTermTemplates(String sessionId, String ontologyName) {
+	public List<JsonTermTemplate> availableTermTemplates(String sessionId, String ontologyName) {
 		// sanity check
 		if (ontologyName == null) {
 			// silently ignore this
-			return new JsonTermTemplate[0];
+			return Collections.emptyList();
 		}
 		Collection<TermTemplate> templates = getTermTemplates(ontologyName);
 		if (templates.isEmpty()) {
 			// short cut for empty results.
-			return new JsonTermTemplate[0];
+			return Collections.emptyList();
 		}
 
 		// encode the templates for JSON
@@ -91,7 +91,8 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			jsonTemplates.add(jsonTools.createJsonTermTemplate(template));
 		}
 		Collections.sort(jsonTemplates, JsonTermTempleSorter.instance);
-		return jsonTemplates.toArray(new JsonTermTemplate[jsonTemplates.size()]);
+		return jsonTemplates;
+//		return jsonTemplates.toArray(new JsonTermTemplate[jsonTemplates.size()]);
 	}
 
 	/*
@@ -101,7 +102,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	@Override
 	public JsonGenerationResponse generateTerms(String sessionId,
 			String ontologyName,
-			JsonTermGenerationInput[] allParameters)
+			List<JsonTermGenerationInput> allParameters)
 	{
 		// sanity checks
 		if (ontologyName == null || ontologyName.isEmpty()) {
@@ -160,7 +161,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			}
 
 			List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
-			Collection<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
+			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
 					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.convert(candidate.getTerm());
@@ -177,14 +178,14 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			// return response
 			return generationResponse;
 		} catch (Exception exception) {
-			logger.warn("An error occured during the term generation for the parameters: {ontologyName: " + ontologyName + ", allParameters: " + Arrays.toString(allParameters) + "}",
+			logger.warn("An error occured during the term generation for the parameters: {ontologyName: " + ontologyName + ", allParameters: " + allParameters + "}",
 					exception);
 			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null);
 		}
 	}
 
 	private List<TermGenerationInput> createGenerationTasks(String ontologyName,
-			JsonTermGenerationInput[] allParameters)
+			List<JsonTermGenerationInput> allParameters)
 	{
 		List<TermGenerationInput> result = new ArrayList<TermGenerationInput>();
 		for (JsonTermGenerationInput jsonInput : allParameters) {
@@ -270,9 +271,9 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			jsonTermTemplate.setHint(template.getHint());
 			List<TemplateField> fields = template.getFields();
 			int size = fields.size();
-			JsonTemplateField[] jsonFields = new JsonTemplateField[size];
-			for (int i = 0; i < size; i++) {
-				jsonFields[i] = createJsonTemplateField(fields.get(i));
+			List<JsonTemplateField> jsonFields = new ArrayList<JsonTemplateField>(size);
+			for (TemplateField field : fields) {
+				jsonFields.add(createJsonTemplateField(field));
 			}
 			jsonTermTemplate.setFields(jsonFields);
 			return jsonTermTemplate;
