@@ -249,8 +249,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		Map<String, String> metaData = new HashMap<String, String>();
 		metaData.put(OboFormatTag.TAG_CREATION_DATE.getTag(), getDate());
 		metaData.put(OboFormatTag.TAG_CREATED_BY.getTag(), "TermGenie");
-		metaData.put(OboFormatTag.TAG_COMMENT.getTag(), getInput("Comment"));
-
+		String comment = getInput("Comment");
+		if (comment != null && comment.length() > 0) {
+			metaData.put(OboFormatTag.TAG_COMMENT.getTag(), comment);
+		}
 		String owlNewId = getNewId();
 
 		try {
