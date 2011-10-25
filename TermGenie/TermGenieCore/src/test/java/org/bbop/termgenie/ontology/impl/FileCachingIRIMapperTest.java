@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ public class FileCachingIRIMapperTest {
 			protected InputStream getInputStream(URL url) throws IOException {
 				String s = url.toExternalForm();
 				requests.add(s);
-				return new StringInputStream(s);
+				return new ByteArrayInputStream(s.getBytes());
 			}
 
 			/*

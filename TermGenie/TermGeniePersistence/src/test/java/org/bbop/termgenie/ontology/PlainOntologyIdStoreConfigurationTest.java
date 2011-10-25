@@ -2,10 +2,10 @@ package org.bbop.termgenie.ontology;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.ontology.entities.OntologyIdInfo;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class PlainOntologyIdStoreConfigurationTest {
 		"barOntology \t bar:000000 \t 9000 \t 10000 \n" + //
 		"longOntology \t "+longPattern+" \t 9000 \t 10000";
 
-		InputStream inputStream = new StringInputStream(storeConfig);
+		InputStream inputStream = new ByteArrayInputStream(storeConfig.getBytes());
 		OntologyIdStoreConfiguration config = new PlainOntologyIdStoreConfiguration(inputStream);
 		Map<String, OntologyIdInfo> infos = config.getInfos();
 		assertEquals(3, infos.size());

@@ -2,12 +2,13 @@ package org.bbop.termgenie.core.io;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
@@ -129,7 +130,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 	}
 
 	private List<TermTemplate> read(String xmlString) throws IOException {
-		StringInputStream inputStream = new StringInputStream(xmlString);
+		InputStream inputStream = new ByteArrayInputStream(xmlString.getBytes());
 		List<TermTemplate> templates = instance.readTemplates(inputStream);
 		inputStream.close();
 		return templates;

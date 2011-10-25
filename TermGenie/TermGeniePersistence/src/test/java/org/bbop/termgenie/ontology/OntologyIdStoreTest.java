@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,6 @@ import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyIdStore.OntologyIdStoreException;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
@@ -67,7 +67,7 @@ public class OntologyIdStoreTest {
 
 		StopWatch watch1 = new StopWatch();
 		watch1.start();
-		InputStream inputStream = new StringInputStream(storeConfig);
+		InputStream inputStream = new ByteArrayInputStream(storeConfig.getBytes());
 		OntologyIdStoreConfiguration config = new PlainOntologyIdStoreConfiguration(inputStream);
 		OntologyIdStore store = new OntologyIdStore(config, emf);
 		watch1.stop();
