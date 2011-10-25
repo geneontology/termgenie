@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
@@ -33,7 +34,7 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	static final String JCEL = "jcel";
 	static final String ELK = "elk";
 
-	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, PELLET)));
+	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, PELLET, ELK)));
 
 	private final String defaultReasoner;
 
@@ -105,7 +106,7 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 			protected OWLReasoner createManaged() {
 				logger.info("Create reasoner: " + reasonerFactory.getReasonerName() + " for ontology: " + ontology.getOntologyID());
 				OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-				reasoner.precomputeInferences();
+				reasoner.precomputeInferences(InferenceType.values());
 				return reasoner;
 			}
 
