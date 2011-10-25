@@ -18,7 +18,7 @@ public class ReasonerModule extends IOCModule {
 	}
 
 	public ReasonerModule() {
-		this(ReasonerFactoryImpl.JCEL);
+		this(ReasonerFactoryImpl.ELK);
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class TermGenieScriptTestRunner {
 								"ontology-configuration_simple.xml");
 					}
 				},
-				new ReasonerModule("hermit"));
+				new ReasonerModule("elk"));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);
