@@ -678,20 +678,16 @@ function termgenie(){
 			extractTermGenerationInput : function(extractionResult) {
 				var success = true;
 				var parameter = {
-						terms:    [],
-						strings:  [],
-						prefixes: []
+						terms:    {},
+						strings:  {}
 					};
-				initSubArrays(parameter.terms, templateFields.length);
-				initSubArrays(parameter.strings, templateFields.length);
-				initSubArrays(parameter.prefixes, templateFields.length);
 				
-				for ( var i = 0; i < templateFields.length; i++) {
-					var templatefield = templateFields[i];
-					var inputField =  inputFields[i];
+				jQuery.each(templateFields, function(index, templatefield) {
+					var inputField =  inputFields[index];
 					var csuccess = inputField.extractParameter(parameter, template, templatefield, 0, extractionResult);
 					success = success && csuccess;
-				}
+				});
+				
 				return {
 					success: success,
 					input: {
@@ -700,11 +696,6 @@ function termgenie(){
 					}
 				};
 				
-				function initSubArrays(array, count) {
-					for(var j = 0; j < count; j += 1) {
-						array[j] = [];
-					}
-				}
 			}
 		};
 	
@@ -760,10 +751,10 @@ function termgenie(){
 								return false;
 							}
 						}
-						var list = parameter.strings[templatePos];
+						var list = parameter.strings[field.name];
 						if (!list) {
 							list = [];
-							parameter.strings[templatePos] = list;
+							parameter.strings[field.name] = list;
 						}
 						list[pos] = text;
 						return true;
@@ -966,10 +957,10 @@ function termgenie(){
 						var text = inputElement.val();
 						if (term.label == text) {
 							var identifier = term.identifier;
-							var list = parameter.terms[templatePos];
+							var list = parameter.terms[field.name];
 							if (!list) {
 								list = [];
-								parameter.terms[templatePos] = list;
+								parameter.terms[field.name] = list;
 							}
 							list[pos] = identifier;
 							return true;
@@ -1117,7 +1108,7 @@ function termgenie(){
 						extractionResult.addError('No prefixes selected.', template, field);
 						return false;
 					}
-					parameter.strings[templatePos] = cPrefixes;
+					parameter.strings[field.name] = cPrefixes;
 					return success;
 				}
 			};

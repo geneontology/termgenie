@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
@@ -94,29 +95,25 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 	}
 
 	private OntologyTerm<ISynonym, IRelation> getFieldSingleTerm(String name) {
-		OntologyTerm<ISynonym, IRelation>[] terms = getFieldTerms(name);
-		if (terms == null || terms.length < 1) {
+		List<OntologyTerm<ISynonym, IRelation>> terms = getFieldTerms(name);
+		if (terms == null || terms.isEmpty()) {
 			return null;
 		}
-		return terms[0];
+		return terms.get(0);
 	}
 
-	private OntologyTerm<ISynonym, IRelation>[] getFieldTerms(String name) {
-		int pos = tools.getFieldPos(name);
-		if (pos < 0) {
-			return null;
+	private List<OntologyTerm<ISynonym, IRelation>> getFieldTerms(String name) {
+		Map<String, List<OntologyTerm<ISynonym, IRelation>>> terms = tools.input.getParameters().getTerms();
+		if (terms != null) {
+			return terms.get(name);
 		}
-		OntologyTerm<ISynonym, IRelation>[][] matrix = tools.input.getParameters().getTerms();
-		if (matrix.length <= pos) {
-			return null;
-		}
-		return matrix[pos];
+		return null;
 	}
 
 	@Override
 	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology) {
-		OntologyTerm<ISynonym, IRelation>[] terms = getFieldTerms(name);
-		if (terms == null || terms.length == 0) {
+		List<OntologyTerm<ISynonym, IRelation>> terms = getFieldTerms(name);
+		if (terms == null || terms.isEmpty()) {
 			return new OWLObject[0];
 		}
 		List<OWLObject> result = new ArrayList<OWLObject>();
@@ -211,7 +208,11 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 
 	@Override
 	public String[] getInputs(String name) {
-		return tools.getInputs(name);
+		List<String> inputs = tools.getInputs(name);
+		if (inputs != null && !inputs.isEmpty()) {
+			return inputs.toArray(new String[inputs.size()]);
+		}
+		return null;
 	}
 
 	@Override

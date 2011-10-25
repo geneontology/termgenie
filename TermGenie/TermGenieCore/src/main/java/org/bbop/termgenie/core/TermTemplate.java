@@ -146,34 +146,6 @@ public class TermTemplate {
 		return null;
 	}
 
-	/**
-	 * Retrieve the field pos for a given name.
-	 * 
-	 * @param name
-	 * @return pos or -1 if not existent
-	 */
-	public int getFieldPos(String name) {
-		if (name == null) {
-			return -1;
-		}
-		for (int i = 0; i < fields.size(); i++) {
-			TemplateField field = fields.get(i);
-			if (field.getName().equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
-	 * Retrieve field count for the template.
-	 * 
-	 * @return count
-	 */
-	public int getFieldCount() {
-		return fields.size();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()

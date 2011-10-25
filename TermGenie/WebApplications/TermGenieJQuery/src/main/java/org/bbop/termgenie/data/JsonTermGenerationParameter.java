@@ -1,11 +1,12 @@
 package org.bbop.termgenie.data;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class JsonTermGenerationParameter {
 
-	private JsonOntologyTermIdentifier[][] terms;
-	private String[][] strings;
+	private Map<String, List<JsonOntologyTermIdentifier>> terms;
+	private Map<String, List<String>> strings;
 
 	public JsonTermGenerationParameter() {
 		super();
@@ -14,28 +15,28 @@ public class JsonTermGenerationParameter {
 	/**
 	 * @return the terms
 	 */
-	public JsonOntologyTermIdentifier[][] getTerms() {
+	public Map<String, List<JsonOntologyTermIdentifier>> getTerms() {
 		return terms;
 	}
 
 	/**
 	 * @param terms the terms to set
 	 */
-	public void setTerms(JsonOntologyTermIdentifier[][] terms) {
+	public void setTerms(Map<String, List<JsonOntologyTermIdentifier>> terms) {
 		this.terms = terms;
 	}
 
 	/**
 	 * @return the strings
 	 */
-	public String[][] getStrings() {
+	public Map<String, List<String>> getStrings() {
 		return strings;
 	}
 
 	/**
 	 * @param strings the strings to set
 	 */
-	public void setStrings(String[][] strings) {
+	public void setStrings(Map<String, List<String>> strings) {
 		this.strings = strings;
 	}
 
@@ -49,20 +50,24 @@ public class JsonTermGenerationParameter {
 		return builder.toString();
 	}
 
-	private static void toString(Object[][] matrix, String name, StringBuilder builder) {
+	private static <T> void toString(Map<String, List<T>> matrix, String name, StringBuilder builder) {
 		if (matrix != null) {
 			builder.append(name);
 			builder.append(":{");
-			for (int i = 0; i < matrix.length; i++) {
-				if (i > 0) {
+			boolean first = true;
+			for(String field : matrix.keySet()) {
+				if (first) {
+					first = false;
+				}
+				else {
 					builder.append(", ");
 				}
-				Object[] termList = matrix[i];
-				if (termList == null) {
+				List<T> values = matrix.get(field);
+				if (values == null) {
 					builder.append("null");
 				}
 				else {
-					builder.append(Arrays.toString(termList));
+					builder.append(values);
 				}
 			}
 			builder.append("}, ");

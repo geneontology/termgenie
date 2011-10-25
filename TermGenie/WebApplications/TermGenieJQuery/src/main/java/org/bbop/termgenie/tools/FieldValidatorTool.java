@@ -3,6 +3,7 @@ package org.bbop.termgenie.tools;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology;
@@ -23,16 +24,22 @@ public class FieldValidatorTool {
 
 		List<TemplateField> fields = template.getFields();
 		List<JsonValidationHint> errors = new ArrayList<JsonValidationHint>();
-
+		Map<String, List<JsonOntologyTermIdentifier>> allTerms = parameter.getTerms();
+		Map<String, List<String>> allStrings = parameter.getStrings();
+		
 		for (int i = 0; i < fields.size(); i++) {
 			TemplateField field = fields.get(i);
 			Cardinality cardinality = field.getCardinality();
 
-			JsonOntologyTermIdentifier[] terms = getList(parameter.getTerms(), i);
-			String[] strings = getList(parameter.getStrings(), i);
+			
+			List<JsonOntologyTermIdentifier> fieldTerms = allTerms.get(field.getName());
+			List<String> fieldStrings = null;
+			if (allStrings != null) {
+				fieldStrings = allStrings.get(field.getName());
+			}
 
-			int termCount = terms == null ? 0 : terms.length;
-			int stringCount = strings == null ? 0 : strings.length;
+			int termCount = fieldTerms == null ? 0 : fieldTerms.size();
+			int stringCount = fieldStrings == null ? 0 : fieldStrings.size();
 
 			final boolean isRequired = field.isRequired();
 			if (isRequired && termCount == 0 && stringCount == 0) {
@@ -41,12 +48,12 @@ public class FieldValidatorTool {
 			}
 
 			final boolean hasOntologies = hasOntologies(field);
-			if (hasOntologies && strings != null && stringCount > 0) {
+			if (hasOntologies && fieldStrings != null && stringCount > 0) {
 				if (hasPrefixes(field)) {
 					// check if strings correspond to the given prefixes in the
 					// template
 					Set<String> prefixes = new HashSet<String>(field.getFunctionalPrefixes());
-					for (String string : strings) {
+					for (String string : fieldStrings) {
 						if (!prefixes.contains(string)) {
 							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix: " + string));
 						}
@@ -71,9 +78,9 @@ public class FieldValidatorTool {
 
 			// check fields for missing content
 			if (isRequired) {
-				Object[] values = hasOntologies ? terms : strings;
+				List<?> values = hasOntologies ? fieldTerms : fieldStrings;
 				int realObjects = 0;
-				if (values != null && values.length > 0) {
+				if (values != null && values.size() > 0) {
 					for (Object value : values) {
 						if (value == null) {
 							errors.add(new JsonValidationHint(jsonTemplate, i, "Required value missing."));
@@ -89,16 +96,6 @@ public class FieldValidatorTool {
 			}
 		}
 		return errors;
-	}
-
-	private static <T> T[] getList(T[][] matrix, int pos) {
-		if (matrix.length > pos) {
-			T[] list = matrix[pos];
-			if (list.length > 0) {
-				return list;
-			}
-		}
-		return null;
 	}
 
 	private static boolean hasOntologies(TemplateField field) {

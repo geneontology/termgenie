@@ -3,7 +3,6 @@ package org.bbop.termgenie.services;
 import static org.bbop.termgenie.tools.ErrorMessages.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -191,8 +190,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		for (JsonTermGenerationInput jsonInput : allParameters) {
 			JsonTermTemplate jsonTemplate = jsonInput.getTermTemplate();
 			TermTemplate template = getTermTemplate(ontologyName, jsonTemplate.getName());
-			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter(),
-					template);
+			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter());
 			TermGenerationInput input = new TermGenerationInput(template, parameters);
 			result.add(input);
 		}
@@ -298,44 +296,30 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return jsonField;
 		}
 
-		TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json,
-				TermTemplate template)
+		TermGenerationParameters createTermGenerationParameters(JsonTermGenerationParameter json)
 		{
-			int fieldCount = template.getFieldCount();
-			TermGenerationParameters result = new TermGenerationParameters(fieldCount);
-			for (int pos = 0; pos < fieldCount; pos++) {
-				result.setStringValues(template, pos, getStrings(json, pos));
-				result.setTermValues(template, pos, getTerms(json, pos));
+			TermGenerationParameters result = new TermGenerationParameters();
+			Map<String, List<JsonOntologyTermIdentifier>> terms = json.getTerms();
+			for (String field : terms.keySet()) {
+				result.setTermValues(field, getTerms(terms.get(field)));
+			}
+			Map<String, List<String>> strings = json.getStrings();
+			if (strings != null && !strings.isEmpty()) {
+				for (String field : strings.keySet()) {
+					result.setStringValues(field, strings.get(field));
+				}
 			}
 			return result;
 		}
 
-		private String[] getStrings(JsonTermGenerationParameter json, int pos) {
-			String[][] allStrings = json.getStrings();
-			if (allStrings.length > pos) {
-				String[] jsonStrings = allStrings[pos];
-				if (jsonStrings.length > 0) {
-					return Arrays.copyOf(jsonStrings, jsonStrings.length);
-				}
+		private List<OntologyTerm<ISynonym, IRelation>> getTerms(List<JsonOntologyTermIdentifier> jsonTerms)
+		{
+			List<OntologyTerm<ISynonym, IRelation>> terms = new ArrayList<OntologyTerm<ISynonym, IRelation>>();
+			for (JsonOntologyTermIdentifier jsonTerm : jsonTerms) {
+				OntologyTerm<ISynonym, IRelation> term = getOntologyTerm(jsonTerm);
+				terms.add(term);
 			}
-			return new String[] {};
-		}
-
-		@SuppressWarnings("unchecked")
-		private OntologyTerm<ISynonym, IRelation>[] getTerms(JsonTermGenerationParameter json, int pos) {
-			JsonOntologyTermIdentifier[][] allTerms = json.getTerms();
-			if (allTerms.length > pos) {
-				JsonOntologyTermIdentifier[] jsonTerms = allTerms[pos];
-				if (jsonTerms.length > 0) {
-					List<OntologyTerm<ISynonym, IRelation>> terms = new ArrayList<OntologyTerm<ISynonym, IRelation>>();
-					for (int i = 0; i < jsonTerms.length; i++) {
-						OntologyTerm<ISynonym, IRelation> term = getOntologyTerm(jsonTerms[i]);
-						terms.add(term);
-					}
-					return terms.toArray(new OntologyTerm[terms.size()]);
-				}
-			}
-			return new OntologyTerm[] {};
+			return terms;
 		}
 
 		private OntologyTerm<ISynonym, IRelation> getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {

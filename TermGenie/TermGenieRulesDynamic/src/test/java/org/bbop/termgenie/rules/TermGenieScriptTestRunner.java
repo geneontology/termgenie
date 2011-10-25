@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -66,16 +68,16 @@ public class TermGenieScriptTestRunner {
 	public void test1() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
-		TermGenerationParameters parameters = new TermGenerationParameters(termTemplate.getFieldCount());
+		TermGenerationParameters parameters = new TermGenerationParameters();
 
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
 
-		parameters.setTermValues(termTemplate, 0, getTerm("GO:0043473", ontologyManager));
-		parameters.setStringValues(termTemplate,
-				0,
-				"regulation",
-				"negative_regulation",
-				"positive_regulation");
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(),
+				Arrays.asList(getTerm("GO:0043473", ontologyManager)));
+		parameters.setStringValues(field.getName(),
+				Arrays.asList("regulation", "negative_regulation", "positive_regulation"));
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
@@ -106,12 +108,16 @@ public class TermGenieScriptTestRunner {
 	public void test2() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
-		TermGenerationParameters parameters = new TermGenerationParameters(termTemplate.getFieldCount());
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		String field0 = termTemplate.getFields().get(0).getName();
+		String field1 = termTemplate.getFields().get(1).getName();
 
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
-		parameters.setTermValues(termTemplate, 0, getTerm("GO:0046836", ontologyManager)); // glycolipid
-																							// transport
-		parameters.setTermValues(termTemplate, 1, getTerm("GO:0006915", ontologyManager)); // apoptosis
+		parameters.setTermValues(field0,
+				Arrays.asList(getTerm("GO:0046836", ontologyManager))); // glycolipid transport
+		parameters.setTermValues(field1, 
+				Arrays.asList(getTerm("GO:0006915", ontologyManager))); // apoptosis
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);

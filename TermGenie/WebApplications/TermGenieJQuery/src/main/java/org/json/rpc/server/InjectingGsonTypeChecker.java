@@ -38,12 +38,14 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 				return false;
 			}
 		}
-		else {
+		else if (genericReturnType instanceof Class) {
 			returnType = (Class<?>) genericReturnType;
 		}
 		boolean result = false;
 		try {
-			result = isValidType(returnType, throwException);
+			if (returnType != null) {
+				result = isValidType(returnType, throwException);
+			}
 			if (!result) {
 				if (throwException) {
 					throw new IllegalArgumentException("invalid return type : " + genericReturnType);
@@ -87,12 +89,14 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 					return false;
 				}
 			}
-			else {
+			else if (genericParameterType instanceof Class) {
 				paramType = (Class<?>) genericParameterType;
 			}
 			result = false;
 			try {
-				result = isValidType(paramType, throwException);
+				if (paramType != null) {
+					result = isValidType(paramType, throwException);
+				}
 				if (!result) {
 					if (throwException) {
 						throw new IllegalArgumentException("invalid parameter type : " + genericParameterType);
@@ -125,7 +129,14 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 			if (typeArguments.length == 2) {
 				Type keyType = typeArguments[0];
 				if (isSimpleType(keyType)) {
-					return (Class<?>) typeArguments[1];
+					Type valueType = typeArguments[1];
+					if (valueType instanceof ParameterizedType) {
+						ParameterizedType parameterizedType = (ParameterizedType) valueType;
+						return checkGenericType(parameterizedType);
+					}
+					else if (valueType instanceof Class) {
+						return (Class<?>) valueType;
+					}
 				}
 			}
 		}

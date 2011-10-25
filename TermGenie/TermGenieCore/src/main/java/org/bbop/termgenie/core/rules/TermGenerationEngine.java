@@ -1,7 +1,8 @@
 package org.bbop.termgenie.core.rules;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.Ontology.IRelation;
@@ -170,98 +171,43 @@ public interface TermGenerationEngine {
 
 	public final class TermGenerationParameters {
 
-		private final OntologyTerm<ISynonym, IRelation>[][] terms;
-		private final String[][] strings;
+		private final Map<String, List<OntologyTerm<ISynonym, IRelation>>> terms;
+		private final Map<String, List<String>> strings;
 
-		/**
-		 * @param terms
-		 * @param strings
-		 */
-		public TermGenerationParameters(OntologyTerm<ISynonym, IRelation>[][] terms, String[][] strings) {
+		public TermGenerationParameters() {
 			super();
-			this.terms = terms;
-			this.strings = strings;
-		}
-
-		/**
-		 * @param fieldCount
-		 */
-		@SuppressWarnings("unchecked")
-		public TermGenerationParameters(int fieldCount) {
-			this(new OntologyTerm[fieldCount][], new String[fieldCount][]);
+			this.terms = new HashMap<String, List<OntologyTerm<ISynonym,IRelation>>>();
+			this.strings = new HashMap<String, List<String>>();
 		}
 
 		/**
 		 * @return the terms
 		 */
-		public OntologyTerm<ISynonym, IRelation>[][] getTerms() {
+		public Map<String, List<OntologyTerm<ISynonym, IRelation>>> getTerms() {
 			return terms;
 		}
 
 		/**
 		 * @return the strings
 		 */
-		public String[][] getStrings() {
+		public Map<String, List<String>> getStrings() {
 			return strings;
 		}
 
 		/**
-		 * @param template
 		 * @param field
 		 * @param values
 		 */
-		public void setStringValues(TermTemplate template, String field, String...values) {
-			setValues(strings, template, field, values);
+		public void setStringValues(String field, List<String> values) {
+			strings.put(field, values);
 		}
 
 		/**
-		 * @param template
-		 * @param pos
-		 * @param values
-		 */
-		public void setStringValues(TermTemplate template, int pos, String...values) {
-			setValues(strings, template, pos, values);
-		}
-
-		/**
-		 * @param template
 		 * @param field
 		 * @param values
 		 */
-		public void setTermValues(TermTemplate template, String field, OntologyTerm<ISynonym, IRelation>...values) {
-			setValues(terms, template, field, values);
-		}
-
-		/**
-		 * @param template
-		 * @param pos
-		 * @param values
-		 */
-		public void setTermValues(TermTemplate template, int pos, OntologyTerm<ISynonym, IRelation>...values) {
-			setValues(terms, template, pos, values);
-		}
-
-		/**
-		 * @param <T>
-		 * @param storeTo
-		 * @param template
-		 * @param field
-		 * @param values
-		 */
-		private <T> void setValues(T[][] storeTo, TermTemplate template, String field, T...values) {
-			int pos = template.getFieldPos(field);
-			storeTo[pos] = values;
-		}
-
-		/**
-		 * @param <T>
-		 * @param storeTo
-		 * @param template
-		 * @param pos
-		 * @param values
-		 */
-		private <T> void setValues(T[][] storeTo, TermTemplate template, int pos, T...values) {
-			storeTo[pos] = values;
+		public void setTermValues(String field, List<OntologyTerm<ISynonym, IRelation>> values) {
+			terms.put(field, values);
 		}
 
 		/*
@@ -274,12 +220,12 @@ public interface TermGenerationEngine {
 			builder.append("TermGenerationParameters [");
 			if (terms != null) {
 				builder.append("terms=");
-				builder.append(Arrays.toString(terms));
+				builder.append(terms);
 				builder.append(", ");
 			}
 			if (strings != null) {
 				builder.append("strings=");
-				builder.append(Arrays.toString(strings));
+				builder.append(strings);
 			}
 			builder.append("]");
 			return builder.toString();

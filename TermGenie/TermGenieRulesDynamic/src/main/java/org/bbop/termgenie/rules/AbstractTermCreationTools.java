@@ -3,7 +3,6 @@ package org.bbop.termgenie.rules;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -147,36 +146,24 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return id;
 	}
 
-	protected int getFieldPos(String name) {
-		return input.getTermTemplate().getFieldPos(name);
-	}
-
-	protected String[] getInputs(String name) {
-		String[] strings = getFieldStrings(name);
-		if (strings == null || strings.length < 1) {
-			return null;
-		}
-		return strings;
+	protected List<String> getInputs(String name) {
+		return getFieldStrings(name);
 	}
 
 	protected String getInput(String name) {
-		String[] strings = getFieldStrings(name);
-		if (strings == null || strings.length < 1) {
+		List<String> strings = getFieldStrings(name);
+		if (strings == null || strings.isEmpty()) {
 			return null;
 		}
-		return strings[0];
+		return strings.get(0);
 	}
 
-	protected String[] getFieldStrings(String name) {
-		int pos = getFieldPos(name);
-		if (pos < 0) {
-			return null;
+	protected List<String> getFieldStrings(String name) {
+		Map<String, List<String>> strings = input.getParameters().getStrings();
+		if (strings != null) {
+			return strings.get(name);
 		}
-		String[][] matrix = input.getParameters().getStrings();
-		if (matrix.length <= pos) {
-			return null;
-		}
-		return matrix[pos];
+		return null;
 	}
 
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
@@ -292,11 +279,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
 	private List<String> getDefXref() {
-		String[] strings = getInputs("DefX_Ref");
-		if (strings == null || strings.length == 0) {
-			return null;
-		}
-		return Arrays.asList(strings);
+		return getInputs("DefX_Ref");
 	}
 
 	private final static ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>(){

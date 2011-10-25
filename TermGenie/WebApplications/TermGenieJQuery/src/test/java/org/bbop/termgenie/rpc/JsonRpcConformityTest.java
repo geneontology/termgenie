@@ -44,6 +44,9 @@ public class JsonRpcConformityTest {
 		
 		boolean validType = checker.isValidInterface(TestGenericInterface.class, true);
 		assertTrue(validType);
+		
+		validType = checker.isValidInterface(TestComplexGenericMap.class, true);
+		assertTrue(validType);
 	}
 	
 	public static interface TestGenericInterface {
@@ -61,5 +64,13 @@ public class JsonRpcConformityTest {
 		public Map<String, String> getMap();
 		
 		public void setMap(Map<String, String> map);
+	}
+	
+	public interface TestComplexGenericMap {
+
+		public Map<String, List<String>> getComplexMap();
+
+		public void setComplexMap(Map<String, List<String>> map);
+
 	}
 }
