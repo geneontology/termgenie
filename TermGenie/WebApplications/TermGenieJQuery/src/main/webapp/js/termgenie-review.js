@@ -32,6 +32,11 @@ function TermGenieReview(){
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
 	
+	// add link to error console
+	jQuery('#termgenie-error-console-link').click(function(){
+		jQuery.openLogPanel();
+	});
+	
 	// Sessions
 	var mySession = jQuery.TermGenieSessionManager(jsonService);
 	

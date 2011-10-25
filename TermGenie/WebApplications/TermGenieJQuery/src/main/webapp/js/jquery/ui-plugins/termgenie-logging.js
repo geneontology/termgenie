@@ -19,6 +19,12 @@
 				loggingSystem = LoggingSystem();
 			}
 			loggingSystem.logUserMessage(message, details);
+		},
+		"openLogPanel" : function() {
+			if (loggingSystem == null) {
+				loggingSystem = LoggingSystem();
+			}
+			loggingSystem.open();
 		}
 	});
 
@@ -78,11 +84,6 @@
 				idPrefix: 'termgenie-logging-tabId-'
 			});
 			
-			// register handler for link to show this panel
-			jQuery('#termgenie-error-console-link').click(function(){
-				popupDiv.dialog('open');
-			});
-			
 			function createPanel(name, maxCount, tabId) {
 				tabTitles.append('<li><a href="#'+tabId+'">'+name+'</a></li>');
 				var container = jQuery('<div id="'+tabId+'"></div>');
@@ -117,6 +118,13 @@
 						// show error popup
 						popupDiv.dialog('open');
 					}
+				},
+				
+				/**
+				 * open the dialog window
+				 */
+				open: function() {
+					popupDiv.dialog('open');
 				}
 			};
 		}
@@ -271,6 +279,13 @@
 			 */
 			logUserMessage : function(message, details) {
 				dialogBox.show(message, details);
+			},
+			
+			/**
+			 * Open the log panel.
+			 */
+			open: function() {
+				popupLoggingPanel.open();
 			}
 		};
 	}
