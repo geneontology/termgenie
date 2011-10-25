@@ -24,7 +24,7 @@ import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ public class TermGenieScriptTestRunner {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml"),
-				new DefaultOntologyModule() {
+				new TestDefaultOntologyModule() {
 
 					@Override
 					protected void bindOntologyConfiguration() {

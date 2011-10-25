@@ -17,6 +17,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import owltools.InferenceBuilder;
 import owltools.graph.OWLGraphWrapper;
@@ -41,7 +42,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 
 	@Override
 	public Modified run(OWLReasoner reasoner) {
-		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology);
+		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
 		for (OWLAxiom owlAxiom : inferences) {

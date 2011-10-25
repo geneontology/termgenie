@@ -10,6 +10,7 @@ import org.apache.tools.ant.filters.StringInputStream;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyCleaner.CleanerConfig;
+import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.junit.Test;
 
 import com.google.inject.Injector;
@@ -70,7 +71,7 @@ public class DefaultOntologyCleanerTest {
 
 	@Test
 	public void testGuice() {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule());
 		OntologyCleaner cleaner = injector.getInstance(OntologyCleaner.class);
 
 		assertTrue("Assert the singleton pattern",

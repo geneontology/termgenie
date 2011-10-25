@@ -6,25 +6,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
-import org.bbop.termgenie.core.ioc.TermGenieGuice;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
-import owltools.graph.OWLGraphWrapper;
-
-import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
- * Module providing the default ontologies.
+ * Abstract module providing the default ontologies.
  * 
  * @see OntologyLoader
  * @see MultiOntologyTaskManager
@@ -32,23 +26,20 @@ import com.google.inject.name.Named;
  * @see OntologyCleaner
  * @see IRIMapper
  */
-public class DefaultOntologyModule extends IOCModule {
+public abstract class DefaultOntologyModule extends IOCModule {
 
 	protected final String defaultOntologyConfigurationResource;
 	protected final String defaultOntologyCleanerResource;
-	protected final String localFileIRIMapperResource;
 
 	public DefaultOntologyModule() {
-		this(DefaultOntologyConfiguration.SETTINGS_FILE, DefaultOntologyCleaner.SETTINGS_FILE, LocalFileIRIMapper.SETTINGS_FILE);
+		this(DefaultOntologyConfiguration.SETTINGS_FILE, DefaultOntologyCleaner.SETTINGS_FILE);
 	}
 
 	public DefaultOntologyModule(String ontologyConfigurationResource,
-			String ontologyCleanerResource,
-			String localFileIRIMapperResource)
+			String ontologyCleanerResource)
 	{
 		this.defaultOntologyConfigurationResource = ontologyConfigurationResource;
 		this.defaultOntologyCleanerResource = ontologyCleanerResource;
-		this.localFileIRIMapperResource = localFileIRIMapperResource;
 	}
 
 	@Override
@@ -83,10 +74,7 @@ public class DefaultOntologyModule extends IOCModule {
 		bind("DefaultOntologyCleanerResource", defaultOntologyCleanerResource);
 	}
 
-	protected void bindIRIMapper() {
-		bind(IRIMapper.class).to(LocalFileIRIMapper.class);
-		bind("LocalFileIRIMapperResource", localFileIRIMapperResource);
-	}
+	protected abstract void bindIRIMapper();
 
 	@Provides
 	@Singleton
@@ -102,26 +90,4 @@ public class DefaultOntologyModule extends IOCModule {
 			super("ManagedMultiOntologyTaskManager", ontologies);
 		}
 	}
-
-	/**
-	 * Main method for a quick test of the config (error free startup).
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
-		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
-		MultiOntologyTaskManager manager = injector.getInstance(MultiOntologyTaskManager.class);
-		MultiOntologyTask task = new MultiOntologyTask() {
-
-			@Override
-			public List<Modified> run(List<OWLGraphWrapper> requested) {
-				System.out.println("requested: " + requested.size());
-				return null;
-			}
-		};
-		manager.runManagedTask(task, configuration.getOntologyConfigurations().get("GeneOntology"));
-
-	}
-
 }

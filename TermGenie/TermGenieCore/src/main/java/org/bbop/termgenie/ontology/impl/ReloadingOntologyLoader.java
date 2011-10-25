@@ -12,21 +12,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
@@ -153,21 +149,4 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule());
-		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
-		List<OntologyTaskManager> ontologies = loader.getOntologies();
-
-		OntologyTaskManager ontologyTaskManager = ontologies.get(0);
-		ontologyTaskManager.runManagedTask(new OntologyTask() {
-			
-			@Override
-			protected void runCatching(OWLGraphWrapper ontology) throws Exception {
-				OWLObject owlObject = ontology.getOWLObjectByIdentifier("GO:0003674");
-				System.out.println(owlObject);
-				System.out.println(ontology.getLabel(owlObject));
-			}
-		});
-
-	}
 }

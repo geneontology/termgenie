@@ -64,6 +64,10 @@
 						<artifactId>commons-logging</artifactId>
 						<groupId>commons-logging</groupId>
 					</exclusion>
+					<exclusion>
+						<artifactId>pellet-custom</artifactId>
+						<groupId>org.bbop</groupId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>

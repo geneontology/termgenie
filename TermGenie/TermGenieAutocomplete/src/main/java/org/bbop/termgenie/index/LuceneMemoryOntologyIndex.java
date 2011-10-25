@@ -33,21 +33,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
-import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.OntologyLoader;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-
-import com.google.inject.Injector;
 
 /**
  * Basic auto-completion using an in-memory lucene index.
@@ -458,34 +448,6 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			super();
 			this.hit = hit;
 			this.score = score;
-		}
-	}
-
-	public static void main(String[] args) {
-
-		Injector injector = TermGenieGuice.createInjector(new DefaultOntologyModule(),
-				new ReasonerModule());
-		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
-		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
-		final ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
-
-		OntologyTask task = new OntologyTask() {
-
-			@Override
-			protected void runCatching(OWLGraphWrapper managed) throws Exception {
-				LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
-				Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
-				for (SearchResult searchResult : results) {
-					String id = managed.getIdentifier(searchResult.hit);
-					String label = managed.getLabel(searchResult.hit);
-					System.out.println(id + "  " + searchResult.score + "  " + label);
-				}
-			}
-		};
-		ontology.runManagedTask(task);
-		if (task.getException() != null) {
-			throw new RuntimeException(task.getException());
 		}
 	}
 

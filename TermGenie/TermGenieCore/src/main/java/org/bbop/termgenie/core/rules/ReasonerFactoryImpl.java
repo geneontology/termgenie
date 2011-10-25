@@ -16,7 +16,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -29,12 +28,11 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	private static final Logger logger = Logger.getLogger(ReasonerFactoryImpl.class);
 	static final String REASONER_FACTORY_DEFAULT_REASONER = "ReasonerFactoryDefaultReasoner";
 	
-	static final String PELLET = "pellet";
 	static final String HERMIT = "hermit";
 	static final String JCEL = "jcel";
 	static final String ELK = "elk";
 
-	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, PELLET, ELK)));
+	private final static Set<String> supportedReasoners = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(JCEL, HERMIT, ELK)));
 
 	private final String defaultReasoner;
 
@@ -79,9 +77,6 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 		}
 		else if (HERMIT.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), new Reasoner.ReasonerFactory());
-		}
-		else if (PELLET.equals(reasonerName)) {
-			return createManager(ontology.getSourceOntology(), PelletReasonerFactory.getInstance());
 		}
 		else if (ELK.equals(reasonerName)) {
 			return createManager(ontology.getSourceOntology(), new ElkReasonerFactory());
