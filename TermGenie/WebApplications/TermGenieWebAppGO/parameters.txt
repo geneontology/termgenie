@@ -1,0 +1,15 @@
+The web application needs an additional set of parameters. 
+These need to be added to the java startup command of the 
+servlet engine (i.e. Jetty).
+
+Maximum Memory:
+-Xmx3000m
+
+Required parameters:
+-Dtermgenie.JsonUserPermissionsFileName=termgenie-user-permissions.json 
+-Dtermgenie.DefaultTermGenieUrl=http://host:port/path/"
+-Dtermgenie.GeneOntologyCommitAdapterCVSPassword=
+
+Recommended parameters:
+-Dtermgenie.TermgenieWebappGODatabaseFolder=termgenie-go-db
+

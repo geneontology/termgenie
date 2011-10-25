@@ -14,7 +14,7 @@ import com.google.inject.name.Names;
  */
 public abstract class IOCModule extends AbstractModule {
 
-	String getProperty(String name) {
+	public static String getProperty(String name) {
 		String property = System.getProperty("termgenie."+name, null);
 		if (property == null) {
 			property = System.getProperty("overwrite." + name, null);

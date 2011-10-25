@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -29,6 +30,8 @@ import com.google.inject.Singleton;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
 
+	private static final Logger logger = Logger.getLogger(TermGenieWebAppGOContextListener.class);
+	
 	@Override
 	protected IOCModule getUserPermissionModule() {
 		return new UserPermissionsModule("termgenie-go");
@@ -92,7 +95,15 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		try {
 			// basic persistence
-			File dbFolder = new File(FileUtils.getUserDirectory(), "termgenie-go-db");
+			String dbFolderString = IOCModule.getProperty("TermgenieWebappGODatabaseFolder");
+			File dbFolder;
+			if (dbFolderString != null && !dbFolderString.isEmpty()) {
+				dbFolder = new File(dbFolderString);
+			}
+			else {
+				dbFolder = new File(FileUtils.getUserDirectory(), "termgenie-go-db");
+			}
+			logger.info("Using db folder: "+dbFolder);
 			FileUtils.forceMkdir(dbFolder);
 			modules.add(new PersistenceBasicModule(dbFolder));
 		} catch (IOException exception) {
