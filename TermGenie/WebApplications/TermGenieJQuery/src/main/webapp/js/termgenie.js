@@ -1751,7 +1751,7 @@ function termgenie(){
 								sb = 'union_of: '+ relation.target;
 							}
 							else {
-								sb = 'relationship: '+type + ' ' + relation.target;
+								sb = 'relationship: '+ relProperties.relationship + ' ' + relation.target;
 							}
 							sb += ' ! ' + relation.targetLabel;
 							table.append('<tr><td class="termgenie-pre nobr">'+sb+'</td></tr>');
