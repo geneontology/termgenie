@@ -1,6 +1,8 @@
 package org.bbop.termgenie.rules;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
@@ -26,25 +29,32 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
+	 * @param auxiliaryOntologies 
 	 */
 	TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
-		super(input, targetOntology, tempIdPrefix, patternID, factory);
+		super(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory);
 	}
 
 	
 	@Override
 	protected AbstractTermCreationTools<List<MDef>> createTermCreationTool(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
-		ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology());
+		List<OWLOntology> ontologies = new ArrayList<OWLOntology>(auxiliaryOntologies.size());
+		for (OWLGraphWrapper wrapper : auxiliaryOntologies) {
+			ontologies.add(wrapper.getSourceOntology());
+		}
+		ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
 		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool);
 	}
 	
@@ -71,7 +81,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology) {
 			if (x instanceof OWLEntity) {
-				ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(ontology.getSourceOntology());
+				ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(ontology.getSourceOntology(), null);
 				parameters.put(name, syntaxTool .mapOwlObject((OWLEntity) x));
 			}
 		}

@@ -49,7 +49,7 @@ public class ManchesterSyntaxToolTest {
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
-				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology());
+				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
 				OWLObject owlObject = managed.getOWLObjectByLabel("occurs_in");
 				assertTrue(owlObject instanceof OWLEntity);
 				String relId = tool.mapOwlObject((OWLEntity) owlObject);

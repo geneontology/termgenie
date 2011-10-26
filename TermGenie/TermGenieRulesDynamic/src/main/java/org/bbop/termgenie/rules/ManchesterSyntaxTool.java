@@ -1,6 +1,8 @@
 package org.bbop.termgenie.rules;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
@@ -20,11 +22,16 @@ class ManchesterSyntaxTool {
 	private OWLEntityChecker entityChecker;
 	private SimpleShortFormProvider shortFormProvider;
 
-	ManchesterSyntaxTool(OWLOntology inputOntology) {
+	ManchesterSyntaxTool(OWLOntology inputOntology, Collection<OWLOntology> auxiliaryOntologies) {
 		OWLOntologyManager manager = inputOntology.getOWLOntologyManager();
 		this.dataFactory = manager.getOWLDataFactory();
 		shortFormProvider = new SimpleShortFormProvider();
-		entityChecker = new ShortFormEntityChecker(new BidirectionalShortFormProviderAdapter(manager, Collections.singleton(inputOntology), shortFormProvider));
+		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
+		ontologies.add(inputOntology);
+		if (auxiliaryOntologies != null && !auxiliaryOntologies.isEmpty()) {
+			ontologies.addAll(auxiliaryOntologies);
+		}
+		entityChecker = new ShortFormEntityChecker(new BidirectionalShortFormProviderAdapter(manager, ontologies, shortFormProvider));
 	}
 	
 	String mapOwlObject(OWLEntity entity) {

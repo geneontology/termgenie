@@ -185,6 +185,26 @@ public interface TermGenieScriptFunctions {
 			String label);
 
 	/**
+	 * Create new synonyms for a given term with a prefix and suffix. The new
+	 * label is required as it is used to prevent accidental creation of a
+	 * synonym with the same label.
+	 * 
+	 * @param prefix the prefix, may be null
+	 * @param x the term
+	 * @param ontology the ontology to retrieve existing synonyms
+	 * @param infix the infix between the synonym components
+	 * @param suffix the suffix, may be null
+	 * @param label the label of the new term
+	 * @return synonyms
+	 */
+	public List<ISynonym> synonyms(String prefix,
+			OWLObject[] x,
+			OWLGraphWrapper ontology,
+			String infix,
+			String suffix,
+			String label);
+	
+	/**
 	 * Create a new definition by concatenation of term names using a prefix,
 	 * infix, and suffix.
 	 * 

@@ -38,22 +38,25 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 	/**
 	 * @param input
 	 * @param targetOntology
+	 * @param auxiliaryOntologies
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
 	 */
 	AbstractTermGenieScriptFunctionsImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory)
 	{
 		super();
-		tools = createTermCreationTool(input, targetOntology, tempIdPrefix, patternID, factory);
+		tools = createTermCreationTool(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory);
 	}
 
 	protected abstract AbstractTermCreationTools<T> createTermCreationTool(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
+			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory);
@@ -356,6 +359,18 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 			}
 		}
 		return results;
+	}
+
+	@Override
+	public List<ISynonym> synonyms(String prefix,
+			OWLObject[] x,
+			OWLGraphWrapper ontology,
+			String infix,
+			String suffix,
+			String label)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null);

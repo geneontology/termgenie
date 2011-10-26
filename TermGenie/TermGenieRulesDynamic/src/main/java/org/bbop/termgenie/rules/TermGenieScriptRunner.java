@@ -206,14 +206,19 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			Integer targetOntologyIndex = null;
 			ChangeTracker changeTracker = null;
 			try {
+				List<OWLGraphWrapper> auxiliaryOntologies = new ArrayList<OWLGraphWrapper>(ontologies.length);
 				OWLGraphWrapper targetOntology = null;
 				ScriptEngine engine = jsEngineManager.getEngine();
 				for (int i = 0; i < ontologies.length; i++) {
 					String name = ontologies[i].getUniqueName();
-					engine.put(name, requested.get(i));
+					OWLGraphWrapper ontology = requested.get(i);
+					engine.put(name, ontology);
 					if (name.equals(this.targetOntology.getUniqueName())) {
-						targetOntology = requested.get(i);
+						targetOntology = ontology;
 						targetOntologyIndex = Integer.valueOf(i);
+					}
+					else{
+						auxiliaryOntologies.add(ontology);
 					}
 				}
 				if (targetOntology == null || targetOntologyIndex == null) {
@@ -221,7 +226,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 					return modified;
 				}
 
-				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, getTempIdPrefix(targetOntology), templateId, factory);
+				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();
