@@ -96,7 +96,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		boolean allowCommit = permissions.allowCommit(guid, manager.getOntology());
 		if (!allowCommit) {
 			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + guid);
-			return error("Could not commit, the user is not authorized to login.");
+			return error("Could not commit, the user is not authorized to execute a commit.");
 		}
 		
 		CommitTask task = new CommitTask(manager, terms, termgenieUser, permissions.getCommitUserData(guid,
