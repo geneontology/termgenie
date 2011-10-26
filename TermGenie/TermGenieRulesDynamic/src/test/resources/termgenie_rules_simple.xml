@@ -131,4 +131,53 @@ function run(){
 };]]>
 		</rule>
 	</template>
+	<template name="occurs_in">
+		<description>processes occurring in parts of the cell</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
+		<fields>
+			<field name="process" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+			</field>
+			<field name="location" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<rule> <![CDATA[
+function run() {
+  var go = GeneOntology;
+  var p = termgenie.getSingleTerm("process", go);
+  var c = termgenie.getSingleTerm("location", go);
+  var check = termgenie.checkGenus(p, "GO:0008150", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  check = termgenie.checkGenus(c, "GO:0005575", go);
+  if (check.isGenus() !== true) {
+    termgenie.error(check.error());
+    return;
+  }
+  var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
+  var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
+  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
+  var mdef = termgenie.createMDef('?P and ?R some ?C');
+  mdef.addParameter('P', p, go);
+  mdef.addParameter('C', c, go);
+  mdef.addRelationByName('R', 'occurs_in', go);
+  termgenie.createTerm(label, definition, synonyms, mdef);
+};]]>
+		</rule>
+	</template>
 </termgenietemplates>

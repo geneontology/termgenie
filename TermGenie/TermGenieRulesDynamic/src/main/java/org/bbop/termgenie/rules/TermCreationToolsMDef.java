@@ -10,10 +10,7 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
-import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
-import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ParserException;
-import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -22,10 +19,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
-import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import owltools.graph.OWLGraphWrapper;
@@ -41,16 +35,18 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
+	 * @param syntaxTool
 	 */
 	TermCreationToolsMDef(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			ManchesterSyntaxTool syntaxTool)
 	{
 		super(input, targetOntology, tempIdPrefix, patternID, factory);
 		this.targetOntologyId = targetOntology.getOntologyId();
-		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology());
+		this.syntaxTool = syntaxTool;
 	}
 
 	@Override
@@ -109,30 +105,5 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 				iri,
 				owlDataFactory.getOWLLiteral(label));
 		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), axiom));
-	}
-
-	private class ManchesterSyntaxTool {
-
-		private final OWLDataFactory dataFactory;
-		private OWLEntityChecker entityChecker;
-
-		ManchesterSyntaxTool(OWLOntology inputOntology) {
-			OWLOntologyManager manager = inputOntology.getOWLOntologyManager();
-			this.dataFactory = manager.getOWLDataFactory();
-			entityChecker = new ShortFormEntityChecker(new BidirectionalShortFormProviderAdapter(manager, Collections.singleton(inputOntology), new SimpleShortFormProvider()));
-		}
-
-		OWLClassExpression parseManchesterExpression(String expression) throws ParserException {
-
-			ManchesterOWLSyntaxEditorParser parser = createParser(expression);
-			OWLClassExpression ce = parser.parseClassExpression();
-			return ce;
-		}
-
-		private ManchesterOWLSyntaxEditorParser createParser(String expression) {
-			ManchesterOWLSyntaxEditorParser parser = new ManchesterOWLSyntaxEditorParser(dataFactory, expression);
-			parser.setOWLEntityChecker(entityChecker);
-			return parser;
-		}
 	}
 }

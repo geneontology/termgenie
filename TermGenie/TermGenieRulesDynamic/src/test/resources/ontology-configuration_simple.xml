@@ -6,6 +6,7 @@
 		</source>
 		<supports>
 			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</support>
+			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>

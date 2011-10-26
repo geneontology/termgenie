@@ -56,7 +56,7 @@ public class TermGenieScriptTestRunner {
 								"ontology-configuration_simple.xml");
 					}
 				},
-				new ReasonerModule("elk"));
+				new ReasonerModule());
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);
@@ -65,7 +65,7 @@ public class TermGenieScriptTestRunner {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test1() {
+	public void test_regulation_of() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
@@ -105,7 +105,7 @@ public class TermGenieScriptTestRunner {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test2() throws Exception {
+	public void test_involved_in_relations() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
 		TermGenerationParameters parameters = new TermGenerationParameters();
@@ -147,6 +147,53 @@ public class TermGenieScriptTestRunner {
 		assertEquals(OboFormatTag.TAG_RELATIONSHIP.getTag(), clause3.getTag());
 		assertEquals("part_of", clause3.getValue());
 		assertEquals("GO:0006915", clause3.getValue2());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test_occurs_in_relations() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(2);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		String field0 = termTemplate.getFields().get(0).getName();
+		String field1 = termTemplate.getFields().get(1).getName();
+
+		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		parameters.setTermValues(field0,
+				Arrays.asList(getTerm("GO:0019660", ontologyManager)));
+		parameters.setTermValues(field1, 
+				Arrays.asList(getTerm("GO:0005777", ontologyManager)));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertTrue(output.getMessage(), output.isSuccess());
+		OntologyTerm<ISynonym, IRelation> term = output.getTerm();
+
+		List<Clause> clauses = OBOConverterTools.translateRelations(term.getRelations(), null);
+		assertEquals(4, clauses.size());
+		Clause clause0 = clauses.get(0);
+		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());
+		assertEquals("GO:0019660", clause0.getValue());
+
+		Clause clause1 = clauses.get(1);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause1.getTag());
+		assertEquals("GO:0019660", clause1.getValue());
+
+		Clause clause2 = clauses.get(2);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause2.getTag());
+		assertEquals("occurs_in", clause2.getValue());
+		assertEquals("GO:0005777", clause2.getValue2());
+
+		Clause clause3 = clauses.get(3);
+		assertEquals(OboFormatTag.TAG_RELATIONSHIP.getTag(), clause3.getTag());
+		assertEquals("occurs_in", clause3.getValue());
+		assertEquals("GO:0005777", clause3.getValue2());
 	}
 
 	private OntologyTerm<ISynonym, IRelation> getTerm(String id, OntologyTaskManager ontologyManager)
