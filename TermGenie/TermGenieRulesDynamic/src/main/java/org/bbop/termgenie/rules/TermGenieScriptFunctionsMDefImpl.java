@@ -23,6 +23,8 @@ import owltools.graph.OWLGraphWrapper.ISynonym;
 public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFunctionsImpl<List<MDef>> implements
 		TermGenieScriptFunctionsMDef
 {
+	private ManchesterSyntaxTool syntaxTool;
+
 	/**
 	 * @param input
 	 * @param targetOntology
@@ -54,11 +56,11 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 		for (OWLGraphWrapper wrapper : auxiliaryOntologies) {
 			ontologies.add(wrapper.getSourceOntology());
 		}
-		ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
+		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
 		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool);
 	}
 	
-	static class MDefImpl implements MDef {
+	class MDefImpl implements MDef {
 		
 		private final String expression;
 		private final Map<String, String> parameters;
@@ -81,7 +83,6 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology) {
 			if (x instanceof OWLEntity) {
-				ManchesterSyntaxTool syntaxTool = new ManchesterSyntaxTool(ontology.getSourceOntology(), null);
 				parameters.put(name, syntaxTool .mapOwlObject((OWLEntity) x));
 			}
 		}
