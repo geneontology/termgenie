@@ -41,11 +41,25 @@ public class PersistenceBasicModule extends IOCModule {
 
 	@Provides
 	@Singleton
-	public EntityManagerFactory provideEntityManager(@Named("PersistenceDatabaseFolder") File folder,
+	@Named("DefaultEntityManagerFactory")
+	public EntityManagerFactory provideDefaultEntityManager(@Named("PersistenceDatabaseFolder") File folder,
 			@Named("PersistenceDatabaseType") String type)
 	{
 		try {
-			return provider.createFactory(folder, type, "TermGenie");
+			return provider.createFactory(new File(folder, "default"), type, "TermGenie");
+		} catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
+	@Provides
+	@Singleton
+	@Named("IdEntityManagerFactory")
+	public EntityManagerFactory provideIdEntityManager(@Named("PersistenceDatabaseFolder") File folder,
+			@Named("PersistenceDatabaseType") String type)
+	{
+		try {
+			return provider.createFactory(new File(folder, "ids"), type, "TermGenie");
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

@@ -7,6 +7,7 @@ import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
  * Implementation of an {@link OntologyIdProvider} using the
@@ -19,7 +20,8 @@ public class OntologyIdProviderImpl implements OntologyIdProvider {
 	private final EntityManagerFactory entityManagerFactory;
 
 	@Inject
-	OntologyIdProviderImpl(OntologyIdStoreConfiguration configuration, EntityManagerFactory entityManagerFactory)
+	OntologyIdProviderImpl(OntologyIdStoreConfiguration configuration,
+			@Named("IdEntityManagerFactory") EntityManagerFactory entityManagerFactory)
 	{
 		super();
 		this.entityManagerFactory = entityManagerFactory;

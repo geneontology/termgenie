@@ -22,6 +22,7 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class CommitHistoryStoreImpl implements CommitHistoryStore {
 
@@ -31,7 +32,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 	 * @param entityManagerFactory
 	 */
 	@Inject
-	CommitHistoryStoreImpl(EntityManagerFactory entityManagerFactory) {
+	CommitHistoryStoreImpl(@Named("DefaultEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		super();
 		this.entityManagerFactory = entityManagerFactory;
 	}
