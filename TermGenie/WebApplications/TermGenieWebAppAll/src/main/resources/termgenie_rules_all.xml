@@ -615,11 +615,11 @@ function run() {
       termgenie.error(check.error());
       return;
     }
-    if (i > 1) {
+    if (i > 0) {
       label += "-"
     }
-    label += termgenie.name(terms[i]);
-    mdefString += ' and (has_part some ?P )'+i;
+    label += termgenie.name(terms[i], pro);
+    mdefString += ' and (has_part some ?P'+i+' )';
   }
   label += " complex";
   var definition = termgenie.definition("Any protein complex consisting of ",terms, pro, ", ",".");

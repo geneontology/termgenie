@@ -377,7 +377,7 @@ function run() {
 };]]>
 		</rule>
 	</template>
-
+	<!-- 
 	<template name="protein_binding">
 		<description>binding to a protein</description>
 		<ontology name="GeneOntology" />
@@ -442,11 +442,13 @@ function run() {
   var synonyms = null; // No synonyms
   var mdef = termgenie.createMDef('GO_0006810 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
-  mdef.addRelationByName('R', 'OBO_REL:results_in_transport_of', go);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_transport_of', GeneOntology);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
+	-->
+	<!-- 
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
 		<ontology name="GeneOntology"></ontology>
@@ -471,11 +473,13 @@ function run() {
   var synonyms = null; // No synonyms
   var mdef = termgenie.createMDef('GO_0005488 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
-  mdef.addRelationByName('R', 'OBO_REL:has_input', go);
+  mdef.addRelationByName('R', 'OBO_REL:has_input', GeneOntology);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
+	-->
+	<!--
 	<template name="metabolism_catabolism_biosynthesis">
 		<description>Select all three subtemplates to generate
 terms for the "metabolic triad". Names, synonyms and definitions are all
@@ -515,7 +519,7 @@ function run() {
     
     var mdef = termgenie.createMDef('GO_0008152 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
-    mdef.addRelationByName('R', 'OBO_REL:has_participant', go);
+    mdef.addRelationByName('R', 'OBO_REL:has_participant', GeneOntology);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -529,7 +533,7 @@ function run() {
     
     var mdef = termgenie.createMDef('GO_0009056 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
-    mdef.addRelationByName('R', 'OBO_REL:has_input', go);
+    mdef.addRelationByName('R', 'OBO_REL:has_input', GeneOntology);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -543,7 +547,7 @@ function run() {
     
     var mdef = termgenie.createMDef('GO_0009058 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
-    mdef.addRelationByName('R', 'OBO_REL:has_output', go);
+    mdef.addRelationByName('R', 'OBO_REL:has_output', GeneOntology);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -554,6 +558,8 @@ function run() {
 };]]>
 		</rule>
 	</template>
+	-->
+	<!--
 	<template name="biosynthesis_from">
 		<description>biosynthetic process</description>
 		<ontology name="GeneOntology"></ontology>
@@ -580,13 +586,14 @@ function run() {
     
   var mdef = termgenie.createMDef('GO_0009058 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
-  mdef.addRelationByName('R', 'OBO_REL:has_output', go);
+  mdef.addRelationByName('R', 'has_output', GeneOntology);
     
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
 	</template>
-
+ -->
+ <!-- 
 	<template name="metazoan_development">
 		<description>development of an animal anatomical structure</description>
 		<ontology name="GeneOntology" />
@@ -628,7 +635,8 @@ function run() {
 };]]>
 		</rule>
 	</template>
-
+	-->
+	<!--
 	<template name="metazoan_morphogenesis">
 		<description>morphogenesis of an animal anatomical structure</description>
 		<ontology name="GeneOntology" />
@@ -668,7 +676,8 @@ function run() {
 };]]>
 		</rule>
 	</template>
-
+	-->
+	<!--
 	<template name="plant_development">
 		<description>development of a plant anatomical structure</description>
 		<ontology name="GeneOntology" />
@@ -710,7 +719,8 @@ function run() {
 };]]>
 		</rule>
 	</template>
-
+	-->
+	<!--
 	<template name="plant_morphogenesis">
 		<description>morphogenesis of a plant animal anatomical structure</description>
 		<ontology name="GeneOntology" />
@@ -749,7 +759,7 @@ function run() {
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
-	</template>
+	</template> -->
 
 	<template name="structural_protein_complex">
 		<description>protein complex defined structurally</description>
@@ -784,11 +794,11 @@ function run() {
       termgenie.error(check.error());
       return;
     }
-    if (i > 1) {
+    if (i > 0) {
       label += "-"
     }
-    label += termgenie.name(terms[i]);
-    mdefString += ' and (has_part some ?P )'+i;
+    label += termgenie.name(terms[i], pro);
+    mdefString += ' and (has_part some ?P'+i+' )';
   }
   label += " complex";
   var definition = termgenie.definition("Any protein complex consisting of ",terms, pro, ", ",".");
