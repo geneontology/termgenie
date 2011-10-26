@@ -37,9 +37,10 @@ function run() {
   var label = termgenie.name(q, PATO) + " of " + termgenie.name(e, go);
   var definition = "Any "+termgenie.name(q, PATO)+" of "+termgenie.name(e, go)+".";
   var synonyms = null; // TODO
-  var mdef = termgenie.createMDef('?Q and OBO_REL:inheres_in some ?E');
+  var mdef = termgenie.createMDef('?Q and ?R some ?E');
   mdef.addParameter('Q', q, PATO);
   mdef.addParameter('E', e, go);
+  mdef.addRelationByName('R', 'OBO_REL:inheres_in', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>

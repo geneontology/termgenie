@@ -253,9 +253,10 @@ function run() {
   var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
   var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
   var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
-  var mdef = termgenie.createMDef('?P and OBO_REL:occurs_in some ?C');
+  var mdef = termgenie.createMDef('?P and ?R some ?C');
   mdef.addParameter('P', p, go);
   mdef.addParameter('C', c, go);
+  mdef.addRelationByName('R', 'occurs_in', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -409,8 +410,9 @@ function run() {
   var label = termgenie.name(x, pro) + " binding";
   var definition = "Interacting selectively and non-covalently with  "+termgenie.name(x, pro)+".";
   var synonyms = termgenie.synonyms(null, x, pro, " binding", label);
-  var mdef = termgenie.createMDef('GO_0005488 and OBO_REL:results_in_binding_of some ?X');
+  var mdef = termgenie.createMDef('GO_0005488 and ?R some ?X');
   mdef.addParameter('X', x, pro);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_binding_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -438,8 +440,9 @@ function run() {
                    termgenie.refname(x, CHEBI)+
                    " acetate into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
   var synonyms = null; // No synonyms
-  var mdef = termgenie.createMDef('GO_0006810 and OBO_REL:results_in_transport_of some ?X');
+  var mdef = termgenie.createMDef('GO_0006810 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_transport_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -466,8 +469,9 @@ function run() {
                    termgenie.name(x, CHEBI)+
                    ".";
   var synonyms = null; // No synonyms
-  var mdef = termgenie.createMDef('GO_0005488 and OBO_REL:has_input some ?X');
+  var mdef = termgenie.createMDef('GO_0005488 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
+  mdef.addRelationByName('R', 'OBO_REL:has_input', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -509,8 +513,9 @@ function run() {
     var synonyms = termgenie.synonyms(null, x, CHEBI, " metabolism", label);
     synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " metabolic process", label));
     
-    var mdef = termgenie.createMDef('GO_0008152 and OBO_REL:has_participant some ?X');
+    var mdef = termgenie.createMDef('GO_0008152 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
+    mdef.addRelationByName('R', 'OBO_REL:has_participant', go);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -522,8 +527,9 @@ function run() {
     var synonyms = termgenie.synonyms(null, x, CHEBI, " catabolism", label);
     synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " catabolic process", label));
     
-    var mdef = termgenie.createMDef('GO_0009056 and OBO_REL:has_input some ?X');
+    var mdef = termgenie.createMDef('GO_0009056 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
+    mdef.addRelationByName('R', 'OBO_REL:has_input', go);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -535,8 +541,9 @@ function run() {
     var synonyms = termgenie.synonyms(null, x, CHEBI, " biosynthesis", label);
     synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " biosynthetic process", label));
     
-    var mdef = termgenie.createMDef('GO_0009058 and OBO_REL:has_output some ?X');
+    var mdef = termgenie.createMDef('GO_0009058 and ?R some ?X');
     mdef.addParameter('X', x, CHEBI);
+    mdef.addRelationByName('R', 'OBO_REL:has_output', go);
     
     termgenie.createTerm(label, definition, synonyms, mdef);
     count += 1;
@@ -571,8 +578,9 @@ function run() {
   var synonyms = termgenie.synonyms(null, x, CHEBI, " biosynthesis", label);
   synonyms = termgenie.concat(synonyms, termgenie.synonyms(null, x, CHEBI, " biosynthetic process", label));
     
-  var mdef = termgenie.createMDef('GO_0009058 and OBO_REL:has_output some ?X');
+  var mdef = termgenie.createMDef('GO_0009058 and ?R some ?X');
   mdef.addParameter('X', x, CHEBI);
+  mdef.addRelationByName('R', 'OBO_REL:has_output', go);
     
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
@@ -613,8 +621,9 @@ function run() {
                    termgenie.refname(x, uberon)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, uberon, " development", label);
-  var mdef = termgenie.createMDef('GO_0032502 and OBO_REL:results_in_complete_development_of some ?X');
+  var mdef = termgenie.createMDef('GO_0032502 and ?R some ?X');
   mdef.addParameter('X', x, uberon);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_complete_development_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -652,8 +661,9 @@ function run() {
   var label = termgenie.name(x, uberon) + " morphogenesis";
   var definition = "The developmental process by which "+termgenie.refname(x, uberon)+" is generated and organized.";
   var synonyms = termgenie.synonyms(null, x, uberon, " morphogenesis", label);
-  var mdef = termgenie.createMDef('GO_0009653 and OBO_REL:results_in_morphogenesis_of some ?X');
+  var mdef = termgenie.createMDef('GO_0009653 and ?R some ?X');
   mdef.addParameter('X', x, uberon);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_morphogenesis_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -693,8 +703,9 @@ function run() {
                    termgenie.refname(x, plant)+
                    " over time, from its formation to the mature structure.";
   var synonyms = termgenie.synonyms(null, x, plant, " development", label);
-  var mdef = termgenie.createMDef('GO_0032502 and OBO_REL:results_in_complete_development_of some ?X');
+  var mdef = termgenie.createMDef('GO_0032502 and ?R some ?X');
   mdef.addParameter('X', x, plant);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_complete_development_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -732,8 +743,9 @@ function run() {
   var label = termgenie.name(x, plant) + " morphogenesis";
   var definition = "The developmental process by which "+termgenie.refname(x, plant)+" is generated and organized.";
   var synonyms = termgenie.synonyms(null, x, plant, " morphogenesis", label);
-  var mdef = termgenie.createMDef('GO_0009653 and OBO_REL:results_in_morphogenesis_of some ?X');
+  var mdef = termgenie.createMDef('GO_0009653 and ?R some ?X');
   mdef.addParameter('X', x, plant);
+  mdef.addRelationByName('R', 'OBO_REL:results_in_morphogenesis_of', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
