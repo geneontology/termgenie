@@ -1753,7 +1753,9 @@ function termgenie(){
 							else {
 								sb = 'relationship: '+ relProperties.relationship + ' ' + relation.target;
 							}
-							sb += ' ! ' + relation.targetLabel;
+							if(relation.targetLabel && relation.targetLabel.length > 0) {
+								sb += ' ! ' + relation.targetLabel;
+							}
 							table.append('<tr><td class="termgenie-pre nobr">'+sb+'</td></tr>');
 						}
 					});
