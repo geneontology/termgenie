@@ -481,7 +481,7 @@ function run() {
   var go = GeneOntology;
   var uberon = Uberon;
   var x = termgenie.getSingleTerm("target", uberon);
-  var check = termgenie.checkGenus(x, UBERON0001062, uberon);
+  var check = termgenie.checkGenus(x, 'UBERON:0001062', uberon);
   if (check.isGenus() !== true) {
     termgenie.error(check.error());
     return;
