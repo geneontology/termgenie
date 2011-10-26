@@ -600,7 +600,7 @@ function run() {
 function run() {
   var go = GeneOntology;
   var pro = ProteinOntology;
-  var terms = getTerms("unit", pro);
+  var terms = termgenie.getTerms("unit", pro);
   var label = "";
   var mdefString = 'GO_0043234';
   for(var i=0; i<terms.length; i+= 1) {
