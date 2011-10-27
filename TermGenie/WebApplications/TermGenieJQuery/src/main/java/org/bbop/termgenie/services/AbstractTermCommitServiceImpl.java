@@ -352,7 +352,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 		private List<ISynonym> extractSynonyms(JsonOntologyTerm jsonTerm) {
 			List<JsonSynonym> synonyms = jsonTerm.getSynonyms();
-			if (synonyms != null && synonyms.isEmpty()) {
+			if (synonyms != null && !synonyms.isEmpty()) {
 				return new ArrayList<ISynonym>(jsonTerm.getSynonyms());
 			}
 			return null;
