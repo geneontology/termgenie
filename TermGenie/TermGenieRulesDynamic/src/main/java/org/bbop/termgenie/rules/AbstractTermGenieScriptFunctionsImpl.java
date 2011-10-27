@@ -2,10 +2,8 @@ package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
@@ -13,13 +11,10 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
-import org.bbop.termgenie.tools.Pair;
-import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
-import owltools.graph.OWLGraphWrapper.Synonym;
 
 /**
  * Abstract implementation of functions for the TermGenie scripting environment.
@@ -27,7 +22,7 @@ import owltools.graph.OWLGraphWrapper.Synonym;
  * 
  * @param <T>
  */
-public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
+public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGenerationTools implements
 		TermGenieScriptFunctions,
 		ChangeTracker
 {
@@ -51,7 +46,12 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 			ReasonerFactory factory)
 	{
 		super();
-		tools = createTermCreationTool(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory);
+		tools = createTermCreationTool(input,
+				targetOntology,
+				auxiliaryOntologies,
+				tempIdPrefix,
+				patternID,
+				factory);
 	}
 
 	protected abstract AbstractTermCreationTools<T> createTermCreationTool(TermGenerationInput input,
@@ -288,177 +288,6 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> implements
 				return true;
 		}
 		return false;
-	}
-
-	@Override
-	public List<ISynonym> synonyms(String prefix,
-			OWLObject x,
-			OWLGraphWrapper ontology,
-			String suffix,
-			String label)
-	{
-		List<ISynonym> synonyms = getSynonyms(x, ontology);
-		if (synonyms == null || synonyms.isEmpty()) {
-			return null;
-		}
-		List<ISynonym> results = new ArrayList<ISynonym>();
-		for (ISynonym synonym : synonyms) {
-			StringBuilder sb = new StringBuilder();
-			if (prefix != null) {
-				sb.append(prefix);
-			}
-			sb.append(synonym.getLabel());
-			if (suffix != null) {
-				sb.append(suffix);
-			}
-			addSynonym(results, synonym, synonym.getScope(), sb.toString(), label);
-		}
-		return results;
-	}
-
-	@Override
-	public List<ISynonym> synonyms(String prefix,
-			OWLObject x1,
-			OWLGraphWrapper ontology1,
-			String infix,
-			OWLObject x2,
-			OWLGraphWrapper ontology2,
-			String suffix,
-			String label)
-	{
-		List<ISynonym> synonyms1 = getSynonyms(x1, ontology1);
-		List<ISynonym> synonyms2 = getSynonyms(x2, ontology2);
-		boolean empty1 = synonyms1 == null || synonyms1.isEmpty();
-		boolean empty2 = synonyms2 == null || synonyms2.isEmpty();
-		if (empty1 && empty2) {
-			// do nothing, as both do not have any synonyms
-			return null;
-		}
-		synonyms1 = addLabel(x1, ontology1, synonyms1);
-		synonyms2 = addLabel(x2, ontology2, synonyms2);
-
-		List<ISynonym> results = new ArrayList<ISynonym>();
-		for (ISynonym synonym1 : synonyms1) {
-			for (ISynonym synonym2 : synonyms2) {
-				Pair<Boolean, String> match = matchScopes(synonym1, synonym2);
-				if (match.getOne()) {
-					StringBuilder sb = new StringBuilder();
-					if (prefix != null) {
-						sb.append(prefix);
-					}
-					sb.append(synonym1.getLabel());
-					if (infix != null) {
-						sb.append(infix);
-					}
-					sb.append(synonym2.getLabel());
-					if (suffix != null) {
-						sb.append(suffix);
-					}
-					addSynonym(results, synonym1, match.getTwo(), sb.toString(), label);
-				}
-			}
-		}
-		return results;
-	}
-
-	@Override
-	public List<ISynonym> synonyms(String prefix,
-			OWLObject[] x,
-			OWLGraphWrapper ontology,
-			String infix,
-			String suffix,
-			String label)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null);
-
-	protected Pair<Boolean, String> matchScopes(ISynonym s1, ISynonym s2) {
-		String scope1 = s1.getScope();
-		String scope2 = s2.getScope();
-		if (scope1 == null) {
-			scope1 = OboFormatTag.TAG_RELATED.getTag();
-		}
-		if (scope2 == null) {
-			scope2 = OboFormatTag.TAG_RELATED.getTag();
-		}
-		if (scope1.equals(scope2)) {
-			return new Pair<Boolean, String>(true, scope1);
-		}
-		if (scope1.equals(OboFormatTag.TAG_BROAD.getTag())
-				|| scope2.equals(OboFormatTag.TAG_BROAD.getTag())) {
-			// this is the only case for a miss match
-			return MISMATCH;	
-		}
-		if (scope1.equals(OboFormatTag.TAG_EXACT.getTag())) {
-			return new Pair<Boolean, String>(true, scope2);
-		}
-		if (scope2.equals(OboFormatTag.TAG_EXACT.getTag())) {
-			return new Pair<Boolean, String>(true, scope1);
-		}
-		if (scope1.equals(OboFormatTag.TAG_NARROW.getTag())){
-			return new Pair<Boolean, String>(true, scope2);
-		}
-		if (scope2.equals(OboFormatTag.TAG_NARROW.getTag())) {
-			return new Pair<Boolean, String>(true, scope1);
-		}
-		return new Pair<Boolean, String>(true, OboFormatTag.TAG_RELATED.getTag());
-	}
-
-	private List<ISynonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<ISynonym> synonyms) {
-		String label = ontology.getLabel(x);
-		if (synonyms == null) {
-			synonyms = new ArrayList<ISynonym>(1);
-		}
-		synonyms.add(new Synonym(label, null, null, null));
-		return synonyms;
-	}
-
-	void addSynonym(List<ISynonym> results,
-			ISynonym synonym,
-			String scope,
-			String newLabel,
-			String label)
-	{
-		if (!newLabel.equals(label)) {
-			// if by any chance a synonym has the same label, it is ignored
-			Set<String> xrefs = addXref("GOC:TermGenie", synonym.getXrefs());
-			// TODO what to to with categories if creating a compound synonym?
-			if (scope == null) {
-				scope = OboFormatTag.TAG_RELATED.getTag();
-			}
-			results.add(new Synonym(newLabel, scope, null, xrefs));
-		}
-	}
-
-	private Set<String> addXref(String xref, Set<String> xrefs) {
-		if (xref == null) {
-			return xrefs;
-		}
-		if (xrefs == null) {
-			HashSet<String> list = new HashSet<String>(1);
-			list.add(xref);
-			return list;
-		}
-		if (!xrefs.contains(xref)) {
-			xrefs.add(xref);
-			return xrefs;
-		}
-		return xrefs;
-	}
-
-	private List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
-		if (ontology != null) {
-			List<ISynonym> oboSynonyms = ontology.getOBOSynonyms(id);
-			if (oboSynonyms != null && !oboSynonyms.isEmpty()) {
-				// defensive copy
-				oboSynonyms = new ArrayList<ISynonym>(oboSynonyms);
-			}
-			return oboSynonyms;
-		}
-		return null;
 	}
 
 	@Override
