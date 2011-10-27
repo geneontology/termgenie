@@ -46,11 +46,6 @@ public class OntologyIdStoreTest {
 		testOntologyIdStore(EntityManagerFactoryProvider.HSQLDB);
 	}
 
-//	@Test
-//	public void testOntologyIdStoreSqlite() {
-//		testOntologyIdStore(EntityManagerFactoryProvider.SQLITE);
-//	}
-
 	@Test
 	public void testOntologyIdStoreH2() {
 		testOntologyIdStore(EntityManagerFactoryProvider.H2);
@@ -58,7 +53,7 @@ public class OntologyIdStoreTest {
 
 	@SuppressWarnings("null")
 	private void testOntologyIdStore(String label) {
-		EntityManagerFactory emf = provider.createFactory(testFolder, label, "OntologyIdStore");
+		EntityManagerFactory emf = provider.createFactory(testFolder, label, EntityManagerFactoryProvider.MODE_IDS, "OntologyIdStore");
 		assertNotNull(emf);
 
 		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + //

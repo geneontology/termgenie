@@ -28,6 +28,9 @@ public class EntityManagerFactoryProvider {
 
 	public static final String HSQLDB = "hslqdb";
 	public static final String H2 = "h2";
+	
+	public static final String MODE_DEFAULT = "default";
+	public static final String MODE_IDS = "ids";
 
 	/**
 	 * Create a new factory for a given type (i.e. {@link #HSQLDB} and
@@ -35,38 +38,41 @@ public class EntityManagerFactoryProvider {
 	 * 
 	 * @param folder
 	 * @param type
+	 * @param mode 
 	 * @param db
 	 * @return factory
 	 * @throws RuntimeException throws an exception, if the type is unknown to
 	 *             this Provider.
 	 */
-	public EntityManagerFactory createFactory(File folder, String type, String db) {
+	public EntityManagerFactory createFactory(File folder, String type, String mode, String db) {
 		if (HSQLDB.equals(type)) {
-			return createHsqlDBFile(folder, db);
+			return createHsqlDBFile(folder, db, mode);
 		}
 		else if (H2.equals(type)) {
-			return createH2(folder, db);
+			return createH2(folder, db, mode);
 		}
 		throw new RuntimeException("Unsupported database type: " + type);
 	}
 
-	protected EntityManagerFactory createHsqlDBFile(File folder, String unique) {
+	protected EntityManagerFactory createHsqlDBFile(File folder, String unique, String mode) {
 		Map<String, String> properties = new HashMap<String, String>();
-		File dbFolder = new File(folder, HSQLDB);
+		String unit = HSQLDB + "-" + mode;
+		File dbFolder = new File(folder, unit);
 		dbFolder.mkdir();
 		properties.put("openjpa.ConnectionDriverName", org.hsqldb.jdbcDriver.class.getName());
 		String connectionURL = "jdbc:hsqldb:file:" + dbFolder.getAbsolutePath() + "/" + unique;
 		properties.put("openjpa.ConnectionURL", connectionURL);
-		return Persistence.createEntityManagerFactory(HSQLDB, properties);
+		return Persistence.createEntityManagerFactory(unit, properties);
 	}
 
-	protected EntityManagerFactory createH2(File folder, String unique) {
+	protected EntityManagerFactory createH2(File folder, String unique, String mode) {
 		Map<String, String> properties = new HashMap<String, String>();
-		File dbFolder = new File(folder, H2);
+		String unit = H2 + "-" + mode;
+		File dbFolder = new File(folder, unit);
 		dbFolder.mkdir();
 		properties.put("openjpa.ConnectionDriverName", org.h2.Driver.class.getName());
 		String connectionURL = "jdbc:h2:" + dbFolder.getAbsolutePath() + "/" + unique;
 		properties.put("openjpa.ConnectionURL", connectionURL);
-		return Persistence.createEntityManagerFactory(H2, properties);
+		return Persistence.createEntityManagerFactory(unit, properties);
 	}
 }

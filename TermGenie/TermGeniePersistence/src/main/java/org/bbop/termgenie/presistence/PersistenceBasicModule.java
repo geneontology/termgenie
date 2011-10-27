@@ -46,7 +46,7 @@ public class PersistenceBasicModule extends IOCModule {
 			@Named("PersistenceDatabaseType") String type)
 	{
 		try {
-			return provider.createFactory(new File(folder, "default"), type, "TermGenie");
+			return provider.createFactory(folder,  type, EntityManagerFactoryProvider.MODE_DEFAULT, "TermGenie");
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -59,7 +59,7 @@ public class PersistenceBasicModule extends IOCModule {
 			@Named("PersistenceDatabaseType") String type)
 	{
 		try {
-			return provider.createFactory(new File(folder, "ids"), type, "TermGenie");
+			return provider.createFactory(folder, type, EntityManagerFactoryProvider.MODE_IDS, "TermGenie");
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

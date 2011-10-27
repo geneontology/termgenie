@@ -50,6 +50,7 @@ public class CommitHistoryStoreImplTest {
 	public void testCommitHistoryStoreImpl() throws Exception {
 		EntityManagerFactory emf = provider.createFactory(testFolder,
 				EntityManagerFactoryProvider.HSQLDB,
+				EntityManagerFactoryProvider.MODE_DEFAULT,
 				"CommitHistory");
 		assertNotNull(emf);
 		CommitHistoryStoreImpl store = new CommitHistoryStoreImpl(emf);
