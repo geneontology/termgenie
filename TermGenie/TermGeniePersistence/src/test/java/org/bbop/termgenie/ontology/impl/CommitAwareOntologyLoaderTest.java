@@ -3,7 +3,6 @@ package org.bbop.termgenie.ontology.impl;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -51,10 +51,17 @@ public class CommitAwareOntologyLoaderTest {
 	@Test
 	public void testPostProcessOBOOntology() throws Exception {
 		// general setup
-		Injector injector = TermGenieGuice.createInjector(new XMLReloadingOntologyModule("persistence-tests-ontology-configuration.xml"),
+		Injector injector = TermGenieGuice.createInjector(new XMLReloadingOntologyModule("persistence-tests-ontology-configuration.xml") {
+
+					@Override
+					protected void bindIRIMapper() {
+						bind(IRIMapper.class).to(LocalFileIRIMapper.class);
+						bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
+					}
+				},
 				new PersistenceBasicModule(testFolder),
 				new IOCModule() {
-					
+
 					@Override
 					protected void configure() {
 						bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
@@ -70,22 +77,38 @@ public class CommitAwareOntologyLoaderTest {
 		final String testLabel = "Test term label";
 
 		// add mods to the history
-		CommitHistoryItem item = new CommitHistoryItem();
-		item.setDate(new Date());
-		item.setUser("test");
-		List<CommitedOntologyTerm> terms = new ArrayList<CommitedOntologyTerm>();
-		CommitedOntologyTerm term = new CommitedOntologyTerm();
-		term.setId(testId);
-		term.setLabel("Test term label");
-		terms.add(term);
-		item.setTerms(terms);
-		item.setCommitted(true);
-		commitHistoryStore.add(item, ontology);
+		{
+			CommitHistoryItem item = new CommitHistoryItem();
+			item.setDate(new Date());
+			item.setUser("test");
+			CommitedOntologyTerm term = new CommitedOntologyTerm();
+			term.setId(testId);
+			term.setLabel("Test term label");
+			term.setOperation(Modification.add);
+			item.setTerms(Collections.singletonList(term));
+			item.setCommitted(true);
+			commitHistoryStore.add(item, ontology);
+		}
+		
+		{
+			CommitHistoryItem item = new CommitHistoryItem();
+			item.setDate(new Date());
+			item.setUser("test2");
+			CommitedOntologyTerm redundantTerm = new CommitedOntologyTerm();
+			redundantTerm.setId("CL:0000001");
+			redundantTerm.setLabel("primary cell line cell");
+			redundantTerm.setOperation(Modification.add);
+			item.setTerms(Collections.singletonList(redundantTerm));
+			item.setCommitted(true);
+			commitHistoryStore.add(item, ontology);
+		}
+		
 
 		CommitHistory history = commitHistoryStore.loadHistory(ontology);
 		assertNotNull(history);
 		assertNotNull(history.getItems());
-		
+		assertEquals(2, history.getItems().size());
+
 		// setup ontology loader
 		CommitAwareOntologyLoader loader = new CommitAwareOntologyLoader(configuration, iriMapper, cleaner, Collections.<String> emptySet(), 1L, TimeUnit.DAYS, commitHistoryStore);
 		assertNotNull(loader);
@@ -103,6 +126,11 @@ public class CommitAwareOntologyLoaderTest {
 				assertEquals(testLabel, managed.getLabel(owlObject));
 			}
 		});
+		
+		history = commitHistoryStore.loadHistory(ontology);
+		assertNotNull(history);
+		assertNotNull(history.getItems());
+		assertEquals(1, history.getItems().size());
 	}
 
 }

@@ -43,6 +43,26 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 					return false;
 			}
 		}
+		
+		public static boolean isMerge(LoadState state) {
+			return state == LoadState.addMerge || state == LoadState.modifyMissing;
+		}
+		
+		public static boolean isRedundant(LoadState state) {
+			switch (state) {
+				case addRedundant:
+				case modifyRedundant:
+				case removeMissing:
+					return true;
+
+				default:
+					return false;
+			}
+		}
+		
+		public static boolean isError(LoadState  state) {
+			return state == LoadState.addError || state == LoadState.modifyError || state == LoadState.unknown;
+		}
 	}
 	
 	public static LoadState handleTerm(OntologyTerm<? extends ISynonym, ? extends IRelation> term,
@@ -59,7 +79,7 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 					state = LoadState.addMerge;
 				}
 				fillOBO(newFrame, term);
-				if (frameEquals(newFrame, frame)) {
+				if (isRedundant(newFrame, frame)) {
 					state = LoadState.addRedundant;
 				}
 				try {
@@ -132,6 +152,43 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 		if (merge) {
 			target.addClause(addOnClause);
 		}
+	}
+	
+	private static boolean isRedundant(Frame newFrame, Frame frame) {
+		if (frame == null) {
+			return false;
+		}
+		if (newFrame == frame) {
+			return true;
+		}
+		if (!objEquals(newFrame.getType(), frame.getType())) {
+			return false;
+		}
+		if (!objEquals(newFrame.getId(), frame.getId())) {
+			return false;
+		}
+		Set<String> newTags = newFrame.getTags();
+		Set<String> tags = frame.getTags();
+		if (!tags.containsAll(newTags)) {
+			return false;
+		}
+		for (String tag : newTags) {
+			Collection<Clause> newClauses = newFrame.getClauses(tag);
+			Collection<Clause> clauses = frame.getClauses(tag);
+			for (Clause newClause : newClauses) {
+				boolean found = false;
+				for (Clause clause : clauses) {
+					if (newClause.equals(clause)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private static boolean frameEquals(Frame newFrame, Frame frame) {

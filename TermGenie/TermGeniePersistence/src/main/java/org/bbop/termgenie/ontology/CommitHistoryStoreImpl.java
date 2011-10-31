@@ -137,6 +137,13 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 		}
 	}
 	
+	@Override
+	public List<CommitHistoryItem> loadHistory(String ontology, boolean committed)
+			throws CommitHistoryStoreException
+	{
+		return getItems(ontology, committed);
+	}
+
 	CommitHistory loadHistory(String ontology, EntityManager entityManager) throws CommitHistoryStoreException {
 		try {
 			CommitHistory find = entityManager.find(CommitHistory.class, ontology);
@@ -245,11 +252,18 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 	public List<CommitHistoryItem> getItemsForReview(String ontology)
 			throws CommitHistoryStoreException
 	{
-		String queryString = "SELECT items FROM CommitHistory history, IN(history.items) items WHERE (history.ontology = ?1) AND (items.committed=false)";
+		return getItems(ontology, false);
+	}
+	
+	List<CommitHistoryItem> getItems(String ontology, boolean committed)
+			throws CommitHistoryStoreException
+	{
+		String queryString = "SELECT items FROM CommitHistory history, IN(history.items) items WHERE (history.ontology = ?1) AND (items.committed=?2)";
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			TypedQuery<CommitHistoryItem> query = entityManager.createQuery(queryString, CommitHistoryItem.class);
 			query.setParameter(1, ontology);
+			query.setParameter(2, committed);
 			List<CommitHistoryItem> resultList = query.getResultList();
 			if (resultList != null && !resultList.isEmpty()) {
 				return new ArrayList<CommitHistoryItem>(resultList);

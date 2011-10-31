@@ -96,6 +96,16 @@ public interface CommitHistoryStore {
 	 * @throws CommitHistoryStoreException
 	 */
 	public CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException;
+	
+	/**
+	 * Retrieve the history for the given ontology and commit status.
+	 * 
+	 * @param ontology
+	 * @param committed 
+	 * @return list of history items
+	 * @throws CommitHistoryStoreException
+	 */
+	public List<CommitHistoryItem> loadHistory(String ontology, boolean committed) throws CommitHistoryStoreException;
 
 	/**
 	 * Check the history for term commits with the same label;

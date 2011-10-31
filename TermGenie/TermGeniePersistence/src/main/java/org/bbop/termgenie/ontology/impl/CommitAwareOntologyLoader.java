@@ -1,5 +1,6 @@
 package org.bbop.termgenie.ontology.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -10,10 +11,10 @@ import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreExceptio
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
+import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -55,18 +56,30 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 		// try to detect, whether the changes have been 
 		// committed to the loaded ontology version, or if conflicts exist.
 		try {
-			CommitHistory history = commitHistoryStore.loadHistory(ontology);
-			if (history == null) {
-				// do nothing
-				return;
-			}
-			List<CommitHistoryItem> items = history.getItems();
-			for (CommitHistoryItem item : items) {
-				if (item.isCommitted()) {
+			List<CommitHistoryItem> items = commitHistoryStore.loadHistory(ontology, true);
+			if (items != null) {
+				for (CommitHistoryItem item : items) {
 					List<CommitedOntologyTerm> terms = item.getTerms();
 					if (terms != null) {
+						List<CommitedOntologyTerm> redundant = new ArrayList<CommitedOntologyTerm>(terms.size());
 						for (CommitedOntologyTerm term : terms) {
-							ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), obodoc);
+							LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), obodoc);
+							if (!LoadState.isSuccess(state)) {
+								if(LoadState.isError(state)) {
+									logger.warn("Could not apply change item #"+item.getId()+" term #"+term.getUuid());
+								}
+								else if (LoadState.isMerge(state)) {
+									logger.info("Merged change item #"+item.getId()+" term #"+term.getUuid());
+								}
+								else if (LoadState.isRedundant(state)) {
+									logger.info("Redundant change item #"+item.getId()+" term #"+term.getUuid());
+									redundant.add(term);
+								}
+							}
+						}
+						if (terms.size() == redundant.size()) {
+							logger.info("Removing redundant history item #"+item.getId());
+							commitHistoryStore.remove(item, ontology);
 						}
 					}
 				}
