@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
+import org.bbop.termgenie.tools.Pair;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
@@ -50,13 +52,13 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	}
 
 	@Override
-	protected List<IRelation> createRelations(List<MDef> logicalDefinitions,
+	protected Pair<List<IRelation>, Set<OWLClass>> createRelations(List<MDef> logicalDefinitions,
 			String newId,
 			String label,
 			OWLChangeTracker changeTracker) throws RelationCreationException
 	{
 		if (logicalDefinitions == null || logicalDefinitions.isEmpty()) {
-			return Collections.emptyList();
+			return new Pair<List<IRelation>, Set<OWLClass>>(Collections.<IRelation>emptyList(), null);
 		}
 		OWLOntologyManager owlManager = targetOntology.getManager();
 		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
@@ -85,7 +87,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
 		reasonerManager.runManagedTask(task);
-		return task.getRelations();
+		return new Pair<List<IRelation>, Set<OWLClass>>(task.getRelations(), task.getEquivalentClasses());
 	}
 
 	static OWLClass addClass(IRI iri, OWLChangeTracker changeTracker) {

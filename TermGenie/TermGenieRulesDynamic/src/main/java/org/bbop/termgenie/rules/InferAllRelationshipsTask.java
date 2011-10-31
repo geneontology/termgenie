@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
@@ -14,8 +15,10 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
@@ -32,6 +35,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private final OWLChangeTracker changeTracker;
 	
 	private List<IRelation> relations = Collections.emptyList();
+	private Set<OWLClass> equivalentClasses = null;
 
 	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker) {
 		super();
@@ -53,21 +57,34 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			RemoveAxiom addAx = new RemoveAxiom(ontology.getSourceOntology(), redundant);
 			changeTracker.apply(addAx);
 		}
-		try {
-			Owl2Obo owl2Obo = new Owl2Obo();
-			OBODoc oboDoc = owl2Obo.convert(ontology.getSourceOntology());
-			String frameId = Owl2Obo.getIdentifier(iri);
-			Frame frame = oboDoc.getTermFrame(frameId);
-			relations = OBOConverterTools.extractRelations(frame, oboDoc);
-			
-		} catch (OWLOntologyCreationException exception) {
-			logger.warn("Could not create obo ontology from owl for ontology:"+ontology.getOntologyId(), exception);
+		OWLClass owlClass = ontology.getOWLClass(iri);
+		Node<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass);
+		if (equivalentClasses.getSize() > 1) {
+			this.equivalentClasses = equivalentClasses.getEntities();
+			this.equivalentClasses.remove(owlClass);
+		} else {
+			try {
+				Owl2Obo owl2Obo = new Owl2Obo();
+				OBODoc oboDoc = owl2Obo.convert(ontology.getSourceOntology());
+				String frameId = Owl2Obo.getIdentifier(iri);
+				Frame frame = oboDoc.getTermFrame(frameId);
+				relations = OBOConverterTools.extractRelations(frame, oboDoc);
+				
+			} catch (OWLOntologyCreationException exception) {
+				logger.warn("Could not create obo ontology from owl for ontology:"+ontology.getOntologyId(), exception);
+			}
 		}
-		
 		return Modified.no;
 	}
 
 	public List<IRelation> getRelations() {
 		return relations;
+	}
+
+	/**
+	 * @return the equivalentClasses
+	 */
+	public Set<OWLClass> getEquivalentClasses() {
+		return equivalentClasses;
 	}
 }

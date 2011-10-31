@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -18,11 +19,13 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -243,7 +246,15 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		String owlNewId = getNewId();
 
 		try {
-			List<IRelation> relations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
+			Pair<List<IRelation>,Set<OWLClass>> pair = createRelations(logicalDefinition, owlNewId, label, changeTracker);
+			if (pair.getTwo() != null) {
+				for (OWLClass owlClass : pair.getTwo()) {
+					output.add(singleError("The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +"' with the same logic definition already exists",
+							input));					
+				}
+				return;
+			}
+			List<IRelation> relations = pair.getOne();
 			if (relations != null && !relations.isEmpty()) {
 				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
 			}
@@ -276,7 +287,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		}
 	}
 	
-	protected abstract List<IRelation> createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
+	protected abstract Pair<List<IRelation>, Set<OWLClass>> createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
 	private List<String> getDefXref() {
 		return getInputs("DefX_Ref");
