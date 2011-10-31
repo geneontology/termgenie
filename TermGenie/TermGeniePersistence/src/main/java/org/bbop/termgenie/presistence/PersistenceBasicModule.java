@@ -1,6 +1,7 @@
 package org.bbop.termgenie.presistence;
 
 import java.io.File;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -19,18 +20,20 @@ public class PersistenceBasicModule extends IOCModule {
 	/**
 	 * @param dbFolder
 	 * @param dbType
+	 * @param applicationProperties 
 	 */
-	public PersistenceBasicModule(File dbFolder, String dbType) {
-		super();
+	public PersistenceBasicModule(File dbFolder, String dbType, Properties applicationProperties) {
+		super(applicationProperties);
 		this.dbFolder = dbFolder;
 		this.dbType = dbType;
 	}
 
 	/**
 	 * @param dbFolder
+	 * @param applicationProperties 
 	 */
-	public PersistenceBasicModule(File dbFolder) {
-		this(dbFolder, EntityManagerFactoryProvider.HSQLDB);
+	public PersistenceBasicModule(File dbFolder, Properties applicationProperties) {
+		this(dbFolder, EntityManagerFactoryProvider.HSQLDB, applicationProperties);
 	}
 
 	@Override

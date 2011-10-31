@@ -1,5 +1,7 @@
 package org.bbop.termgenie.ontology;
 
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
@@ -18,11 +20,13 @@ public class AdvancedPersistenceModule extends IOCModule {
 	/**
 	 * @param ontologyIdManagerName
 	 * @param ontologyIdStoreConfigurationFile
+	 * @param applicationProperties 
 	 */
 	public AdvancedPersistenceModule(String ontologyIdManagerName,
-			String ontologyIdStoreConfigurationFile)
+			String ontologyIdStoreConfigurationFile,
+			Properties applicationProperties)
 	{
-		super();
+		super(applicationProperties);
 		this.ontologyIdManagerName = ontologyIdManagerName;
 		this.ontologyIdStoreConfigurationFile = ontologyIdStoreConfigurationFile;
 	}

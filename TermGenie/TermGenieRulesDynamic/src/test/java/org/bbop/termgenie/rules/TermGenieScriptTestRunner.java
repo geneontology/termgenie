@@ -46,7 +46,7 @@ public class TermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml"),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", null),
 				new TestDefaultOntologyModule() {
 
 					@Override
@@ -56,7 +56,7 @@ public class TermGenieScriptTestRunner {
 								"ontology-configuration_simple.xml");
 					}
 				},
-				new ReasonerModule());
+				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		configuration = injector.getInstance(OntologyConfiguration.class);

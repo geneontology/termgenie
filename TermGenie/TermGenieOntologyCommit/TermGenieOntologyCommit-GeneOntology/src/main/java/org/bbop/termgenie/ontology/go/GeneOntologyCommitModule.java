@@ -1,5 +1,7 @@
 package org.bbop.termgenie.ontology.go;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
@@ -21,10 +23,11 @@ public class GeneOntologyCommitModule extends IOCModule {
 	/**
 	 * @param cvsOntologyFileName
 	 * @param cvsRoot
+	 * @param applicationProperties
 	 */
-	public GeneOntologyCommitModule(String cvsOntologyFileName, String cvsRoot)
+	public GeneOntologyCommitModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties)
 	{
-		super();
+		super(applicationProperties);
 		this.cvsOntologyFileName = cvsOntologyFileName;
 		this.cvsRoot = cvsRoot;
 	}

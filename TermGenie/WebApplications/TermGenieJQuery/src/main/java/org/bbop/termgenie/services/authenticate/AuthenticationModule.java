@@ -2,6 +2,7 @@ package org.bbop.termgenie.services.authenticate;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 
@@ -29,17 +30,19 @@ public class AuthenticationModule extends IOCModule {
 
 	/**
 	 * @param openIdServletPath
+	 * @param applicationProperties
 	 */
-	public AuthenticationModule(String openIdServletPath) {
-		this(DEFAULT_TERMGENIE_URL, openIdServletPath);
+	public AuthenticationModule(String openIdServletPath, Properties applicationProperties) {
+		this(DEFAULT_TERMGENIE_URL, openIdServletPath, applicationProperties);
 	}
 
 	/**
 	 * @param defaultTermGenieUrl
 	 * @param openIdServletPath
+	 * @param applicationProperties
 	 */
-	public AuthenticationModule(String defaultTermGenieUrl, String openIdServletPath) {
-		super();
+	public AuthenticationModule(String defaultTermGenieUrl, String openIdServletPath, Properties applicationProperties) {
+		super(applicationProperties);
 		this.openIdServletPath = openIdServletPath;
 		this.defaultTermGenieUrl = defaultTermGenieUrl;
 	}

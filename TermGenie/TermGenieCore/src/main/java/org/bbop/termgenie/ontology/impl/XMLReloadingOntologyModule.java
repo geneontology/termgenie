@@ -1,5 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 
 /**
@@ -12,14 +14,15 @@ public class XMLReloadingOntologyModule extends ReloadingOntologyModule {
 	
 	/**
 	 * @param configFile
+	 * @param applicationProperties 
 	 */
-	public XMLReloadingOntologyModule(String configFile) {
-		super();
+	public XMLReloadingOntologyModule(String configFile, Properties applicationProperties) {
+		super(applicationProperties);
 		this.configFile = configFile;
 	}
 
-	public XMLReloadingOntologyModule() {
-		this(XMLOntologyConfiguration.SETTINGS_FILE);
+	public XMLReloadingOntologyModule(Properties applicationProperties) {
+		this(XMLOntologyConfiguration.SETTINGS_FILE, applicationProperties);
 	}
 
 	@Override

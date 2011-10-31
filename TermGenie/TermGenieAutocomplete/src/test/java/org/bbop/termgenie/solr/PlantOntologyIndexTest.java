@@ -32,7 +32,7 @@ public class PlantOntologyIndexTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
-				new ReasonerModule());
+				new ReasonerModule(null));
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		Map<String, ConfiguredOntology> ontologies = configuration.getOntologyConfigurations();
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);

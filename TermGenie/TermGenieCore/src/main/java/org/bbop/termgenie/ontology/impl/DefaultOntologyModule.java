@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
@@ -31,13 +32,15 @@ public abstract class DefaultOntologyModule extends IOCModule {
 	protected final String defaultOntologyConfigurationResource;
 	protected final String defaultOntologyCleanerResource;
 
-	public DefaultOntologyModule() {
-		this(DefaultOntologyConfiguration.SETTINGS_FILE, DefaultOntologyCleaner.SETTINGS_FILE);
+	public DefaultOntologyModule(Properties applicationProperties) {
+		this(DefaultOntologyConfiguration.SETTINGS_FILE, DefaultOntologyCleaner.SETTINGS_FILE, applicationProperties);
 	}
 
 	public DefaultOntologyModule(String ontologyConfigurationResource,
-			String ontologyCleanerResource)
+			String ontologyCleanerResource,
+			Properties applicationProperties)
 	{
+		super(applicationProperties);
 		this.defaultOntologyConfigurationResource = ontologyConfigurationResource;
 		this.defaultOntologyCleanerResource = ontologyCleanerResource;
 	}

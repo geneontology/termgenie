@@ -26,7 +26,7 @@ public class LuceneMemoryOntologyIndexTest {
 	@Test
 	public void testLuceneMemoryOntologyIndex() {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
-				new ReasonerModule());
+				new ReasonerModule(null));
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);

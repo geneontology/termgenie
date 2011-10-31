@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 import javax.inject.Singleton;
 
@@ -33,14 +34,15 @@ public class XMLDynamicRulesModule extends IOCModule {
 	
 	/**
 	 * @param ruleFile
+	 * @param applicationProperties
 	 */
-	public XMLDynamicRulesModule(String ruleFile) {
-		super();
+	public XMLDynamicRulesModule(String ruleFile, Properties applicationProperties) {
+		super(applicationProperties);
 		this.ruleFile = ruleFile;
 	}
 	
 	protected void bindTemplateIO() {
-		install(new XMLTermTemplateModule());
+		install(new XMLTermTemplateModule(applicationProperties));
 		bind("DynamicRulesTemplateResource", ruleFile);
 	}
 

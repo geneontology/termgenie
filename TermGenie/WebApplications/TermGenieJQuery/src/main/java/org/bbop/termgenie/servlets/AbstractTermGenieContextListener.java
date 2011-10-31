@@ -1,8 +1,13 @@
 package org.bbop.termgenie.servlets;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -62,15 +67,40 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		}
 	}
 
+	protected final Properties applicationProperties;
+	
+	
+	protected AbstractTermGenieContextListener(String applicationPropertyConfigName) {
+		applicationProperties = new Properties();
+		applicationProperties.isEmpty();
+		String property = IOCModule.getSystemProperty(applicationPropertyConfigName);
+		if (property != null) {
+			File propertyFile = new File(property);
+			if (propertyFile.isFile() && propertyFile.canRead()) {
+				try {
+					applicationProperties.load(new FileInputStream(propertyFile));
+				} catch (FileNotFoundException exception) {
+					throw new RuntimeException(exception);
+				} catch (IOException exception) {
+					throw new RuntimeException(exception);
+				}
+			}
+		}
+	}
+	
+	protected AbstractTermGenieContextListener(Properties applicationProperties) {
+		this.applicationProperties = applicationProperties;
+	}
+
 	@Override
 	protected Injector getInjector() {
 		ServletModule module = new TermGenieServletModule();
-		return TermGenieGuice.createWebInjector(module, getConfiguration());
+		return TermGenieGuice.createWebInjector(module, applicationProperties, getConfiguration());
 	}
 
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
-		modules.add(new TermGenieToolsModule());
+		modules.add(new TermGenieToolsModule(applicationProperties));
 		add(modules, getServiceModule(), true, "ServiceModule");
 		add(modules, getAuthenticationModule(), true, "Authentication");
 		add(modules, getUserPermissionModule(), true, "UserPermission");
@@ -106,14 +136,14 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 * @return module handling the TermGenie service implementations
 	 */
 	protected TermGenieServiceModule getServiceModule() {
-		return new TermGenieServiceModule();
+		return new TermGenieServiceModule(applicationProperties);
 	}
 
 	/**
 	 * @return module handling the authentication
 	 */
 	protected IOCModule getAuthenticationModule() {
-		return new AuthenticationModule(TermGenieServletModule.OPENID_SERVLET_PATH);
+		return new AuthenticationModule(TermGenieServletModule.OPENID_SERVLET_PATH, applicationProperties);
 	}
 
 	/**
@@ -135,7 +165,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 * @return module providing the implementations of the reasoner
 	 */
 	protected IOCModule getReasoningModule() {
-		return new ReasonerModule();
+		return new ReasonerModule(applicationProperties);
 	}
 
 	/**
@@ -146,7 +176,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	}
 
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(false);
+		return new TermCommitReviewServiceModule(false, applicationProperties);
 	}
 
 	/**

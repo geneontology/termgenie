@@ -1,5 +1,7 @@
 package org.bbop.termgenie.tools;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -12,6 +14,10 @@ import com.google.inject.Singleton;
  * Module for commons tools in the TermGenie web application.
  */
 public class TermGenieToolsModule extends IOCModule {
+
+	public TermGenieToolsModule(Properties applicationProperties) {
+		super(applicationProperties);
+	}
 
 	@Override
 	protected void configure() {

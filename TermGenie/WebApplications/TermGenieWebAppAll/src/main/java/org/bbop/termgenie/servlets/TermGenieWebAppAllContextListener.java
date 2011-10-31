@@ -7,19 +7,23 @@ import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 
 public class TermGenieWebAppAllContextListener extends AbstractTermGenieContextListener {
 
+	public TermGenieWebAppAllContextListener() {
+		super("TermGenieWebAppAllConfigFile");
+	}
+	
 	@Override
 	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule("termgenie-all");
+		return new UserPermissionsModule("termgenie-all", applicationProperties);
 	}
 	
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_all.xml");
+		return new XMLReloadingOntologyModule("ontology-configuration_all.xml", applicationProperties);
 	}
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_all.xml");
+		return new XMLDynamicRulesModule("termgenie_rules_all.xml", applicationProperties);
 	}
 
 }

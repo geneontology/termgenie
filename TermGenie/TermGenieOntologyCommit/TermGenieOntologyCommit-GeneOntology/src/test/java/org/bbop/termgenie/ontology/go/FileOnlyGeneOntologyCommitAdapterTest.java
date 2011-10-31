@@ -57,9 +57,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		final File cvslocalFile = new File(testFolder, "local-go.obo");
 		
 		// create modules for configuration
-		XMLReloadingOntologyModule ontologyModule = new XMLReloadingOntologyModule("ontology-configuration_go_simple.xml");
-		PersistenceBasicModule persistenceModule = new PersistenceBasicModule(dbFolder);
-		AdvancedPersistenceModule advancedPersistenceModule = new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf");
+		XMLReloadingOntologyModule ontologyModule = new XMLReloadingOntologyModule("ontology-configuration_go_simple.xml", null);
+		PersistenceBasicModule persistenceModule = new PersistenceBasicModule(dbFolder, null);
+		AdvancedPersistenceModule advancedPersistenceModule = new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf", null);
 		
 		// create injector from modules
 		Injector injector = TermGenieGuice.createInjector(ontologyModule, persistenceModule, advancedPersistenceModule);

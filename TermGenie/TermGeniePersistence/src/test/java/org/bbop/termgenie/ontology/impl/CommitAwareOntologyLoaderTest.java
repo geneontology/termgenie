@@ -51,7 +51,7 @@ public class CommitAwareOntologyLoaderTest {
 	@Test
 	public void testPostProcessOBOOntology() throws Exception {
 		// general setup
-		Injector injector = TermGenieGuice.createInjector(new XMLReloadingOntologyModule("persistence-tests-ontology-configuration.xml") {
+		Injector injector = TermGenieGuice.createInjector(new XMLReloadingOntologyModule("persistence-tests-ontology-configuration.xml", null) {
 
 					@Override
 					protected void bindIRIMapper() {
@@ -59,8 +59,8 @@ public class CommitAwareOntologyLoaderTest {
 						bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
 					}
 				},
-				new PersistenceBasicModule(testFolder),
-				new IOCModule() {
+				new PersistenceBasicModule(testFolder, null),
+				new IOCModule(null) {
 
 					@Override
 					protected void configure() {

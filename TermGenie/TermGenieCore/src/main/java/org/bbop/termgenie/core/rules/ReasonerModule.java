@@ -1,5 +1,7 @@
 package org.bbop.termgenie.core.rules;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 
 import com.google.inject.name.Names;
@@ -11,14 +13,15 @@ public class ReasonerModule extends IOCModule {
 	
 	/**
 	 * @param defaultReasonerName
+	 * @param applicationProperties
 	 */
-	public ReasonerModule(String defaultReasonerName) {
-		super();
+	public ReasonerModule(String defaultReasonerName, Properties applicationProperties) {
+		super(applicationProperties);
 		this.defaultReasonerName = defaultReasonerName;
 	}
 
-	public ReasonerModule() {
-		this(ReasonerFactoryImpl.ELK);
+	public ReasonerModule(Properties applicationProperties) {
+		this(ReasonerFactoryImpl.ELK, applicationProperties);
 	}
 
 	@Override

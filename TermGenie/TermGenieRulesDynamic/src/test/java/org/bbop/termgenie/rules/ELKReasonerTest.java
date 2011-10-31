@@ -43,7 +43,7 @@ public class ELKReasonerTest {
 				bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
 				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
 			}
-		}, new ReasonerModule("elk"));
+		}, new ReasonerModule("elk", null));
 
 		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);

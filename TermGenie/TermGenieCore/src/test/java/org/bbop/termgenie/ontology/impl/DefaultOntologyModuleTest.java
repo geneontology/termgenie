@@ -21,6 +21,10 @@ public class DefaultOntologyModuleTest {
 
 	public static class TestDefaultOntologyModule extends DefaultOntologyModule {
 
+		public TestDefaultOntologyModule() {
+			super(null);
+		}
+
 		@Override
 		protected void bindIRIMapper() {
 			bind(IRIMapper.class).to(LocalFileIRIMapper.class);

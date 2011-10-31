@@ -32,14 +32,18 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	private static final Logger logger = Logger.getLogger(TermGenieWebAppGOContextListener.class);
 	
+	public TermGenieWebAppGOContextListener() {
+		super("TermGenieWebAppGOConfigFile");
+	}
+	
 	@Override
 	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule("termgenie-go");
+		return new UserPermissionsModule("termgenie-go", applicationProperties);
 	}
 	
 	@Override
 	protected TermGenieServiceModule getServiceModule() {
-		return new TermGenieServiceModule() {
+		return new TermGenieServiceModule(applicationProperties) {
 
 			@Override
 			protected void bindTermCommitService() {
@@ -50,7 +54,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_go.xml") {
+		return new XMLReloadingOntologyModule("ontology-configuration_go.xml", applicationProperties) {
 
 			@Override
 			protected void bindOntologyLoader() {
@@ -63,21 +67,21 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_go.xml");
+		return new XMLDynamicRulesModule("termgenie_rules_go.xml", applicationProperties);
 	}
 
 	@Override
 	protected IOCModule getCommitModule() {
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		return new GeneOntologyCommitReviewModule(cvsFileName, cvsRoot);
+		return new GeneOntologyCommitReviewModule(cvsFileName, cvsRoot, applicationProperties);
 	}
 	
 	
 
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true) {
+		return new TermCommitReviewServiceModule(true, applicationProperties) {
 
 			@Override
 			@Singleton
@@ -95,7 +99,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		try {
 			// basic persistence
-			String dbFolderString = IOCModule.getProperty("TermgenieWebappGODatabaseFolder");
+			String dbFolderString = IOCModule.getSystemProperty("TermgenieWebappGODatabaseFolder", applicationProperties);
 			File dbFolder;
 			if (dbFolderString != null && !dbFolderString.isEmpty()) {
 				dbFolder = new File(dbFolderString);
@@ -105,12 +109,12 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 			}
 			logger.info("Using db folder: "+dbFolder);
 			FileUtils.forceMkdir(dbFolder);
-			modules.add(new PersistenceBasicModule(dbFolder));
+			modules.add(new PersistenceBasicModule(dbFolder, applicationProperties));
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 		// commit history and ontology id store
-		modules.add(new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf"));
+		modules.add(new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf", applicationProperties));
 		return modules;
 	}
 

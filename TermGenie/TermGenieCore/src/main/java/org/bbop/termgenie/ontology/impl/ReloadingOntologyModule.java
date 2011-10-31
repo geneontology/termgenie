@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,10 @@ import org.bbop.termgenie.ontology.OntologyLoader;
  * Ontology Module, which periodically reloads ontologies from the source.
  */
 public class ReloadingOntologyModule extends DefaultOntologyModule {
+
+	public ReloadingOntologyModule(Properties applicationProperties) {
+		super(applicationProperties);
+	}
 
 	@Override
 	protected void bindOntologyLoader() {

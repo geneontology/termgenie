@@ -1,6 +1,7 @@
 package org.bbop.termgenie.core.ioc;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -14,10 +15,36 @@ import com.google.inject.name.Names;
  */
 public abstract class IOCModule extends AbstractModule {
 
-	public static String getProperty(String name) {
+	protected final Properties applicationProperties;
+	
+	/**
+	 * @param applicationProperties
+	 */
+	protected IOCModule(Properties applicationProperties) {
+		super();
+		this.applicationProperties = applicationProperties;
+	}
+	
+	public static String getSystemProperty(String name) {
 		String property = System.getProperty("termgenie."+name, null);
 		if (property == null) {
 			property = System.getProperty("overwrite." + name, null);
+		}
+		return property;
+	}
+	
+	public static String getSystemProperty(String name, Properties applicationProperties) {
+		String property = getSystemProperty(name);
+		if (property == null && applicationProperties != null && !applicationProperties.isEmpty()) {
+			property = applicationProperties.getProperty(name, null);
+		}
+		return property;
+	}
+
+	public String getProperty(String name) {
+		String property = getSystemProperty(name);
+		if (property == null && applicationProperties != null && !applicationProperties.isEmpty()) {
+			property = applicationProperties.getProperty(name, null);
 		}
 		return property;
 	}

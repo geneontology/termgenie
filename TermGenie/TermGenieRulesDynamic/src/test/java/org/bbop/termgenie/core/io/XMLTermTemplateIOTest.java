@@ -33,7 +33,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
-				new IOCModule() {
+				new IOCModule(null) {
 
 					@Override
 					protected void configure() {

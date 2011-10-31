@@ -2,6 +2,7 @@ package org.bbop.termgenie.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.ioc.IOCModule;
@@ -19,6 +20,10 @@ import com.google.inject.Singleton;
  * Module containing the implementations for the TermGenie services.
  */
 public class TermGenieServiceModule extends IOCModule {
+
+	public TermGenieServiceModule(Properties applicationProperties) {
+		super(applicationProperties);
+	}
 
 	@Override
 	protected void configure() {

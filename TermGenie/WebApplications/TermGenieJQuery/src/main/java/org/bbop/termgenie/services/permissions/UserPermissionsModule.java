@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services.permissions;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 
 
@@ -9,9 +11,10 @@ public class UserPermissionsModule extends IOCModule {
 	
 	/**
 	 * @param applicationName
+	 * @param applicationProperties
 	 */
-	public UserPermissionsModule(String applicationName) {
-		super();
+	public UserPermissionsModule(String applicationName, Properties applicationProperties) {
+		super(applicationProperties);
 		this.applicationName = applicationName;
 	}
 

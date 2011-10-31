@@ -1,5 +1,7 @@
 package org.bbop.termgenie.services.review;
 
+import java.util.Properties;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -16,9 +18,10 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	
 	/**
 	 * @param enabled
+	 * @param applicationProperties
 	 */
-	public TermCommitReviewServiceModule(boolean enabled) {
-		super();
+	public TermCommitReviewServiceModule(boolean enabled, Properties applicationProperties) {
+		super(applicationProperties);
 		this.enabled = enabled;
 	}
 
