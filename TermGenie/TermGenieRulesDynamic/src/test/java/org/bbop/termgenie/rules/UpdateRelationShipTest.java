@@ -19,14 +19,11 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
-import org.obolibrary.obo2owl.Owl2Obo;
-import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -39,7 +36,6 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyRenameException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
@@ -125,8 +121,7 @@ public class UpdateRelationShipTest {
 				System.out.println(redundant);
 			}
 
-			OBODoc oboDoc = createOboDoc();
-			List<IRelation> relations = getRelations(exampleClass, oboDoc);
+			List<IRelation> relations = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
 			System.out.println("------------");
 			for (IRelation relation : relations) {
 				System.out.println(relation);
@@ -137,7 +132,7 @@ public class UpdateRelationShipTest {
 			assertTrue(subClasses.containsEntity(ecprtd));
 			assertTrue(subClasses.isSingleton());
 
-			List<IRelation> relations2 = getRelations(ecprtd, oboDoc);
+			List<IRelation> relations2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
 			System.out.println("------------");
 			assertEquals(4, relations2.size());
 			for (IRelation relation : relations2) {
@@ -199,24 +194,6 @@ public class UpdateRelationShipTest {
 
 		private OWLClass getOWLClassByIdentifier(String id) {
 			return wrapper.getOWLClass(wrapper.getOWLObjectByIdentifier(id));
-		}
-
-		private OBODoc createOboDoc() {
-			try {
-				Owl2Obo owl2Obo = new Owl2Obo();
-				OBODoc oboDoc = owl2Obo.convert(ontology);
-				return oboDoc;
-			} catch (OWLOntologyCreationException exception) {
-				fail(exception.getMessage());
-			}
-			return null;
-		}
-
-		private List<IRelation> getRelations(OWLClass owlClass, OBODoc oboDoc) {
-			String frameId = Owl2Obo.getIdentifier(owlClass.getIRI());
-			Frame frame = oboDoc.getTermFrame(frameId);
-			List<IRelation> relations = OBOConverterTools.extractRelations(frame, oboDoc);
-			return relations;
 		}
 	}
 }
