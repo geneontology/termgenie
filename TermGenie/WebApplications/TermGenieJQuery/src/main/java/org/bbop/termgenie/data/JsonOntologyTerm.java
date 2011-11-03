@@ -22,6 +22,7 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	private List<String> defXRef;
 	private List<JsonTermRelation> relations;
 	private Map<String, String> metaData;
+	private List<JsonTermRelation> changed;
 
 	public JsonOntologyTerm() {
 		super();
@@ -135,6 +136,20 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
 	}
+	
+	/**
+	 * @return the changed
+	 */
+	public List<JsonTermRelation> getChanged() {
+		return changed;
+	}
+	
+	/**
+	 * @param changed the changed to set
+	 */
+	public void setChanged(List<JsonTermRelation> changed) {
+		this.changed = changed;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -176,11 +191,16 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 			builder.append("metaData=");
 			builder.append(metaData.toString());
 		}
+		if (changed != null) {
+			builder.append(", ");
+			builder.append("changed=");
+			builder.append(changed);
+		}
 		builder.append("]");
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm convert(OntologyTerm<? extends ISynonym, ? extends IRelation> source) {
+	public static JsonOntologyTerm convert(OntologyTerm<? extends ISynonym, ? extends IRelation> source, List<? extends IRelation> changed) {
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setDefinition(source.getDefinition());
 		term.setDefXRef(source.getDefXRef());
@@ -195,6 +215,13 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 				jsonRelations.add(JsonTermRelation.convert(relation));
 			}
 			term.setRelations(jsonRelations);
+		}
+		if (changed != null && !changed.isEmpty()) {
+			List<JsonTermRelation> jsonChangedRelations = new ArrayList<JsonTermRelation>(changed.size());
+			for (IRelation relation : changed) {
+				jsonChangedRelations.add(JsonTermRelation.convert(relation));
+			}
+			term.setChanged(jsonChangedRelations);
 		}
 		return term;
 	}

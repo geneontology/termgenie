@@ -44,19 +44,19 @@ public class ComitAwareOBOConverterToolsTest extends ResourceLoader {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		OBOFormatParser parser = new OBOFormatParser();
 		OBODoc obodoc = parser.parse(reader);
-		assertEquals(LoadState.addSuccess, handleTerm(term, Modification.add, obodoc));
-		assertEquals(LoadState.addRedundant, handleTerm(term, Modification.add, obodoc));
+		assertEquals(LoadState.addSuccess, handleTerm(term, null, Modification.add, obodoc));
+		assertEquals(LoadState.addRedundant, handleTerm(term, null, Modification.add, obodoc));
 		assertClauseCount(2, "CARO:0001002", obodoc);
-		assertEquals(LoadState.modifyRedundant, handleTerm(term, Modification.modify, obodoc));
+		assertEquals(LoadState.modifyRedundant, handleTerm(term, null, Modification.modify, obodoc));
 		assertClauseCount(2, "CARO:0001002", obodoc);
 		
 		List<ISynonym> synonyms = Collections.<ISynonym>singletonList(new Synonym("Test merge synonym", "TEST", null, Collections.<String>emptySet()));
 		DefaultOntologyTerm termMod = new DefaultOntologyTerm("CARO:0001001", "neuron projection bundle", null, synonyms, null, null, null);
-		assertEquals(LoadState.modifySuccess, handleTerm(termMod, Modification.modify, obodoc));
+		assertEquals(LoadState.modifySuccess, handleTerm(termMod, null, Modification.modify, obodoc));
 		assertClauseCount(6, "CARO:0001001", obodoc);
 		
-		assertEquals(LoadState.removeSuccess, handleTerm(term, Modification.remove, obodoc));
-		assertEquals(LoadState.removeMissing, handleTerm(term, Modification.remove, obodoc));
+		assertEquals(LoadState.removeSuccess, handleTerm(term, null, Modification.remove, obodoc));
+		assertEquals(LoadState.removeMissing, handleTerm(term, null, Modification.remove, obodoc));
 	}
 
 	private void assertClauseCount(int count, String id, OBODoc oboDoc) {

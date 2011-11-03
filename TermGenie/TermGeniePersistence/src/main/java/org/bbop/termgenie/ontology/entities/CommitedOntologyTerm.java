@@ -32,6 +32,7 @@ public class CommitedOntologyTerm implements
 	private List<String> defXRef;
 	private List<CommitedOntologyTermRelation> relations;
 	private Map<String, String> metaData;
+	private List<CommitedOntologyTermRelation> changed;
 
 	private Modification operation;
 
@@ -182,6 +183,21 @@ public class CommitedOntologyTerm implements
 	 */
 	public void setOperation(Modification operation) {
 		this.operation = operation;
+	}
+
+	/**
+	 * @return the changed
+	 */
+	@PersistentCollection(elementCascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	public List<CommitedOntologyTermRelation> getChanged() {
+		return changed;
+	}
+
+	/**
+	 * @param changed the changed to set
+	 */
+	public void setChanged(List<CommitedOntologyTermRelation> changed) {
+		this.changed = changed;
 	}
 
 }

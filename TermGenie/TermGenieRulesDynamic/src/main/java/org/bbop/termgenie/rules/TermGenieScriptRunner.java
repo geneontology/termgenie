@@ -88,7 +88,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				sb.append(") differs from expected ontology (");
 				sb.append(templateOntologyName);
 				sb.append(')');
-				generationOutputs.add(new TermGenerationOutput(null, input, false, sb.toString()));
+				generationOutputs.add(TermGenerationOutput.error(input, sb.toString()));
 				continue;
 			}
 			
@@ -111,7 +111,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 						sb.append(missing.get(i));
 					}
 				}
-				generationOutputs.add(new TermGenerationOutput(null, input, false, sb.toString()));
+				generationOutputs.add(TermGenerationOutput.error(input, sb.toString()));
 				continue;
 			}
 			
@@ -264,8 +264,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		}
 
 		protected List<TermGenerationOutput> createError(String message) {
-			TermGenerationOutput error = new TermGenerationOutput(null, input, false, message);
-			return Collections.singletonList(error);
+			return Collections.singletonList(TermGenerationOutput.error(input, message));
 		}
 	}
 

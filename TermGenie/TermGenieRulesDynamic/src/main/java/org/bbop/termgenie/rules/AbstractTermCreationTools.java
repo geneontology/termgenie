@@ -19,7 +19,6 @@ import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
-import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -246,21 +245,21 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		String owlNewId = getNewId();
 
 		try {
-			Pair<List<IRelation>,Set<OWLClass>> pair = createRelations(logicalDefinition, owlNewId, label, changeTracker);
-			if (pair.getTwo() != null) {
-				for (OWLClass owlClass : pair.getTwo()) {
+			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
+			if (inferredRelations.equivalentClasses != null) {
+				for (OWLClass owlClass : inferredRelations.equivalentClasses) {
 					output.add(singleError("The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +"' with the same logic definition already exists",
 							input));					
 				}
 				return;
 			}
-			List<IRelation> relations = pair.getOne();
+			List<IRelation> relations = inferredRelations.classRelations;
 			if (relations != null && !relations.isEmpty()) {
 				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
 			}
 			String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
 			DefaultOntologyTerm term = new DefaultOntologyTerm(oboNewId, label, definition, synonyms, defxrefs, metaData, relations);
-			output.add(success(term, input));
+			output.add(success(term, inferredRelations.changed, input));
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
 		}
@@ -287,8 +286,33 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		}
 	}
 	
-	protected abstract Pair<List<IRelation>, Set<OWLClass>> createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
+	protected abstract InferredRelations createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
+	static class InferredRelations {
+		
+		static final InferredRelations EMPTY = new InferredRelations(Collections.<IRelation>emptyList(), null);
+		
+		List<IRelation> classRelations = null;
+		List<IRelation> changed = null;
+		Set<OWLClass> equivalentClasses = null;
+		
+		/**
+		 * @param equivalentClasses
+		 */
+		InferredRelations(Set<OWLClass> equivalentClasses) {
+			this.equivalentClasses = equivalentClasses;
+		}
+		
+		/**
+		 * @param classRelations
+		 * @param directSubClasses
+		 */
+		InferredRelations(List<IRelation> classRelations, List<IRelation> changed) {
+			this.classRelations = classRelations;
+			this.changed = changed;
+		}
+	}
+	
 	private List<String> getDefXref() {
 		return getInputs("DefX_Ref");
 	}
@@ -308,11 +332,11 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	}
 
 	protected TermGenerationOutput singleError(String message, TermGenerationInput input) {
-		return new TermGenerationOutput(null, input, false, message);
+		return TermGenerationOutput.error(input, message);
 	}
 
-	protected TermGenerationOutput success(OntologyTerm<ISynonym, IRelation> term, TermGenerationInput input) {
-		return new TermGenerationOutput(term, input, true, null);
+	protected TermGenerationOutput success(OntologyTerm<ISynonym, IRelation> term, List<IRelation> changed, TermGenerationInput input) {
+		return new TermGenerationOutput(term, changed, input, true, null);
 	}
 	
 	@Override

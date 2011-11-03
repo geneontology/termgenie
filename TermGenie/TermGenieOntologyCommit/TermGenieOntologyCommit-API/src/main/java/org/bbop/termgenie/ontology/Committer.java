@@ -2,11 +2,8 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.tools.Pair;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Methods for committing changes to an ontology
@@ -34,7 +31,7 @@ public interface Committer {
 
 		private final boolean success;
 		private final String message;
-		private final List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms;
+		private final List<CommitObject<TermCommit>> terms;
 		private final String diff;
 
 		/**
@@ -45,7 +42,7 @@ public interface Committer {
 		 */
 		public CommitResult(boolean success,
 				String message,
-				List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
+				List<CommitObject<TermCommit>> terms,
 				String diff)
 		{
 			super();
@@ -79,7 +76,7 @@ public interface Committer {
 		/**
 		 * @return the terms
 		 */
-		public List<CommitObject<OntologyTerm<ISynonym, IRelation>>> getTerms() {
+		public List<CommitObject<TermCommit>> getTerms() {
 			return terms;
 		}
 	}

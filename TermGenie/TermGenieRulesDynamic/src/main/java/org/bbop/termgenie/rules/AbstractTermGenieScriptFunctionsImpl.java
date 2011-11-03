@@ -314,8 +314,7 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 	}
 
 	protected TermGenerationOutput createError(String message) {
-		TermGenerationOutput error = new TermGenerationOutput(null, tools.input, false, message);
-		return error;
+		return TermGenerationOutput.error(tools.input, message);
 	}
 
 	public List<TermGenerationOutput> getResult() {

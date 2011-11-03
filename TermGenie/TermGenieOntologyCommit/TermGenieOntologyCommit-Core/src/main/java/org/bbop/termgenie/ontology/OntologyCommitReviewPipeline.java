@@ -13,6 +13,7 @@ import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -286,13 +287,16 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<CommitObject<OntologyTerm<ISynonym, IRelation>>> createResultTerms(CommitHistoryItem item)
+	private List<CommitObject<TermCommit>> createResultTerms(CommitHistoryItem item)
 	{
-		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = new ArrayList<CommitObject<OntologyTerm<ISynonym, IRelation>>>();
+		List<CommitObject<TermCommit>> terms = new ArrayList<CommitObject<TermCommit>>();
 		for(CommitedOntologyTerm term: item.getTerms()) {
 			OntologyTerm<ISynonym, IRelation> t = (OntologyTerm) term;
+			List<IRelation> changed = (List) term.getChanged();
+			TermCommit c = new TermCommit(t, changed);
 			Modification mod = term.getOperation();
-			terms.add(new CommitObject<OntologyTerm<ISynonym, IRelation>>(t, mod));
+			term.getChanged();
+			terms.add(new CommitObject<TermCommit>(c, mod));
 		}
 		return terms;
 	}

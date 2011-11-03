@@ -273,6 +273,10 @@ h1 {
 	background-color: #fff;
 }
 
+.termgenie-temp-identfier {
+	color: #CC0000;
+}
+
 .termgenie-select-template-input-field {
 	margin-left: 10px;
 	padding-left: 5px;

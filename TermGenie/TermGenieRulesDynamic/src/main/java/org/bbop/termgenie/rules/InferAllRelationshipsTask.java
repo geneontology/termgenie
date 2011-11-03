@@ -1,12 +1,13 @@
 package org.bbop.termgenie.rules;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
+import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
@@ -28,9 +29,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private final IRI iri;
 	private final OWLChangeTracker changeTracker;
 	
-	private List<IRelation> relations = Collections.emptyList();
-	private Set<OWLClass> equivalentClasses = null;
-	private Set<OWLClass> subClasses = null;
+	private InferredRelations result;
 
 	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker) {
 		super();
@@ -54,32 +53,31 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		}
 		OWLClass owlClass = ontology.getOWLClass(iri);
 		Node<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass);
-		if (equivalentClasses.getSize() > 1) {
-			this.equivalentClasses = equivalentClasses.getEntities();
-			this.equivalentClasses.remove(owlClass);
+		if (equivalentClasses != null && equivalentClasses.getSize() > 1) {
+			Set<OWLClass> equivalentClassesSet = equivalentClasses.getEntities();
+			equivalentClassesSet.remove(owlClass);
+			result = new InferredRelations(equivalentClassesSet);
 		} else {
+			List<IRelation> changed = null;
 			NodeSet<OWLClass> subClasses = reasoner.getSubClasses(owlClass, true);
-			if (!subClasses.isEmpty()) {
-				this.subClasses = subClasses.getFlattened();
+			if (subClasses != null && !subClasses.isEmpty()) {
+				changed = new ArrayList<IRelation>();
+				for (OWLClass subClass : subClasses.getFlattened()) {
+					changed.addAll(OwlTranslatorTools.extractRelations(subClass, ontology));
+				}
 			}
-			relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
-				
+			List<IRelation> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
+			result = new InferredRelations(relations, changed);
 		}
 		return Modified.no;
 	}
 
-	public List<IRelation> getRelations() {
-		return relations;
+	
+	/**
+	 * @return the {@link InferredRelations}
+	 */
+	public final InferredRelations getInferredRelations() {
+		return result;
 	}
 
-	/**
-	 * @return the equivalentClasses
-	 */
-	public Set<OWLClass> getEquivalentClasses() {
-		return equivalentClasses;
-	}
-	
-	public Set<OWLClass> getSubClasses() {
-		return subClasses;
-	}
 }

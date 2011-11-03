@@ -140,7 +140,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setId(term.getId());
 			jsonDiff.setUuid(term.getUuid());
 			
-			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), oboDoc);
+			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getChanged(), term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
 				try {
 					jsonDiff.setDiff(OBOWriterTools.writeTerm(term.getId(), oboDoc));

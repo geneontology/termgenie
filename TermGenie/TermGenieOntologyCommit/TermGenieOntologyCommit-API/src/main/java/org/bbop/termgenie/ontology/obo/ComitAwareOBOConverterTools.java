@@ -1,11 +1,13 @@
 package org.bbop.termgenie.ontology.obo;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -65,7 +67,8 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 		}
 	}
 	
-	public static LoadState handleTerm(OntologyTerm<? extends ISynonym, ? extends IRelation> term,
+	public static LoadState handleTerm(OntologyTerm<? extends ISynonym, ? extends  IRelation> term,
+			List<? extends IRelation> changed,
 			Modification mode,
 			OBODoc obodoc)
 	{
@@ -123,6 +126,13 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 			default:
 				return LoadState.unknown;
 		}
+	}
+	
+	public static LoadState handleTerm(TermCommit termCommit,
+			Modification mode,
+			OBODoc obodoc)
+	{
+		return handleTerm(termCommit.getTerm(), termCommit.getChanged(), mode, obodoc);
 	}
 	
 	private static void merge(Frame target, Frame addOn) throws FrameMergeException {

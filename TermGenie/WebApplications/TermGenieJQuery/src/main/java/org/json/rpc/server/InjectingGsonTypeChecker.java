@@ -10,9 +10,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.rpc.commons.GsonTypeChecker;
 import org.json.rpc.commons.TypeChecker;
@@ -213,7 +212,7 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
         return isValidType(clazz, throwException, null);
     }
 	
-	private boolean isValidType(Type type, boolean throwException, Set<Class<?>> visited) {
+	private boolean isValidType(Type type, boolean throwException, Map<Class<?>, Boolean> visited) {
 		Class<?> clazz = null;
 		if (type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -231,7 +230,7 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 		return isValidType(clazz, throwException, visited);
 	}
 	
-	private boolean isValidType(Class<?> clazz, boolean throwException, Set<Class<?>> visited) {
+	private boolean isValidType(Class<?> clazz, boolean throwException, Map<Class<?>, Boolean> visited) {
         if (isSimpleType(clazz)) {
             return true;
         }
@@ -285,14 +284,14 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
         }
 
         // avoid circular references
-        visited = (visited == null ? new HashSet<Class<?>>() : visited);
-        if (visited.contains(clazz)) {
+        visited = (visited == null ? new HashMap<Class<?>, Boolean>() : visited);
+        if (visited.containsKey(clazz) && visited.get(clazz) == null) {
             if (throwException) {
                 throw new IllegalArgumentException("circular reference detected : " + clazz);
             }
             return false;
         }
-        visited.add(clazz);
+        visited.put(clazz, null);
 
         // Check for fields because Gson uses fields
         for (Field f : clazz.getDeclaredFields()) {
@@ -326,6 +325,7 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
                 }
             }
         }
+        visited.put(clazz, Boolean.TRUE);
 
 
         return true;

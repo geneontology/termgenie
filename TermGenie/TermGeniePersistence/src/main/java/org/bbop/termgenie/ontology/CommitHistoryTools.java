@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -114,7 +115,7 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	public static CommitHistoryItem create(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
+	public static CommitHistoryItem create(List<CommitObject<TermCommit>> terms,
 			String user,
 			Date date)
 	{
@@ -127,23 +128,26 @@ public class CommitHistoryTools {
 		return item;
 	}
 	
-	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms)
+	private static List<CommitedOntologyTerm> translateTerms(List<CommitObject<TermCommit>> terms)
 	{
 		List<CommitedOntologyTerm> result = null;
 		if (terms != null && !terms.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTerm>(terms.size());
-			for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : terms) {
+			for (CommitObject<TermCommit> commitObject : terms) {
 				CommitedOntologyTerm term = new CommitedOntologyTerm();
+				
+				OntologyTerm<ISynonym, IRelation> storedTerm = commitObject.getObject().getTerm();
 
-				term.setId(commitObject.getObject().getId());
-				term.setLabel(commitObject.getObject().getLabel());
-				term.setDefinition(commitObject.getObject().getDefinition());
-				term.setDefXRef(commitObject.getObject().getDefXRef());
-				term.setMetaData(commitObject.getObject().getMetaData());
+				term.setId(storedTerm.getId());
+				term.setLabel(storedTerm.getLabel());
+				term.setDefinition(storedTerm.getDefinition());
+				term.setDefXRef(storedTerm.getDefXRef());
+				term.setMetaData(storedTerm.getMetaData());
 
-				term.setSynonyms(translateSynonyms(commitObject.getObject().getSynonyms()));
+				term.setSynonyms(translateSynonyms(storedTerm.getSynonyms()));
 				term.setOperation(commitObject.getType());
-				term.setRelations(translateRelations(commitObject.getObject().getRelations()));
+				term.setRelations(translateRelations(storedTerm.getRelations()));
+				term.setChanged(translateRelations(commitObject.getObject().getChanged()));
 				result.add(term);
 			}
 		}

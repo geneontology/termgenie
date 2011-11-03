@@ -49,6 +49,28 @@ public class JsonRpcConformityTest {
 		assertTrue(validType);
 	}
 	
+	@Test
+	public void testMultipleReferences() {
+		TypeChecker checker = new InjectingGsonTypeChecker();
+
+		boolean validType = checker.isValidType(TestSimple.class, true);
+		assertTrue(validType);
+		
+		validType = checker.isValidInterface(TestMultiple.class, true);
+		assertTrue(validType);
+	}
+	
+	@Test
+	public void testCircle() {
+		TypeChecker checker = new InjectingGsonTypeChecker();
+
+		boolean validType = checker.isValidInterface(Circle1.class, false);
+		assertFalse(validType);
+		
+		validType = checker.isValidInterface(Circle2.class, false);
+		assertFalse(validType);
+	}
+	
 	public static interface TestGenericInterface {
 
 		public String getSimple();
@@ -66,11 +88,37 @@ public class JsonRpcConformityTest {
 		public void setMap(Map<String, String> map);
 	}
 	
-	public interface TestComplexGenericMap {
+	public static interface TestComplexGenericMap {
 
 		public Map<String, List<String>> getComplexMap();
 
 		public void setComplexMap(Map<String, List<String>> map);
 
+	}
+	
+	public static class TestSimple {
+		
+		public String getSimple() {
+			return null;
+		}
+	}
+	
+	public static interface TestMultiple {
+		
+		public TestSimple getSimple1();
+		
+		public TestSimple getSimple2(TestSimple t);
+		
+		public TestSimple getSimple3();
+	}
+	
+	public static interface Circle1 {
+		
+		public Circle2 getCircle();
+	}
+	
+	public static interface Circle2 {
+		
+		public Circle1 getCircle();
 	}
 }

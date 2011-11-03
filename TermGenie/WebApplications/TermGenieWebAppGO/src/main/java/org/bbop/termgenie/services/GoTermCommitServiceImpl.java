@@ -3,11 +3,9 @@ package org.bbop.termgenie.services;
 import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.CommitInfo;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyIdManager;
@@ -19,7 +17,6 @@ import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -63,8 +60,7 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 	}
 
 	@Override
-	protected CommitInfo createCommitInfo(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
-			List<CommitObject<Relation>> relations,
+	protected CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
 			String termgenieUser,
 			CommitUserData commitUserData) {
 		String screenname = commitUserData.getScreenname();

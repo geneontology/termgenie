@@ -3,14 +3,11 @@ package org.bbop.termgenie.services.review;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class JsonCommitReviewCommitResult extends JsonResult {
 
@@ -88,14 +85,14 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		return result;
 	}
 
-	private static List<JsonOntologyTerm> convert(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms)
+	private static List<JsonOntologyTerm> convert(List<CommitObject<TermCommit>> terms)
 	{
 		if (terms == null) {
 			return null;
 		}
 		List<JsonOntologyTerm> jsonTerms = new ArrayList<JsonOntologyTerm>();
-		for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : terms) {
-			jsonTerms.add(JsonOntologyTerm.convert(commitObject.getObject()));
+		for (CommitObject<TermCommit> commitObject : terms) {
+			jsonTerms.add(JsonOntologyTerm.convert(commitObject.getObject().getTerm(), commitObject.getObject().getChanged()));
 		}
 		return jsonTerms;
 	}

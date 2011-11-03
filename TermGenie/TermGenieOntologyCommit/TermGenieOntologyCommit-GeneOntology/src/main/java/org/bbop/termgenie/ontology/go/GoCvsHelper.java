@@ -12,12 +12,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
@@ -29,8 +28,6 @@ import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -253,12 +250,12 @@ public abstract class GoCvsHelper {
 		}
 	}
 
-	protected boolean applyChanges(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
+	protected boolean applyChanges(List<CommitObject<TermCommit>> terms,
 			final OBODoc oboDoc)
 	{
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
-			for (CommitObject<OntologyTerm<ISynonym, IRelation>> commitObject : terms) {
+			for (CommitObject<TermCommit> commitObject : terms) {
 				boolean csuccess = LoadState.isSuccess(handleTerm(commitObject.getObject(),
 						commitObject.getType(),
 						oboDoc));
@@ -280,7 +277,7 @@ public abstract class GoCvsHelper {
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
-				boolean csuccess = LoadState.isSuccess(handleTerm(term, term.getOperation(), oboDoc));
+				boolean csuccess = LoadState.isSuccess(handleTerm(term, term.getChanged(), term.getOperation(), oboDoc));
 				success = success && csuccess;
 			}
 		}

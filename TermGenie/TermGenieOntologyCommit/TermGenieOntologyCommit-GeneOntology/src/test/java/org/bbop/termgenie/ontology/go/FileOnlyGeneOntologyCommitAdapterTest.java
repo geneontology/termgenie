@@ -18,6 +18,7 @@ import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
@@ -98,20 +99,20 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 
 	@Test
 	public void testCommit() throws CommitException {
-		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms = createCommitTerms();
+		List<CommitObject<TermCommit>> terms = createCommitTerms();
 		CommitInfo commitInfo = new CommitInfo(terms, "junit-test", CommitMode.anonymus, null, null);
 		CommitResult commitResult = instance.commit(commitInfo);
 		assertTrue(commitResult.isSuccess());
 		System.out.println(commitResult.getDiff());
 	}
 
-	private List<CommitObject<OntologyTerm<ISynonym, IRelation>>> createCommitTerms() {
-		List<CommitObject<OntologyTerm<ISynonym, IRelation>>> list = new ArrayList<CommitObject<OntologyTerm<ISynonym,IRelation>>>(2);
+	private List<CommitObject<TermCommit>> createCommitTerms() {
+		List<CommitObject<TermCommit>> list = new ArrayList<CommitObject<TermCommit>>(2);
 		
 		OntologyTerm<ISynonym, IRelation> term1 = createTerm(1, "GO:0003332", "Biological Process");
 		OntologyTerm<ISynonym, IRelation> term2 = createTerm(2, term1.getId(), term1.getLabel());
-		list.add(new CommitObject<OntologyTerm<ISynonym,IRelation>>(term2, Modification.add));
-		list.add(new CommitObject<OntologyTerm<ISynonym,IRelation>>(term1, Modification.add));
+		list.add(new CommitObject<TermCommit>(new TermCommit(term2, null), Modification.add));
+		list.add(new CommitObject<TermCommit>(new TermCommit(term1, null), Modification.add));
 		
 		return list;
 	}

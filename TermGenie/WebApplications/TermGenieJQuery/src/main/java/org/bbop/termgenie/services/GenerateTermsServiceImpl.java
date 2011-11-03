@@ -163,7 +163,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.convert(candidate.getTerm());
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.convert(candidate.getTerm(), candidate.getChangedTermRelations());
 					jsonCandidates.add(jsonCandidate);
 				}
 				else {

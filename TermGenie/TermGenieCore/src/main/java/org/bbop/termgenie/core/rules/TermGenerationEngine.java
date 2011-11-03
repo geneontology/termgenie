@@ -92,23 +92,31 @@ public interface TermGenerationEngine {
 	public class TermGenerationOutput {
 
 		private final OntologyTerm<ISynonym, IRelation> term;
+		private final List<IRelation> changedTermRelations;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
 
+		public static TermGenerationOutput error(TermGenerationInput input, String message) {
+			return new TermGenerationOutput(null, null, input, false, message);
+		}
+		
 		/**
 		 * @param term
+		 * @param changedTermRelations 
 		 * @param input
 		 * @param success
 		 * @param message
 		 */
 		public TermGenerationOutput(OntologyTerm<ISynonym, IRelation> term,
+				List<IRelation> changedTermRelations,
 				TermGenerationInput input,
 				boolean success,
 				String message)
 		{
 			super();
 			this.term = term;
+			this.changedTermRelations = changedTermRelations;
 			this.input = input;
 			this.success = success;
 			this.message = message;
@@ -141,6 +149,13 @@ public interface TermGenerationEngine {
 		public String getMessage() {
 			return message;
 		}
+		
+		/**
+		 * @return the changedTermRelations
+		 */
+		public final List<IRelation> getChangedTermRelations() {
+			return changedTermRelations;
+		}
 
 		@Override
 		public String toString() {
@@ -152,6 +167,11 @@ public interface TermGenerationEngine {
 				builder.append(", ");
 				builder.append("term=");
 				builder.append(term);
+			}
+			if (changedTermRelations != null) {
+				builder.append(", ");
+				builder.append("changedTermRelations=");
+				builder.append(changedTermRelations);
 			}
 			if (message != null) {
 				builder.append(", ");

@@ -9,8 +9,51 @@ import owltools.graph.OWLGraphWrapper.ISynonym;
 
 
 public class CommitInfo {
+	
+	public static class TermCommit {
+		
+		private OntologyTerm<ISynonym, IRelation> term;
+		private List<IRelation> changed;
+		
+		/**
+		 * @param term
+		 * @param changed
+		 */
+		public TermCommit(OntologyTerm<ISynonym, IRelation> term, List<IRelation> changed) {
+			this.term = term;
+			this.changed = changed;
+		}
 
-	private final List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms;
+		/**
+		 * @return the term
+		 */
+		public OntologyTerm<ISynonym, IRelation> getTerm() {
+			return term;
+		}
+		
+		/**
+		 * @param term the term to set
+		 */
+		public void setTerm(OntologyTerm<ISynonym, IRelation> term) {
+			this.term = term;
+		}
+		
+		/**
+		 * @return the changed
+		 */
+		public List<IRelation> getChanged() {
+			return changed;
+		}
+		
+		/**
+		 * @param changed the changed to set
+		 */
+		public void setChanged(List<IRelation> changed) {
+			this.changed = changed;
+		}
+	}
+
+	private final List<CommitObject<TermCommit>> terms;
 	
 	public enum CommitMode {
 		anonymus, internal, explicit
@@ -29,7 +72,7 @@ public class CommitInfo {
 	 * @param username
 	 * @param password
 	 */
-	public CommitInfo(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
+	public CommitInfo(List<CommitObject<TermCommit>> terms,
 			String termgenieUser,
 			CommitMode commitMode,
 			String username,
@@ -46,7 +89,7 @@ public class CommitInfo {
 	/**
 	 * @return the terms
 	 */
-	public List<CommitObject<OntologyTerm<ISynonym, IRelation>>> getTerms() {
+	public List<CommitObject<TermCommit>> getTerms() {
 		return terms;
 	}
 

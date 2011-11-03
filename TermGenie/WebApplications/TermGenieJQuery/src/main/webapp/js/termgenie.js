@@ -1420,7 +1420,10 @@ function termgenie(){
 			interalLayoutTable.addClass('termgenie-review-panel-term-details-table');
 			elem.append(interalLayoutTable);
 			
-			interalLayoutTable.append('<tr class="header"><td>Label</td><td>Definition</td><td>Def_XRef</td></tr>')
+			interalLayoutTable.append('<tr class="header"><td>Temporary Term Identifier</td></tr>');
+			interalLayoutTable.append('<tr class="values"><td class="termgenie-pre nobr termgenie-temp-identfier">'+term.tempId+'</td></tr>');
+			
+			interalLayoutTable.append('<tr class="header"><td>Label</td><td>Definition</td><td>Def_XRef</td></tr>');
 			var trElement = jQuery('<tr class="values"></tr>');
 			interalLayoutTable.append(trElement);
 			
@@ -1455,13 +1458,23 @@ function termgenie(){
 			
 			// Metadata
 			tdElement  = jQuery('<td></td>');
-			trElement.append(tdElement)
+			trElement.append(tdElement);
 			MetaDataFieldReviewPanel(tdElement, term.metaData);
 			
 			// Relations
 			tdElement  = jQuery('<td></td>');
 			trElement.append(tdElement)
 			RelationFieldReviewPanel(tdElement, term.relations);
+			
+			// changed Relations
+			if(term.changed && term.changed.length > 0) {
+				interalLayoutTable.append('<tr class="header"><td colspan="3" >Changed Relations</td></tr>')
+				trElement = jQuery('<tr class="values"></tr>');
+				interalLayoutTable.append(trElement);
+				tdElement  = jQuery('<td colspan="3"></td>');
+				trElement.append(tdElement);
+				ChangedRelationsFieldReviewPanel(tdElement, term.changed);
+			}
 			
 			return {
 				/**
@@ -1714,6 +1727,46 @@ function termgenie(){
 			}
 			
 			/**
+			 * Render the changed relations. This is a read-only field.
+			 * 
+			 * @param parent
+			 * @param relations
+			 */
+			function ChangedRelationsFieldReviewPanel(parent, relations) {
+				parent.css('height','100%');
+				var divElem = jQuery('<div></div>');
+				parent.append(divElem);
+				var table = createLayoutTable();
+				table.appendTo(divElem);
+				
+				// group relations per source term
+				var relMap = {};
+				jQuery.each(relations, function(index, relation){
+					var rendered = renderRelation(relation);
+					if (rendered !== null) {
+						var source = relation.source;
+						var relList = relMap[source];
+						if (!relList) {
+							relList = [];
+							relMap[source] = relList;
+						}
+						relList.push(rendered);
+					}
+				});
+				
+				jQuery.each(relMap, function(source, relList){
+					jQuery.each(relList, function(index, relString){
+						if(index === 0) {
+							table.append('<tr><td>'+source+'</td><td class="termgenie-pre nobr">'+relString+'</td></tr>');
+						}
+						else {
+							table.append('<tr><td></td><td class="termgenie-pre nobr">'+relString+'</td></tr>');
+						}
+					});
+				});
+			}
+			
+			/**
 			 * Render the relations. Currently this is read-only.
 			 * 
 			 * @param parent
@@ -1728,35 +1781,9 @@ function termgenie(){
 				table.appendTo(divElem);
 				if(relations && relations.length > 0) {
 					jQuery.each(relations, function(index, relation){
-						// create map from array based objects
-						var relProperties = relation.properties;
-						
-						// check type
-						var type = relProperties.type;
-						if (type && type.length !== 0) {
-							// only append relation, if a type is given
-							var sb;
-							if(type === 'is_a') {
-								sb = 'is_a: '+ relation.target;
-							}
-							else if (type === 'intersection_of') {
-								sb = 'intersection_of: ';
-								var intersectionRelationship = relProperties.relationship;
-								if (intersectionRelationship && intersectionRelationship.length !== 0) {
-									sb += intersectionRelationship + ' ';
-								}
-								sb += relation.target;
-							}
-							else if (type === 'union_of') {
-								sb = 'union_of: '+ relation.target;
-							}
-							else {
-								sb = 'relationship: '+ relProperties.relationship + ' ' + relation.target;
-							}
-							if(relation.targetLabel && relation.targetLabel.length > 0) {
-								sb += ' ! ' + relation.targetLabel;
-							}
-							table.append('<tr><td class="termgenie-pre nobr">'+sb+'</td></tr>');
+						var relString = renderRelation(relation);
+						if (relString && relString !== null) {
+							table.append('<tr><td class="termgenie-pre nobr">'+relString+'</td></tr>');
 						}
 					});
 				}
@@ -1766,6 +1793,51 @@ function termgenie(){
 				return {
 					relations: relations
 				};
+			}
+			
+			/**
+			 * Render a relation as obo format string
+			 * 
+			 * @param relation
+			 * @returns {String} or null
+			 */
+			function renderRelation(relation) {
+				var relProperties = relation.properties;
+				// check type
+				var type = relProperties.type;
+				if (type && type.length !== 0) {
+					// only append relation, if a type is given
+					var sb;
+					if(type === 'is_a') {
+						sb = 'is_a: '+ renderTarget(relation.target);
+					}
+					else if (type === 'intersection_of') {
+						sb = 'intersection_of: ';
+						var intersectionRelationship = relProperties.relationship;
+						if (intersectionRelationship && intersectionRelationship.length !== 0) {
+							sb += intersectionRelationship + ' ';
+						}
+						sb += renderTarget(relation.target);
+					}
+					else if (type === 'union_of') {
+						sb = 'union_of: '+ renderTarget(relation.target);
+					}
+					else {
+						sb = 'relationship: '+ relProperties.relationship + ' ' + renderTarget(relation.target);
+					}
+					if(relation.targetLabel && relation.targetLabel.length > 0) {
+						sb += ' ! ' + relation.targetLabel;
+					}
+					return sb;
+				}
+				return null;
+				
+				function renderTarget(target) {
+					if (target.indexOf('TEMP') !== -1) {
+						return '<span class="termgenie-temp-identfier">'+target+'</span>';
+					}
+					return target;
+				}
 			}
 			
 			/**

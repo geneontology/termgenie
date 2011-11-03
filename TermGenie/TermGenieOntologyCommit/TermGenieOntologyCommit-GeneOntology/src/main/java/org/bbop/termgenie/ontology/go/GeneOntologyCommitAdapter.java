@@ -3,29 +3,27 @@ package org.bbop.termgenie.ontology.go;
 import java.io.File;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
 import org.obolibrary.oboformat.model.OBODoc;
 
-import owltools.graph.OWLGraphWrapper.ISynonym;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, OboCommitData, OBODoc> {
+public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, OboCommitData, OBODoc>
+{
 
 	protected final GoCvsHelper helper;
-	
+
 	@Inject
 	GeneOntologyCommitAdapter(@Named("GeneOntology") final OntologyTaskManager source,
 			final CommitHistoryStore store,
@@ -34,7 +32,7 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
 	}
-	
+
 	@Override
 	protected OboCommitData prepareWorkflow(File workFolder) throws CommitException {
 		return helper.prepareWorkflow(workFolder);
@@ -61,9 +59,7 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 	}
 
 	@Override
-	protected boolean applyChanges(List<CommitObject<OntologyTerm<ISynonym, IRelation>>> terms,
-			final OBODoc oboDoc)
-	{
+	protected boolean applyChanges(List<CommitObject<TermCommit>> terms, final OBODoc oboDoc) {
 		return helper.applyChanges(terms, oboDoc);
 	}
 
@@ -75,10 +71,8 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<CVSTools, 
 	}
 
 	@Override
-	protected void commitToRepository(String username,
-			CVSTools scm,
-			OboCommitData data,
-			String diff) throws CommitException
+	protected void commitToRepository(String username, CVSTools scm, OboCommitData data, String diff)
+			throws CommitException
 	{
 		helper.commitToRepository(username, scm, data, diff);
 	}

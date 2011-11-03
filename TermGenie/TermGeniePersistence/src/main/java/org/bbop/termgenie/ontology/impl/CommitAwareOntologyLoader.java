@@ -63,7 +63,7 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 					if (terms != null) {
 						List<CommitedOntologyTerm> redundant = new ArrayList<CommitedOntologyTerm>(terms.size());
 						for (CommitedOntologyTerm term : terms) {
-							LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getOperation(), obodoc);
+							LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getChanged(), term.getOperation(), obodoc);
 							if (!LoadState.isSuccess(state)) {
 								if(LoadState.isError(state)) {
 									logger.warn("Could not apply change item #"+item.getId()+" term #"+term.getUuid());
