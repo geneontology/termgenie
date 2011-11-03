@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +86,63 @@ public class OBOConverterTools {
 		Clause clause = translateRelation(relation, id);
 		if (clause != null) {
 			frame.addClause(clause);
+		}
+	}
+	
+	
+	private static final Set<String> updateRelations = createUpdateRelations();
+	
+	private static Set<String> createUpdateRelations() {
+		HashSet<String> set = new HashSet<String>();
+		set.add(OboFormatTag.TAG_IS_A.getTag());
+		set.add(OboFormatTag.TAG_INTERSECTION_OF.getTag());
+		set.add(OboFormatTag.TAG_UNION_OF.getTag());
+		// Do NOT add disjoint_from
+		set.add(OboFormatTag.TAG_RELATIONSHIP.getTag());
+		return Collections.unmodifiableSet(set);
+	}
+	
+	public static void fillChangedRelations(OBODoc oboDoc,
+			List<? extends IRelation> changed,
+			List<String> modIds)
+	{
+		if (changed != null && !changed.isEmpty()) {
+			Map<String, List<IRelation>> groups = new HashMap<String, List<IRelation>>();
+			for (IRelation change : changed) {
+				List<IRelation> list = groups.get(change.getSource());
+				if (list == null) {
+					list = new ArrayList<IRelation>();
+					groups.put(change.getSource(), list);
+				}
+				list.add(change);
+			}
+			
+			for(String modId : groups.keySet()) {
+				if (modIds != null) {
+					modIds.add(modId);
+				}
+				Frame frame = oboDoc.getTermFrame(modId);
+				Collection<Clause> clauses = frame.getClauses();
+				
+				// remove old relations, except disjoint_from
+				Iterator<Clause> iterator = clauses.iterator();
+				while (iterator.hasNext()) {
+					Clause clause = iterator.next();
+					String tag = clause.getTag();
+					if (updateRelations.contains(tag)) {
+						iterator.remove();
+					}
+				}
+				
+				List<IRelation> relations = groups.get(modId);
+				List<Clause> newRelations = translateRelations(relations, null);
+				for (Clause newRelation : newRelations) {
+					String tag = newRelation.getTag();
+					if (updateRelations.contains(tag)) {
+						clauses.add(newRelation);
+					}
+				}
+			}
 		}
 	}
 	
