@@ -242,6 +242,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		if (comment != null && comment.length() > 0) {
 			metaData.put(OboFormatTag.TAG_COMMENT.getTag(), comment);
 		}
+		String oboNamespace = this.input.getTermTemplate().getOboNamespace();
+		if (oboNamespace != null) {
+			metaData.put(OboFormatTag.TAG_NAMESPACE.getTag(), oboNamespace);
+		}
 		String owlNewId = getNewId();
 
 		try {
