@@ -1745,12 +1745,14 @@ function termgenie(){
 					var rendered = renderRelation(relation);
 					if (rendered !== null) {
 						var source = relation.source;
-						var relList = relMap[source];
-						if (!relList) {
-							relList = [];
-							relMap[source] = relList;
+						if(isTempIdentifier(relation.target)) {
+							var relList = relMap[source];
+							if (!relList) {
+								relList = [];
+								relMap[source] = relList;
+							}
+							relList.push(rendered);
 						}
-						relList.push(rendered);
 					}
 				});
 				
@@ -1833,11 +1835,15 @@ function termgenie(){
 				return null;
 				
 				function renderTarget(target) {
-					if (target.indexOf('TEMP') !== -1) {
+					if (isTempIdentifier(target)) {
 						return '<span class="termgenie-temp-identfier">'+target+'</span>';
 					}
 					return target;
 				}
+			}
+			
+			function isTempIdentifier(identifier) {
+				return identifier.indexOf('TEMP') !== -1;
 			}
 			
 			/**
