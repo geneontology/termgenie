@@ -8,10 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.ontology.CommitException;
@@ -27,10 +29,12 @@ import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
+import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonRelationDiff;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
@@ -147,6 +151,23 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					result.add(jsonDiff);
 				} catch (IOException exception) {
 					logger.error("Could not create diff for pending commit", exception);
+				}
+			}
+			Map<String, List<IRelation>> groups = OBOConverterTools.groupChangedRelations(term.getChanged());
+			if (groups != null) {
+				List<JsonRelationDiff> modifiedRelations = new ArrayList<JsonRelationDiff>(groups.size());
+				for(String termId : groups.keySet()) {
+					JsonRelationDiff relationDiff = new JsonRelationDiff();
+					relationDiff.setTermId(termId);
+					try {
+						relationDiff.setRelations(OBOWriterTools.writeRelations(termId, oboDoc));
+						modifiedRelations.add(relationDiff);
+					} catch (IOException exception) {
+						logger.error("Could not create diff for pending commit", exception);
+					}
+				}
+				if (!modifiedRelations.isEmpty()) {
+					jsonDiff.setRelations(modifiedRelations);
 				}
 			}
 		}

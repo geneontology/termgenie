@@ -72,6 +72,7 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 			Modification mode,
 			OBODoc obodoc)
 	{
+		fillChangedRelations(obodoc, changed, null);
 		String id = term.getId();
 		Frame frame = obodoc.getTermFrame(id);
 		switch (mode) {

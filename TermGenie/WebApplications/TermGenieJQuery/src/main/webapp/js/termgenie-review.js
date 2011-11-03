@@ -224,6 +224,11 @@ function TermGenieReview(){
 				if(operation !== null) {
 					addRow(table, null, operation, preDiff);
 				}
+				if (diff.relations && diff.relations !== null && diff.relations.length > 0) {
+					jQuery.each(diff.relations, function(relIndex, relDiff){
+						addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+relDiff.termId+'</span>', '<pre>'+relDiff.relations+'</pre>');
+					});
+				}
 			});
 		});
 		mainReviewPanel.append(table);

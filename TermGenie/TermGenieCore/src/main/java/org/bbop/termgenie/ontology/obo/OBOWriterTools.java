@@ -6,8 +6,10 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
 
@@ -28,5 +30,27 @@ public class OBOWriterTools {
 	
 	public static String writeTerm(String id, OBODoc oboDoc) throws IOException {
 		return writeTerms(Collections.singleton(id), oboDoc);
+	}
+	
+	public static String writeRelations(String id, OBODoc oboDoc) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		BufferedWriter writer = new BufferedWriter(stringWriter);
+		
+		final Frame termFrame = oboDoc.getTermFrame(id);
+		writeTags(writer, termFrame, oboDoc, OboFormatTag.TAG_IS_A, OboFormatTag.TAG_INTERSECTION_OF, OboFormatTag.TAG_UNION_OF, OboFormatTag.TAG_DISJOINT_FROM, OboFormatTag.TAG_RELATED);
+		writer.close();
+		return stringWriter.getBuffer().toString();
+	}
+	
+	public static void writeTags(BufferedWriter writer, Frame frame, OBODoc oboDoc, OboFormatTag...tags) throws IOException {
+		
+		for (OboFormatTag tag : tags) {
+			Collection<Clause> clauses = frame.getClauses(tag);
+			if (clauses != null && !clauses.isEmpty()) {
+				for (Clause clause : clauses) {
+					oboWriter.write(clause, writer, oboDoc);	
+				}
+			}	
+		}
 	}
 }

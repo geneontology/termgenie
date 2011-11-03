@@ -107,7 +107,45 @@ public class OBOConverterTools {
 			List<String> modIds)
 	{
 		if (changed != null && !changed.isEmpty()) {
-			Map<String, List<IRelation>> groups = new HashMap<String, List<IRelation>>();
+			Map<String, List<IRelation>> groups = groupChangedRelations(changed);
+			
+			for(String modId : groups.keySet()) {
+				if (modIds != null) {
+					modIds.add(modId);
+				}
+				Frame frame = oboDoc.getTermFrame(modId);
+				if (frame != null) {
+					Collection<Clause> clauses = frame.getClauses();
+					
+					// remove old relations, except disjoint_from
+					Iterator<Clause> iterator = clauses.iterator();
+					while (iterator.hasNext()) {
+						Clause clause = iterator.next();
+						String tag = clause.getTag();
+						if (updateRelations.contains(tag)) {
+							iterator.remove();
+						}
+					}
+					
+					// add updated relations
+					List<IRelation> relations = groups.get(modId);
+					List<Clause> newRelations = translateRelations(relations, null);
+					for (Clause newRelation : newRelations) {
+						String tag = newRelation.getTag();
+						if (updateRelations.contains(tag)) {
+							clauses.add(newRelation);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static Map<String, List<IRelation>> groupChangedRelations(List<? extends IRelation> changed)
+	{
+		Map<String, List<IRelation>> groups = null;
+		if (changed != null && !changed.isEmpty()) {
+			groups = new HashMap<String, List<IRelation>>();
 			for (IRelation change : changed) {
 				List<IRelation> list = groups.get(change.getSource());
 				if (list == null) {
@@ -116,34 +154,8 @@ public class OBOConverterTools {
 				}
 				list.add(change);
 			}
-			
-			for(String modId : groups.keySet()) {
-				if (modIds != null) {
-					modIds.add(modId);
-				}
-				Frame frame = oboDoc.getTermFrame(modId);
-				Collection<Clause> clauses = frame.getClauses();
-				
-				// remove old relations, except disjoint_from
-				Iterator<Clause> iterator = clauses.iterator();
-				while (iterator.hasNext()) {
-					Clause clause = iterator.next();
-					String tag = clause.getTag();
-					if (updateRelations.contains(tag)) {
-						iterator.remove();
-					}
-				}
-				
-				List<IRelation> relations = groups.get(modId);
-				List<Clause> newRelations = translateRelations(relations, null);
-				for (Clause newRelation : newRelations) {
-					String tag = newRelation.getTag();
-					if (updateRelations.contains(tag)) {
-						clauses.add(newRelation);
-					}
-				}
-			}
 		}
+		return groups;
 	}
 	
 	public static List<Clause> translateRelations(List<? extends IRelation> relations, String id) {

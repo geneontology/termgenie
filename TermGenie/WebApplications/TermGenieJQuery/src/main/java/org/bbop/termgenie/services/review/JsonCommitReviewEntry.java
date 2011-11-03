@@ -92,6 +92,8 @@ public class JsonCommitReviewEntry {
 		private int operation;
 
 		private String diff;
+		
+		private List<JsonRelationDiff> relations = null;
 
 		private boolean modified = false;
 
@@ -178,6 +180,54 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setModified(boolean modified) {
 			this.modified = modified;
+		}
+
+		/**
+		 * @return the relations
+		 */
+		public List<JsonRelationDiff> getRelations() {
+			return relations;
+		}
+
+		/**
+		 * @param relations the relations to set
+		 */
+		public void setRelations(List<JsonRelationDiff> relations) {
+			this.relations = relations;
+		}
+	}
+	
+	public static class JsonRelationDiff {
+		
+		String termId;
+		String relations;
+		
+		/**
+		 * @return the termId
+		 */
+		public String getTermId() {
+			return termId;
+		}
+		
+		/**
+		 * @param termId the termId to set
+		 */
+		public void setTermId(String termId) {
+			this.termId = termId;
+		}
+		
+		/**
+		 * @return the relations
+		 */
+		public String getRelations() {
+			return relations;
+		}
+		
+		/**
+		 * @param relations the relations to set
+		 */
+		public void setRelations(String relations) {
+			this.relations = relations;
 		}
 	}
 }
