@@ -178,49 +178,49 @@ function TermGenieReview(){
 			}
 			
 			jQuery.each(entry.diffs, function(diffIndex, diff){
-				var operation = null;
 				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
+				var operation = jQuery('<div></div>');
 				if (diff.operation === 0) {
 					// add
-					operation = jQuery('<div></div>');
 					operation.append('<div>Add</div>');
-					var editButton = jQuery('<button>Edit term</button>');
-					operation.append(editButton);
-					editButton.click(function(){
-						var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
-						var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
-						editDialog.append(editField);
-						editDialog.dialog({
-							title: "Term Editor",
-							resizable: true,
-							height:450,
-							width: 600,
-							minHeight: 200,
-							minWidth: 200,
-							modal: true,
-							buttons: {
-								"Change": function() {
-									diff.modified = true;
-									diff.diff = editField.val();
-									preDiff.empty();
-									preDiff.append(diff.diff);
-									$( this ).dialog( "close" );
-								},
-								"Cancel": function() {
-									$( this ).dialog( "close" );
-								}
-							}
-						});
-					});
 				}
 				else if (diff.operation === 1) {
 					// modify
-					operation = 'Modify';
+					operation.append('<div>Modify</div>');
 				}
 				else if (diff.operation === 2) {
 					// remove
-					operation = 'Remove';
+					operation.append('<div>Remove</div>');
 				}
+				var editButton = jQuery('<button>Edit term</button>');
+				operation.append(editButton);
+				editButton.click(function(){
+					var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+					var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
+					editDialog.append(editField);
+					editDialog.dialog({
+						title: "Term Editor",
+						resizable: true,
+						height:450,
+						width: 600,
+						minHeight: 200,
+						minWidth: 200,
+						modal: true,
+						buttons: {
+							"Change": function() {
+								diff.modified = true;
+								diff.diff = editField.val();
+								preDiff.empty();
+								preDiff.append(diff.diff);
+								$( this ).dialog( "close" );
+							},
+							"Cancel": function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+				});
+				
 				if(operation !== null) {
 					addRow(table, null, operation, preDiff);
 				}
