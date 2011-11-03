@@ -87,7 +87,7 @@ public class OBOConverterTools {
 		}
 	}
 	
-	public static List<Clause> translateRelations(List<IRelation> relations, String id) {
+	public static List<Clause> translateRelations(List<? extends IRelation> relations, String id) {
 		List<Clause> result = new ArrayList<Clause>(relations.size());
 		for(IRelation relation : relations) {
 			Clause clause = translateRelation(relation, id);

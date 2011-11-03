@@ -21,7 +21,6 @@ public class OBOWriterTools {
 		for (String id : ids) {
 			Frame termFrame = oboDoc.getTermFrame(id);
 			oboWriter.write(termFrame, writer, oboDoc);
-			writer.append('\n');
 		}
 		writer.close();
 		return stringWriter.getBuffer().toString();

@@ -1842,10 +1842,6 @@ function termgenie(){
 				}
 			}
 			
-			function isTempIdentifier(identifier) {
-				return identifier.indexOf('TEMP') !== -1;
-			}
-			
 			/**
 			 * Create an input field with a default String value
 			 * 
@@ -1962,10 +1958,17 @@ function termgenie(){
 		var exportsContainer = jQuery('<div class="term-generation-exports"></div>');
 		exportsContainer.appendTo(container);
 		if (exportResult.success === true) {
+			var keys = [];
 			jQuery.each(exportResult.exports, function(format, content){
 				if (content.length > 0) {
-					renderExport(format, content, exportsContainer);
+					keys.push(format);
 				}
+			});
+			
+			keys.sort();
+			jQuery.each(keys, function(index, key){
+				var content = exportResult.exports[key];
+				renderExport(key, content, exportsContainer);
 			});
 		}
 		else {
@@ -1976,7 +1979,27 @@ function termgenie(){
 		
 		function renderExport(name, content, exportsContainer) {
 			exportsContainer.append('<div>'+name+'</div>');
-			exportsContainer.append('<pre>'+content+'</pre>');
+			var replaced = "";
+			var lines = content.split('\n');
+			jQuery.each(lines, function(index, line){
+				var containsTempId = isTempIdentifier(line);
+				if (containsTempId === true) {
+					var words = line.split(' ');
+					jQuery.each(words, function(pos, word){
+						if(isTempIdentifier(word)) {
+							replaced += '<span class="termgenie-temp-identfier">' + word + '</span> ';
+						}
+						else {
+							replaced += word + ' ';
+						}
+					});
+					replaced += '</br>\n';
+				}
+				else {
+					replaced += line + '</br>\n';
+				}
+			});
+			exportsContainer.append('<div class="termgenie-pre nobr">'+replaced+'</div>');
 		}
 	}
 	
@@ -2032,6 +2055,10 @@ function termgenie(){
 		// remove the 'GeneOntology|' prefix
 		var name = ontologyName.replace(/GeneOntology\|/,''); 
 		return getOntologyName(name);
+	}
+	
+	function isTempIdentifier(identifier) {
+		return identifier.indexOf('TEMP-') !== -1;
 	}
 	
 	// HTML wrapper functions
