@@ -26,6 +26,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 
 	private final ManchesterSyntaxTool syntaxTool;
 	private final String targetOntologyId;
+	private final String tempIdPrefix;
 
 	/**
 	 * @param input
@@ -43,6 +44,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			ManchesterSyntaxTool syntaxTool)
 	{
 		super(input, targetOntology, tempIdPrefix, patternID, factory);
+		this.tempIdPrefix = tempIdPrefix;
 		this.targetOntologyId = targetOntology.getOntologyId();
 		this.syntaxTool = syntaxTool;
 	}
@@ -78,7 +80,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			}
 		}
 
-		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker);
+		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix);
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);

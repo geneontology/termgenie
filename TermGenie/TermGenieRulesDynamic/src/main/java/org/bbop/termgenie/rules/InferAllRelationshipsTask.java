@@ -28,14 +28,17 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private final OWLGraphWrapper ontology;
 	private final IRI iri;
 	private final OWLChangeTracker changeTracker;
+	private final String tempIdPrefix;
 	
 	private InferredRelations result;
+	
 
-	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker) {
+	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
 		this.changeTracker = changeTracker;
+		this.tempIdPrefix = tempIdPrefix;
 	}
 
 	@Override
@@ -63,7 +66,10 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			if (subClasses != null && !subClasses.isEmpty()) {
 				changed = new ArrayList<IRelation>();
 				for (OWLClass subClass : subClasses.getFlattened()) {
-					changed.addAll(OwlTranslatorTools.extractRelations(subClass, ontology));
+					String subClassIRI = subClass.getIRI().toString();
+					if (!subClassIRI.startsWith(tempIdPrefix)) {
+						changed.addAll(OwlTranslatorTools.extractRelations(subClass, ontology));	
+					}
 				}
 			}
 			List<IRelation> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
