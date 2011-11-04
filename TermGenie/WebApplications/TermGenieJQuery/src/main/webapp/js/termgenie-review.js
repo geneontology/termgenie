@@ -54,7 +54,7 @@ function TermGenieReview(){
 							startLoadingReviewEntries();
 						}
 						else {
-							setInsufficientUserRightsMessage(mySession.getCredentials());
+							setInsufficientUserRightsMessage(myLoginPanel.getCredentials());
 						}
 					}, function(e) { // on error
 						jQuery.logSystemError('Could not check user permissions on server',e);

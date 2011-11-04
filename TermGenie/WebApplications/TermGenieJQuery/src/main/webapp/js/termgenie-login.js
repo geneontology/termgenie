@@ -50,8 +50,8 @@
 		};
 		
 		function setUserInfo(username) {
-			userinfo = {
-				username: username,
+			userInfo = {
+				'username': username
 			};
 		}
 		
