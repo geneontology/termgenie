@@ -1630,6 +1630,7 @@ function termgenie(){
 							var synonyms = [];
 							jQuery.each(rows, function(index, row){
 								if(row.checkbox.is(':checked')) {
+									row.synonym.scope = row.getScope();
 									synonyms.push(row.synonym);
 								}
 							});
@@ -1667,9 +1668,26 @@ function termgenie(){
 					// scope
 					var scopeCell = jQuery('<td></td>');
 					scopeCell.appendTo(tableRow);
+					var selectScope = null;
 					if (synonym.scope && synonym.scope.length > 0) {
-						scopeCell.text(synonym.scope);
+						selectScope = jQuery('<select>'+
+								'<option value="RELATED">RELATED</option>'+
+								'<option value="NARROW">NARROW</option>'+
+								'<option value="EXACT">EXACT</option>'+
+								'<option value="BROAD">BROAD</option>'+
+								'</select>');
+						selectScope.val(synonym.scope);
 					}
+					else {
+						selectScope = jQuery('<select>'+
+								'<option value="-" selected=true>-</option>'+
+								'<option value="RELATED">RELATED</option>'+
+								'<option value="NARROW">NARROW</option>'+
+								'<option value="EXACT">EXACT</option>'+
+								'<option value="BROAD">BROAD</option>'+
+								'</select>');
+					}
+					scopeCell.append(selectScope);
 					
 					// category
 					if (showCategory === true) {
@@ -1701,7 +1719,17 @@ function termgenie(){
 					rows.push({
 						tableRow : tableRow,
 						checkbox : checkbox,
-						synonym : synonym
+						synonym : synonym,
+						getScope : function() {
+							var scope = synonym.scope;
+							if (selectScope !== null) {
+								scope = selectScope.val();
+								if (scope == '-') {
+									scope = synonym.scope;
+								}
+							}
+							return scope;
+						}
 					});
 				}
 			}
