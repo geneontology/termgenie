@@ -51,6 +51,10 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 			HttpServletResponse httpResp,
 			HttpSession session)
 	{
+		if (session == null) {
+			logger.warn("OpenId check failed: session is null.");
+			return RedirectRequest.createError("OpenId check failed: session is null.");
+		}
 		try {
 			// perform discovery on the user-supplied identifier
 			List<?> discoveries = manager.discover(userSuppliedString);
