@@ -112,6 +112,7 @@ public class CommitHistoryStoreImplTest {
 			relation.setProperties(properties);
 			t.setRelations(Collections.singletonList(relation));
 		}
+		t.setObsolete(false);
 		CommitedOntologyTermSynonym syn1 = new CommitedOntologyTermSynonym();
 		syn1.setLabel("Syn Label " + i + "_1");
 		syn1.setScope("EXACT");

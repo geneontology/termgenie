@@ -350,6 +350,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			List<String> defxref = null;
 			Map<String, String> metadata = new HashMap<String, String>();
 			List<IRelation> relations = null;
+			boolean isObsolete = false;
 
 			if (realInstance != null) {
 				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
@@ -359,6 +360,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 						definition = realInstance.getDef(owlObject);
 						synonyms = realInstance.getOBOSynonyms(owlObject);
 						defxref = realInstance.getDefXref(owlObject);
+						isObsolete = realInstance.isObsolete(owlObject);
 						// meta data
 						put(metadata, "comment", realInstance.getComment(owlObject));
 						put(metadata, "created_by", realInstance.getCreatedBy(owlObject));
@@ -384,7 +386,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					}
 				}
 			}
-			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations);
+			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations, isObsolete);
 		}
 
 		OntologyTerm<ISynonym, IRelation> getTerm() {

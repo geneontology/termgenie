@@ -72,6 +72,8 @@ public class Ontology {
 		public List<R> getRelations();
 
 		public Map<String, String> getMetaData();
+		
+		public boolean isObsolete();
 	}
 	
 	/**
@@ -118,6 +120,9 @@ public class Ontology {
 				builder.append("getMetaData()=");
 				builder.append(getMetaData());
 			}
+			if (isObsolete() == true) {
+				builder.append("isObsolete()=true");
+			}
 			builder.append("]");
 			return builder.toString();
 		}
@@ -131,6 +136,7 @@ public class Ontology {
 			private final List<String> defXRef;
 			private final List<IRelation> relations;
 			private final Map<String, String> metaData;
+			private final boolean isObsolete;
 
 			public DefaultOntologyTerm(String id,
 					String label,
@@ -138,7 +144,8 @@ public class Ontology {
 					List<ISynonym> synonyms,
 					List<String> defXRef,
 					Map<String, String> metaData,
-					List<IRelation> relations)
+					List<IRelation> relations,
+					boolean isObsolete)
 			{
 				super();
 				this.id = id;
@@ -148,6 +155,7 @@ public class Ontology {
 				this.defXRef = defXRef;
 				this.relations = relations;
 				this.metaData = metaData;
+				this.isObsolete = isObsolete;
 			}
 
 			/**
@@ -204,6 +212,11 @@ public class Ontology {
 			@Override
 			public Map<String, String> getMetaData() {
 				return metaData;
+			}
+
+			@Override
+			public boolean isObsolete() {
+				return isObsolete;
 			}
 		}
 	}

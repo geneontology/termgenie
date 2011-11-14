@@ -225,7 +225,7 @@ public class TermGenieScriptTestRunner {
 			List<String> defXRef = managed.getDefXref(x);
 			Map<String, String> metaData = new HashMap<String, String>();
 			List<IRelation> relations = Collections.emptyList();
-			term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
+			term = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations, false);
 		}
 	}
 }

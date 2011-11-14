@@ -155,7 +155,8 @@ public class SimpleSolrClient implements OntologyTermSuggestor {
 		final String label = solrDocument.getFieldValue("label").toString();
 		Object descObj = solrDocument.getFieldValue("description");
 		final String def = descObj != null ? descObj.toString() : null;
-		return new DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String> emptyMap(), null);
+		boolean isObsolete = false; // TODO are deprecated values stored in the index and if yes in which field?
+		return new DefaultOntologyTerm(id, label, def, null, null, Collections.<String, String> emptyMap(), null, isObsolete);
 	}
 
 	/**

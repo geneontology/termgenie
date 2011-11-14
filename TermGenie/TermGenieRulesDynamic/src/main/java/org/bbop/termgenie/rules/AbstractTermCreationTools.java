@@ -262,7 +262,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
 			}
 			String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
-			DefaultOntologyTerm term = new DefaultOntologyTerm(oboNewId, label, definition, synonyms, defxrefs, metaData, relations);
+			DefaultOntologyTerm term = new DefaultOntologyTerm(oboNewId, label, definition, synonyms, defxrefs, metaData, relations, false);
 			output.add(success(term, inferredRelations.changed, input));
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));

@@ -33,6 +33,7 @@ public class CommitedOntologyTerm implements
 	private List<CommitedOntologyTermRelation> relations;
 	private Map<String, String> metaData;
 	private List<CommitedOntologyTermRelation> changed;
+	private boolean isObsolete;
 
 	private Modification operation;
 
@@ -200,4 +201,14 @@ public class CommitedOntologyTerm implements
 		this.changed = changed;
 	}
 
+	@Override
+	@Column
+	@Basic
+	public boolean isObsolete() {
+		return isObsolete;
+	}
+
+	public void setObsolete(boolean isObsolete) {
+		this.isObsolete = isObsolete;
+	}
 }

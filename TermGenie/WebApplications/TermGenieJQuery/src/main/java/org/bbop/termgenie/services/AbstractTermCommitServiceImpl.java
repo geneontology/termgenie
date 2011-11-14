@@ -314,8 +314,9 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				List<String> defXRef = jsonTerm.getDefXRef();
 				Map<String, String> metaData = extractMetaData(jsonTerm);
 				List<IRelation> relations = extractRelations(jsonTerm, idHandler);
+				boolean isObsolete = jsonTerm.isObsolete();
 
-				DefaultOntologyTerm t = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations);
+				DefaultOntologyTerm t = new DefaultOntologyTerm(id, label, definition, synonyms, defXRef, metaData, relations, isObsolete);
 				List<IRelation> changed = extractRelations(jsonTerm.getChanged(), idHandler);
 				
 				TermCommit term = new TermCommit(t, changed);

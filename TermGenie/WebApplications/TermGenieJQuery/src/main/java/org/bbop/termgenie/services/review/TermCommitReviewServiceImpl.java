@@ -260,8 +260,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
-				if (jsonDiff.isModified()) {
-					Frame termFrame = parseDiff(jsonDiff);
+				if (jsonDiff.isModified() || entry.isObsolete()) {
+					Frame termFrame = parseDiff(jsonDiff, entry.isObsolete());
 					CommitedOntologyTerm term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
 					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
 				}
@@ -269,7 +269,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			afterReview.updateItem(historyItem);
 		}
 
-		private Frame parseDiff(JsonDiff jsonDiff) {
+		private Frame parseDiff(JsonDiff jsonDiff, boolean isObsolete) {
 			OBOFormatParser p = new OBOFormatParser();
 			p.setReader(new BufferedReader(new StringReader(jsonDiff.getDiff())));
 			OBODoc obodoc = new OBODoc();
@@ -284,7 +284,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		{
 			List<CommitedOntologyTerm> terms = historyItem.getTerms();
 			for (int i = 0; i < terms.size(); i++) {
-				if (uuid == terms.get(i).getUuid()) {
+				CommitedOntologyTerm original = terms.get(i);
+				if (uuid == original.getUuid()) {
+					updatedTerm.setChanged(original.getChanged());
 					terms.set(i, updatedTerm);
 					return;
 				}

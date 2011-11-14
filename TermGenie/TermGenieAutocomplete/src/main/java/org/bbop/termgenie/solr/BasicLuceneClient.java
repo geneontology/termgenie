@@ -210,7 +210,8 @@ public class BasicLuceneClient implements
 		final String label = ontology.getLabel(hit);
 		final String def = ontology.getDef(hit);
 		List<ISynonym> synonyms = ontology.getOBOSynonyms(hit);
-		OntologyTerm<ISynonym, IRelation> term = new DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null);
+		boolean isObsolete = ontology.isObsolete(hit);
+		OntologyTerm<ISynonym, IRelation> term = new DefaultOntologyTerm(identifier, label, def, synonyms, null, Collections.<String, String> emptyMap(), null, isObsolete);
 		return term;
 	}
 

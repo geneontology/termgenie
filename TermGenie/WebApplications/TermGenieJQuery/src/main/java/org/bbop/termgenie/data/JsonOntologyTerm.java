@@ -23,6 +23,7 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	private List<JsonTermRelation> relations;
 	private Map<String, String> metaData;
 	private List<JsonTermRelation> changed;
+	private boolean isObsolete;
 
 	public JsonOntologyTerm() {
 		super();
@@ -151,6 +152,15 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		this.changed = changed;
 	}
 
+	@Override
+	public boolean isObsolete() {
+		return isObsolete;
+	}
+
+	public void setObsolete(boolean isObsolete) {
+		this.isObsolete = isObsolete;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -196,6 +206,9 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 			builder.append("changed=");
 			builder.append(changed);
 		}
+		if (isObsolete) {
+			builder.append("isObsolete=true");
+		}
 		builder.append("]");
 		return builder.toString();
 	}
@@ -223,6 +236,7 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 			}
 			term.setChanged(jsonChangedRelations);
 		}
+		term.setObsolete(source.isObsolete());
 		return term;
 	}
 	

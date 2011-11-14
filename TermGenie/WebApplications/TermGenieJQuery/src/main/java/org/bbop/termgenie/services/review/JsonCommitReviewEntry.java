@@ -12,8 +12,9 @@ public class JsonCommitReviewEntry {
 	private String user;
 	private String date;
 
+	private boolean obsolete;
 	private List<JsonDiff> diffs;
-
+	
 	/**
 	 * @return the historyId
 	 */
@@ -82,6 +83,14 @@ public class JsonCommitReviewEntry {
 	 */
 	public void setDiffs(List<JsonDiff> diffs) {
 		this.diffs = diffs;
+	}
+
+	public boolean isObsolete() {
+		return obsolete;
+	}
+	
+	public void setObsolete(boolean isObsolete) {
+		this.obsolete = isObsolete;
 	}
 
 	public static class JsonDiff {

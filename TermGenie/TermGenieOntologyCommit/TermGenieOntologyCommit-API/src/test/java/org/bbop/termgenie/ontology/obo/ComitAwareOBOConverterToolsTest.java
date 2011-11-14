@@ -39,7 +39,7 @@ public class ComitAwareOBOConverterToolsTest extends ResourceLoader {
 		Map<String, String> properties = new HashMap<String, String>();
 		Relation.setType(properties, OboFormatTag.TAG_IS_A);
 		List<IRelation> relations = Collections.<IRelation>singletonList(new Relation("CARO:0001002", "CARO:0001001", null, properties));
-		DefaultOntologyTerm term = new DefaultOntologyTerm("CARO:0001002", "test label 1", null, null, null, null, relations);
+		DefaultOntologyTerm term = new DefaultOntologyTerm("CARO:0001002", "test label 1", null, null, null, null, relations, false);
 		InputStream inputStream = loadResource("caro-mini-test.obo");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		OBOFormatParser parser = new OBOFormatParser();
@@ -51,7 +51,7 @@ public class ComitAwareOBOConverterToolsTest extends ResourceLoader {
 		assertClauseCount(2, "CARO:0001002", obodoc);
 		
 		List<ISynonym> synonyms = Collections.<ISynonym>singletonList(new Synonym("Test merge synonym", "TEST", null, Collections.<String>emptySet()));
-		DefaultOntologyTerm termMod = new DefaultOntologyTerm("CARO:0001001", "neuron projection bundle", null, synonyms, null, null, null);
+		DefaultOntologyTerm termMod = new DefaultOntologyTerm("CARO:0001001", "neuron projection bundle", null, synonyms, null, null, null, false);
 		assertEquals(LoadState.modifySuccess, handleTerm(termMod, null, Modification.modify, obodoc));
 		assertClauseCount(6, "CARO:0001001", obodoc);
 		

@@ -49,6 +49,12 @@ public class CommitHistoryTools {
 		term.setMetaData(convertMetaData(frame));
 		term.setSynonyms(convertSynonyms(frame));
 		term.setRelations(convertRelations(frame));
+		boolean isObsolete = false;
+		Boolean tagValue = frame.getTagValue(OboFormatTag.TAG_IS_OBSELETE, Boolean.class);
+		if (tagValue != null) {
+			isObsolete = tagValue.booleanValue();
+		}
+		term.setObsolete(isObsolete);
 		return term;
 	}
 
@@ -148,6 +154,7 @@ public class CommitHistoryTools {
 				term.setOperation(commitObject.getType());
 				term.setRelations(translateRelations(storedTerm.getRelations()));
 				term.setChanged(translateRelations(commitObject.getObject().getChanged()));
+				term.setObsolete(storedTerm.isObsolete());
 				result.add(term);
 			}
 		}

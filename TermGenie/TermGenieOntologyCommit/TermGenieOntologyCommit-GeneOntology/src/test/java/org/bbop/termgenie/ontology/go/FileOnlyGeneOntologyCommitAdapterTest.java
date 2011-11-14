@@ -143,7 +143,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 				return Collections.singletonMap("type", OboFormatTag.TAG_IS_A.getTag());
 			}
 		});
-		OntologyTerm<ISynonym, IRelation> term1 = new DefaultOntologyTerm("GO:faketest00"+count, "term"+count, "def term"+count, synonyms, defXRef, metaData, relations);
+		OntologyTerm<ISynonym, IRelation> term1 = new DefaultOntologyTerm("GO:faketest00"+count, "term"+count, "def term"+count, synonyms, defXRef, metaData, relations, false);
 		return term1;
 	}
 
