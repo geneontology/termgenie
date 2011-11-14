@@ -1511,7 +1511,7 @@ function termgenie(){
 			}
 			
 			/**
-			 * Create a review field for a string.
+			 * Create a review field for a string array.
 			 * 
 			 * @param parent {DOM element}
 			 * @param strings {String[]} values
@@ -1530,29 +1530,20 @@ function termgenie(){
 						addLine(value);
 					});
 				}
-				else {
-					addLine();
-				}
-				
-				createAddRemoveWidget(parent, addLine, removeLine);
 				
 				function addLine(value) {
+					if (!value || value.length === 0) {
+						// do nothing
+						return;
+					}
 					var tableCell = jQuery('<tr></tr>');
 					var tdCell = jQuery('<td></td>');
 					tdCell.appendTo(tableCell);
 					var checkbox = jQuery('<input type="checkbox" checked="true"/>');
 					checkbox.appendTo(tdCell);
 					
-					tdCell = jQuery('<td></td>');
-					tdCell.appendTo(tableCell);
-					var inputField;
-					if (value && value.length > 0) {
-						inputField = createInputField(value);
-					}
-					else {
-						inputField = createInputField();
-					}
-					inputField.appendTo(tdCell);
+					var inputField = jQuery('<td>'+value+'</td>');
+					inputField.appendTo(tableCell);
 					tableCell.appendTo(listParent);
 					rows.push({
 						tableCell : tableCell,
@@ -1561,19 +1552,12 @@ function termgenie(){
 					});
 				}
 				
-				function removeLine() {
-					if (rows.length > strings.length) {
-						var element = rows.pop();
-						element.tableCell.remove();
-					}
-				}
-				
 				return {
 					getValue : function () {
 						var strings = [];
 						jQuery.each(rows, function(index, element){
 							if(element.checkbox.is(':checked')) {
-								var text = normalizeString(element.inputField.val());
+								var text = normalizeString(element.inputField.text());
 								if (text !== null) {
 									strings.push(text);
 								}
