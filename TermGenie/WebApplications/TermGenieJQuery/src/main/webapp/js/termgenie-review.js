@@ -176,7 +176,6 @@ function TermGenieReview(){
 			if (entry.date && entry.date.length > 0) {
 				addRow(table, null, 'Date', '<span>'+entry.date+'</span>');
 			}
-			
 			jQuery.each(entry.diffs, function(diffIndex, diff){
 				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
 				var operation = jQuery('<div></div>');
@@ -192,41 +191,61 @@ function TermGenieReview(){
 					// remove
 					operation.append('<div>Remove</div>');
 				}
-				var editButton = jQuery('<button>Edit term</button>');
-				operation.append(editButton);
-				editButton.click(function(){
-					var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
-					var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
-					editDialog.append(editField);
-					editDialog.dialog({
-						title: "Term Editor",
-						resizable: true,
-						height:450,
-						width: 600,
-						minHeight: 200,
-						minWidth: 200,
-						modal: true,
-						buttons: {
-							"Change": function() {
-								diff.modified = true;
-								diff.diff = editField.val();
-								preDiff.empty();
-								preDiff.append(diff.diff);
-								$( this ).dialog( "close" );
-							},
-							"Cancel": function() {
-								$( this ).dialog( "close" );
-							}
-						}
-					});
-				});
 				
-				if(operation !== null) {
-					addRow(table, null, operation, preDiff);
+				var obsolete = false;
+				if(diff.isObsolete && diff.isObsolete === true) {
+					obsolete = true;
 				}
+				
+				if(obsolete !== true) {
+					var editButton = jQuery('<button>Edit term</button>');
+					operation.append(editButton);
+					editButton.click(function(){
+						var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+						var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
+						editDialog.append(editField);
+						editDialog.dialog({
+							title: "Term Editor",
+							resizable: true,
+							height:450,
+							width: 600,
+							minHeight: 200,
+							minWidth: 200,
+							modal: true,
+							buttons: {
+								"Change": function() {
+									diff.modified = true;
+									diff.diff = editField.val();
+									preDiff.empty();
+									preDiff.append(diff.diff);
+									$( this ).dialog( "close" );
+								},
+								"Cancel": function() {
+									$( this ).dialog( "close" );
+								}
+							}
+						});
+					});
+					var obsoleteButton = jQuery('<button>Make Obsolete</button>');
+					operation.append(obsoleteButton);
+					
+					obsoleteButton.click(function(){
+						editButton.remove();
+						obsoleteButton.remove();
+						operation.append('<div class="termgenie-obsolete-term">Obsolete</div>');
+						diff.obsolete = true;
+						diff.modified = true;
+					});
+				}
+				else {
+					operation.append('<div class="termgenie-obsolete-term">Obsolete</div>');
+				}
+				
+				addRow(table, null, operation, preDiff);
+				
 				if (diff.relations && diff.relations !== null && diff.relations.length > 0) {
 					jQuery.each(diff.relations, function(relIndex, relDiff){
-						addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+relDiff.termId+'</span>', '<pre>'+relDiff.relations+'</pre>');
+						addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+relDiff.termId+'</span>', '<pre>'+relDiff.relations+'\n</pre>');
 					});
 				}
 			});

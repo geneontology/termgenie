@@ -36,8 +36,10 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonRelationDiff;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 import owltools.graph.OWLGraphWrapper;
@@ -143,6 +145,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setOperation(term.getOperation());
 			jsonDiff.setId(term.getId());
 			jsonDiff.setUuid(term.getUuid());
+			jsonDiff.setObsolete(term.isObsolete());
 			
 			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getChanged(), term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
@@ -260,8 +263,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
-				if (jsonDiff.isModified() || entry.isObsolete()) {
-					Frame termFrame = parseDiff(jsonDiff, entry.isObsolete());
+				if (jsonDiff.isModified()) {
+					Frame termFrame = parseDiff(jsonDiff);
 					CommitedOntologyTerm term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
 					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
 				}
@@ -269,12 +272,19 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			afterReview.updateItem(historyItem);
 		}
 
-		private Frame parseDiff(JsonDiff jsonDiff, boolean isObsolete) {
+		private Frame parseDiff(JsonDiff jsonDiff) {
+			boolean isObsolete = jsonDiff.isObsolete();
 			OBOFormatParser p = new OBOFormatParser();
 			p.setReader(new BufferedReader(new StringReader(jsonDiff.getDiff())));
 			OBODoc obodoc = new OBODoc();
 			p.parseTermFrame(obodoc);
 			Frame termFrame = obodoc.getTermFrame(jsonDiff.getId());
+			Clause clause = termFrame.getClause(OboFormatTag.TAG_IS_OBSELETE);
+			if (clause == null) {
+				clause = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+				termFrame.addClause(clause);
+			}
+			clause.setValue(Boolean.valueOf(isObsolete));
 			return termFrame;
 		}
 

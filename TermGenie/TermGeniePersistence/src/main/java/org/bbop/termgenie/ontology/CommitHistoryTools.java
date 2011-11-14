@@ -54,6 +54,12 @@ public class CommitHistoryTools {
 		if (tagValue != null) {
 			isObsolete = tagValue.booleanValue();
 		}
+		else {
+			String value = frame.getTagValue(OboFormatTag.TAG_IS_OBSELETE, String.class);
+			if (value != null && Boolean.TRUE.toString().equals(value)) {
+				isObsolete = true;
+			}
+		}
 		term.setObsolete(isObsolete);
 		return term;
 	}

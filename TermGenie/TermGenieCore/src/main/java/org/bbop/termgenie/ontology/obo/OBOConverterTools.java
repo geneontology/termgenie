@@ -47,6 +47,11 @@ public class OBOConverterTools {
 				frame.addClause(new Clause(entry.getKey(), entry.getValue()));
 			}
 		}
+		if (term.isObsolete()) {
+			Clause cl = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+			cl.setValue(Boolean.TRUE);
+			frame.addClause(cl);
+		}
 		fillSynonyms(frame, term.getSynonyms());
 		fillRelations(frame, term.getRelations(), id);
 	}

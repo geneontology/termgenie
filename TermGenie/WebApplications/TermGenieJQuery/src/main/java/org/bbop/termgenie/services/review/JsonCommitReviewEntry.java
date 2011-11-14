@@ -12,7 +12,6 @@ public class JsonCommitReviewEntry {
 	private String user;
 	private String date;
 
-	private boolean obsolete;
 	private List<JsonDiff> diffs;
 	
 	/**
@@ -85,14 +84,6 @@ public class JsonCommitReviewEntry {
 		this.diffs = diffs;
 	}
 
-	public boolean isObsolete() {
-		return obsolete;
-	}
-	
-	public void setObsolete(boolean isObsolete) {
-		this.obsolete = isObsolete;
-	}
-
 	public static class JsonDiff {
 
 		private int uuid;
@@ -100,6 +91,7 @@ public class JsonCommitReviewEntry {
 
 		private int operation;
 
+		private boolean isObsolete = false;
 		private String diff;
 		
 		private List<JsonRelationDiff> relations = null;
@@ -203,6 +195,20 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setRelations(List<JsonRelationDiff> relations) {
 			this.relations = relations;
+		}
+
+		/**
+		 * @return the isObsolete
+		 */
+		public boolean isObsolete() {
+			return isObsolete;
+		}
+
+		/**
+		 * @param isObsolete the isObsolete to set
+		 */
+		public void setObsolete(boolean isObsolete) {
+			this.isObsolete = isObsolete;
 		}
 	}
 	
