@@ -1546,9 +1546,8 @@ function termgenie(){
 					inputField.appendTo(tableCell);
 					tableCell.appendTo(listParent);
 					rows.push({
-						tableCell : tableCell,
 						checkbox : checkbox,
-						inputField : inputField
+						value : value
 					});
 				}
 				
@@ -1557,10 +1556,7 @@ function termgenie(){
 						var strings = [];
 						jQuery.each(rows, function(index, element){
 							if(element.checkbox.is(':checked')) {
-								var text = normalizeString(element.inputField.text());
-								if (text !== null) {
-									strings.push(text);
-								}
+								strings.push(element.value);
 							}
 						});
 						if (strings.length > 0) {
