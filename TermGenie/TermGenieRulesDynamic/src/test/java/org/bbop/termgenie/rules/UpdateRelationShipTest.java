@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 import java.util.Collections;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -24,6 +22,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -121,9 +120,9 @@ public class UpdateRelationShipTest {
 				System.out.println(redundant);
 			}
 
-			List<IRelation> relations = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
+			List<Clause> relations = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
 			System.out.println("------------");
-			for (IRelation relation : relations) {
+			for (Clause relation : relations) {
 				System.out.println(relation);
 			}
 			assertEquals(4, relations.size());
@@ -132,14 +131,13 @@ public class UpdateRelationShipTest {
 			assertTrue(subClasses.containsEntity(ecprtd));
 			assertTrue(subClasses.isSingleton());
 
-			List<IRelation> relations2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
+			List<Clause> relations2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
 			System.out.println("------------");
 			assertEquals(4, relations2.size());
-			for (IRelation relation : relations2) {
+			for (Clause relation : relations2) {
 				System.out.println(relation);
-				if(relation.getTarget().equals("GO:0050673")){
-					String type = Relation.getType(relation.getProperties());
-					assertFalse(OboFormatTag.TAG_IS_A.getTag().equals(type));
+				if(relation.getValue().equals("GO:0050673")){
+					assertFalse(OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag()));
 				}
 			}
 

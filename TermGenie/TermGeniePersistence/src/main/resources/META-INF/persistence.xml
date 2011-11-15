@@ -4,8 +4,6 @@
     <persistence-unit name="hslqdb-default" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
-    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
-    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>
@@ -30,8 +28,6 @@
     <persistence-unit name="h2-default" transaction-type="RESOURCE_LOCAL">
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTerm</class>
-    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym</class>
-    	<class>org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitHistory</class>
     	<class>org.bbop.termgenie.ontology.entities.CommitHistoryItem</class>
         <properties>

@@ -7,14 +7,10 @@ import java.util.List;
 
 import org.apache.solr.common.SolrDocument;
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.index.AutoCompletionTools;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Tests for {@link SimpleSolrClient}.
@@ -36,10 +32,10 @@ public class SimpleSolrClientTest extends OntologyProvider {
 	public void testSuggestTerms() {
 		String query = "pig";
 		int maxCount = 10;
-		List<OntologyTerm<ISynonym, IRelation>> terms = client.suggestTerms(query, go, maxCount);
+		List<String> terms = client.suggestTerms(query, go, maxCount);
 		assertNotNull("This may be null, if the solr server is not available.", terms);
 		assertEquals(maxCount, terms.size());
-		assertEquals("pigmentation", terms.get(0).getLabel());
+		assertEquals("GO:0043473", terms.get(0)); // pigmentation
 		assertNull(client.suggestTerms(query, cc, maxCount));
 	}
 
@@ -52,9 +48,9 @@ public class SimpleSolrClientTest extends OntologyProvider {
 		String query = "nucl";
 		String branch = "cellular_component";
 		int maxCount = 5;
-		List<OntologyTerm<ISynonym, IRelation>> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
+		List<String> terms = client.searchGeneOntologyTerms(query, branch, maxCount);
 		assertEquals(maxCount, terms.size());
-		assertEquals("nucleus", terms.get(0).getLabel());
+		assertEquals("GO:0005634", terms.get(0)); // nucleus
 	}
 
 	/**

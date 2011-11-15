@@ -14,6 +14,7 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
+import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
@@ -26,6 +27,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
@@ -277,7 +279,9 @@ public abstract class GoCvsHelper {
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
-				boolean csuccess = LoadState.isSuccess(handleTerm(term, term.getChanged(), term.getOperation(), oboDoc));
+				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
+				List<Frame> changes = CommitHistoryTools.translate(term.getChanged());
+				boolean csuccess = LoadState.isSuccess(handleTerm(frame, changes, term.getOperation(), oboDoc));
 				success = success && csuccess;
 			}
 		}

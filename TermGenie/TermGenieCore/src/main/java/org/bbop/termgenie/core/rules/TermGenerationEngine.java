@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.TermTemplate;
+import org.obolibrary.oboformat.model.Frame;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public interface TermGenerationEngine {
 
@@ -91,8 +89,8 @@ public interface TermGenerationEngine {
 
 	public class TermGenerationOutput {
 
-		private final OntologyTerm<ISynonym, IRelation> term;
-		private final List<IRelation> changedTermRelations;
+		private final Frame term;
+		private final List<Frame> changedTermRelations;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
@@ -108,8 +106,8 @@ public interface TermGenerationEngine {
 		 * @param success
 		 * @param message
 		 */
-		public TermGenerationOutput(OntologyTerm<ISynonym, IRelation> term,
-				List<IRelation> changedTermRelations,
+		public TermGenerationOutput(Frame term,
+				List<Frame> changedTermRelations,
 				TermGenerationInput input,
 				boolean success,
 				String message)
@@ -125,7 +123,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the term
 		 */
-		public OntologyTerm<ISynonym, IRelation> getTerm() {
+		public Frame getTerm() {
 			return term;
 		}
 
@@ -153,7 +151,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the changedTermRelations
 		 */
-		public final List<IRelation> getChangedTermRelations() {
+		public final List<Frame> getChangedTermRelations() {
 			return changedTermRelations;
 		}
 
@@ -191,19 +189,19 @@ public interface TermGenerationEngine {
 
 	public final class TermGenerationParameters {
 
-		private final Map<String, List<OntologyTerm<ISynonym, IRelation>>> terms;
+		private final Map<String, List<String>> terms;
 		private final Map<String, List<String>> strings;
 
 		public TermGenerationParameters() {
 			super();
-			this.terms = new HashMap<String, List<OntologyTerm<ISynonym,IRelation>>>();
+			this.terms = new HashMap<String, List<String>>();
 			this.strings = new HashMap<String, List<String>>();
 		}
 
 		/**
 		 * @return the terms
 		 */
-		public Map<String, List<OntologyTerm<ISynonym, IRelation>>> getTerms() {
+		public Map<String, List<String>> getTerms() {
 			return terms;
 		}
 
@@ -226,7 +224,7 @@ public interface TermGenerationEngine {
 		 * @param field
 		 * @param values
 		 */
-		public void setTermValues(String field, List<OntologyTerm<ISynonym, IRelation>> values) {
+		public void setTermValues(String field, List<String> values) {
 			terms.put(field, values);
 		}
 

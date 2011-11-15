@@ -5,35 +5,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.FrameMergeException;
 import org.obolibrary.oboformat.model.OBODoc;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class ComitAwareOBOConverterTools extends OBOConverterTools {
 
 	private static final Logger logger = Logger.getLogger(ComitAwareOBOConverterTools.class);
 
 	public static enum LoadState {
-		addSuccess,
-		addMerge,
-		addRedundant,
-		addError,
-		modifySuccess,
-		modifyRedundant,
-		modifyMissing,
-		modifyError,
-		removeSuccess,
-		removeMissing,
-		unknown;
-		
+		addSuccess, addMerge, addRedundant, addError, modifySuccess, modifyRedundant, modifyMissing, modifyError, removeSuccess, removeMissing, unknown;
+
 		public static boolean isSuccess(LoadState state) {
 			switch (state) {
 				case addSuccess:
@@ -45,11 +30,11 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 					return false;
 			}
 		}
-		
+
 		public static boolean isMerge(LoadState state) {
 			return state == LoadState.addMerge || state == LoadState.modifyMissing;
 		}
-		
+
 		public static boolean isRedundant(LoadState state) {
 			switch (state) {
 				case addRedundant:
@@ -61,14 +46,21 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 					return false;
 			}
 		}
-		
-		public static boolean isError(LoadState  state) {
+
+		public static boolean isError(LoadState state) {
 			return state == LoadState.addError || state == LoadState.modifyError || state == LoadState.unknown;
 		}
 	}
-	
-	public static LoadState handleTerm(OntologyTerm<? extends ISynonym, ? extends  IRelation> term,
-			List<? extends IRelation> changed,
+
+	public static LoadState handleTerm(TermCommit termCommit,
+			Modification modification,
+			OBODoc oboDoc)
+	{
+		return handleTerm(termCommit.getTerm(), termCommit.getChanged(), modification, oboDoc);
+	}
+
+	public static LoadState handleTerm(Frame term,
+			List<Frame> changed,
 			Modification mode,
 			OBODoc obodoc)
 	{
@@ -78,20 +70,18 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 		switch (mode) {
 			case add: {
 				LoadState state = LoadState.addSuccess;
-				Frame newFrame = new Frame(FrameType.TERM);
 				if (frame != null) {
 					state = LoadState.addMerge;
 				}
-				fillOBO(newFrame, term);
-				if (isRedundant(newFrame, frame)) {
-					state = LoadState.addRedundant;
+				if (isRedundant(term, frame)) {
+					return LoadState.addRedundant;
 				}
 				try {
 					if (frame == null) {
-						obodoc.addFrame(newFrame);
+						obodoc.addFrame(term);
 					}
 					else {
-						merge(frame, newFrame);
+						merge(frame, term);
 					}
 					return state;
 				} catch (FrameMergeException exception) {
@@ -104,12 +94,10 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 					return LoadState.modifyMissing;
 				}
 				try {
-					Frame modFrame = new Frame(FrameType.TERM);
-					fillOBO(modFrame, term);
-					if (frameEquals(modFrame, frame)) {
+					if (frameEquals(term, frame)) {
 						return LoadState.modifyRedundant;
 					}
-					merge(frame, modFrame);
+					merge(frame, term);
 					return LoadState.modifySuccess;
 				} catch (FrameMergeException exception) {
 					logger.warn("Could not apply changes to frame.", exception);
@@ -128,18 +116,10 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 				return LoadState.unknown;
 		}
 	}
-	
-	public static LoadState handleTerm(TermCommit termCommit,
-			Modification mode,
-			OBODoc obodoc)
-	{
-		return handleTerm(termCommit.getTerm(), termCommit.getChanged(), mode, obodoc);
-	}
-	
+
 	private static void merge(Frame target, Frame addOn) throws FrameMergeException {
-		if(target == addOn)
-			return;
-		
+		if (target == addOn) return;
+
 		if (!addOn.getId().equals(target.getId())) {
 			throw new FrameMergeException("ids do not match");
 		}
@@ -164,7 +144,7 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 			target.addClause(addOnClause);
 		}
 	}
-	
+
 	private static boolean isRedundant(Frame newFrame, Frame frame) {
 		if (frame == null) {
 			return false;
@@ -245,7 +225,6 @@ public class ComitAwareOBOConverterTools extends OBOConverterTools {
 		return true;
 	}
 
-	
 	private static <T> boolean objEquals(T s1, T s2) {
 		if (s1 == s2) {
 			return true;

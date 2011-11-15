@@ -6,12 +6,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.CommitException;
@@ -29,15 +25,15 @@ import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
-import owltools.graph.OWLGraphWrapper.Synonym;
 
 import com.google.inject.Injector;
 
@@ -94,7 +90,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 	
 	@AfterClass
 	public static void afterClass() {
-//		TempTestFolderTools.deleteTestFolder(testFolder);
+		TempTestFolderTools.deleteTestFolder(testFolder);
 	}
 
 	@Test
@@ -109,42 +105,20 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 	private List<CommitObject<TermCommit>> createCommitTerms() {
 		List<CommitObject<TermCommit>> list = new ArrayList<CommitObject<TermCommit>>(2);
 		
-		OntologyTerm<ISynonym, IRelation> term1 = createTerm(1, "GO:0003332", "Biological Process");
-		OntologyTerm<ISynonym, IRelation> term2 = createTerm(2, term1.getId(), term1.getLabel());
+		Frame term1 = createTerm(1, "GO:0003332");
+		Frame term2 = createTerm(2, term1.getId());
 		list.add(new CommitObject<TermCommit>(new TermCommit(term2, null), Modification.add));
 		list.add(new CommitObject<TermCommit>(new TermCommit(term1, null), Modification.add));
 		
 		return list;
 	}
 
-	private OntologyTerm<ISynonym, IRelation> createTerm(final int count, final String parent, final String parentLabel) {
-		List<ISynonym> synonyms = Collections.<ISynonym>singletonList(new Synonym("term syn"+count, "EXACT", null, Collections.singleton("test:syn_xref")));
-		List<String> defXRef = Collections.singletonList("test:term_xref");
-		Map<String, String> metaData = Collections.emptyMap();
-		List<IRelation> relations = Collections.<IRelation>singletonList(new IRelation() {
-			
-			@Override
-			public String getTargetLabel() {
-				return parentLabel;
-			}
-			
-			@Override
-			public String getTarget() {
-				return parent;
-			}
-			
-			@Override
-			public String getSource() {
-				return "GO:faketest00"+count;
-			}
-			
-			@Override
-			public Map<String, String> getProperties() {
-				return Collections.singletonMap("type", OboFormatTag.TAG_IS_A.getTag());
-			}
-		});
-		OntologyTerm<ISynonym, IRelation> term1 = new DefaultOntologyTerm("GO:faketest00"+count, "term"+count, "def term"+count, synonyms, defXRef, metaData, relations, false);
-		return term1;
+	private Frame createTerm(final int count, final String parent) {
+		Frame frame = OBOConverterTools.createTermFrame("GO:faketest00"+count, "term"+count);
+		OBOConverterTools.addSynonym(frame, "term syn"+count, "EXACT", Collections.singleton("test:syn_xref"));
+		OBOConverterTools.addDefinition(frame, "def term"+count, Collections.singletonList("test:term_xref"));
+		frame.addClause(new Clause(OboFormatTag.TAG_IS_A, parent));
+		return frame;
 	}
 
 }

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -61,18 +63,21 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			equivalentClassesSet.remove(owlClass);
 			result = new InferredRelations(equivalentClassesSet);
 		} else {
-			List<IRelation> changed = null;
+			List<Frame> changed = null;
 			NodeSet<OWLClass> subClasses = reasoner.getSubClasses(owlClass, true);
 			if (subClasses != null && !subClasses.isEmpty()) {
-				changed = new ArrayList<IRelation>();
+				changed = new ArrayList<Frame>();
 				for (OWLClass subClass : subClasses.getFlattened()) {
 					String subClassIRI = subClass.getIRI().toString();
 					if (!subClassIRI.startsWith(tempIdPrefix)) {
-						changed.addAll(OwlTranslatorTools.extractRelations(subClass, ontology));	
+						Frame frame = OBOConverterTools.createTermFrame(subClass);
+						frame.getClauses().addAll(OwlTranslatorTools.extractRelations(subClass, ontology));
+						OBOConverterTools.addTermId(frame, subClass);
+						changed.add(frame);	
 					}
 				}
 			}
-			List<IRelation> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
+			List<Clause> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
 			result = new InferredRelations(relations, changed);
 		}
 		return Modified.no;

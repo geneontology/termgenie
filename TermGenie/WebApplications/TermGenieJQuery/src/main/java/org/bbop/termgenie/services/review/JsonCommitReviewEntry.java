@@ -2,6 +2,7 @@ package org.bbop.termgenie.services.review;
 
 import java.util.List;
 
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonChange;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 
 public class JsonCommitReviewEntry {
@@ -94,7 +95,7 @@ public class JsonCommitReviewEntry {
 		private boolean isObsolete = false;
 		private String diff;
 		
-		private List<JsonRelationDiff> relations = null;
+		private List<JsonChange> relations = null;
 
 		private boolean modified = false;
 
@@ -186,14 +187,14 @@ public class JsonCommitReviewEntry {
 		/**
 		 * @return the relations
 		 */
-		public List<JsonRelationDiff> getRelations() {
+		public List<JsonChange> getRelations() {
 			return relations;
 		}
 
 		/**
 		 * @param relations the relations to set
 		 */
-		public void setRelations(List<JsonRelationDiff> relations) {
+		public void setRelations(List<JsonChange> relations) {
 			this.relations = relations;
 		}
 
@@ -209,40 +210,6 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setObsolete(boolean isObsolete) {
 			this.isObsolete = isObsolete;
-		}
-	}
-	
-	public static class JsonRelationDiff {
-		
-		String termId;
-		String relations;
-		
-		/**
-		 * @return the termId
-		 */
-		public String getTermId() {
-			return termId;
-		}
-		
-		/**
-		 * @param termId the termId to set
-		 */
-		public void setTermId(String termId) {
-			this.termId = termId;
-		}
-		
-		/**
-		 * @return the relations
-		 */
-		public String getRelations() {
-			return relations;
-		}
-		
-		/**
-		 * @param relations the relations to set
-		 */
-		public void setRelations(String relations) {
-			this.relations = relations;
 		}
 	}
 }

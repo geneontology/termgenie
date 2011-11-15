@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,13 +12,14 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -176,6 +176,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			T logicalDefinition,
 			List<TermGenerationOutput> output)
 	{
+		Frame term = new Frame(FrameType.TERM);
 
 		// get overwrites from GUI
 		String inputName = getInput("Name");
@@ -186,14 +187,6 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			}
 		}
 
-		String inputDefinition = getInput("Definition");
-		if (inputDefinition != null) {
-			inputDefinition = inputDefinition.trim();
-			if (inputDefinition.length() > 1) {
-				definition = inputDefinition;
-			}
-		}
-
 		// Fact Checking
 		// check label
 		OWLObject sameName = targetOntology.getOWLObjectByLabel(label);
@@ -201,6 +194,15 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			output.add(singleError("The term " + targetOntology.getIdentifier(sameName) + " with the same label already exists",
 					input));
 			return;
+		}
+		OBOConverterTools.addTermLabel(term, label);
+		
+		String inputDefinition = getInput("Definition");
+		if (inputDefinition != null) {
+			inputDefinition = inputDefinition.trim();
+			if (inputDefinition.length() > 1) {
+				definition = inputDefinition;
+			}
 		}
 
 		// def xref
@@ -234,19 +236,28 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		else {
 			defxrefs = Collections.singletonList("GOC:TermGenie");
 		}
+		OBOConverterTools.addDefinition(term, definition, defxrefs);
 
-		Map<String, String> metaData = new HashMap<String, String>();
-		metaData.put(OboFormatTag.TAG_CREATION_DATE.getTag(), getDate());
-		metaData.put(OboFormatTag.TAG_CREATED_BY.getTag(), "TermGenie");
+		term.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));
+		term.addClause(new Clause(OboFormatTag.TAG_CREATED_BY, "TermGenie"));
 		String comment = getInput("Comment");
 		if (comment != null && comment.length() > 0) {
-			metaData.put(OboFormatTag.TAG_COMMENT.getTag(), comment);
+			term.addClause(new Clause(OboFormatTag.TAG_COMMENT, comment));
 		}
 		String oboNamespace = this.input.getTermTemplate().getOboNamespace();
 		if (oboNamespace != null) {
-			metaData.put(OboFormatTag.TAG_NAMESPACE.getTag(), oboNamespace);
+			term.addClause(new Clause(OboFormatTag.TAG_NAMESPACE, oboNamespace));
 		}
+		
+		if (synonyms != null) {
+			for(ISynonym synonym : synonyms) {
+				OBOConverterTools.addSynonym(term, synonym.getLabel(), synonym.getScope(), synonym.getXrefs());
+			}
+		}
+		
 		String owlNewId = getNewId();
+		String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
+		OBOConverterTools.addTermId(term, oboNewId);
 
 		try {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
@@ -257,12 +268,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 				}
 				return;
 			}
-			List<IRelation> relations = inferredRelations.classRelations;
-			if (relations != null && !relations.isEmpty()) {
-				Collections.sort(relations, IRelation.RELATION_SORT_COMPARATOR);
+			List<Clause> relations = inferredRelations.classRelations;
+			if (relations != null) {
+				term.getClauses().addAll(relations);
 			}
-			String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
-			DefaultOntologyTerm term = new DefaultOntologyTerm(oboNewId, label, definition, synonyms, defxrefs, metaData, relations, false);
 			output.add(success(term, inferredRelations.changed, input));
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
@@ -294,10 +303,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 	static class InferredRelations {
 		
-		static final InferredRelations EMPTY = new InferredRelations(Collections.<IRelation>emptyList(), null);
+		static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause>emptyList(), null);
 		
-		List<IRelation> classRelations = null;
-		List<IRelation> changed = null;
+		List<Clause> classRelations = null;
+		List<Frame> changed = null;
 		Set<OWLClass> equivalentClasses = null;
 		
 		/**
@@ -311,7 +320,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		 * @param classRelations
 		 * @param directSubClasses
 		 */
-		InferredRelations(List<IRelation> classRelations, List<IRelation> changed) {
+		InferredRelations(List<Clause> classRelations, List<Frame> changed) {
 			this.classRelations = classRelations;
 			this.changed = changed;
 		}
@@ -339,7 +348,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return TermGenerationOutput.error(input, message);
 	}
 
-	protected TermGenerationOutput success(OntologyTerm<ISynonym, IRelation> term, List<IRelation> changed, TermGenerationInput input) {
+	protected TermGenerationOutput success(Frame term, List<Frame> changed, TermGenerationInput input) {
 		return new TermGenerationOutput(term, changed, input, true, null);
 	}
 	

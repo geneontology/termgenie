@@ -1,39 +1,26 @@
 package org.bbop.termgenie.ontology;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.entities.CommitedOntologyTermRelation;
-import org.bbop.termgenie.ontology.entities.CommitedOntologyTermSynonym;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
-import org.obolibrary.oboformat.model.Clause;
+import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.Xref;
+import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class CommitHistoryTools {
 
-	private static final Map<String, OboFormatTag> SCOPE_TAGS = new HashMap<String, OboFormatTag>();
-	static {
-		SCOPE_TAGS.put(OboFormatTag.TAG_RELATED.getTag(), OboFormatTag.TAG_RELATED);
-		SCOPE_TAGS.put(OboFormatTag.TAG_EXACT.getTag(), OboFormatTag.TAG_EXACT);
-		SCOPE_TAGS.put(OboFormatTag.TAG_BROAD.getTag(), OboFormatTag.TAG_BROAD);
-		SCOPE_TAGS.put(OboFormatTag.TAG_NARROW.getTag(), OboFormatTag.TAG_NARROW);
-	}
+	private static final Logger logger = Logger.getLogger(CommitHistoryTools.class);
 	
 	private CommitHistoryTools() {
 		// no instances allowed
@@ -44,87 +31,13 @@ public class CommitHistoryTools {
 		term.setId(frame.getId());
 		term.setOperation(operation);
 		term.setLabel(frame.getTagValue(OboFormatTag.TAG_NAME, String.class));
-		term.setDefinition(frame.getTagValue(OboFormatTag.TAG_DEF, String.class));
-		term.setDefXRef(convertXrefs(frame.getTagXrefs(OboFormatTag.TAG_DEF.getTag())));
-		term.setMetaData(convertMetaData(frame));
-		term.setSynonyms(convertSynonyms(frame));
-		term.setRelations(convertRelations(frame));
-		boolean isObsolete = false;
-		Boolean tagValue = frame.getTagValue(OboFormatTag.TAG_IS_OBSELETE, Boolean.class);
-		if (tagValue != null) {
-			isObsolete = tagValue.booleanValue();
+		try {
+			term.setObo(OBOWriterTools.writeFrame(frame));
+		} catch (IOException exception) {
+			logger.error("Could not translate term: "+frame.getId(), exception);
+			return null;
 		}
-		else {
-			String value = frame.getTagValue(OboFormatTag.TAG_IS_OBSELETE, String.class);
-			if (value != null && Boolean.TRUE.toString().equals(value)) {
-				isObsolete = true;
-			}
-		}
-		term.setObsolete(isObsolete);
 		return term;
-	}
-
-	private static List<CommitedOntologyTermRelation> convertRelations(Frame frame) {
-		List<IRelation> relations = OBOConverterTools.extractRelations(frame, null);
-		return translateRelations(relations);
-	}
-
-	private static List<CommitedOntologyTermSynonym> convertSynonyms(Frame frame) {
-		List<CommitedOntologyTermSynonym> result = null;
-		Collection<Clause> synonymClauses = frame.getClauses(OboFormatTag.TAG_SYNONYM);
-		if (synonymClauses != null && !synonymClauses.isEmpty()) {
-			result = new ArrayList<CommitedOntologyTermSynonym>();
-			for (Clause clause : synonymClauses) {
-				CommitedOntologyTermSynonym synonym = new CommitedOntologyTermSynonym();
-				synonym.setLabel(clause.getValue(String.class));
-				String value2 = clause.getValue(String.class); 
-				if (value2 != null && SCOPE_TAGS.containsKey(value2)) {
-					synonym.setScope(value2);
-				}
-				Collection<Xref> xrefs = clause.getXrefs();
-				if (xrefs != null && !xrefs.isEmpty()) {
-					Set<String> xrefStrings  = new HashSet<String>();
-					for (Xref xref : xrefs) {
-						xrefStrings.add(xref.getIdref());
-					}
-					synonym.setXrefs(xrefStrings);
-				}
-				result.add(synonym);
-			}
-		}
-		return result;
-	}
-
-	private static Map<String, String> convertMetaData(Frame frame) {
-		Map<String, String> map = new HashMap<String, String>();
-		addTag(frame, map, OboFormatTag.TAG_IS_ANONYMOUS);
-		addTag(frame, map, OboFormatTag.TAG_NAMESPACE);
-		addTag(frame, map, OboFormatTag.TAG_COMMENT);
-		addTag(frame, map, OboFormatTag.TAG_CREATED_BY);
-		addTag(frame, map, OboFormatTag.TAG_CREATION_DATE);
-		addTag(frame, map, OboFormatTag.TAG_IS_OBSELETE);
-		addTag(frame, map, OboFormatTag.TAG_REPLACED_BY);
-		addTag(frame, map, OboFormatTag.TAG_CONSIDER);
-		return map;
-	}
-
-	private static void addTag(Frame frame, Map<String, String> map, OboFormatTag oboTag) {
-		final String tag = oboTag.getTag();
-		String value = frame.getTagValue(tag, String.class);
-		if (value != null) {
-			map.put(tag, value);
-		}
-	}
-
-	private static List<String> convertXrefs(Collection<Xref> tagXrefs) {
-		List<String> result = null;
-		if (tagXrefs != null && !tagXrefs.isEmpty()) {
-			result = new ArrayList<String>(tagXrefs.size());
-			for (Xref xref : tagXrefs) {
-				result.add(xref.getIdref());
-			}
-		}
-		return result;
 	}
 
 	public static CommitHistoryItem create(List<CommitObject<TermCommit>> terms,
@@ -146,62 +59,66 @@ public class CommitHistoryTools {
 		if (terms != null && !terms.isEmpty()) {
 			result = new ArrayList<CommitedOntologyTerm>(terms.size());
 			for (CommitObject<TermCommit> commitObject : terms) {
-				CommitedOntologyTerm term = new CommitedOntologyTerm();
+				TermCommit termCommit = commitObject.getObject();
+				Frame frame = termCommit.getTerm();
+				CommitedOntologyTerm term = create(frame, commitObject.getType());
+				List<CommitedOntologyTerm> changed = null;
+				List<Frame> changedFrames = termCommit.getChanged();
+				if (changedFrames != null && !changedFrames.isEmpty()) {
+					changed = new ArrayList<CommitedOntologyTerm>(changedFrames.size());
+					for(Frame changedFrame : changedFrames) {
+						changed.add(create(changedFrame, Modification.modify));
+					}
+				}
+				term.setChanged(changed);
 				
-				OntologyTerm<ISynonym, IRelation> storedTerm = commitObject.getObject().getTerm();
-
-				term.setId(storedTerm.getId());
-				term.setLabel(storedTerm.getLabel());
-				term.setDefinition(storedTerm.getDefinition());
-				term.setDefXRef(storedTerm.getDefXRef());
-				term.setMetaData(storedTerm.getMetaData());
-
-				term.setSynonyms(translateSynonyms(storedTerm.getSynonyms()));
-				term.setOperation(commitObject.getType());
-				term.setRelations(translateRelations(storedTerm.getRelations()));
-				term.setChanged(translateRelations(commitObject.getObject().getChanged()));
-				term.setObsolete(storedTerm.isObsolete());
 				result.add(term);
 			}
 		}
 		return result;
 	}
 
-	private static List<CommitedOntologyTermSynonym> translateSynonyms(List<ISynonym> synonyms) {
-		List<CommitedOntologyTermSynonym> result = null;
-		if (synonyms != null && !synonyms.isEmpty()) {
-			result = new ArrayList<CommitedOntologyTermSynonym>(synonyms.size());
-			for (ISynonym synonym : synonyms) {
-				CommitedOntologyTermSynonym syn = new CommitedOntologyTermSynonym();
-				syn.setCategory(synonym.getCategory());
-				syn.setLabel(synonym.getLabel());
-				syn.setScope(synonym.getScope());
-				syn.setXrefs(synonym.getXrefs());
-				result.add(syn);
+	
+	public static List<CommitObject<TermCommit>> translate(CommitHistoryItem item) {
+		List<CommitObject<TermCommit>> result = new ArrayList<CommitObject<TermCommit>>();
+		List<CommitedOntologyTerm> terms = item.getTerms();
+		for (CommitedOntologyTerm commitedOntologyTerm : terms) {
+			Frame term = translate(commitedOntologyTerm.getId(), commitedOntologyTerm.getObo());
+			if (term != null) {
+				List<Frame> changed = translate(commitedOntologyTerm.getChanged());
+				TermCommit termCommit = new TermCommit(term, changed);
+				CommitObject<TermCommit> commitObject = new CommitObject<TermCommit>(termCommit, commitedOntologyTerm.getOperation());
+				result.add(commitObject);
+			}
+		}
+		return result;
+	}
+	
+	public static List<Frame> translate(List<CommitedOntologyTerm> changed) {
+		List<Frame> result = null;
+		if (changed != null && !changed.isEmpty()) {
+			result = new ArrayList<Frame>(changed.size());
+			for(CommitedOntologyTerm term : changed) {
+				Frame frame = translate(term.getId(), term.getObo());
+				if (frame != null) {
+					result.add(frame);
+				}
 			}
 		}
 		return result;
 	}
 
-	private static List<CommitedOntologyTermRelation> translateRelations(List<IRelation> relations) {
-		List<CommitedOntologyTermRelation> result = null;
-		if (relations != null && !relations.isEmpty()) {
-			result = new ArrayList<CommitedOntologyTermRelation>(relations.size());
-			for (IRelation relation : relations) {
-				result.add(translateRelation(relation));
-			}
+	public static Frame translate(String id, String obo) {
+		OBOFormatParser p = new OBOFormatParser();
+		OBODoc obodoc = new OBODoc();
+		BufferedReader r = new BufferedReader(new StringReader(obo));
+		p.setReader(r);
+		p.parseTermFrame(obodoc);
+		try {
+			r.close();
+		} catch (IOException exception) {
+			logger.error("Could not close stream.", exception);
 		}
-		return result;
+		return obodoc.getTermFrame(id);
 	}
-
-	private static CommitedOntologyTermRelation translateRelation(IRelation relation)
-	{
-		CommitedOntologyTermRelation rel = new CommitedOntologyTermRelation();
-		rel.setProperties(relation.getProperties());
-		rel.setSource(relation.getSource());
-		rel.setTarget(relation.getTarget());
-		rel.setTargetLabel(relation.getTargetLabel());
-		return rel;
-	}
-
 }

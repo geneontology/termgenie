@@ -16,7 +16,6 @@ import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 
 import owltools.graph.OWLGraphWrapper;
@@ -100,12 +99,11 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 			for (JsonOntologyTerm term : terms) {
 				addIds.add(term.getTempId());
 				
-				final Frame frame = new Frame(FrameType.TERM);
-				OBOConverterTools.fillOBO(frame, term);
+				final Frame frame = JsonOntologyTerm.createFrame(term);
 				oboDoc.addTermFrame(frame);
 				
 				// changed relations
-				OBOConverterTools.fillChangedRelations(oboDoc, term.getChanged(), modIds);
+				OBOConverterTools.fillChangedRelations(oboDoc, JsonOntologyTerm.createChangedFrames(term.getChanged()), modIds);
 			}
 			
 			oboDiffAdd = OBOWriterTools.writeTerms(addIds, oboDoc);

@@ -2,24 +2,21 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
+import org.obolibrary.oboformat.model.Frame;
 
 
 public class CommitInfo {
 	
 	public static class TermCommit {
 		
-		private OntologyTerm<ISynonym, IRelation> term;
-		private List<IRelation> changed;
+		private Frame term;
+		private List<Frame> changed;
 		
 		/**
 		 * @param term
 		 * @param changed
 		 */
-		public TermCommit(OntologyTerm<ISynonym, IRelation> term, List<IRelation> changed) {
+		public TermCommit(Frame term, List<Frame> changed) {
 			this.term = term;
 			this.changed = changed;
 		}
@@ -27,28 +24,28 @@ public class CommitInfo {
 		/**
 		 * @return the term
 		 */
-		public OntologyTerm<ISynonym, IRelation> getTerm() {
+		public Frame getTerm() {
 			return term;
 		}
 		
 		/**
 		 * @param term the term to set
 		 */
-		public void setTerm(OntologyTerm<ISynonym, IRelation> term) {
+		public void setTerm(Frame term) {
 			this.term = term;
 		}
 		
 		/**
 		 * @return the changed
 		 */
-		public List<IRelation> getChanged() {
+		public List<Frame> getChanged() {
 			return changed;
 		}
 		
 		/**
 		 * @param changed the changed to set
 		 */
-		public void setChanged(List<IRelation> changed) {
+		public void setChanged(List<Frame> changed) {
 			this.changed = changed;
 		}
 	}

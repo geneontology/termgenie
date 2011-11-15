@@ -3,97 +3,113 @@ package org.bbop.termgenie.ontology.obo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
+import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-
-import owltools.graph.OWLGraphWrapper.ISynonym;
+import org.semanticweb.owlapi.model.OWLClass;
 
 public class OBOConverterTools {
+	
+	public static Frame createTermFrame(String id) {
+		Frame frame = new Frame(FrameType.TERM);
+		addTermId(frame, id);
+		return frame;
+	}
+	
+	public static Frame createTermFrame(OWLClass cls) {
+		return createTermFrame(Owl2Obo.getIdentifier(cls.getIRI()));
+	}
 
-	public static void fillOBO(Frame frame, OntologyTerm<? extends ISynonym, ? extends IRelation> term) {
-		String id = term.getId();
+	public static Frame createTermFrame(String id, String label) {
+		Frame frame = createTermFrame(id);
+		addTermLabel(frame, label);
+		return frame;
+	}
+
+	public static void addTermId(Frame frame, String id) {
 		frame.setId(id);
 		frame.addClause(new Clause(OboFormatTag.TAG_ID, id));
-		frame.addClause(new Clause(OboFormatTag.TAG_NAME, term.getLabel()));
-		String definition = term.getDefinition();
-		if (definition != null) {
-			Clause cl = new Clause(OboFormatTag.TAG_DEF, definition);
-			List<String> defXRef = term.getDefXRef();
-			if (defXRef != null && !defXRef.isEmpty()) {
-				for (String xref : defXRef) {
-					cl.addXref(new Xref(xref));
-				}
+	}
+	
+	public static void addTermId(Frame frame, OWLClass cls) {
+		addTermId(frame, Owl2Obo.getIdentifier(cls.getIRI()));
+	}
+	
+	public static void addTermLabel(Frame frame, String label) {
+		frame.addClause(new Clause(OboFormatTag.TAG_NAME, label));
+	}
+	
+	public static void addDefinition(Frame frame, String def, List<String> xrefs) {
+		Clause cl = new Clause(OboFormatTag.TAG_DEF, def);
+		if (xrefs != null) {
+			List<Xref> xrefList = new ArrayList<Xref>(xrefs.size());
+			for (String idRef : xrefs) {
+				xrefList.add(new Xref(idRef));
 			}
-			frame.addClause(cl);
+			cl.setXrefs(xrefList);
 		}
-		Map<String, String> metaData = term.getMetaData();
-		if (metaData != null && !metaData.isEmpty()) {
-			for (Entry<String, String> entry : metaData.entrySet()) {
-				frame.addClause(new Clause(entry.getKey(), entry.getValue()));
+		frame.addClause(cl);
+	}
+	
+	public static void addSynonym(Frame frame, String label, String scope, Collection<String> xrefs) {
+		Clause cl = new Clause(OboFormatTag.TAG_SYNONYM, label);
+		if (scope != null) {
+			cl.addValue(scope);
+		}
+		if (xrefs != null) {
+			List<Xref> xrefList = new ArrayList<Xref>(xrefs.size());
+			for (String idRef : xrefs) {
+				xrefList.add(new Xref(idRef));
 			}
+			cl.setXrefs(xrefList);
 		}
-		if (term.isObsolete()) {
+		frame.addClause(cl);
+	}
+	
+	public static void addObsolete(Frame frame, boolean obsolete) {
+		if (obsolete) {
 			Clause cl = new Clause(OboFormatTag.TAG_IS_OBSELETE);
 			cl.setValue(Boolean.TRUE);
 			frame.addClause(cl);
 		}
-		fillSynonyms(frame, term.getSynonyms());
-		fillRelations(frame, term.getRelations(), id);
-	}
-
-	public static void fillSynonyms(Frame frame, List<? extends ISynonym> synonyms) {
-		if (synonyms != null && !synonyms.isEmpty()) {
-			for (ISynonym termSynonym : synonyms) {
-				Clause cl = new Clause(OboFormatTag.TAG_SYNONYM, termSynonym.getLabel());
-				Set<String> defXRef = termSynonym.getXrefs();
-				if (defXRef != null && !defXRef.isEmpty()) {
-					for (String xref : defXRef) {
-						cl.addXref(new Xref(xref));
-					}
-				}
-				String scope = termSynonym.getScope();
-				if (scope != null) {
-					cl.addValue(scope);
-				}
-				String category = termSynonym.getCategory();
-				if (category != null) {
-					cl.addValue(category);
-				}
-				frame.addClause(cl);
-			}
-		}
 	}
 	
-	public static void fillRelations(Frame frame, List<? extends IRelation> relations, String id) {
-		if (relations != null && !relations.isEmpty()) {
-			for (IRelation relation : relations) {
-				fillRelation(frame, relation, id);
-			}
-		}
+	public static boolean isScope(String s) {
+		return OboFormatTag.TAG_EXACT.getTag().equals(s) ||
+				OboFormatTag.TAG_NARROW.getTag().equals(s) ||
+				OboFormatTag.TAG_RELATED.getTag().equals(s) ||
+				OboFormatTag.TAG_BROAD.getTag().equals(s);
 	}
-
-	public static void fillRelation(Frame frame, IRelation relation, String id) {
-		Clause clause = translateRelation(relation, id);
+	
+	
+	public static boolean isObsolete(Clause clause) {
 		if (clause != null) {
-			frame.addClause(clause);
+			Object value = clause.getValue();
+			if (value != null) {
+				if (value instanceof Boolean) {
+					return ((Boolean) value).booleanValue();
+				}
+				else if (value instanceof String) {
+					String s = (String) value;
+					return Boolean.TRUE.toString().equals(s);
+				}
+			}
 		}
+		return false;
 	}
 	
+	public static boolean isObsolete(Frame frame) {
+		return isObsolete(frame.getClause(OboFormatTag.TAG_IS_OBSELETE));
+	}
 	
 	private static final Set<String> updateRelations = createUpdateRelations();
 	
@@ -108,16 +124,13 @@ public class OBOConverterTools {
 	}
 	
 	public static void fillChangedRelations(OBODoc oboDoc,
-			List<? extends IRelation> changed,
+			List<Frame> changed,
 			List<String> modIds)
 	{
 		if (changed != null && !changed.isEmpty()) {
-			Map<String, List<IRelation>> groups = groupChangedRelations(changed);
-			
-			for(String modId : groups.keySet()) {
-				if (modIds != null) {
-					modIds.add(modId);
-				}
+			for(Frame changedFrame : changed) {
+				String modId = changedFrame.getId();
+				modIds.add(modId);
 				Frame frame = oboDoc.getTermFrame(modId);
 				if (frame != null) {
 					Collection<Clause> clauses = frame.getClauses();
@@ -133,9 +146,8 @@ public class OBOConverterTools {
 					}
 					
 					// add updated relations
-					List<IRelation> relations = groups.get(modId);
-					List<Clause> newRelations = translateRelations(relations, null);
-					for (Clause newRelation : newRelations) {
+					List<Clause> relations = getRelations(changedFrame);
+					for (Clause newRelation : relations) {
 						String tag = newRelation.getTag();
 						if (updateRelations.contains(tag)) {
 							clauses.add(newRelation);
@@ -146,166 +158,19 @@ public class OBOConverterTools {
 		}
 	}
 
-	public static Map<String, List<IRelation>> groupChangedRelations(List<? extends IRelation> changed)
-	{
-		Map<String, List<IRelation>> groups = null;
-		if (changed != null && !changed.isEmpty()) {
-			groups = new HashMap<String, List<IRelation>>();
-			for (IRelation change : changed) {
-				List<IRelation> list = groups.get(change.getSource());
-				if (list == null) {
-					list = new ArrayList<IRelation>();
-					groups.put(change.getSource(), list);
-				}
-				list.add(change);
-			}
-		}
-		return groups;
-	}
-	
-	public static List<Clause> translateRelations(List<? extends IRelation> relations, String id) {
-		List<Clause> result = new ArrayList<Clause>(relations.size());
-		for(IRelation relation : relations) {
-			Clause clause = translateRelation(relation, id);
-			if (clause != null) {
-				result.add(clause);
-			}
-		}
+	public static List<Clause> getRelations(Frame frame) {
+		List<Clause> result = new ArrayList<Clause>();
+		addClauses(result, frame.getClauses(OboFormatTag.TAG_IS_A));
+		addClauses(result, frame.getClauses(OboFormatTag.TAG_INTERSECTION_OF));
+		addClauses(result, frame.getClauses(OboFormatTag.TAG_UNION_OF));
+		addClauses(result, frame.getClauses(OboFormatTag.TAG_DISJOINT_FROM));
+		addClauses(result, frame.getClauses(OboFormatTag.TAG_RELATIONSHIP));
 		return result;
 	}
 	
-	public static Clause translateRelation(IRelation relation, String id) {
-		Clause result = null;
-		if (id == null || id.equals(relation.getSource())) {
-			String target = relation.getTarget();
-			Map<String, String> properties = relation.getProperties();
-			if (properties != null && !properties.isEmpty()) {
-				String type = Relation.getType(properties);
-				result = createRelationClause(target, properties, type);
-			}
+	private static void addClauses(List<Clause> clauses, Collection<Clause> clauses2) {
+		if (clauses2 != null && !clauses2.isEmpty()) {
+			clauses.addAll(clauses2);
 		}
-		return result;
-	}
-
-	private static Clause createRelationClause(String target,
-			Map<String, String> properties,
-			String type)
-	{
-		Clause cl = null;
-		if (OboFormatTag.TAG_IS_A.getTag().equals(type)) {
-			cl = new Clause(type, target);
-		}
-		else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(type)) {
-			cl = new Clause(type);
-			String relationShip = Relation.getRelationShip(properties);
-			if (relationShip != null) {
-				cl.addValue(relationShip);
-			}
-			cl.addValue(target);
-		}
-		else if (OboFormatTag.TAG_UNION_OF.getTag().equals(type)) {
-			cl = new Clause(type, target);
-		}
-		else if (OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(type)) {
-			cl = new Clause(type, target);
-		}
-		else  if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(type)){
-			cl = new Clause(type);
-			cl.addValue(Relation.getRelationShip(properties));
-			cl.addValue(target);
-		}
-		return cl;
-	}
-	
-	public static List<IRelation> extractRelations(Frame termFrame, OBODoc oboDoc) {
-		if (FrameType.TERM != termFrame.getType()) {
-			return Collections.emptyList();
-		}
-		String source = termFrame.getId();
-		List<IRelation> list = new ArrayList<IRelation>();
-		addAllSimple(list, source, termFrame.getClauses(OboFormatTag.TAG_IS_A), oboDoc);
-		addIntersections(list, source, termFrame.getClauses(OboFormatTag.TAG_INTERSECTION_OF), oboDoc);
-		addAllSimple(list, source, termFrame.getClauses(OboFormatTag.TAG_UNION_OF), oboDoc);
-		addAllSimple(list, source, termFrame.getClauses(OboFormatTag.TAG_DISJOINT_FROM), oboDoc);
-		addRelations(list, source, termFrame.getClauses(OboFormatTag.TAG_RELATIONSHIP), oboDoc);
-		return list;
-	}
-
-	private static void addAllSimple(List<IRelation> relations,
-			String source,
-			Collection<Clause> clauses,
-			OBODoc oboDoc)
-	{
-		if (clauses != null && !clauses.isEmpty()) {
-			for (Clause clause : clauses) {
-				addSimple(relations, source, clause, oboDoc);
-			}
-		}
-	}
-
-	private static void addRelations(List<IRelation> list,
-			String source,
-			Collection<Clause> clauses,
-			OBODoc oboDoc)
-	{
-		if (clauses != null && !clauses.isEmpty()) {
-			for (Clause clause : clauses) {
-				addLong(list, source, oboDoc, clause);
-			}
-		}
-	}
-
-	private static void addIntersections(List<IRelation> list,
-			String source,
-			Collection<Clause> clauses,
-			OBODoc oboDoc)
-	{
-		if (clauses != null && !clauses.isEmpty()) {
-			for (Clause clause : clauses) {
-				if (clause.getValues().size() > 1) {
-					addLong(list, source, oboDoc, clause);
-				}
-				else {
-					addSimple(list, source, clause, oboDoc);
-				}
-			}
-		}
-
-	}
-
-	private static void addSimple(List<IRelation> relations,
-			String source,
-			Clause clause,
-			OBODoc oboDoc)
-	{
-		String target = clause.getValue(String.class);
-		Map<String, String> properties = new HashMap<String, String>();
-		Relation.setType(properties, clause.getTag());
-		Relation rel = new Relation(source, target, getLabel(target, oboDoc), properties);
-		relations.add(rel);
-	}
-	
-	private static void addLong(List<IRelation> list, String source, OBODoc oboDoc, Clause clause)
-	{
-		String target = clause.getValue2(String.class);
-		String label = getLabel(target, oboDoc);
-		Map<String, String> properties = new HashMap<String, String>();
-		Relation.setType(properties, clause.getTag(), clause.getValue(String.class));
-		Relation rel = new Relation(source, target, label, properties);
-		list.add(rel);
-	}
-
-	private static String getLabel(String id, OBODoc oboDoc) {
-		String label = null;
-		if (id != null && oboDoc != null) {
-			Frame termFrame = oboDoc.getTermFrame(id);
-			if (termFrame != null) {
-				Clause clause = termFrame.getClause(OboFormatTag.TAG_NAME);
-				if (clause != null) {
-					label = clause.getValue(String.class);
-				}
-			}
-		}
-		return label;
 	}
 }

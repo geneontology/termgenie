@@ -9,17 +9,12 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
-import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
-import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.tools.Pair;
 
-import owltools.graph.OWLGraphWrapper.ISynonym;
 import difflib.DiffUtils;
 import difflib.Patch;
 
@@ -268,7 +263,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			// set the commit also to success in the commit history
 			finalizeCommitHistory(item);
 
-			results.add(new CommitResult(true, null, createResultTerms(item), diff));
+			results.add(new CommitResult(true, null, CommitHistoryTools.translate(item), diff));
 			changed = true;
 		}
 		
@@ -284,21 +279,6 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 			thread.start();
 		}
 		return results;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<CommitObject<TermCommit>> createResultTerms(CommitHistoryItem item)
-	{
-		List<CommitObject<TermCommit>> terms = new ArrayList<CommitObject<TermCommit>>();
-		for(CommitedOntologyTerm term: item.getTerms()) {
-			OntologyTerm<ISynonym, IRelation> t = (OntologyTerm) term;
-			List<IRelation> changed = (List) term.getChanged();
-			TermCommit c = new TermCommit(t, changed);
-			Modification mod = term.getOperation();
-			term.getChanged();
-			terms.add(new CommitObject<TermCommit>(c, mod));
-		}
-		return terms;
 	}
 
 	private List<CommitHistoryItem> retrieveItems(List<Integer> historyIds) throws CommitException {

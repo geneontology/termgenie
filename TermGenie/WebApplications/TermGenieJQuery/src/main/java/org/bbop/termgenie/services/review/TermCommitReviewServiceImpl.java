@@ -1,21 +1,18 @@
 package org.bbop.termgenie.services.review;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology.IRelation;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
@@ -30,17 +27,16 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OBOParserTools;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
-import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonRelationDiff;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -141,13 +137,15 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {
+			Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
 			JsonDiff jsonDiff = new JsonDiff();
 			jsonDiff.setOperation(term.getOperation());
 			jsonDiff.setId(term.getId());
 			jsonDiff.setUuid(term.getUuid());
-			jsonDiff.setObsolete(term.isObsolete());
+			jsonDiff.setObsolete(OBOConverterTools.isObsolete(frame));
 			
-			LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getChanged(), term.getOperation(), oboDoc);
+			List<Frame> changed = CommitHistoryTools.translate(term.getChanged());
+			LoadState state = ComitAwareOBOConverterTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
 				try {
 					jsonDiff.setDiff(OBOWriterTools.writeTerm(term.getId(), oboDoc));
@@ -156,22 +154,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					logger.error("Could not create diff for pending commit", exception);
 				}
 			}
-			Map<String, List<IRelation>> groups = OBOConverterTools.groupChangedRelations(term.getChanged());
-			if (groups != null) {
-				List<JsonRelationDiff> modifiedRelations = new ArrayList<JsonRelationDiff>(groups.size());
-				for(String termId : groups.keySet()) {
-					JsonRelationDiff relationDiff = new JsonRelationDiff();
-					relationDiff.setTermId(termId);
-					try {
-						relationDiff.setRelations(OBOWriterTools.writeRelations(termId, oboDoc));
-						modifiedRelations.add(relationDiff);
-					} catch (IOException exception) {
-						logger.error("Could not create diff for pending commit", exception);
-					}
-				}
-				if (!modifiedRelations.isEmpty()) {
-					jsonDiff.setRelations(modifiedRelations);
-				}
+			if (changed != null && !changed.isEmpty()) {
+				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed));
 			}
 		}
 		if (!result.isEmpty()) {
@@ -274,18 +258,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 		private Frame parseDiff(JsonDiff jsonDiff) {
 			boolean isObsolete = jsonDiff.isObsolete();
-			OBOFormatParser p = new OBOFormatParser();
-			p.setReader(new BufferedReader(new StringReader(jsonDiff.getDiff())));
-			OBODoc obodoc = new OBODoc();
-			p.parseTermFrame(obodoc);
-			Frame termFrame = obodoc.getTermFrame(jsonDiff.getId());
-			Clause clause = termFrame.getClause(OboFormatTag.TAG_IS_OBSELETE);
+			Frame frame = OBOParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
+			Clause clause = frame.getClause(OboFormatTag.TAG_IS_OBSELETE);
 			if (clause == null) {
 				clause = new Clause(OboFormatTag.TAG_IS_OBSELETE);
-				termFrame.addClause(clause);
+				frame.addClause(clause);
 			}
 			clause.setValue(Boolean.valueOf(isObsolete));
-			return termFrame;
+			return frame;
 		}
 
 		private void updateMatchingTerm(CommitHistoryItem historyItem,

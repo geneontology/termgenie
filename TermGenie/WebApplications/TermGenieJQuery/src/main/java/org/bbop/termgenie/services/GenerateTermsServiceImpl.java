@@ -9,14 +9,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.core.Ontology.AbstractOntologyTerm.DefaultOntologyTerm;
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -34,15 +29,8 @@ import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 import org.bbop.termgenie.data.JsonValidationHint;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
 import org.bbop.termgenie.tools.OntologyTools;
-import org.semanticweb.owlapi.model.OWLObject;
-
-import owltools.graph.OWLGraphEdge;
-import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.ISynonym;
-import owltools.graph.OWLQuantifiedProperty;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -163,7 +151,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.convert(candidate.getTerm(), candidate.getChangedTermRelations());
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getChangedTermRelations());
 					jsonCandidates.add(jsonCandidate);
 				}
 				else {
@@ -312,93 +300,15 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			return result;
 		}
 
-		private List<OntologyTerm<ISynonym, IRelation>> getTerms(List<JsonOntologyTermIdentifier> jsonTerms)
+		private List<String> getTerms(List<JsonOntologyTermIdentifier> jsonTerms)
 		{
-			List<OntologyTerm<ISynonym, IRelation>> terms = new ArrayList<OntologyTerm<ISynonym, IRelation>>();
+			List<String> terms = new ArrayList<String>();
 			for (JsonOntologyTermIdentifier jsonTerm : jsonTerms) {
-				OntologyTerm<ISynonym, IRelation> term = getOntologyTerm(jsonTerm);
-				terms.add(term);
+				terms.add(jsonTerm.getTermId());
 			}
 			return terms;
 		}
 
-		private OntologyTerm<ISynonym, IRelation> getOntologyTerm(JsonOntologyTermIdentifier jsonOntologyTerm) {
-			String ontologyName = jsonOntologyTerm.getOntology();
-			OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
-			OntologyTermTask task = new OntologyTermTask(jsonOntologyTerm.getTermId());
-			manager.runManagedTask(task);
-			return task.getTerm();
-		}
-	}
-
-	private static class OntologyTermTask extends OntologyTask {
-
-		private final String id;
-		private OntologyTerm<ISynonym, IRelation> term = null;
-
-		OntologyTermTask(String id) {
-			this.id = id;
-		}
-
-		
-		
-		@Override
-		protected void runCatching(OWLGraphWrapper realInstance) throws Exception {
-			String label = null;
-			String definition = null;
-			List<ISynonym> synonyms = null;
-			List<String> defxref = null;
-			Map<String, String> metadata = new HashMap<String, String>();
-			List<IRelation> relations = null;
-			boolean isObsolete = false;
-
-			if (realInstance != null) {
-				OWLObject owlObject = realInstance.getOWLObjectByIdentifier(id);
-				if (owlObject != null) {
-					label = realInstance.getLabel(owlObject);
-					if (label != null) {
-						definition = realInstance.getDef(owlObject);
-						synonyms = realInstance.getOBOSynonyms(owlObject);
-						defxref = realInstance.getDefXref(owlObject);
-						isObsolete = realInstance.isObsolete(owlObject);
-						// meta data
-						put(metadata, "comment", realInstance.getComment(owlObject));
-						put(metadata, "created_by", realInstance.getCreatedBy(owlObject));
-						put(metadata, "resource", realInstance.getNamespace(owlObject));
-						// relations
-						Set<OWLGraphEdge> outgoingEdges = realInstance.getOutgoingEdges(owlObject);
-						if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
-							relations = new ArrayList<IRelation>(outgoingEdges.size());
-							for (OWLGraphEdge edge : outgoingEdges) {
-								String source = realInstance.getIdentifier(edge.getSource());
-								OWLObject targetOWLObject = edge.getTarget();
-								String target = realInstance.getIdentifier(targetOWLObject);
-								String targetLabel = realInstance.getLabel(targetOWLObject);
-								Map<String, String> properties = new HashMap<String, String>();
-								for (OWLQuantifiedProperty property : edge.getQuantifiedPropertyList()) {
-									properties.put(property.getPropertyId(),
-											property.getQuantifier().name());
-								}
-								Relation r = new Relation(source, target, targetLabel, properties);
-								relations.add(r);
-							}
-						}
-					}
-				}
-			}
-			term = new DefaultOntologyTerm(id, label, definition, synonyms, defxref, metadata, relations, isObsolete);
-		}
-
-		OntologyTerm<ISynonym, IRelation> getTerm() {
-			return term;
-		}
-
-	}
-
-	private static void put(Map<String, String> map, String key, String value) {
-		if (value != null) {
-			map.put(key, value);
-		}
 	}
 
 	static class TemplateCache {

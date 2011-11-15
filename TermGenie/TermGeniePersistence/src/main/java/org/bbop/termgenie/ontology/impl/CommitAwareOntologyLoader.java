@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
+import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -15,6 +16,7 @@ import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
 import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -63,7 +65,9 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 					if (terms != null) {
 						List<CommitedOntologyTerm> redundant = new ArrayList<CommitedOntologyTerm>(terms.size());
 						for (CommitedOntologyTerm term : terms) {
-							LoadState state = ComitAwareOBOConverterTools.handleTerm(term, term.getChanged(), term.getOperation(), obodoc);
+							Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
+							List<Frame> changes = CommitHistoryTools.translate(term.getChanged());
+							LoadState state = ComitAwareOBOConverterTools.handleTerm(frame, changes, term.getOperation(), obodoc);
 							if (!LoadState.isSuccess(state)) {
 								if(LoadState.isError(state)) {
 									logger.warn("Could not apply change item #"+item.getId()+" term #"+term.getUuid());

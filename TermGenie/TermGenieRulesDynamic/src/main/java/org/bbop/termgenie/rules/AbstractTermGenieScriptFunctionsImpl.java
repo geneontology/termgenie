@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -14,7 +12,6 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Abstract implementation of functions for the TermGenie scripting environment.
@@ -75,7 +72,7 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 
 	@Override
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper[] ontologies) {
-		String id = getFieldSingleTerm(name).getId();
+		String id = getFieldSingleTerm(name);
 		for (OWLGraphWrapper ontology : ontologies) {
 			if (ontology != null) {
 				OWLObject x = getTermSimple(id, ontology);
@@ -97,16 +94,16 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 		return null;
 	}
 
-	private OntologyTerm<ISynonym, IRelation> getFieldSingleTerm(String name) {
-		List<OntologyTerm<ISynonym, IRelation>> terms = getFieldTerms(name);
+	private String getFieldSingleTerm(String name) {
+		List<String> terms = getFieldTerms(name);
 		if (terms == null || terms.isEmpty()) {
 			return null;
 		}
 		return terms.get(0);
 	}
 
-	private List<OntologyTerm<ISynonym, IRelation>> getFieldTerms(String name) {
-		Map<String, List<OntologyTerm<ISynonym, IRelation>>> terms = tools.input.getParameters().getTerms();
+	private List<String> getFieldTerms(String name) {
+		Map<String, List<String>> terms = tools.input.getParameters().getTerms();
 		if (terms != null) {
 			return terms.get(name);
 		}
@@ -115,14 +112,14 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 
 	@Override
 	public OWLObject[] getTerms(String name, OWLGraphWrapper ontology) {
-		List<OntologyTerm<ISynonym, IRelation>> terms = getFieldTerms(name);
+		List<String> terms = getFieldTerms(name);
 		if (terms == null || terms.isEmpty()) {
 			return new OWLObject[0];
 		}
 		List<OWLObject> result = new ArrayList<OWLObject>();
-		for (OntologyTerm<ISynonym, IRelation> term : terms) {
+		for (String term : terms) {
 			if (term != null) {
-				OWLObject x = getTermSimple(term.getId(), ontology);
+				OWLObject x = getTermSimple(term, ontology);
 				if (x != null) {
 					result.add(x);
 				}

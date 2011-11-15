@@ -32,6 +32,14 @@ public class OBOWriterTools {
 		return writeTerms(Collections.singleton(id), oboDoc);
 	}
 	
+	public static String writeFrame(Frame frame) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		BufferedWriter writer = new BufferedWriter(stringWriter);
+		oboWriter.write(frame, writer, null);
+		writer.close();
+		return stringWriter.getBuffer().toString();
+	}
+	
 	public static String writeRelations(String id, OBODoc oboDoc) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter writer = new BufferedWriter(stringWriter);
@@ -48,9 +56,17 @@ public class OBOWriterTools {
 			Collection<Clause> clauses = frame.getClauses(tag);
 			if (clauses != null && !clauses.isEmpty()) {
 				for (Clause clause : clauses) {
-					oboWriter.write(clause, writer, oboDoc);	
+					oboWriter.write(clause, writer, oboDoc);						
 				}
 			}	
 		}
+	}
+	
+	public static String writeClause(Clause clause, OBODoc oboDoc) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		BufferedWriter writer = new BufferedWriter(stringWriter);
+		oboWriter.write(clause, writer, oboDoc);
+		writer.close();
+		return stringWriter.getBuffer().toString();
 	}
 }

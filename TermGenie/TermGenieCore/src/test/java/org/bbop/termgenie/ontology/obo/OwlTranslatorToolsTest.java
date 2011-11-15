@@ -5,12 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -22,6 +18,7 @@ import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -69,8 +66,8 @@ public class OwlTranslatorToolsTest {
 					for (OWLObject owlObject : allOWLObjects) {
 						if (owlObject instanceof OWLClass) {
 							OWLClass owlClass = (OWLClass) owlObject;
-							List<IRelation> relations = OwlTranslatorTools.extractRelations(owlClass, wrapper);
-							List<IRelation> oboRelations = getRelations(owlClass, oboDoc);
+							List<Clause> relations = OwlTranslatorTools.extractRelations(owlClass, wrapper);
+							List<Clause> oboRelations = getRelations(owlClass, oboDoc);
 							compareRelations(oboRelations, relations, owlClass);
 						}
 					}
@@ -82,31 +79,31 @@ public class OwlTranslatorToolsTest {
 		}
 	}
 	
-	private List<IRelation> getRelations(OWLClass owlClass, OBODoc oboDoc) {
+	private List<Clause> getRelations(OWLClass owlClass, OBODoc oboDoc) {
 		String frameId = Owl2Obo.getIdentifier(owlClass.getIRI());
 		Frame frame = oboDoc.getTermFrame(frameId);
 		if (frame == null) {
 			// happens for alt_id
 			return Collections.emptyList();
 		}
-		List<IRelation> relations = OBOConverterTools.extractRelations(frame, oboDoc);
+		List<Clause> relations = OBOConverterTools.getRelations(frame);
 		return relations;
 	}
 	
 	
-	private void compareRelations(List<IRelation> oboRelations, List<IRelation> relations, OWLClass owlClass) {
-		List<IRelation> obo = new ArrayList<IRelation>();
-		List<IRelation> rel = new ArrayList<IRelation>();
+	private void compareRelations(List<Clause> oboRelations, List<Clause> relations, OWLClass owlClass) {
+		List<Clause> obo = new ArrayList<Clause>();
+		List<Clause> rel = new ArrayList<Clause>();
 		if (oboRelations != null) {
-			for (IRelation relation : oboRelations) {
-				if (!OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(Relation.getType(relation.getProperties()))) {
+			for (Clause relation : oboRelations) {
+				if (!OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(relation.getTag())) {
 					obo.add(relation);
 				}
 			}
 		}
 		if (relations != null) {
-			for (IRelation relation : relations) {
-				if (!OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(Relation.getType(relation.getProperties()))) {
+			for (Clause relation : relations) {
+				if (!OboFormatTag.TAG_DISJOINT_FROM.getTag().equals(relation.getTag())) {
 					rel.add(relation);
 				}
 			}
@@ -114,29 +111,12 @@ public class OwlTranslatorToolsTest {
 		assertEquals("Relation extraction failed for: "+Owl2Obo.getIdentifier(owlClass.getIRI()),
 				obo.size(), rel.size());
 		
-		List<IRelation> missing = new ArrayList<IRelation>();
-		for (IRelation oboRelation : obo) {
+		List<Clause> missing = new ArrayList<Clause>();
+		for (Clause oboRelation : obo) {
 			boolean found = false;
-			for (IRelation relation : rel) {
-				if (oboRelation.getSource().equals(relation.getSource())) {
-					if (oboRelation.getTarget().equals(relation.getTarget())) {
-						Map<String, String> oboProperties = oboRelation.getProperties();
-						Map<String, String> properties = relation.getProperties();
-						if (oboProperties.keySet().containsAll(properties.keySet())) {
-							if (properties.keySet().containsAll(oboProperties.keySet())) {
-								boolean mapEquals = true;
-								for (Entry<String, String> entry : oboProperties.entrySet()) {
-									if (!entry.getValue().equals(properties.get(entry.getKey()))) {
-										mapEquals = false;
-										break;
-									}
-								}
-								if (mapEquals) {
-									found = true;
-								}
-							}
-						}
-					}
+			for (Clause relation : rel) {
+				if(oboRelation.equals(relation)) {
+					found = true;
 				}
 			}
 			if (!found) {

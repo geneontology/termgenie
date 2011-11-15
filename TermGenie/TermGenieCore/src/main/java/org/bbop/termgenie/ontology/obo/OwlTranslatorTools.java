@@ -1,14 +1,11 @@
 package org.bbop.termgenie.ontology.obo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.Relation;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -26,12 +23,11 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OwlTranslatorTools {
 
-	public static List<IRelation> extractRelations(OWLClass owlClass,
+	public static List<Clause> extractRelations(OWLClass owlClass,
 			OWLGraphWrapper wrapper)
 	{
 		OWLOntology ontology = wrapper.getSourceOntology();
-		String source = Owl2Obo.getIdentifier(owlClass.getIRI());
-		List<IRelation> result = new ArrayList<IRelation>();
+		List<Clause> result = new ArrayList<Clause>();
 
 		// IS_A
 		Set<OWLSubClassOfAxiom> subClassAxioms = ontology.getSubClassAxiomsForSubClass(owlClass);
@@ -40,21 +36,18 @@ public class OwlTranslatorTools {
 				OWLClassExpression sup = axiom.getSuperClass();
 				if (sup instanceof OWLClass) {
 					String target = Owl2Obo.getIdentifierFromObject(sup, ontology);
-					String targetLabel = wrapper.getLabel(sup);
-					Map<String, String> properties = new HashMap<String, String>(3);
-					Relation.setType(properties, OboFormatTag.TAG_IS_A);
-					result.add(new Relation(source, target, targetLabel, properties));
+					result.add(new Clause(OboFormatTag.TAG_IS_A, target));
 				}
 				else if (sup instanceof OWLObjectSomeValuesFrom || sup instanceof OWLObjectAllValuesFrom) {
 					OWLQuantifiedRestriction<?,?,?> r = (OWLQuantifiedRestriction<?,?,?>) sup;
 					String target = Owl2Obo.getIdentifierFromObject(r.getFiller(), ontology);
 
 					if (target != null) {
-						String targetLabel = wrapper.getLabel(r.getFiller());
-						Map<String, String> properties = new HashMap<String, String>(3);
 						String reltype = Owl2Obo.getIdentifierFromObject(r.getProperty(), ontology);
-						Relation.setType(properties, OboFormatTag.TAG_RELATIONSHIP, reltype);
-						result.add(new Relation(source, target, targetLabel, properties));
+						Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP);
+						cl.addValue(reltype);
+						cl.addValue(target);
+						result.add(cl);
 					}
 				}
 			}
@@ -76,7 +69,7 @@ public class OwlTranslatorTools {
 				}
 
 				boolean isUntranslateable = false;
-				List<IRelation> equivalenceAxiomRelations = new ArrayList<IRelation>();
+				List<Clause> equivalenceAxiomRelations = new ArrayList<Clause>();
 
 				if (cls2 != null) {
 					// TODO OboFormatTag.TAG_EQUIVALENT_TO
@@ -89,11 +82,7 @@ public class OwlTranslatorTools {
 							isUntranslateable = true;
 						}
 						else {
-							Map<String, String> properties = new HashMap<String, String>(3);
-							Relation.setType(properties, OboFormatTag.TAG_UNION_OF);
-							String targetLabel = wrapper.getLabel(operand);
-							Relation rel = new Relation(source, id, targetLabel, properties);
-							equivalenceAxiomRelations.add(rel);
+							equivalenceAxiomRelations.add(new Clause(OboFormatTag.TAG_UNION_OF, id));
 						}
 					}
 				}
@@ -103,26 +92,20 @@ public class OwlTranslatorTools {
 					for (OWLClassExpression operand : operands) {
 						String r = null;
 						String target = Owl2Obo.getIdentifierFromObject(operand, ontology);
-						String targetLabel = wrapper.getLabel(operand);
 
 						if (operand instanceof OWLObjectSomeValuesFrom) {
 							OWLObjectSomeValuesFrom ristriction = (OWLObjectSomeValuesFrom) operand;
 							r = Owl2Obo.getIdentifierFromObject(ristriction.getProperty(), ontology);
 							target = Owl2Obo.getIdentifierFromObject(ristriction.getFiller(),
 									ontology);
-							targetLabel = wrapper.getLabel(ristriction.getFiller());
 						}
 						if (target != null) {
-							Map<String, String> properties = new HashMap<String, String>(3);
-
-							if (r == null) {
-								Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF);
+							Clause cl = new Clause(OboFormatTag.TAG_INTERSECTION_OF);
+							if (r != null) {
+								cl.addValue(r);
 							}
-							else {
-								Relation.setType(properties, OboFormatTag.TAG_INTERSECTION_OF, r);
-							}
-							Relation rel = new Relation(source, target, targetLabel, properties);
-							equivalenceAxiomRelations.add(rel);
+							cl.addValue(target);
+							equivalenceAxiomRelations.add(cl);
 						}
 						else {
 							isUntranslateable = true;
@@ -147,10 +130,7 @@ public class OwlTranslatorTools {
 						OWLClass targetClass = (OWLClass) expression;
 						String target = Owl2Obo.getIdentifierFromObject(targetClass, ontology);
 						if (target != null) {
-							String targetLabel = wrapper.getLabel(targetClass);
-							Map<String, String> properties = new HashMap<String, String>(3);
-							Relation.setType(properties, OboFormatTag.TAG_DISJOINT_FROM);
-							result.add(new Relation(source, target, targetLabel, properties));
+							result.add(new Clause(OboFormatTag.TAG_DISJOINT_FROM, target));
 						}
 					}	
 				}

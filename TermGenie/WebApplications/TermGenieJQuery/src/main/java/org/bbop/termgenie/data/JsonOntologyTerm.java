@@ -1,28 +1,35 @@
 package org.bbop.termgenie.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology.IRelation;
-import org.bbop.termgenie.core.Ontology.OntologyTerm;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
-import org.bbop.termgenie.data.JsonOntologyTerm.JsonTermRelation;
+import org.apache.log4j.Logger;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OBOParserTools;
+import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Xref;
+import org.obolibrary.oboformat.parser.OBOFormatConstants;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
-import owltools.graph.OWLGraphWrapper.ISynonym;
-
-public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelation>{
+public class JsonOntologyTerm {
+	
+	public static final Logger logger = Logger.getLogger(JsonOntologyTerm.class);
 
 	private String tempId;
 	private String label;
 	private String definition;
-	private List<JsonSynonym> synonyms;
 	private List<String> defXRef;
-	private List<JsonTermRelation> relations;
-	private Map<String, String> metaData;
-	private List<JsonTermRelation> changed;
+	private List<JsonSynonym> synonyms;
+	private List<String> relations;
+	private List<String> metaData;
+	private List<JsonChange> changed;
 	private boolean isObsolete;
 
 	public JsonOntologyTerm() {
@@ -36,11 +43,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		return tempId;
 	}
 
-	@Override
-	public String getId() {
-		return tempId;
-	}
-
 	/**
 	 * @param tempId the tempId to set
 	 */
@@ -51,7 +53,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	/**
 	 * @return the label
 	 */
-	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -66,7 +67,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	/**
 	 * @return the definition
 	 */
-	@Override
 	public String getDefinition() {
 		return definition;
 	}
@@ -81,7 +81,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	/**
 	 * @return the defxRef
 	 */
-	@Override
 	public List<String> getDefXRef() {
 		return defXRef;
 	}
@@ -96,22 +95,20 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	/**
 	 * @return the relations
 	 */
-	@Override
-	public List<JsonTermRelation> getRelations() {
+	public List<String> getRelations() {
 		return relations;
 	}
 
 	/**
 	 * @param relations the relations to set
 	 */
-	public void setRelations(List<JsonTermRelation> relations) {
+	public void setRelations(List<String> relations) {
 		this.relations = relations;
 	}
 
 	/**
 	 * @return the synonyms
 	 */
-	@Override
 	public List<JsonSynonym> getSynonyms() {
 		return synonyms;
 	}
@@ -126,33 +123,31 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 	/**
 	 * @return the metaData
 	 */
-	@Override
-	public Map<String, String> getMetaData() {
+	public List<String> getMetaData() {
 		return metaData;
 	}
 
 	/**
 	 * @param metaData the metaData to set
 	 */
-	public void setMetaData(Map<String, String> metaData) {
+	public void setMetaData(List<String> metaData) {
 		this.metaData = metaData;
 	}
 	
 	/**
 	 * @return the changed
 	 */
-	public List<JsonTermRelation> getChanged() {
+	public List<JsonChange> getChanged() {
 		return changed;
 	}
 	
 	/**
 	 * @param changed the changed to set
 	 */
-	public void setChanged(List<JsonTermRelation> changed) {
+	public void setChanged(List<JsonChange> changed) {
 		this.changed = changed;
 	}
 
-	@Override
 	public boolean isObsolete() {
 		return isObsolete;
 	}
@@ -213,34 +208,131 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm convert(OntologyTerm<? extends ISynonym, ? extends IRelation> source, List<? extends IRelation> changed) {
+	public static JsonOntologyTerm createJson(Frame source, List<Frame> changed) {
 		JsonOntologyTerm term = new JsonOntologyTerm();
-		term.setDefinition(source.getDefinition());
-		term.setDefXRef(source.getDefXRef());
 		term.setTempId(source.getId());
-		term.setLabel(source.getLabel());
-		term.setSynonyms(JsonSynonym.convert(source.getSynonyms()));
-		term.setMetaData(source.getMetaData());
-		List<? extends IRelation> relations = source.getRelations();
-		if (relations != null && !relations.isEmpty()) {
-			List<JsonTermRelation> jsonRelations = new ArrayList<JsonTermRelation>(relations.size());
-			for (IRelation relation : relations) {
-				jsonRelations.add(JsonTermRelation.convert(relation));
+		
+		List<String> other = null;
+		List<JsonSynonym> synonyms = null;
+		List<String> jsonRelations = null;
+		for (Clause clause : source.getClauses()) {
+			OboFormatTag tag = OBOFormatConstants.getTag(clause.getTag());
+			switch (tag) {
+				case TAG_ID:
+					break;
+				case TAG_NAME:
+					term.setLabel(clause.getValue(String.class));
+					break;
+				case TAG_SYNONYM:
+					synonyms = add(JsonSynonym.convert(clause), synonyms);
+					break;
+				case TAG_DEF:
+					term.setDefinition(clause.getValue(String.class));
+					Collection<Xref> xrefs = clause.getXrefs();
+					if (xrefs != null && !xrefs.isEmpty()) {
+						List<String> xrefList = new ArrayList<String>(xrefs.size());
+						for (Xref xref : xrefs) {
+							xrefList.add(xref.getIdref());
+						}
+						term.setDefXRef(xrefList);	
+					}
+					break;
+
+				case TAG_IS_A:
+				case TAG_INTERSECTION_OF:
+				case TAG_UNION_OF:
+				case TAG_DISJOINT_FROM:
+				case TAG_RELATIONSHIP:
+					jsonRelations = add(convert(clause), jsonRelations);
+					break;
+					
+				case TAG_IS_OBSELETE:
+					term.setObsolete(OBOConverterTools.isObsolete(clause));
+					break;
+				default:
+					other = add(convert(clause), other);
+					break;
 			}
-			term.setRelations(jsonRelations);
 		}
-		if (changed != null && !changed.isEmpty()) {
-			List<JsonTermRelation> jsonChangedRelations = new ArrayList<JsonTermRelation>(changed.size());
-			for (IRelation relation : changed) {
-				jsonChangedRelations.add(JsonTermRelation.convert(relation));
-			}
-			term.setChanged(jsonChangedRelations);
-		}
-		term.setObsolete(source.isObsolete());
+		term.setSynonyms(synonyms);
+		term.setRelations(jsonRelations);
+		term.setMetaData(other);
+		
+		// changed
+		term.setChanged(createJson(changed));
 		return term;
 	}
+
+	public static List<JsonChange> createJson(List<Frame> changed) {
+		if (changed != null && !changed.isEmpty()) {
+			List<JsonChange> jsonChanged = new ArrayList<JsonChange>(changed.size());
+			for (Frame changedFrame : changed) {
+				List<String> frameChanges = null;
+				Collection<Clause> changedClauses = changedFrame.getClauses();
+				if (changedClauses != null) {
+					for (Clause relation : changedClauses) {
+						frameChanges = add(convert(relation), frameChanges);		
+					}
+				}
+				if (frameChanges != null) {
+					JsonChange jsonChange = new JsonChange();
+					jsonChange.setId(changedFrame.getId());
+					jsonChange.setChanges(frameChanges);
+					jsonChanged.add(jsonChange);
+				}
+			}
+			return jsonChanged;
+		}
+		return null;
+	}
 	
-	public static class JsonSynonym implements ISynonym {
+	private static <T> List<T> add(T elem, List<T> list) {
+		if (list == null) {
+			list = new ArrayList<T>();
+		}
+		list.add(elem);
+		return list;
+	}
+	
+	private static String convert(Clause clause) {
+		try {
+			String string = OBOWriterTools.writeClause(clause, null);
+			return string;
+		} catch (IOException exception) {
+			logger.error("Could not serialze clause.", exception);
+			return null;
+		}
+	}
+	
+	public static Frame createFrame(JsonOntologyTerm term) {
+		Frame frame = OBOConverterTools.createTermFrame(term.getTempId(), term.getLabel());
+		OBOConverterTools.addObsolete(frame, term.isObsolete());
+		OBOConverterTools.addDefinition(frame, term.getDefinition(), term.getDefXRef());
+		List<JsonSynonym> jsonSynonyms = term.getSynonyms();
+		if (jsonSynonyms != null && !jsonSynonyms.isEmpty()) {
+			for (JsonSynonym jsonSynonym : jsonSynonyms) {
+				OBOConverterTools.addSynonym(frame, jsonSynonym.getLabel(), jsonSynonym.getScope(), jsonSynonym.getXrefs());
+			}
+		}
+		OBOParserTools.parseClauses(frame, term.getMetaData());
+		OBOParserTools.parseClauses(frame, term.getRelations());
+		return frame;
+	}
+	
+	public static List<Frame> createChangedFrames(List<JsonChange> jsonChanges) {
+		List<Frame> changed = null;
+		if (jsonChanges != null && !jsonChanges.isEmpty()) {
+			changed = new ArrayList<Frame>(jsonChanges.size());
+			for (JsonChange jsonChange : jsonChanges) {
+				Frame frame = OBOConverterTools.createTermFrame(jsonChange.getId());
+				OBOParserTools.parseClauses(frame, jsonChange.getChanges());
+			}
+			
+		}
+		return changed;
+	}
+	
+	public static class JsonSynonym {
 
 		private String label;
 		private String scope;
@@ -250,7 +342,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		/**
 		 * @return the label
 		 */
-		@Override
 		public String getLabel() {
 			return label;
 		}
@@ -265,7 +356,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		/**
 		 * @return the scope
 		 */
-		@Override
 		public String getScope() {
 			return scope;
 		}
@@ -280,7 +370,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		/**
 		 * @return the xrefs
 		 */
-		@Override
 		public Set<String> getXrefs() {
 			return xrefs;
 		}
@@ -295,7 +384,6 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 		/**
 		 * @return the category
 		 */
-		@Override
 		public String getCategory() {
 			return category;
 		}
@@ -334,134 +422,70 @@ public class JsonOntologyTerm implements OntologyTerm<JsonSynonym, JsonTermRelat
 			return builder.toString();
 		}
 		
-		static List<JsonSynonym> convert(Collection<? extends ISynonym> synonyms) {
-			if (synonyms != null && !synonyms.isEmpty()) {
-				List<JsonSynonym> jsonSynonyms = new ArrayList<JsonSynonym>(synonyms.size());
-				for (ISynonym synonym : synonyms) {
-					if (synonym instanceof JsonSynonym) {
-						jsonSynonyms.add((JsonSynonym) synonym);
-					}else {
-						JsonSynonym jsonSynonym = new JsonSynonym();
-						jsonSynonym.setLabel(synonym.getLabel());
-						jsonSynonym.setScope(synonym.getScope());
-						jsonSynonym.setCategory(synonym.getCategory());
-						jsonSynonym.setXrefs(synonym.getXrefs());
-						jsonSynonyms.add(jsonSynonym);
-					}
-				}
-				return jsonSynonyms;
+		static JsonSynonym convert(Clause clause) {
+			JsonSynonym jsonSynonym = new JsonSynonym();
+			jsonSynonym.setLabel(clause.getValue(String.class));
+			String scope = clause.getValue2(String.class);
+			String category = null;
+			if (!OBOConverterTools.isScope(scope)) {
+				category = scope;
+				scope = null;
 			}
-			return null;
+			else {
+				Collection<Object> values = clause.getValues();
+				if (values.size() > 2) {
+					Iterator<Object> iterator = values.iterator();
+					iterator.next();
+					iterator.next();
+					category = (String) iterator.next();
+				}
+			}
+			jsonSynonym.setScope(scope);
+			jsonSynonym.setCategory(category);
+			Collection<Xref> xrefs = clause.getXrefs();
+			if (xrefs != null && !xrefs.isEmpty()) {
+				Set<String> xrefSet = new HashSet<String>();
+				for (Xref xref : xrefs) {
+					xrefSet.add(xref.getIdref());
+				}
+				jsonSynonym.setXrefs(xrefSet);
+			}
+
+			return jsonSynonym;
 		}
 	}
-
-	public static class JsonTermRelation implements IRelation {
-
-		private String source;
-		private String target;
-		private String targetLabel;
-		private Map<String, String> properties;
-
-		public JsonTermRelation() {
-			super();
-		}
-
+	
+	public static class JsonChange {
+		
+		private String id;
+		private List<String> changes;
+		
 		/**
-		 * @return the source
+		 * @return the id
 		 */
-		@Override
-		public String getSource() {
-			return source;
-		}
-
-		/**
-		 * @param source the source to set
-		 */
-		public void setSource(String source) {
-			this.source = source;
-		}
-
-		/**
-		 * @return the target
-		 */
-		@Override
-		public String getTarget() {
-			return target;
-		}
-
-		/**
-		 * @param target the target to set
-		 */
-		public void setTarget(String target) {
-			this.target = target;
+		public String getId() {
+			return id;
 		}
 		
 		/**
-		 * @return the targetLabel
+		 * @param id the id to set
 		 */
-		@Override
-		public String getTargetLabel() {
-			return targetLabel;
-		}
-
-		/**
-		 * @param targetLabel the targetLabel to set
-		 */
-		public void setTargetLabel(String targetLabel) {
-			this.targetLabel = targetLabel;
-		}
-
-		/**
-		 * @return the properties
-		 */
-		@Override
-		public Map<String, String> getProperties() {
-			return properties;
-		}
-
-		/**
-		 * @param properties the properties to set
-		 */
-		public void setProperties(Map<String, String> properties) {
-			this.properties = properties;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("JsonTermRelation [");
-			if (source != null) {
-				builder.append("source=");
-				builder.append(source);
-				builder.append(", ");
-			}
-			if (target != null) {
-				builder.append("target=");
-				builder.append(target);
-				builder.append(", ");
-			}
-			if (properties != null) {
-				builder.append("properties=");
-				builder.append(properties);
-			}
-			builder.append("]");
-			return builder.toString();
+		public void setId(String id) {
+			this.id = id;
 		}
 		
-		static JsonTermRelation convert(IRelation relation) {
-			if (relation instanceof JsonTermRelation) {
-				return (JsonTermRelation) relation;
-			}
-			JsonTermRelation jsonRelation = new JsonTermRelation();
-			jsonRelation.source = relation.getSource();
-			jsonRelation.target = relation.getTarget();
-			jsonRelation.targetLabel = relation.getTargetLabel();
-			jsonRelation.properties = relation.getProperties();
-			return jsonRelation;
+		/**
+		 * @return the changes
+		 */
+		public List<String> getChanges() {
+			return changes;
+		}
+		
+		/**
+		 * @param changes the changes to set
+		 */
+		public void setChanges(List<String> changes) {
+			this.changes = changes;
 		}
 	}
 }

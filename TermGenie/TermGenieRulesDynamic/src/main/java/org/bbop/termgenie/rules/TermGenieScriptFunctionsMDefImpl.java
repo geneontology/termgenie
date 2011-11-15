@@ -138,14 +138,19 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			List<ISynonym> synonyms,
 			MDef logicalDefinition)
 	{
-		List<MDef> defs;
-		if (logicalDefinition != null) {
-			defs = Collections.singletonList(logicalDefinition);
+		try {
+			List<MDef> defs;
+			if (logicalDefinition != null) {
+				defs = Collections.singletonList(logicalDefinition);
+			}
+			else {
+				defs = Collections.emptyList();
+			}
+			tools.addTerm(label, definition, synonyms, defs, getResultList());
+		} catch (NullPointerException exception) {
+			Logger.getLogger(getClass()).error("NPE", exception);
+			throw exception;
 		}
-		else {
-			defs = Collections.emptyList();
-		}
-		tools.addTerm(label, definition, synonyms, defs, getResultList());
 	}
 
 	@Override
