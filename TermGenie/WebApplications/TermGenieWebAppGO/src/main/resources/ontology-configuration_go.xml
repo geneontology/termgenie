@@ -4,15 +4,6 @@
 	<ontology name="GeneOntology">
 		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
 		</source>
-		<supports>
-			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</support>
-			<support>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</support>
-			<support>http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo</support>
-			<!-- <support>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</support>  -->
-			<!-- <support>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</support> -->
-			<support>http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo</support>
-			<!-- <support>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</support> -->
-		</supports>
 		<roots>
 			<root>GO:0008150</root>
 			<root>GO:0003674</root>

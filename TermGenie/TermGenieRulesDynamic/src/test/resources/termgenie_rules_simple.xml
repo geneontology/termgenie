@@ -87,7 +87,6 @@ function run() {
 		<hint>[part] involved in [whole]</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -135,7 +134,6 @@ function run(){
 		<description>processes occurring in parts of the cell</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">

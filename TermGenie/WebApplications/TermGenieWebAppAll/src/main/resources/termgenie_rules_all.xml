@@ -168,7 +168,6 @@ function run() {
 		<hint>[part] involved in [whole]</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -216,7 +215,6 @@ function run(){
 		<description>processes occurring in parts of the cell</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_cellular_component.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -266,7 +264,6 @@ function run() {
 		</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo</requires>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -385,7 +382,6 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/molecular_function_xp_protein.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="ProteinOntology" />
@@ -425,7 +421,6 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon" />
@@ -467,7 +462,6 @@ function run() {
 			<ontology name="Uberon"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_uber_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="Uberon"/>
@@ -507,7 +501,6 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -549,7 +542,6 @@ function run() {
 			<ontology name="PO"/>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/scratch/xps/biological_process_xp_plant_anatomy.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="PO"/>
@@ -589,7 +581,6 @@ function run() {
 			<ontology name="ProteinOntology"/>
 		</external>
 		<obonamespace>cellular_component</obonamespace>
-		<!-- <requires>http://www.geneontology.org/scratch/xps/cellular_component_xp_protein.obo</requires>  -->
 		<fields>
 			<field name="unit" required="true">
 				<ontology name="ProteinOntology" />
