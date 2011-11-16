@@ -12,11 +12,12 @@ import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
-import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 public class CommitHistoryTools {
 
@@ -31,6 +32,19 @@ public class CommitHistoryTools {
 		term.setId(frame.getId());
 		term.setOperation(operation);
 		term.setLabel(frame.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		try {
+			term.setObo(OBOWriterTools.writeFrame(frame));
+		} catch (IOException exception) {
+			logger.error("Could not translate term: "+frame.getId(), exception);
+			return null;
+		}
+		return term;
+	}
+	
+	public static SimpleCommitedOntologyTerm createSimple(Frame frame, Modification operation) {
+		SimpleCommitedOntologyTerm term = new SimpleCommitedOntologyTerm();
+		term.setId(frame.getId());
+		term.setOperation(operation);
 		try {
 			term.setObo(OBOWriterTools.writeFrame(frame));
 		} catch (IOException exception) {
@@ -62,12 +76,12 @@ public class CommitHistoryTools {
 				TermCommit termCommit = commitObject.getObject();
 				Frame frame = termCommit.getTerm();
 				CommitedOntologyTerm term = create(frame, commitObject.getType());
-				List<CommitedOntologyTerm> changed = null;
+				List<SimpleCommitedOntologyTerm> changed = null;
 				List<Frame> changedFrames = termCommit.getChanged();
 				if (changedFrames != null && !changedFrames.isEmpty()) {
-					changed = new ArrayList<CommitedOntologyTerm>(changedFrames.size());
+					changed = new ArrayList<SimpleCommitedOntologyTerm>(changedFrames.size());
 					for(Frame changedFrame : changedFrames) {
-						changed.add(create(changedFrame, Modification.modify));
+						changed.add(createSimple(changedFrame, Modification.modify));
 					}
 				}
 				term.setChanged(changed);
@@ -85,7 +99,7 @@ public class CommitHistoryTools {
 		for (CommitedOntologyTerm commitedOntologyTerm : terms) {
 			Frame term = translate(commitedOntologyTerm.getId(), commitedOntologyTerm.getObo());
 			if (term != null) {
-				List<Frame> changed = translate(commitedOntologyTerm.getChanged());
+				List<Frame> changed = translateSimple(commitedOntologyTerm.getChanged());
 				TermCommit termCommit = new TermCommit(term, changed);
 				CommitObject<TermCommit> commitObject = new CommitObject<TermCommit>(termCommit, commitedOntologyTerm.getOperation());
 				result.add(commitObject);
@@ -99,6 +113,20 @@ public class CommitHistoryTools {
 		if (changed != null && !changed.isEmpty()) {
 			result = new ArrayList<Frame>(changed.size());
 			for(CommitedOntologyTerm term : changed) {
+				Frame frame = translate(term.getId(), term.getObo());
+				if (frame != null) {
+					result.add(frame);
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static List<Frame> translateSimple(List<SimpleCommitedOntologyTerm> changed) {
+		List<Frame> result = null;
+		if (changed != null && !changed.isEmpty()) {
+			result = new ArrayList<Frame>(changed.size());
+			for(SimpleCommitedOntologyTerm term : changed) {
 				Frame frame = translate(term.getId(), term.getObo());
 				if (frame != null) {
 					result.add(frame);

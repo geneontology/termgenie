@@ -26,11 +26,13 @@ import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -302,8 +304,14 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			List<CommitObject<TermCommit>> commits = new ArrayList<CommitObject<TermCommit>>();
 			IdHandler idHandler = new IdHandler(idProvider, ontology, getTempIdPrefix());
 			for (JsonOntologyTerm jsonTerm : terms) {
-				Frame frame = JsonOntologyTerm.createFrame(jsonTerm);
+				Frame frame = JsonOntologyTerm.createFrame(jsonTerm, idHandler.create(jsonTerm.getTempId()));
+				updateIdentifiers(frame, idHandler);
 				List<Frame> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
+				if (changed != null && !changed.isEmpty()) {
+					for (Frame changedFrame : changed) {
+						updateIdentifiers(changedFrame, idHandler);
+					}
+				}
 				TermCommit term = new TermCommit(frame, changed);
 				commits.add(CommitObject.add(term));
 			}
@@ -316,6 +324,36 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				throw new CommitException("Missing terms with tempIds: " + missingIds, true);
 			}
 			return new Pair<List<CommitObject<TermCommit>>, Integer>(commits, idHandler.base);
+		}
+		
+		
+		private void updateIdentifiers(Frame frame, IdHandler idHandler) {
+			updateIdentifiers(OBOConverterTools.getRelations(frame), idHandler);
+		}
+		
+		private void updateIdentifiers(List<Clause> clauses, IdHandler idHandler) {
+			if (clauses != null && !clauses.isEmpty()) {
+				for (Clause clause : clauses) {
+					Collection<Object> values = clause.getValues();
+					if (values != null) {
+						List<Object> list;
+						if (values instanceof List) {
+							list = (List<Object>) values;
+						}
+						else {
+							list = new ArrayList<Object>(values);
+							clause.setValues(list);
+						}
+						for (int i = 0; i < list.size(); i++) {
+							Object object = list.get(i);
+							if (object != null && object instanceof String) {
+								String value = (String) object;
+								list.set(i, idHandler.map(value));
+							}
+						}
+					}
+				} 
+			}
 		}
 	}
 

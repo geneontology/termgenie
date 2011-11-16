@@ -130,7 +130,9 @@ public class OBOConverterTools {
 		if (changed != null && !changed.isEmpty()) {
 			for(Frame changedFrame : changed) {
 				String modId = changedFrame.getId();
-				modIds.add(modId);
+				if (modIds != null) {
+					modIds.add(modId);
+				}
 				Frame frame = oboDoc.getTermFrame(modId);
 				if (frame != null) {
 					Collection<Clause> clauses = frame.getClauses();

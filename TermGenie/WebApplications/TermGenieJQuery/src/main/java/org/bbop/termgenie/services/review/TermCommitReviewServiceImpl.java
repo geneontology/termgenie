@@ -144,7 +144,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setUuid(term.getUuid());
 			jsonDiff.setObsolete(OBOConverterTools.isObsolete(frame));
 			
-			List<Frame> changed = CommitHistoryTools.translate(term.getChanged());
+			List<Frame> changed = CommitHistoryTools.translateSimple(term.getChanged());
 			LoadState state = ComitAwareOBOConverterTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
 				try {

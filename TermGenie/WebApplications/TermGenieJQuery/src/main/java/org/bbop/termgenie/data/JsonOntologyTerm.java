@@ -305,7 +305,11 @@ public class JsonOntologyTerm {
 	}
 	
 	public static Frame createFrame(JsonOntologyTerm term) {
-		Frame frame = OBOConverterTools.createTermFrame(term.getTempId(), term.getLabel());
+		return createFrame(term, term.getTempId());
+	}
+	
+	public static Frame createFrame(JsonOntologyTerm term, String id) {
+		Frame frame = OBOConverterTools.createTermFrame(id, term.getLabel());
 		OBOConverterTools.addObsolete(frame, term.isObsolete());
 		OBOConverterTools.addDefinition(frame, term.getDefinition(), term.getDefXRef());
 		List<JsonSynonym> jsonSynonyms = term.getSynonyms();

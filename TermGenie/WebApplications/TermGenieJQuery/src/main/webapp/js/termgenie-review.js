@@ -244,8 +244,15 @@ function TermGenieReview(){
 				addRow(table, null, operation, preDiff);
 				
 				if (diff.relations && diff.relations !== null && diff.relations.length > 0) {
-					jQuery.each(diff.relations, function(relIndex, relDiff){
-						addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+relDiff.termId+'</span>', '<pre>'+relDiff.relations+'\n</pre>');
+					jQuery.each(diff.relations, function(relIndex, jsonChange){
+						if (jsonChange.changes && jsonChange.changes !== null && jsonChange.changes.length > 0) {
+							var relString = '<pre>';
+							jQuery.each(jsonChange.changes, function(changeIndex, change){
+								relString += change;
+							});
+							relString += '\n</pre>';
+							addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+jsonChange.id+'</span>', relString);
+						}
 					});
 				}
 			});

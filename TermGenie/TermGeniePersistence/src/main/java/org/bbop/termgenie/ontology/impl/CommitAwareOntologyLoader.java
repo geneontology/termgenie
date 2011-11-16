@@ -66,7 +66,7 @@ public class CommitAwareOntologyLoader extends ReloadingOntologyLoader {
 						List<CommitedOntologyTerm> redundant = new ArrayList<CommitedOntologyTerm>(terms.size());
 						for (CommitedOntologyTerm term : terms) {
 							Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
-							List<Frame> changes = CommitHistoryTools.translate(term.getChanged());
+							List<Frame> changes = CommitHistoryTools.translateSimple(term.getChanged());
 							LoadState state = ComitAwareOBOConverterTools.handleTerm(frame, changes, term.getOperation(), obodoc);
 							if (!LoadState.isSuccess(state)) {
 								if(LoadState.isError(state)) {

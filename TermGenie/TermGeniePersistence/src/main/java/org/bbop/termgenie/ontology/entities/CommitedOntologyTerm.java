@@ -6,65 +6,21 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 import org.apache.openjpa.persistence.PersistentCollection;
-import org.bbop.termgenie.ontology.CommitObject.Modification;
 
 @Entity
-public class CommitedOntologyTerm
+public class CommitedOntologyTerm extends SimpleCommitedOntologyTerm
 {
-
-	private int uuid;
-	private String id;
 	private String label;
 	
-	private String obo;
-	private List<CommitedOntologyTerm> changed;
+	private List<SimpleCommitedOntologyTerm> changed;
 
-	private Modification operation;
-
-	/**
-	 * @return the uuid
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public int getUuid() {
-		return uuid;
-	}
-
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(int uuid) {
-		this.uuid = uuid;
-	}
-
-	/**
-	 * @return the id
-	 */
-	@Column
-	@Basic(optional = false)
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	
 	/**
 	 * @return the label
 	 */
-	@Column
+	@Column(length=Integer.MAX_VALUE)
 	@Basic(optional = false)
 	public String getLabel() {
 		return label;
@@ -78,50 +34,17 @@ public class CommitedOntologyTerm
 	}
 
 	/**
-	 * @return the operation
-	 */
-	@Column
-	@Enumerated(EnumType.STRING)
-	public Modification getOperation() {
-		return operation;
-	}
-
-	/**
-	 * @param operation the operation to set
-	 */
-	public void setOperation(Modification operation) {
-		this.operation = operation;
-	}
-
-	/**
 	 * @return the changed
 	 */
 	@PersistentCollection(elementCascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-	public List<CommitedOntologyTerm> getChanged() {
+	public List<SimpleCommitedOntologyTerm> getChanged() {
 		return changed;
 	}
 
 	/**
 	 * @param changed the changed to set
 	 */
-	public void setChanged(List<CommitedOntologyTerm> changed) {
+	public void setChanged(List<SimpleCommitedOntologyTerm> changed) {
 		this.changed = changed;
-	}
-
-	
-	/**
-	 * @return the obo
-	 */
-	@Column
-	@Basic(optional = false)
-	public String getObo() {
-		return obo;
-	}
-	
-	/**
-	 * @param obo the obo to set
-	 */
-	public void setObo(String obo) {
-		this.obo = obo;
 	}
 }

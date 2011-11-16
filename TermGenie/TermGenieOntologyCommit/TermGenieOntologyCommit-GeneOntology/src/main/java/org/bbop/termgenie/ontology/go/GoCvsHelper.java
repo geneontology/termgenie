@@ -280,7 +280,7 @@ public abstract class GoCvsHelper {
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
 				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
-				List<Frame> changes = CommitHistoryTools.translate(term.getChanged());
+				List<Frame> changes = CommitHistoryTools.translateSimple(term.getChanged());
 				boolean csuccess = LoadState.isSuccess(handleTerm(frame, changes, term.getOperation(), oboDoc));
 				success = success && csuccess;
 			}
