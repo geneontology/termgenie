@@ -326,6 +326,7 @@ public class JsonOntologyTerm {
 			for (JsonChange jsonChange : jsonChanges) {
 				Frame frame = OBOConverterTools.createTermFrame(jsonChange.getId());
 				OBOParserTools.parseClauses(frame, jsonChange.getChanges());
+				changed.add(frame);
 			}
 			
 		}

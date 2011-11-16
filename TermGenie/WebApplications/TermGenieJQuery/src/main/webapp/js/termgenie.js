@@ -1728,8 +1728,8 @@ function termgenie(){
 				var table = createLayoutTable();
 				table.css('width','350px');
 				table.appendTo(divElem);
-				jQuery.each(metaData, function(field, value) {
-					table.append('<tr><td>'+field+'</td><td class="nobr">'+value+'</td></tr>');
+				jQuery.each(metaData, function(index, value) {
+					table.append('<tr><td class="nobr">'+value+'</td></tr>');
 				});
 				return {};
 			}
@@ -1738,42 +1738,55 @@ function termgenie(){
 			 * Render the changed relations. This is a read-only field.
 			 * 
 			 * @param parent
-			 * @param relations
+			 * @param jsonChanges
 			 */
-			function ChangedRelationsFieldReviewPanel(parent, relations) {
+			function ChangedRelationsFieldReviewPanel(parent, jsonChanges) {
 				parent.css('height','100%');
 				var divElem = jQuery('<div></div>');
 				parent.append(divElem);
 				var table = createLayoutTable();
 				table.appendTo(divElem);
 				
-				// group relations per source term
-				var relMap = {};
-				jQuery.each(relations, function(index, relation){
-					var rendered = renderRelation(relation);
-					if (rendered !== null) {
-						var source = relation.source;
-						if(isTempIdentifier(relation.target)) {
-							var relList = relMap[source];
-							if (!relList) {
-								relList = [];
-								relMap[source] = relList;
+				jQuery.each(jsonChanges, function(index, jsonChange){
+					var relList = jsonChange.changes;
+					var count = 0;
+					jQuery.each(relList, function(relIndex, relString){
+						var marked = markupRelation(relString);
+						if (marked) {
+							if(count === 0) {
+								table.append('<tr><td>'+jsonChange.id+'</td><td class="termgenie-pre nobr">'+marked+'</td></tr>');
 							}
-							relList.push(rendered);
-						}
-					}
-				});
-				
-				jQuery.each(relMap, function(source, relList){
-					jQuery.each(relList, function(index, relString){
-						if(index === 0) {
-							table.append('<tr><td>'+source+'</td><td class="termgenie-pre nobr">'+relString+'</td></tr>');
-						}
-						else {
-							table.append('<tr><td></td><td class="termgenie-pre nobr">'+relString+'</td></tr>');
+							else {
+								table.append('<tr><td></td><td class="termgenie-pre nobr">'+marked+'</td></tr>');
+							}
+							count += 1;
 						}
 					});
 				});
+			}
+
+			/**
+			 * Markup temporary identifiers in a relation string.
+			 * 
+			 * @returns {String} or undefined
+			 */
+			function markupRelation(relString) {
+				// markup relation by splitting it into tokens
+				var containsTempId = isTempIdentifier(relString);
+				if (containsTempId === true) {
+					var replaced = "";
+					var words = relString.split(' ');
+					jQuery.each(words, function(pos, word){
+						if(isTempIdentifier(word)) {
+							replaced += '<span class="termgenie-temp-identfier">' + word + '</span> ';
+						}
+						else {
+							replaced += word + ' ';
+						}
+					});
+					return replaced;
+				}
+				return undefined;
 			}
 			
 			/**
@@ -1791,10 +1804,11 @@ function termgenie(){
 				table.appendTo(divElem);
 				if(relations && relations.length > 0) {
 					jQuery.each(relations, function(index, relation){
-						var relString = renderRelation(relation);
-						if (relString && relString !== null) {
-							table.append('<tr><td class="termgenie-pre nobr">'+relString+'</td></tr>');
+						var relString = markupRelation(relation);
+						if (!relString) {
+							relString = relation;
 						}
+						table.append('<tr><td class="termgenie-pre nobr">'+relString+'</td></tr>');
 					});
 				}
 				else {
@@ -1803,51 +1817,6 @@ function termgenie(){
 				return {
 					relations: relations
 				};
-			}
-			
-			/**
-			 * Render a relation as obo format string
-			 * 
-			 * @param relation
-			 * @returns {String} or null
-			 */
-			function renderRelation(relation) {
-				var relProperties = relation.properties;
-				// check type
-				var type = relProperties.type;
-				if (type && type.length !== 0) {
-					// only append relation, if a type is given
-					var sb;
-					if(type === 'is_a') {
-						sb = 'is_a: '+ renderTarget(relation.target);
-					}
-					else if (type === 'intersection_of') {
-						sb = 'intersection_of: ';
-						var intersectionRelationship = relProperties.relationship;
-						if (intersectionRelationship && intersectionRelationship.length !== 0) {
-							sb += intersectionRelationship + ' ';
-						}
-						sb += renderTarget(relation.target);
-					}
-					else if (type === 'union_of') {
-						sb = 'union_of: '+ renderTarget(relation.target);
-					}
-					else {
-						sb = 'relationship: '+ relProperties.relationship + ' ' + renderTarget(relation.target);
-					}
-					if(relation.targetLabel && relation.targetLabel.length > 0) {
-						sb += ' ! ' + relation.targetLabel;
-					}
-					return sb;
-				}
-				return null;
-				
-				function renderTarget(target) {
-					if (isTempIdentifier(target)) {
-						return '<span class="termgenie-temp-identfier">'+target+'</span>';
-					}
-					return target;
-				}
 			}
 			
 			/**
