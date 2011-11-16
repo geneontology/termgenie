@@ -29,8 +29,11 @@ import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 import org.bbop.termgenie.data.JsonValidationHint;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
 import org.bbop.termgenie.tools.OntologyTools;
+
+import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -147,20 +150,9 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null);
 			}
 
-			List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
-			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
-			for (TermGenerationOutput candidate : candidates) {
-				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getChangedTermRelations());
-					jsonCandidates.add(jsonCandidate);
-				}
-				else {
-					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
-					jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
-				}
-			}
-
-			JsonGenerationResponse generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates);
+			GenerateJsonResponse task = new GenerateJsonResponse(candidates);
+			manager.runManagedTask(task);
+			JsonGenerationResponse generationResponse = task.generationResponse;
 
 			// return response
 			return generationResponse;
@@ -169,6 +161,39 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 					exception);
 			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null);
 		}
+	}
+	
+	private class GenerateJsonResponse extends OntologyTask {
+
+		private final List<TermGenerationOutput> candidates;
+		private JsonGenerationResponse generationResponse;
+		
+		/**
+		 * @param candidates
+		 */
+		GenerateJsonResponse(List<TermGenerationOutput> candidates) {
+			super();
+			this.candidates = candidates;
+		}
+
+		@Override
+		protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+			List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
+			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
+			
+			for (TermGenerationOutput candidate : candidates) {
+				if (candidate.isSuccess()) {
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getChangedTermRelations(), managed);
+					jsonCandidates.add(jsonCandidate);
+				}
+				else {
+					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+					jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
+				}
+			}
+			generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates);
+		}
+		
 	}
 
 	private List<TermGenerationInput> createGenerationTasks(String ontologyName,

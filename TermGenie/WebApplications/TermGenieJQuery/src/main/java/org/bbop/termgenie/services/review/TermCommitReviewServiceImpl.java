@@ -37,6 +37,7 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -155,7 +156,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				}
 			}
 			if (changed != null && !changed.isEmpty()) {
-				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed));
+				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed, new OBODocNameProvider(oboDoc)));
 			}
 		}
 		if (!result.isEmpty()) {
@@ -198,7 +199,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits);
+		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology);
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

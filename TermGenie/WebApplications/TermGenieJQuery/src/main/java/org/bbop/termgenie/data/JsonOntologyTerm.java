@@ -12,11 +12,15 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
 import org.bbop.termgenie.ontology.obo.OBOParserTools;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+
+import owltools.graph.OWLGraphWrapper;
 
 public class JsonOntologyTerm {
 	
@@ -208,7 +212,8 @@ public class JsonOntologyTerm {
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm createJson(Frame source, List<Frame> changed) {
+	public static JsonOntologyTerm createJson(Frame source, List<Frame> changed, OWLGraphWrapper wrapper) {
+		NameProvider nameProvider = new OwlGraphWrapperNameProvider(wrapper);
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setTempId(source.getId());
 		
@@ -243,14 +248,14 @@ public class JsonOntologyTerm {
 				case TAG_UNION_OF:
 				case TAG_DISJOINT_FROM:
 				case TAG_RELATIONSHIP:
-					jsonRelations = add(convert(clause), jsonRelations);
+					jsonRelations = add(convert(clause, nameProvider), jsonRelations);
 					break;
 					
 				case TAG_IS_OBSELETE:
 					term.setObsolete(OBOConverterTools.isObsolete(clause));
 					break;
 				default:
-					other = add(convert(clause), other);
+					other = add(convert(clause, nameProvider), other);
 					break;
 			}
 		}
@@ -259,11 +264,11 @@ public class JsonOntologyTerm {
 		term.setMetaData(other);
 		
 		// changed
-		term.setChanged(createJson(changed));
+		term.setChanged(createJson(changed, nameProvider));
 		return term;
 	}
 
-	public static List<JsonChange> createJson(List<Frame> changed) {
+	public static List<JsonChange> createJson(List<Frame> changed, NameProvider nameProvider) {
 		if (changed != null && !changed.isEmpty()) {
 			List<JsonChange> jsonChanged = new ArrayList<JsonChange>(changed.size());
 			for (Frame changedFrame : changed) {
@@ -271,7 +276,7 @@ public class JsonOntologyTerm {
 				Collection<Clause> changedClauses = changedFrame.getClauses();
 				if (changedClauses != null) {
 					for (Clause relation : changedClauses) {
-						frameChanges = add(convert(relation), frameChanges);		
+						frameChanges = add(convert(relation, nameProvider), frameChanges);		
 					}
 				}
 				if (frameChanges != null) {
@@ -294,9 +299,9 @@ public class JsonOntologyTerm {
 		return list;
 	}
 	
-	private static String convert(Clause clause) {
+	private static String convert(Clause clause, NameProvider nameProvider) {
 		try {
-			String string = OBOWriterTools.writeClause(clause, null);
+			String string = OBOWriterTools.writeClause(clause, nameProvider);
 			return string;
 		} catch (IOException exception) {
 			logger.error("Could not serialze clause.", exception);

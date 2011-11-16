@@ -272,7 +272,9 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 					message = "Commit operation finished successfully.";
 				}
 				result.setMessage(message);
-				result.setTerms(createTerms(commitTerms));
+				CreateJsonTermsTask task = new CreateJsonTermsTask(commitTerms);
+				manager.runManagedTask(task);
+				result.setTerms(task.terms);
 				result.setSuccess(true);
 				result.setDiff(commitResult.getDiff());
 
@@ -286,17 +288,30 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			return;
 		}
 
-		private List<JsonOntologyTerm> createTerms(List<CommitObject<TermCommit>> commitTerms)
-		{
-			List<JsonOntologyTerm> terms = new ArrayList<JsonOntologyTerm>();
-			for (CommitObject<TermCommit> commitObject : commitTerms) {
-				if (commitObject.getType() == Modification.add) {
-					terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(), commitObject.getObject().getChanged()));
+		private class CreateJsonTermsTask extends OntologyTask {
+
+			private final List<CommitObject<TermCommit>> commitTerms;
+			private List<JsonOntologyTerm> terms;
+			
+			/**
+			 * @param commitTerms
+			 */
+			CreateJsonTermsTask(List<CommitObject<TermCommit>> commitTerms) {
+				super();
+				this.commitTerms = commitTerms;
+			}
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				List<JsonOntologyTerm> terms = new ArrayList<JsonOntologyTerm>();
+				for (CommitObject<TermCommit> commitObject : commitTerms) {
+					if (commitObject.getType() == Modification.add) {
+						terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(), commitObject.getObject().getChanged(), managed));
+					}
 				}
 			}
-			return terms;
 		}
-
+		
 		private Pair<List<CommitObject<TermCommit>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
 				Ontology ontology,
 				OntologyIdProvider idProvider) throws CommitException
