@@ -1,12 +1,12 @@
 package org.bbop.termgenie.cvs;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.netbeans.lib.cvsclient.CVSRoot;
 import org.netbeans.lib.cvsclient.Client;
 import org.netbeans.lib.cvsclient.admin.AdminHandler;
@@ -27,7 +27,7 @@ import org.netbeans.lib.cvsclient.event.MessageEvent;
  * Tools for connecting to a CVS repository. This class is not ThreadSafe, each
  * thread must have its own instance.
  */
-public class CVSTools implements Closeable {
+public class CVSTools implements VersionControlAdapter {
 
 	private static final Logger logger = Logger.getLogger(CVSTools.class);
 
@@ -66,6 +66,7 @@ public class CVSTools implements Closeable {
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is already open
 	 */
+	@Override
 	public void connect() throws IOException {
 		if (client != null) {
 			throw new IllegalStateException("You need to close() the current connection before you can create a new one.");
@@ -108,6 +109,7 @@ public class CVSTools implements Closeable {
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
+	@Override
 	public boolean checkout(String cvsFile) throws IOException {
 		if (client == null) {
 			throw new IllegalStateException("You need to call connect() before you can use this method");
@@ -137,6 +139,7 @@ public class CVSTools implements Closeable {
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
+	@Override
 	public boolean commit(String message) throws IOException {
 		if (client == null) {
 			throw new IllegalStateException("You need to call connect() before you can use this method");
@@ -154,6 +157,7 @@ public class CVSTools implements Closeable {
 		}
 	}
 	
+	@Override
 	public boolean update() throws IOException {
 		if (client == null) {
 			throw new IllegalStateException("You need to call connect() before you can use this method");

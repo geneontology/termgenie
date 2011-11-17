@@ -19,6 +19,7 @@ import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.ontology.OBOSCMHelper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -34,6 +35,7 @@ import org.junit.Test;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
 import com.google.inject.Injector;
 
@@ -45,6 +47,8 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		Class<?> cls = OBOFormatWriter.NameProvider.class;
+		assertNotNull(cls);
 		// setup file
 		testFolder = TempTestFolderTools.createTestFolder(FileOnlyGeneOntologyCommitAdapterTest.class);
 		final File dbFolder = new File(testFolder, "dbfolder");
@@ -71,7 +75,7 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		String localFile = cvslocalFile.getAbsolutePath();
 		CommitHistoryStore store = injector.getInstance(CommitHistoryStore.class);
 		
-		GoCvsHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(goManager, iriMapper, cleaner, cvsFileName, cvsRoot);
+		OBOSCMHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(goManager, iriMapper, cleaner, cvsFileName, cvsRoot);
 		/// create adapter instance, which writes to test-local resource
 		instance = new FileOnlyGeneOntologyCommitAdapter(goManager, store, helper, localFile) {
 

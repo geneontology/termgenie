@@ -33,7 +33,7 @@ public class CommitHistoryTools {
 		term.setOperation(operation);
 		term.setLabel(frame.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		try {
-			term.setObo(OBOWriterTools.writeFrame(frame));
+			term.setObo(OBOWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
 			logger.error("Could not translate term: "+frame.getId(), exception);
 			return null;
@@ -46,7 +46,7 @@ public class CommitHistoryTools {
 		term.setId(frame.getId());
 		term.setOperation(operation);
 		try {
-			term.setObo(OBOWriterTools.writeFrame(frame));
+			term.setObo(OBOWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
 			logger.error("Could not translate term: "+frame.getId(), exception);
 			return null;

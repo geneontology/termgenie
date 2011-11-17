@@ -74,7 +74,9 @@ public class TempTestFolderTools {
 	 */
 	public static void deleteTestFolder(File testFolder) {
 		try {
-			FileUtils.deleteDirectory(testFolder);
+			if (testFolder != null) {
+				FileUtils.deleteDirectory(testFolder);
+			}
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}

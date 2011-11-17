@@ -21,5 +21,6 @@
 		<module>TermGenieOntologyCommit-CVS</module>
 		<module>TermGenieOntologyCommit-GeneOntology</module>
 		<module>TermGenieOntologyCommit-Core</module>
+		<module>TermGenieOntologyCommit-SVN</module>
 	</modules>
 </project>

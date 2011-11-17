@@ -35,10 +35,10 @@ public class OBOWriterTools {
 		return writeTerms(Collections.singleton(id), oboDoc);
 	}
 	
-	public static String writeFrame(Frame frame) throws IOException {
+	public static String writeFrame(Frame frame, NameProvider nameProvider) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter writer = new BufferedWriter(stringWriter);
-		oboWriter.write(frame, writer, null);
+		oboWriter.write(frame, writer, nameProvider);
 		writer.close();
 		return stringWriter.getBuffer().toString();
 	}

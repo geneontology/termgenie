@@ -13,6 +13,7 @@ import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreExceptio
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
 
 import difflib.DiffUtils;
@@ -22,11 +23,10 @@ import difflib.Patch;
  * Main steps for directly committing ontology changes to an ontology file in an
  * SCM repository.
  * 
- * @param <SCM> the tool to access and modify the ontology repository
  * @param <WORKFLOWDATA> the data during the commit process
  * @param <ONTOLOGY> the type of target ontology
  */
-public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends OntologyCommitPipelineData, ONTOLOGY> implements
+public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends OntologyCommitPipelineData, ONTOLOGY> implements
 		OntologyCommitReviewPipelineStages.AfterReview,
 		OntologyCommitReviewPipelineStages.BeforeReview,
 		Committer
@@ -202,7 +202,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	{
 		WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
 
-		SCM scm = prepareSCM(mode, username, password, data);
+		VersionControlAdapter scm = prepareSCM(mode, username, password, data);
 
 		ONTOLOGY targetOntology = retrieveTargetOntology(scm, data);
 		// check for valid ontology file
@@ -314,7 +314,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	 * @return SCM
 	 * @throws CommitException
 	 */
-	protected abstract SCM prepareSCM(CommitMode mode,
+	protected abstract VersionControlAdapter prepareSCM(CommitMode mode,
 			String username,
 			String password,
 			WORKFLOWDATA data) throws CommitException;
@@ -327,7 +327,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	 * @param data
 	 * @throws CommitException
 	 */
-	protected abstract void updateSCM(SCM scm, ONTOLOGY targetOntology, WORKFLOWDATA data)
+	protected abstract void updateSCM(VersionControlAdapter scm, ONTOLOGY targetOntology, WORKFLOWDATA data)
 			throws CommitException;
 
 	/**
@@ -337,7 +337,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	 * @return ONTOLOGY
 	 * @throws CommitException
 	 */
-	protected abstract ONTOLOGY retrieveTargetOntology(SCM scm, WORKFLOWDATA data)
+	protected abstract ONTOLOGY retrieveTargetOntology(VersionControlAdapter scm, WORKFLOWDATA data)
 			throws CommitException;
 
 	/**
@@ -382,7 +382,7 @@ public abstract class OntologyCommitReviewPipeline<SCM, WORKFLOWDATA extends Ont
 	 * @throws CommitException
 	 */
 	protected abstract void commitToRepository(String username,
-			SCM scm,
+			VersionControlAdapter scm,
 			WORKFLOWDATA data,
 			String diff) throws CommitException;
 

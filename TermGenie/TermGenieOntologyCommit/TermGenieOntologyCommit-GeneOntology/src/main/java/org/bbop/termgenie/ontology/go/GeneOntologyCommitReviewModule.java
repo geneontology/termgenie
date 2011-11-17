@@ -6,6 +6,7 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OBOSCMHelper;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -53,7 +54,7 @@ public class GeneOntologyCommitReviewModule extends IOCModule {
 	}
 
 	protected void bindGoCvsHelper() {
-		bind(GoCvsHelper.class).to(GoCvsHelper.GoCvsHelperPassword.class);
+		bind(OBOSCMHelper.class).to(GoCvsHelper.GoCvsHelperPassword.class);
 	}
 
 	@Singleton

@@ -1902,7 +1902,7 @@ function termgenie(){
 		container.append('<div class="term-generation-commit-heading">Commit<div>');
 		if (commitResults.success === true) {
 			if(commitResults.message && commitResults.message.length > 0) {
-				container.append('<div>'+commitResults.message+'</div>');
+				container.append('<div>' + markupNewLines(commitResults.message) + '</div>');
 			}
 			if (commitResults.terms && commitResults.terms.length > 0) {
 				container.append('<div>The following terms have been created:</div>');
@@ -1915,7 +1915,17 @@ function termgenie(){
 		}
 		else {
 			container.append('<div>The commit of the generated terms did not complete normally with the following reason:</div>');
-			container.append('<div class="term-generation-commit-error-details">'+commitResults.message+'</div>');
+			container.append('<div class="term-generation-commit-error-details">'+markupNewLines(commitResults.message)+'</div>');
+		}
+		
+		function markupNewLines(text) {
+			var message = '';
+			var lines = text.split('\n');
+			jQuery.each(lines, function(pos, line){
+				message += line + '</br>\n';
+			});
+			message += '</div>';
+			return message; 
 		}
 	}
 	

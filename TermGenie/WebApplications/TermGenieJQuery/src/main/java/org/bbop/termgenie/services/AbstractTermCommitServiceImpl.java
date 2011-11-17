@@ -177,9 +177,13 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 					sb.append("the following terms with the same label were recently committed: ");
 					for (int i = 0; i < matchingCommits.size(); i++) {
 						if (i > 0) {
-							sb.append(", ");
+							sb.append(',');
 						}
-						sb.append(matchingCommits.get(i));
+						sb.append('\n');
+						Pair<String, String> pair = matchingCommits.get(i);
+						String id = pair.getOne();
+						String label = pair.getTwo();
+						sb.append(id).append(" with Label: '").append(label);
 					}
 				}
 				setMessage(sb.toString());
@@ -303,7 +307,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
-				List<JsonOntologyTerm> terms = new ArrayList<JsonOntologyTerm>();
+				terms = new ArrayList<JsonOntologyTerm>();
 				for (CommitObject<TermCommit> commitObject : commitTerms) {
 					if (commitObject.getType() == Modification.add) {
 						terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(), commitObject.getObject().getChanged(), managed));

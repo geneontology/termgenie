@@ -2,11 +2,12 @@ package org.bbop.termgenie.ontology.go;
 
 import java.io.File;
 
-import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
+import org.bbop.termgenie.ontology.OBOSCMHelper;
+import org.bbop.termgenie.ontology.OBOSCMHelper.OboCommitData;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
+import org.bbop.termgenie.scm.VersionControlAdapter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,7 +27,7 @@ public class FileOnlyGeneOntologyCommitAdapter extends GeneOntologyCommitAdapter
 	@Inject
 	FileOnlyGeneOntologyCommitAdapter(@Named("GeneOntology") final OntologyTaskManager source,
 			final CommitHistoryStore store,
-			final GoCvsHelper helper,
+			final OBOSCMHelper helper,
 			@Named("FileOnlyGeneOntologyCommitAdapterLocalFile") final String localFile)
 	{
 		super(source, store, helper);
@@ -35,7 +36,7 @@ public class FileOnlyGeneOntologyCommitAdapter extends GeneOntologyCommitAdapter
 
 	@Override
 	protected void commitToRepository(String username,
-			CVSTools scm,
+			VersionControlAdapter scm,
 			OboCommitData data,
 			String diff) throws CommitException
 	{

@@ -7,19 +7,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
-import org.bbop.termgenie.cvs.CVSTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OBOSCMHelper.OboCommitData;
+import org.bbop.termgenie.ontology.OBOSCMHelper;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.go.GoCvsHelper.OboCommitData;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.OBODoc;
 
@@ -30,17 +31,17 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipeline<CVSTools, OboCommitData, OBODoc> implements
+public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipeline<OboCommitData, OBODoc> implements
 		OntologyCommitReviewPipelineStages
 {
 
-	protected final GoCvsHelper helper;
+	protected final OBOSCMHelper helper;
 	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	@Inject
 	GeneOntologyReviewCommitAdapter(@Named("GeneOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
-			GoCvsHelper helper)
+			OBOSCMHelper helper)
 	{
 		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
@@ -96,16 +97,16 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	}
 
 	@Override
-	protected CVSTools prepareSCM(CommitMode mode,
+	protected VersionControlAdapter prepareSCM(CommitMode mode,
 			String username,
 			String password,
 			OboCommitData data) throws CommitException
 	{
-		return helper.createCVS(mode, username, password, data.cvsFolder);
+		return helper.createSCM(mode, username, password, data.getScmFolder());
 	}
 
 	@Override
-	protected void updateSCM(CVSTools scm, OBODoc targetOntology, OboCommitData data)
+	protected void updateSCM(VersionControlAdapter scm, OBODoc targetOntology, OboCommitData data)
 			throws CommitException
 	{
 		try {
@@ -123,7 +124,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	}
 
 	@Override
-	protected OBODoc retrieveTargetOntology(CVSTools scm, OboCommitData data)
+	protected OBODoc retrieveTargetOntology(VersionControlAdapter scm, OboCommitData data)
 			throws CommitException
 	{
 		return helper.retrieveTargetOntology(scm, data);
@@ -151,7 +152,7 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 	}
 
 	@Override
-	protected void commitToRepository(String username, CVSTools scm, OboCommitData data, String diff)
+	protected void commitToRepository(String username, VersionControlAdapter scm, OboCommitData data, String diff)
 			throws CommitException
 	{
 		helper.commitToRepository(username, scm, data, diff);
