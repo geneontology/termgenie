@@ -68,19 +68,21 @@ public class CVSTools implements VersionControlAdapter {
 	 */
 	@Override
 	public void connect() throws IOException {
-		if (client != null) {
-			throw new IllegalStateException("You need to close() the current connection before you can create a new one.");
-		}
-		try {
-			connection.open();
-			AdminHandler adminHandler = new StandardAdminHandler();
-			client = new Client(connection, adminHandler);
-			client.getEventManager().addCVSListener(new BasicListener());
-			client.setLocalPath(targetFolder.getAbsolutePath());
-		} catch (CommandAbortedException exception) {
-			throw new IOException(exception);
-		} catch (AuthenticationException exception) {
-			throw new IOException(exception);
+		synchronized (this) {
+			if (client != null) {
+				throw new IllegalStateException("You need to close() the current connection before you can create a new one.");
+			}
+			try {
+				connection.open();
+				AdminHandler adminHandler = new StandardAdminHandler();
+				client = new Client(connection, adminHandler);
+				client.getEventManager().addCVSListener(new BasicListener());
+				client.setLocalPath(targetFolder.getAbsolutePath());
+			} catch (CommandAbortedException exception) {
+				throw new IOException(exception);
+			} catch (AuthenticationException exception) {
+				throw new IOException(exception);
+			}
 		}
 	}
 
@@ -91,11 +93,13 @@ public class CVSTools implements VersionControlAdapter {
 	 */
 	@Override
 	public void close() throws IOException {
-		if (client != null) {
-			client = null;
-		}
-		if (connection.isOpen()) {
-			connection.close();
+		synchronized (this) {
+			if (client != null) {
+				client = null;
+			}
+			if (connection.isOpen()) {
+				connection.close();
+			}
 		}
 	}
 
@@ -111,9 +115,7 @@ public class CVSTools implements VersionControlAdapter {
 	 */
 	@Override
 	public boolean checkout(String cvsFile) throws IOException {
-		if (client == null) {
-			throw new IllegalStateException("You need to call connect() before you can use this method");
-		}
+		checkConnection();
 		CheckoutCommand co = new CheckoutCommand();
 		co.setModule(cvsFile);
 		co.setRecursive(true);
@@ -141,9 +143,7 @@ public class CVSTools implements VersionControlAdapter {
 	 */
 	@Override
 	public boolean commit(String message) throws IOException {
-		if (client == null) {
-			throw new IllegalStateException("You need to call connect() before you can use this method");
-		}
+		checkConnection();
 		CommitCommand commit = new CommitCommand();
 		commit.setMessage(message);
 		try {
@@ -159,9 +159,7 @@ public class CVSTools implements VersionControlAdapter {
 	
 	@Override
 	public boolean update() throws IOException {
-		if (client == null) {
-			throw new IllegalStateException("You need to call connect() before you can use this method");
-		}
+		checkConnection();
 		UpdateCommand update = new UpdateCommand();
 		update.setCleanCopy(true);
 		update.setRecursive(true);
@@ -173,6 +171,14 @@ public class CVSTools implements VersionControlAdapter {
 			throw new IOException(exception);
 		} catch (AuthenticationException exception) {
 			throw new IOException(exception);
+		}
+	}
+
+	private void checkConnection() throws IllegalStateException {
+		synchronized (this) {
+			if (client == null) {
+				throw new IllegalStateException("You need to call connect() before you can use this method");
+			}
 		}
 	}
 
