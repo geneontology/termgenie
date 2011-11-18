@@ -175,4 +175,19 @@ public class OBOConverterTools {
 			clauses.addAll(clauses2);
 		}
 	}
+	
+	public static void updateClauseValues(Frame frame, OboFormatTag tag, Object...values) {
+		if (frame != null && tag != null) {
+			Clause clause = frame.getClause(tag);
+			if (clause == null) {
+				clause = new Clause(tag);
+				frame.addClause(clause);
+			}
+			List<Object> newValues = new ArrayList<Object>(values.length);
+			for(Object value : values) {
+				newValues.add(value);
+			}
+			clause.setValues(newValues);
+		}
+	}
 }

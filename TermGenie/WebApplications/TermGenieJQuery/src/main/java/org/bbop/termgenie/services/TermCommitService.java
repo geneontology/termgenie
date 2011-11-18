@@ -15,9 +15,15 @@ public interface TermCommitService {
 	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
 	 * @param ontology
+	 * @param session introduced via {@link SessionAware}, do not send in rpc
+	 *            call.
 	 * @return {@link JsonExportResult}
 	 */
-	public JsonExportResult exportTerms(String sessionId, JsonOntologyTerm[] terms, String ontology);
+	@SessionAware
+	public JsonExportResult exportTerms(String sessionId,
+			JsonOntologyTerm[] terms,
+			String ontology,
+			HttpSession session);
 
 	/**
 	 * Commit the terms to the ontology. Retrieve the username and password from

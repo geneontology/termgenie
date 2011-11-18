@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.netbeans.lib</groupId>
 			<artifactId>cvsclient</artifactId>
-			<version>200110816</version>
+			<version>20110816</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -34,6 +34,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -41,7 +42,6 @@ import owltools.graph.OWLGraphWrapper;
 
 public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
 
-	private final InternalSessionHandler sessionHandler;
 	private final Committer committer;
 	private final OntologyIdManager idProvider;
 	protected final UserPermissions permissions;
@@ -52,8 +52,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			OntologyIdManager idProvider,
 			UserPermissions permissions)
 	{
-		super(ontologyTools);
-		this.sessionHandler = sessionHandler;
+		super(ontologyTools, sessionHandler);
 		this.committer = committer;
 		this.idProvider = idProvider;
 		this.permissions = permissions;
@@ -257,6 +256,15 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			Integer base = pair.getTwo();
 			List<CommitObject<TermCommit>> commitTerms = pair.getOne();
 
+			// update "Generated_by" tag with username
+			for (CommitObject<TermCommit> commitObject : commitTerms) {
+				if (Modification.add == commitObject.getType()) {
+					TermCommit termCommit = commitObject.getObject();
+					Frame frame = termCommit.getTerm();
+					OBOConverterTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
+				}
+			}
+			
 			CommitInfo commitInfo = createCommitInfo(commitTerms,
 					termgenieUser,
 					commitUserData);

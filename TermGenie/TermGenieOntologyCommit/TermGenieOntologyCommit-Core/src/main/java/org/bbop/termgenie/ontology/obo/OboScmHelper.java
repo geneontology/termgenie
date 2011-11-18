@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology;
+package org.bbop.termgenie.ontology.obo;
 
 import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.*;
 
@@ -35,13 +35,13 @@ import org.obolibrary.oboformat.writer.OBOFormatWriter;
  * Main steps for committing ontology changes to an OBO file in an SCM
  * repository.
  */
-public abstract class OBOSCMHelper {
+public abstract class OboScmHelper {
 
 	private final OntologyTaskManager source;
 	private final DirectOntologyLoader loader;
 	private final String targetOntologyFileName;
 
-	protected OBOSCMHelper(OntologyTaskManager source,
+	protected OboScmHelper(OntologyTaskManager source,
 			IRIMapper iriMapper,
 			OntologyCleaner cleaner,
 			String targetOntologyFileName)

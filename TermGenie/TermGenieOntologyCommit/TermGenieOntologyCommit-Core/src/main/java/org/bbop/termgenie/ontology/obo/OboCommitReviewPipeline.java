@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.go;
+package org.bbop.termgenie.ontology.obo;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +11,6 @@ import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.Committer;
-import org.bbop.termgenie.ontology.OBOSCMHelper.OboCommitData;
-import org.bbop.termgenie.ontology.OBOSCMHelper;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -20,28 +18,23 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.OBODoc;
 
 import owltools.graph.OWLGraphWrapper;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-
-@Singleton
-public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipeline<OboCommitData, OBODoc> implements
+public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCommitData, OBODoc> implements
 		OntologyCommitReviewPipelineStages
 {
 
-	protected final OBOSCMHelper helper;
+	protected final OboScmHelper helper;
 	private final AfterReviewTaskManager afterReviewTaskManager;
 
-	@Inject
-	GeneOntologyReviewCommitAdapter(@Named("GeneOntology") OntologyTaskManager source,
+	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
-			OBOSCMHelper helper)
+			OboScmHelper helper)
 	{
 		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
@@ -113,12 +106,12 @@ public class GeneOntologyReviewCommitAdapter extends OntologyCommitReviewPipelin
 			scm.connect();
 			scm.update();
 		} catch (IOException exception) {
-			throw error("Could not update cvs repository", exception);
+			throw error("Could not update scm repository", exception);
 		} finally {
 			try {
 				scm.close();
 			} catch (IOException exception) {
-				Logger.getLogger(getClass()).error("Could not close CVS tool.", exception);
+				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
 			}
 		}
 	}

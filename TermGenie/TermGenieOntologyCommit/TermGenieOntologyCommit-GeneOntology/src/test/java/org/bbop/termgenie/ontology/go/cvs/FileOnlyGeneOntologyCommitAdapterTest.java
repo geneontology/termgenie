@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.go;
+package org.bbop.termgenie.ontology.go.cvs;
 
 import static org.junit.Assert.*;
 
@@ -19,14 +19,15 @@ import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OBOSCMHelper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.obo.FileOnlyOboCommitPipeline;
 import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
@@ -43,7 +44,7 @@ import com.google.inject.Injector;
 public class FileOnlyGeneOntologyCommitAdapterTest {
 	
 	private static File testFolder = null;
-	private static FileOnlyGeneOntologyCommitAdapter instance = null;
+	private static FileOnlyOboCommitPipeline instance = null;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -75,9 +76,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		String localFile = cvslocalFile.getAbsolutePath();
 		CommitHistoryStore store = injector.getInstance(CommitHistoryStore.class);
 		
-		OBOSCMHelper helper = new GoCvsHelper.GoCvsHelperAnonymous(goManager, iriMapper, cleaner, cvsFileName, cvsRoot);
+		OboScmHelper helper = new GoCvsHelperAnonymous(goManager, iriMapper, cleaner, cvsFileName, cvsRoot);
 		/// create adapter instance, which writes to test-local resource
-		instance = new FileOnlyGeneOntologyCommitAdapter(goManager, store, helper, localFile) {
+		instance = new FileOnlyOboCommitPipeline(goManager, store, helper, localFile) {
 
 			@Override
 			protected WorkFolders createTempDir() throws CommitException {

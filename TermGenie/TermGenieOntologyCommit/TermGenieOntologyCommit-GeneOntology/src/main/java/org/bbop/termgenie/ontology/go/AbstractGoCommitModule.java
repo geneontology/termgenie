@@ -5,7 +5,6 @@ import java.util.Properties;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
-import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -15,31 +14,14 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-public class GeneOntologyCommitModule extends IOCModule {
+public abstract class AbstractGoCommitModule extends IOCModule {
 
-	private final String cvsOntologyFileName;
-	private final String cvsRoot;
-	
-	/**
-	 * @param cvsOntologyFileName
-	 * @param cvsRoot
-	 * @param applicationProperties
-	 */
-	public GeneOntologyCommitModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties)
-	{
+	protected AbstractGoCommitModule(Properties applicationProperties) {
 		super(applicationProperties);
-		this.cvsOntologyFileName = cvsOntologyFileName;
-		this.cvsRoot = cvsRoot;
 	}
 
 	@Override
 	protected void configure() {
-		bind(Committer.class).to(GeneOntologyCommitAdapter.class);
-		bind("GeneOntologyCommitAdapterCVSOntologyFileName", cvsOntologyFileName);
-		bind("GeneOntologyCommitAdapterCVSRoot", cvsRoot);
-		// bind the password only via a system parameter !
-		// Reason: Do not accidently commit a secret password
-		bind("GeneOntologyCommitAdapterCVSPassword"); 
 		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
 	}
 	

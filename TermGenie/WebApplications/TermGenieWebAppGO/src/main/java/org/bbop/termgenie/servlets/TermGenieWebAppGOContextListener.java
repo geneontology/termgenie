@@ -14,7 +14,7 @@ import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.go.GeneOntologyCommitReviewModule;
+import org.bbop.termgenie.ontology.go.cvs.GoCommitReviewCvsModule;
 import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
@@ -74,7 +74,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getCommitModule() {
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		return new GeneOntologyCommitReviewModule(cvsFileName, cvsRoot, applicationProperties);
+		return new GoCommitReviewCvsModule(cvsFileName, cvsRoot, applicationProperties);
 	}
 	
 	

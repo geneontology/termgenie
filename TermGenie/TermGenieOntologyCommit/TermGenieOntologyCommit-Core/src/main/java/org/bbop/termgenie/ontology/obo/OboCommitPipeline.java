@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.go;
+package org.bbop.termgenie.ontology.obo;
 
 import java.io.File;
 import java.util.List;
@@ -8,27 +8,19 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
-import org.bbop.termgenie.ontology.OBOSCMHelper;
-import org.bbop.termgenie.ontology.OBOSCMHelper.OboCommitData;
+import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
 import org.bbop.termgenie.ontology.OntologyCommitPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.oboformat.model.OBODoc;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-
-@Singleton
-public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<OboCommitData, OBODoc>
+public class OboCommitPipeline extends OntologyCommitPipeline<OboCommitData, OBODoc>
 {
+	protected final OboScmHelper helper;
 
-	protected final OBOSCMHelper helper;
-
-	@Inject
-	GeneOntologyCommitAdapter(@Named("GeneOntology") final OntologyTaskManager source,
+	public OboCommitPipeline(final OntologyTaskManager source,
 			final CommitHistoryStore store,
-			final OBOSCMHelper helper)
+			final OboScmHelper helper)
 	{
 		super(source, store, helper.isSupportAnonymus());
 		this.helper = helper;
@@ -46,10 +38,10 @@ public class GeneOntologyCommitAdapter extends OntologyCommitPipeline<OboCommitD
 	}
 
 	@Override
-	protected OBODoc retrieveTargetOntology(VersionControlAdapter cvs, OboCommitData data)
+	protected OBODoc retrieveTargetOntology(VersionControlAdapter scm, OboCommitData data)
 			throws CommitException
 	{
-		return helper.retrieveTargetOntology(cvs, data);
+		return helper.retrieveTargetOntology(scm, data);
 	}
 
 	@Override
