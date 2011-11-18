@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
@@ -70,9 +70,9 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 				for (OWLClass subClass : subClasses.getFlattened()) {
 					String subClassIRI = subClass.getIRI().toString();
 					if (!subClassIRI.startsWith(tempIdPrefix)) {
-						Frame frame = OBOConverterTools.createTermFrame(subClass);
+						Frame frame = OboTools.createTermFrame(subClass);
 						frame.getClauses().addAll(OwlTranslatorTools.extractRelations(subClass, ontology));
-						OBOConverterTools.addTermId(frame, subClass);
+						OboTools.addTermId(frame, subClass);
 						changed.add(frame);	
 					}
 				}

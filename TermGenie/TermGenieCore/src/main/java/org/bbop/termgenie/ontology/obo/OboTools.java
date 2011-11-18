@@ -17,7 +17,7 @@ import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClass;
 
-public class OBOConverterTools {
+public class OboTools {
 	
 	public static Frame createTermFrame(String id) {
 		Frame frame = new Frame(FrameType.TERM);

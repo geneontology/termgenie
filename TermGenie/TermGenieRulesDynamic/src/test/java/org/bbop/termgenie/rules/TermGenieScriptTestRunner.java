@@ -18,7 +18,7 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.oboformat.model.Clause;
@@ -100,7 +100,7 @@ public class TermGenieScriptTestRunner {
 		TermGenerationOutput output = list.get(0);
 		Frame term = output.getTerm();
 
-		List<Clause> clauses = OBOConverterTools.getRelations(term);
+		List<Clause> clauses = OboTools.getRelations(term);
 		assertEquals(4, clauses.size());
 		Clause clause0 = clauses.get(0);
 		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());
@@ -143,7 +143,7 @@ public class TermGenieScriptTestRunner {
 		assertTrue(output.getMessage(), output.isSuccess());
 		Frame term = output.getTerm();
 
-		List<Clause> clauses = OBOConverterTools.getRelations(term);
+		List<Clause> clauses = OboTools.getRelations(term);
 		assertEquals(4, clauses.size());
 		Clause clause0 = clauses.get(0);
 		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());

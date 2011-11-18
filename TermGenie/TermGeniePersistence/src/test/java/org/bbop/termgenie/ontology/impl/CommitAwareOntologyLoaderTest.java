@@ -23,7 +23,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
@@ -84,7 +84,7 @@ public class CommitAwareOntologyLoaderTest {
 			CommitHistoryItem item = new CommitHistoryItem();
 			item.setDate(new Date());
 			item.setUser("test");
-			Frame frame = OBOConverterTools.createTermFrame(testId, "Test term label");
+			Frame frame = OboTools.createTermFrame(testId, "Test term label");
 			CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add);
 			item.setTerms(Collections.singletonList(term));
 			item.setCommitted(true);
@@ -95,7 +95,7 @@ public class CommitAwareOntologyLoaderTest {
 			CommitHistoryItem item = new CommitHistoryItem();
 			item.setDate(new Date());
 			item.setUser("test2");
-			Frame frame = OBOConverterTools.createTermFrame("CL:0000001", "primary cell line cell");
+			Frame frame = OboTools.createTermFrame("CL:0000001", "primary cell line cell");
 			CommitedOntologyTerm redundantTerm = CommitHistoryTools.create(frame, Modification.add);
 			item.setTerms(Collections.singletonList(redundantTerm));
 			item.setCommitted(true);

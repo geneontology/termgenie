@@ -13,7 +13,7 @@ import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -33,7 +33,7 @@ public class CommitHistoryTools {
 		term.setOperation(operation);
 		term.setLabel(frame.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		try {
-			term.setObo(OBOWriterTools.writeFrame(frame, null));
+			term.setObo(OboWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
 			logger.error("Could not translate term: "+frame.getId(), exception);
 			return null;
@@ -46,7 +46,7 @@ public class CommitHistoryTools {
 		term.setId(frame.getId());
 		term.setOperation(operation);
 		try {
-			term.setObo(OBOWriterTools.writeFrame(frame, null));
+			term.setObo(OboWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
 			logger.error("Could not translate term: "+frame.getId(), exception);
 			return null;

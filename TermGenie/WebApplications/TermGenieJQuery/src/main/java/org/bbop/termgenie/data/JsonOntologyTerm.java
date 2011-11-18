@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
-import org.bbop.termgenie.ontology.obo.OBOParserTools;
-import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.ontology.obo.OboParserTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -252,7 +252,7 @@ public class JsonOntologyTerm {
 					break;
 					
 				case TAG_IS_OBSELETE:
-					term.setObsolete(OBOConverterTools.isObsolete(clause));
+					term.setObsolete(OboTools.isObsolete(clause));
 					break;
 				default:
 					other = add(convert(clause, nameProvider), other);
@@ -301,7 +301,7 @@ public class JsonOntologyTerm {
 	
 	private static String convert(Clause clause, NameProvider nameProvider) {
 		try {
-			String string = OBOWriterTools.writeClause(clause, nameProvider);
+			String string = OboWriterTools.writeClause(clause, nameProvider);
 			return string;
 		} catch (IOException exception) {
 			logger.error("Could not serialze clause.", exception);
@@ -314,17 +314,17 @@ public class JsonOntologyTerm {
 	}
 	
 	public static Frame createFrame(JsonOntologyTerm term, String id) {
-		Frame frame = OBOConverterTools.createTermFrame(id, term.getLabel());
-		OBOConverterTools.addObsolete(frame, term.isObsolete());
-		OBOConverterTools.addDefinition(frame, term.getDefinition(), term.getDefXRef());
+		Frame frame = OboTools.createTermFrame(id, term.getLabel());
+		OboTools.addObsolete(frame, term.isObsolete());
+		OboTools.addDefinition(frame, term.getDefinition(), term.getDefXRef());
 		List<JsonSynonym> jsonSynonyms = term.getSynonyms();
 		if (jsonSynonyms != null && !jsonSynonyms.isEmpty()) {
 			for (JsonSynonym jsonSynonym : jsonSynonyms) {
-				OBOConverterTools.addSynonym(frame, jsonSynonym.getLabel(), jsonSynonym.getScope(), jsonSynonym.getXrefs());
+				OboTools.addSynonym(frame, jsonSynonym.getLabel(), jsonSynonym.getScope(), jsonSynonym.getXrefs());
 			}
 		}
-		OBOParserTools.parseClauses(frame, term.getMetaData());
-		OBOParserTools.parseClauses(frame, term.getRelations());
+		OboParserTools.parseClauses(frame, term.getMetaData());
+		OboParserTools.parseClauses(frame, term.getRelations());
 		return frame;
 	}
 	
@@ -333,8 +333,8 @@ public class JsonOntologyTerm {
 		if (jsonChanges != null && !jsonChanges.isEmpty()) {
 			changed = new ArrayList<Frame>(jsonChanges.size());
 			for (JsonChange jsonChange : jsonChanges) {
-				Frame frame = OBOConverterTools.createTermFrame(jsonChange.getId());
-				OBOParserTools.parseClauses(frame, jsonChange.getChanges());
+				Frame frame = OboTools.createTermFrame(jsonChange.getId());
+				OboParserTools.parseClauses(frame, jsonChange.getChanges());
 				changed.add(frame);
 			}
 			
@@ -437,7 +437,7 @@ public class JsonOntologyTerm {
 			jsonSynonym.setLabel(clause.getValue(String.class));
 			String scope = clause.getValue2(String.class);
 			String category = null;
-			if (!OBOConverterTools.isScope(scope)) {
+			if (!OboTools.isScope(scope)) {
 				category = scope;
 				scope = null;
 			}

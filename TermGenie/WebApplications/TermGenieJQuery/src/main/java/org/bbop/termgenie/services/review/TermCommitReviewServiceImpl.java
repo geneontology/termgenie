@@ -24,11 +24,11 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools;
-import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
-import org.bbop.termgenie.ontology.obo.OBOParserTools;
-import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
+import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
+import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.ontology.obo.OboParserTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -143,13 +143,13 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setOperation(term.getOperation());
 			jsonDiff.setId(term.getId());
 			jsonDiff.setUuid(term.getUuid());
-			jsonDiff.setObsolete(OBOConverterTools.isObsolete(frame));
+			jsonDiff.setObsolete(OboTools.isObsolete(frame));
 			
 			List<Frame> changed = CommitHistoryTools.translateSimple(term.getChanged());
-			LoadState state = ComitAwareOBOConverterTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
+			LoadState state = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
 			if (LoadState.isSuccess(state)) {
 				try {
-					jsonDiff.setDiff(OBOWriterTools.writeTerm(term.getId(), oboDoc));
+					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc));
 					result.add(jsonDiff);
 				} catch (IOException exception) {
 					logger.error("Could not create diff for pending commit", exception);
@@ -259,7 +259,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 		private Frame parseDiff(JsonDiff jsonDiff) {
 			boolean isObsolete = jsonDiff.isObsolete();
-			Frame frame = OBOParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
+			Frame frame = OboParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
 			Clause clause = frame.getClause(OboFormatTag.TAG_IS_OBSELETE);
 			if (clause == null) {
 				clause = new Clause(OboFormatTag.TAG_IS_OBSELETE);

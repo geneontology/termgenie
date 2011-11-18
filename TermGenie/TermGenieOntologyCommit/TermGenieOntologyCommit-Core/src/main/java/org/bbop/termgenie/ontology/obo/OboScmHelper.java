@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology.obo;
 
-import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.*;
+import static org.bbop.termgenie.ontology.obo.ComitAwareOboTools.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +25,7 @@ import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
-import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
+import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;

@@ -86,7 +86,7 @@ public class OwlTranslatorToolsTest {
 			// happens for alt_id
 			return Collections.emptyList();
 		}
-		List<Clause> relations = OBOConverterTools.getRelations(frame);
+		List<Clause> relations = OboTools.getRelations(frame);
 		return relations;
 	}
 	

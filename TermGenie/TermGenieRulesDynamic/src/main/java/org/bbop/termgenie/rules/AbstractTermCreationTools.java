@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -195,7 +195,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 					input));
 			return;
 		}
-		OBOConverterTools.addTermLabel(term, label);
+		OboTools.addTermLabel(term, label);
 		
 		String inputDefinition = getInput("Definition");
 		if (inputDefinition != null) {
@@ -236,7 +236,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		else {
 			defxrefs = Collections.singletonList("GOC:TermGenie");
 		}
-		OBOConverterTools.addDefinition(term, definition, defxrefs);
+		OboTools.addDefinition(term, definition, defxrefs);
 
 		term.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));
 		term.addClause(new Clause(OboFormatTag.TAG_CREATED_BY, "TermGenie"));
@@ -251,13 +251,13 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		
 		if (synonyms != null) {
 			for(ISynonym synonym : synonyms) {
-				OBOConverterTools.addSynonym(term, synonym.getLabel(), synonym.getScope(), synonym.getXrefs());
+				OboTools.addSynonym(term, synonym.getLabel(), synonym.getScope(), synonym.getXrefs());
 			}
 		}
 		
 		String owlNewId = getNewId();
 		String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
-		OBOConverterTools.addTermId(term, oboNewId);
+		OboTools.addTermId(term, oboNewId);
 
 		try {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);

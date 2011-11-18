@@ -12,7 +12,7 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 
-public class OBOParserTools {
+public class OboParserTools {
 	
 	/**
 	 * Parse a single line as term clause. Ignores id clause lines

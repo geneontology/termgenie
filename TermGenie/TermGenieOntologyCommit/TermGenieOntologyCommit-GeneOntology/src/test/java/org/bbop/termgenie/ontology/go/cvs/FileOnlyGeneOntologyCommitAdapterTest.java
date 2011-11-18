@@ -26,7 +26,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.FileOnlyOboCommitPipeline;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.tools.TempTestFolderTools;
@@ -119,9 +119,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 	}
 
 	private Frame createTerm(final int count, final String parent) {
-		Frame frame = OBOConverterTools.createTermFrame("GO:faketest00"+count, "term"+count);
-		OBOConverterTools.addSynonym(frame, "term syn"+count, "EXACT", Collections.singleton("test:syn_xref"));
-		OBOConverterTools.addDefinition(frame, "def term"+count, Collections.singletonList("test:term_xref"));
+		Frame frame = OboTools.createTermFrame("GO:faketest00"+count, "term"+count);
+		OboTools.addSynonym(frame, "term syn"+count, "EXACT", Collections.singleton("test:syn_xref"));
+		OboTools.addDefinition(frame, "def term"+count, Collections.singletonList("test:term_xref"));
 		frame.addClause(new Clause(OboFormatTag.TAG_IS_A, parent));
 		return frame;
 	}

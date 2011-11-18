@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.TempTestFolderTools;
@@ -92,14 +92,14 @@ public class CommitHistoryStoreImplTest {
 	}
 
 	private CommitedOntologyTerm createTestTerm(int i) {
-		Frame frame = OBOConverterTools.createTermFrame("t:0" + i, "Term label " + i);
-		OBOConverterTools.addDefinition(frame, "Term Def " + i, Arrays.asList("DefXref " + i + "_1", "DefXref " + i + "_2"));
+		Frame frame = OboTools.createTermFrame("t:0" + i, "Term label " + i);
+		OboTools.addDefinition(frame, "Term Def " + i, Arrays.asList("DefXref " + i + "_1", "DefXref " + i + "_2"));
 		frame.addClause(new Clause("Committer", "TestCommitter " + i));
 		if (i > 0) {
 			frame.addClause(new Clause(OboFormatTag.TAG_IS_A, "t:0" + (i - 1)));
 		}
-		OBOConverterTools.addSynonym(frame, "Syn Label " + i + "_1", "EXACT", Collections.singleton("Syn Xref " + i + "_1"));
-		OBOConverterTools.addSynonym(frame, "Syn Label " + i + "_2", "BROADER", null);
+		OboTools.addSynonym(frame, "Syn Label " + i + "_1", "EXACT", Collections.singleton("Syn Xref " + i + "_1"));
+		OboTools.addSynonym(frame, "Syn Label " + i + "_2", "BROADER", null);
 		return CommitHistoryTools.create(frame, Modification.add);
 	}
 

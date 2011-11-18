@@ -2,7 +2,7 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
@@ -22,7 +22,7 @@ public class AddLabelTest {
 	public void test() throws Exception {
 		OBODoc obodoc = new OBODoc();
 		obodoc.setHeaderFrame(new Frame(FrameType.HEADER));
-		Frame frame = OBOConverterTools.createTermFrame("GO:TEMP-LL-01");
+		Frame frame = OboTools.createTermFrame("GO:TEMP-LL-01");
 		obodoc.addFrame(frame);
 		
 		Obo2Owl obo2Owl = new Obo2Owl();

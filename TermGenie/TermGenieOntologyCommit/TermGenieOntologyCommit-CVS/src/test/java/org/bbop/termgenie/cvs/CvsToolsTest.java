@@ -11,13 +11,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CVSToolsTest {
+public class CvsToolsTest {
 
 	private static File testFolder = null;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		testFolder = TempTestFolderTools.createTestFolder(CVSToolsTest.class);
+		testFolder = TempTestFolderTools.createTestFolder(CvsToolsTest.class);
 	}
 	
 	@AfterClass
@@ -28,7 +28,7 @@ public class CVSToolsTest {
 	@Test
 	public void testCVSTools() throws IOException {
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		CVSTools tools = new CVSTools(cvsRoot, null, testFolder);
+		CvsTools tools = new CvsTools(cvsRoot, null, testFolder);
 		tools.connect();
 		boolean checkout = tools.checkout("go/ontology/obo_format_1_2");
 		tools.close();

@@ -12,9 +12,9 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.FrameMergeException;
 import org.obolibrary.oboformat.model.OBODoc;
 
-public class ComitAwareOBOConverterTools extends OBOConverterTools {
+public class ComitAwareOboTools extends OboTools {
 
-	private static final Logger logger = Logger.getLogger(ComitAwareOBOConverterTools.class);
+	private static final Logger logger = Logger.getLogger(ComitAwareOboTools.class);
 
 	public static enum LoadState {
 		addSuccess, addMerge, addRedundant, addError, modifySuccess, modifyRedundant, modifyMissing, modifyError, removeSuccess, removeMissing, unknown;

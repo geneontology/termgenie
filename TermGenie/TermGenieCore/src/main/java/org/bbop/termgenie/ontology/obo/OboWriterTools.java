@@ -15,7 +15,7 @@ import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 
 
-public class OBOWriterTools {
+public class OboWriterTools {
 
 	private static final OBOFormatWriter oboWriter = new OBOFormatWriter();
 	

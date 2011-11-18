@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
-public class GOCommitSVNUserKeyFileModule extends AbstractGoCommitSvnModule {
+public class GoCommitSvnUserKeyFileModule extends AbstractGoCommitSvnModule {
 
 	private final String svnUsername;
 	private final File svnKeyFile;
@@ -19,7 +19,7 @@ public class GOCommitSVNUserKeyFileModule extends AbstractGoCommitSvnModule {
 	 * @param svnPassword
 	 * @param applicationProperties
 	 */
-	public GOCommitSVNUserKeyFileModule(String svnRepository,
+	public GoCommitSvnUserKeyFileModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			File svnKeyFile,

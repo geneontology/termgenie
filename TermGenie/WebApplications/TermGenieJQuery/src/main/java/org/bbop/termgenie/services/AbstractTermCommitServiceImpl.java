@@ -26,7 +26,7 @@ import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
@@ -261,7 +261,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				if (Modification.add == commitObject.getType()) {
 					TermCommit termCommit = commitObject.getObject();
 					Frame frame = termCommit.getTerm();
-					OBOConverterTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
+					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
 				}
 			}
 			
@@ -355,7 +355,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		
 		
 		private void updateIdentifiers(Frame frame, IdHandler idHandler) {
-			updateIdentifiers(OBOConverterTools.getRelations(frame), idHandler);
+			updateIdentifiers(OboTools.getRelations(frame), idHandler);
 		}
 		
 		private void updateIdentifiers(List<Clause> clauses, IdHandler idHandler) {

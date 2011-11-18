@@ -11,8 +11,8 @@ import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.obo.OBOConverterTools;
-import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Frame;
@@ -110,19 +110,19 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 
 				final Frame frame = JsonOntologyTerm.createFrame(term);
 				if (termgenieUser != null) {
-					OBOConverterTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
+					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
 				}
 				oboDoc.addTermFrame(frame);
 
 				// changed relations
-				OBOConverterTools.fillChangedRelations(oboDoc,
+				OboTools.fillChangedRelations(oboDoc,
 						JsonOntologyTerm.createChangedFrames(term.getChanged()),
 						modIds);
 			}
 
-			oboDiffAdd = OBOWriterTools.writeTerms(addIds, oboDoc);
+			oboDiffAdd = OboWriterTools.writeTerms(addIds, oboDoc);
 			if (!modIds.isEmpty()) {
-				oboDiffModified = OBOWriterTools.writeTerms(modIds, oboDoc);
+				oboDiffModified = OboWriterTools.writeTerms(modIds, oboDoc);
 			}
 		}
 	}

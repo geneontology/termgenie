@@ -4,9 +4,9 @@ import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
-public class GOCommitSVNAnonymousModule extends AbstractGoCommitSvnModule {
+public class GoCommitSvnAnonymousModule extends AbstractGoCommitSvnModule {
 
-	public GOCommitSVNAnonymousModule(String svnRepository,
+	public GoCommitSvnAnonymousModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties) {
 		super(svnRepository, svnOntologyFileName, applicationProperties);

@@ -1,6 +1,6 @@
 package org.bbop.termgenie.ontology.obo;
 
-import static org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.*;
+import static org.bbop.termgenie.ontology.obo.ComitAwareOboTools.*;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 
 import org.bbop.termgenie.ontology.CommitObject.Modification;
-import org.bbop.termgenie.ontology.obo.ComitAwareOBOConverterTools.LoadState;
+import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.Test;
 import org.obolibrary.oboformat.model.Clause;

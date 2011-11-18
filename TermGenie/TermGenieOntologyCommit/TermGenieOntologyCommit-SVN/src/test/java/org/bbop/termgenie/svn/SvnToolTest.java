@@ -11,13 +11,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class SVNToolTest {
+public class SvnToolTest {
 
 	private static File testFolder;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		testFolder = TempTestFolderTools.createTestFolder(SVNToolTest.class);
+		testFolder = TempTestFolderTools.createTestFolder(SvnToolTest.class);
 	}
 
 	@AfterClass
@@ -30,7 +30,7 @@ public class SVNToolTest {
 		File svnfolder = new File(testFolder, "svn");
 		String repositoryURL = "http://termgenie.googlecode.com/svn/trunk/";
 		String targetFolder = "TermGenie/TermGenieOntologyCommit/TermGenieOntologyCommit-SVN/src/main/java/org/bbop/termgenie/svn/";
-		SVNTool svnTool = SVNTool.createAnonymousSVN(svnfolder, repositoryURL+targetFolder);
+		SvnTool svnTool = SvnTool.createAnonymousSVN(svnfolder, repositoryURL+targetFolder);
 		svnTool.connect();
 		String targetFileName = "SVNTool.java";
 		assertTrue(svnTool.checkout(targetFileName));

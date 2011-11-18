@@ -4,12 +4,12 @@ import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
-public class GOCommitSVNUserPasswdModule extends AbstractGoCommitSvnModule {
+public class GoCommitSvnUserPasswdModule extends AbstractGoCommitSvnModule {
 
 	private final String svnUsername;
 	private final String svnPassword;
 
-	public GOCommitSVNUserPasswdModule(String svnRepository,
+	public GoCommitSvnUserPasswdModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			String svnPassword,

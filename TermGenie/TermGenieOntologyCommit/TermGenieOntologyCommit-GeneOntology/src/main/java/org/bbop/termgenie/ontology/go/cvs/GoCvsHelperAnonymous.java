@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology.go.cvs;
 
 import java.io.File;
 
-import org.bbop.termgenie.cvs.CVSTools;
+import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
@@ -37,7 +37,7 @@ public final class GoCvsHelperAnonymous extends OboScmHelper {
 			String password,
 			File cvsFolder) throws CommitException
 	{
-		return new CVSTools(cvsRoot, null, cvsFolder);
+		return new CvsTools(cvsRoot, null, cvsFolder);
 	}
 
 	@Override

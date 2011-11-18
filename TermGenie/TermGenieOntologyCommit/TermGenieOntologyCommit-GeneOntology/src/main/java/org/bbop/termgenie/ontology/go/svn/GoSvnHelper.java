@@ -9,7 +9,7 @@ import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.scm.VersionControlAdapter;
-import org.bbop.termgenie.svn.SVNTool;
+import org.bbop.termgenie.svn.SvnTool;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -59,7 +59,7 @@ public class GoSvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SVNTool svn = SVNTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword);
+			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword);
 			return svn;
 		}
 
@@ -105,7 +105,7 @@ public class GoSvnHelper {
 				String password,
 				File svnFolder) throws CommitException
 		{
-			return SVNTool.createAnonymousSVN(svnFolder, svnRepository);
+			return SvnTool.createAnonymousSVN(svnFolder, svnRepository);
 		}
 
 		@Override
@@ -170,7 +170,7 @@ public class GoSvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SVNTool svn = SVNTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword);
+			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword);
 			return svn;
 		}
 	

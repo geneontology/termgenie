@@ -18,7 +18,7 @@ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 
-public class SVNTool implements VersionControlAdapter {
+public class SvnTool implements VersionControlAdapter {
 
 	private final File targetFolder;
 	private final SVNURL repositoryURL;
@@ -26,19 +26,19 @@ public class SVNTool implements VersionControlAdapter {
 	
 	private SVNClientManager ourClientManager;
 
-	public static SVNTool createAnonymousSVN(File targetFolder, String repositoryURL) {
+	public static SvnTool createAnonymousSVN(File targetFolder, String repositoryURL) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager();
-		return new SVNTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager);
 	}
 	
-	public static SVNTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password) {
+	public static SvnTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password);
-		return new SVNTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager);
 	}
 	
-	public static SVNTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase) {
+	public static SvnTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(null, username, null, sshKeyFile, passphrase, false);
-		return new SVNTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class SVNTool implements VersionControlAdapter {
 	 * @param repositoryURL 
 	 * @param authManager
 	 */
-	SVNTool(File targetFolder, String repositoryURL, ISVNAuthenticationManager authManager) {
+	SvnTool(File targetFolder, String repositoryURL, ISVNAuthenticationManager authManager) {
 		super();
 		this.targetFolder = targetFolder;
 		try {

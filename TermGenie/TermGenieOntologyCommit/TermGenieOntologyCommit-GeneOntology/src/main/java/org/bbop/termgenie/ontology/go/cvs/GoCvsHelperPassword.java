@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology.go.cvs;
 
 import java.io.File;
 
-import org.bbop.termgenie.cvs.CVSTools;
+import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -46,7 +46,7 @@ public final class GoCvsHelperPassword extends OboScmHelper {
 		else {
 			realPassword = password;
 		}
-		CVSTools cvs = new CVSTools(cvsRoot, realPassword, cvsFolder);
+		CvsTools cvs = new CvsTools(cvsRoot, realPassword, cvsFolder);
 		return cvs;
 	}
 

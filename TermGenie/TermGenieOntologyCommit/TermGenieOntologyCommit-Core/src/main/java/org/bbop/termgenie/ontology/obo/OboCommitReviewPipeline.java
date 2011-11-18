@@ -17,7 +17,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OBOWriterTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -79,7 +79,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 				for (CommitedOntologyTerm term : terms) {
 					ids.add(term.getId());
 				}
-				diff = OBOWriterTools.writeTerms(ids, oboDoc);
+				diff = OboWriterTools.writeTerms(ids, oboDoc);
 			}
 		}
 	}

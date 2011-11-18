@@ -27,9 +27,9 @@ import org.netbeans.lib.cvsclient.event.MessageEvent;
  * Tools for connecting to a CVS repository. This class is not ThreadSafe, each
  * thread must have its own instance.
  */
-public class CVSTools implements VersionControlAdapter {
+public class CvsTools implements VersionControlAdapter {
 
-	private static final Logger logger = Logger.getLogger(CVSTools.class);
+	private static final Logger logger = Logger.getLogger(CvsTools.class);
 
 	private final File targetFolder;
 	private final GlobalOptions options;
@@ -44,7 +44,7 @@ public class CVSTools implements VersionControlAdapter {
 	 * @param cvsPassword unscrambled password
 	 * @param targetFolder the target folder
 	 */
-	public CVSTools(String cvsRoot, String cvsPassword, File targetFolder) {
+	public CvsTools(String cvsRoot, String cvsPassword, File targetFolder) {
 		super();
 		this.targetFolder = targetFolder;
 
