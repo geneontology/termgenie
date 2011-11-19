@@ -21,11 +21,11 @@ public interface BrowserIdHandler {
 	 * @param req 
 	 * @param resp 
 	 * @param httpSession
-	 * @return {@link UserData} or null
+	 * @return {@link JsonUserData} or null
 	 */
 	@ServletAware
 	@SessionAware
-	public UserData verifyAssertion(String sessionId,
+	public JsonUserData verifyAssertion(String sessionId,
 			String assertion,
 			HttpServletRequest req,
 			HttpServletResponse resp,

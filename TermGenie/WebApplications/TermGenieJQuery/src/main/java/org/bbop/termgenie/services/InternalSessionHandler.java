@@ -2,6 +2,8 @@ package org.bbop.termgenie.services;
 
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.user.UserData;
+
 /**
  * Separate methods that should not be exposed via an RPC call.
  */
@@ -10,17 +12,16 @@ public interface InternalSessionHandler extends SessionHandler {
 	/**
 	 * Set the current session as authenticated for the given user name.
 	 * 
-	 * @param screenname
-	 * @param guid
+	 * @param userData
 	 * @param session
 	 */
-	public void setAuthenticated(String screenname, String guid, HttpSession session);
-	
+	public void setAuthenticated(UserData userData, HttpSession session);
+
 	/**
 	 * Retrieve the GUID for an authenticated session.
 	 * 
 	 * @param session
-	 * @return guid
+	 * @return userData or null
 	 */
-	public String getGUID(HttpSession session);
+	public UserData getUserData(HttpSession session);
 }

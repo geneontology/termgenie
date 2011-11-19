@@ -329,5 +329,6 @@
 		<module>TermGeniePersistence</module>
 		<module>TermGenieOntologyCommit</module>
 		<module>WebApplications</module>
+		<module>TermGenieUserManagement</module>
 	</modules>
 </project>

@@ -1,29 +1,32 @@
 package org.bbop.termgenie.services.authenticate;
 
-public class UserData {
-	
+import org.bbop.termgenie.user.UserData;
+
+public class JsonUserData {
+
 	private String screenname;
 	private String guid;
+
 	private String error;
-	
-	public UserData() {
+
+	public JsonUserData() {
 		guid = null;
 		screenname = null;
 		error = null;
 	}
-	
-	public UserData(String guid, String screenname) {
-		this.guid = guid;
-		this.screenname = screenname;
+
+	public JsonUserData(UserData userData) {
+		this.guid = userData.getGuid();
+		this.screenname = userData.getScreenname();
 		this.error = null;
 	}
 
-	public UserData(String error) {
+	public JsonUserData(String error) {
 		this.guid = null;
 		this.screenname = null;
 		this.error = error;
 	}
-	
+
 	/**
 	 * @return the screenname
 	 */
@@ -37,21 +40,21 @@ public class UserData {
 	public String getGuid() {
 		return guid;
 	}
-	
+
 	/**
 	 * @return the error
 	 */
 	public String getError() {
 		return error;
 	}
-	
+
 	/**
 	 * @param screenname the screenname to set
 	 */
 	public void setScreenname(String screenname) {
 		this.screenname = screenname;
 	}
-	
+
 	/**
 	 * @param guid the guid to set
 	 */

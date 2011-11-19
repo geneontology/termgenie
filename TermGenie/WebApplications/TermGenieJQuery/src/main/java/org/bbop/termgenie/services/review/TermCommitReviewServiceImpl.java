@@ -32,6 +32,7 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
+import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -78,9 +79,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	public boolean isAuthorized(String sessionId, HttpSession session) {
 		String screenname = sessionHandler.isAuthenticated(sessionId, session);
 		if (screenname != null) {
-			String guid = sessionHandler.getGUID(session);
-			if (guid != null) {
-				boolean allowCommitReview = permissions.allowCommitReview(guid, ontology.getOntology());
+			UserData userData = sessionHandler.getUserData(session);
+			if (userData != null) {
+				boolean allowCommitReview = permissions.allowCommitReview(userData, ontology.getOntology());
 				return allowCommitReview;
 			}
 		}
@@ -116,7 +117,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			entry.setHistoryId(item.getId());
 			entry.setVersion(item.getVersion());
 			entry.setDate(formatDate(item.getDate()));
-			entry.setUser(item.getUser());
+			entry.setCommitMessage(item.getCommitMessage());
+			entry.setEmail(item.getEmail());
 			entry.setDiffs(createJsonDiffs(item, task.result));
 			result.add(entry);
 		}

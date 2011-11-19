@@ -64,9 +64,9 @@ public class OboCommitPipeline extends OntologyCommitPipeline<OboCommitData, OBO
 	}
 
 	@Override
-	protected void commitToRepository(String username, VersionControlAdapter scm, OboCommitData data, String diff)
+	protected void commitToRepository(String commitMessage, VersionControlAdapter scm, OboCommitData data, String diff)
 			throws CommitException
 	{
-		helper.commitToRepository(username, scm, data, diff);
+		helper.commitToRepository(commitMessage, scm, data, diff);
 	}
 }

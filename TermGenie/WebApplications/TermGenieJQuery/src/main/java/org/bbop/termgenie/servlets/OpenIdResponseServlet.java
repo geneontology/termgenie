@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdHandler;
-import org.bbop.termgenie.services.authenticate.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -54,12 +53,7 @@ public class OpenIdResponseServlet extends HttpServlet {
 	private void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		HttpSession session = req.getSession(false);
 		if (session != null) {
-			UserData userData = openIdHandler.verifyResponse(req, session);
-			if (userData != null && userData.getError() == null) {
-				sessionHandler.setAuthenticated(userData.getScreenname(),
-						userData.getGuid(),
-						session);
-			}
+			openIdHandler.verifyResponse(req, session, sessionHandler);
 		}
 		resp.sendRedirect(defaultTermGenieUrl);
 	}

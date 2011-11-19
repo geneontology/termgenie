@@ -26,10 +26,13 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.FileOnlyOboCommitPipeline;
-import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.tools.TempTestFolderTools;
+import org.bbop.termgenie.user.UserData;
+import org.bbop.termgenie.user.UserDataProvider;
+import org.bbop.termgenie.user.simple.SimpleUserDataModule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,6 +46,7 @@ import com.google.inject.Injector;
 
 public class FileOnlyGeneOntologyCommitAdapterTest {
 	
+	private static UserDataProvider userDataProvider = null;
 	private static File testFolder = null;
 	private static FileOnlyOboCommitPipeline instance = null;
 
@@ -62,15 +66,16 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 		XMLReloadingOntologyModule ontologyModule = new XMLReloadingOntologyModule("ontology-configuration_go_simple.xml", null);
 		PersistenceBasicModule persistenceModule = new PersistenceBasicModule(dbFolder, null);
 		AdvancedPersistenceModule advancedPersistenceModule = new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf", null);
-		
+		SimpleUserDataModule userDataModule =  new SimpleUserDataModule(null);
 		// create injector from modules
-		Injector injector = TermGenieGuice.createInjector(ontologyModule, persistenceModule, advancedPersistenceModule);
+		Injector injector = TermGenieGuice.createInjector(ontologyModule, persistenceModule, advancedPersistenceModule, userDataModule);
 		
 		// retrieve components (via injector) and set parameters
 		ConfiguredOntology source = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager goManager = injector.getInstance(OntologyLoader.class).getOntology(source);
 		IRIMapper iriMapper = injector.getInstance(IRIMapper.class);
 		OntologyCleaner cleaner = injector.getInstance(OntologyCleaner.class);
+		userDataProvider = injector.getInstance(UserDataProvider.class);
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
 		String localFile = cvslocalFile.getAbsolutePath();
@@ -101,7 +106,9 @@ public class FileOnlyGeneOntologyCommitAdapterTest {
 	@Test
 	public void testCommit() throws CommitException {
 		List<CommitObject<TermCommit>> terms = createCommitTerms();
-		CommitInfo commitInfo = new CommitInfo(terms, "junit-test", CommitMode.anonymus, null, null);
+		UserData userData = userDataProvider.getUserDataPerEMail("junit-test@test.test");
+		String commitMessage = "Test commit message";
+		CommitInfo commitInfo = new CommitInfo(terms, userData, CommitMode.anonymus, commitMessage, null, null);
 		CommitResult commitResult = instance.commit(commitInfo);
 		assertTrue(commitResult.isSuccess());
 		System.out.println(commitResult.getDiff());

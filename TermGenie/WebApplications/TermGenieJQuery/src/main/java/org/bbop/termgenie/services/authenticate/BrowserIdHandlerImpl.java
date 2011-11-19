@@ -20,6 +20,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.InternalSessionHandler;
+import org.bbop.termgenie.user.UserData;
+import org.bbop.termgenie.user.UserDataProvider;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -38,21 +40,24 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 	private final String browserIdVerificationUrl;
 	private final String termgenieBrowserIdAudience;
 	private final InternalSessionHandler sessionHandler;
+	private final UserDataProvider userDataProvider;
 
 	@Inject
 	public BrowserIdHandlerImpl(@Named("BrowserIdVerificationUrl") String browserIdVerificationUrl,
 			@Named("TermGenieBrowserIdAudience") String termgenieBrowserIdAudience,
-			InternalSessionHandler sessionHandler)
+			InternalSessionHandler sessionHandler,
+			UserDataProvider userDataProvider)
 	{
 		super();
 		this.browserIdVerificationUrl = browserIdVerificationUrl;
 		this.termgenieBrowserIdAudience = termgenieBrowserIdAudience;
 		this.sessionHandler = sessionHandler;
+		this.userDataProvider = userDataProvider;
 		logger.info("Configuring BrowserID: verificationURL=" + browserIdVerificationUrl + " termgenieBrowserIdAudience=" + termgenieBrowserIdAudience);
 	}
 
 	@Override
-	public UserData verifyAssertion(String sessionId,
+	public JsonUserData verifyAssertion(String sessionId,
 			String assertion,
 			HttpServletRequest req,
 			HttpServletResponse resp,
@@ -81,19 +86,20 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 						if (details.email != null) {
 							// TODO verify 'details.issuer' and
 							// 'details.validUntil'
-							sessionHandler.setAuthenticated(details.email, details.email, httpSession);
-							return new UserData(details.email, details.email);
+							UserData userData  = userDataProvider.getUserDataPerEMail(details.email);
+							sessionHandler.setAuthenticated(userData, httpSession);
+							return new JsonUserData(userData);
 						}
 					}
 					else {
-						return new UserData("BrowserID could not be verified status: " + details.status + " reason: " + details.reason);
+						return new JsonUserData("BrowserID could not be verified status: " + details.status + " reason: " + details.reason);
 					}
 				}
 			}
-			return new UserData("BrowserID could not be verified.");
+			return new JsonUserData("BrowserID could not be verified.");
 		} catch (Exception exception) {
 			logger.warn("Could not verify browserId", exception);
-			return new UserData("Internal error during BrowserID verification: " + exception.getMessage());
+			return new JsonUserData("Internal error during BrowserID verification: " + exception.getMessage());
 		}
 	}
 

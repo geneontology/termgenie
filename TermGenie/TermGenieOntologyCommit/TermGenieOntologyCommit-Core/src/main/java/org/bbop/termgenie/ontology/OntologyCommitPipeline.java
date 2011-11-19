@@ -14,6 +14,7 @@ import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.user.UserData;
 
 import difflib.DiffUtils;
 import difflib.Patch;
@@ -170,7 +171,7 @@ public abstract class OntologyCommitPipeline<WORKFLOWDATA extends OntologyCommit
 		
 		// store the changes in the local commit history,
 		// mark them as unfinished
-		final CommitHistoryItem item = updateCommitHistory(commitInfo, terms);
+		final CommitHistoryItem item = updateCommitHistory(commitInfo.getCommitMessage(), commitInfo.getUserData(), terms);
 
 		// create the diff from the written and round-trip file
 		Pair<String, Patch> pair = createUnifiedDiff(targetFile,
@@ -183,7 +184,7 @@ public abstract class OntologyCommitPipeline<WORKFLOWDATA extends OntologyCommit
 
 		// commit the changes to the repository
 		String diff = pair.getOne();
-		commitToRepository(commitInfo.getTermgenieUser(), scm, data, diff);
+		commitToRepository(commitInfo.getCommitMessage(), scm, data, diff);
 
 		// set the commit also to success in the commit history
 		finalizeCommitHistory(item);
@@ -266,25 +267,25 @@ public abstract class OntologyCommitPipeline<WORKFLOWDATA extends OntologyCommit
 	/**
 	 * Execute the commit using the SCM tool.
 	 * 
-	 * @param commitInfo
+	 * @param commitMessage
 	 * @param scm
 	 * @param data
 	 * @param diff
 	 * @throws CommitException
 	 */
-	protected abstract void commitToRepository(String username,
+	protected abstract void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
 			WORKFLOWDATA data,
 			String diff) throws CommitException;
 
-	private CommitHistoryItem updateCommitHistory(CommitInfo commitInfo,
+	private CommitHistoryItem updateCommitHistory(String commitMessage,
+			UserData userData,
 			List<CommitObject<TermCommit>> terms) throws CommitException
 	{
 		try {
 			// add terms to local commit log
 			Date date = new Date();
-			String user = commitInfo.getUsername();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, user, date);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(terms, commitMessage, userData, date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			return historyItem;
 		} catch (CommitHistoryStoreException exception) {

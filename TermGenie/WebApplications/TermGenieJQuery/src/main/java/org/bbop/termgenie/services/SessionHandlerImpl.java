@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Singleton;
 
@@ -23,8 +24,7 @@ public class SessionHandlerImpl implements SessionHandler {
 	protected static class SessionObject {
 
 		private boolean authenticated = false;
-		private String guid = null;
-		private String screename = null;
+		private UserData userData = null;
 		private final Map<String, String> values = new ConcurrentHashMap<String, String>();
 
 		String put(String key, String value) {
@@ -35,14 +35,13 @@ public class SessionHandlerImpl implements SessionHandler {
 			return values.get(key);
 		}
 		
-		void authenticated(String screenname, String guid) {
+		void authenticated(UserData userData) {
 			authenticated = true;
-			this.screename = screenname;
-			this.guid = guid;
+			this.userData = userData;
 		}
 		
-		String getGUID() {
-			return guid;
+		UserData getUserData() {
+			return userData;
 		}
 	}
 
@@ -89,8 +88,7 @@ public class SessionHandlerImpl implements SessionHandler {
 					processLogout(sessionObject);
 				}
 				sessionObject.authenticated = false;
-				sessionObject.screename = null;
-				sessionObject.guid = null;
+				sessionObject.userData = null;
 			}
 		}
 	}
@@ -107,8 +105,8 @@ public class SessionHandlerImpl implements SessionHandler {
 		if (isValidSession(sessionId, session)) {
 			SessionObject sessionObject = getSessionObject(session);
 			synchronized (sessionObject) {
-				if (sessionObject.authenticated && sessionObject.guid != null) {
-					return sessionObject.screename;
+				if (sessionObject.authenticated && sessionObject.userData != null) {
+					return sessionObject.userData.getScreenname();
 				}
 			}
 		}

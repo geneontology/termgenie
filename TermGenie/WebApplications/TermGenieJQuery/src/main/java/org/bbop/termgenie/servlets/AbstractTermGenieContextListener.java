@@ -23,6 +23,7 @@ import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
+import org.bbop.termgenie.user.simple.SimpleUserDataModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
 import com.google.inject.Injector;
@@ -107,6 +108,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getOntologyModule(), true, "OntologyModule");
 		add(modules, getReasoningModule(), true, "ReasoningModule");
 		add(modules, getRulesModule(), true, "RulesModule");
+		add(modules, getUserDataModule(), true, "UserDataModule");
 		add(modules, getCommitModule(), false, "CommitModule");
 		add(modules, getCommitReviewWebModule(), true, "CommitReviewModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
@@ -166,6 +168,13 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 */
 	protected IOCModule getReasoningModule() {
 		return new ReasonerModule(applicationProperties);
+	}
+	
+	/**
+	 * @return module providing the implementations for user data 
+	 */
+	protected IOCModule getUserDataModule() {
+		return new SimpleUserDataModule(applicationProperties);
 	}
 
 	/**

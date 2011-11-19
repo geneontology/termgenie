@@ -14,6 +14,7 @@ import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
+import org.bbop.termgenie.user.UserData;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -55,13 +56,15 @@ public class CommitHistoryTools {
 	}
 
 	public static CommitHistoryItem create(List<CommitObject<TermCommit>> terms,
-			String user,
+			String commitMessage,
+			UserData userData,
 			Date date)
 	{
 		CommitHistoryItem item = new CommitHistoryItem();
 
 		item.setTerms(translateTerms(terms));
-		item.setUser(user);
+		item.setCommitMessage(commitMessage);
+		item.setEmail(userData.getEmail());
 		item.setDate(date);
 
 		return item;

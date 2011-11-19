@@ -15,6 +15,7 @@ import org.bbop.termgenie.ontology.go.GoCommitInfo;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
+import org.bbop.termgenie.user.UserData;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -61,12 +62,9 @@ public class GoTermCommitServiceImpl extends AbstractTermCommitServiceImpl {
 
 	@Override
 	protected CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
-			String termgenieUser,
+			String commitMessage,
+			UserData userData,
 			CommitUserData commitUserData) {
-		String screenname = commitUserData.getScreenname();
-		if (screenname == null) {
-			screenname = termgenieUser;
-		}
-		return new GoCommitInfo(terms, screenname);
+		return new GoCommitInfo(terms, commitMessage, userData);
 	}
 }

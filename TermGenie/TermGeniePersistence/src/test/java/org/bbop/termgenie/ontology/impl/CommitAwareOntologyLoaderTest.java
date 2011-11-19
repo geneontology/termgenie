@@ -83,7 +83,8 @@ public class CommitAwareOntologyLoaderTest {
 		{
 			CommitHistoryItem item = new CommitHistoryItem();
 			item.setDate(new Date());
-			item.setUser("test");
+			item.setCommitMessage("Test commit message 1");
+			item.setEmail("test@test.test");
 			Frame frame = OboTools.createTermFrame(testId, "Test term label");
 			CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add);
 			item.setTerms(Collections.singletonList(term));
@@ -94,7 +95,8 @@ public class CommitAwareOntologyLoaderTest {
 		{
 			CommitHistoryItem item = new CommitHistoryItem();
 			item.setDate(new Date());
-			item.setUser("test2");
+			item.setCommitMessage("Test commit message 2");
+			item.setEmail("test2@test.test");
 			Frame frame = OboTools.createTermFrame("CL:0000001", "primary cell line cell");
 			CommitedOntologyTerm redundantTerm = CommitHistoryTools.create(frame, Modification.add);
 			item.setTerms(Collections.singletonList(redundantTerm));

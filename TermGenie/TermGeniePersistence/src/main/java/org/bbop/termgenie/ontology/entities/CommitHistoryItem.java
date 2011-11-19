@@ -21,7 +21,8 @@ public class CommitHistoryItem {
 	private int id;
 	private int version; // used to detect conflicting updates, do not modify
 	private Date date = null;
-	private String user;
+	private String commitMessage = null;
+	private String email = null;
 	private boolean committed = false;
 
 	private List<CommitedOntologyTerm> terms = null;
@@ -41,7 +42,6 @@ public class CommitHistoryItem {
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	
 	/**
 	 *  Used to detect conflicting updates, do not modify.
@@ -70,18 +70,34 @@ public class CommitHistoryItem {
 	}
 
 	/**
-	 * @return the user
+	 * @return the commitMessage
 	 */
-	@Column(length = Integer.MAX_VALUE, name="termgenieuser")
-	public String getUser() {
-		return user;
+	@Column(length = Integer.MAX_VALUE)
+	public String getCommitMessage() {
+		return commitMessage;
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param commitMessage the commitMessage to set
 	 */
-	public void setUser(String user) {
-		this.user = user;
+	public void setCommitMessage(String commitMessage) {
+		this.commitMessage = commitMessage;
+	}
+	
+	/**
+	 * @return the email
+	 */
+	@Column(length=1023) // increase default length from 255
+	@Basic(optional=false)
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.util.List;
 
+import org.bbop.termgenie.user.UserData;
 import org.obolibrary.oboformat.model.Frame;
 
 
@@ -57,28 +58,33 @@ public class CommitInfo {
 	}
 	
 	private final CommitMode commitMode;
-	private final String termgenieUser;
+	private final UserData userData;
+	
+	private final String commitMessage;
 	
 	private final String username;
 	private final String password;
 	
 	/**
 	 * @param terms
-	 * @param termgenieUser
+	 * @param userData
 	 * @param commitMode
+	 * @param commitMessage
 	 * @param username
 	 * @param password
 	 */
 	public CommitInfo(List<CommitObject<TermCommit>> terms,
-			String termgenieUser,
+			UserData userData,
 			CommitMode commitMode,
+			String commitMessage,
 			String username,
 			String password)
 	{
 		super();
 		this.terms = terms;
-		this.termgenieUser = termgenieUser;
+		this.userData = userData;
 		this.commitMode = commitMode;
+		this.commitMessage = commitMessage;
 		this.username = username;
 		this.password = password;
 	}
@@ -88,13 +94,6 @@ public class CommitInfo {
 	 */
 	public List<CommitObject<TermCommit>> getTerms() {
 		return terms;
-	}
-
-	/**
-	 * @return the termgenieUser
-	 */
-	public String getTermgenieUser() {
-		return termgenieUser;
 	}
 
 	/**
@@ -116,6 +115,20 @@ public class CommitInfo {
 	 */
 	public String getPassword() {
 		return password;
+	}
+
+	/**
+	 * @return the userData
+	 */
+	public UserData getUserData() {
+		return userData;
+	}
+	
+	/**
+	 * @return the commitMessage
+	 */
+	public String getCommitMessage() {
+		return commitMessage;
 	}
 	
 }

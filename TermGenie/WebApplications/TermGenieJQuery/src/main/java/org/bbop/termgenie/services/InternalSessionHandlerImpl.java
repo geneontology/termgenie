@@ -2,6 +2,8 @@ package org.bbop.termgenie.services;
 
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.user.UserData;
+
 import com.google.inject.Singleton;
 
 /**
@@ -11,30 +13,30 @@ import com.google.inject.Singleton;
 @Singleton
 public class InternalSessionHandlerImpl extends SessionHandlerImpl implements InternalSessionHandler
 {
-
 	@Override
-	public void setAuthenticated(String screenname, String guid, HttpSession session) {
+	public void setAuthenticated(UserData userData, HttpSession session) {
 		if (session != null) {
 			SessionObject sessionObject = getSessionObject(session);
 			if (sessionObject != null) {
 				synchronized (sessionObject) {
-					sessionObject.authenticated(screenname, guid);
+					sessionObject.authenticated(userData);
 				}
 			}
 		}
 
 	}
-
+	
 	@Override
-	public String getGUID(HttpSession session) {
+	public UserData getUserData(HttpSession session) {
 		if (session != null) {
 			SessionObject sessionObject = getSessionObject(session);
 			if (sessionObject != null) {
 				synchronized (sessionObject) {
-					return sessionObject.getGUID();
+					return sessionObject.getUserData();
 				}
 			}
 		}
 		return null;
 	}
+
 }

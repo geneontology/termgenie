@@ -8,4 +8,11 @@
 	<artifactId>TermGenieOntologyCommit-API</artifactId>
 	<name>TermGenieOntologyCommit-API</name>
 	<description>API for TermGenie to commit new terms and ontology changes</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieUserManagement-API</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

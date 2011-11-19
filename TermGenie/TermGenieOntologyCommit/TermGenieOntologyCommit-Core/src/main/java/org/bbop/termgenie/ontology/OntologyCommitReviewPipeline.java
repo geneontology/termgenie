@@ -51,7 +51,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		try {
 			// add terms to local commit log
 			Date date = new Date();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getTermgenieUser(), date);
+			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getCommitMessage(), commitInfo.getUserData(), date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
 			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
@@ -258,7 +258,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 
 			// commit the changes to the repository
 			String diff = pair.getOne();
-			commitToRepository(item.getUser(), scm, data, diff);
+			commitToRepository(item.getCommitMessage(), scm, data, diff);
 
 			// set the commit also to success in the commit history
 			finalizeCommitHistory(item);

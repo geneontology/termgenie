@@ -82,7 +82,8 @@ public class CommitHistoryStoreImplTest {
 	private CommitHistoryItem createTestItem(int i, int childrenStart, int childrenCount) {
 		CommitHistoryItem item = new CommitHistoryItem();
 		item.setDate(new Date());
-		item.setUser("test" + i + "@test.tt");
+		item.setCommitMessage("Test commit message: "+i);
+		item.setEmail("test" + i + "@test.tt");
 		List<CommitedOntologyTerm> terms = new ArrayList<CommitedOntologyTerm>(childrenCount);
 		for (int c = 0; c < childrenCount; c++) {
 			terms.add(createTestTerm(childrenStart + c));
@@ -104,7 +105,8 @@ public class CommitHistoryStoreImplTest {
 	}
 
 	private void assertEqualsItem(CommitHistoryItem expected, CommitHistoryItem actual) {
-		assertEquals(expected.getUser(), actual.getUser());
+		assertEquals(expected.getCommitMessage(), actual.getCommitMessage());
+		assertEquals(expected.getEmail(), actual.getEmail());
 		assertEquals(expected.getDate(), actual.getDate());
 		assertEqualsTerms(expected.getTerms(), actual.getTerms());
 	}

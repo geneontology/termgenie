@@ -111,7 +111,8 @@ public abstract class OboScmHelper {
 		return data;
 	}
 
-	public VersionControlAdapter prepareSCM(CommitInfo commitInfo, OboCommitData data) throws CommitException
+	public VersionControlAdapter prepareSCM(CommitInfo commitInfo, OboCommitData data)
+			throws CommitException
 	{
 		final VersionControlAdapter scm = createSCM(commitInfo.getCommitMode(),
 				commitInfo.getUsername(),
@@ -152,9 +153,7 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public boolean applyChanges(List<CommitObject<TermCommit>> terms,
-			final OBODoc oboDoc)
-	{
+	public boolean applyChanges(List<CommitObject<TermCommit>> terms, final OBODoc oboDoc) {
 		boolean success = true;
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitObject<TermCommit> commitObject : terms) {
@@ -181,7 +180,10 @@ public abstract class OboScmHelper {
 			for (CommitedOntologyTerm term : terms) {
 				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
 				List<Frame> changes = CommitHistoryTools.translateSimple(term.getChanged());
-				boolean csuccess = LoadState.isSuccess(handleTerm(frame, changes, term.getOperation(), oboDoc));
+				boolean csuccess = LoadState.isSuccess(handleTerm(frame,
+						changes,
+						term.getOperation(),
+						oboDoc));
 				success = success && csuccess;
 			}
 		}
@@ -196,20 +198,22 @@ public abstract class OboScmHelper {
 	}
 
 	/**
-	 * @param username
+	 * @param commitMessage
 	 * @param scm
 	 * @param data
 	 * @param diff
 	 * @throws CommitException
 	 */
-	public void commitToRepository(String username, VersionControlAdapter scm, OboCommitData data, String diff)
-			throws CommitException
+	public void commitToRepository(String commitMessage,
+			VersionControlAdapter scm,
+			OboCommitData data,
+			String diff) throws CommitException
 	{
 		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
 
 		try {
 			scm.connect();
-			scm.commit("TermGenie commit for user: " + username);
+			scm.commit(commitMessage);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}

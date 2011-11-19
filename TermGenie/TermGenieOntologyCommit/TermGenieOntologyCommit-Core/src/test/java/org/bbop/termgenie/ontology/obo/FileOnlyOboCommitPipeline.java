@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -28,11 +29,12 @@ public class FileOnlyOboCommitPipeline extends OboCommitPipeline {
 	}
 
 	@Override
-	protected void commitToRepository(String username,
+	protected void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
 			OboCommitData data,
 			String diff) throws CommitException
 	{
+		Logger.getLogger(getClass()).info("Commit to file. Message:\n"+commitMessage);
 		helper.copyFileForCommit(data.getModifiedSCMTargetFile(), localFile);
 	}
 }

@@ -31,6 +31,7 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -88,17 +89,30 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			return error("Could not commit as the user is not logged.");
 		}
 
-		String guid = sessionHandler.getGUID(session);
-		boolean allowCommit = permissions.allowCommit(guid, manager.getOntology());
+		UserData userData = sessionHandler.getUserData(session);
+		boolean allowCommit = permissions.allowCommit(userData, manager.getOntology());
 		if (!allowCommit) {
-			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + guid);
+			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + userData.getGuid());
 			return error("Could not commit, the user is not authorized to execute a commit.");
 		}
 		
-		CommitTask task = new CommitTask(manager, terms, termgenieUser, permissions.getCommitUserData(guid,
+		String commitMessage = createDefaultCommitMessage(userData);
+		CommitTask task = new CommitTask(manager, terms, commitMessage , userData, permissions.getCommitUserData(userData,
 				manager.getOntology()));
 		idProvider.runManagedTask(task);
 		return task.result;
+	}
+
+	private String createDefaultCommitMessage(UserData userData)
+	{
+		String name = userData.getScmAlias();
+		if (name == null) {
+			name = userData.getScreenname();
+		}
+		if (name == null) {
+			name = userData.getEmail();
+		}
+		return "Termgenie commit for user: "+name;
 	}
 
 	private class CheckTermsTask extends OntologyTask {
@@ -205,27 +219,32 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	 */
 	private class CommitTask extends OntologyIdManagerTask {
 
+		private final String commitMessage;
+
 		/**
 		 * @param manager
 		 * @param terms
-		 * @param termgenieUser
+		 * @param commitMessage
+		 * @param userData
 		 * @param commitUserData
 		 */
 		CommitTask(OntologyTaskManager manager,
 				JsonOntologyTerm[] terms,
-				String termgenieUser,
+				String commitMessage,
+				UserData userData,
 				CommitUserData commitUserData)
 		{
 			super();
 			this.manager = manager;
 			this.terms = terms;
-			this.termgenieUser = termgenieUser;
+			this.commitMessage = commitMessage;
+			this.userData = userData;
 			this.commitUserData = commitUserData;
 		}
 
 		private final OntologyTaskManager manager;
 		private final JsonOntologyTerm[] terms;
-		private final String termgenieUser;
+		private final UserData userData;
 		private final CommitUserData commitUserData;
 
 		private JsonCommitResult result = error("The commit operation is not enabled.");
@@ -261,13 +280,11 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				if (Modification.add == commitObject.getType()) {
 					TermCommit termCommit = commitObject.getObject();
 					Frame frame = termCommit.getTerm();
-					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
+					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, userData.getScmAlias());
 				}
 			}
 			
-			CommitInfo commitInfo = createCommitInfo(commitTerms,
-					termgenieUser,
-					commitUserData);
+			CommitInfo commitInfo = createCommitInfo(commitTerms, commitMessage, userData, commitUserData);
 			try {
 				// commit
 				CommitResult commitResult = committer.commit(commitInfo);
@@ -388,13 +405,14 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 	 * Create {@link CommitInfo} instance for the given modifications.
 	 * 
 	 * @param terms
-	 * @param relations
-	 * @param termgenieUser
+	 * @param userData
+	 * @param commitMessage
 	 * @param commitUserData
 	 * @return CommitInfo
 	 */
 	protected abstract CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
-			String termgenieUser,
+			String  commitMessage,
+			UserData userData,
 			CommitUserData commitUserData);
 
 	// ---------------- Helper ----------------

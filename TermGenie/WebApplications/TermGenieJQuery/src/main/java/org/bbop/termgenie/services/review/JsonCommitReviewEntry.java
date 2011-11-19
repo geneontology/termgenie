@@ -10,11 +10,12 @@ public class JsonCommitReviewEntry {
 	private int historyId;
 	private int version;
 
-	private String user;
+	private String commitMessage;
+	private String email;
 	private String date;
 
 	private List<JsonDiff> diffs;
-	
+
 	/**
 	 * @return the historyId
 	 */
@@ -44,17 +45,17 @@ public class JsonCommitReviewEntry {
 	}
 
 	/**
-	 * @return the user
+	 * @return the commitMessage
 	 */
-	public String getUser() {
-		return user;
+	public String getCommitMessage() {
+		return commitMessage;
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param commitMessage the commitMessage to set
 	 */
-	public void setUser(String user) {
-		this.user = user;
+	public void setCommitMessage(String commitMessage) {
+		this.commitMessage = commitMessage;
 	}
 
 	/**
@@ -85,6 +86,20 @@ public class JsonCommitReviewEntry {
 		this.diffs = diffs;
 	}
 
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public static class JsonDiff {
 
 		private int uuid;
@@ -94,7 +109,7 @@ public class JsonCommitReviewEntry {
 
 		private boolean isObsolete = false;
 		private String diff;
-		
+
 		private List<JsonChange> relations = null;
 
 		private boolean modified = false;

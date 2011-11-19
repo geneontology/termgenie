@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.services.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -48,18 +49,19 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	@Override
-	public boolean allowCommitReview(String guid, Ontology ontology) {
-		return checkPermissions(guid, ontology.getUniqueName(), FLAG_ALLOW_COMMIT_REVIEW);
+	public boolean allowCommitReview(UserData userData, Ontology ontology) {
+		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
-	public boolean allowCommit(String guid, Ontology ontology) {
-		return checkPermissions(guid, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
+	public boolean allowCommit(UserData userData, Ontology ontology) {
+		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
 	}
 
-	private boolean checkPermissions(String guid, String group, String flag) {
+	private boolean checkPermissions(UserData userData, String group, String flag) {
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
-		if (permissions != null) {
+		if (permissions != null && userData != null) {
+			String guid = userData.getGuid();
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
 					applicationName);
 			if (termgeniePermissions != null) {
@@ -76,25 +78,26 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	@Override
-	public CommitUserData getCommitReviewUserData(String guid, Ontology ontology) {
-		return retrieveCommitUserData(guid,
+	public CommitUserData getCommitReviewUserData(UserData userData, Ontology ontology) {
+		return retrieveCommitUserData(userData,
 				ontology.getUniqueName(),
 				ontology,
 				FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
-	public CommitUserData getCommitUserData(String guid, Ontology ontology) {
-		return retrieveCommitUserData(guid, ontology.getUniqueName(), ontology, FLAG_ALLOW_WRITE);
+	public CommitUserData getCommitUserData(UserData userData, Ontology ontology) {
+		return retrieveCommitUserData(userData, ontology.getUniqueName(), ontology, FLAG_ALLOW_WRITE);
 	}
 
-	private CommitUserData retrieveCommitUserData(String guid,
+	private CommitUserData retrieveCommitUserData(UserData userData,
 			String group,
 			Ontology ontology,
 			String flag)
 	{
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
-		if (permissions != null) {
+		if (permissions != null && userData != null) {
+			String guid = userData.getGuid();
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
 					applicationName);
 			if (termgeniePermissions != null) {

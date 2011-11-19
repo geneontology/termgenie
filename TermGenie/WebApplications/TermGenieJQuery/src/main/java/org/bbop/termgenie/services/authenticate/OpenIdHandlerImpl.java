@@ -1,5 +1,6 @@
 package org.bbop.termgenie.services.authenticate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,12 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.services.InternalSessionHandler;
+import org.bbop.termgenie.user.UserData;
+import org.bbop.termgenie.user.UserDataProvider;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
-import org.openid4java.discovery.UrlIdentifier;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.AuthSuccess;
 import org.openid4java.message.ParameterList;
@@ -27,15 +30,23 @@ import com.google.inject.name.Named;
 @Singleton
 public class OpenIdHandlerImpl implements OpenIdHandler {
 
+	private static final String EMAIL_OPEN_ID_URI = "http://schema.openid.net/contact/email";
+	private static final String GUID_OPEN_ID_URI = "http://openid.net/schema/person/guid";
+	private static final String EMAIL_ATTRIBUTE = "email";
+	private static final String GUID_ATTRIBUTE = "guid";
+
 	private final static Logger logger = Logger.getLogger(OpenIdHandlerImpl.class);
 
 	private final ConsumerManager manager;
 	private final String returnToUrl;
+	private final UserDataProvider userDataProvider;
 
 	@Inject
-	public OpenIdHandlerImpl(@Named("OpenIdHandlerReturnToUrl") String returnToUrl) {
+	public OpenIdHandlerImpl(@Named("OpenIdHandlerReturnToUrl") String returnToUrl,
+			UserDataProvider userDataProvider) {
 		super();
 		this.returnToUrl = returnToUrl;
+		this.userDataProvider = userDataProvider;
 		logger.info("Configuring OpenID: OpenIdHandlerReturnToUrl="+returnToUrl);
 		try {
 			manager = new ConsumerManager();
@@ -71,8 +82,8 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 
 			// Attribute Exchange example: fetching the 'email' attribute
 			FetchRequest fetch = FetchRequest.createFetchRequest();
-			fetch.addAttribute("guid", "http://openid.net/schema/person/guid", true);
-			fetch.addAttribute("screenname", "http://openid.net/schema/namePerson/friendly", true);
+			fetch.addAttribute(GUID_ATTRIBUTE, GUID_OPEN_ID_URI, true);
+			fetch.addAttribute(EMAIL_ATTRIBUTE, EMAIL_OPEN_ID_URI, true);  
 
 			// attach the extension to the authentication request
 			authReq.addExtension(fetch);
@@ -89,7 +100,7 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 
 	// --- processing the authentication response ---
 	@Override
-	public UserData verifyResponse(HttpServletRequest httpReq, HttpSession session) {
+	public boolean verifyResponse(HttpServletRequest httpReq, HttpSession session, InternalSessionHandler sessionHandler) {
 		try {
 			// extract the parameters from the authentication response
 			// (which comes in as a HTTP request from the OpenID provider)
@@ -114,44 +125,40 @@ public class OpenIdHandlerImpl implements OpenIdHandler {
 			Identifier verified = verification.getVerifiedId();
 
 			if (verified != null) {
+				List<String> emails = null;
 				String guid = null;
-				String screenname = null;
 				AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
 
 				if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
 					FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
 
-					guid = fetchResp.getAttributeValue("guid");
-					screenname = fetchResp.getAttributeValue("screenname");
+					guid = fetchResp.getAttributeValue(GUID_ATTRIBUTE);
+					List<?> emailCandidates = fetchResp.getAttributeValues(EMAIL_ATTRIBUTE);
+                    if (emailCandidates != null && !emailCandidates.isEmpty()) {
+                    	emails = new ArrayList<String>(emailCandidates.size());
+						for (Object object : emailCandidates) {
+							if (object instanceof String) {
+								emails.add((String) object);
+							}
+						}
+					}
 				}
-
 				if (guid == null) {
 					guid = verified.getIdentifier();
 				}
-				if (screenname == null) {
-					if (verified instanceof UrlIdentifier) {
-						UrlIdentifier urlIdentifier = (UrlIdentifier) verified;
-						String path = urlIdentifier.getUrl().getPath();
-						if (path != null && path.length() > 1) {
-							if (path.charAt(0) == '/') {
-								path = path.substring(1);
-							}
-							screenname = path;
-						}
-					}
-					if (screenname == null) {
-						// may look ugly but is correct
-						screenname = verified.getIdentifier();
-					}
+				if (emails == null || emails.isEmpty()) {
+					logger.warn("Successful authentication aborted for "+guid+"\nReason: missing attribute e-mail");
+					return false;
 				}
-				UserData userData = new UserData(guid, screenname);
-				logger.info("Successful openId login: " + userData);
-				return userData;
+				UserData userData = userDataProvider.getUserDataPerGuid(guid, emails);
+				sessionHandler.setAuthenticated(userData, session);
+				logger.info("Successful openId login: " + userData.getGuid());
+				return true;
 			}
 		} catch (Exception exception) {
 			logger.error("Internal error during OpenId check stage 2.", exception);
 		}
-		return null;
+		return false;
 	}
 
 }

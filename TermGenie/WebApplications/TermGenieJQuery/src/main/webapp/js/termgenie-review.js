@@ -169,12 +169,15 @@ function TermGenieReview(){
 			checkboxes.push(checkbox);
 			addRow(table, checkbox, 'Details for commit #'+(entry.historyId), null);
 			
-			// user and date
-			if (entry.user && entry.user.length > 0) {
-				addRow(table, null, 'User', '<span>'+entry.user+'</span>');
+			// email, date, commit message
+			if (entry.email && entry.email.length > 0) {
+				addRow(table, null, 'User email', '<span>'+entry.email+'</span>');
 			}
 			if (entry.date && entry.date.length > 0) {
 				addRow(table, null, 'Date', '<span>'+entry.date+'</span>');
+			}
+			if (entry.commitMessage && entry.commitMessage.length > 0) {
+				addRow(table, null, 'Commit Message', '<span>'+entry.commitMessage+'</span>');
 			}
 			jQuery.each(entry.diffs, function(diffIndex, diff){
 				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
