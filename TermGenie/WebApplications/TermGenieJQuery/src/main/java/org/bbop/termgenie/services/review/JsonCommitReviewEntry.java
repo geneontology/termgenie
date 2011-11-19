@@ -10,6 +10,7 @@ public class JsonCommitReviewEntry {
 	private int historyId;
 	private int version;
 
+	private boolean commitMessageChanged = false;
 	private String commitMessage;
 	private String email;
 	private String date;
@@ -56,6 +57,20 @@ public class JsonCommitReviewEntry {
 	 */
 	public void setCommitMessage(String commitMessage) {
 		this.commitMessage = commitMessage;
+	}
+
+	/**
+	 * @return the commitMessageChanged
+	 */
+	public boolean isCommitMessageChanged() {
+		return commitMessageChanged;
+	}
+	
+	/**
+	 * @param commitMessageChanged the commitMessageChanged to set
+	 */
+	public void setCommitMessageChanged(boolean commitMessageChanged) {
+		this.commitMessageChanged = commitMessageChanged;
 	}
 
 	/**

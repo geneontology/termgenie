@@ -169,16 +169,15 @@ function TermGenieReview(){
 			checkboxes.push(checkbox);
 			addRow(table, checkbox, 'Details for commit #'+(entry.historyId), null);
 			
-			// email, date, commit message
+			// email and date
 			if (entry.email && entry.email.length > 0) {
 				addRow(table, null, 'User email', '<span>'+entry.email+'</span>');
 			}
 			if (entry.date && entry.date.length > 0) {
 				addRow(table, null, 'Date', '<span>'+entry.date+'</span>');
 			}
-			if (entry.commitMessage && entry.commitMessage.length > 0) {
-				addRow(table, null, 'Commit Message', '<span>'+entry.commitMessage+'</span>');
-			}
+			addEditableCommitMessage(entry, table);
+			
 			jQuery.each(entry.diffs, function(diffIndex, diff){
 				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
 				var operation = jQuery('<div></div>');
@@ -284,6 +283,42 @@ function TermGenieReview(){
 				jQuery.logUserMessage('Please select at least one pending commit to proceed.');
 			}
 		});
+		
+		function addEditableCommitMessage(entry, table) {
+			if (entry.commitMessage && entry.commitMessage.length > 0) {
+				var descriptionColumn = jQuery('<div>Commit Message</div>')
+				var editButton = jQuery('<button>Edit Message</button>');
+				descriptionColumn.append(editButton);
+				var messageColumn = jQuery('<span>'+entry.commitMessage+'</span>');
+				editButton.click(function(){
+					var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+					var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;">'+entry.commitMessage+'</textarea>');
+					editDialog.append(editField);
+					editDialog.dialog({
+						title: "Commit Message Editor",
+						resizable: true,
+						height:450,
+						width: 600,
+						minHeight: 200,
+						minWidth: 200,
+						modal: true,
+						buttons: {
+							"Change": function() {
+								entry.commitMessage = editField.val();
+								entry.commitMessageChanged = true;
+								messageColumn.empty();
+								messageColumn.append(entry.commitMessage);
+								$( this ).dialog( "close" );
+							},
+							"Cancel": function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+				});
+				addRow(table, null, descriptionColumn, messageColumn);
+			}
+		}
 		
 		/**
 		 * Add a new row to the table.

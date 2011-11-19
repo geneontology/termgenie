@@ -221,11 +221,16 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			try {
 				historyIds = new ArrayList<Integer>(entries.length);
 				for (JsonCommitReviewEntry entry : entries) {
-					List<JsonDiff> jsonDiffs = entry.getDiffs();
-					for (JsonDiff jsonDiff : jsonDiffs) {
-						if (jsonDiff.isModified()) {
-							updateHistoryItem(entry, afterReview);
-							break;
+					if (entry.isCommitMessageChanged()) {
+						updateHistoryItem(entry, afterReview);
+					}
+					else {
+						List<JsonDiff> jsonDiffs = entry.getDiffs();
+						for (JsonDiff jsonDiff : jsonDiffs) {
+							if (jsonDiff.isModified()) {
+								updateHistoryItem(entry, afterReview);
+								break;
+							}
 						}
 					}
 					historyIds.add(entry.getHistoryId());
@@ -247,6 +252,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 			if (historyItem.isCommitted()) {
 				throw new CommitException("Trying to change an already committed item.", false);
+			}
+			if (entry.isCommitMessageChanged()) {
+				historyItem.setCommitMessage(entry.getCommitMessage());
 			}
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
