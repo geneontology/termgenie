@@ -1,0 +1,200 @@
+Abbreviation	Database	Name	Comment (optional)
+GOC:fmc	AgBase	Fiona McCarthy	
+GOC:lp	AgBase	Lakshmi Pillai	
+GOC:cy	AstraZeneca	Courtland Yockey	
+GOC:ebc	BHF-UCL	Evelyn Camon	formerly GOA
+GOC:rl	BHF-UCL	Ruth Lovering	formerly HGNC
+GOC:vk	BHF-UCL	Varsha Khodiyar	formerly HGNC
+GOC:sjp	BHF-UCL	Sejal Patel
+GOC:nln	BIOMD	Nicolas Le Novere	
+GOC:mcc	CGD	Maria Costanzo	
+GOC:add	CL	Alex Diehl	formerly MGI; now Univ. Buffalo
+GOC:amm	CL	Anna Maria Masci	not directly affiliated with a database, but collaborates on Cell Ontology development
+GOC:dsd	CL	David S. Dougall	member of Richard Scheuermann's group; not directly affiliated with a database, but collaborates on Cell Ontology development
+GOC:cl	Cognia	Chris Larsen	
+GOC:kp	DDB	Karen Pilcher	
+GOC:pf	DDB	Petra Fey	
+GOC:pg	DDB	Pascale Gaudet	
+GOC:das	E. coli	Debby Siegele	
+GOC:jh2	E. coli	Jim Hu	
+GOC:fb_curators	FB	Curators at FlyBase	
+GOC:hb	FB	Heather Butler	
+GOC:ma	FB	Michael Ashburner	
+GOC:dos	FB	David Osumi-Sutherland	
+GOC:rc	FB	Russ Collins	
+GOC:sart	FB	Susan Tweedie	
+GOC:mb	GeneDB_Pfalciparum	Matt Berriman	
+GOC:lmg	GeneDB_Spombe	Linda Groocock	
+GOC:ai	GO	Amelia Ireland	
+GOC:bf	GO	Becky Foulger	former affiliations: FB, then UniProt
+GOC:ceb	GO	Cath Brooksbank	
+GOC:go_curators	GO	Curators at GO editorial office	
+GOC:jid	GO	Jennifer Deegan (nee Clark)	
+GOC:jl	GO	Jane Lomax	
+GOC:pr	GO	Paola Roncaglia
+GOC:curators	GO	GO curators	Usually indicates GO editorial office curators plus others, e.g. from MODs
+GOC:devbiol	GO Interest Group	The Developmental Biology Interest Group	
+GOC:ecd	GOA	Emily Dimmer	
+GOC:rph	GOA	Rachael Huntley	
+GOC:vl	GOA	Vivian Lee	
+GOC:yaf	GOA	Yasmin Alam-Faruque	
+GOC:pj	GR	Pankaj Jaiswal	
+GOC:so	InterPro	Sandra Orchard
+GOC:imk	MetaCyc	Ingrid Keseler	
+GOC:dph	MGI	David Hill	
+GOC:tfm	MGI	Terry Meehan	Cell Ontology
+GOC:ajp	MGI	Tony Planchart	
+GOC:dms	MGI	Dmitry Sitnikov	
+GOC:cls	MGI	Cynthia Smith	
+GOC:hgd	MGI	typo for Harold Drabkin?	
+GOC:hjd	MGI	Harold Drabkin	
+GOC:ln	MGI	Li Ni	
+GOC:mgi_curators	MGI	Curators at MGI	
+GOC:rs	MTBbase	Ralf Stephan	
+GOC:rv	OBI	Randi Vita	
+GOC:cc	PAMGO	Candace Collmer	
+GOC:mcc2	PAMGO	Marcus Chibucos	
+GOC:ml	PAMGO	Magdalen Lindeberg	
+GOC:pamgo_curators	PAMGO	Curators at Plant-Associated Microbe GO	
+GOC:gvg	PATO	George Gkoutos	also spelled Georgios Gkoutos
+GOC:pmn_curators	PMN	Curators at Plant Metabolic Network
+GOC:al	PomBase	Antonia Lock	
+GOC:jb	PomBase	Jurg Bahler	
+GOC:mah	PomBase	Midori Harris	GO editorial office; MGI; SGD in distant past
+GOC:vw	PomBase	Val Wood	former affiliation: GeneDB_Spombe
+GOC:fz	PO	Felipe Zapata	
+GOC:cna	PRO	Cecilia Arighi	Protein Ontology curator
+GOC:mg2	Reactome	Marc Gillespie	
+GOC:pde	Reactome	Peter D'Eustachio
+GOC:sj	Reactome	Steven Jupe	
+GOC:jsg	RESID	John Garavelli
+GOC:sjw	RGD	Shur-Jen Wang
+GOC:sl	RGD	Stan Laulederkind	
+GOC:st	RGD	Simon Twigger	
+GOC:vp	RGD	Victoria Petri	
+GOC:cb	RSC	Colin Batchelor	
+GOC:cjm	LBL	Chris Mungall
+GOC:as	SGD	Anand Sethuraman	
+GOC:cab2	SGD	Cathy Ball	
+GOC:cjk	SGD	Cindy Krieger	
+GOC:clt	SGD	Chandra Theesfeld	
+GOC:sgd_curators	SGD	Curators at SGD	
+GOC:dgf	SGD	Dianna Fisk	
+GOC:elh	SGD	Eurie Hong	
+GOC:jh	SGD	Jodi Hirschman	
+GOC:jp	SGD	Julie Park	
+GOC:kd	SGD	Kara Dolinski	
+GOC:krc	SGD	Karen Christie	
+GOC:mcc	SGD	Maria Costanzo	
+GOC:rb	SGD	Rama Balakrishnan	
+GOC:rn	SGD	Rob Nash	
+GOC:se	SGD	Stacia Engel	
+GOC:ssd	SGD	Selina Dwight		
+GOC:ask	TAIR	A. S. Karthikeyan	
+GOC:ct	TAIR	Christopher Tissier	
+GOC:dhl	TAIR	Donghui Li	
+GOC:ds	TAIR	David Swarbreck	
+GOC:hf	TAIR	Hartmut Foerster	
+GOC:jy	TAIR	Jungwon Yoon	
+GOC:kad	TAIR	Kate Dreher	
+GOC:ki	TAIR	Katica Ilic	
+GOC:lm	TAIR	Lukas Mueller	
+GOC:lr	TAIR	Leonore Reiser	
+GOC:mg	TAIR	Margarita Garcia?	
+GOC:pz	TAIR	Peifer Zhang	
+GOC:sm	TAIR	Suparna Mundodi	
+GOC:syr	TAIR	Sue Rhee	
+GOC:tair_curators	TAIR	Curators at TAIR	
+GOC:tb	TAIR	Tanya Berardini	
+GOC:yl	TAIR	?	
+GOC:ns	TGD	Nick Stover	
+GOC:cr	TIGR	Cathy Ronning	
+GOC:dh	JCVI	Dan Haft	
+GOC:js	JCVI	Jeremy Selengut	
+GOC:lh	JCVI	Linda Hannick	
+GOC:mlg	IGS	Michelle Gwinn	
+GOC:sd	JCVI	Scott Durkin	
+GOC:ef	TRAIT	Erika Feltrin	
+GOC:lm	TRAIT	Lorenza Mittempergher	
+GOC:hw	Tufts University	Heather Wick
+GOC:aa	UniProt	Andrea Auchincloss
+GOC:ab	UniProt	Alan Bridge
+GOC:ans	UniProt	Andre Stutz
+GOC:br	UniProt	Bernd Roechert
+GOC:dl	UniProt	Duncan Legge
+GOC:fj	UniProt	Florence Jungo
+GOC:jj	UniProt	Janet James
+GOC:kd	UniProt	Kirill Degtyarenko
+GOC:klp	UniProt	Klemens Pichler	
+GOC:lb	UniProt	Lionel Breuza	
+GOC:lf	UniProt	Livia Famiglietti	
+GOC:mf	UniProt	Marc Feuermann	
+GOC:mm2	UniProt	Michele Magrane	
+GOC:njm	UniProt	Nicky Mulder	
+GOC:so	UniProt	Sandra Orchard	
+GOC:sp	UniProt	Sylvain Poux	
+GOC:ss	UniProt	Shyamala Sundaram
+GOC:ppm	IntAct	Pablo Porras Millan
+GOC:pk	VIDA	Paul Kellam (UCL)	
+GOC:rh1	VIDA	Ria Holzerlandt	
+GOC:cab1	WB	Carol Bastiani	
+GOC:ems	WB	Erich Schwarz	
+GOC:kmv	WB	Kimberly Van Auken	GOC:kva is also used; occasionally MAH goes through and updates to GOC:kmv
+GOC:rk	WB	Ranjana Kishore	
+GOC:dgh	ZFIN	Doug Howe	
+GOC:dsf	ZFIN	David Fashena	
+GOC:cvs	ZFIN	Ceri Van Slyke	
+GOC:ejs	ZFIN	Erik Segerdell	
+GOC:lb	ZFIN	Leyla Bayraktaroglu	
+GOC:mh	ZFIN	Melissa Haendel	
+GOC:sr	ZFIN	Sridhar Ramachandran
+GOC:mag	BRENDA	Marion Gremse
+GOC:expert_db	Community expert	Dominique Bergmann	Stanford
+GOC:expert_dr	Community expert	David Roos	U Penn
+GOC:expert_ks	Community expert	Kevin Struhl	
+GOC:expert_jrp	Community expert	John Pringle	
+GOC:expert_jwt	Community expert	Jeremy Thorner	
+GOC:expert_mf	Community expert	Migues Ferreira	
+GOC:expert_mm	Community expert	Michael Melkonian	
+GOC:expert_pt	Community expert	Philippa Talmud	
+GOC:expert_ras	Community expert	Richard A. Singer	
+GOC:expert_rg	Community expert	? (spindle assembly)
+GOC:expert_rsh	Community expert	R. Scott Hawley	
+GOC:expert_tf	Community expert	Tim Formosa	
+GOC:expert_vm	Community expert	Vladimir Mironov	
+GOC:BHF	BHF_UCL	curators	dbxref created to allow easy counting of terms added for BHF-UCL cardiovascular annotation
+GOC:jal	Community expert	Jamie A. Lee	different format from most expert dbxrefs; GOC:expert_jal would be synonymous
+GOC:isa_complete	GO content meeting	Is_a complete session, Hinxton, Oct. 2006; also used for post-meeting work on is_a complete biological process	
+GOC:mtg_15nov05	GO content meeting	Immunology, TIGR, November 2005
+GOC:mtg_15jun06	GO content meeting	Neurobiology, June 2006	Community experts present: Bill Bug, Maryann Martone, Kathleen Millen, Francis Szele
+GOC:mtg_MIT_16mar07	GO-MIT collaboration meeting	Collaboration with Harvard-MIT group using information theory to evaluate GO; also used for post-meeting edits motivated by their analysis
+GOC:mtg_cardio	GO content meeting	Cardiovascular physiology, June 2007; participant list at http://wiki.geneontology.org/index.php/Cardiovascular_physiology/development
+GOC:mtg_chebi_dec09	GO-ChEBI conference call	December 2009; GO and ChEBI curators
+GOC:mtg_kidney_jan10	GO content meeting	kidney development meeting, January 2010; http://wiki.geneontology.org/index.php/Agenda_for_Kidney_Development_Ontology_Content_Meeting
+GOC:mtg_mpo	GO editors' meeting	David Hill, Jane Lomax, Val Wood, Chris Mungall; Chris' report of terms with more than one part_of parent; various processes related to complexes
+GOC:mtg_pamgo_17jul06	GO content meeting	PAMGO meeting, July 2006; GO and PAMGO curators
+GOC:mtg_pamgo	GO content meeting	meeting of GO and PAMGO curators; superset of GOC:mtg_pamgo_17jul06
+GOC:mtg_sensu	GO content meeting	Series of web (virtual) meetings to recast sensu terms; GO & MOD curators
+GOC:cardio_2	working group project	Cardiac contraction; Varsha Khodiyar, with some help from Midori
+GOC:txnOH	working group project	transcription overhaul summer 2010; Karen Christie & David Hill
+GOC:ascb_2009	conference-based GO development	ASCB 2009; Tanya Berardini & David Hill
+GOC:mtg_apoptosis	GO content meeting	June 1st 2011, EBI: with APO-SYS consortium members.
+GOC:mtg_cambridge_2009	GO content meeting
+GOC:mtg_cardiac_conduct_nov11	GO content meeting, cardiac conduction. November 10th-11th 2011, UCL: http://gocwiki.geneontology.org/index.php/Cardiac_conduction
+GOC:mtg_electron_transport	GO content meeting
+GOC:mtg_far_red	GO content meeting
+GOC:mtg_heart	GO content meeting
+GOC:mtg_kidney_jan10	GO content meeting
+GOC:mtg_lung	GO content meeting
+GOC:mtg_mpo	GO content meeting
+GOC:mtg_muscle	GO content meeting
+GOC:mtg_plant	GO content meeting
+GOC:mtg_sensu	GO content meeting
+GOC:mtg_signal	GO content meeting	Jen Deegan and signaling working group. Series of web (virtual) meetings and calls to overhaul signaling
+GOC:mtg_signaling_feb11	GO content meeting	February 16th-17th 2011, EBI: http://gocwiki.geneontology.org/index.php/Signaling_Workshop_February_2011
+GOC:mtg_transport	GO content meeting
+GOC:sdb_2009	conference-based GO development	Society for Developmental Biology 2009; Tanya Berardini & David Hill
+GOC:sensu	working group project	overhaul of 'sensu' terms
+GOC:signaling	working group project	signaling overhaul (Becky and signaling working group)
+GOC:chem_mtg	GO content meeting	GO/ChEBI alignment meeting (mainly Hinxton Feb. 2010, but can also refer to virtual meetings)	used in goche.obo file
+GOC:carnegie_chem_mtg	GO content meeting	GO/ChEBI alignment meeting, Carnegie Inst. July 2010	used in goche.obo file
