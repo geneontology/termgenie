@@ -17,3 +17,24 @@ td {
 	text-align: left;
 	vertical-align: top;
 }
+
+.termgenie-module-header {
+	margin: 10pt 5pt;
+}
+
+.termgenie-top-module-header-title {
+	font-weight: bold;
+	font-size: 1.6em;
+}
+
+.termgenie-module-header-title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.termgenie-module-header-tool {
+	font-size: 0.8em;
+	color: gray;
+	margin-left: 5pt;
+	vertical-align: text-top;
+}

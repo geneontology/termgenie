@@ -119,9 +119,35 @@ function TermGenieManagement(){
 	}
 	
 	function createModuleDetailsPanel(details) {
-		mainConfigurationPanel.append('<h2>Module Configuration</h2>')
+		var topModuleHeader = jQuery('<div class="termgenie-module-header"><span class="termgenie-top-module-header-title">Module Configuration</span></div>');
+		mainConfigurationPanel.append(topModuleHeader);
+		var topModuleHeaderTools = jQuery('<span class="termgenie-module-header-tool"></span>');
+		topModuleHeader.append(topModuleHeaderTools);
+		var topModuleHeaderToolShowAll = jQuery('<span class="myClickable">Show all</span>');
+		var topModuleHeaderToolHideAll = jQuery('<span class="myClickable">Hide all</span>');
+		topModuleHeaderTools.append('(');
+		topModuleHeaderTools.append(topModuleHeaderToolShowAll);
+		topModuleHeaderTools.append(', ');
+		topModuleHeaderTools.append(topModuleHeaderToolHideAll);
+		topModuleHeaderTools.append(')');
+		
+		var moduleTables = [];
+		topModuleHeaderToolShowAll.click(function(){
+			jQuery.each(moduleTables, function(index, elem){
+				elem.show();
+			});
+		});
+		topModuleHeaderToolHideAll.click(function(){
+			jQuery.each(moduleTables, function(index, elem){
+				elem.hide();
+			});
+		});
+		
 		jQuery.each(details, function(index, module){
-			mainConfigurationPanel.append('<h3>'+module.moduleName+'</h3>');
+			var moduleHeader = jQuery('<div class="termgenie-module-header"><span class="termgenie-module-header-title">'+module.moduleName+'<span></div>');
+			var moduleHeaderTools = jQuery('<span class="termgenie-module-header-tool myClickable">(Show/Hide)</span>');
+			moduleHeader.append(moduleHeaderTools);
+			mainConfigurationPanel.append(moduleHeader);
 			var content = '<table>';
 			if(module.parameters) {
 				content += '<tr><td class="termgenie-module-table-header">Name</td><td class="termgenie-module-table-header">Value</td></tr>';
@@ -136,7 +162,7 @@ function TermGenieManagement(){
 				});
 			}
 			if(module.provides) {
-				content += '<tr><td class="termgenie-module-table-header">Provides Implementations</td></tr>';
+				content += '<tr><td colspan="2" class="termgenie-module-table-header">Provides Implementations</td></tr>';
 				jQuery.each(module.provides, function(providesIndex, providesValue){
 					content += '<tr><td>'+providesValue.one+'</td>';
 					if (providesValue.two) {
@@ -146,7 +172,9 @@ function TermGenieManagement(){
 				});
 			}
 			content += '</table>';
-			mainConfigurationPanel.append(content);
+			var moduleTable = jQuery(content);
+			mainConfigurationPanel.append(moduleTable);
+			moduleTables.push(moduleTable);
 			if (module.additionalData) {
 				var additionalTable = jQuery('<table></table>');
 				additionalTable.css('margin-top', '10pt');
@@ -162,6 +190,16 @@ function TermGenieManagement(){
 					additionalTable.append(additionalRow);
 				});
 				mainConfigurationPanel.append(additionalTable);
+				moduleTables.push(additionalTable);
+				moduleHeaderTools.click(function(){
+					moduleTable.toggle();
+					additionalTable.toggle();
+				});
+			}
+			else {
+				moduleHeaderTools.click(function(){
+					moduleTable.toggle();
+				});
 			}
 		});
 	}

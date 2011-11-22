@@ -14,6 +14,7 @@ import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.management.JsonModuleConfigDetails.JsonPair;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -94,15 +95,14 @@ public class ManagementServicesImpl implements ManagementServices {
 
 	@Override
 	public boolean isAuthorized(String sessionId, HttpSession session) {
-		return true;
-//		String screenname = sessionHandler.isAuthenticated(sessionId, session);
-//		if (screenname != null) {
-//			UserData userData = sessionHandler.getUserData(session);
-//			if (userData != null) {
-//				boolean allowCommitReview = permissions.allowManagementAccess(userData);
-//				return allowCommitReview;
-//			}
-//		}
-//		return false;
+		String screenname = sessionHandler.isAuthenticated(sessionId, session);
+		if (screenname != null) {
+			UserData userData = sessionHandler.getUserData(session);
+			if (userData != null) {
+				boolean allowCommitReview = permissions.allowManagementAccess(userData);
+				return allowCommitReview;
+			}
+		}
+		return false;
 	}
 }
