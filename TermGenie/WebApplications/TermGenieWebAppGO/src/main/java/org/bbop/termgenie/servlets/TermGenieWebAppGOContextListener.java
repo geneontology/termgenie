@@ -25,6 +25,7 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
 
 import com.google.inject.Singleton;
 
@@ -43,11 +44,16 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	
 	@Override
 	protected TermGenieServiceModule getServiceModule() {
-		return new TermGenieServiceModule(applicationProperties, "TermGenieServiceModule") {
+		return new TermGenieServiceModule(applicationProperties) {
 
 			@Override
 			protected void bindTermCommitService() {
 				bind(TermCommitService.class, GoTermCommitServiceImpl.class);
+			}
+			
+			@Override
+			public String getModuleName() {
+				return "TermGenieGO-TermGenieServiceModule";
 			}
 		};
 	}
@@ -61,6 +67,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 				bind(OntologyLoader.class, CommitAwareOntologyLoader.class);
 				bind("ReloadingOntologyLoaderPeriod", new Long(6L));
 				bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
+			}
+			
+			@Override
+			public String getModuleName() {
+				return "TermGenieGO-XMLReloadingOntologyModule";
 			}
 		};
 	}
@@ -81,7 +92,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties, "CommitReviewWebModule") {
+		return new TermCommitReviewServiceModule(true, applicationProperties) {
 
 			@Override
 			@Singleton
@@ -91,6 +102,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 				return ontologyLoader.getOntology(configuredOntology);
 			}
 			
+			@Override
+			public String getModuleName() {
+				return "TermGenieGO-TermCommitReviewServiceModule";
+			}
 		};
 	}
 
@@ -118,4 +133,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		return modules;
 	}
 
+	@Override
+	protected IOCModule getUserDataModule() {
+		String gocConfigResource = "GO.curators_dbxrefs";
+		String gocMappingResource = "GO.curators_email_dbxrefs";
+		return new GeneOntologyUserDataModule(applicationProperties, gocConfigResource, '\t', gocMappingResource, '\t');
+	}
 }

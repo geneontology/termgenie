@@ -31,20 +31,6 @@ public abstract class IOCModule extends AbstractModule {
 	private final Map<String, String> configuredParameters = new HashMap<String, String>();
 	private final Map<Class<?>, Class<?>> boundClasses = new HashMap<Class<?>, Class<?>>();
 	private final List<Pair<Method, String>> providesClasses = new ArrayList<Pair<Method,String>>();
-	private final String name;
-	private final String description;
-	
-	/**
-	 * @param applicationProperties
-	 */
-	protected IOCModule(Properties applicationProperties, String name, String description) {
-		super();
-		this.applicationProperties = applicationProperties;
-		this.name = name;
-		this.description = description;
-		allModules.add(this);
-		addProvidedClasses(providesClasses, this);
-	}
 	
 	/**
 	 * @param applicationProperties
@@ -52,8 +38,6 @@ public abstract class IOCModule extends AbstractModule {
 	protected IOCModule(Properties applicationProperties) {
 		super();
 		this.applicationProperties = applicationProperties;
-		this.name = getClass().getSimpleName();
-		this.description = null;
 		allModules.add(this);
 		addProvidedClasses(providesClasses, this);
 	}
@@ -117,6 +101,26 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
 		configuredParameters.put(name, value);
+	}
+	
+	/**
+	 * Convenience method for binding a {@link Character} parameter. Check system
+	 * properties for overwrites.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	protected void bind(String name, Character value) {
+		String property = getProperty(name);
+		if (property != null && property.length() == 1) {
+			value = Character.valueOf(property.charAt(0));
+		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for key: " + name);
+		}
+		bind(Character.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 
 	/**
@@ -284,14 +288,14 @@ public abstract class IOCModule extends AbstractModule {
 	 * @return the module name
 	 */
 	public String getModuleName() {
-		return name;
+		return getClass().getSimpleName();
 	}
 	
 	/**
 	 * @return the module description or null
 	 */
 	public String getModuleDescription() {
-		return description;
+		return null;
 	}
 	
 	/**

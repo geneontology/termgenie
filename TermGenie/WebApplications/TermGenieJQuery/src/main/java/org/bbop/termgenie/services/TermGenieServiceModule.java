@@ -23,19 +23,11 @@ public class TermGenieServiceModule extends IOCModule {
 
 	/**
 	 * @param applicationProperties
-	 * @param name
-	 */
-	public TermGenieServiceModule(Properties applicationProperties, String name) {
-		super(applicationProperties, name, null);
-	}
-	
-	/**
-	 * @param applicationProperties
 	 */
 	public TermGenieServiceModule(Properties applicationProperties) {
-		this(applicationProperties, TermGenieServiceModule.class.getSimpleName());
+		super(applicationProperties);
 	}
-
+	
 	@Override
 	protected void configure() {
 		bind(GenerateTermsService.class, GenerateTermsServiceImpl.class);

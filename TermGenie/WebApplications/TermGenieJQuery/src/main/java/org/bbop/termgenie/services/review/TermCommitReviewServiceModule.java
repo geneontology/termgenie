@@ -19,21 +19,12 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	/**
 	 * @param enabled
 	 * @param applicationProperties
-	 * @param name 
 	 */
-	public TermCommitReviewServiceModule(boolean enabled, Properties applicationProperties, String name) {
-		super(applicationProperties, name, null);
+	public TermCommitReviewServiceModule(boolean enabled, Properties applicationProperties) {
+		super(applicationProperties);
 		this.enabled = enabled;
 	}
 	
-	/**
-	 * @param enabled
-	 * @param applicationProperties
-	 */
-	public TermCommitReviewServiceModule(boolean enabled, Properties applicationProperties) {
-		this(enabled, applicationProperties, TermCommitReviewServiceModule.class.getSimpleName());
-	}
-
 	@Override
 	protected void configure() {
 		if (enabled) {
@@ -44,7 +35,13 @@ public class TermCommitReviewServiceModule extends IOCModule {
 		}
 	}
 	
-	@SuppressWarnings("unused")
+	/**
+	 * This method must be overwritten and implemented, if reviews are enabled.
+	 * 
+	 * @param configuration
+	 * @param ontologyLoader
+	 * @return ontology
+	 */
 	@Named("TermCommitReviewServiceOntology")
 	@Provides
 	@Singleton

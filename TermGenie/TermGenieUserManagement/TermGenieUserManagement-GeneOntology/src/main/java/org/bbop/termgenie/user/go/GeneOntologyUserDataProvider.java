@@ -22,10 +22,10 @@ public class GeneOntologyUserDataProvider extends SimpleUserDataProvider {
 
 	private static final Logger logger = Logger.getLogger(GeneOntologyUserDataProvider.class);
 	
-	private static final String ConfigResourceName = "GeneOntologyUserDataProviderConfigResource";
-	private static final String ConfigResourceSeparatorName = "GeneOntologyUserDataProviderConfigResourceSeparator";
-	private static final String MappingResourceName = "GeneOntologyUserDataProviderMappingResource";
-	private static final String MappingResourceSeparatorName = "GeneOntologyUserDataProviderMappingResourceSeparator";
+	static final String ConfigResourceName = "GeneOntologyUserDataProviderConfigResource";
+	static final String ConfigResourceSeparatorName = "GeneOntologyUserDataProviderConfigResourceSeparator";
+	static final String MappingResourceName = "GeneOntologyUserDataProviderMappingResource";
+	static final String MappingResourceSeparatorName = "GeneOntologyUserDataProviderMappingResourceSeparator";
 	
 	private static final ResourceProvider resourceProvider = new ResourceProvider();
 

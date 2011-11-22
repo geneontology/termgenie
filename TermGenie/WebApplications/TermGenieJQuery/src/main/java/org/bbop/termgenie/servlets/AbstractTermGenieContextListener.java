@@ -98,7 +98,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	}
 
 	@Override
-	protected synchronized Injector getInjector() {
+	protected final synchronized Injector getInjector() {
 		if (injector == null) {
 			ServletModule module = new TermGenieServletModule();
 			injector = TermGenieGuice.createWebInjector(module,

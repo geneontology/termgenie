@@ -3,6 +3,6 @@
 		termgenie-go: "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
 	},
 	"hdietze@lbl.gov": {
-		"termgenie-go": "(GeneOntology, allowWrite, true), (GeneOntology, allowCommitReview, true)"
+		"termgenie-go": "(GeneOntology, allowWrite, true), (GeneOntology, allowCommitReview, true), (termgenie-go, allowManagement, true)"
 	}
 }

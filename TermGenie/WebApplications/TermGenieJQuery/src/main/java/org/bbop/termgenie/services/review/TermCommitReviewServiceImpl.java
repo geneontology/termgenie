@@ -98,6 +98,15 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					List<JsonCommitReviewEntry> result = createEntries(items);
 					
 					if (!result.isEmpty()) {
+						// update commit message to include the user doing the review
+						UserData userData = sessionHandler.getUserData(session);
+						String scmAlias = userData.getScmAlias();
+						for (JsonCommitReviewEntry entry : result) {
+							StringBuilder sb = new StringBuilder(entry.getCommitMessage());
+							sb.append(" reviewed by ").append(scmAlias);
+							entry.setCommitMessage(sb.toString());
+							entry.setCommitMessageChanged(true);
+						}
 						return result.toArray(new JsonCommitReviewEntry[result.size()]);
 					}
 				}
