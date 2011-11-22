@@ -42,5 +42,10 @@
 			<artifactId>TermGenieOntologyCommit-GeneOntology</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieUserManagement-GeneOntology</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 </project>
