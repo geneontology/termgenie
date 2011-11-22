@@ -35,4 +35,15 @@ public interface ManagementServices {
 	@IOCInjectorAware
 	@SessionAware
 	public List<JsonModuleConfigDetails> getModuleDetails(String sessionId, HttpSession session, Injector injector);
+	
+	
+	/**
+	 * Retrieve the system details of TermGenie
+	 * 
+	 * @param sessionId
+	 * @param session
+	 * @return systemDetails
+	 */
+	@SessionAware
+	public JsonSystemDetails getSystemDetails(String sessionId, HttpSession session);
 }

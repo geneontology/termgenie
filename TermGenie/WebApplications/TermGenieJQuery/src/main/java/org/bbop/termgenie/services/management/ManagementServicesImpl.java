@@ -76,8 +76,13 @@ public class ManagementServicesImpl implements ManagementServices {
 		}
 		List<JsonPair> result = new ArrayList<JsonPair>(providesClasses.size());
 		for (Pair<Method, String> pair : providesClasses) {
-			final String methodString = pair.getOne().getGenericReturnType().toString();
-			result.add(new JsonPair(methodString, pair.getTwo()));
+			final Method method = pair.getOne();
+			final String methodString = method.getGenericReturnType().toString();
+			String name = pair.getTwo();
+			if (name == null) {
+				name = method.getName();
+			}
+			result.add(new JsonPair(methodString, name));
 		}
 		return result;
 	}
@@ -104,5 +109,21 @@ public class ManagementServicesImpl implements ManagementServices {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public JsonSystemDetails getSystemDetails(String sessionId, HttpSession session) {
+		JsonSystemDetails details = new JsonSystemDetails();
+		details.setEnvironment(System.getProperties(), "java.", "sun.", "os.");
+		final Runtime runtime = Runtime.getRuntime();
+		details.setMaxHeap(bytesToMByteString(runtime.maxMemory()));
+		details.setCurrentHeap(bytesToMByteString(runtime.totalMemory()));
+		details.setFreeHeap(bytesToMByteString(runtime.freeMemory()));
+		return details;
+	}
+	
+	private String bytesToMByteString(long bytes) {
+		long mbytes = bytes / (1024 * 1024);
+		return Long.toString(mbytes);
 	}
 }
