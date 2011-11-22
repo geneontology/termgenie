@@ -67,14 +67,18 @@ public class XMLReloadingOntologyModule extends ReloadingOntologyModule {
 		}
 		
 		String loadXmlConfig(String resource) {
+			InputStream stream = null;
 			try {
-				InputStream stream = loadResourceSimple(resource);
+				stream = loadResourceSimple(resource);
 				if (stream != null) {
 					return IOUtils.toString(stream);
 				}
 				logger.warn("Missing resource: "+resource);
 			} catch (IOException exception) {
 				logger.warn("Could not read from resource: "+resource, exception);
+			}
+			finally {
+				IOUtils.closeQuietly(stream);
 			}
 			return null;
 		}

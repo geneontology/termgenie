@@ -59,6 +59,9 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+		finally {
+			IOUtils.closeQuietly(jsonPermissionsInputStream);
+		}
 	}
 
 	@Override

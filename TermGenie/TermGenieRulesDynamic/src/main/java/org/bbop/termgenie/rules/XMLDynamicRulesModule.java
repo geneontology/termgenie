@@ -102,6 +102,9 @@ public class XMLDynamicRulesModule extends IOCModule {
 		} catch (IOException exception) {
 			Logger.getLogger(getClass()).warn("Could not read template resource: "+templateResource, exception);
 		}
+		finally {
+			IOUtils.closeQuietly(stream);
+		}
 		return null;
 	}
 }
