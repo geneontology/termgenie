@@ -57,7 +57,7 @@ public abstract class DefaultOntologyModule extends IOCModule {
 	}
 
 	protected void bindOntologyLoader() {
-		bind(OntologyLoader.class).to(DefaultOntologyLoader.class);
+		bind(OntologyLoader.class, DefaultOntologyLoader.class);
 	}
 
 	@Provides
@@ -68,12 +68,12 @@ public abstract class DefaultOntologyModule extends IOCModule {
 	}
 
 	protected void bindOntologyConfiguration() {
-		bind(OntologyConfiguration.class).to(DefaultOntologyConfiguration.class);
+		bind(OntologyConfiguration.class, DefaultOntologyConfiguration.class);
 		bind("DefaultOntologyConfigurationResource", defaultOntologyConfigurationResource);
 	}
 
 	protected void bindOntologyCleaner() {
-		bind(OntologyCleaner.class).to(DefaultOntologyCleaner.class);
+		bind(OntologyCleaner.class, DefaultOntologyCleaner.class);
 		bind("DefaultOntologyCleanerResource", defaultOntologyCleanerResource);
 	}
 

@@ -15,7 +15,7 @@ public class XMLTermTemplateModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(TermTemplateIO.class).to(XMLTermTemplateIO.class);
+		bind(TermTemplateIO.class, XMLTermTemplateIO.class);
 	}
 
 }

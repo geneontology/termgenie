@@ -21,14 +21,25 @@ import com.google.inject.Singleton;
  */
 public class TermGenieServiceModule extends IOCModule {
 
+	/**
+	 * @param applicationProperties
+	 * @param name
+	 */
+	public TermGenieServiceModule(Properties applicationProperties, String name) {
+		super(applicationProperties, name, null);
+	}
+	
+	/**
+	 * @param applicationProperties
+	 */
 	public TermGenieServiceModule(Properties applicationProperties) {
-		super(applicationProperties);
+		this(applicationProperties, TermGenieServiceModule.class.getSimpleName());
 	}
 
 	@Override
 	protected void configure() {
-		bind(GenerateTermsService.class).to(GenerateTermsServiceImpl.class);
-		bind(OntologyService.class).to(OntologyServiceImpl.class);
+		bind(GenerateTermsService.class, GenerateTermsServiceImpl.class);
+		bind(OntologyService.class, OntologyServiceImpl.class);
 		bindSessionHandler();
 		bindTermCommitService();
 	}
@@ -40,11 +51,11 @@ public class TermGenieServiceModule extends IOCModule {
 	}
 	
 	protected void bindSessionHandler() {
-		bind(InternalSessionHandler.class).to(InternalSessionHandlerImpl.class);
+		bind(InternalSessionHandler.class, InternalSessionHandlerImpl.class);
 	}
 	
 	protected void bindTermCommitService() {
-		bind(TermCommitService.class).to(NoCommitTermCommitServiceImpl.class);
+		bind(TermCommitService.class, NoCommitTermCommitServiceImpl.class);
 	}
 
 	@Provides

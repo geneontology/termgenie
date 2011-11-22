@@ -6,10 +6,15 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.bbop.termgenie.services.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.Test;
 
 
-public class PermissionsDataTest {
+public class PermissionsDataTest extends ResourceLoader {
+
+	public PermissionsDataTest() {
+		super(false);
+	}
 
 	@Test
 	public void testPermissionsDataIO() {
@@ -69,6 +74,12 @@ public class PermissionsDataTest {
 				}
 			}
 		}
+	}
+	
+	@Test
+	public void testPermissionFile() {
+		PermissionsData permissions = JsonFileUserPermissionsImpl.loadInputSteam(loadResource("termgenie-user-permissions.json"));
+		assertFalse(permissions.userPermissions.isEmpty());
 	}
 
 }

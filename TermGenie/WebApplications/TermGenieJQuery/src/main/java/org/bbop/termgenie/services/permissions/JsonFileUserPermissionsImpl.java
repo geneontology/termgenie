@@ -2,9 +2,11 @@ package org.bbop.termgenie.services.permissions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.services.permissions.PermissionsData.TermGeniePermissions;
 import org.bbop.termgenie.user.UserData;
@@ -19,6 +21,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	private static final String FLAG_SCREEN_NAME = "screenname";
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
+	private static final String FLAG_ALLOW_MANAGEMENT = "allowManagement";
 
 	private final String applicationName;
 	private final File jsonPermissionsFile;
@@ -41,6 +44,16 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	static PermissionsData loadFile(File jsonPermissionsFile) {
 		try {
 			String configString = FileUtils.readFileToString(jsonPermissionsFile);
+			PermissionsData permissionsData = PermissionsData.loadFromJson(configString);
+			return permissionsData;
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
+	static PermissionsData loadInputSteam(InputStream jsonPermissionsInputStream) {
+		try {
+			String configString = IOUtils.toString(jsonPermissionsInputStream);
 			PermissionsData permissionsData = PermissionsData.loadFromJson(configString);
 			return permissionsData;
 		} catch (IOException exception) {
@@ -75,6 +88,11 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean allowManagementAccess(UserData userData) {
+		return checkPermissions(userData, applicationName, FLAG_ALLOW_MANAGEMENT);
 	}
 
 	@Override

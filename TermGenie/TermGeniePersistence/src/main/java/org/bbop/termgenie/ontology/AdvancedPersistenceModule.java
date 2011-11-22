@@ -41,15 +41,15 @@ public class AdvancedPersistenceModule extends IOCModule {
 	}
 
 	protected void bindOntologyIdStoreConfiguration() {
-		bind(OntologyIdStoreConfiguration.class).to(PlainOntologyIdStoreConfiguration.class);
+		bind(OntologyIdStoreConfiguration.class, PlainOntologyIdStoreConfiguration.class);
 		bind("PlainOntologyIdStoreConfigurationResource", ontologyIdStoreConfigurationFile);
 	}
 
 	protected void bindOntologyIdProvider() {
-		bind(OntologyIdProvider.class).to(OntologyIdProviderImpl.class);
+		bind(OntologyIdProvider.class, OntologyIdProviderImpl.class);
 	}
 
 	protected void bindCommitHistoryStore() {
-		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
+		bind(CommitHistoryStore.class, CommitHistoryStoreImpl.class);
 	}
 }

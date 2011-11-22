@@ -82,7 +82,6 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 		Collections.sort(jsonTemplates, JsonTermTempleSorter.instance);
 		return jsonTemplates;
-//		return jsonTemplates.toArray(new JsonTermTemplate[jsonTemplates.size()]);
 	}
 
 	/*

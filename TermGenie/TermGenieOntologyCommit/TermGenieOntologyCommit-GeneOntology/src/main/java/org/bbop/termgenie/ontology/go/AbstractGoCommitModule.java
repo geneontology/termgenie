@@ -22,7 +22,7 @@ public abstract class AbstractGoCommitModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
+		bind(CommitHistoryStore.class, CommitHistoryStoreImpl.class);
 	}
 	
 	@Singleton

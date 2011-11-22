@@ -1,6 +1,5 @@
 {
-	guid: {
+	"hdietze@lbl.gov": {
 		termgenie: "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
-		}
 	}
 }

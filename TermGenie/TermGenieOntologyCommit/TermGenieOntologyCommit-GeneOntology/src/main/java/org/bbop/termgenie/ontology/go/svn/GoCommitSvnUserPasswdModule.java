@@ -29,6 +29,6 @@ public class GoCommitSvnUserPasswdModule extends AbstractGoCommitSvnModule {
 
 	@Override
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class).to(GoSvnHelper.GoSvnHelperPassword.class);
+		bind(OboScmHelper.class, GoSvnHelper.GoSvnHelperPassword.class);
 	}
 }

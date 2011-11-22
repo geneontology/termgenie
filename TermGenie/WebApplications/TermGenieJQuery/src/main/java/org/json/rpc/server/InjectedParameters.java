@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.inject.Injector;
+
 /**
  * This class is a work around for a bug of the sun/oracle java compiler (javac
  * 1.6.0_26). The compile produces missing annotation errors, when the
@@ -47,6 +49,7 @@ class InjectedParameters {
 				HttpServletResponse.class });
 		map.put(ServletContextAware.class, new Class<?>[] { ServletContext.class });
 		map.put(SessionAware.class, new Class<?>[] { HttpSession.class });
+		map.put(IOCInjectorAware.class, new Class<?>[] { Injector.class });
 		return Collections.unmodifiableMap(map);
 	}
 

@@ -50,8 +50,8 @@ public class AuthenticationModule extends IOCModule {
 	@Override
 	protected void configure() {
 		bind("DefaultTermGenieUrl", defaultTermGenieUrl);
-		bind(OpenIdHandler.class).to(OpenIdHandlerImpl.class);
-		bind(BrowserIdHandler.class).to(BrowserIdHandlerImpl.class);
+		bind(OpenIdHandler.class, OpenIdHandlerImpl.class);
+		bind(BrowserIdHandler.class, BrowserIdHandlerImpl.class);
 		bind("BrowserIdVerificationUrl",DEFAUL_BROWSER_ID_VERFICATION_URL);
 	}
 

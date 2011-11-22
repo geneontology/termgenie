@@ -27,7 +27,7 @@ public class DefaultOntologyModuleTest {
 
 		@Override
 		protected void bindIRIMapper() {
-			bind(IRIMapper.class).to(LocalFileIRIMapper.class);
+			bind(IRIMapper.class, LocalFileIRIMapper.class);
 			bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
 		}
 	}

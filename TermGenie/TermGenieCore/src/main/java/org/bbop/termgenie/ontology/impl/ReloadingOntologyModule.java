@@ -21,14 +21,14 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 
 	@Override
 	protected void bindOntologyLoader() {
-		bind(OntologyLoader.class).to(ReloadingOntologyLoader.class);
+		bind(OntologyLoader.class, ReloadingOntologyLoader.class);
 		bind("ReloadingOntologyLoaderPeriod", new Long(6L));
 		bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
 	}
 
 	@Override
 	protected void bindIRIMapper() {
-		bind(IRIMapper.class).to(FileCachingIRIMapper.class);
+		bind(IRIMapper.class, FileCachingIRIMapper.class);
 		bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(),"termgenie-download-cache").getAbsolutePath());
 		bind("FileCachingIRIMapperPeriod", new Long(6L));
 		bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);

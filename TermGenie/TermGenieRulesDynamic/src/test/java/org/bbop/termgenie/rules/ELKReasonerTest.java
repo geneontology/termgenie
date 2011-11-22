@@ -40,7 +40,7 @@ public class ELKReasonerTest {
 
 			@Override
 			protected void bindOntologyConfiguration() {
-				bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
+				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
 				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
 			}
 		}, new ReasonerModule("elk", null));

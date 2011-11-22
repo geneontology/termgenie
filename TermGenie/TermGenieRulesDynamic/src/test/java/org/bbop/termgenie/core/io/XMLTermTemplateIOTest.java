@@ -37,7 +37,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 
 					@Override
 					protected void configure() {
-						bind(TemplateOntologyHelper.class).to(TemplateOntologyHelperImpl.class);
+						bind(TemplateOntologyHelper.class, TemplateOntologyHelperImpl.class);
 					}
 				});
 		instance = new XMLTermTemplateIO(injector.getInstance(OntologyConfiguration.class));

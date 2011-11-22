@@ -31,12 +31,12 @@ public class AbstractGoCommitCvsModule extends AbstractGoCommitModule {
 	}
 	
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class).to(GoCvsHelperPassword.class);
+		bind(OboScmHelper.class, GoCvsHelperPassword.class);
 	}
 
 	protected void bindCVSPassword() {
 		// bind the password only via a system parameter !
 		// Reason: Do not accidently commit a secret password
-		bind("GeneOntologyCommitAdapterCVSPassword");
+		bindSecret("GeneOntologyCommitAdapterCVSPassword");
 	}
 }

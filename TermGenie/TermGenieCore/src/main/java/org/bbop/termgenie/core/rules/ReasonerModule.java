@@ -26,7 +26,7 @@ public class ReasonerModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(ReasonerFactory.class).to(CachingReasonerFactoryImpl.class);
+		bind(ReasonerFactory.class, CachingReasonerFactoryImpl.class);
 		bind(ReasonerFactoryImpl.REASONER_FACTORY_DEFAULT_REASONER, defaultReasonerName);
 		bind(ReasonerFactory.class).annotatedWith(Names.named(NAMED_DIRECT_REASONER_FACTORY)).to(ReasonerFactoryImpl.class);
 	}

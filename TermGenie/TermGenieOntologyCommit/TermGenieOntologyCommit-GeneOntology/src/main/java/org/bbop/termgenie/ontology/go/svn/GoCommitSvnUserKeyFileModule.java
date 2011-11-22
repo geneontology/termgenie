@@ -42,6 +42,6 @@ public class GoCommitSvnUserKeyFileModule extends AbstractGoCommitSvnModule {
 
 	@Override
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class).to(GoSvnHelper.GoSvnHelperKeyFile.class);
+		bind(OboScmHelper.class, GoSvnHelper.GoSvnHelperKeyFile.class);
 	}
 }

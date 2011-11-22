@@ -51,6 +51,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.inject.Injector;
 
 /**
  * Extend the existing {@link JsonRpcExecutor} to inject servlet specific 
@@ -72,12 +73,14 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 
     private final Map<String, HandleEntry<?>> handlers;
 
+    private final Injector injector;
     private final TypeChecker typeChecker;
     private volatile boolean locked;
 
     @SuppressWarnings("unchecked")
-    public InjectingJsonRpcExecutor() {
-        this.typeChecker = new InjectingGsonTypeChecker();
+    public InjectingJsonRpcExecutor(Injector injector) {
+        this.injector = injector;
+		this.typeChecker = new InjectingGsonTypeChecker();
         this.handlers = new HashMap<String, HandleEntry<?>>();
         addHandler("system", this, RpcIntroSpection.class);
     }
@@ -276,6 +279,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
     	if (isServletContextAwareMethod(method)) {
     		parameterLength += InjectedParameters.getParameterCount(ServletContextAware.class);
 		}
+    	if (isIOCInjectorAwareMethod(method)) {
+    		parameterLength += InjectedParameters.getParameterCount(ServletContextAware.class);
+		}
         return method.getParameterTypes().length == parameterLength;
     }
 
@@ -291,6 +297,10 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		return isInjectMethod(method, SessionAware.class);
 	}
 	
+	static boolean isIOCInjectorAwareMethod(Method method) {
+		return isInjectMethod(method, IOCInjectorAware.class);
+	}
+	
 	static boolean isInjectMethod(Method method, Class<? extends Annotation> annotationClass) {
 		return method.getAnnotation(annotationClass) != null;
 	}
@@ -304,6 +314,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         final boolean isSessionAware = isSessionAwareMethod(method);
         final boolean isServletAware = isServletAwareMethod(method);
         final boolean isServletContextAware = isServletContextAwareMethod(method);
+        final boolean isIOCInjectorAware = isIOCInjectorAwareMethod(method);
         if (isSessionAware) {
 			length = length - InjectedParameters.getParameterCount(SessionAware.class);
 		}
@@ -312,6 +323,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		}
 		if (isServletContextAware) {
         	length = length - InjectedParameters.getParameterCount(ServletContextAware.class);
+		}
+		if (isIOCInjectorAware) {
+        	length = length - InjectedParameters.getParameterCount(IOCInjectorAware.class);
 		}
 		
 		for (int i = 0; i < length; i++) {
@@ -329,6 +343,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		}
         if (isServletContextAware) {
 			list.add(servletContext);
+		}
+        if (isIOCInjectorAware) {
+			list.add(injector);
 		}
         return list.toArray();
     }
@@ -389,6 +406,5 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         String[] arr = new String[signatures.size()];
         return signatures.toArray(arr);
     }
-
 
 }

@@ -20,7 +20,7 @@ public class UserPermissionsModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(UserPermissions.class).to(JsonFileUserPermissionsImpl.class);
+		bind(UserPermissions.class, JsonFileUserPermissionsImpl.class);
 		bind("JsonUserPermissionsFileName");
 		bind("JsonUserPermissionsApplicationName", applicationName);
 	}

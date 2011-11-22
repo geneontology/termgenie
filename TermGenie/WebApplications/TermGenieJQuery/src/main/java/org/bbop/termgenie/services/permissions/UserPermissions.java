@@ -61,4 +61,13 @@ public interface UserPermissions {
 		 */
 		public String getScreenname();
 	}
+
+	/**
+	 * Check that the given user has the sufficient rights to manage the
+	 * application.
+	 * 
+	 * @param userData
+	 * @return true, if the user has the sufficient rights
+	 */
+	public boolean allowManagementAccess(UserData userData);
 }

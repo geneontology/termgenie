@@ -43,11 +43,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	
 	@Override
 	protected TermGenieServiceModule getServiceModule() {
-		return new TermGenieServiceModule(applicationProperties) {
+		return new TermGenieServiceModule(applicationProperties, "TermGenieServiceModule") {
 
 			@Override
 			protected void bindTermCommitService() {
-				bind(TermCommitService.class).to(GoTermCommitServiceImpl.class);
+				bind(TermCommitService.class, GoTermCommitServiceImpl.class);
 			}
 		};
 	}
@@ -58,7 +58,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 			@Override
 			protected void bindOntologyLoader() {
-				bind(OntologyLoader.class).to(CommitAwareOntologyLoader.class);
+				bind(OntologyLoader.class, CommitAwareOntologyLoader.class);
 				bind("ReloadingOntologyLoaderPeriod", new Long(6L));
 				bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
 			}
@@ -81,7 +81,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties) {
+		return new TermCommitReviewServiceModule(true, applicationProperties, "CommitReviewWebModule") {
 
 			@Override
 			@Singleton

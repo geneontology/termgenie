@@ -20,6 +20,8 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.management.ManagementServiceModule;
+import org.bbop.termgenie.services.management.ManagementServices;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
@@ -53,9 +55,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				SessionHandler user,
 				OpenIdRequestHandler openId,
 				BrowserIdHandler browserId,
-				TermCommitReviewService review)
+				TermCommitReviewService review,
+				ManagementServices management)
 		{
-			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor();
+			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor(getInjector());
 			executor.addHandler("generate", generate, GenerateTermsService.class);
 			executor.addHandler("ontology", ontology, OntologyService.class);
 			executor.addHandler("commit", commit, TermCommitService.class);
@@ -63,12 +66,13 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
 			executor.addHandler("browserid", browserId, BrowserIdHandler.class);
 			executor.addHandler("review", review, TermCommitReviewService.class);
-
+			executor.addHandler("management", management, ManagementServices.class);
 			return executor;
 		}
 	}
 
 	protected final Properties applicationProperties;
+	private Injector injector = null;
 	
 	
 	protected AbstractTermGenieContextListener(String applicationPropertyConfigName) {
@@ -94,14 +98,20 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	}
 
 	@Override
-	protected Injector getInjector() {
-		ServletModule module = new TermGenieServletModule();
-		return TermGenieGuice.createWebInjector(module, applicationProperties, getConfiguration());
+	protected synchronized Injector getInjector() {
+		if (injector == null) {
+			ServletModule module = new TermGenieServletModule();
+			injector = TermGenieGuice.createWebInjector(module,
+					applicationProperties,
+					getConfiguration());
+		}
+		return injector;
 	}
 
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		modules.add(new TermGenieToolsModule(applicationProperties));
+		modules.add(new ManagementServiceModule(applicationProperties));
 		add(modules, getServiceModule(), true, "ServiceModule");
 		add(modules, getAuthenticationModule(), true, "Authentication");
 		add(modules, getUserPermissionModule(), true, "UserPermission");

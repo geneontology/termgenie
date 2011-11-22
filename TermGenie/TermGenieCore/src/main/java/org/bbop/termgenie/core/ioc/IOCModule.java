@@ -1,12 +1,21 @@
 package org.bbop.termgenie.core.ioc;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 /**
@@ -14,8 +23,28 @@ import com.google.inject.name.Names;
  * parameters with system properties.
  */
 public abstract class IOCModule extends AbstractModule {
+	
+	private final static List<IOCModule> allModules = new ArrayList<IOCModule>();
 
 	protected final Properties applicationProperties;
+	
+	private final Map<String, String> configuredParameters = new HashMap<String, String>();
+	private final Map<Class<?>, Class<?>> boundClasses = new HashMap<Class<?>, Class<?>>();
+	private final List<Pair<Method, String>> providesClasses = new ArrayList<Pair<Method,String>>();
+	private final String name;
+	private final String description;
+	
+	/**
+	 * @param applicationProperties
+	 */
+	protected IOCModule(Properties applicationProperties, String name, String description) {
+		super();
+		this.applicationProperties = applicationProperties;
+		this.name = name;
+		this.description = description;
+		allModules.add(this);
+		addProvidedClasses(providesClasses, this);
+	}
 	
 	/**
 	 * @param applicationProperties
@@ -23,16 +52,37 @@ public abstract class IOCModule extends AbstractModule {
 	protected IOCModule(Properties applicationProperties) {
 		super();
 		this.applicationProperties = applicationProperties;
+		this.name = getClass().getSimpleName();
+		this.description = null;
+		allModules.add(this);
+		addProvidedClasses(providesClasses, this);
 	}
 	
+	private static void addProvidedClasses(List<Pair<Method, String>> provided, Object instance) {
+		Method[] methods = instance.getClass().getDeclaredMethods();
+		if (methods != null) {
+			for (Method method : methods) {
+				Provides annotation = method.getAnnotation(Provides.class);
+				if (annotation != null) {
+					String name = null;
+					Named named = method.getAnnotation(Named.class);
+					if (named != null) {
+						name = named.value();
+					}
+					provided.add(new Pair<Method, String>(method, name));
+				}
+			}
+		}
+	}
+
 	public static String getSystemProperty(String name) {
-		String property = System.getProperty("termgenie."+name, null);
+		String property = System.getProperty("termgenie." + name, null);
 		if (property == null) {
 			property = System.getProperty("overwrite." + name, null);
 		}
 		return property;
 	}
-	
+
 	public static String getSystemProperty(String name, Properties applicationProperties) {
 		String property = getSystemProperty(name);
 		if (property == null && applicationProperties != null && !applicationProperties.isEmpty()) {
@@ -62,23 +112,40 @@ public abstract class IOCModule extends AbstractModule {
 			value = property;
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for key: " + name);
 		}
 		bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value);
 	}
 
 	/**
-	 * Convenience method for binding a {@link String} parameter to a system 
+	 * Convenience method for binding a {@link String} parameter to a system
 	 * parameter.
 	 * 
 	 * @param name
 	 */
 	protected void bind(String name) {
+		bindPropertyValue(name, false);
+	}
+	
+	/**
+	 * Convenience method for binding a {@link String} parameter to a system
+	 * parameter. The value will not be shown in the management console. 
+	 * 
+	 * @param name
+	 */
+	protected void bindSecret(String name) {
+		bindPropertyValue(name, true);
+	}
+	
+	private void bindPropertyValue(String name, boolean secret) {
 		String property = getProperty(name);
 		if (property == null) {
-			throw new RuntimeException("No system property value found for key: "+name);
+			throw new RuntimeException("No system property value found for key: " + name);
 		}
 		bind(String.class).annotatedWith(Names.named(name)).toInstance(property);
+		configuredParameters.put(name, secret ? "*******" : property);
 	}
 
 	/**
@@ -94,9 +161,11 @@ public abstract class IOCModule extends AbstractModule {
 			value = Long.valueOf(property);
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for long key: " + name);
 		}
 		bind(Long.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 
 	/**
@@ -112,9 +181,11 @@ public abstract class IOCModule extends AbstractModule {
 			value = TimeUnit.valueOf(property);
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for time unit key: " + name);
 		}
 		bind(TimeUnit.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 
 	/**
@@ -130,9 +201,11 @@ public abstract class IOCModule extends AbstractModule {
 			value = Integer.valueOf(property);
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for integer key: " + name);
 		}
 		bind(Integer.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 
 	/**
@@ -153,8 +226,12 @@ public abstract class IOCModule extends AbstractModule {
 			else if ("false".equals(property)) {
 				value = Boolean.FALSE;
 			}
+			else {
+				throw new RuntimeException("No valid value found for boolean key: " + name);
+			}
 		}
 		bind(Boolean.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 
 	/**
@@ -170,8 +247,66 @@ public abstract class IOCModule extends AbstractModule {
 			value = new File(property);
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '"+name+"' is null");
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for file key: " + name);
 		}
 		bind(File.class).annotatedWith(Names.named(name)).toInstance(value);
+		configuredParameters.put(name, value.getAbsolutePath());
 	}
+	
+	protected <T> void bind(Class<T> interfaceClass, Class<? extends T> implementationClass) {
+		bind(interfaceClass).to(implementationClass);
+		boundClasses.put(interfaceClass, implementationClass);
+	}
+	
+	/**
+	 * @return map of configured parameters
+	 */
+	public Map<String, String> getConfiguredParameters() {
+		return configuredParameters;
+	}
+	
+	/**
+	 * @return the map of bound classes
+	 */
+	public Map<Class<?>, Class<?>> getBoundClasses() {
+		return boundClasses;
+	}
+
+	/**
+	 * @return the set of provided classes
+	 */
+	public List<Pair<Method, String>> getProvidesClasses() {
+		return providesClasses;
+	}
+
+	/**
+	 * @return the module name
+	 */
+	public String getModuleName() {
+		return name;
+	}
+	
+	/**
+	 * @return the module description or null
+	 */
+	public String getModuleDescription() {
+		return description;
+	}
+	
+	/**
+	 * @param injector
+	 * @return additional data or null;
+	 */
+	public List<Pair<String, String>> getAdditionalData(Injector injector) {
+		return null;
+	}
+	
+	/**
+	 * @return list of all modules
+	 */
+	public static List<IOCModule> getAllModules() {
+		return allModules;
+	}
+	
 }

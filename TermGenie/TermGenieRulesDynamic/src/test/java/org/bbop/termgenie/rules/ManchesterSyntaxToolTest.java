@@ -32,7 +32,7 @@ public class ManchesterSyntaxToolTest {
 
 					@Override
 					protected void bindOntologyConfiguration() {
-						bind(OntologyConfiguration.class).to(XMLOntologyConfiguration.class);
+						bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
 						bind("XMLOntologyConfigurationResource",
 								"ontology-configuration_simple.xml");
 					}

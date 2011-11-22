@@ -6,6 +6,8 @@ import java.util.Properties;
  * Module for global configuration flags and parameters.
  */
 public class GlobalConfigModule extends IOCModule {
+	
+	public static final String TryResourceLoadAsFilesName = "TryResourceLoadAsFiles";
 
 	protected GlobalConfigModule(Properties applicationProperties) {
 		super(applicationProperties);
@@ -13,7 +15,7 @@ public class GlobalConfigModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind("TryResourceLoadAsFiles", false);
+		bind(TryResourceLoadAsFilesName, false);
 	}
 
 }

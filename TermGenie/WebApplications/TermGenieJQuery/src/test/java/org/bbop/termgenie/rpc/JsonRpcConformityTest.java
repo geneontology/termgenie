@@ -12,6 +12,7 @@ import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.management.ManagementServices;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.json.rpc.commons.TypeChecker;
 import org.json.rpc.server.InjectingGsonTypeChecker;
@@ -22,6 +23,8 @@ public class JsonRpcConformityTest {
 	@Test
 	public void testMethodInterfaces() {
 		TypeChecker checker = new InjectingGsonTypeChecker();
+		
+		assertTrue(checker.isValidInterface(ManagementServices.class, true));
 
 		assertTrue(checker.isValidInterface(GenerateTermsService.class, true));
 
@@ -36,6 +39,7 @@ public class JsonRpcConformityTest {
 		assertTrue(checker.isValidInterface(BrowserIdHandler.class, true));
 		
 		assertTrue(checker.isValidInterface(TermCommitReviewService.class, true));
+		
 	}
 	
 	@Test

@@ -64,6 +64,10 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 		int length = checkInjectAnnotation(parameterTypes,
 				parameterTypes.length,
 				method,
+				IOCInjectorAware.class);
+		length = checkInjectAnnotation(parameterTypes,
+				length,
+				method,
 				SessionAware.class);
 		length = checkInjectAnnotation(parameterTypes,
 				length,
@@ -73,7 +77,6 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 				length,
 				method,
 				ServletAware.class);
-		
 
 		for (int i = 0; i < length; i++) {
 			Type genericParameterType = parameterTypes[i];

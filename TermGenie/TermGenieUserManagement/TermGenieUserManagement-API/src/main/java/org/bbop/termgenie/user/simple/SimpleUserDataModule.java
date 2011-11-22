@@ -16,7 +16,7 @@ public class SimpleUserDataModule extends IOCModule {
 
 	@Override
 	protected void configure() {
-		bind(UserDataProvider.class).to(SimpleUserDataProvider.class);
+		bind(UserDataProvider.class, SimpleUserDataProvider.class);
 	}
 
 }

@@ -58,7 +58,7 @@ public class CommitAwareOntologyLoaderTest {
 
 					@Override
 					protected void bindIRIMapper() {
-						bind(IRIMapper.class).to(LocalFileIRIMapper.class);
+						bind(IRIMapper.class, LocalFileIRIMapper.class);
 						bind("LocalFileIRIMapperResource", LocalFileIRIMapper.SETTINGS_FILE);
 					}
 				},
@@ -67,7 +67,7 @@ public class CommitAwareOntologyLoaderTest {
 
 					@Override
 					protected void configure() {
-						bind(CommitHistoryStore.class).to(CommitHistoryStoreImpl.class);
+						bind(CommitHistoryStore.class, CommitHistoryStoreImpl.class);
 					}
 				});
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
