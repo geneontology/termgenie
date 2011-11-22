@@ -16,12 +16,12 @@ public class SimpleUserDataProvider implements UserDataProvider {
 	public UserData getUserDataPerEMail(String email) {
 		String screenname = getNameFromEMail(email);
 		String guid = email;
-		String xref = email;
+		String xref = null;
 		String scmAlias = screenname;
 		return new UserDataImpl(screenname, guid, email, xref, scmAlias);
 	}
 
-	private String getNameFromEMail(String email) {
+	protected String getNameFromEMail(String email) {
 		int pos = email.indexOf('@');
 		if (pos > 0) {
 			return email.substring(0, pos);
@@ -33,7 +33,7 @@ public class SimpleUserDataProvider implements UserDataProvider {
 	public UserData getUserDataPerGuid(String guid, List<String> emails) {
 		String email = emails.get(0);
 		String screenname = getNameFromEMail(email);
-		String xref = email;
+		String xref = null;
 		String scmAlias = screenname;
 		return new UserDataImpl(screenname, guid, email, xref, scmAlias);
 	}

@@ -7,5 +7,5 @@ public interface UserDataProvider {
 
 	public UserData getUserDataPerEMail(String email);
 	
-	public UserData getUserDataPerGuid(String guid, List<String> email);
+	public UserData getUserDataPerGuid(String guid, List<String> emails);
 }

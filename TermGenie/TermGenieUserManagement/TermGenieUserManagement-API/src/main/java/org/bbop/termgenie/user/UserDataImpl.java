@@ -108,4 +108,21 @@ public class UserDataImpl implements UserData {
 	public void setScmAlias(String scmAlias) {
 		this.scmAlias = scmAlias;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserDataImpl [screenname=");
+		builder.append(screenname);
+		builder.append(", guid=");
+		builder.append(guid);
+		builder.append(", email=");
+		builder.append(email);
+		builder.append(", xref=");
+		builder.append(xref);
+		builder.append(", scmAlias=");
+		builder.append(scmAlias);
+		builder.append("]");
+		return builder.toString();
+	}
 }
