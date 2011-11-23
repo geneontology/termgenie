@@ -17,7 +17,7 @@ public interface ManagementServices {
 	 * permissions.
 	 * 
 	 * @param sessionId
-	 * @param session
+	 * @param session automatically injected by framework
 	 * @return true, if there is an authenticated user with the correct
 	 *         permissions.
 	 */
@@ -25,10 +25,10 @@ public interface ManagementServices {
 	public boolean isAuthorized(String sessionId, HttpSession session);
 	
 	/**
-	 * Retrieve the current configuration of TermGenie
+	 * Retrieve the current configuration of TermGenie.
 	 * 
 	 * @param sessionId
-	 * @param session
+	 * @param session automatically injected by framework
 	 * @param injector 
 	 * @return list of module details
 	 */
@@ -38,12 +38,32 @@ public interface ManagementServices {
 	
 	
 	/**
-	 * Retrieve the system details of TermGenie
+	 * Retrieve the system details of TermGenie.
 	 * 
 	 * @param sessionId
-	 * @param session
+	 * @param session automatically injected by framework
 	 * @return systemDetails
 	 */
 	@SessionAware
 	public JsonSystemDetails getSystemDetails(String sessionId, HttpSession session);
+	
+	/**
+	 * Create a thread dump of TermGenie.
+	 * 
+	 * @param sessionId
+	 * @param session automatically injected by framework
+	 * @return list of thread details
+	 */
+	@SessionAware
+	public List<String> getThreadDump(String sessionId, HttpSession session);
+	
+	/**
+	 * Create an overview of the sessions in the TermGenie web application.
+	 * 
+	 * @param sessionId
+	 * @param session automatically injected by framework
+	 * @return session details
+	 */
+	@SessionAware
+	public JsonSessionDetails getSessionDetails(String sessionId, HttpSession session);
 }

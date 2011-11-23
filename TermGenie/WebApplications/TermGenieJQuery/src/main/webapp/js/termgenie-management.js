@@ -25,7 +25,9 @@ function TermGenieManagement(){
 	              'browserid.verifyAssertion',
 	              'management.isAuthorized',
 	              'management.getModuleDetails',
-	              'management.getSystemDetails']
+	              'management.getSystemDetails',
+	              'management.getThreadDump',
+	              'management.getSessionDetails']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -85,17 +87,124 @@ function TermGenieManagement(){
 		mainConfigurationPanel.append(
 				'<div id="tabs"><ul>'+
 				'<li><a href="#tabs-1">System Details</a></li>'+
-				'<li><a href="#tabs-2">Module Configuration</a></li></ul>'+
+				'<li><a href="#tabs-2">Module Configuration</a></li>'+
+				'<li><a href="#tabs-3">Threads</a></li>'+
+				'<li><a href="#tabs-4">Sessions</a></li>'+
+				'</ul>'+
 				'<div id="tabs-1"></div>'+
 				'<div id="tabs-2"></div>'+
+				'<div id="tabs-3"></div>'+
+				'<div id="tabs-4"></div>'+
 				'</div>');
 		
 		// load content
 		loadSystemDetails(jQuery("#tabs-1"));
 		loadModuleConfiguration(jQuery("#tabs-2"));
 		
+		createThreadTabContent(jQuery("#tabs-3"));
+		loadSessionDetails(jQuery("#tabs-4"));
+		
 		// create tabs
 		jQuery("#tabs").tabs();
+	}
+	
+	/**
+	 * Load the session information from the server 
+	 * and append it to the given panel.
+	 * 
+	 * @param panel parent element to be manipulated.
+	 */
+	function loadSessionDetails(panel) {
+		// add busy message
+		panel.append(createBusyMessage('Retrieving session details from server.'));
+		// request sessionId and then try to load commits for review
+		mySession.getSessionId(function(sessionId){
+			jsonService.management.getSessionDetails({
+				params: [sessionId],
+				onSuccess: function(details){
+					// empty the current content
+					panel.empty();
+					if (details) {
+						createSessionDetailsPanel(details, panel);
+					}
+				},
+				onException: function(e) {
+					// empty the current content
+					panel.empty();
+					jQuery.logSystemError('Could not retrieve session details from server',e);
+					return true;
+				}
+			});	
+		});
+	}
+	
+	/**
+	 * Render the session details in the given panel.
+	 * 
+	 * @param details system details
+	 * @param panel target panel
+	 */
+	function createSessionDetailsPanel(details, panel) {
+		var content = '<table>';
+		content += '<tr><td colspan="2" class="termgenie-module-table-header">Session Details</td></tr>';
+		content += '<tr><td>Current Active Sessions</td><td>'+details.activeSessions+'</td></tr>';
+		content += '<tr><td>Overall Sessions Created</td><td>'+details.sessionsCreated+'</td></tr>';
+		content += '<tr><td>Overall Sessions Destroyed</td><td>'+details.sessionsDestroyed+'</td></tr>';
+		content += '</table>';
+		panel.append(content);
+	}
+	
+	/**
+	 * Create the basic layout and buttons to retrieve the 
+	 * thread dump information.
+	 */
+	function createThreadTabContent(panel) {
+		panel.append('<h2>Threads</h2>');
+		var button = jQuery('<button>Create Thread Dump</button>');
+		panel.append(button);
+		var contentDiv = jQuery('<div></div>');
+		panel.append(contentDiv);
+		
+		button.click(function(){
+			button.attr("disabled", "disabled");
+			contentDiv.append(createBusyMessage('Retrieving thread dump from server.'));
+			// request sessionId and then try to load commits for review
+			mySession.getSessionId(function(sessionId){
+				jsonService.management.getThreadDump({
+					params: [sessionId],
+					onSuccess: function(details){
+						// empty the current content
+						button.removeAttr("disabled");
+						contentDiv.empty();
+						if (details) {
+							renderThreadDumpDetails(details, contentDiv);
+						}
+					},
+					onException: function(e) {
+						// empty the current content
+						contentDiv.empty();
+						button.removeAttr("disabled");
+						jQuery.logSystemError('Could not retrieve thread dump from server',e);
+						return true;
+					}
+				});	
+			});
+		});
+		
+	}
+	
+	/**
+	 * Render the thread dump details in the given panel.
+	 * 
+	 * @param details thread dump details
+	 * @param panel target panel
+	 */
+	function renderThreadDumpDetails(details, panel) {
+		var table = jQuery('<table></table>');
+		jQuery.each(details, function(index, detail){
+			table.append('<tr><td><pre>'+detail+'</pre></td></tr>');
+		});
+		panel.append(table);
 	}
 	
 	/**

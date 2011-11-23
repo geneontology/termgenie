@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -34,8 +37,12 @@ import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 
-public abstract class AbstractTermGenieContextListener extends GuiceServletContextListener {
+public abstract class AbstractTermGenieContextListener extends GuiceServletContextListener implements HttpSessionListener {
 
+	private static long sessionsCreated = 0;
+	private static long sessionsDestroyed = 0;
+	private static int activeSessions = 0;
+	
 	protected final class TermGenieServletModule extends ServletModule {
 
 		public static final String OPENID_SERVLET_PATH = "/openid";
@@ -205,4 +212,33 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		return null;
 	}
 
+	@Override
+	public void sessionCreated(HttpSessionEvent event) {
+		synchronized (AbstractTermGenieContextListener.class) {
+			activeSessions += 1;
+			sessionsCreated += 1;
+		}
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent event) {
+		synchronized (AbstractTermGenieContextListener.class) {
+			if (activeSessions > 0) {
+				activeSessions -= 1;
+				sessionsDestroyed += 1;
+			}
+		}
+	}
+	
+	public static int getActiveSessionCount() {
+		return activeSessions;
+	}
+
+	public static long getSessionsCreated() {
+		return sessionsCreated;
+	}
+	
+	public static long getSessionsDestroyed() {
+		return sessionsDestroyed;
+	}
 }

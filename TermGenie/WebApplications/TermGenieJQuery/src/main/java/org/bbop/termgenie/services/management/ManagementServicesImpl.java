@@ -1,5 +1,10 @@
 package org.bbop.termgenie.services.management;
 
+import java.lang.management.LockInfo;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +14,13 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.time.StopWatch;
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.management.JsonModuleConfigDetails.JsonPair;
 import org.bbop.termgenie.services.permissions.UserPermissions;
+import org.bbop.termgenie.servlets.AbstractTermGenieContextListener;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 
@@ -31,15 +39,20 @@ public class ManagementServicesImpl implements ManagementServices {
 	 * @param permissions
 	 */
 	@Inject
-	ManagementServicesImpl(InternalSessionHandler sessionHandler, UserPermissions permissions)
-	{
+	ManagementServicesImpl(InternalSessionHandler sessionHandler, UserPermissions permissions) {
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
 	}
 
 	@Override
-	public List<JsonModuleConfigDetails> getModuleDetails(String sessionId, HttpSession session, Injector injector) {
+	public List<JsonModuleConfigDetails> getModuleDetails(String sessionId,
+			HttpSession session,
+			Injector injector)
+	{
+		if (!isAuthorized(sessionId, session)) {
+			return null;
+		}
 		List<IOCModule> allModules = IOCModule.getAllModules();
 		List<JsonModuleConfigDetails> result = new ArrayList<JsonModuleConfigDetails>(allModules.size());
 		for (IOCModule module : allModules) {
@@ -64,7 +77,7 @@ public class ManagementServicesImpl implements ManagementServices {
 		}
 		List<JsonPair> result = new ArrayList<JsonPair>();
 		for (Pair<String, String> pair : additionalData) {
-			JsonPair jsonPair =  new JsonPair(pair.getOne(), pair.getTwo());
+			JsonPair jsonPair = new JsonPair(pair.getOne(), pair.getTwo());
 			result.add(jsonPair);
 		}
 		return result;
@@ -113,6 +126,9 @@ public class ManagementServicesImpl implements ManagementServices {
 
 	@Override
 	public JsonSystemDetails getSystemDetails(String sessionId, HttpSession session) {
+		if (!isAuthorized(sessionId, session)) {
+			return null;
+		}
 		JsonSystemDetails details = new JsonSystemDetails();
 		details.setEnvironment(System.getProperties(), "java.", "sun.", "os.");
 		final Runtime runtime = Runtime.getRuntime();
@@ -121,9 +137,98 @@ public class ManagementServicesImpl implements ManagementServices {
 		details.setFreeHeap(bytesToMByteString(runtime.freeMemory()));
 		return details;
 	}
-	
+
 	private String bytesToMByteString(long bytes) {
 		long mbytes = bytes / (1024 * 1024);
 		return Long.toString(mbytes);
+	}
+
+	@Override
+	public List<String> getThreadDump(String sessionId, HttpSession session) {
+		if (!isAuthorized(sessionId, session)) {
+			return null;
+		}
+		StopWatch watch = new StopWatch();
+		final Logger logger = Logger.getLogger(ManagementServicesImpl.class);
+		logger.info("Start creating ThreadDump");
+		watch.start();
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(true, true);
+		List<String> infos = new ArrayList<String>(threadInfos.length);
+		for (ThreadInfo threadInfo : threadInfos) {
+			infos.add(toString(threadInfo));
+		}
+		watch.stop();
+		logger.info("Finished creating ThreadDump. Time: " + watch);
+		return infos;
+	}
+
+	private static String toString(ThreadInfo threadInfo) {
+		StringBuilder sb = new StringBuilder("\"" + threadInfo.getThreadName() + "\"" + " Id=" + threadInfo.getThreadId() + " " + threadInfo.getThreadState());
+		if (threadInfo.getLockName() != null) {
+			sb.append(" on " + threadInfo.getLockName());
+		}
+		if (threadInfo.getLockOwnerName() != null) {
+			sb.append(" owned by \"" + threadInfo.getLockOwnerName() + "\" Id=" + threadInfo.getLockOwnerId());
+		}
+		if (threadInfo.isSuspended()) {
+			sb.append(" (suspended)");
+		}
+		if (threadInfo.isInNative()) {
+			sb.append(" (in native)");
+		}
+		sb.append('\n');
+		StackTraceElement[] stackTrace = threadInfo.getStackTrace();
+		int i = 0;
+		for (; i < stackTrace.length; i++) {
+			StackTraceElement ste = stackTrace[i];
+			sb.append("\tat " + ste.toString());
+			sb.append('\n');
+			if (i == 0 && threadInfo.getLockInfo() != null) {
+				Thread.State ts = threadInfo.getThreadState();
+				switch (ts) {
+					case BLOCKED:
+						sb.append("\t-  blocked on " + threadInfo.getLockInfo());
+						sb.append('\n');
+						break;
+					case WAITING:
+						sb.append("\t-  waiting on " + threadInfo.getLockInfo());
+						sb.append('\n');
+						break;
+					case TIMED_WAITING:
+						sb.append("\t-  waiting on " + threadInfo.getLockInfo());
+						sb.append('\n');
+						break;
+					default:
+				}
+			}
+
+			for (MonitorInfo mi : threadInfo.getLockedMonitors()) {
+				if (mi.getLockedStackDepth() == i) {
+					sb.append("\t-  locked " + mi);
+					sb.append('\n');
+				}
+			}
+		}
+		LockInfo[] locks = threadInfo.getLockedSynchronizers();
+		if (locks.length > 0) {
+			sb.append("\n\tNumber of locked synchronizers = " + locks.length);
+			sb.append('\n');
+			for (LockInfo li : locks) {
+				sb.append("\t- " + li);
+				sb.append('\n');
+			}
+		}
+		sb.append('\n');
+		return sb.toString();
+	}
+
+	@Override
+	public JsonSessionDetails getSessionDetails(String sessionId, HttpSession session) {
+		JsonSessionDetails details = new JsonSessionDetails();
+		details.setActiveSessions(AbstractTermGenieContextListener.getActiveSessionCount());
+		details.setSessionsCreated(AbstractTermGenieContextListener.getSessionsCreated());
+		details.setSessionsDestroyed(AbstractTermGenieContextListener.getSessionsDestroyed());
+		return details;
 	}
 }
