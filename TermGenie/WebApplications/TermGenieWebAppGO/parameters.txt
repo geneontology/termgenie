@@ -11,5 +11,5 @@ Required parameters:
 -Dtermgenie.GeneOntologyCommitAdapterCVSPassword=
 
 Recommended parameters:
--Dtermgenie.TermgenieWebappGODatabaseFolder=termgenie-go-db
+-Dtermgenie.TermGenieWebappGODatabaseFolder=termgenie-go-db
 

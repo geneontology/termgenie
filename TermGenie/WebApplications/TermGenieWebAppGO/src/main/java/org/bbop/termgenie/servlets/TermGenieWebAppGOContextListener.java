@@ -114,7 +114,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		try {
 			// basic persistence
-			String dbFolderString = IOCModule.getSystemProperty("TermgenieWebappGODatabaseFolder", applicationProperties);
+			String dbFolderString = IOCModule.getSystemProperty("TermGenieWebappGODatabaseFolder", applicationProperties);
 			File dbFolder;
 			if (dbFolderString != null && !dbFolderString.isEmpty()) {
 				dbFolder = new File(dbFolderString);

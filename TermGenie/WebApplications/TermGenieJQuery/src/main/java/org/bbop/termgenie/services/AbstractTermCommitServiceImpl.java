@@ -112,7 +112,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		if (name == null) {
 			name = userData.getEmail();
 		}
-		return "Termgenie commit for user: "+name;
+		return "TermGenie commit for user: "+name;
 	}
 
 	private class CheckTermsTask extends OntologyTask {
