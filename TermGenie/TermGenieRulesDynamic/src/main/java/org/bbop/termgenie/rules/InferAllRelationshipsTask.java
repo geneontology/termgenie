@@ -68,6 +68,10 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			if (subClasses != null && !subClasses.isEmpty()) {
 				changed = new ArrayList<Frame>();
 				for (OWLClass subClass : subClasses.getFlattened()) {
+					if (subClass.isBottomEntity()) {
+						// skip owl:Nothing
+						continue;
+					}
 					String subClassIRI = subClass.getIRI().toString();
 					if (!subClassIRI.startsWith(tempIdPrefix)) {
 						Frame frame = OboTools.createTermFrame(subClass);
@@ -75,6 +79,9 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 						OboTools.addTermId(frame, subClass);
 						changed.add(frame);	
 					}
+				}
+				if (changed.isEmpty()) {
+					changed = null;
 				}
 			}
 			List<Clause> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);

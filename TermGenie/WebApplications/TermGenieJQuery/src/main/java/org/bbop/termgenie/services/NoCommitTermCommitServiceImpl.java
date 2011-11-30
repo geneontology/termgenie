@@ -14,6 +14,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.tools.OntologyTools;
+import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
@@ -59,8 +60,8 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 			result.setMessage("Unknown ontology: " + ontologyName);
 			return result;
 		}
-		String termgenieUser = sessionHandler.isAuthenticated(sessionId, session);
-		CreateExportDiffTask task = new CreateExportDiffTask(terms, termgenieUser);
+		UserData userData = sessionHandler.getUserData(session);
+		CreateExportDiffTask task = new CreateExportDiffTask(terms, userData);
 		manager.runManagedTask(task);
 		if (task.getException() != null) {
 			result.setSuccess(false);
@@ -85,14 +86,14 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	private static class CreateExportDiffTask extends OntologyTask {
 
 		private final JsonOntologyTerm[] terms;
-		private final String termgenieUser;
+		private final UserData userData;
 		
 		private String oboDiffAdd = null;
 		private String oboDiffModified = null;
 
-		public CreateExportDiffTask(JsonOntologyTerm[] terms, String termgenieUser) {
+		public CreateExportDiffTask(JsonOntologyTerm[] terms, UserData userData) {
 			this.terms = terms;
-			this.termgenieUser = termgenieUser;
+			this.userData = userData;
 		}
 
 		@Override
@@ -109,8 +110,11 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 				addIds.add(term.getTempId());
 
 				final Frame frame = JsonOntologyTerm.createFrame(term);
-				if (termgenieUser != null) {
-					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, termgenieUser);
+				if (userData != null) {
+					final String scmAlias = userData.getScmAlias();
+					if (scmAlias != null) {
+						OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, scmAlias);
+					}
 				}
 				oboDoc.addTermFrame(frame);
 
