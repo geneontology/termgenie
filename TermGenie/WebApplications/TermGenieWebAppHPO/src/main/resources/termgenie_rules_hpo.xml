@@ -32,9 +32,8 @@ function run() {
   var label = "Abnormal "+termgenie.name(a, FMA) + " morphology";
   var definition = "Any morphological abnormality of a "+termgenie.name(a, FMA)+".";
   var synonyms = null; // TODO
-  var mdef = termgenie.createMDef('PATO_0000051 and ?R some ?X');
+  var mdef = termgenie.createMDef("PATO_0000051 and 'inheres_in' some ?X");
   mdef.addParameter('X', a, FMA);
-  mdef.addRelationByName('R', 'OBO_REL:inheres_in', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>
@@ -74,10 +73,9 @@ function run() {
   var label = termgenie.name(q, PATO) + " " + termgenie.name(e, FMA);
   var definition = "Any "+termgenie.name(e, FMA)+" that is "+termgenie.name(q, PATO)+".";
   var synonyms = null; // TODO
-  var mdef = termgenie.createMDef('?Q and ?R some ?E');
+  var mdef = termgenie.createMDef("?Q and 'inheres_in' some ?E");
   mdef.addParameter('Q', q, PATO);
   mdef.addParameter('E', e, FMA);
-  mdef.addRelationByName('R', 'OBO_REL:inheres_in', go);
   termgenie.createTerm(label, definition, synonyms, mdef);
 };]]>
 		</rule>

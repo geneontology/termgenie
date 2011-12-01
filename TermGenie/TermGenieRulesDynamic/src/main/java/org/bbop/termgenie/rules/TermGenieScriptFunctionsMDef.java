@@ -50,26 +50,6 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 		 */
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies);
 
-		/**
-		 * Bind a given relation parameter with a given relation. The relation is
-		 * resolved by name and not by identifier.
-		 * 
-		 * @param name
-		 * @param relation
-		 * @param ontology
-		 */
-		public void addRelationByName(String name, String relation, OWLGraphWrapper ontology);
-		
-		/**
-		 * Bind a given relation parameter with a given relation. The relation is
-		 * resolved by identifier.
-		 * 
-		 * @param name
-		 * @param identifier
-		 * @param ontology
-		 */
-		public void addRelationByIdentifier(String name, String identifier, OWLGraphWrapper ontology);
-
 		public String getExpression();
 
 		public Map<String, String> getParameters();

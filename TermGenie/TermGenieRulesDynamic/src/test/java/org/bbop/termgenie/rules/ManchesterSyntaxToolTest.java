@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
+import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -12,9 +13,8 @@ import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOnt
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -28,17 +28,20 @@ public class ManchesterSyntaxToolTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule() {
-
-					@Override
-					protected void bindOntologyConfiguration() {
-						bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-						bind("XMLOntologyConfigurationResource",
-								"ontology-configuration_simple.xml");
-					}
-				});
+		Injector injector = TermGenieGuice.createInjector(createOntologyModule());
 		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
+	}
+	
+	private static IOCModule createOntologyModule() {
+		return new TestDefaultOntologyModule() {
+
+			@Override
+			protected void bindOntologyConfiguration() {
+				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
+				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
+			}
+		};
 	}
 
 	@Test
@@ -49,12 +52,29 @@ public class ManchesterSyntaxToolTest {
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology());
+				OWLClassExpression expression = tool.parseManchesterExpression("GO_0019660 and 'occurs in' some GO_0005777");
+				assertNotNull(expression);
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
+		
+	}
+	
+	@Test
+	public void testManchesterSyntaxTool2() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
-				OWLObject owlObject = managed.getOWLObjectByLabel("occurs_in");
-				assertTrue(owlObject instanceof OWLEntity);
-				String relId = tool.mapOwlObject((OWLEntity) owlObject);
-				
-				OWLClassExpression expression = tool.parseManchesterExpression("GO_0019660 and "+relId+" some GO_0005777");
+				OWLClassExpression expression = tool.parseManchesterExpression("GO_0046836 and 'part_of' some GO_0051402");
 				assertNotNull(expression);
 			}
 		};

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
+import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -83,7 +84,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 		@Override
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology) {
 			if (x instanceof OWLEntity) {
-				parameters.put(name, syntaxTool .mapOwlObject((OWLEntity) x));
+				parameters.put(name, syntaxTool.getId((OWLEntity) x));
 			}
 		}
 		
@@ -107,23 +108,6 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 		@Override
 		public Map<String, String> getParameters() {
 			return Collections.unmodifiableMap(parameters);
-		}
-
-		@Override
-		public void addRelationByName(String name, String relation, OWLGraphWrapper ontology) {
-			OWLObject owlObject = ontology.getOWLObjectByLabel(relation);
-			if (owlObject != null) {
-				addParameter(name, owlObject, ontology);
-			}
-		}
-
-		@Override
-		public void addRelationByIdentifier(String name, String identifier, OWLGraphWrapper ontology)
-		{
-			OWLObject owlObject = ontology.getOWLObjectByIdentifier(identifier);
-			if (owlObject != null) {
-				addParameter(name, owlObject, ontology);
-			}
 		}
 	}
 	

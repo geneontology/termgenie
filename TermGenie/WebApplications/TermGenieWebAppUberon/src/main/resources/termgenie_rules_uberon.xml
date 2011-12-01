@@ -32,7 +32,7 @@ function run() {
   var label = termgenie.name(w, Uberon) + " " + termgenie.name(p, Uberon);
   var definition = "Any "+termgenie.name(p, Uberon)+" that is part of a "+termgenie.name(w, Uberon)+".";
   var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
-  var mdef = termgenie.createMDef('?P and part_of some ?W');
+  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
   mdef.addParameter('P', c, Uberon);
   mdef.addParameter('W', w, Uberon);
   termgenie.createTerm(label, definition, synonyms, mdef);

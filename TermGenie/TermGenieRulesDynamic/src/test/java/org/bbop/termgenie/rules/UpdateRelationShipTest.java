@@ -2,7 +2,6 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -21,6 +20,7 @@ import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -176,8 +176,8 @@ public class UpdateRelationShipTest {
 						factory.getOWLLiteral(label));
 				manager.applyChange(new AddAxiom(ontology, labelAxiom));
 				
-				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(ontology, Collections.<OWLOntology> emptyList());
-				OWLClassExpression expression = tool.parseManchesterExpression(tool.mapOwlObject(ecp) + " and part_of some " + tool.mapOwlObject(rsd));
+				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(ontology);
+				OWLClassExpression expression = tool.parseManchesterExpression(tool.getId(ecp) + " and 'part_of' some " + tool.getId(rsd));
 				OWLEquivalentClassesAxiom axiom = factory.getOWLEquivalentClassesAxiom(owlClass,
 						expression);
 				manager.applyChange(new AddAxiom(ontology, axiom));
