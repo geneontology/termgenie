@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
+import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.expression.ParserException;
@@ -122,6 +123,7 @@ public class UpdateRelationShipTest {
 
 			List<Clause> relations = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
 			System.out.println("------------");
+			System.out.println("Relations for: "+Owl2Obo.getIdentifier(exampleClass.getIRI()));
 			for (Clause relation : relations) {
 				System.out.println(relation);
 			}
@@ -133,6 +135,7 @@ public class UpdateRelationShipTest {
 
 			List<Clause> relations2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
 			System.out.println("------------");
+			System.out.println("Relations for: "+Owl2Obo.getIdentifier(ecprtd.getIRI()));
 			assertEquals(4, relations2.size());
 			for (Clause relation : relations2) {
 				System.out.println(relation);
