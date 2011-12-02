@@ -1,11 +1,9 @@
 package org.bbop.termgenie.ontology.obo;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -102,18 +100,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	protected void updateSCM(VersionControlAdapter scm, OBODoc targetOntology, OboCommitData data)
 			throws CommitException
 	{
-		try {
-			scm.connect();
-			scm.update();
-		} catch (IOException exception) {
-			throw error("Could not update scm repository", exception);
-		} finally {
-			try {
-				scm.close();
-			} catch (IOException exception) {
-				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
-			}
-		}
+		helper.updateSCM(scm);
 	}
 
 	@Override

@@ -136,6 +136,23 @@ public abstract class OboScmHelper {
 		// load ontology
 		return loadOntology(data.scmTargetOntology);
 	}
+	
+	public void updateSCM(VersionControlAdapter scm)
+			throws CommitException
+	{
+		try {
+			scm.connect();
+			scm.update(targetOntologyFileName);
+		} catch (IOException exception) {
+			throw error("Could not update scm repository", exception, false);
+		} finally {
+			try {
+				scm.close();
+			} catch (IOException exception) {
+				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
+			}
+		}
+	}
 
 	public void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
 			throws CommitException
@@ -213,7 +230,7 @@ public abstract class OboScmHelper {
 
 		try {
 			scm.connect();
-			scm.commit(commitMessage);
+			scm.commit(commitMessage, targetOntologyFileName);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}

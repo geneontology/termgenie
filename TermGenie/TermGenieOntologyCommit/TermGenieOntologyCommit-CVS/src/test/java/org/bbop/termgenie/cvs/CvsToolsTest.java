@@ -37,7 +37,7 @@ public class CvsToolsTest {
 		assertNotNull(content);
 		
 		tools.connect();
-		boolean update = tools.update();
+		boolean update = tools.update("go/ontology/obo_format_1_2");
 		tools.close();
 		assertTrue(update);
 	}

@@ -26,5 +26,16 @@
 			<artifactId>cvsclient</artifactId>
 			<version>20110816</version>
 		</dependency>
+		<dependency>
+			<groupId>com.trilead</groupId>
+			<artifactId>trilead-ssh2</artifactId>
+			<version>1.0.0-build214</version>
+		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>svnkit</id>
+			<url>http://maven.tmatesoft.com/content/repositories/releases/</url>
+		</repository>
+	</repositories>
 </project>

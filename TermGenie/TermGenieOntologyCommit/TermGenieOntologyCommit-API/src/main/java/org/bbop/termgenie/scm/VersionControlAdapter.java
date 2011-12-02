@@ -40,18 +40,20 @@ public interface VersionControlAdapter extends Closeable {
 	 * Commit the current checkout with the given message.
 	 * 
 	 * @param message the commit message
+	 * @param targetFile the file or folder to commit
 	 * @return true, if the VC commit operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
-	public boolean commit(String message) throws IOException;
+	public boolean commit(String message, String targetFile) throws IOException;
 
 	/**
 	 * Update the current working copy from the VC repository.
 	 * 
+	 * @param targetFile the file or folder to update
 	 * @return true, if the VC update operation successfully finished
 	 * @throws IOException
 	 */
-	public boolean update() throws IOException;
+	public boolean update(String targetFile) throws IOException;
 
 }

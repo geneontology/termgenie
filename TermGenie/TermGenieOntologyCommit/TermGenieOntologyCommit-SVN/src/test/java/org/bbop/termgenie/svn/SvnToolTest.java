@@ -32,14 +32,14 @@ public class SvnToolTest {
 		String targetFolder = "TermGenie/TermGenieOntologyCommit/TermGenieOntologyCommit-SVN/src/main/java/org/bbop/termgenie/svn/";
 		SvnTool svnTool = SvnTool.createAnonymousSVN(svnfolder, repositoryURL+targetFolder);
 		svnTool.connect();
-		String targetFileName = "SVNTool.java";
+		String targetFileName = SvnTool.class.getSimpleName()+".java";
 		assertTrue(svnTool.checkout(targetFileName));
 		File testFile = new File(svnfolder, targetFileName);
 		assertTrue(testFile.exists());
 		assertTrue(testFile.isFile());
 		assertTrue(testFile.canRead());
 		assertTrue(testFile.canWrite());
-		assertTrue(svnTool.update());
+		assertTrue(svnTool.update(targetFileName));
 		svnTool.close();
 		svnTool.close();
 		svnTool.close();

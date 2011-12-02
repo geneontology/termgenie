@@ -95,11 +95,11 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean commit(String message) throws IOException {
+	public boolean commit(String message, String target) throws IOException {
 		checkConnection();
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();
 		try {
-			SVNCommitInfo info = commitClient.doCommit(new File[]{ targetFolder }, false, message, null, null, false, false, SVNDepth.INFINITY);
+			SVNCommitInfo info = commitClient.doCommit(new File[]{ new File(targetFolder, target) }, false, message, null, null, false, false, SVNDepth.INFINITY);
 			SVNErrorMessage errorMessage = info.getErrorMessage();
 			if (errorMessage != null) {
 				throw new IOException(errorMessage.getMessage(), errorMessage.getCause());
@@ -111,11 +111,11 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean update() throws IOException {
+	public boolean update(String target) throws IOException {
 		checkConnection();
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		try {
-			updateClient.doUpdate(targetFolder, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
+			updateClient.doUpdate(new File(targetFolder, target), SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);

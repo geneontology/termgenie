@@ -18,8 +18,8 @@ import org.netbeans.lib.cvsclient.command.checkout.CheckoutCommand;
 import org.netbeans.lib.cvsclient.command.commit.CommitCommand;
 import org.netbeans.lib.cvsclient.command.update.UpdateCommand;
 import org.netbeans.lib.cvsclient.connection.AuthenticationException;
+import org.netbeans.lib.cvsclient.connection.Connection;
 import org.netbeans.lib.cvsclient.connection.PServerConnection;
-import org.netbeans.lib.cvsclient.connection.StandardScrambler;
 import org.netbeans.lib.cvsclient.event.CVSAdapter;
 import org.netbeans.lib.cvsclient.event.MessageEvent;
 
@@ -32,10 +32,13 @@ public class CvsTools implements VersionControlAdapter {
 	private static final Logger logger = Logger.getLogger(CvsTools.class);
 
 	private final File targetFolder;
+	private final CVSRoot root;
 	private final GlobalOptions options;
 
-	private final PServerConnection connection;
+	private final Connection connection;
 	private Client client;
+
+	
 
 	/**
 	 * Create a new instance, for the given parameters.
@@ -48,14 +51,29 @@ public class CvsTools implements VersionControlAdapter {
 		super();
 		this.targetFolder = targetFolder;
 
-		CVSRoot root = CVSRoot.parse(cvsRoot);
-		connection = new PServerConnection(root);
-		if (cvsPassword != null) {
-			String password = StandardScrambler.getInstance().scramble(cvsPassword);
-			connection.setEncodedPassword(password);
+		root = new MyCVSRoot(cvsRoot, cvsPassword);
+		String method = root.getMethod();
+		if (CVSRoot.METHOD_PSERVER.equals(method)) {
+			connection = new PServerConnection(root);
+		}
+		else if (CVSRoot.METHOD_EXT.equals(method)) {
+			connection = new SshExtServerConnection(root);
+		}
+		else{
+			throw new RuntimeException("Unsupported Method: "+method);
 		}
 		options = new GlobalOptions();
 		client = null;
+	}
+	
+	private static class MyCVSRoot extends CVSRoot {
+
+		protected MyCVSRoot(String cvsroot, String password) throws IllegalArgumentException {
+			super(cvsroot);
+			if (password != null) {
+				setPassword(password);
+			}
+		}
 	}
 
 	/**
@@ -142,10 +160,11 @@ public class CvsTools implements VersionControlAdapter {
 	 * @throws IllegalStateException in case the connection is not open
 	 */
 	@Override
-	public boolean commit(String message) throws IOException {
+	public boolean commit(String message, String cvsFile) throws IOException {
 		checkConnection();
 		CommitCommand commit = new CommitCommand();
 		commit.setMessage(message);
+		commit.setFiles(new File[]{new File(targetFolder, cvsFile)});
 		try {
 			return client.executeCommand(commit, options);
 		} catch (CommandAbortedException exception) {
@@ -158,11 +177,12 @@ public class CvsTools implements VersionControlAdapter {
 	}
 	
 	@Override
-	public boolean update() throws IOException {
+	public boolean update(String cvsFile) throws IOException {
 		checkConnection();
 		UpdateCommand update = new UpdateCommand();
 		update.setCleanCopy(true);
 		update.setRecursive(true);
+		update.setFiles(new File[]{new File(targetFolder, cvsFile)});
 		try {
 			return client.executeCommand(update, options);
 		} catch (CommandAbortedException exception) {
