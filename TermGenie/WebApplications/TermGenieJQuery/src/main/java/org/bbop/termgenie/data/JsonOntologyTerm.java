@@ -18,6 +18,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
 import owltools.graph.OWLGraphWrapper;
@@ -220,7 +221,9 @@ public class JsonOntologyTerm {
 		List<String> other = null;
 		List<JsonSynonym> synonyms = null;
 		List<String> jsonRelations = null;
-		for (Clause clause : source.getClauses()) {
+		List<Clause> clauses = new ArrayList<Clause>(source.getClauses());
+		OBOFormatWriter.sortTermClauses(clauses);
+		for (Clause clause : clauses) {
 			OboFormatTag tag = OBOFormatConstants.getTag(clause.getTag());
 			switch (tag) {
 				case TAG_ID:

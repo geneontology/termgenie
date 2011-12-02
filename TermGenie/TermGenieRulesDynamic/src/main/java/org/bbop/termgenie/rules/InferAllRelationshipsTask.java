@@ -11,6 +11,7 @@ import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -75,9 +76,11 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 					String subClassIRI = subClass.getIRI().toString();
 					if (!subClassIRI.startsWith(tempIdPrefix)) {
 						Frame frame = OboTools.createTermFrame(subClass);
-						frame.getClauses().addAll(OwlTranslatorTools.extractRelations(subClass, ontology));
-						OboTools.addTermId(frame, subClass);
-						changed.add(frame);	
+						List<Clause> clauses = OwlTranslatorTools.extractRelations(subClass, ontology);
+						OBOFormatWriter.sortTermClauses(clauses);
+						frame.getClauses().addAll(clauses);
+						changed.add(frame);
+						
 					}
 				}
 				if (changed.isEmpty()) {
