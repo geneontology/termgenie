@@ -7,7 +7,7 @@
 	</parent>
 	<artifactId>TermGeniePersistence</artifactId>
 	<name>TermGeniePersistence</name>
-	<description>Persitence Layer for TermGenie</description>
+	<description>Persistence Layer for TermGenie</description>
 	<properties>
 		<openjpa.version>2.1.1</openjpa.version>
 	</properties>
