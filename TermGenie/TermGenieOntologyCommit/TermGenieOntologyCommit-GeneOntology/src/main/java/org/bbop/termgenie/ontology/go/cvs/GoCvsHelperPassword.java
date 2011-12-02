@@ -62,7 +62,7 @@ public final class GoCvsHelperPassword extends OboScmHelper {
 
 	@Override
 	public String getCommitUserName() {
-		return null; // encoded in the cvs root
+		return ""; // encoded in the cvs root
 	}
 
 	@Override

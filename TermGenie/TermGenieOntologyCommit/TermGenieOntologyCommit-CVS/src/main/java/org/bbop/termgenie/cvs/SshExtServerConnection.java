@@ -65,7 +65,11 @@ public class SshExtServerConnection extends AbstractConnection {
         try {
         	sshConnection = new Connection(hostName, port);
         	sshConnection.connect();
-        	sshConnection.authenticateWithPassword(userName, password);
+        	boolean success = sshConnection.authenticateWithPassword(userName, password);
+        	if (!success) {
+        		String message = "Failed to authenticate via user name ('"+userName+"') and password.";
+				throw new AuthenticationException(message, message);
+			}
         	session = sshConnection.openSession();
         	session.execCommand("cvs server");
 
