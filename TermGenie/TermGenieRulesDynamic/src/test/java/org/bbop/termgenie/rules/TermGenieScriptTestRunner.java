@@ -76,6 +76,29 @@ public class TermGenieScriptTestRunner {
 		assertEquals("negative regulation of pigmentation", term2.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getTagValue(OboFormatTag.TAG_NAME, String.class));
 	}
+	
+	@Test
+	public void test_regulation_of_specific_relation() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0072225"));
+		parameters.setStringValues(field.getName(), Collections.singletonList("regulation"));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+
+		Frame term = list.get(0).getTerm();
+		assertEquals("regulation of metanephric late distal convoluted tubule development", term.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		assertEquals("GO:0072215", term.getTagValue(OboFormatTag.TAG_IS_A)); // regulation of metanephros development
+	}
 
 	@Test
 	public void test_involved_in_relations() throws Exception {
