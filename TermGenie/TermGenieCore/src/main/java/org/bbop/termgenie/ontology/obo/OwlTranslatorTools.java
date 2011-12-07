@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -23,9 +24,7 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OwlTranslatorTools {
 
-	public static List<Clause> extractRelations(OWLClass owlClass,
-			OWLGraphWrapper wrapper)
-	{
+	public static List<Clause> extractRelations(OWLClass owlClass, OWLGraphWrapper wrapper) {
 		OWLOntology ontology = wrapper.getSourceOntology();
 		List<Clause> result = new ArrayList<Clause>();
 
@@ -35,15 +34,15 @@ public class OwlTranslatorTools {
 			for (OWLSubClassOfAxiom axiom : subClassAxioms) {
 				OWLClassExpression sup = axiom.getSuperClass();
 				if (sup instanceof OWLClass) {
-					String target = Owl2Obo.getIdentifierFromObject(sup, ontology);
+					String target = getId(sup, ontology);
 					result.add(new Clause(OboFormatTag.TAG_IS_A, target));
 				}
 				else if (sup instanceof OWLObjectSomeValuesFrom || sup instanceof OWLObjectAllValuesFrom) {
-					OWLQuantifiedRestriction<?,?,?> r = (OWLQuantifiedRestriction<?,?,?>) sup;
-					String target = Owl2Obo.getIdentifierFromObject(r.getFiller(), ontology);
+					OWLQuantifiedRestriction<?, ?, ?> r = (OWLQuantifiedRestriction<?, ?, ?>) sup;
+					String target = getId(r.getFiller(), ontology);
 
 					if (target != null) {
-						String reltype = Owl2Obo.getIdentifierFromObject(r.getProperty(), ontology);
+						String reltype = getId(r.getProperty(), ontology);
 						Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP);
 						cl.addValue(reltype);
 						cl.addValue(target);
@@ -61,14 +60,15 @@ public class OwlTranslatorTools {
 				OWLClassExpression ce1 = list.get(0);
 				OWLClassExpression ce2 = list.get(1);
 
-				final String cls2 = Owl2Obo.getIdentifierFromObject(ce2, ontology);
+				boolean isUntranslateable = false;
+
+				final String cls2 = getId(ce2, ontology);
 
 				final String label = wrapper.getLabel(ce1);
 				if (label == null) {
 					continue;
 				}
 
-				boolean isUntranslateable = false;
 				List<Clause> equivalenceAxiomRelations = new ArrayList<Clause>();
 
 				if (cls2 != null) {
@@ -77,7 +77,7 @@ public class OwlTranslatorTools {
 				else if (ce2 instanceof OWLObjectUnionOf) {
 					List<OWLClassExpression> operands = ((OWLObjectUnionOf) ce2).getOperandsAsList();
 					for (OWLClassExpression operand : operands) {
-						String id = Owl2Obo.getIdentifierFromObject(operand, ontology);
+						String id = getId(operand, ontology);
 						if (id == null) {
 							isUntranslateable = true;
 						}
@@ -91,13 +91,12 @@ public class OwlTranslatorTools {
 					List<OWLClassExpression> operands = ((OWLObjectIntersectionOf) ce2).getOperandsAsList();
 					for (OWLClassExpression operand : operands) {
 						String r = null;
-						String target = Owl2Obo.getIdentifierFromObject(operand, ontology);
+						String target = getId(operand, ontology);
 
 						if (operand instanceof OWLObjectSomeValuesFrom) {
 							OWLObjectSomeValuesFrom ristriction = (OWLObjectSomeValuesFrom) operand;
-							r = Owl2Obo.getIdentifierFromObject(ristriction.getProperty(), ontology);
-							target = Owl2Obo.getIdentifierFromObject(ristriction.getFiller(),
-									ontology);
+							r = getId(ristriction.getProperty(), ontology);
+							target = getId(ristriction.getFiller(), ontology);
 						}
 						if (target != null) {
 							Clause cl = new Clause(OboFormatTag.TAG_INTERSECTION_OF);
@@ -128,14 +127,18 @@ public class OwlTranslatorTools {
 				for (OWLClassExpression expression : expressions) {
 					if (expression instanceof OWLClass) {
 						OWLClass targetClass = (OWLClass) expression;
-						String target = Owl2Obo.getIdentifierFromObject(targetClass, ontology);
+						String target = getId(targetClass, ontology);
 						if (target != null) {
 							result.add(new Clause(OboFormatTag.TAG_DISJOINT_FROM, target));
 						}
-					}	
+					}
 				}
 			}
 		}
 		return result;
+	}
+
+	private static String getId(OWLObject obj, OWLOntology ontology) {
+		return Owl2Obo.getIdentifierFromObject(obj, ontology, null);
 	}
 }
