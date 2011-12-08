@@ -13,7 +13,7 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 import owltools.graph.OWLGraphWrapper.Synonym;
 
-public class SynonymGenerationTools implements TermGenieScriptFuntionsSynonyms {
+public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms {
 
 	@Override
 	public List<ISynonym> synonyms(String prefix,
@@ -39,6 +39,68 @@ public class SynonymGenerationTools implements TermGenieScriptFuntionsSynonyms {
 			addSynonym(results, synonym.getScope(), sb.toString(), label);
 		}
 		return results;
+	}
+
+	@Override
+	public List<ISynonym> synonyms(String[] prefixes,
+			OWLObject x,
+			OWLGraphWrapper ontology,
+			String[] suffixes,
+			String label)
+	{
+		List<ISynonym> results = new ArrayList<ISynonym>();
+		String termLabel = getLabel(x, ontology);
+		for(String prefix : prefixes) {
+			if (suffixes != null && suffixes.length > 0) {
+				for(String suffix : suffixes) {
+					addSynonym(label, results, termLabel, prefix, OboFormatTag.TAG_RELATED.getTag(), suffix);
+				}
+			}
+			else {
+				addSynonym(label, results, termLabel, prefix, OboFormatTag.TAG_RELATED.getTag(), null);
+			}
+		}
+		
+		List<ISynonym> synonyms = getSynonyms(x, ontology);
+		if (synonyms != null && !synonyms.isEmpty()) {
+			for (ISynonym synonym : synonyms) {
+				for(String prefix : prefixes) {
+					String scope = synonym.getScope();
+					if (suffixes != null && suffixes.length > 0) {
+						for(String suffix : suffixes) {
+							addSynonym(label, results, synonym.getLabel(), prefix, scope, suffix);
+						}
+					}
+					else {
+						addSynonym(label, results, synonym.getLabel(), prefix, scope, null);
+					}
+				}
+				
+			}
+		}
+		
+		if (results.isEmpty()) {
+			results = null;
+		}
+		return results;
+	}
+
+	private void addSynonym(String label,
+			List<ISynonym> results,
+			String synonymLabel,
+			String prefix,
+			String scope,
+			String suffix)
+	{
+		StringBuilder sb = new StringBuilder();
+		if (prefix != null) {
+			sb.append(prefix);
+		}
+		sb.append(synonymLabel);
+		if (suffix != null) {
+			sb.append(suffix);
+		}
+		addSynonym(results, scope, sb.toString(), label);
 	}
 
 	@Override

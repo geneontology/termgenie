@@ -6,7 +6,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
-public interface TermGenieScriptFunctions extends TermGenieScriptFuntionsSynonyms {
+public interface TermGenieScriptFunctions extends TermGenieScriptFunctionsSynonyms {
 
 	/**
 	 * Retrieve a term given the template field name.

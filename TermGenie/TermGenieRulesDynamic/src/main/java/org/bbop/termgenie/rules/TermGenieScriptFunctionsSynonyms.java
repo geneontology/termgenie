@@ -7,7 +7,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
-public interface TermGenieScriptFuntionsSynonyms {
+public interface TermGenieScriptFunctionsSynonyms {
 
 	/**
 	 * Create new synonyms for a given term with a prefix and suffix. The new
@@ -25,6 +25,24 @@ public interface TermGenieScriptFuntionsSynonyms {
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String suffix,
+			String label);
+	
+	/**
+	 * Create new synonyms for a given term with prefixes and suffixes. The new
+	 * label is required as it is used to prevent accidental creation of a
+	 * synonym with the same label.
+	 * 
+	 * @param prefixes the array prefixes, may not be null
+	 * @param x the term
+	 * @param ontology the ontology to retrieve existing synonyms
+	 * @param suffixes the array suffixes, may be null
+	 * @param label the label of the new term
+	 * @return synonyms
+	 */
+	public List<ISynonym> synonyms(String[] prefixes,
+			OWLObject x,
+			OWLGraphWrapper ontology,
+			String[] suffixes,
 			String label);
 
 	/**

@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,6 +74,7 @@ public class TermGenieScriptTestRunner {
 		assertEquals("regulation of pigmentation", term1.getTagValue(OboFormatTag.TAG_NAME, String.class));
 
 		Frame term2 = list.get(1).getTerm();
+		assertEquals("down regulation of pigmentation", term2.getTagValue(OboFormatTag.TAG_SYNONYM));
 		assertEquals("negative regulation of pigmentation", term2.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getTagValue(OboFormatTag.TAG_NAME, String.class));
 	}
