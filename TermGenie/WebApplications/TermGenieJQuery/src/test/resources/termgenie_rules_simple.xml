@@ -61,7 +61,7 @@ function run() {
   if (termgenie.contains(prefixes, "negative_regulation")) {
     var label = "negative regulation of "+ termgenie.name(x, go);
     var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms("negative regulation of ", x, go, null, label);
+    var synonyms = termgenie.synonyms(["negative regulation of ", "down regulation of "], x, go, [], label);
     var mdef = termgenie.createMDef("GO_0065007 and 'negatively_regulates' some ?X");
     mdef.addParameter('X', x, go);
     termgenie.createTerm(label, definition, synonyms, mdef);
@@ -70,7 +70,7 @@ function run() {
   if (termgenie.contains(prefixes, "positive_regulation")) {
     var label = "positive regulation of "+ termgenie.name(x, go);
     var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms("positive regulation of ", x, go, null, label);
+    var synonyms = termgenie.synonyms(["positive regulation of ","up regulation of "], x, go, [], label);
     var mdef = termgenie.createMDef("GO_0065007 and 'positively_regulates' some ?X");
     mdef.addParameter('X', x, go);
     termgenie.createTerm(label, definition, synonyms, mdef);
