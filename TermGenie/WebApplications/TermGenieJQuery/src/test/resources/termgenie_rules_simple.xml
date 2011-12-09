@@ -23,64 +23,9 @@
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var x = termgenie.getSingleTerm("target", go);
-  // biological_process
-  var check = termgenie.checkGenus(x, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  if (termgenie.genus(x, "GO:0065007", go)) {
-    // biological regulation
-    termgenie.error(
-      "Cannot create 'regulation of regulation of X' terms. The term "+
-      termgenie.getTermShortInfo("GO:0065007", go)+
-      " is a parent of "+
-      termgenie.getTermShortInfo(x, go)+
-      ".");
-    return;
-  }
-  var prefixes = termgenie.getInputs("target");
-  if (!prefixes || prefixes === null || prefixes.length === 0) {
-    termgenie.error("Could not create a term for X, as no prefix was selected");
-    return;
-  }
-  var count = 0;
-  if (termgenie.contains(prefixes, "regulation")) {
-    var label = "regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "negative_regulation")) {
-    var label = "negative regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["negative regulation of ", "down regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'negatively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "positive_regulation")) {
-    var label = "positive regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["positive regulation of ","up regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'positively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (count === 0) {
-    termgenie.error("Could not create a term for X, as no known prefix was selected");
-  }
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/all_regulation.js</ruleFile>
+		</ruleFiles>
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
@@ -105,29 +50,8 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run(){
-  var go = GeneOntology;
-  var p = termgenie.getSingleTerm("part", go);
-  var w = termgenie.getSingleTerm("whole", go);
-  var check = termgenie.checkGenus(p, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var check = termgenie.checkGenus(w, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(p, go) + " involved in " + termgenie.name(w, go);
-  var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
-  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
-  mdef.addParameter('P', p, go);
-  mdef.addParameter('W', w, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/involved_in.js</ruleFile>
+		</ruleFiles>
 	</template>
 </termgenietemplates>

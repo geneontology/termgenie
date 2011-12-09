@@ -2,8 +2,9 @@ package org.bbop.termgenie.rules;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.inject.Singleton;
@@ -95,10 +96,16 @@ public class XMLDynamicRulesModule extends IOCModule {
 	@Override
 	public List<Pair<String, String>> getAdditionalData(Injector injector) {
 		String templateResource = injector.getInstance(Key.get(String.class, Names.named(DynamicRulesTemplateResourceName)));
+		TermGenieScriptRunner scriptRunner = injector.getInstance(TermGenieScriptRunner.class);
 		InputStream stream = getResourceInputStream(templateResource, injector.getInstance(Key.get(Boolean.class, Names.named(GlobalConfigModule.TryResourceLoadAsFilesName))));
 		try {
+			List<Pair<String, String>> result = new ArrayList<Pair<String,String>>();
 			String templates = IOUtils.toString(stream);
-			return Collections.singletonList(new Pair<String, String>(templateResource, templates));
+			result.add(new Pair<String, String>(templateResource, templates));
+			for(Entry<TermTemplate, String> scriptEntry : scriptRunner.scripts.entrySet()) {
+				result.add(new Pair<String, String>(scriptEntry.getKey().getName(), scriptEntry.getValue()));
+			}
+			return result;
 		} catch (IOException exception) {
 			Logger.getLogger(getClass()).warn("Could not read template resource: "+templateResource, exception);
 		}

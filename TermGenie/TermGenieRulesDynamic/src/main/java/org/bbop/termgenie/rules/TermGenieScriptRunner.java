@@ -1,16 +1,23 @@
 package org.bbop.termgenie.rules;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
@@ -21,18 +28,20 @@ import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.bbop.termgenie.tools.ResourceLoader;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 
-public class TermGenieScriptRunner implements TermGenerationEngine {
+public class TermGenieScriptRunner extends ResourceLoader implements TermGenerationEngine {
 
 	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
+	final Map<TermTemplate, String> scripts;
 	private final Map<TermTemplate, Ontology[]> templateOntologyManagers;
 	private final MultiOntologyTaskManager multiOntologyTaskManager;
 
@@ -46,13 +55,14 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			ReasonerFactory factory,
 			OntologyConfiguration ontologyConfiguration)
 	{
-		super();
+		super(false);
 		this.factory = factory;
 		this.ontologyConfiguration = ontologyConfiguration;
 		this.jsEngineManager = new JSEngineManager();
 		this.multiOntologyTaskManager = multiOntologyTaskManager;
 		this.templateOntologyManagers = new HashMap<TermTemplate, Ontology[]>();
 		this.templates = templates;
+		this.scripts = new HashMap<TermTemplate, String>();
 		for (TermTemplate termTemplate : templates) {
 			List<Ontology> requiredOntologies = new ArrayList<Ontology>();
 			Ontology targetOntology = termTemplate.getCorrespondingOntology();
@@ -63,9 +73,72 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			}
 			Ontology[] array = requiredOntologies.toArray(new Ontology[requiredOntologies.size()]);
 			templateOntologyManagers.put(termTemplate, array);
+			scripts.put(termTemplate, loadScript(termTemplate));
 		}
 	}
 
+	private String loadScript(TermTemplate template) {
+		StringBuilder sb = new StringBuilder();
+		Set<String> loadedFiles = new HashSet<String>();
+		ConcurrentLinkedQueue<String> fileQueue = new ConcurrentLinkedQueue<String>(template.getRuleFiles());
+		while (fileQueue.peek() != null) {
+			String ruleFile = fileQueue.poll();
+			sb.append("\n// ruleFile: ");
+			sb.append(ruleFile);
+			sb.append('\n');
+			InputStream stream = null;
+			try {
+				boolean add = loadedFiles.add(ruleFile);
+				if (!add) {
+					continue;
+				}
+				stream = loadResourceSimple(ruleFile);
+				if (stream == null) {
+					String msg = "Could not find ruleFile: '"+ruleFile+"'";
+					logger.error(msg);
+					throw new RuntimeException(msg);
+				}
+				
+				LineIterator iterator = IOUtils.lineIterator(stream, "UTF-8");
+				while (iterator.hasNext()) {
+					String line = iterator.next();
+					String requiredFile = getRequiredImport(line);
+					if (requiredFile != null) {
+						fileQueue.add(requiredFile);
+					}
+					sb.append(line);
+					sb.append('\n');
+				}
+			} catch (IOException exception) {
+				String msg = "Could not load ruleFile: '"+ruleFile+"'";
+				logger.error(msg, exception);
+				throw new RuntimeException(msg, exception);
+			}
+			finally {
+				IOUtils.closeQuietly(stream);
+			}
+		}
+		if (loadedFiles.isEmpty()) {
+			String msg = "No rule files loaded for template: "+template.getName();
+			logger.error(msg);
+			throw new RuntimeException(msg);
+		}
+		return sb.toString();
+	}
+	
+	private static final String JS_REQUIRES_PREFIX = "// @requires ";
+	private static final int  JS_REQUIRES_PREFIX_LENGTH = JS_REQUIRES_PREFIX.length();
+
+	private String getRequiredImport(String line) {
+		if (line.length() > JS_REQUIRES_PREFIX_LENGTH && line.startsWith(JS_REQUIRES_PREFIX)) {
+			String requiredFile = line.substring(JS_REQUIRES_PREFIX_LENGTH).trim();
+			if (requiredFile.length() > 1) {
+				return requiredFile;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public List<TermGenerationOutput> generateTerms(Ontology ontology,
 			List<TermGenerationInput> generationTasks)
@@ -118,8 +191,18 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			final Ontology[] ontologies = templateOntologyManagers.get(termTemplate);
 			if (ontologies != null && ontologies.length > 0) {
 				String templateId = getTemplateId(termTemplate, count);
-				String script = termTemplate.getRules();
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, templateId, factory);
+				String script = scripts.get(termTemplate);
+				if (script == null) {
+					String msg = "No valid script found for template: "+termTemplate.getName();
+					logger.error(msg);
+					generationOutputs.add(TermGenerationOutput.error(input, msg));
+					continue;
+				}
+				String methodName = termTemplate.getMethodName();
+				if (methodName == null) {
+					methodName = termTemplate.getName();
+				}
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
@@ -175,6 +258,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 		private final Ontology[] ontologies;
 		private final Ontology targetOntology;
 		private final String script;
+		private final String methodName;
 		private final TermGenerationInput input;
 		private final String templateId;
 		private final ReasonerFactory factory;
@@ -185,6 +269,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 				Ontology targetOntology,
 				TermGenerationInput input,
 				String script,
+				String methodName,
 				String templateId,
 				ReasonerFactory factory)
 		{
@@ -192,6 +277,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			this.targetOntology = targetOntology;
 			this.input = input;
 			this.script = script;
+			this.methodName = methodName;
 			this.templateId = templateId;
 			this.factory = factory;
 		}
@@ -260,7 +346,7 @@ public class TermGenieScriptRunner implements TermGenerationEngine {
 			engine.put("termgenie", functionsImpl);
 			engine.eval(script);
 			Invocable invocableEngine = (Invocable) engine;
-			invocableEngine.invokeFunction("run");
+			invocableEngine.invokeFunction(methodName);
 		}
 
 		protected List<TermGenerationOutput> createError(String message) {

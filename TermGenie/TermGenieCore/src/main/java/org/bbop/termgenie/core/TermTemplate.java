@@ -16,7 +16,8 @@ public class TermTemplate {
 	private final List<Ontology> external;
 	private final List<String> requires;
 	private final String obo_namespace;
-	private final String rules;
+	private final List<String> ruleFiles;
+	private final String methodName;
 	private final String hint;
 
 	/**
@@ -28,7 +29,8 @@ public class TermTemplate {
 	 * @param external
 	 * @param requires
 	 * @param obo_namespace
-	 * @param rules
+	 * @param ruleFiles
+	 * @param methodName 
 	 * @param hint
 	 */
 	public TermTemplate(Ontology correspondingOntology,
@@ -39,7 +41,8 @@ public class TermTemplate {
 			List<Ontology> external,
 			List<String> requires,
 			String obo_namespace,
-			String rules,
+			List<String> ruleFiles,
+			String methodName,
 			String hint)
 	{
 		super();
@@ -56,7 +59,8 @@ public class TermTemplate {
 		this.external = external != null ? Collections.unmodifiableList(external) : null;
 		this.requires = requires != null ? Collections.unmodifiableList(requires) : null;
 		this.obo_namespace = obo_namespace;
-		this.rules = rules;
+		this.ruleFiles = ruleFiles;
+		this.methodName = methodName;
 		this.description = description;
 		this.hint = hint;
 	}
@@ -101,10 +105,17 @@ public class TermTemplate {
 	}
 
 	/**
-	 * @return the rules
+	 * @return the ruleFiles
 	 */
-	public String getRules() {
-		return rules;
+	public List<String> getRuleFiles() {
+		return ruleFiles;
+	}
+	
+	/**
+	 * @return the methodName
+	 */
+	public String getMethodName() {
+		return methodName;
 	}
 
 	/**

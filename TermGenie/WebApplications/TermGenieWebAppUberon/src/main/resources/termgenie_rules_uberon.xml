@@ -20,23 +20,8 @@
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var p = termgenie.getSingleTerm("part", Uberon);
-  var w = termgenie.getSingleTerm("whole", Uberon);
-  if (p == null || w == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(w, Uberon) + " " + termgenie.name(p, Uberon);
-  var definition = "Any "+termgenie.name(p, Uberon)+" that is part of a "+termgenie.name(w, Uberon)+".";
-  var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
-  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
-  mdef.addParameter('P', c, Uberon);
-  mdef.addParameter('W', w, Uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/uberon/metazoan_location_specific_anatomical_structure.js</ruleFile>
+		</ruleFiles>
 	</template>
 </termgenietemplates>

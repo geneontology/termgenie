@@ -23,24 +23,9 @@
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var c = termgenie.getSingleTerm("cell", CL);
-  var a = termgenie.getSingleTerm("location", Uberon);
-  if (c == null || a == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(a, Uberon) + " " + termgenie.name(c, CL);
-  var definition = "Any "+termgenie.name(c, CL)+" that is part of a "+termgenie.name(a, Uberon)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?C and 'part_of' some ?A");
-  mdef.addParameter('C', c, CL);
-  mdef.addParameter('A', a, Uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/cl/metazoan_location_specific_cell.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="cell_by_surface_marker">
@@ -68,28 +53,8 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var pro = ProteinOntology;
-  var c = termgenie.getSingleTerm("cell", CL);
-  var two = [pro, go];
-  var p = termgenie.getSingleTerm("membrane_part", two);
-  if (c == null || p == null || !(termgenie.genus(p, "GO:0032991", go) || termgenie.genus(p, "PR:000000001", pro))) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(p, two) + " " + termgenie.name(c, CL);
-  var definition = "Any "+termgenie.name(c, CL)+" that has "+termgenie.name(p, two)+" on the plasma membrane.";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?C and 'has_plasma_membrane_part' some ?P");
-  mdef.addParameter('C', c, CL);
-  mdef.addParameter('P', p, two);
-  // cdef.property("multivalued(has_plasma_membrane_part)");
-  // cdef.property("any_cardinality(has_plasma_membrane_part)");
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/cl/cell_by_surface_marker.js</ruleFile>
+		</ruleFiles>
 	</template>
 </termgenietemplates>

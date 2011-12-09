@@ -85,7 +85,8 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		List<Ontology> external = null;
 		List<String> requires = null;
 		String obo_namespace = null;
-		String rule = null;
+		List<String> ruleFiles = null;
+		String methodName = null;
 		String hint = null;
 	}
 
@@ -120,8 +121,8 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 								TAG_obonamespace,
 								current.obo_namespace);
 					}
-					else if (TAG_rule.equals(element)) {
-						current.rule = getTextTag(parser, TAG_rule, current.rule);
+					else if (TAG_ruleFiles.equals(element)) {
+						current.ruleFiles = parseRuleFiles(parser, current);
 					}
 					else if (TAG_ontology.equals(element)) {
 						if (current.correspondingOntology != null) {
@@ -193,6 +194,43 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		else {
 			current.requires.add(text);
 			return current.requires;
+		}
+	}
+
+	private List<String> parseRuleFiles(XMLStreamReader parser, TemplateParseData current) 
+			throws XMLStreamException
+	{
+		if (current.ruleFiles != null) {
+			error("Multiple " + TAG_ruleFiles + " tags found", parser);
+		}
+		current.ruleFiles = new ArrayList<String>();
+		while (true) {
+			switch (parser.next()) {
+				case XMLStreamConstants.END_ELEMENT:
+					if (TAG_ruleFiles.equals(parser.getLocalName())) {
+						if (current.fields.isEmpty()) {
+							error("Missing " + TAG_ruleFile + " tag", parser);
+						}
+						return current.ruleFiles;
+					}
+					break;
+				case XMLStreamConstants.START_ELEMENT:
+					String element = parser.getLocalName();
+					if (TAG_ruleFile.equals(element)) {
+						String text = getTextTag(parser, TAG_ruleFile, null);
+						if (text == null || text.isEmpty()) {
+							error("Found unexpected empty tag: "+TAG_ruleFile, parser);
+						}
+						current.ruleFiles.add(text);
+					}
+					else if (TAG_methodName.equals(element)) {
+						current.methodName = getTextTag(parser, TAG_ruleFile, current.methodName);
+					}
+					else {
+						error("Unexpected tag: " + element, parser);
+					}
+					break;
+			}
 		}
 	}
 
@@ -334,10 +372,10 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		if (current.obo_namespace == null) {
 			error("Missing " + TAG_obonamespace + " tag", parser);
 		}
-		if (current.rule == null) {
-			error("Missing " + TAG_rule + " tag", parser);
+		if (current.ruleFiles == null || current.ruleFiles.isEmpty()) {
+			error("Missing " + TAG_ruleFiles + " tag", parser);
 		}
-		TermTemplate template = new TermTemplate(current.correspondingOntology, current.name, current.displayName, current.description, current.fields, current.external, current.requires, current.obo_namespace, current.rule, current.hint);
+		TermTemplate template = new TermTemplate(current.correspondingOntology, current.name, current.displayName, current.description, current.fields, current.external, current.requires, current.obo_namespace, current.ruleFiles, current.methodName, current.hint);
 		result.add(template);
 	}
 

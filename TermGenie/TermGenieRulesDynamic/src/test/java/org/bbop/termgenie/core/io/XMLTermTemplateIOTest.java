@@ -70,7 +70,8 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 			assertEquals(t1.getDescription(), t2.getDescription());
 			assertEquals(t1.getHint(), t2.getHint());
 			assertEquals(t1.getOboNamespace(), t2.getOboNamespace());
-			assertEquals(t1.getRules(), t2.getRules());
+			assertArrayEquals(t1.getRuleFiles().toArray(), t2.getRuleFiles().toArray());
+			assertEquals(t1.getMethodName(), t2.getMethodName());
 			assertOntology(t1.getCorrespondingOntology(), t2.getCorrespondingOntology());
 			assertOntologies(t1.getExternal(), t2.getExternal());
 			assertList(t1.getRequires(), t2.getRequires());

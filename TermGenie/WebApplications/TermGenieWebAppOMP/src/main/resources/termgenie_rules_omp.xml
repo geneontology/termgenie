@@ -24,24 +24,8 @@
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var e = termgenie.getSingleTerm("entity", go);
-  var q = termgenie.getSingleTerm("quality", PATO);
-  if (e == null ||  q == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(q, PATO) + " of " + termgenie.name(e, go);
-  var definition = "Any "+termgenie.name(q, PATO)+" of "+termgenie.name(e, go)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?Q and 'inheres_in' some ?E");
-  mdef.addParameter('Q', q, PATO);
-  mdef.addParameter('E', e, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/omp/omp_entity_quality.js</ruleFile>
+		</ruleFiles>
 	</template>
 </termgenietemplates>

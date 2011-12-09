@@ -23,64 +23,9 @@
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var x = termgenie.getSingleTerm("target", go);
-  // biological_process
-  var check = termgenie.checkGenus(x, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  if (termgenie.genus(x, "GO:0065007", go)) {
-    // biological regulation
-    termgenie.error(
-      "Cannot create 'regulation of regulation of X' terms. The term "+
-      termgenie.getTermShortInfo("GO:0065007", go)+
-      " is a parent of "+
-      termgenie.getTermShortInfo(x, go)+
-      ".");
-    return;
-  }
-  var prefixes = termgenie.getInputs("target");
-  if (!prefixes || prefixes === null || prefixes.length === 0) {
-    termgenie.error("Could not create a term for X, as no prefix was selected");
-    return;
-  }
-  var count = 0;
-  if (termgenie.contains(prefixes, "regulation")) {
-    var label = "regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "negative_regulation")) {
-    var label = "negative regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["negative regulation of ", "down regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'negatively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "positive_regulation")) {
-    var label = "positive regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["positive regulation of ","up regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'positively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (count === 0) {
-    termgenie.error("Could not create a term for X, as no known prefix was selected");
-  }
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/all_regulation.js</ruleFile>
+		</ruleFiles>
 	</template>
 	<template name="all_regulation_mf" displayname="regulation: molecular_function">
 		<description>Select all three subtemplates to generate terms for
@@ -104,64 +49,9 @@ function run() {
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var x = termgenie.getSingleTerm("target", go);
-  // molecular function
-  var check = termgenie.checkGenus(x, "GO:0003674", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  if (termgenie.genus(x, "GO:0065007", go)) {
-    // biological regulation
-    termgenie.error(
-      "Cannot create 'regulation of regulation of X' terms. The term "+
-      termgenie.getTermShortInfo("GO:0065007", go)+
-      " is a parent of "+
-      termgenie.getTermShortInfo(x, go)+
-      ".");
-    return;
-  }
-  var prefixes = termgenie.getInputs("target");
-  if (!prefixes || prefixes === null || prefixes.length === 0) {
-    termgenie.error("Could not create a term for X, as no prefix was selected");
-    return;
-  }
-  var count = 0;
-  if (termgenie.contains(prefixes, "regulation")) {
-    var label = "regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", x, go, null, label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "negative_regulation")) {
-    var label = "negative regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that stops, prevents or reduces the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["negative regulation of ", "down regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'negatively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (termgenie.contains(prefixes, "positive_regulation")) {
-    var label = "positive regulation of "+ termgenie.name(x, go);
-    var definition = "Any process that activates or increases the frequency, rate or extent of "+termgenie.name(x, go)+".";
-    var synonyms = termgenie.synonyms(["positive regulation of ","up regulation of "], x, go, [], label);
-    var mdef = termgenie.createMDef("GO_0065007 and 'positively_regulates' some ?X");
-    mdef.addParameter('X', x, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-    count += 1;
-  }
-  if (count === 0) {
-    termgenie.error("Could not create a term for X, as no known prefix was selected");
-  }
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/all_regulation_mf.js</ruleFile>
+		</ruleFiles>
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
@@ -186,30 +76,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run(){
-  var go = GeneOntology;
-  var p = termgenie.getSingleTerm("part", go);
-  var w = termgenie.getSingleTerm("whole", go);
-  var check = termgenie.checkGenus(p, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var check = termgenie.checkGenus(w, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(p, go) + " involved in " + termgenie.name(w, go);
-  var definition = "Any "+termgenie.name(p, go)+" that is involved in "+termgenie.name(w, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
-  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
-  mdef.addParameter('P', p, go);
-  mdef.addParameter('W', w, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/involved_in.js</ruleFile>
+		</ruleFiles>
 	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
@@ -233,30 +102,9 @@ function run(){
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var p = termgenie.getSingleTerm("process", go);
-  var c = termgenie.getSingleTerm("location", go);
-  var check = termgenie.checkGenus(p, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  check = termgenie.checkGenus(c, "GO:0005575", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(p, go) + " in " + termgenie.name(c, go);
-  var definition = "Any "+termgenie.name(p, go)+" that takes place in "+termgenie.name(c, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
-  var mdef = termgenie.createMDef("?P and 'occurs in' some ?C");
-  mdef.addParameter('P', p, go);
-  mdef.addParameter('C', c, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/occurs_in.js</ruleFile>
+		</ruleFiles>
 	</template>
 	<template name="regulation_by">
 		<description>processes regulated by other regulating processes
@@ -281,48 +129,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var p = termgenie.getSingleTerm("process", go);
-  var r = termgenie.getSingleTerm("regulator", go);
-  var check = termgenie.checkGenus(p, "GO:0008150", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  check = termgenie.checkGenus(r, "GO:0050789", go); // regulation of biological process
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  subrun(r);
-  
-  var negative_r = go.getOWLObjectByLabel("negative "+termgenie.name(r, go));
-  if (negative_r !== null) {
-    subrun(negative_r);
-  }
-  
-  var positive_r = go.getOWLObjectByLabel("positive "+termgenie.name(r, go));
-  if (positive_r !== null) {
-    subrun(positive_r);
-  }
-  
-  function subrun(regulator) {
-    var label = "regulation of "+termgenie.name(p, go) + " by " + termgenie.name(regulator, go);
-    var definition = "Any process that modulates the frequency, rate or extent of "+termgenie.name(p, go)+", by "+termgenie.name(regulator, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, label);
-    
-    // intentionally null, as the intended relations do not fit the pattern
-    // but the synonyms, might be of some use
-    var mdef = [];
-    // var mdef = termgenie.createMDef("GO_0065007 and is_a some ?P and is_a some ?R");
-    // mdef.addParameter('P', p, go);
-    // mdef.addParameter('P', regulator, go);
-    termgenie.createTerm(label, definition, synonyms, mdef);
-  };
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/regulation_by.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="part_of_cell_component">
@@ -348,30 +157,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var p = termgenie.getSingleTerm("part", go);
-  var w = termgenie.getSingleTerm("whole", go);
-  var check = termgenie.checkGenus(p, "GO:0005575", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  check = termgenie.checkGenus(w, "GO:0005575", go);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(p, go) + " " + termgenie.name(w, go);
-  var definition = "Any "+termgenie.name(p, go)+" that is part of a "+termgenie.name(w, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
-  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
-  mdef.addParameter('P', p, go);
-  mdef.addParameter('W', w, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="protein_binding">
@@ -392,24 +180,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var pro = ProteinOntology;
-  var x = termgenie.getSingleTerm("target", pro);
-  var check = termgenie.checkGenus(x, "PR:000000001", pro);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(x, pro) + " binding";
-  var definition = "Interacting selectively and non-covalently with  "+termgenie.name(x, pro)+".";
-  var synonyms = termgenie.synonyms(null, x, pro, " binding", label);
-  var mdef = termgenie.createMDef("GO_0005488 and 'results_in_binding_of' some ?X");
-  mdef.addParameter('X', x, pro);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/pro/protein_binding.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="metazoan_development">
@@ -430,26 +203,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var uberon = Uberon;
-  var x = termgenie.getSingleTerm("target", uberon);
-  var check = termgenie.checkGenus(x, "UBERON:0001062", uberon);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(x, uberon) + " development";
-  var definition = "The process whose specific outcome is the progression of "+
-                   termgenie.refname(x, uberon)+
-                   " over time, from its formation to the mature structure.";
-  var synonyms = termgenie.synonyms(null, x, uberon, " development", label);
-  var mdef = termgenie.createMDef("GO_0032502 and 'results_in_complete_development_of' some ?X");
-  mdef.addParameter('X', x, uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="metazoan_morphogenesis">
@@ -470,24 +226,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var uberon = Uberon;
-  var x = termgenie.getSingleTerm("target", uberon);
-  var check = termgenie.checkGenus(x, 'UBERON:0001062', uberon);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(x, uberon) + " morphogenesis";
-  var definition = "The developmental process by which "+termgenie.refname(x, uberon)+" is generated and organized.";
-  var synonyms = termgenie.synonyms(null, x, uberon, " morphogenesis", label);
-  var mdef = termgenie.createMDef("GO_0009653 and 'results_in_morphogenesis_of' some ?X");
-  mdef.addParameter('X', x, uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/uberon/metazoan_morphogenesis.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="plant_development">
@@ -508,26 +249,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var plant = PO;
-  var x = termgenie.getSingleTerm("target", plant);
-  var check = termgenie.checkGenus(x, "PO:0025131", plant);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(x, plant) + " development";
-  var definition = "The process whose specific outcome is the progression of "+
-                   termgenie.refname(x, plant)+
-                   " over time, from its formation to the mature structure.";
-  var synonyms = termgenie.synonyms(null, x, plant, " development", label);
-  var mdef = termgenie.createMDef("GO_0032502 and 'results_in_complete_development_of' some ?X");
-  mdef.addParameter('X', x, plant);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/plant/plant_development.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="plant_morphogenesis">
@@ -548,24 +272,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var plant = PO;
-  var x = termgenie.getSingleTerm("target", plant);
-  var check = termgenie.checkGenus(x, PO0025131, plant);
-  if (check.isGenus() !== true) {
-    termgenie.error(check.error());
-    return;
-  }
-  var label = termgenie.name(x, plant) + " morphogenesis";
-  var definition = "The developmental process by which "+termgenie.refname(x, plant)+" is generated and organized.";
-  var synonyms = termgenie.synonyms(null, x, plant, " morphogenesis", label);
-  var mdef = termgenie.createMDef("GO_0009653 and 'results_in_morphogenesis_of' some ?X");
-  mdef.addParameter('X', x, plant);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/plant/plant_morphogenesis.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="structural_protein_complex">
@@ -587,35 +296,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var pro = ProteinOntology;
-  var terms = termgenie.getTerms("unit", pro);
-  var label = "";
-  var mdefString = 'GO_0043234';
-  for(var i=0; i<terms.length; i+= 1) {
-    var check = termgenie.checkGenus(terms[i], "PR:000000001", pro);
-    if (check.isGenus() !== true) {
-      termgenie.error(check.error());
-      return;
-    }
-    if (i > 0) {
-      label += "-"
-    }
-    label += termgenie.name(terms[i], pro);
-    mdefString += ' and (has_part some ?P'+i+' )';
-  }
-  label += " complex";
-  var definition = termgenie.definition("Any protein complex consisting of ",terms, pro, ", ",".");
-  var synonyms = termgenie.synonyms(null, terms, pro, "-", " complex", label);
-  var mdef = termgenie.createMDef(mdefString);
-  for(i=0; i<terms.length; i+= 1) {
-    mdef.addParameter('P'+i, terms[i], pro);
-  }
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/go/pro/structural_protein_complex.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="abnormal_morphology">
@@ -638,21 +321,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var a = termgenie.getSingleTerm("target", FMA);
-  if (a === null) {
-    termgenie.error("The specified term does not correspond to the pattern");
-    return;
-  }
-  var label = "Abnormal "+termgenie.name(a, FMA) + " morphology";
-  var definition = "Any morphological abnormality of a "+termgenie.name(a, FMA)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("PATO_0000051 and 'inheres_in' some ?X");
-  mdef.addParameter('X', a, FMA);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/hpo/abnormal_morphology.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="hpo_entity_quality">
@@ -678,23 +349,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var e = termgenie.getSingleTerm("entity", FMA);
-  var q = termgenie.getSingleTerm("quality", PATO);
-  if (e === null || q === null) {
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(q, PATO) + " " + termgenie.name(e, FMA);
-  var definition = "Any "+termgenie.name(e, FMA)+" that is "+termgenie.name(q, PATO)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?Q and 'inheres_in' some ?E");
-  mdef.addParameter('Q', q, PATO);
-  mdef.addParameter('E', e, FMA);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/hpo/hpo_entity_quality.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="omp_entity_quality">
@@ -719,25 +376,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var e = termgenie.getSingleTerm("entity", go);
-  var q = termgenie.getSingleTerm("quality", PATO);
-  if (e == null ||  q == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(q, PATO) + " of " + termgenie.name(e, go);
-  var definition = "Any "+termgenie.name(q, PATO)+" of "+termgenie.name(e, go)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?Q and 'inheres_in' some ?E");
-  mdef.addParameter('Q', q, PATO);
-  mdef.addParameter('E', e, go);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/omp/omp_entity_quality.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="metazoan_location_specific_cell">
@@ -761,24 +402,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var c = termgenie.getSingleTerm("cell", CL);
-  var a = termgenie.getSingleTerm("location", Uberon);
-  if (c == null || a == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(a, Uberon) + " " + termgenie.name(c, CL);
-  var definition = "Any "+termgenie.name(c, CL)+" that is part of a "+termgenie.name(a, Uberon)+".";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?C and 'part_of' some ?A");
-  mdef.addParameter('C', c, CL);
-  mdef.addParameter('A', a, Uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/cl/metazoan_location_specific_cell.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="cell_by_surface_marker">
@@ -806,29 +432,9 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var go = GeneOntology;
-  var pro = ProteinOntology;
-  var c = termgenie.getSingleTerm("cell", CL);
-  var two = [pro, go];
-  var p = termgenie.getSingleTerm("membrane_part", two);
-  if (c == null || p == null || !(termgenie.genus(p, "GO:0032991", go) || termgenie.genus(p, "PR:000000001", pro))) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(p, two) + " " + termgenie.name(c, CL);
-  var definition = "Any "+termgenie.name(c, CL)+" that has "+termgenie.name(p, two)+" on the plasma membrane.";
-  var synonyms = null; // TODO
-  var mdef = termgenie.createMDef("?C and 'has_plasma_membrane_part' some ?P");
-  mdef.addParameter('C', c, CL);
-  mdef.addParameter('P', p, two);
-  // cdef.property("multivalued(has_plasma_membrane_part)");
-  // cdef.property("any_cardinality(has_plasma_membrane_part)");
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/cl/cell_by_surface_marker.js</ruleFile>
+		</ruleFiles>
 	</template>
 
 	<template name="metazoan_location_specific_anatomical_structure">
@@ -849,23 +455,8 @@ function run() {
 			</field>
 			<field name="Comment" />
 		</fields>
-		<rule> <![CDATA[
-function run() {
-  var p = termgenie.getSingleTerm("part", Uberon);
-  var w = termgenie.getSingleTerm("whole", Uberon);
-  if (p == null || w == null) {
-    // check branch
-    termgenie.error("The specified terms do not correspond to the pattern");
-    return;
-  }
-  var label = termgenie.name(w, Uberon) + " " + termgenie.name(p, Uberon);
-  var definition = "Any "+termgenie.name(p, Uberon)+" that is part of a "+termgenie.name(w, Uberon)+".";
-  var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
-  var mdef = termgenie.createMDef("?P and 'part_of' some ?W");
-  mdef.addParameter('P', c, Uberon);
-  mdef.addParameter('W', w, Uberon);
-  termgenie.createTerm(label, definition, synonyms, mdef);
-};]]>
-		</rule>
+		<ruleFiles>
+			<ruleFile>rules/uberon/metazoan_location_specific_anatomical_structure.js</ruleFile>
+		</ruleFiles>
 	</template>
 </termgenietemplates>

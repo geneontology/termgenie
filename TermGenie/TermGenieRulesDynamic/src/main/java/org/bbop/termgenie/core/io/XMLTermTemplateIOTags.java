@@ -15,7 +15,9 @@ interface XMLTermTemplateIOTags {
 	static final String TAG_requires = "requires";
 	static final String TAG_fields = "fields";
 	static final String TAG_field = "field";
-	static final String TAG_rule = "rule";
+	static final String TAG_ruleFiles = "ruleFiles";
+	static final String TAG_ruleFile = "ruleFile";
+	static final String TAG_methodName = "methodName";
 	static final String TAG_cardinality = "cardinality";
 	static final String TAG_prefixes = "prefixes";
 	static final String TAG_prefix = "prefix";

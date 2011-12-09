@@ -142,6 +142,15 @@ public interface TermGenieScriptFunctions extends TermGenieScriptFunctionsSynony
 	public String refname(OWLObject x, OWLGraphWrapper[] ontologies);
 
 	/**
+	 * Create a short info string for a term containing the label and id.
+	 * 
+	 * @param x
+	 * @param ontology
+	 * @return short info for a term
+	 */
+	public String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology);
+	
+	/**
 	 * Create a new definition by concatenation of term names using a prefix,
 	 * infix, and suffix.
 	 * 
