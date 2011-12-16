@@ -1754,11 +1754,14 @@ function termgenie(){
 						var marked = markupRelation(relString);
 						if (marked) {
 							if(count === 0) {
-								table.append('<tr><td>'+jsonChange.id+'</td><td class="termgenie-pre nobr">'+marked+'</td></tr>');
+								var s = '<tr><td>'+jsonChange.id;
+								if (jsonChange.label && jsonChange.label !== null) {
+									s += '</td><td>' + jsonChange.label;
+								}
+								s += '</td></tr>';
+								table.append(s);
 							}
-							else {
-								table.append('<tr><td></td><td class="termgenie-pre nobr">'+marked+'</td></tr>');
-							}
+							table.append('<tr><td></td><td class="termgenie-pre nobr">'+marked+'</td></tr>');
 							count += 1;
 						}
 					});

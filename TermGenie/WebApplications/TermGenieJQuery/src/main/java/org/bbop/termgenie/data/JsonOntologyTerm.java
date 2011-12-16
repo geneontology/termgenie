@@ -285,6 +285,9 @@ public class JsonOntologyTerm {
 				if (frameChanges != null) {
 					JsonChange jsonChange = new JsonChange();
 					jsonChange.setId(changedFrame.getId());
+					if (nameProvider != null) {
+						jsonChange.setLabel(nameProvider.getName(changedFrame.getId()));
+					}
 					jsonChange.setChanges(frameChanges);
 					jsonChanged.add(jsonChange);
 				}
@@ -471,6 +474,7 @@ public class JsonOntologyTerm {
 	public static class JsonChange {
 		
 		private String id;
+		private String label;
 		private List<String> changes;
 		
 		/**
@@ -487,6 +491,20 @@ public class JsonOntologyTerm {
 			this.id = id;
 		}
 		
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+
+		/**
+		 * @param label the label to set
+		 */
+		public void setLabel(String label) {
+			this.label = label;
+		}
+
 		/**
 		 * @return the changes
 		 */
