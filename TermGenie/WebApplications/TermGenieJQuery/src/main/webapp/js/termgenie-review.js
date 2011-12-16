@@ -253,7 +253,11 @@ function TermGenieReview(){
 								relString += change;
 							});
 							relString += '\n</pre>';
-							addRow(table, null, 'Modified relations for<br/>term <span class="termgenie-pre">'+jsonChange.id+'</span>', relString);
+							var desc = 'Modified relations for term <span class="termgenie-pre">'+jsonChange.id+'</span>';
+							if (jsonChange.label && jsonChange.label !== null) {
+								desc += ' with label: <span class="termgenie-pre">' + jsonChange.label+'</span>';
+							}
+							addRow(table, null, desc, relString);
 						}
 					});
 				}
