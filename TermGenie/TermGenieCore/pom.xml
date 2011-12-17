@@ -30,7 +30,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop</groupId>
-			<artifactId>OWLTools</artifactId>
+			<artifactId>OWLTools-Core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jcel</groupId>
