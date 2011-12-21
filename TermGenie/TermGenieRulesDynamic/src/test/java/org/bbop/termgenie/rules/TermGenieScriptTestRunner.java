@@ -79,6 +79,33 @@ public class TermGenieScriptTestRunner {
 	}
 	
 	@Test
+	public void test_regulation_of_fail() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0002754"));
+		parameters.setStringValues(field.getName(),
+				Arrays.asList("regulation", "negative_regulation", "positive_regulation"));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		
+		TermGenerationOutput output = list.get(0);
+		assertFalse(output.isSuccess());
+		assertTrue(output.getMessage().contains("biological regulation"));
+		// GO:0002754 has the ancestor 'biological regulation', which has to result result in a fail.
+	}
+	
+	
+	
+	@Test
 	public void test_regulation_of_specific_relation() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);

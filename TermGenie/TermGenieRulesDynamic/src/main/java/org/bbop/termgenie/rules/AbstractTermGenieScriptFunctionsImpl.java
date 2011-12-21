@@ -206,6 +206,11 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 	public String getTermShortInfo(OWLObject x, OWLGraphWrapper ontology) {
 		return "\"" + ontology.getLabel(x) + "\" (" + ontology.getIdentifier(x) + ")";
 	}
+	
+	@Override
+	public String getTermShortInfo(String x, OWLGraphWrapper ontology) {
+		return getTermShortInfo(getTermSimple(x, ontology), ontology);
+	}
 
 	@Override
 	public String[] getInputs(String name) {
