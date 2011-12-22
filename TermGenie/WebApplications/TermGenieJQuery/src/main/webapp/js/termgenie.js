@@ -1889,6 +1889,18 @@ function termgenie(){
 				
 				myUserPanel.submit(terms, ontology);
 			});
+			
+			/*
+			 * change label of submit button depending state of commit checkbox
+			 */
+			var checkBoxElem = jQuery('#checkbox-try-commit');
+			checkBoxElem.change(function(){
+				var label = 'Preview';
+				if (checkBoxElem.is(':checked')) {
+					label = 'Submit';
+				}
+				jQuery('#button-submit-for-commit-or-export').text(label);
+			});
 		}
 	}
 	
