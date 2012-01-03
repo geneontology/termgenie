@@ -7,10 +7,10 @@ function regulation_triad(x, parent) {
 		error(check.error());
 		return;
 	}
-	if (genus(x, "GO:0065007", go)) {
+	if (containsClassInEquivalenceAxioms(x, getEquivalentClasses("GO:0065007", go), go)) {
 		// biological regulation
 		error("Cannot create 'regulation of regulation of X' terms. The term "
-				+ getTermShortInfo("GO:0065007", go) + " is a parent of "
+				+ getTermShortInfo("GO:0065007", go) + " is a used in the definition of "
 				+ getTermShortInfo(x, go) + ".");
 		return;
 	}

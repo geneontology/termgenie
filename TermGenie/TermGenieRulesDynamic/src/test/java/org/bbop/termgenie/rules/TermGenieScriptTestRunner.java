@@ -79,6 +79,38 @@ public class TermGenieScriptTestRunner {
 	}
 	
 	@Test
+	public void test_regulation_of_weaker_check_of_ancestor() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		// intracellular vesicle pattern recognition receptor signaling pathway
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0002754"));
+		parameters.setStringValues(field.getName(),
+				Arrays.asList("regulation", "negative_regulation", "positive_regulation"));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(3, list.size());
+
+		Frame term1 = list.get(0).getTerm();
+		assertEquals("regulation of intracellular vesicle pattern recognition receptor signaling pathway", term1.getTagValue(OboFormatTag.TAG_NAME, String.class));
+
+		Frame term2 = list.get(1).getTerm();
+		assertEquals("down regulation of intracellular vesicle pattern recognition receptor signaling pathway", term2.getTagValue(OboFormatTag.TAG_SYNONYM));
+		assertEquals("negative regulation of intracellular vesicle pattern recognition receptor signaling pathway", term2.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		
+		Frame term3 = list.get(2).getTerm();
+		assertEquals("positive regulation of intracellular vesicle pattern recognition receptor signaling pathway", term3.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		assertEquals("up regulation of intracellular vesicle pattern recognition receptor signaling pathway", term3.getTagValue(OboFormatTag.TAG_SYNONYM));
+	}
+	
+	@Test
 	public void test_regulation_of_fail() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
@@ -86,7 +118,7 @@ public class TermGenieScriptTestRunner {
 
 		TemplateField field = termTemplate.getFields().get(0);
 
-		parameters.setTermValues(field.getName(), Arrays.asList("GO:0002754"));
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0051782")); // negative regulation of cell division
 		parameters.setStringValues(field.getName(),
 				Arrays.asList("regulation", "negative_regulation", "positive_regulation"));
 
@@ -100,10 +132,7 @@ public class TermGenieScriptTestRunner {
 		TermGenerationOutput output = list.get(0);
 		assertFalse(output.isSuccess());
 		assertTrue(output.getMessage().contains("biological regulation"));
-		// GO:0002754 has the ancestor 'biological regulation', which has to result result in a fail.
 	}
-	
-	
 	
 	@Test
 	public void test_regulation_of_specific_relation() {

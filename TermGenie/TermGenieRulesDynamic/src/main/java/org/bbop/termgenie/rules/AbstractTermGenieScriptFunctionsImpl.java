@@ -2,14 +2,21 @@ package org.bbop.termgenie.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.reasoner.Node;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -200,6 +207,74 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass,
+			Set<OWLClass> checkedForClasses,
+			OWLGraphWrapper ontology)
+	{
+		return RuleHelper.containsClassInEquivalenceAxioms(targetClass, checkedForClasses, ontology.getSourceOntology());
+	}
+
+	@Override
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass,
+			OWLClass checkedFor,
+			OWLGraphWrapper ontology)
+	{
+		return containsClassInEquivalenceAxioms(targetClass, Collections.singleton(checkedFor), ontology);
+	}
+
+	@Override
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass,
+			String checkedForId,
+			OWLGraphWrapper ontology)
+	{
+		OWLClass checkedFor = ontology.getOWLClassByIdentifier(checkedForId);
+		return containsClassInEquivalenceAxioms(targetClass, checkedFor, ontology);
+	}
+
+	@Override
+	public boolean containsClassInEquivalenceAxioms(String targetClassId,
+			String checkedForId,
+			OWLGraphWrapper ontology)
+	{
+		OWLClass targetClass = ontology.getOWLClassByIdentifier(targetClassId);
+		OWLClass checkedFor = ontology.getOWLClassByIdentifier(checkedForId);
+		return containsClassInEquivalenceAxioms(targetClass, checkedFor, ontology);
+	}
+
+	@Override
+	public Set<OWLClass> getEquivalentClasses(final OWLClass cls, OWLGraphWrapper ontology) {
+		ReasonerTaskManager manager = this.tools.factory.getDefaultTaskManager(ontology);
+		final Set<OWLClass> result = new HashSet<OWLClass>();
+		ManagedTask<OWLReasoner> task = new ManagedTask<OWLReasoner>(){
+
+			@Override
+			public Modified run(OWLReasoner managed)
+			{
+				Node<OWLClass> classes = managed.getEquivalentClasses(cls);
+				if (classes != null) {
+					result.addAll(classes.getEntitiesMinusBottom());
+				}
+				return Modified.no;
+			}
+			
+		};
+		manager.runManagedTask(task);
+		return result;
+	}
+
+	@Override
+	public Set<OWLClass> getEquivalentClasses(String id, OWLGraphWrapper ontology) {
+		if (id == null) {
+			return Collections.emptySet();
+		}
+		OWLClass cls = ontology.getOWLClassByIdentifier(id);
+		if (cls == null ) {
+			return Collections.emptySet();
+		}
+		return getEquivalentClasses(cls, ontology);
 	}
 
 	@Override

@@ -69,6 +69,30 @@ function genus(x, parent, ontology) {
 }
 
 /**
+ * Check if there is an equivalence axiom for x, which has the checkedFor class in its signature.
+ * 
+ * @param x
+ * @param checkedFor
+ * @param ontology
+ * @returns boolean
+ */
+function containsClassInEquivalenceAxioms(x, checkedFor, ontology) {
+	return termgenie.containsClassInEquivalenceAxioms(x, checkedFor, ontology);
+}
+
+/**
+ * Retrieve the set of equivalent classes for the given class. 
+ * The set will contain the class itself.
+ * 
+ * @param x
+ * @param ontology
+ * @returns
+ */
+function getEquivalentClasses(x, ontology) {
+	return termgenie.getEquivalentClasses(x, ontology);
+}
+
+/**
  * Retrieve the values for a template field
  * 
  * @param name name of the field

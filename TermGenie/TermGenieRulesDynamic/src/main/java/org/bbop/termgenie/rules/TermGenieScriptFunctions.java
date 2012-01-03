@@ -1,7 +1,9 @@
 package org.bbop.termgenie.rules;
 
 import java.util.List;
+import java.util.Set;
 
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
@@ -71,7 +73,66 @@ public interface TermGenieScriptFunctions extends TermGenieScriptFunctionsSynony
 	 * @return true if x is a genus of parent
 	 */
 	public boolean genus(OWLObject x, String parent, OWLGraphWrapper ontology);
+	
+	/**
+	 * Check if the target class has equivalence axioms, which has any of checkedFor classes in its signature.
+	 * 
+	 * @param targetClass
+	 * @param checkedForClasses
+	 * @param ontology
+	 * @return true if there is an equivalence axiom, which has any of checkedFor classes in its signature.
+	 */
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass, Set<OWLClass> checkedForClasses, OWLGraphWrapper ontology);
 
+	/**
+	 * Check if the target class has equivalence axioms, which use the checkedFor class in its signature.
+	 * 
+	 * @param targetClass
+	 * @param checkedFor
+	 * @param ontology
+	 * @return true if there is an equivalence axiom which has the checkedFor class in its signature
+	 */
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass, OWLClass checkedFor, OWLGraphWrapper ontology);
+	
+	/**
+	 * Check if the target class has equivalence axioms, which use the checkedFor class in its signature.
+	 * 
+	 * @param targetClass
+	 * @param checkedForId identifier
+	 * @param ontology
+	 * @return true if there is an equivalence axiom which has the checkedFor class in its signature
+	 */
+	public boolean containsClassInEquivalenceAxioms(OWLClass targetClass, String checkedForId, OWLGraphWrapper ontology);
+	
+	/**
+	 * Check if the target class has equivalence axioms, which use the checkedFor class in its signature.
+	 * 
+	 * @param targetClassId identifier
+	 * @param checkedForId identifier
+	 * @param ontology
+	 * @return true if there is an equivalence axiom which has the checkedFor class in its signature
+	 */
+	public boolean containsClassInEquivalenceAxioms(String targetClassId, String checkedForId, OWLGraphWrapper ontology);
+	
+	/**
+	 * Retrieve a set of equivalent classes for the given {@link OWLClass}.
+	 * 
+	 * @param cls
+	 * @param ontology
+	 * @return set of equivalent classes (never null)
+	 */
+	public Set<OWLClass> getEquivalentClasses(OWLClass cls, OWLGraphWrapper ontology);
+	
+	/**
+	 * Retrieve a set of equivalent classes for the given identifier. 
+	 * If no class can be found for the id, an empty set is returned.
+	 * 
+	 * @param id
+	 * @param ontology
+	 * @return set of equivalent classes (never null)
+	 */
+	public Set<OWLClass> getEquivalentClasses(String id, OWLGraphWrapper ontology);
+	
 	public static interface CheckResult {
 
 		/**
