@@ -430,7 +430,7 @@ function termgenie(){
 				templateContainer.append('<div class="termgenie-term-template-description">Description: <span class="description-content">'+template.description+'</span></div>');
 			}
 			if (template.hint && template.hint.length > 0) {
-				templateContainer.append('<div class="termgenie-term-template-hint">Hint: <span class="hint-content">'+template.hint+'</span></div>');
+				templateContainer.append('<div class="termgenie-term-template-hint">'+createLayoutTableOpenTag()+'<tr><td class="termgenie-term-template-hint">Hint:</td><td class="hint-content">'+template.hint+'</td></tr></table></div>');
 			}
 			templateContainer.append('<div id="'+id+'"></div>');
 		}
