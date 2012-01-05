@@ -23,6 +23,7 @@ public class CommitHistoryItem {
 	private Date date = null;
 	private String commitMessage = null;
 	private String email = null;
+	private String savedBy = null;
 	private boolean committed = false;
 
 	private List<CommitedOntologyTerm> terms = null;
@@ -128,6 +129,21 @@ public class CommitHistoryItem {
 	 */
 	public void setTerms(List<CommitedOntologyTerm> terms) {
 		this.terms = terms;
+	}
+
+	/**
+	 * @return savedBy
+	 */
+	@Column
+	public String getSavedBy() {
+		return savedBy;
+	}
+
+	/**
+	 * @param savedBy the savedBy to set
+	 */
+	public void setSavedBy(String savedBy) {
+		this.savedBy = savedBy;
 	}
 
 }

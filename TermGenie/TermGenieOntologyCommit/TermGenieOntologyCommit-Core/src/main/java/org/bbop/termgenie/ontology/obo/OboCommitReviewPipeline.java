@@ -125,10 +125,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void createModifiedTargetFile(OboCommitData data, OBODoc ontology)
+	protected void createModifiedTargetFile(OboCommitData data, OBODoc ontology, String savedBy)
 			throws CommitException
 	{
-		helper.createModifiedTargetFile(data, ontology);
+		helper.createModifiedTargetFile(data, ontology, savedBy);
 	}
 
 	@Override

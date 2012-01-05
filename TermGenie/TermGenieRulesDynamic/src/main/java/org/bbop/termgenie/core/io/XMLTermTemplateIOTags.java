@@ -24,6 +24,7 @@ interface XMLTermTemplateIOTags {
 	static final String TAG_branch = "branch";
 
 	static final String ATTR_name = "name";
+	static final String ATTR_label = "label";
 	static final String ATTR_displayname = "displayname";
 	static final String ATTR_required = "required";
 }

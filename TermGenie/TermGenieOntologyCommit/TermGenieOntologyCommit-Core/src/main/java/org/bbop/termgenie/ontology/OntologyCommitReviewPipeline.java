@@ -232,7 +232,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			}
 
 			// write changed ontology to a file
-			createModifiedTargetFile(data, targetOntology);
+			createModifiedTargetFile(data, targetOntology, item.getSavedBy());
 
 			// check for valid ontology files
 			File targetFile = data.getTargetFile();
@@ -367,9 +367,10 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * 
 	 * @param data
 	 * @param ontology
+	 * @param savedBy
 	 * @throws CommitException
 	 */
-	protected abstract void createModifiedTargetFile(WORKFLOWDATA data, ONTOLOGY ontology)
+	protected abstract void createModifiedTargetFile(WORKFLOWDATA data, ONTOLOGY ontology, String savedBy)
 			throws CommitException;
 
 	/**

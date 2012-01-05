@@ -65,6 +65,7 @@ public class CommitHistoryTools {
 		item.setTerms(translateTerms(terms));
 		item.setCommitMessage(commitMessage);
 		item.setEmail(userData.getEmail());
+		item.setSavedBy(userData.getScmAlias());
 		item.setDate(date);
 
 		return item;

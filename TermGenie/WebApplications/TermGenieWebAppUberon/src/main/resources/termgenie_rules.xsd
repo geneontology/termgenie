@@ -51,6 +51,7 @@
             <xsd:element name="prefixes" type="prefixesType" maxOccurs="1" minOccurs="0" />
         </xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="label" type="xsd:string" use="optional"/>
 		<xsd:attribute name="required" type="xsd:boolean" use="optional"/>
 	</xsd:complexType>
   <xsd:complexType name="prefixesType">

@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -27,8 +28,10 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 
 /**
@@ -207,11 +210,31 @@ public abstract class OboScmHelper {
 		return success;
 	}
 
-	public void createModifiedTargetFile(OboCommitData data, OBODoc ontology)
+	public void createModifiedTargetFile(OboCommitData data, OBODoc ontology, String savedBy)
 			throws CommitException
 	{
 		// write changed ontology to a file
+		Frame headerFrame = ontology.getHeaderFrame();
+		if (headerFrame != null) {
+			// set date
+			updateClause(headerFrame, OboFormatTag.TAG_DATE, new Date());
+			
+			// set saved-by
+			updateClause(headerFrame, OboFormatTag.TAG_SAVED_BY, savedBy);
+			
+			// set auto-generated-by
+			updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
+		}
 		data.modifiedTargetOntology = createOBOFile(data.oboFolder, ontology);
+	}
+	
+	private void updateClause(Frame frame, OboFormatTag tag, Object value) {
+		Clause clause = frame.getClause(tag);
+		if (clause == null) {
+			clause = new Clause(tag);
+			frame.addClause(clause);
+		}
+		clause.setValue(value);
 	}
 
 	/**

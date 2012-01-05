@@ -581,7 +581,11 @@ function termgenie(){
 						}
 					}
 					// write field names
-					secondRow += '<td><span class="termgenie-term-template-field-name">'+field.name+'</span></td>';
+					var fieldLabel = field.name;
+					if (field.label && field.label !== null) {
+						fieldLabel = field.label;
+					}
+					secondRow += '<td><span class="termgenie-term-template-field-name">'+fieldLabel+'</span></td>';
 					thirdRow += '<td><span class="termgenie-term-template-field-ontologies">';
 					if (field.ontologies && field.ontologies.length > 0) {
 						jQuery.each(field.ontologies, function(index, ontology){

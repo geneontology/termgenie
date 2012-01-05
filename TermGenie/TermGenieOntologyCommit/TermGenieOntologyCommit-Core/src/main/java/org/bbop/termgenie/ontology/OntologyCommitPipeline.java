@@ -154,7 +154,7 @@ public abstract class OntologyCommitPipeline<WORKFLOWDATA extends OntologyCommit
 		}
 
 		// write changed ontology to a file
-		createModifiedTargetFile(data, targetOntology);
+		createModifiedTargetFile(data, targetOntology, commitInfo.getUserData().getScmAlias());
 
 		// check for valid ontology files
 		File targetFile = data.getTargetFile();
@@ -261,7 +261,7 @@ public abstract class OntologyCommitPipeline<WORKFLOWDATA extends OntologyCommit
 	 * @param ontology
 	 * @throws CommitException
 	 */
-	protected abstract void createModifiedTargetFile(WORKFLOWDATA data, ONTOLOGY ontology)
+	protected abstract void createModifiedTargetFile(WORKFLOWDATA data, ONTOLOGY ontology, String savedBy)
 			throws CommitException;
 
 	/**

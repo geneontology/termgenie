@@ -292,6 +292,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		private JsonTemplateField createJsonTemplateField(TemplateField field) {
 			JsonTemplateField jsonField = new JsonTemplateField();
 			jsonField.setName(field.getName());
+			jsonField.setLabel(field.getLabel());
 			jsonField.setRequired(field.isRequired());
 			Cardinality c = field.getCardinality();
 			jsonField.setCardinality(new JsonCardinality(c.getMinimum(), c.getMaximum()));

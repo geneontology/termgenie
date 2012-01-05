@@ -128,6 +128,7 @@ public class JsonTermTemplate {
 	public static class JsonTemplateField {
 
 		private String name;
+		private String label;
 		private boolean required;
 		private JsonCardinality cardinality;
 		private String[] functionalPrefixes;
@@ -170,6 +171,20 @@ public class JsonTermTemplate {
 		 */
 		public void setName(String name) {
 			this.name = name;
+		}
+		
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+
+		/**
+		 * @param label the label to set
+		 */
+		public void setLabel(String label) {
+			this.label = label;
 		}
 
 		/**

@@ -9,6 +9,7 @@ import java.util.List;
 public class TemplateField {
 
 	private final String name;
+	private final String label;
 	private final boolean required;
 	private final Cardinality cardinality;
 	private final List<String> functionalPrefixes;
@@ -81,21 +82,32 @@ public class TemplateField {
 	}
 
 	public TemplateField(String name, Ontology ontology) {
-		this(name, true, ontology == null ? null : Collections.singletonList(ontology));
+		this(name, null, true, ontology == null ? null : Collections.singletonList(ontology));
 	}
 
 	public TemplateField(String name, List<Ontology> ontologies) {
-		this(name, true, ontologies);
+		this(name, null, true, ontologies);
 	}
 
+	/**
+	 * Convenience constructor, for fields without prefixes, single cardinality,
+	 * no corresponding ontology, and no label.
+	 * 
+	 * @param name
+	 */
+	public TemplateField(String name) {
+		this(name, null, false, SINGLE_FIELD_CARDINALITY, null);
+	}
+	
 	/**
 	 * Convenience constructor, for fields without prefixes, single cardinality,
 	 * and no corresponding ontology.
 	 * 
 	 * @param name
+	 * @param label
 	 */
-	public TemplateField(String name) {
-		this(name, false, SINGLE_FIELD_CARDINALITY, null);
+	public TemplateField(String name, String label) {
+		this(name, label, false, SINGLE_FIELD_CARDINALITY, null);
 	}
 
 	/**
@@ -103,57 +115,64 @@ public class TemplateField {
 	 * cardinality.
 	 * 
 	 * @param name
+	 * @param label
 	 * @param required
 	 * @param correspondingOntologies
 	 */
-	public TemplateField(String name, boolean required, List<Ontology> correspondingOntologies) {
-		this(name, required, SINGLE_FIELD_CARDINALITY, correspondingOntologies);
+	public TemplateField(String name, String label, boolean required, List<Ontology> correspondingOntologies) {
+		this(name, label, required, SINGLE_FIELD_CARDINALITY, correspondingOntologies);
 	}
 
 	/**
 	 * Convenience constructor, for fields without prefixes.
 	 * 
 	 * @param name
+	 * @param label
 	 * @param required
 	 * @param cardinality
 	 * @param correspondingOntologies
 	 */
 	public TemplateField(String name,
+			String label,
 			boolean required,
 			Cardinality cardinality,
 			List<Ontology> correspondingOntologies)
 	{
-		this(name, required, cardinality, null, correspondingOntologies);
+		this(name, label, required, cardinality, null, correspondingOntologies);
 	}
 
 	/**
 	 * Standard constructor for specifying all parameters of a field.
 	 * 
 	 * @param name
+	 * @param label
 	 * @param required
 	 * @param cardinality
 	 * @param functionalPrefixes
 	 * @param correspondingOntology
 	 */
 	public TemplateField(String name,
+			String label,
 			boolean required,
 			Cardinality cardinality,
 			List<String> functionalPrefixes,
 			Ontology correspondingOntology)
 	{
-		this(name, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology));
+		this(name, label, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology));
 	}
 
 	/**
 	 * Standard constructor for specifying all parameters of a field.
 	 * 
 	 * @param name
+	 * @param label
 	 * @param required
 	 * @param cardinality
 	 * @param functionalPrefixes
 	 * @param correspondingOntologies
 	 */
 	public TemplateField(String name,
+			String label,
 			boolean required,
 			Cardinality cardinality,
 			List<String> functionalPrefixes,
@@ -161,6 +180,7 @@ public class TemplateField {
 	{
 		super();
 		this.name = name;
+		this.label = label;
 		this.required = required;
 		this.cardinality = cardinality;
 		if (functionalPrefixes == null || functionalPrefixes.isEmpty()) {
@@ -177,6 +197,13 @@ public class TemplateField {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
 	}
 
 	/**

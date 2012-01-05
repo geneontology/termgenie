@@ -267,6 +267,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 
 	private TemplateField parseField(XMLStreamReader parser) throws XMLStreamException {
 		String name = getAttribute(parser, ATTR_name);
+		String label = getAttribute(parser, ATTR_label, true);
 		String stringRequired = getAttribute(parser, ATTR_required, true);
 		boolean required = stringRequired != null ? Boolean.parseBoolean(stringRequired) : false;
 		Cardinality cardinality = null;
@@ -281,7 +282,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (cardinality == null) {
 							cardinality = TemplateField.SINGLE_FIELD_CARDINALITY;
 						}
-						return new TemplateField(name, required, cardinality, functionalPrefixes, correspondingOntologies);
+						return new TemplateField(name, label, required, cardinality, functionalPrefixes, correspondingOntologies);
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:

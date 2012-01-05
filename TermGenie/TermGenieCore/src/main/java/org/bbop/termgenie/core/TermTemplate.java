@@ -150,7 +150,7 @@ public class TermTemplate {
 			return null;
 		}
 		for (TemplateField field : fields) {
-			if (field.getName().equals(name)) {
+			if (field.getName().equals(name) || name.equals(field.getLabel())) {
 				return field;
 			}
 		}

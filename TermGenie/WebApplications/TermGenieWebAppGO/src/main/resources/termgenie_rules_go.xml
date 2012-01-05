@@ -55,7 +55,11 @@
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
-		<hint>[part] involved in [whole]</hint>
+		<hint>[part] involved in [involved in] &lt;br/&gt;
+		E.g., &lt;b&gt;G1 phase&lt;/b&gt; [part] and &lt;b&gt;Meiosis&lt;/b&gt; [involved in] 
+		will generate the term '&lt;b&gt;G1 phase&lt;/b&gt; involved in &lt;b&gt;Meiosis'&lt;/b&gt;. 
+		 &lt;br/&gt; The new term is defined as 'is_a' &lt;b&gt;G1 phase&lt;/b&gt;,  
+		 'part_of' &lt;b&gt;Meiosis&lt;/b&gt;, and as the intersection of the input terms.</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
@@ -64,7 +68,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="whole" required="true">
+			<field name="whole" required="true" label="involved in">
 				<ontology name="GeneOntology">
 					<branch>biological_process</branch>
 				</ontology>
