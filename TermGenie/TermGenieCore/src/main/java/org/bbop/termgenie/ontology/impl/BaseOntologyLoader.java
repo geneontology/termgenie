@@ -91,6 +91,7 @@ public class BaseOntologyLoader {
 		try {
 			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 			OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
+			postProcessOWLOntology(ontology, owlOntology);
 			return owlOntology;
 		} catch (URISyntaxException exception) {
 			throw new OWLOntologyCreationException(exception);
