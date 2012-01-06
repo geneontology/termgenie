@@ -33,7 +33,7 @@ public class DefaultOntologyConfigurationTest {
 				go.getRoots().toArray(new String[0]));
 		assertArrayEquals(new String[] { "ProteinOntology", "Uberon", "PO" },
 				go.requires.toArray(new String[0]));
-		assertEquals(3, go.supports.size());
+		assertTrue(go.supports == null || go.supports.isEmpty());
 
 		ConfiguredOntology bp = configurations.get("biological_process");
 		assertEquals("http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo",
