@@ -133,6 +133,7 @@ public class JsonTermTemplate {
 		private JsonCardinality cardinality;
 		private String[] functionalPrefixes;
 		private String[] ontologies;
+		private String remoteResource;
 
 		public JsonTemplateField() {
 			super();
@@ -140,23 +141,29 @@ public class JsonTermTemplate {
 
 		/**
 		 * @param name
+		 * @param label
 		 * @param required
 		 * @param cardinality
 		 * @param functionalPrefixes
 		 * @param ontologies
+		 * @param remoteResource 
 		 */
 		public JsonTemplateField(String name,
+				String label,
 				boolean required,
 				JsonCardinality cardinality,
 				String[] functionalPrefixes,
-				String[] ontologies)
+				String[] ontologies,
+				String remoteResource)
 		{
 			super();
 			this.name = name;
+			this.label = label;
 			this.required = required;
 			this.cardinality = cardinality;
 			this.functionalPrefixes = functionalPrefixes;
 			this.ontologies = ontologies;
+			this.remoteResource = remoteResource;
 		}
 
 		/**
@@ -241,6 +248,20 @@ public class JsonTermTemplate {
 		 */
 		public void setOntologies(String[] ontologies) {
 			this.ontologies = ontologies;
+		}
+
+		/**
+		 * @return the remoteResource
+		 */
+		public String getRemoteResource() {
+			return remoteResource;
+		}
+
+		/**
+		 * @param remoteResource the remoteResource to set
+		 */
+		public void setRemoteResource(String remoteResource) {
+			this.remoteResource = remoteResource;
 		}
 
 		/*

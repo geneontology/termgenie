@@ -14,6 +14,7 @@ public class TemplateField {
 	private final Cardinality cardinality;
 	private final List<String> functionalPrefixes;
 	private final List<Ontology> correspondingOntologies;
+	private final String remoteResource;
 
 	/**
 	 * Constant: Fields, which require exactly one input.
@@ -138,7 +139,7 @@ public class TemplateField {
 			Cardinality cardinality,
 			List<Ontology> correspondingOntologies)
 	{
-		this(name, label, required, cardinality, null, correspondingOntologies);
+		this(name, label, required, cardinality, null, correspondingOntologies, null);
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class TemplateField {
 			List<String> functionalPrefixes,
 			Ontology correspondingOntology)
 	{
-		this(name, label, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology));
+		this(name, label, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology), null);
 	}
 
 	/**
@@ -170,13 +171,15 @@ public class TemplateField {
 	 * @param cardinality
 	 * @param functionalPrefixes
 	 * @param correspondingOntologies
+	 * @param remoteResource 
 	 */
 	public TemplateField(String name,
 			String label,
 			boolean required,
 			Cardinality cardinality,
 			List<String> functionalPrefixes,
-			List<Ontology> correspondingOntologies)
+			List<Ontology> correspondingOntologies,
+			String remoteResource)
 	{
 		super();
 		this.name = name;
@@ -190,6 +193,7 @@ public class TemplateField {
 			this.functionalPrefixes = Collections.unmodifiableList(functionalPrefixes);
 		}
 		this.correspondingOntologies = correspondingOntologies;
+		this.remoteResource = remoteResource;
 	}
 
 	/**
@@ -236,37 +240,49 @@ public class TemplateField {
 		return correspondingOntologies != null && !correspondingOntologies.isEmpty();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * @return the remoteResource
 	 */
+	public String getRemoteResource() {
+		return remoteResource;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("TemplateField [");
-		if (name != null) {
-			builder.append("name=");
-			builder.append(name);
+		builder.append("name=");
+		builder.append(name);
+		if (label != null) {
 			builder.append(", ");
+			builder.append("label=");
+			builder.append(label);
 		}
+		builder.append(", ");
 		builder.append("required=");
 		builder.append(required);
-		builder.append(", ");
 		if (cardinality != null) {
+			builder.append(", ");
 			builder.append("cardinality=");
 			builder.append(cardinality);
-			builder.append(", ");
 		}
 		if (functionalPrefixes != null) {
+			builder.append(", ");
 			builder.append("functionalPrefixes=");
 			builder.append(functionalPrefixes);
-			builder.append(", ");
 		}
 		if (correspondingOntologies != null) {
+			builder.append(", ");
 			builder.append("correspondingOntologies=");
 			builder.append(correspondingOntologies);
+		}
+		if (remoteResource != null) {
+			builder.append(", ");
+			builder.append("remoteResource=");
+			builder.append(remoteResource);
 		}
 		builder.append("]");
 		return builder.toString();
 	}
+
 }

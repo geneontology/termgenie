@@ -19,7 +19,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -45,7 +45,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -75,7 +75,7 @@
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -101,7 +101,7 @@
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -128,7 +128,7 @@
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -156,7 +156,7 @@
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -179,7 +179,7 @@
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -290,7 +290,7 @@ generated automatically</description>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -314,7 +314,7 @@ generated automatically</description>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -339,7 +339,7 @@ generated automatically</description>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -364,7 +364,7 @@ generated automatically</description>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />
@@ -388,7 +388,7 @@ generated automatically</description>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" />

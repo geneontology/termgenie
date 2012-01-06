@@ -19,7 +19,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
-			<field name="DefX_Ref">
+			<field name="DefX_Ref" remoteResource="test_remote">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>

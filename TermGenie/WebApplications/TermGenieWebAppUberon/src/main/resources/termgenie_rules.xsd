@@ -53,6 +53,7 @@
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
 		<xsd:attribute name="label" type="xsd:string" use="optional"/>
 		<xsd:attribute name="required" type="xsd:boolean" use="optional"/>
+		<xsd:attribute name="remoteResource" type="xsd:string" use="optional"/>
 	</xsd:complexType>
   <xsd:complexType name="prefixesType">
     <xsd:sequence>

@@ -24,6 +24,8 @@ import org.bbop.termgenie.services.GoTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
+import org.bbop.termgenie.services.resources.ResourceProviderModule;
+import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
 
@@ -138,5 +140,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String gocConfigResource = "GO.curators_dbxrefs";
 		String gocMappingResource = "GO.curators_email_dbxrefs";
 		return new GeneOntologyUserDataModule(applicationProperties, gocConfigResource, '\t', gocMappingResource, '\t');
+	}
+	
+	@Override
+	protected ResourceProviderModule getResourceProviderModule() {
+		return new ConfiguredResourceProviderModule(applicationProperties);
 	}
 }

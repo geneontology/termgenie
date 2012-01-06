@@ -91,6 +91,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			if (templateField.isRequired()) {
 				writer.writeAttribute(ATTR_required, Boolean.toString(true));
 			}
+			if (templateField.getRemoteResource() != null) {
+				writer.writeAttribute(ATTR_remoteResource, templateField.getRemoteResource());
+			}
 			List<Ontology> ontologies = templateField.getCorrespondingOntologies();
 			if (ontologies != null) {
 				for (Ontology ontology : ontologies) {

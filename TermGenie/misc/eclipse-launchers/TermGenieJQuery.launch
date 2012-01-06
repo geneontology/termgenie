@@ -5,7 +5,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="RunJettyRunWebAppClassPathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="runjettyrun.Bootstrap"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TermGenieJQuery"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2500M -Dtermgenie.JsonUserPermissionsFileName=src/test/resources/termgenie-user-permissions.json"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2500M -Dtermgenie.JsonUserPermissionsFileName=src/test/resources/termgenie-user-permissions.json -Dtermgenie.ConfiguredResourceProviderFile=src/test/resources/resourceprovider-config.tab"/>
 <stringAttribute key="run_jetty_run.CONTEXT_ATTR" value="/termgenie"/>
 <booleanAttribute key="run_jetty_run.ENABLE_JNDI_ATTR" value="false"/>
 <booleanAttribute key="run_jetty_run.ENABLE_MAVEN_TEST_CLASSES_ATTR" value="false"/>

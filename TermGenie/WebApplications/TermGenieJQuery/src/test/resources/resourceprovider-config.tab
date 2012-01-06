@@ -1,0 +1,3 @@
+# This is a config file mapping resource names to files
+
+GO.curators_dbxrefs 	 src/test/resources/GO.curators_dbxrefs

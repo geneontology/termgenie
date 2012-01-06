@@ -6,6 +6,8 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
+import org.bbop.termgenie.services.resources.ResourceProviderModule;
+import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
 
 public class TermGenieContextListener extends AbstractTermGenieContextListener {
 
@@ -28,4 +30,10 @@ public class TermGenieContextListener extends AbstractTermGenieContextListener {
 		return new UserPermissionsModule("termgenie", applicationProperties);
 	}
 
+	@Override
+	protected ResourceProviderModule getResourceProviderModule() {
+		return new ConfiguredResourceProviderModule(applicationProperties);
+	}
+
+	
 }

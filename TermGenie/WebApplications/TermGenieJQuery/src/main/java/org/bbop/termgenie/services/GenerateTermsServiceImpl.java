@@ -294,6 +294,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			jsonField.setName(field.getName());
 			jsonField.setLabel(field.getLabel());
 			jsonField.setRequired(field.isRequired());
+			jsonField.setRemoteResource(field.getRemoteResource());
 			Cardinality c = field.getCardinality();
 			jsonField.setCardinality(new JsonCardinality(c.getMinimum(), c.getMaximum()));
 			jsonField.setFunctionalPrefixes(field.getFunctionalPrefixes().toArray(new String[0]));

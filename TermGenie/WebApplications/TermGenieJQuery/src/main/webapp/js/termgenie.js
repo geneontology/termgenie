@@ -87,7 +87,8 @@ function termgenie(){
 	              'user.getValues',
 	              'user.setValues',
 	              'openid.authRequest',
-	              'browserid.verifyAssertion']
+	              'browserid.verifyAssertion',
+	              'resource.getLinesFromResource']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -128,6 +129,39 @@ function termgenie(){
 			}
 		});	
 	});
+	
+	var remoteResourceCache = {};
+	
+	function fetchLinesFromRemoteResource(name, onSuccessCallback, onErrorCallback) {
+		// first check cache
+		if (remoteResourceCache[name]) {
+			// found in cache
+			onSuccessCallback(remoteResourceCache[name]);
+			return;
+		}
+		// not in cache
+		
+		// create default error handler, if not defined
+		if (!onErrorCallback) {
+			onErrorCallback = function(e) {
+				// hidden error message
+				jQuery.logSystemError('RemoteResource service call failed',e, true);
+			};
+		}
+		// request sessionId and then start a request for the resource.
+		mySession.getSessionId(function(sessionId){
+			// use json-rpc to retrieve available ontologies
+			jsonService.resource.getLinesFromResource({
+				params: [sessionId, name],
+				onSuccess: function(result) {
+					// put in cache
+					remoteResourceCache[name] = result;
+					onSuccessCallback(result);
+				},
+				onException: onErrorCallback
+			});	
+		});
+	}
 	
 	/**
 	 * Create a selector for the given list of ontologies.
@@ -629,6 +663,36 @@ function termgenie(){
 					trElement.append('<td></td>');
 					tdElement = trElement.children().last();
 					
+					if (field.remoteResource && field.remoteResource !== null) {
+						fetchLinesFromRemoteResource(field.remoteResource, function(lines) {
+							// process lines into choices
+							var choices = [];
+							jQuery.each(lines, function(index, line){
+								if (index === 0) {
+									// skip the first line
+									return;
+								}
+								// get the first substring until a tab
+								var charPos = line.indexOf('\t');
+								if(charPos > 0) {
+									choices.push(line.substring(0,charPos));
+								}
+								else {
+									// or take the whole string if no tab is available
+									choices.push(line);
+								}
+							});
+							// create field with choices
+							createField(field, i, tdElement, choices);
+						});
+					}
+					else {
+						// default no choices
+						createField(field, i, tdElement);	
+					}
+				}
+				
+				function createField(field, i, tdElement, choices) {
 					if (field.ontologies && field.ontologies.length > 0) {
 						var cardinality = field.cardinality;
 						if (cardinality.min === 1 && cardinality.max === 1) {
@@ -665,7 +729,7 @@ function termgenie(){
 									return matching;
 								};
 							}
-							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max, validator);
+							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max, validator, choices);
 						}
 					}
 				}
@@ -717,8 +781,13 @@ function termgenie(){
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function TextFieldInput(elem, templatePos, validator) {
-			var inputElement = jQuery('<input type="text"/>'); 
+		function TextFieldInput(elem, templatePos, validator, choices) {
+			var inputElement = jQuery('<input type="text"/>');
+			if (choices && choices !== null) {
+				inputElement.autocomplete({
+					source: choices
+				});
+			}
 			elem.append(inputElement);
 			
 			inputElement.change(function(){
@@ -789,7 +858,7 @@ function termgenie(){
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function TextFieldInputList(container, templatePos, min, max, validator) {
+		function TextFieldInputList(container, templatePos, min, max, validator, choices) {
 			
 			var list = [];
 			var listParent = createLayoutTable();
@@ -805,7 +874,7 @@ function termgenie(){
 					listElem.appendTo(listParent);
 					var tdElement = jQuery('<td></td>');
 					tdElement.appendTo(listElem);
-					var inputElem = TextFieldInput(tdElement, templatePos, validator);  
+					var inputElem = TextFieldInput(tdElement, templatePos, validator, choices);  
 					list.push(inputElem);
 				}
 			}
