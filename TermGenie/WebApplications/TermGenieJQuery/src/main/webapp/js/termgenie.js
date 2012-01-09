@@ -650,18 +650,12 @@ function termgenie(){
 			 * @param domId the unique id for this line
 			 */
 			appendLine : function(elem, domId) {
-				// define variable here as there is only function scope
-				var i;
-				var field;
-				var tdElement;
-				
 				var trElement = jQuery('<tr id="'+domId+'"></tr>');
 				elem.find('tbody').first().append(trElement);
 				
-				for (i = 0; i < templateFields.length; i+=1) {
-					field = templateFields[i];
+				jQuery.each(templateFields, function(i, field){
 					trElement.append('<td></td>');
-					tdElement = trElement.children().last();
+					var tdElement = trElement.children().last();
 					
 					if (field.remoteResource && field.remoteResource !== null) {
 						fetchLinesFromRemoteResource(field.remoteResource, function(lines) {
@@ -690,7 +684,7 @@ function termgenie(){
 						// default no choices
 						createField(field, i, tdElement);	
 					}
-				}
+				});
 				
 				function createField(field, i, tdElement, choices) {
 					if (field.ontologies && field.ontologies.length > 0) {
