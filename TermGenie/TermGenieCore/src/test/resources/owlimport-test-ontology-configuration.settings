@@ -1,0 +1,4 @@
+[Ontology]
+name: GeneOntology
+source: http://purl.obolibrary.org/obo/go/extensions/x-disjoint-importer.owl
+

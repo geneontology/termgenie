@@ -30,6 +30,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.semanticweb.owlapi.model.IRI;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -121,6 +122,17 @@ public class FileCachingIRIMapper implements IRIMapper {
 	}
 	
 	@Override
+	public IRI getDocumentIRI(IRI ontologyIRI) {
+		URL url = mapUrl(ontologyIRI.toString());
+		try {
+			return IRI.create(url);
+		} catch (URISyntaxException exception) {
+			logger.warn("Could not create IRI from URL: "+url, exception);
+			throw new RuntimeException(exception);
+		}
+	}
+
+	@Override
 	public URL mapUrl(String url) {
 		try {
 			final URL originalURL = new URL(url);
@@ -152,7 +164,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 	}
 
-	private void createFile(File localFile) {
+	protected void createFile(File localFile) {
 		File folder = localFile.getParentFile();
 		createFolder(folder);
 		try {
@@ -206,14 +218,22 @@ public class FileCachingIRIMapper implements IRIMapper {
 			 * only set the file valid, if there were no exceptions and the
 			 * output stream is closed.
 			 */
-			validityHelper.setValid(localFile);
+			setValid(localFile);
 		}
 	}
 
-	private boolean isValid(File localFile) {
+	protected void setValid(File localFile) {
+		validityHelper.setValid(localFile);
+	}
+
+	protected boolean isValid(File localFile) {
 		return localFile.exists() && validityHelper.isValid(localFile);
 	}
 
+	protected File localCacheFile(File file) {
+		return new File(cacheDirectory, localCacheFilename(file));
+	}
+	
 	private File localCacheFile(URL url) {
 		return new File(cacheDirectory, localCacheFilename(url));
 	}
@@ -222,6 +242,13 @@ public class FileCachingIRIMapper implements IRIMapper {
 		StringBuilder sb = new StringBuilder();
 		escapeToBuffer(sb, url.getHost());
 		escapeToBuffer(sb, url.getPath());
+		return sb.toString();
+	}
+	
+	static String localCacheFilename(File file) {
+		StringBuilder sb = new StringBuilder();
+		escapeToBuffer(sb, "local");
+		sb.append(file.getAbsolutePath());
 		return sb.toString();
 	}
 

@@ -11,7 +11,7 @@ import org.apache.commons.io.FileUtils;
  * Helper tools for handling temporary test folders.
  */
 public class TempTestFolderTools {
-
+	
 	/**
 	 * Create a new test folder relative to a given class. The idea is, that the
 	 * test folder is created in the build directory of the corresponding
@@ -25,12 +25,31 @@ public class TempTestFolderTools {
 	 * @see #deleteTestFolder(File)
 	 */
 	public static File createTestFolder(Class<?> cls) {
+		return createTestFolder(cls, true);
+	}
+
+	/**
+	 * Create a new test folder relative to a given class. The idea is, that the
+	 * test folder is created in the build directory of the corresponding
+	 * project, thus isolating multiple project instances from each other. Also,
+	 * the user usually has the appropriate rights in the build folder. <br/>
+	 * <br/>
+	 * <b>Limits:</b> The class cls may not be in a jar.
+	 * 
+	 * @param cls The class to which this test folder should be relative to.
+	 * @param clear if true, the content of the folder is cleared, if it already exists
+	 * @return testFolder
+	 * @see #deleteTestFolder(File)
+	 */
+	public static File createTestFolder(Class<?> cls, boolean clear) {
 		try {
 			URL resource = getResourceURL(cls);
 			File classFile = new File(resource.toURI());
 			File testFolder = new File(classFile.getParentFile(), cls.getSimpleName() + "-TestFolder");
 			FileUtils.forceMkdir(testFolder);
-			FileUtils.cleanDirectory(testFolder);
+			if (clear) {
+				FileUtils.cleanDirectory(testFolder);
+			}
 			return testFolder;
 		} catch (URISyntaxException exception) {
 			throw new RuntimeException(exception);

@@ -73,20 +73,27 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	private ReasonerTaskManager createManager(OWLGraphWrapper ontology, String reasonerName) {
 		if (JCEL.equals(reasonerName)) {
 			OWLReasonerFactory factory = new JcelOWLReasonerFactory();
-			return createManager(ontology.getSourceOntology(), factory);
+			return createManager(ontology, factory);
 		}
 		else if (HERMIT.equals(reasonerName)) {
-			return createManager(ontology.getSourceOntology(), new Reasoner.ReasonerFactory());
+			return createManager(ontology, new Reasoner.ReasonerFactory());
 		}
 		else if (ELK.equals(reasonerName)) {
-			return createManager(ontology.getSourceOntology(), new ElkReasonerFactory());
+			return createManager(ontology, new ElkReasonerFactory());
 		}
 		return null;
 	}
 
-	private ReasonerTaskManager createManager(final OWLOntology ontology,
+	private ReasonerTaskManager createManager(OWLGraphWrapper graph,
 			final OWLReasonerFactory reasonerFactory)
 	{
+		final OWLOntology ontology = graph.getSourceOntology();
+		Set<OWLOntology> importsClosure = ontology.getImportsClosure();
+		Set<OWLOntology> supportOntologies = graph.getSupportOntologySet();
+		if (importsClosure.containsAll(supportOntologies) == false) {
+			throw new RuntimeException("Import closure for: "+ontology.getOntologyID()+" does not contain all support ontologies.");
+		}
+		
 		return new ReasonerTaskManager("reasoner-manager-" + reasonerFactory.getReasonerName() + "-" + ontology.getOntologyID())
 		{
 

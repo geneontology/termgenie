@@ -41,9 +41,10 @@ public class BaseOntologyLoader {
 		for (String support : ontology.getSupports()) {
 			OWLOntology owl = loadOntology("support", support);
 			if (support != null) {
-				w.addSupportOntology(owl);
+				w.mergeOntology(owl);
 			}
 		}
+		w.addSupportOntologiesFromImportsClosure();
 		return w;
 	}
 
@@ -68,10 +69,12 @@ public class BaseOntologyLoader {
 		else {
 			realUrl = new URL(url);
 		}
-		if (realUrl.getPath().endsWith(".obo") || realUrl.getQuery().endsWith(".obo")) {
+		String path = realUrl.getPath();
+		String query = realUrl.getQuery();
+		if ((path != null && path.endsWith(".obo")) || (query != null &&  query.endsWith(".obo"))) {
 			return loadOBO2OWL(ontology, realUrl);
 		}
-		else if (realUrl.getPath().endsWith(".owl") || realUrl.getQuery().endsWith(".owl")) {
+		else if ((path != null && path.endsWith(".owl")) || (query != null && query.endsWith(".owl"))) {
 			return loadOWLPure(ontology, realUrl);
 		}
 		else {
@@ -90,6 +93,9 @@ public class BaseOntologyLoader {
 	protected OWLOntology loadOWLPure(String ontology, URL realUrl) throws OWLOntologyCreationException {
 		try {
 			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+			if (iriMapper != null) {
+				manager.addIRIMapper(iriMapper);
+			}
 			OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
 			postProcessOWLOntology(ontology, owlOntology);
 			return owlOntology;
@@ -153,7 +159,9 @@ public class BaseOntologyLoader {
 	 * @param obodoc
 	 */
 	protected void postProcessOBOOntology(String ontology, OBODoc obodoc) {
-		cleaner.cleanOBOOntology(ontology, obodoc);
+		if (cleaner != null) {
+			cleaner.cleanOBOOntology(ontology, obodoc);
+		}
 	}
 
 }

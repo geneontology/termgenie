@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +53,9 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 			@Named("ReloadingOntologyLoaderTimeUnit") TimeUnit unit)
 	{
 		super(iriMapper, cleaner);
+		if (skipOntologies == null) {
+			skipOntologies = Collections.emptySet();
+		}
 		this.skipOntologies = skipOntologies;
 		configurations = configuration.getOntologyConfigurations();
 
