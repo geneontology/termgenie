@@ -3,7 +3,6 @@ package org.bbop.termgenie.ontology;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -33,9 +31,8 @@ public class CommitHistoryStoreImplTest {
 	private static File testFolder;
 
 	@BeforeClass
-	public static void beforeClass() throws IOException {
+	public static void beforeClass() {
 		testFolder = TempTestFolderTools.createTestFolder(CommitHistoryStoreImplTest.class);
-		FileUtils.cleanDirectory(testFolder);
 	}
 
 	@AfterClass

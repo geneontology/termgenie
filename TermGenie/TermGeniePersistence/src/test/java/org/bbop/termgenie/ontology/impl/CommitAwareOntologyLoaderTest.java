@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -43,7 +42,6 @@ public class CommitAwareOntologyLoaderTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		testFolder = TempTestFolderTools.createTestFolder(CommitAwareOntologyLoaderTest.class);
-		FileUtils.cleanDirectory(testFolder);
 	}
 
 	@AfterClass
