@@ -35,6 +35,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 
 		private int historyId;
 		private List<JsonOntologyTerm> terms;
+		private String diff;
 
 		/**
 		 * @return the historyId
@@ -62,6 +63,20 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		 */
 		public void setTerms(List<JsonOntologyTerm> terms) {
 			this.terms = terms;
+		}
+		
+		/**
+		 * @return the diff
+		 */
+		public String getDiff() {
+			return diff;
+		}
+
+		/**
+		 * @param diff the diff to set
+		 */
+		public void setDiff(String diff) {
+			this.diff = diff;
 		}
 	}
 
@@ -106,6 +121,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 				json.setMessage(commitResult.getMessage());
 				json.setHistoryId(ids.get(i));
 				json.setTerms(convert(commitResult.getTerms(), managed));
+				json.setDiff(commitResult.getDiff());
 				details.add(json);
 			}
 			result.setDetails(details);

@@ -299,3 +299,12 @@ h1 {
 	padding-left: 10px;
 	padding-top: 2px;
 }
+
+.termgenie-changes-to-ontology {
+	margin-left: 20px;
+	margin-bottom: 5px;
+}
+
+.termgenie-changes-to-ontology pre {
+	margin-left: 20px;
+}

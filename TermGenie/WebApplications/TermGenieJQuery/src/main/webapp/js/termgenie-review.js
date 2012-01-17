@@ -235,7 +235,7 @@ function TermGenieReview(){
 						editButton.remove();
 						obsoleteButton.remove();
 						operation.append('<div class="termgenie-obsolete-term">Obsolete</div>');
-						diff.obsolete = true;
+						diff.isObsolete = true;
 						diff.modified = true;
 					});
 				}
@@ -450,25 +450,48 @@ function TermGenieReview(){
 			mainReviewPanel.append('<div>There have been '+details.length+' separate commit operations:</div>');
 		}
 		jQuery.each(details, function(index, detail){
-			var elem = '<div>Status for commit #' + detail.historyId + ': ';
+			var elem = jQuery('<div></div>');
+			var elemContent = 'Status for commit #' + detail.historyId + ': ';
 			if (detail.success === true) {
-				elem += 'Success';
+				elemContent += 'Success';
 			}
 			else {
-				elem += 'Failure';
+				elemContent += 'Failure';
 			}
 			if (detail.message && detail.message.length > 0) {
-				elem += '<br/>Message:';
-				elem += details.message; 
+				elemContent += '<br/>Message:';
+				elemContent += details.message; 
 			}
 			if (detail.terms && detail.terms.length > 0) {
-				elem += '<ul>';
+				elemContent += '<ul>';
 				jQuery.each(detail.terms, function(termIndex, term){
-					elem += '<li style="font-family:monospace;">ID: '+ term.tempId + ' Label: ' + term.label +'</li>';
+					elemContent += '<li style="font-family:monospace;">';
+					if (term.isObsolete === true) {
+						elemContent += '<span class="term-label-obsolete">(obsolete)</span> ';
+					}
+					elemContent += 'ID: '+ term.tempId + ' Label: ' + term.label + '</li>';
 				});
-				elem += '</ul>';
+				elemContent += '</ul>';
 			}
-			elem += '</div>';
+			elem.append(elemContent);
+			if (detail.diff && detail.diff !== null) {
+				var diffElem = jQuery('<div class="termgenie-changes-to-ontology"></div>');
+				var diffElemHeader = jQuery('<div>Changes to ontology (Click to open or close)</div>');
+				diffElem.append(diffElemHeader);
+				var diffElemContent = jQuery('<pre></pre>');
+				diffElem.append(diffElemContent);
+				diffElemContent.append(detail.diff);
+				elem.append(diffElem);
+				
+				// add toggle functionality to diff header
+				diffElemHeader.click(function(){
+					diffElemContent.toggle('fold');
+				});
+				
+				// hidden as default
+				diffElemContent.hide();
+			}
+			
 			mainReviewPanel.append(elem);
 		});
 	}

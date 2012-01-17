@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -277,14 +279,21 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 
 		private Frame parseDiff(JsonDiff jsonDiff) {
-			boolean isObsolete = jsonDiff.isObsolete();
 			Frame frame = OboParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
-			Clause clause = frame.getClause(OboFormatTag.TAG_IS_OBSELETE);
-			if (clause == null) {
-				clause = new Clause(OboFormatTag.TAG_IS_OBSELETE);
-				frame.addClause(clause);
+			Collection<Clause> clauses = frame.getClauses();
+			Iterator<Clause> iterator = clauses.iterator();
+			String tagName = OboFormatTag.TAG_IS_OBSELETE.getTag();
+			while (iterator.hasNext()) {
+				Clause clause = iterator.next();
+				if (tagName.equals(clause.getTag())) {
+					iterator.remove();
+				}
 			}
-			clause.setValue(Boolean.valueOf(isObsolete));
+			if (jsonDiff.isObsolete()) {
+				Clause cl = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+				cl.addValue(Boolean.TRUE);
+				frame.addClause(cl);
+			}
 			return frame;
 		}
 
