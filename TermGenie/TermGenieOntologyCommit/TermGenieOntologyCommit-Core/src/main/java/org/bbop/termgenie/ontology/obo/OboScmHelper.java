@@ -6,7 +6,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -229,12 +231,30 @@ public abstract class OboScmHelper {
 	}
 	
 	private void updateClause(Frame frame, OboFormatTag tag, Object value) {
-		Clause clause = frame.getClause(tag);
-		if (clause == null) {
-			clause = new Clause(tag);
-			frame.addClause(clause);
+		if (OboFormatTag.TAG_IS_OBSELETE == tag) {
+			Collection<Clause> clauses = frame.getClauses();
+			Iterator<Clause> iterator = clauses.iterator();
+			String tagName = tag.getTag();
+			while (iterator.hasNext()) {
+				Clause clause = iterator.next();
+				if (tagName.equals(clause.getTag())) {
+					iterator.remove();
+				}
+			}
+			if (Boolean.TRUE.equals(value) || Boolean.TRUE.toString().equals(value)) {
+				Clause cl = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+				cl.addValue(Boolean.TRUE);
+				frame.addClause(cl);
+			}
 		}
-		clause.setValue(value);
+		else {
+			Clause clause = frame.getClause(tag);
+			if (clause == null) {
+				clause = new Clause(tag);
+				frame.addClause(clause);
+			}
+			clause.setValue(value);
+		}
 	}
 
 	/**
