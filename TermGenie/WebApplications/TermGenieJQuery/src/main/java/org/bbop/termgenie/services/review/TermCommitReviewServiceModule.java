@@ -28,11 +28,19 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	@Override
 	protected void configure() {
 		if (enabled) {
-			bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
+			bindEnabled();
 		}
 		else {
-			bind(TermCommitReviewService.class, DisabledTermCommitReviewServiceImpl.class);
+			bindDisabled();
 		}
+	}
+
+	protected void bindDisabled() {
+		bind(TermCommitReviewService.class, DisabledTermCommitReviewServiceImpl.class);
+	}
+
+	protected void bindEnabled() {
+		bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
 	}
 	
 	/**

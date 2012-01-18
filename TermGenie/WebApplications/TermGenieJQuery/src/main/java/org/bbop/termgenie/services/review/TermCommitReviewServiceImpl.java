@@ -206,7 +206,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		// commit changes to repository
 		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
 		
-		CommitTask task = new CommitTask(entries);
+		CommitTask task = new CommitTask(entries, this);
 		afterReviewTaskManager.runManagedTask(task);
 		if (task.exception != null) {
 			logger.error("Error during commit", task.exception);
@@ -221,9 +221,11 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		private List<Integer> historyIds;
 		private List<CommitResult> commits;
 		private CommitException exception;
+		private final TermCommitReviewServiceImpl instance;
 	
-		private CommitTask(JsonCommitReviewEntry[] entries) {
+		private CommitTask(JsonCommitReviewEntry[] entries, TermCommitReviewServiceImpl instance) {
 			this.entries = entries;
+			this.instance = instance;
 		}
 	
 		@Override
@@ -267,14 +269,34 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			if (entry.isCommitMessageChanged()) {
 				historyItem.setCommitMessage(entry.getCommitMessage());
 			}
+			StringBuilder sb = new StringBuilder(historyItem.getCommitMessage());
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
+				Frame termFrame = parseDiff(jsonDiff);
+				CommitedOntologyTerm term;
 				if (jsonDiff.isModified()) {
-					Frame termFrame = parseDiff(jsonDiff);
-					CommitedOntologyTerm term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
+					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
 					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
 				}
+				else {
+					term = getMatchingTerm(historyItem, jsonDiff.getUuid());
+				}
+				sb.append('\n');
+				if(OboTools.isObsolete(termFrame)) {
+					term.setChanged(null); // do not change any relations for other terms
+					sb.append("OBSOLETE ");
+				}
+				else {
+					sb.append("Added ");
+				}
+				sb.append(termFrame.getId());
+				Object label = termFrame.getTagValue(OboFormatTag.TAG_NAME);
+				if (label != null) {
+					sb.append(" ");
+					sb.append(label);
+				}
 			}
+			historyItem.setCommitMessage(sb.toString());
 			afterReview.updateItem(historyItem);
 		}
 
@@ -290,9 +312,11 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				}
 			}
 			if (jsonDiff.isObsolete()) {
-				Clause cl = new Clause(OboFormatTag.TAG_IS_OBSELETE);
-				cl.addValue(Boolean.TRUE);
-				frame.addClause(cl);
+				Clause obsoleteClause = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+				obsoleteClause.addValue(Boolean.TRUE);
+				frame.addClause(obsoleteClause);
+				
+				instance.handleObsoleteFrame(jsonDiff, frame);
 			}
 			return frame;
 		}
@@ -312,6 +336,32 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 			throw new CommitException("Could not find the modified term in the history", false);
 		}
+		
+		private CommitedOntologyTerm getMatchingTerm(CommitHistoryItem historyItem,
+				int uuid) throws CommitException
+		{
+			List<CommitedOntologyTerm> terms = historyItem.getTerms();
+			for (int i = 0; i < terms.size(); i++) {
+				CommitedOntologyTerm original = terms.get(i);
+				if (uuid == original.getUuid()) {
+					return terms.get(i);
+				}
+			}
+			throw new CommitException("Could not find the modified term in the history", false);
+		}
 	}
 
+	/**
+	 * Override this method to change the implement additional modifications for obsolete frames.
+	 * 
+	 * @param jsonDiff
+	 * @param frame
+	 */
+	protected void handleObsoleteFrame(JsonDiff jsonDiff, Frame frame) {
+		// remove all relations
+		OboTools.removeAllRelations(frame);
+		
+		// remove all references to this term
+	}
+	
 }

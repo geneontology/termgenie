@@ -99,6 +99,9 @@ h1 {
 
 .termgenie-term-template-hint .hint-content {
 	padding-left: 10px;
+}
+
+.hint-content {
 	font-style: italic;
 	font-size: 0.8em;
 }

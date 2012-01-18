@@ -123,6 +123,7 @@ public class JsonCommitReviewEntry {
 		private int operation;
 
 		private boolean isObsolete = false;
+		private String obsoleteComment = null;
 		private String diff;
 
 		private List<JsonChange> relations = null;
@@ -241,5 +242,19 @@ public class JsonCommitReviewEntry {
 		public void setObsolete(boolean isObsolete) {
 			this.isObsolete = isObsolete;
 		}
+		
+		/**
+		 * @return the obsoleteComment
+		 */
+		public String getObsoleteComment() {
+			return obsoleteComment;
+		}
+
+		/**
+		 * @param obsoleteComment the obsoleteComment to set
+		 */
+		public void setObsoleteComment(String obsoleteComment) {
+			this.obsoleteComment = obsoleteComment;
+		}		
 	}
 }

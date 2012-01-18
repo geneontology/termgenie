@@ -123,6 +123,18 @@ public class OboTools {
 		return Collections.unmodifiableSet(set);
 	}
 	
+	private static final Set<String> allRelations = createAllRelations();
+	
+	private static Set<String> createAllRelations() {
+		HashSet<String> set = new HashSet<String>();
+		set.add(OboFormatTag.TAG_IS_A.getTag());
+		set.add(OboFormatTag.TAG_INTERSECTION_OF.getTag());
+		set.add(OboFormatTag.TAG_UNION_OF.getTag());
+		set.add(OboFormatTag.TAG_DISJOINT_FROM.getTag());
+		set.add(OboFormatTag.TAG_RELATIONSHIP.getTag());
+		return Collections.unmodifiableSet(set);
+	}
+	
 	public static void fillChangedRelations(OBODoc oboDoc,
 			List<Frame> changed,
 			List<String> modIds)
@@ -135,24 +147,15 @@ public class OboTools {
 				}
 				Frame frame = oboDoc.getTermFrame(modId);
 				if (frame != null) {
-					Collection<Clause> clauses = frame.getClauses();
-					
 					// remove old relations, except disjoint_from
-					Iterator<Clause> iterator = clauses.iterator();
-					while (iterator.hasNext()) {
-						Clause clause = iterator.next();
-						String tag = clause.getTag();
-						if (updateRelations.contains(tag)) {
-							iterator.remove();
-						}
-					}
+					removeRelations(frame, updateRelations);
 					
 					// add updated relations
 					List<Clause> relations = getRelations(changedFrame);
 					for (Clause newRelation : relations) {
 						String tag = newRelation.getTag();
 						if (updateRelations.contains(tag)) {
-							clauses.add(newRelation);
+							frame.addClause(newRelation);
 						}
 					}
 				}
@@ -168,6 +171,22 @@ public class OboTools {
 		addClauses(result, frame.getClauses(OboFormatTag.TAG_DISJOINT_FROM));
 		addClauses(result, frame.getClauses(OboFormatTag.TAG_RELATIONSHIP));
 		return result;
+	}
+	
+	public static void removeAllRelations(Frame frame) {
+		removeRelations(frame, allRelations);
+	}
+	
+	public static void removeRelations(Frame frame, Set<String> tags) {
+		Collection<Clause> clauses = frame.getClauses();
+		Iterator<Clause> iterator = clauses.iterator();
+		while (iterator.hasNext()) {
+			Clause clause = iterator.next();
+			String tag = clause.getTag();
+			if (tags.contains(tag)) {
+				iterator.remove();
+			}
+		}
 	}
 	
 	private static void addClauses(List<Clause> clauses, Collection<Clause> clauses2) {

@@ -199,6 +199,8 @@ function TermGenieReview(){
 					obsolete = true;
 				}
 				
+				var diffRelationRows = [];
+				
 				if(obsolete !== true) {
 					var editButton = jQuery('<button>Edit term</button>');
 					operation.append(editButton);
@@ -236,6 +238,11 @@ function TermGenieReview(){
 						obsoleteButton.remove();
 						operation.append('<div class="termgenie-obsolete-term">Obsolete</div>');
 						diff.isObsolete = true;
+						diff.obsoleteComment = 'This term was obsoleted at the TermGenie Gatekeeper stage.';
+						diff.relations = null; // also remove all the changed relations
+						jQuery.each(diffRelationRows, function(rowIndex, tr){
+							tr.remove();
+						});
 						diff.modified = true;
 					});
 				}
@@ -257,7 +264,8 @@ function TermGenieReview(){
 							if (jsonChange.label && jsonChange.label !== null) {
 								desc += ' with label: <span class="termgenie-pre">' + jsonChange.label+'</span>';
 							}
-							addRow(table, null, desc, relString);
+							var tr = addRow(table, null, desc, relString);
+							diffRelationRows.push(tr);
 						}
 					});
 				}
@@ -293,7 +301,11 @@ function TermGenieReview(){
 				var descriptionColumn = jQuery('<div>Commit Message</div>')
 				var editButton = jQuery('<button>Edit Message</button>');
 				descriptionColumn.append(editButton);
-				var messageColumn = jQuery('<span>'+entry.commitMessage+'</span>');
+				var wholeMessageColumn = jQuery('<div></div>');
+				var secondaryMessage = jQuery('<div class="hint-content">No need to add IDs, they will be added to the commit message by TermGenie during commit.</div>');
+				var messageColumn = jQuery('<div>'+entry.commitMessage+'</div>');
+				wholeMessageColumn.append(messageColumn);
+				wholeMessageColumn.append(secondaryMessage);
 				editButton.click(function(){
 					var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
 					var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;">'+entry.commitMessage+'</textarea>');
@@ -320,7 +332,7 @@ function TermGenieReview(){
 						}
 					});
 				});
-				addRow(table, null, descriptionColumn, messageColumn);
+				addRow(table, null, descriptionColumn, wholeMessageColumn);
 			}
 		}
 		
@@ -367,6 +379,7 @@ function TermGenieReview(){
 				td.append(col3);
 				tr.append(td);
 			}
+			return tr;
 		}
 	}
 	

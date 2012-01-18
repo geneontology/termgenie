@@ -26,6 +26,8 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
+import org.bbop.termgenie.services.review.GOTermCommitReviewServiceImpl;
+import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
 
@@ -107,6 +109,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 			@Override
 			public String getModuleName() {
 				return "TermGenieGO-TermCommitReviewServiceModule";
+			}
+			
+			@Override
+			protected void bindEnabled() {
+				bind(TermCommitReviewService.class, GOTermCommitReviewServiceImpl.class);
 			}
 		};
 	}
