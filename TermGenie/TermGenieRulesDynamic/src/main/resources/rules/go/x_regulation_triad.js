@@ -47,7 +47,7 @@ function regulation_triad(x, parent) {
 		var definition = "Any process that activates or increases the frequency, rate or extent of "
 				+ termname(x, go) + ".";
 		var synonyms = termgenie.synonyms([ "positive regulation of ",
-				"up regulation of ", "up-regulation of ", "upregulation of ", "activiation of " ],
+				"up regulation of ", "up-regulation of ", "upregulation of ", "activation of " ],
 				x, go, [], label);
 		var mdef = createMDef("GO_0065007 and 'positively_regulates' some ?X");
 		mdef.addParameter('X', x, go);
