@@ -16,7 +16,7 @@ function structural_protein_complex() {
 			label += "-"
 		}
 		label += termname(terms[i], pro);
-		mdefString += ' and (has_part some ?P' + i + ' )';
+		mdefString += " and ('has_part' some ?P" + i + ' )';
 	}
 	label += " complex";
 	var definition = termgenie.definition("Any protein complex consisting of ",

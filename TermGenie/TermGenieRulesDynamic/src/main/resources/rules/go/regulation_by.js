@@ -34,7 +34,7 @@ function regulation_by() {
     // intentionally null, as the intended relations do not fit the pattern
     // but the synonyms, might be of some use
     var mdef = [];
-    // var mdef = createMDef("GO_0065007 and is_a some ?P and is_a some ?R");
+    // var mdef = createMDef("GO_0065007 and 'is_a' some ?P and 'is_a' some ?R");
     // mdef.addParameter('P', p, go);
     // mdef.addParameter('P', regulator, go);
     termgenie.createTerm(label, definition, synonyms, mdef);
