@@ -32,7 +32,7 @@ public class LocalFileIRIMapperTest {
 
 		@Override
 		protected InputStream loadRemote(String url) throws MalformedURLException, IOException {
-			throw new RuntimeException("Remote load in test not allowed!");
+			throw new RuntimeException("Remote load in test not allowed! Trying to load: "+url);
 		}
 
 		@Override
