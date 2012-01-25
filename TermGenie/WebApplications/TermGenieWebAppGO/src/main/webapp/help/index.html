@@ -6,6 +6,22 @@
  li {
  	margin: 15px;
  }
+ 
+ .additional-remark {
+	margin-top: 10px;
+ }
+ 
+ .screen-shot {
+ 	margin-top: 10px;
+ 	margin-left: 10px;
+ }
+ 
+ .screen-shot img {
+ 	padding: 1px;
+ 	border-width: 1px;
+	border-color: gray;
+	border-style: solid;
+ }
 </style>
 </head>
 <body>
@@ -15,45 +31,64 @@
 <ol>
 <li>Click ‘Log-in’ at top right of page at 
 <a href="http://go.termgenie.org/">http://go.termgenie.org/</a><br/> 
-(If you already are a registered user, you can skip the next two steps).</li>
+(If you already are a registered user, you can skip the step number 3).</li>
 
-<li>Create a browser log-in by selecting BrowserID and clicking 
+<li>Create or use your a browser log-in by selecting BrowserID and clicking 
 on ‘Log In’ using your email address; you will then be prompted
-for a password</li>
+for a password
+<div class="screen-shot"><img src="images/image_002.png" alt="TermGenie login selection - screen shot"/></div>
+</li>
 
 <li> Send your user ID to the TermGenie help desk: 
 <a href="mailto:help@go.termgenie.org">help@go.termgenie.org</a> They can 
 grant you permission to submit term requests.</li>
 
-<li>Click ‘sign in’ at browser user id</li>
+<li>Click ‘sign in’ at browser user id
+<div class="screen-shot"><img src="images/image_004.png" alt="BrowserID login - screen shot"/></div>
+</li>
 
 <li>This will take you back to the TermGenie front
-page at the step 2 Template stage.</li>
+page at the step 2 Template stage.
+<div class="screen-shot"><img src="images/image_005.png" alt="TermGenie template selection overview - screen shot"/></div>
+</li>
 
 <li>In the drop down template menu select the type of term you are
-seeking to create </li>
+seeking to create
+<div class="screen-shot"><img src="images/image_006.png" alt="TermGenie template selection - screen shot"/></div>
+</li>
 
 <li>You can add more than one of the same or a different template by 
 clicking ‘Add template’ allowing the creation of many
-new terms at the same time.</li>
+new terms at the same time.
+<div class="screen-shot"><img src="images/image_007a.png" alt="TermGenie multiple template selection - screen shot"/></div>
 
-<li><b>NB:</b> To remove templates added in error, just click on the
-'Less' button:</li>
+<div class="additional-remark"><b>NB:</b> To remove templates added in error, just click on the
+'Less' button:
+<div class="screen-shot"><img src="images/image_007b-more-less.png" alt="TermGenie template removal button - screen shot"/></div>
+</div>
+</li>
 
 <li>Paste in the go term id or <b>type the name</b> of the term you 
-are requesting a child term for.</li>
+are requesting a child term for.
 
-<li>At this step you can add any DB Xrefs such as a <span>PMID:1234567</span> 
+<div class="additional-remark">At this step you can add any DB Xrefs such as a <span>PMID:1234567</span> 
 or your identity (e.g., <span>GOC:yaf</span>) and again there is a
-(More, Less) option to add/remove boxes.</li>
+(More, Less) option to add/remove boxes.</div>
+<div class="screen-shot"><img src="images/image_008.png" alt="TermGenie template input data - screen shot"/></div>
+</li>
 
-<li>Click on the ‘verify input’ button. This will create GO:TEMP ids, name 
-and definitions for the future terms in the preview and submit page.</li>
+<li>Click on the ‘Verify Input’ button. This will create GO:TEMP ids, name 
+and definitions for the future terms in the preview and submit page.
+<div class="screen-shot"><img src="images/image_009.png" alt="TermGenie template 'Verfify Input' button - screen shot"/></div>
+</li>
 
 <li>Confirm your selection by clicking on the small tick-box on the
 left of each new term. Then click ‘Submit for Review’ followed by ‘Submit’ 
 (the ‘Preview’ button should change to ‘Submit’ when you tick the ‘Submit 
-for Review’ check box).</li>
+for Review’ check box).
+<div class="screen-shot"><img src="images/image_010a.png" alt="TermGenie template step 3 review - screen shot"/></div>
+<div class="screen-shot"><img src="images/image_010b.png" alt="TermGenie template step 3 submit - screen shot"/></div>
+</li>
 
 <li>Your new term ids in the final step are created for your new GO term 
 with a new GO id starting <span>GO:1900xxx</span>, which will be put into 
@@ -63,6 +98,7 @@ the OBO file within a few days after review of a senior editor, e.g.:
   ID: GO:1900035 Label: negative regulation of cellular response to heat
   ID: GO:1900036 Label: positive regulation of cellular response to heat
 </pre>
+<div class="screen-shot"><img src="images/image_011.png" alt="TermGenie generated terms - screen shot"/></div>
 </li>
 
 <li>The new GO terms will be reviewed by a senior GO editor before they
