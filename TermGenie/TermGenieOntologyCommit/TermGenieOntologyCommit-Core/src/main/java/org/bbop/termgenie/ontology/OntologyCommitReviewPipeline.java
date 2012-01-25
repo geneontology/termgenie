@@ -439,11 +439,21 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	}
 
 	protected CommitException error(String message, Throwable exception) {
-		return OntologyCommitPipeline.error(message, exception, false, getClass());
+		return error(message, exception, false, getClass());
 	}
 
 	protected CommitException error(String message) {
-		return OntologyCommitPipeline.error(message, false, getClass());
+		return error(message, false, getClass());
+	}
+	
+	public static CommitException error(String message, Throwable exception, boolean rollback, Class<?> cls) {
+		Logger.getLogger(cls).warn(message, exception);
+		return new CommitException(message, exception, rollback);
+	}
+
+	public static CommitException error(String message, boolean rollback, Class<?> cls) {
+		Logger.getLogger(cls).warn(message);
+		return new CommitException(message, rollback);
 	}
 
 	protected File createFolder(final File workFolder, String name) throws CommitException {

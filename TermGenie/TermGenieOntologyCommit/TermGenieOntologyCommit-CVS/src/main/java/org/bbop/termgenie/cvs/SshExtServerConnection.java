@@ -32,7 +32,7 @@ public class SshExtServerConnection extends AbstractConnection {
 	private Session session = null;
 
     /**
-     * Setup the connection propeties with the CVSRoot object and password
+     * Setup the connection properties with the CVSRoot object and password
      * 
      * @param cvsRoot the {@link CVSRoot}
      * @throws IllegalArgumentException if the cvsRoot does not represent ext connection type.

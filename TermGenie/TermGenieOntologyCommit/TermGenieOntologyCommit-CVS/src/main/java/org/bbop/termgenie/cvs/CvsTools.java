@@ -19,6 +19,7 @@ import org.netbeans.lib.cvsclient.command.commit.CommitCommand;
 import org.netbeans.lib.cvsclient.command.update.UpdateCommand;
 import org.netbeans.lib.cvsclient.connection.AuthenticationException;
 import org.netbeans.lib.cvsclient.connection.Connection;
+import org.netbeans.lib.cvsclient.connection.LocalConnection;
 import org.netbeans.lib.cvsclient.connection.PServerConnection;
 import org.netbeans.lib.cvsclient.event.CVSAdapter;
 import org.netbeans.lib.cvsclient.event.MessageEvent;
@@ -59,6 +60,11 @@ public class CvsTools implements VersionControlAdapter {
 		else if (CVSRoot.METHOD_EXT.equals(method)) {
 			connection = new SshExtServerConnection(root);
 		}
+		else if (CVSRoot.METHOD_LOCAL.equals(method)) {
+			LocalConnection connection = new LocalConnection();
+			connection.setRepository(root.getRepository());
+			this.connection = connection;
+		}
 		else{
 			throw new RuntimeException("Unsupported Method: "+method);
 		}
@@ -66,6 +72,13 @@ public class CvsTools implements VersionControlAdapter {
 		client = null;
 	}
 	
+	/**
+	 * @return the targetFolder
+	 */
+	public File getTargetFolder() {
+		return targetFolder;
+	}
+
 	private static class MyCVSRoot extends CVSRoot {
 
 		protected MyCVSRoot(String cvsroot, String password) throws IllegalArgumentException {
@@ -180,7 +193,6 @@ public class CvsTools implements VersionControlAdapter {
 	public boolean update(String cvsFile) throws IOException {
 		checkConnection();
 		UpdateCommand update = new UpdateCommand();
-		update.setCleanCopy(true);
 		update.setRecursive(true);
 		update.setFiles(new File[]{new File(targetFolder, cvsFile)});
 		try {

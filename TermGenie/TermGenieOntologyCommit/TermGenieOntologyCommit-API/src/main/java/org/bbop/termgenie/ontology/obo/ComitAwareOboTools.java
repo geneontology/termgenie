@@ -2,7 +2,6 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
@@ -16,50 +15,14 @@ public class ComitAwareOboTools extends OboTools {
 
 	private static final Logger logger = Logger.getLogger(ComitAwareOboTools.class);
 
-	public static enum LoadState {
-		addSuccess, addMerge, addRedundant, addError, modifySuccess, modifyRedundant, modifyMissing, modifyError, removeSuccess, removeMissing, unknown;
-
-		public static boolean isSuccess(LoadState state) {
-			switch (state) {
-				case addSuccess:
-				case modifySuccess:
-				case removeSuccess:
-					return true;
-
-				default:
-					return false;
-			}
-		}
-
-		public static boolean isMerge(LoadState state) {
-			return state == LoadState.addMerge || state == LoadState.modifyMissing;
-		}
-
-		public static boolean isRedundant(LoadState state) {
-			switch (state) {
-				case addRedundant:
-				case modifyRedundant:
-				case removeMissing:
-					return true;
-
-				default:
-					return false;
-			}
-		}
-
-		public static boolean isError(LoadState state) {
-			return state == LoadState.addError || state == LoadState.modifyError || state == LoadState.unknown;
-		}
-	}
-
-	public static LoadState handleTerm(TermCommit termCommit,
+	public static boolean handleTerm(TermCommit termCommit,
 			Modification modification,
 			OBODoc oboDoc)
 	{
 		return handleTerm(termCommit.getTerm(), termCommit.getChanged(), modification, oboDoc);
 	}
 
-	public static LoadState handleTerm(Frame term,
+	public static boolean handleTerm(Frame term,
 			List<Frame> changed,
 			Modification mode,
 			OBODoc obodoc)
@@ -69,51 +32,39 @@ public class ComitAwareOboTools extends OboTools {
 		Frame frame = obodoc.getTermFrame(id);
 		switch (mode) {
 			case add: {
-				LoadState state = LoadState.addSuccess;
 				if (frame != null) {
-					state = LoadState.addMerge;
-				}
-				if (isRedundant(term, frame)) {
-					return LoadState.addRedundant;
+					return false;
 				}
 				try {
-					if (frame == null) {
-						obodoc.addFrame(term);
-					}
-					else {
-						merge(frame, term);
-					}
-					return state;
+					obodoc.addFrame(term);
+					return true;
 				} catch (FrameMergeException exception) {
-					logger.error("Could not add new term to ontology: " + id, exception);
-					return LoadState.addError;
+					logger.warn("Could not add new frame.", exception);
+					return false;
 				}
 			}
 			case modify: {
 				if (frame == null) {
-					return LoadState.modifyMissing;
+					return false;
 				}
 				try {
-					if (frameEquals(term, frame)) {
-						return LoadState.modifyRedundant;
-					}
 					merge(frame, term);
-					return LoadState.modifySuccess;
+					return true;
 				} catch (FrameMergeException exception) {
 					logger.warn("Could not apply changes to frame.", exception);
-					return LoadState.modifyError;
+					return false;
 				}
 			}
 			case remove:
 				if (frame == null) {
-					return LoadState.removeMissing;
+					return false;
 				}
 				Collection<Frame> frames = obodoc.getTermFrames();
 				frames.remove(frame);
-				return LoadState.removeSuccess;
+				return true;
 
 			default:
-				return LoadState.unknown;
+				return false;
 		}
 	}
 
@@ -145,93 +96,4 @@ public class ComitAwareOboTools extends OboTools {
 		}
 	}
 
-	private static boolean isRedundant(Frame newFrame, Frame frame) {
-		if (frame == null) {
-			return false;
-		}
-		if (newFrame == frame) {
-			return true;
-		}
-		if (!objEquals(newFrame.getType(), frame.getType())) {
-			return false;
-		}
-		if (!objEquals(newFrame.getId(), frame.getId())) {
-			return false;
-		}
-		Set<String> newTags = newFrame.getTags();
-		Set<String> tags = frame.getTags();
-		if (!tags.containsAll(newTags)) {
-			return false;
-		}
-		for (String tag : newTags) {
-			Collection<Clause> newClauses = newFrame.getClauses(tag);
-			Collection<Clause> clauses = frame.getClauses(tag);
-			for (Clause newClause : newClauses) {
-				boolean found = false;
-				for (Clause clause : clauses) {
-					if (newClause.equals(clause)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private static boolean frameEquals(Frame newFrame, Frame frame) {
-		if (frame == null) {
-			return false;
-		}
-		if (newFrame == frame) {
-			return true;
-		}
-		if (!objEquals(newFrame.getType(), frame.getType())) {
-			return false;
-		}
-		if (!objEquals(newFrame.getId(), frame.getId())) {
-			return false;
-		}
-		Set<String> newTags = newFrame.getTags();
-		Set<String> tags = frame.getTags();
-		if (!tags.containsAll(newTags)) {
-			return false;
-		}
-		if (!newTags.containsAll(tags)) {
-			return false;
-		}
-		for (String tag : tags) {
-			Collection<Clause> newClauses = newFrame.getClauses(tag);
-			Collection<Clause> clauses = frame.getClauses(tag);
-			if (newClauses.size() != clauses.size()) {
-				return false;
-			}
-			for (Clause newClause : newClauses) {
-				boolean found = false;
-				for (Clause clause : clauses) {
-					if (newClause.equals(clause)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private static <T> boolean objEquals(T s1, T s2) {
-		if (s1 == s2) {
-			return true;
-		}
-		if (s1 == null) {
-			return false;
-		}
-		return s1.equals(s2);
-	}
 }

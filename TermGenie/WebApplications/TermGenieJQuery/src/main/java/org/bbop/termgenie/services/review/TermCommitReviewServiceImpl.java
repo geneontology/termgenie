@@ -27,7 +27,6 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
-import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
@@ -159,8 +158,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setObsolete(OboTools.isObsolete(frame));
 			
 			List<Frame> changed = CommitHistoryTools.translateSimple(term.getChanged());
-			LoadState state = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
-			if (LoadState.isSuccess(state)) {
+			boolean success = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
+			if (success) {
 				try {
 					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc));
 					result.add(jsonDiff);

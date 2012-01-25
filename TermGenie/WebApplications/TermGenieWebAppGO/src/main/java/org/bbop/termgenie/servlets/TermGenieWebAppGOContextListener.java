@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -15,9 +14,8 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.cvs.GoCommitReviewCvsModule;
-import org.bbop.termgenie.ontology.impl.CommitAwareOntologyLoader;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.CvsAwareXMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.GoTermCommitServiceImpl;
@@ -64,20 +62,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_go.xml", applicationProperties) {
-
-			@Override
-			protected void bindOntologyLoader() {
-				bind(OntologyLoader.class, CommitAwareOntologyLoader.class);
-				bind("ReloadingOntologyLoaderPeriod", new Long(6L));
-				bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
-			}
-			
-			@Override
-			public String getModuleName() {
-				return "TermGenieGO-XMLReloadingOntologyModule";
-			}
-		};
+		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
+		String remoteTargetFile = "go/ontology/editors/gene_ontology_write.obo";
+		String mappedIRI = "http://www.geneontology.org/ontology/editors/gene_ontology_write.obo";
+		return new CvsAwareXMLReloadingOntologyModule("ontology-configuration_go.xml", applicationProperties, cvsRoot, remoteTargetFile, mappedIRI, null);
 	}
 
 	@Override

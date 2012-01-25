@@ -15,18 +15,14 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
-import org.bbop.termgenie.ontology.CommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
-import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
-import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
-import org.bbop.termgenie.ontology.OntologyCommitPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
+import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
-import org.bbop.termgenie.ontology.obo.ComitAwareOboTools.LoadState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -114,16 +110,6 @@ public abstract class OboScmHelper {
 		return data;
 	}
 
-	public VersionControlAdapter prepareSCM(CommitInfo commitInfo, OboCommitData data)
-			throws CommitException
-	{
-		final VersionControlAdapter scm = createSCM(commitInfo.getCommitMode(),
-				commitInfo.getUsername(),
-				commitInfo.getPassword(),
-				data.scmFolder);
-		return scm;
-	}
-
 	public abstract VersionControlAdapter createSCM(CommitMode commitMode,
 			String username,
 			String password,
@@ -173,19 +159,6 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public boolean applyChanges(List<CommitObject<TermCommit>> terms, final OBODoc oboDoc) {
-		boolean success = true;
-		if (terms != null && !terms.isEmpty()) {
-			for (CommitObject<TermCommit> commitObject : terms) {
-				boolean csuccess = LoadState.isSuccess(handleTerm(commitObject.getObject(),
-						commitObject.getType(),
-						oboDoc));
-				success = success && csuccess;
-			}
-		}
-		return success;
-	}
-
 	/**
 	 * @param terms
 	 * @param oboDoc
@@ -200,10 +173,10 @@ public abstract class OboScmHelper {
 			for (CommitedOntologyTerm term : terms) {
 				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
 				List<Frame> changes = CommitHistoryTools.translateSimple(term.getChanged());
-				boolean csuccess = LoadState.isSuccess(handleTerm(frame,
+				boolean csuccess = handleTerm(frame,
 						changes,
 						term.getOperation(),
-						oboDoc));
+						oboDoc);
 				success = success && csuccess;
 			}
 		}
@@ -376,10 +349,10 @@ public abstract class OboScmHelper {
 	}
 
 	protected CommitException error(String message, Throwable exception, boolean rollback) {
-		return OntologyCommitPipeline.error(message, exception, rollback, getClass());
+		return OntologyCommitReviewPipeline.error(message, exception, rollback, getClass());
 	}
 
 	protected CommitException error(String message, boolean rollback) {
-		return OntologyCommitPipeline.error(message, rollback, getClass());
+		return OntologyCommitReviewPipeline.error(message, rollback, getClass());
 	}
 }
