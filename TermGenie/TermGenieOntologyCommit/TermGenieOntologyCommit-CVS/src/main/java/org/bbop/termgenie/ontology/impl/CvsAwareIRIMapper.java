@@ -55,6 +55,8 @@ public class CvsAwareIRIMapper extends AbstractScmAwareIRIMapper<CvsAwareIRIMapp
 			this.mappedCVSFiles = mappedCVSFiles;
 			cvs = new CvsTools(cvsRoot, cvsPassword, targetFolder);
 			try {
+				// create work directory
+				targetFolder.mkdirs();
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				cvs.connect();
