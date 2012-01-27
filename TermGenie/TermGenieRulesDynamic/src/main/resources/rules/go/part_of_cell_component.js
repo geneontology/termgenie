@@ -17,7 +17,7 @@ function part_of_cell_component() {
 	var label = termname(p, go) + " " + termname(w, go);
 	var definition = "Any " + termname(p, go) + " that is part of a "
 			+ termname(w, go) + ".";
-	var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, label);
+	var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, null, label);
 	var mdef = createMDef("?P and 'part_of' some ?W");
 	mdef.addParameter('P', p, go);
 	mdef.addParameter('W', w, go);

@@ -20,6 +20,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String suffix,
+			String defaultScope,
 			String label)
 	{
 		List<ISynonym> synonyms = getSynonyms(x, ontology);
@@ -36,13 +37,23 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			if (suffix != null) {
 				sb.append(suffix);
 			}
-			addSynonym(results, synonym.getScope(), sb.toString(), label);
+			String scope = synonym.getScope();
+			if (defaultScope != null) {
+				if (defaultScope.equals(OboFormatTag.TAG_BROAD.getTag())) {
+					scope = OboFormatTag.TAG_BROAD.getTag();
+				}
+				else {
+					scope = matchScopes(defaultScope, scope).getTwo();
+				}
+			}
+			addSynonym(results, scope, sb.toString(), label);
 		}
 		return results;
 	}
 
 	@Override
 	public List<ISynonym> synonyms(String[] prefixes,
+			String[] scopes,
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String[] suffixes,
@@ -50,14 +61,22 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 	{
 		List<ISynonym> results = new ArrayList<ISynonym>();
 		String termLabel = getLabel(x, ontology);
-		for(String prefix : prefixes) {
+		for (int i = 0; i < prefixes.length; i++) {
+			String prefix = prefixes[i];
+			String scope = null;
+			if (scopes != null && scopes.length > i) {
+				scope = scopes[i];
+			}
+			if(scope == null) {
+				scope = OboFormatTag.TAG_RELATED.getTag();
+			}
 			if (suffixes != null && suffixes.length > 0) {
 				for(String suffix : suffixes) {
-					addSynonym(label, results, termLabel, prefix, OboFormatTag.TAG_RELATED.getTag(), suffix);
+					addSynonym(label, results, termLabel, prefix, scope, suffix);
 				}
 			}
 			else {
-				addSynonym(label, results, termLabel, prefix, OboFormatTag.TAG_RELATED.getTag(), null);
+				addSynonym(label, results, termLabel, prefix, scope, null);
 			}
 		}
 		
@@ -111,6 +130,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			OWLObject x2,
 			OWLGraphWrapper ontology2,
 			String suffix,
+			String defaultScope,
 			String label)
 	{
 		List<ISynonym> synonyms1 = getSynonyms(x1, ontology1);
@@ -141,7 +161,13 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 					if (suffix != null) {
 						sb.append(suffix);
 					}
-					addSynonym(results, match.getTwo(), sb.toString(), label);
+					String scope = match.getTwo();
+					if (defaultScope != null 
+							&& !OboFormatTag.TAG_RELATED.getTag().equals(defaultScope)
+							&& OboFormatTag.TAG_RELATED.getTag().equals(scope)) {
+						scope = defaultScope;
+					}
+					addSynonym(results, scope, sb.toString(), label);
 				}
 			}
 		}
@@ -151,6 +177,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 	@Override
 	public List<ISynonym> synonyms(String prefix,
 			OWLObject[] terms,
+			String[] defaultScopes,
 			OWLGraphWrapper ontology,
 			String infix,
 			String suffix,
@@ -161,11 +188,19 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		}
 		final int size = terms.length;
 		if (size == 1) {
-			return synonyms(prefix, terms[0], ontology, suffix, label);
+			String defaultScope = null;
+			if (defaultScopes != null && defaultScopes.length >= 1) {
+				defaultScope = defaultScopes[0];
+			}
+			return synonyms(prefix, terms[0], ontology, suffix, defaultScope , label);
 		}
 
 		if (size == 2) {
-			return synonyms(prefix, terms[0], ontology, infix, terms[1], ontology, suffix, label);
+			String defaultScope = null;
+			if (defaultScopes != null && defaultScopes.length >= 2) {
+				defaultScope = matchScopes(defaultScopes[0], defaultScopes[1]).getTwo();
+			}
+			return synonyms(prefix, terms[0], ontology, infix, terms[1], ontology, suffix, defaultScope, label);
 		}
 		List<ISynonym> result = new ArrayList<ISynonym>();
 		List<OWLObject> termList = Arrays.asList(terms).subList(1, terms.length);
@@ -263,7 +298,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		if (synonyms == null) {
 			synonyms = new ArrayList<ISynonym>(1);
 		}
-		synonyms.add(new Synonym(label, null, null, null));
+		synonyms.add(new Synonym(label, OboFormatTag.TAG_EXACT.getTag(), null, null));
 		return synonyms;
 	}
 

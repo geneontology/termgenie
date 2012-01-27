@@ -18,6 +18,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 * @param x the term
 	 * @param ontology the ontology to retrieve existing synonyms
 	 * @param suffix the suffix, may be null
+	 * @param defaultScope the scope for the new synonym, may be null.
 	 * @param label the label of the new term
 	 * @return synonyms
 	 */
@@ -25,6 +26,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String suffix,
+			String defaultScope,
 			String label);
 	
 	/**
@@ -33,6 +35,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 * synonym with the same label.
 	 * 
 	 * @param prefixes the array prefixes, may not be null
+	 * @param defaultScopes the scopes associated with the synonyms
 	 * @param x the term
 	 * @param ontology the ontology to retrieve existing synonyms
 	 * @param suffixes the array suffixes, may be null
@@ -40,6 +43,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 * @return synonyms
 	 */
 	public List<ISynonym> synonyms(String[] prefixes,
+			String[] defaultScopes,
 			OWLObject x,
 			OWLGraphWrapper ontology,
 			String[] suffixes,
@@ -57,6 +61,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 * @param x2
 	 * @param ontology2
 	 * @param suffix
+	 * @param defaultScope the scope for the new synonym, may be null.
 	 * @param label
 	 * @return synonyms
 	 */
@@ -67,6 +72,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 			OWLObject x2,
 			OWLGraphWrapper ontology2,
 			String suffix,
+			String defaultScope,
 			String label);
 
 	/**
@@ -76,6 +82,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 * 
 	 * @param prefix the prefix, may be null
 	 * @param terms the term list
+	 * @param defaultScopes the default scopes for the new synonym, may be null.
 	 * @param ontology the ontology to retrieve existing synonyms
 	 * @param infix the infix between the synonym components
 	 * @param suffix the suffix, may be null
@@ -84,6 +91,7 @@ public interface TermGenieScriptFunctionsSynonyms {
 	 */
 	public List<ISynonym> synonyms(String prefix,
 			OWLObject[] terms,
+			String[] defaultScopes,
 			OWLGraphWrapper ontology,
 			String infix,
 			String suffix,

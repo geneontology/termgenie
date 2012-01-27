@@ -29,7 +29,7 @@ function regulation_by() {
   function subrun(regulator) {
     var label = "regulation of "+termname(p, go) + " by " + termname(regulator, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termname(p, go)+", by "+termname(regulator, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, label);
+    var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, null, label);
     
     // intentionally null, as the intended relations do not fit the pattern
     // but the synonyms, might be of some use

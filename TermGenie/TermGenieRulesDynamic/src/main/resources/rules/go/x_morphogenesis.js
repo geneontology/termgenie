@@ -11,7 +11,7 @@ function x_morphogenesis(ontology, parent) {
 	var label = termname(x, ontology) + " morphogenesis";
 	var definition = "The developmental process by which " + refname(x, ontology)
 			+ " is generated and organized.";
-	var synonyms = termgenie.synonyms(null, x, ontology, " morphogenesis", label);
+	var synonyms = termgenie.synonyms(null, x, ontology, " morphogenesis", null, label);
 	var mdef = createMDef("GO_0009653 and 'results_in_morphogenesis_of' some ?X");
 	mdef.addParameter('X', x, ontology);
 	createTerm(label, definition, synonyms, mdef);

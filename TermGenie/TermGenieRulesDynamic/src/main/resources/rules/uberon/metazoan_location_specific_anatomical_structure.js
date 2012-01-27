@@ -10,7 +10,7 @@ function metazoan_location_specific_anatomical_structure() {
   }
   var label = termname(w, Uberon) + " " + termname(p, Uberon);
   var definition = "Any "+termname(p, Uberon)+" that is part of a "+termname(w, Uberon)+".";
-  var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, label);
+  var synonyms = termgenie.synonyms(null, p, Uberon, " of ", w, Uberon, null, null, label);
   var mdef = createMDef("?P and 'part_of' some ?W");
   mdef.addParameter('P', c, Uberon);
   mdef.addParameter('W', w, Uberon);

@@ -16,7 +16,7 @@ function occurs_in() {
   }
   var label = termname(p, go) + " in " + termname(c, go);
   var definition = "Any "+termname(p, go)+" that takes place in "+termname(c, go)+".";
-  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, label);
+  var synonyms = termgenie.synonyms(null, p, go, " in ", c, go, null, null, label);
   var mdef = createMDef("?P and 'occurs in' some ?C");
   mdef.addParameter('P', p, go);
   mdef.addParameter('C', c, go);

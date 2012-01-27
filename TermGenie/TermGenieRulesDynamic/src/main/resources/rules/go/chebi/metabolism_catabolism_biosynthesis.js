@@ -13,7 +13,7 @@ function metabolism_catabolism_biosynthesis() {
 		var definition = "The chemical reactions and pathways involving "
 				+ termname(x, CHEBI) + ".";
 		var synonyms = termgenie.synonyms("", x, CHEBI, [ " metabolism",
-				" metabolic process" ], label);
+				" metabolic process" ], null, label);
 		var mdef = createMDef("GO_0008152 and 'has_participant' some ?X");
 		mdef.addParameter('X', x, CHEBI);
 		createTerm(label, definition, synonyms, mdef);
@@ -24,7 +24,7 @@ function metabolism_catabolism_biosynthesis() {
 		var definition = "The chemical reactions and pathways resulting in the breakdown of "
 				+ termname(x, CHEBI) + ".";
 		var synonyms = termgenie.synonyms("", x, CHEBI, [ " catabolism",
-				" catabolic process" ], label);
+				" catabolic process" ], null, label);
 		var mdef = createMDef("GO_0009056 and 'has_input' some ?X");
 		mdef.addParameter('X', x, CHEBI);
 		createTerm(label, definition, synonyms, mdef);
@@ -35,7 +35,7 @@ function metabolism_catabolism_biosynthesis() {
 		var definition = "The chemical reactions and pathways resulting in the formation of "
 				+ termname(x, CHEBI) + ".";
 		var synonyms = termgenie.synonyms("", x, CHEBI, [ " biosynthesis",
-				" biosynthetic process" ], label);
+				" biosynthetic process" ], null, label);
 		var mdef = createMDef("GO_0009058 and 'has_output' some ?X");
 		mdef.addParameter('X', x, CHEBI);
 		createTerm(label, definition, synonyms, mdef);

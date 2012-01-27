@@ -21,7 +21,7 @@ function structural_protein_complex() {
 	label += " complex";
 	var definition = termgenie.definition("Any protein complex consisting of ",
 			terms, pro, ", ", ".");
-	var synonyms = termgenie.synonyms(null, terms, pro, "-", " complex", label);
+	var synonyms = termgenie.synonyms(null, terms, null, pro, "-", " complex", label);
 	var mdef = createMDef(mdefString);
 	for (i = 0; i < terms.length; i += 1) {
 		mdef.addParameter('P' + i, terms[i], pro);

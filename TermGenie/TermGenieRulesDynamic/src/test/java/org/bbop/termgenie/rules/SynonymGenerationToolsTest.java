@@ -158,7 +158,8 @@ public class SynonymGenerationToolsTest {
 
 	@Test
 	public void testSynonymsSingle() {
-		List<ISynonym> synonyms = tool.synonyms("prefix-", t1, null, "-suffix", "t1");
+		String defaultScope = null;
+		List<ISynonym> synonyms = tool.synonyms("prefix-", t1, null, "-suffix", defaultScope, "t1");
 		assertEquals(2, synonyms.size());
 		{
 			ISynonym s1 = synonyms.get(0);
@@ -176,22 +177,23 @@ public class SynonymGenerationToolsTest {
 			assertEquals(1, xrefs2.size());
 			assertTrue(xrefs2.contains("GOC:TermGenie"));
 		}
-		assertNull(tool.synonyms("prefix-", t3, null, "-suffix", "t3"));
+		assertNull(tool.synonyms("prefix-", t3, null, "-suffix", defaultScope , "t3"));
 	}
 
 	@Test
 	public void testSynonymsPair() {
-		List<ISynonym> synonyms = tool.synonyms("prefix-", t1, null, "-infix-", t2, null, "-suffix", "prefix-t1-infix-t2-suffix");
+		String defaultScope = null;
+		List<ISynonym> synonyms = tool.synonyms("prefix-", t1, null, "-infix-", t2, null, "-suffix", defaultScope, "prefix-t1-infix-t2-suffix");
 		assertEquals(6, synonyms.size());
 		Iterator<ISynonym> it = synonyms.iterator();
 		assertSynonym("prefix-s11-infix-s21-suffix", OboFormatTag.TAG_NARROW, it.next());
 		assertSynonym("prefix-s11-infix-s22-suffix", OboFormatTag.TAG_EXACT, it.next());
-		assertSynonym("prefix-s11-infix-t2-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-s11-infix-t2-suffix", OboFormatTag.TAG_EXACT, it.next());
 		
 		assertSynonym("prefix-s12-infix-s23-suffix", OboFormatTag.TAG_BROAD, it.next());
 		
-		assertSynonym("prefix-t1-infix-s21-suffix", OboFormatTag.TAG_RELATED, it.next());
-		assertSynonym("prefix-t1-infix-s22-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-t1-infix-s21-suffix", OboFormatTag.TAG_NARROW, it.next());
+		assertSynonym("prefix-t1-infix-s22-suffix", OboFormatTag.TAG_EXACT, it.next());
 	}
 	
 	private void assertSynonym(String label, OboFormatTag scope, ISynonym synonym) {
@@ -204,28 +206,29 @@ public class SynonymGenerationToolsTest {
 	@Test
 	public void testSynonymsList() {
 		OWLObject[] terms = {t1, t2, t4};
-		List<ISynonym> synonyms = tool.synonyms("prefix-", terms, null, "-infix-", "-suffix", "prefix-t1-infix-t2-infix-t4-suffix");
+		String[] defaultScopes = null;
+		List<ISynonym> synonyms = tool.synonyms("prefix-", terms, defaultScopes, null, "-infix-", "-suffix", "prefix-t1-infix-t2-infix-t4-suffix");
 		assertEquals(12, synonyms.size());
 		
 		Iterator<ISynonym> it = synonyms.iterator();
 		assertSynonym("prefix-s11-infix-s21-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
-		assertSynonym("prefix-s11-infix-s21-infix-t4-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-s11-infix-s21-infix-t4-suffix", OboFormatTag.TAG_NARROW, it.next());
 		
 		assertSynonym("prefix-s11-infix-s22-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
-		assertSynonym("prefix-s11-infix-s22-infix-t4-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-s11-infix-s22-infix-t4-suffix", OboFormatTag.TAG_EXACT, it.next());
 		
-		assertSynonym("prefix-s11-infix-t2-infix-s41-suffix", OboFormatTag.TAG_RELATED, it.next());
-		assertSynonym("prefix-s11-infix-t2-infix-t4-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-s11-infix-t2-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
+		assertSynonym("prefix-s11-infix-t2-infix-t4-suffix", OboFormatTag.TAG_EXACT, it.next());
 		
 		assertSynonym("prefix-s12-infix-s23-infix-s42-suffix", OboFormatTag.TAG_BROAD, it.next());
 		
-		assertSynonym("prefix-t1-infix-s21-infix-s41-suffix", OboFormatTag.TAG_RELATED, it.next());
-		assertSynonym("prefix-t1-infix-s21-infix-t4-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-t1-infix-s21-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
+		assertSynonym("prefix-t1-infix-s21-infix-t4-suffix", OboFormatTag.TAG_NARROW, it.next());
 		
-		assertSynonym("prefix-t1-infix-s22-infix-s41-suffix", OboFormatTag.TAG_RELATED, it.next());
-		assertSynonym("prefix-t1-infix-s22-infix-t4-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-t1-infix-s22-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
+		assertSynonym("prefix-t1-infix-s22-infix-t4-suffix", OboFormatTag.TAG_EXACT, it.next());
 		
-		assertSynonym("prefix-t1-infix-t2-infix-s41-suffix", OboFormatTag.TAG_RELATED, it.next());
+		assertSynonym("prefix-t1-infix-t2-infix-s41-suffix", OboFormatTag.TAG_NARROW, it.next());
 	}
 
 	@Test
