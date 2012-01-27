@@ -1,12 +1,13 @@
 package org.bbop.termgenie.rules;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -53,9 +54,10 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			String patternID,
 			ReasonerFactory factory)
 	{
-		List<OWLOntology> ontologies = new ArrayList<OWLOntology>(auxiliaryOntologies.size());
+		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
+		ontologies.addAll(targetOntology.getSupportOntologySet());
 		for (OWLGraphWrapper wrapper : auxiliaryOntologies) {
-			ontologies.add(wrapper.getSourceOntology());
+			ontologies.addAll(wrapper.getAllOntologies());
 		}
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
 		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool);
