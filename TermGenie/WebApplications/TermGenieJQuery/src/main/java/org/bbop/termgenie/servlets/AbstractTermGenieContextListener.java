@@ -30,6 +30,8 @@ import org.bbop.termgenie.services.resources.ResourceProviderModule.EmptyResourc
 import org.bbop.termgenie.services.resources.ResourceProviderService;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+import org.bbop.termgenie.services.visualization.TermHierarchyModule;
+import org.bbop.termgenie.services.visualization.TermHierarchyRenderer;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.bbop.termgenie.user.simple.SimpleUserDataModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
@@ -67,7 +69,8 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				BrowserIdHandler browserId,
 				TermCommitReviewService review,
 				ManagementServices management,
-				ResourceProviderService resource)
+				ResourceProviderService resource,
+				TermHierarchyRenderer renderer)
 		{
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor(getInjector());
 			executor.addHandler("generate", generate, GenerateTermsService.class);
@@ -79,6 +82,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("review", review, TermCommitReviewService.class);
 			executor.addHandler("management", management, ManagementServices.class);
 			executor.addHandler("resource", resource, ResourceProviderService.class);
+			executor.addHandler("renderer", renderer, TermHierarchyRenderer.class);
 			return executor;
 		}
 	}
@@ -134,6 +138,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getCommitModule(), false, "CommitModule");
 		add(modules, getCommitReviewWebModule(), true, "CommitReviewModule");
 		add(modules, getResourceProviderModule(), true, "ResourceProviderModule");
+		add(modules, getTermHierarchyModule(), true, "TermHierarchyModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -215,6 +220,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		return new EmptyResourceProviderModule(applicationProperties);
 	}
 
+	protected IOCModule getTermHierarchyModule() {
+		return new TermHierarchyModule(applicationProperties);
+	}
+	
 	/**
 	 * @return null or additional modules required for the start-up
 	 */
