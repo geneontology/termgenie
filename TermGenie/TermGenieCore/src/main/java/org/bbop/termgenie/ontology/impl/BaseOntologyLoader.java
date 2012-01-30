@@ -14,7 +14,10 @@ import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyDocumentAlreadyExistsException;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import owltools.graph.OWLGraphWrapper;
@@ -24,11 +27,16 @@ public class BaseOntologyLoader {
 	private static final Logger LOGGER = Logger.getLogger(BaseOntologyLoader.class);
 	private final IRIMapper iriMapper;
 	private final OntologyCleaner cleaner;
+	private final OWLOntologyManager manager;
 
 	protected BaseOntologyLoader(IRIMapper iriMapper, OntologyCleaner cleaner) {
 		super();
 		this.iriMapper = iriMapper;
 		this.cleaner = cleaner;
+		manager = OWLManager.createOWLOntologyManager();
+		if (iriMapper != null) {
+			manager.addIRIMapper(iriMapper);
+		}
 	}
 
 	protected OWLGraphWrapper getResource(ConfiguredOntology ontology)
@@ -91,17 +99,20 @@ public class BaseOntologyLoader {
 	 * @throws OWLOntologyCreationException
 	 */
 	protected OWLOntology loadOWLPure(String ontology, URL realUrl) throws OWLOntologyCreationException {
+		OWLOntology ont;
 		try {
-			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-			if (iriMapper != null) {
-				manager.addIRIMapper(iriMapper);
-			}
-			OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
-			postProcessOWLOntology(ontology, owlOntology);
-			return owlOntology;
+			ont = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
 		} catch (URISyntaxException exception) {
 			throw new OWLOntologyCreationException(exception);
+		} catch (OWLOntologyAlreadyExistsException exception) {
+			// Trying to recover from exception
+			ont = handleException(exception);
+		} catch (OWLOntologyDocumentAlreadyExistsException exception) {
+			// Trying to recover from exception
+			ont = handleException(ontology, exception);
 		}
+		postProcessOWLOntology(ontology, ont);
+		return ont;
 	}
 	
 	/**
@@ -128,21 +139,31 @@ public class BaseOntologyLoader {
 	{
 		OBODoc obodoc = loadOBO(ontology, realUrl);
 		
-		Obo2Owl obo2Owl = new Obo2Owl();
+		Obo2Owl obo2Owl = new Obo2Owl(manager);
+		
 		LOGGER.info("Convert ontology " + ontology + " to owl.");
-		OWLOntology owlOntology = obo2Owl.convert(obodoc);
+		OWLOntology ont;
+		try {
+			ont = obo2Owl.convert(obodoc, false);
+		} catch (OWLOntologyAlreadyExistsException exception) {
+			// Trying to recover from exception
+			ont = handleException(exception);
+		} catch (OWLOntologyDocumentAlreadyExistsException exception) {
+			// Trying to recover from exception
+			ont = handleException(ontology, exception);
+		}
 		LOGGER.info("Finished loading ontology: " + ontology);
-		return owlOntology;
+		return ont;
 	}
 
 	protected OBODoc loadOBO(String ontology, URL realUrl) throws IOException {
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc;
 		try {
-			LOGGER.info("Start parsing obo ontology from input: " + realUrl);
+			LOGGER.info("Start parsing '"+ontology+"' obo ontology from input: " + realUrl);
 			obodoc = p.parse(realUrl);
 			if (obodoc == null) {
-				throw new RuntimeException("Could not load: " + realUrl);
+				throw new RuntimeException("Could not load '"+ontology+"': " + realUrl);
 			}
 			postProcessOBOOntology(ontology, obodoc);
 		} catch (StringIndexOutOfBoundsException exception) {
@@ -162,6 +183,44 @@ public class BaseOntologyLoader {
 		if (cleaner != null) {
 			cleaner.cleanOBOOntology(ontology, obodoc);
 		}
+	}
+
+	private OWLOntology handleException(String ontology,
+			OWLOntologyDocumentAlreadyExistsException exception)
+			throws OWLOntologyDocumentAlreadyExistsException
+	{
+		OWLOntology ont;
+		IRI duplicate = exception.getOntologyDocumentIRI();
+		ont = manager.getOntology(duplicate);
+		if (ont == null) {
+			for(OWLOntology managed : manager.getOntologies()) {
+				if(duplicate.equals(managed.getOntologyID().getOntologyIRI())) {
+					LOGGER.info("Skip already loaded ontology: "+ontology);
+					ont = managed;
+					break;
+				}
+			}
+		}
+		if (ont == null) {
+			// throw original exception, if no ontology could be found
+			// never return null ontology
+			throw exception;
+		}
+		return ont;
+	}
+
+	private OWLOntology handleException(OWLOntologyAlreadyExistsException exception)
+			throws OWLOntologyAlreadyExistsException
+	{
+		OWLOntology ont;
+		OWLOntologyID duplicate = exception.getOntologyID();
+		ont = manager.getOntology(duplicate);
+		if (ont == null) {
+			// throw original exception, if no ontology could be found
+			// never return null ontology
+			throw exception;
+		}
+		return ont;
 	}
 
 }
