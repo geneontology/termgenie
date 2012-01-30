@@ -18,7 +18,11 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 
 	
 	private final IRIMapper fallBackIRIMapper;
-	private final OWLOntologyIRIMapper catalogXMLMapper;
+	private final String catalogXml;
+	
+	private OWLOntologyIRIMapper catalogXMLMapper;
+	private File catalogFile = null;
+	private URL catalogURL = null;
 
 	@Inject
 	public CatalogXmlIRIMapper(IRIMapper fallBackIRIMapper, String catalogXml) {
@@ -26,15 +30,23 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 			throw new IllegalArgumentException("IRIMapper may never be null");
 		}
 		this.fallBackIRIMapper = fallBackIRIMapper;
+		this.catalogXml = catalogXml;
+		catalogXMLMapper = createCatalogMapper();
+	}
+
+	private OWLOntologyIRIMapper createCatalogMapper() throws RuntimeException
+	{
 		try {
 			URL url = fallBackIRIMapper.mapUrl(catalogXml);
 			if (url.getProtocol() == null || "file".equals(url.getProtocol())) {
 				File file = new File(url.toURI());
-				catalogXMLMapper = new owltools.io.CatalogXmlIRIMapper(file);
+				catalogFile = file;
+				catalogURL = null;
+				return new owltools.io.CatalogXmlIRIMapper(catalogFile);
 			}
-			else {
-				catalogXMLMapper = new owltools.io.CatalogXmlIRIMapper(url);
-			}
+			catalogFile = null;
+			catalogURL = url;
+			return new owltools.io.CatalogXmlIRIMapper(catalogURL);
 		} catch (URISyntaxException exception) {
 			throw new RuntimeException(exception);
 		} catch (IOException exception) {
@@ -42,8 +54,17 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 		}
 	}
 	
+	private synchronized void updateCatalogMapper()
+	{
+		// TODO make this more efficient?
+		// Goal, only reload if file/URL (content) was changed. URLs do not have a 
+		// reliable last changed date. MD5?
+		catalogXMLMapper = createCatalogMapper();
+	}
+	
 	@Override
 	public IRI getDocumentIRI(IRI ontologyIRI) {
+		updateCatalogMapper();
 		IRI iri = catalogXMLMapper.getDocumentIRI(ontologyIRI);
 		if (iri != null) {
 			return iri;
@@ -55,6 +76,7 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 	@Override
 	public URL mapUrl(String url) {
 		try {
+			updateCatalogMapper();
 			IRI iri = catalogXMLMapper.getDocumentIRI(IRI.create(url));
 			if (iri != null) {
 				return iri.toURI().toURL();
