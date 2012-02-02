@@ -3,13 +3,15 @@ package org.bbop.termgenie.services.review;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
+import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -87,13 +89,13 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		return result;
 	}
 
-	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, OntologyTaskManager manager) {
+	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, Ontology ontology, MultiOntologyTaskManager manager) {
 		GenerateSuccessTask task = new GenerateSuccessTask(ids, commits);
-		manager.runManagedTask(task);
+		manager.runManagedTask(task, ontology);
 		return task.result;
 	}
 	
-	private static class GenerateSuccessTask extends OntologyTask {
+	private static class GenerateSuccessTask extends MultiOntologyTask {
 		
 		private final List<Integer> ids;
 		private final List<CommitResult> commits;
@@ -108,9 +110,11 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 			this.ids = ids;
 			this.commits = commits;
 		}
+		
+		
 
 		@Override
-		protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+		public List<Modified> run(List<OWLGraphWrapper> requested) {
 			result = new JsonCommitReviewCommitResult();
 			result.setSuccess(true);
 			List<JsonCommitDetails> details = new ArrayList<JsonCommitDetails>(commits.size());
@@ -120,12 +124,14 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 				json.setSuccess(commitResult.isSuccess());
 				json.setMessage(commitResult.getMessage());
 				json.setHistoryId(ids.get(i));
-				json.setTerms(convert(commitResult.getTerms(), managed));
+				json.setTerms(convert(commitResult.getTerms(), requested.get(0)));
 				json.setDiff(commitResult.getDiff());
 				details.add(json);
 			}
 			result.setDetails(details);
+			return null;
 		}
+
 	}
 
 	private static List<JsonOntologyTerm> convert(List<CommitObject<TermCommit>> terms, OWLGraphWrapper wrapper)

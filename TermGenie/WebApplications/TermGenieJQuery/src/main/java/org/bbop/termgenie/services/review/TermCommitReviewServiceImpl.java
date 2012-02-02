@@ -12,23 +12,25 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
+import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
+import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
-import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
+import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
@@ -40,6 +42,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -55,18 +58,21 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
 	private final OntologyCommitReviewPipelineStages stages;
-	private final OntologyTaskManager ontology;
+	private final Ontology ontology;
+	private final MultiOntologyTaskManager manager;
 	
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("TermCommitReviewServiceOntology") OntologyTaskManager ontology,
+			@Named("TermCommitReviewServiceOntology") Ontology ontology,
+			MultiOntologyTaskManager manager,
 			OntologyCommitReviewPipelineStages stages)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
 		this.ontology = ontology;
+		this.manager = manager;
 		this.stages = stages;
 	}
 
@@ -82,7 +88,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		if (screenname != null) {
 			UserData userData = sessionHandler.getUserData(session);
 			if (userData != null) {
-				boolean allowCommitReview = permissions.allowCommitReview(userData, ontology.getOntology());
+				boolean allowCommitReview = permissions.allowCommitReview(userData, ontology);
 				return allowCommitReview;
 			}
 		}
@@ -117,14 +123,16 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				}
 			} catch (CommitException exception) {
 				logger.error("Could not retrieve pending commits for db", exception);
+			} catch (OWLOntologyCreationException exception) {
+				logger.error("Could not create entries for items", exception);
 			}
 		}
 		return null;
 	}
 
-	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) {
+	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException {
 		CreateOboDocTask task = new CreateOboDocTask();
-		ontology.runManagedTask(task);
+		manager.runManagedTask(task, ontology);
 		List<JsonCommitReviewEntry> result = new ArrayList<JsonCommitReviewEntry>(items.size());
 		for (CommitHistoryItem item : items) {
 			JsonCommitReviewEntry entry = new JsonCommitReviewEntry();
@@ -133,20 +141,30 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			entry.setDate(formatDate(item.getDate()));
 			entry.setCommitMessage(item.getCommitMessage());
 			entry.setEmail(item.getEmail());
+			if (task.exception != null) {
+				throw task.exception;
+			}
 			entry.setDiffs(createJsonDiffs(item, task.result));
 			result.add(entry);
 		}
 		return result;
 	}
 	
-	private static class CreateOboDocTask extends OntologyTask {
+	private static class CreateOboDocTask extends MultiOntologyTask {
 
 		OBODoc result = null;
+		OWLOntologyCreationException exception;
 
 		@Override
-		protected void runCatching(OWLGraphWrapper managed) throws Exception {
+		public List<Modified> run(List<OWLGraphWrapper> requested) {
 			Owl2Obo owl2Obo = new Owl2Obo();
-			result = owl2Obo.convert(managed.getSourceOntology());
+			OWLGraphWrapper graph = requested.get(0);
+			try {
+				result = owl2Obo.convert(graph.getSourceOntology());
+			} catch (OWLOntologyCreationException exception) {
+				this.exception = exception;
+			}
+			return null;
 		}
 	}
 	
@@ -215,7 +233,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology);
+		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology, manager);
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

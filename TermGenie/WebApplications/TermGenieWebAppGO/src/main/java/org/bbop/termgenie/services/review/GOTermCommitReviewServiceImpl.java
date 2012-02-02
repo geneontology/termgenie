@@ -1,7 +1,8 @@
 package org.bbop.termgenie.services.review;
 
+import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -19,10 +20,11 @@ public class GOTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl {
 	@Inject
 	GOTermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("TermCommitReviewServiceOntology") OntologyTaskManager ontology,
+			@Named("TermCommitReviewServiceOntology") Ontology ontology,
+			MultiOntologyTaskManager manager,
 			OntologyCommitReviewPipelineStages stages)
 	{
-		super(sessionHandler, permissions, ontology, stages);
+		super(sessionHandler, permissions, ontology, manager, stages);
 	}
 
 	/**

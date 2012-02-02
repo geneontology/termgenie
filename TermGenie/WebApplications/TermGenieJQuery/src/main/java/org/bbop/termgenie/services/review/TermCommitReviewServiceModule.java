@@ -2,10 +2,9 @@ package org.bbop.termgenie.services.review;
 
 import java.util.Properties;
 
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.OntologyLoader;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -47,13 +46,12 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	 * This method must be overwritten and implemented, if reviews are enabled.
 	 * 
 	 * @param configuration
-	 * @param ontologyLoader
 	 * @return ontology
 	 */
 	@Named("TermCommitReviewServiceOntology")
 	@Provides
 	@Singleton
-	protected OntologyTaskManager getTermCommitReviewServiceOntology(OntologyConfiguration configuration, OntologyLoader ontologyLoader){
+	protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration){
 		throw new RuntimeException("This method must be overwritten, if reviews are enabled");
 	}
 

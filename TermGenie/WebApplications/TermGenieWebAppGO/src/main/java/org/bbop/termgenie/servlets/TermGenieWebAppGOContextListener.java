@@ -8,11 +8,10 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.OntologyLoader;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.go.cvs.GoCommitReviewCvsModule;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.CvsAwareXMLReloadingOntologyModule;
@@ -88,10 +87,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 			@Override
 			@Singleton
-			protected OntologyTaskManager getTermCommitReviewServiceOntology(OntologyConfiguration configuration,  OntologyLoader ontologyLoader)
+			protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration)
 			{
 				ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
-				return ontologyLoader.getOntology(configuredOntology);
+				return configuredOntology;
 			}
 			
 			@Override
