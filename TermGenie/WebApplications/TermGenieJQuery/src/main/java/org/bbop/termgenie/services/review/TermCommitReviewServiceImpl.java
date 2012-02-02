@@ -101,6 +101,10 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					if (!result.isEmpty()) {
 						// update commit message to include the user doing the review
 						UserData userData = sessionHandler.getUserData(session);
+						if (userData == null) {
+							logger.warn("Could not retrieve user data for session: "+sessionId);
+							return null;
+						}
 						String scmAlias = userData.getScmAlias();
 						for (JsonCommitReviewEntry entry : result) {
 							StringBuilder sb = new StringBuilder(entry.getCommitMessage());

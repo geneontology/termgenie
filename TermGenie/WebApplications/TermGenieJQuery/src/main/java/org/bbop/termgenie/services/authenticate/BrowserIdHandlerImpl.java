@@ -35,8 +35,8 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 	private static final Logger logger = Logger.getLogger(BrowserIdHandlerImpl.class);
 
 	private static final Gson gson = new Gson();
-	private static final DefaultHttpClient client = new DefaultHttpClient();
-
+	
+	private final DefaultHttpClient client = new DefaultHttpClient();
 	private final String browserIdVerificationUrl;
 	private final String termgenieBrowserIdAudience;
 	private final InternalSessionHandler sessionHandler;
@@ -74,7 +74,10 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 			pairs.add(new BasicNameValuePair("audience", audienceValue));
 			post.setEntity(new UrlEncodedFormEntity(pairs));
 
-			HttpResponse response = client.execute(post);
+			HttpResponse response;
+			synchronized (client) {
+				response = client.execute(post);
+			}
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
