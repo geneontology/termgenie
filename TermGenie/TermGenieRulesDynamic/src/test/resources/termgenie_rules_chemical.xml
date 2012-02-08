@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+	<template name="metabolism_catabolism_biosynthesis">
+		<description>Select all three subtemplates to generate
+terms for the "metabolic triad". Names, synonyms and definitions are all
+generated automatically</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="ChemicalImporter"></ontology>
+				<prefixes>
+					<prefix>metabolism</prefix>
+					<prefix>catabolism</prefix>
+					<prefix>biosynthesis</prefix>
+				</prefixes>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
+		</ruleFiles>
+	</template>
+</termgenietemplates>

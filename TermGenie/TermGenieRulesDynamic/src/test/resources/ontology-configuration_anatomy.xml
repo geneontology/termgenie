@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="GeneOntology">
+		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
+		</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go/extensions/x-metazoan-anatomy-importer.owl</support>
+		</supports>
+		<roots>
+			<root>GO:0008150</root>
+			<root>GO:0003674</root>
+			<root>GO:0005575</root>
+		</roots>
+		<ontologybranch name="biological_process">
+			<roots>
+				<root>GO:0008150</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="molecular_function">
+			<roots>
+				<root>GO:0003674</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="cellular_component">
+			<roots>
+				<root>GO:0005575</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="UberonDevelopment">
+			<roots>
+				<root>UBERON:0001062</root> <!-- chemical entity -->
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>

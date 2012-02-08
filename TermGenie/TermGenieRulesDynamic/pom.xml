@@ -25,5 +25,11 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieOntologyCommit-SVN</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
