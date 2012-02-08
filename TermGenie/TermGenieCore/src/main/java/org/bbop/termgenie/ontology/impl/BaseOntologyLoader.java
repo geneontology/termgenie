@@ -73,7 +73,10 @@ public class BaseOntologyLoader {
 			throws OWLOntologyCreationException, IOException
 	{
 		if (update != null) {
-			manager.removeOntology(update.getSourceOntology());
+			Set<OWLOntology> closure = update.getSourceOntology().getImportsClosure();
+			for (OWLOntology owlOntology : closure) {
+				manager.removeOntology(owlOntology);	
+			}
 			Set<OWLOntology> supports = update.getSupportOntologySet();
 			if (supports != null) {
 				for (OWLOntology support : supports) {
