@@ -263,6 +263,11 @@ public abstract class IOCModule extends AbstractModule {
 		boundClasses.put(interfaceClass, implementationClass);
 	}
 	
+	protected <T> void bind(Class<T> interfaceClass, String name, Class<? extends T> implementationClass) {
+		bind(interfaceClass).annotatedWith(Names.named(name)).to(implementationClass);
+		// TODO add to reporting
+	}
+	
 	/**
 	 * @return map of configured parameters
 	 */

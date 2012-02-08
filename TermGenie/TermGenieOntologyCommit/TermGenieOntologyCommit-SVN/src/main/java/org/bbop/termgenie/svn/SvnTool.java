@@ -130,4 +130,7 @@ public class SvnTool implements VersionControlAdapter {
 		}
 	}
 
+	public File getTargetFolder() {
+		return targetFolder;
+	}
 }

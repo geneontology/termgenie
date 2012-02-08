@@ -57,7 +57,7 @@ public class CvsAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModu
 
 	@Override
 	protected void bindIRIMapper() {
-		// skip implementation binding, use provide methods
+		bind(IRIMapper.class, "FallbackIRIMapper", FileCachingIRIMapper.class);
 		bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(), "termgenie-download-cache").getAbsolutePath());
 		bind("FileCachingIRIMapperPeriod", new Long(6L));
 		bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);
@@ -66,16 +66,6 @@ public class CvsAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModu
 		bind("CVSAwareIRIMapperRemoteTargetFile", remoteTargetFileDefault);
 		bind("CVSAwareIRIMapperMappedIRI", mappedIRIDefault);
 		bind("CVSAwareIRIMapperWorkFolder", workFolderDefault);
-	}
-
-	@Provides
-	@Named("FallbackIRIMapper")
-	@Singleton
-	protected IRIMapper getDefaultIRIMapper(@Named("FileCachingIRIMapperLocalCache") String localCache,
-			@Named("FileCachingIRIMapperPeriod") long period,
-			@Named("FileCachingIRIMapperTimeUnit") TimeUnit unit)
-	{
-		return new FileCachingIRIMapper(localCache, period, unit);
 	}
 
 	@Provides

@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyDocumentAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderListener;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import owltools.graph.OWLGraphWrapper;
@@ -37,6 +38,34 @@ public class BaseOntologyLoader {
 		if (iriMapper != null) {
 			manager.addIRIMapper(iriMapper);
 		}
+		manager.addOntologyLoaderListener(new OWLOntologyLoaderListener() {
+			
+			@Override
+			public void startedLoadingOntology(LoadingStartedEvent event) {
+				StringBuilder sb = new StringBuilder("Start loading ontology");
+				final IRI ontologyIRI = event.getOntologyID().getOntologyIRI();
+				if (ontologyIRI != null) {
+					sb.append(": ");
+					sb.append(ontologyIRI);
+				}
+				sb.append(" from IRI: ");
+				sb.append(event.getDocumentIRI());
+				LOGGER.info(sb.toString());
+			}
+			
+			@Override
+			public void finishedLoadingOntology(LoadingFinishedEvent event) {
+				StringBuilder sb = new StringBuilder("Finished loading ontology");
+				final IRI ontologyIRI = event.getOntologyID().getOntologyIRI();
+				if (ontologyIRI != null) {
+					sb.append(": ");
+					sb.append(ontologyIRI);
+				}
+				sb.append(" from IRI: ");
+				sb.append(event.getDocumentIRI());
+				LOGGER.info(sb.toString());
+			}
+		});
 	}
 
 	protected OWLGraphWrapper getResource(ConfiguredOntology ontology)
