@@ -39,7 +39,6 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 	protected final static Logger LOGGER = Logger.getLogger(ReloadingOntologyLoader.class);
 
 	private final Map<String, OntologyTaskManager> managers = new HashMap<String, OntologyTaskManager>();
-//	private final Map<String, OWLGraphWrapper> ontologies = new HashMap<String, OWLGraphWrapper>();
 
 	private final Map<String, ConfiguredOntology> configurations;
 	private final Set<String> skipOntologies;
@@ -76,7 +75,6 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 	}
 
 	private synchronized void reloadOntologies() {
-//		ontologies.clear();
 		for (OntologyTaskManager manager : managers.values()) {
 			manager.updateManaged();
 		}
@@ -117,6 +115,12 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 				protected OWLGraphWrapper createManaged() {
 					return loadOntology(configuredOntology);
 				}
+
+				@Override
+				protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) {
+					return reloadOntology(configuredOntology, managed);
+				}
+				
 			};
 			managers.put(uniqueName, manager);
 		}
@@ -137,12 +141,8 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 			LOGGER.info("Skipping ontology: " + uniqueName);
 			return null;
 		}
-//		if (ontologies.containsKey(uniqueName)) {
-//			return ontologies.get(uniqueName);
-//		}
 		try {
-			OWLGraphWrapper w = getResource(ontology);
-//			ontologies.put(uniqueName, w);
+			OWLGraphWrapper w = getResource(ontology, null);
 			return w;
 		} catch (UnknownOWLOntologyException exception) {
 			throw new RuntimeException(exception);
@@ -153,4 +153,17 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		}
 	}
 
+	private OWLGraphWrapper reloadOntology(ConfiguredOntology ontology, OWLGraphWrapper oldGraph) {
+		try {
+			OWLGraphWrapper w = getResource(ontology, oldGraph);
+			return w;
+		} catch (UnknownOWLOntologyException exception) {
+			throw new RuntimeException(exception);
+		} catch (OWLOntologyCreationException exception) {
+			throw new RuntimeException(exception);
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
 }

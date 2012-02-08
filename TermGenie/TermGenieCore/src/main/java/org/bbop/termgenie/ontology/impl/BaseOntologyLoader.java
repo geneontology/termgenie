@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology.impl;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
@@ -68,9 +69,18 @@ public class BaseOntologyLoader {
 		});
 	}
 
-	protected OWLGraphWrapper getResource(ConfiguredOntology ontology)
+	protected OWLGraphWrapper getResource(ConfiguredOntology ontology, OWLGraphWrapper update)
 			throws OWLOntologyCreationException, IOException
 	{
+		if (update != null) {
+			manager.removeOntology(update.getSourceOntology());
+			Set<OWLOntology> supports = update.getSupportOntologySet();
+			if (supports != null) {
+				for (OWLOntology support : supports) {
+					manager.removeOntology(support);
+				}
+			}
+		}
 		OWLGraphWrapper w = load(ontology, ontology.source);
 		if (w == null) {
 			return null;
