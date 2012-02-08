@@ -164,11 +164,12 @@ public class BasicLuceneClient implements
 		LuceneMemoryOntologyIndex old = index;
 		try {
 			index = new LuceneMemoryOntologyIndex(ontology, roots, dlQuery, branches, factory);
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		} finally {
 			if (old != null) {
 				old.close();
 			}
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
 		}
 	}
 
