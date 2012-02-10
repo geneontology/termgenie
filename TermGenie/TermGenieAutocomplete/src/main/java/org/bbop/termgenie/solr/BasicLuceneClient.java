@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
-import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
+import org.bbop.termgenie.core.eventbus.OntologyChangeEvent.SecondaryOntologyChangeEvent;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.BranchDetails;
@@ -23,7 +23,7 @@ import owltools.graph.OWLGraphWrapper;
 
 public class BasicLuceneClient implements
 		OntologyTermSuggestor,
-		EventSubscriber<OntologyChangeEvent>
+		EventSubscriber<SecondaryOntologyChangeEvent>
 {
 
 	private final String name;
@@ -156,7 +156,7 @@ public class BasicLuceneClient implements
 		this.dlQuery = dlQuery;
 		this.branches = branches;
 		this.factory = factory;
-		EventBus.subscribe(OntologyChangeEvent.class, this);
+		EventBus.subscribe(SecondaryOntologyChangeEvent.class, this);
 	}
 
 	void setup(OWLGraphWrapper ontology) {
@@ -174,7 +174,7 @@ public class BasicLuceneClient implements
 	}
 
 	@Override
-	public void onEvent(OntologyChangeEvent event) {
+	public void onEvent(SecondaryOntologyChangeEvent event) {
 		// ignore event, if it's just a reset
 		if (!event.isReset()) {
 			// check if the changed ontology is the one used for this index

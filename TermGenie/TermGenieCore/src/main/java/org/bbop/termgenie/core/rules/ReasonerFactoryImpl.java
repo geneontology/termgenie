@@ -94,30 +94,41 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 			throw new RuntimeException("Import closure for: "+ontology.getOntologyID()+" does not contain all support ontologies.");
 		}
 		
-		return new ReasonerTaskManager("reasoner-manager-" + reasonerFactory.getReasonerName() + "-" + ontology.getOntologyID())
+		return new ReasonerTaskManagerImpl("reasoner-manager-" + reasonerFactory.getReasonerName() + "-" + ontology.getOntologyID(), reasonerFactory, ontology);
+	}
+
+	private static final class ReasonerTaskManagerImpl extends ReasonerTaskManager {
+	
+		private final OWLReasonerFactory reasonerFactory;
+		private final OWLOntology ontology;
+	
+		private ReasonerTaskManagerImpl(String name,
+				OWLReasonerFactory reasonerFactory,
+				OWLOntology ontology)
 		{
-
-			@Override
-			protected OWLReasoner updateManaged(OWLReasoner managed) {
-				// Do nothing, as the reasoner should reflect changes to
-				// the underlying ontology (non-buffering).
-				return managed;
-			}
-
-			@Override
-			protected OWLReasoner createManaged() {
-				logger.info("Create reasoner: " + reasonerFactory.getReasonerName() + " for ontology: " + ontology.getOntologyID());
-				OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-				reasoner.precomputeInferences(InferenceType.values());
-				return reasoner;
-			}
-
-			@Override
-			protected OWLReasoner resetManaged(OWLReasoner managed) {
-				// Do nothing as a reasoner cannot change the underlying
-				// ontology
-				return managed;
-			}
-		};
+			super(name);
+			this.reasonerFactory = reasonerFactory;
+			this.ontology = ontology;
+		}
+	
+		@Override
+		protected OWLReasoner updateManaged(OWLReasoner managed) {
+			return createManaged();
+		}
+	
+		@Override
+		protected OWLReasoner createManaged() {
+			logger.info("Create reasoner: " + reasonerFactory.getReasonerName() + " for ontology: " + ontology.getOntologyID());
+			OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
+			reasoner.precomputeInferences(InferenceType.values());
+			return reasoner;
+		}
+	
+		@Override
+		protected OWLReasoner resetManaged(OWLReasoner managed) {
+			// Do nothing as a reasoner cannot change the underlying
+			// ontology
+			return managed;
+		}
 	}
 }

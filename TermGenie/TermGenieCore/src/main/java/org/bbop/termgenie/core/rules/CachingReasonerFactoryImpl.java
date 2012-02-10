@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bbop.termgenie.core.eventbus.OntologyChangeEvent;
+import org.bbop.termgenie.core.eventbus.OntologyChangeEvent.SecondaryOntologyChangeEvent;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.tools.Pair;
 import org.bushe.swing.event.EventBus;
@@ -60,6 +61,7 @@ public class CachingReasonerFactoryImpl extends ReasonerFactoryImpl implements
 	@Override
 	public void onEvent(OntologyChangeEvent event) {
 		updateBuffered(event.getManager().getOntologyId());
+		EventBus.publish(new SecondaryOntologyChangeEvent(event.getManager(), event.isReset()));
 	}
 
 	@Override

@@ -46,4 +46,12 @@ public class OntologyChangeEvent {
 	public boolean isReset() {
 		return reset;
 	}
+	
+	public static class SecondaryOntologyChangeEvent extends OntologyChangeEvent {
+
+		public SecondaryOntologyChangeEvent(OntologyTaskManager manager, boolean reset) {
+			super(manager, reset);
+		}
+		
+	}
 }
