@@ -112,6 +112,16 @@ public abstract class GenericTaskManager<T> {
 	protected abstract T resetManaged(T managed);
 
 	/**
+	 * Called for disposing the managed instance.
+	 * Overwrite to implement custom functionality.
+	 * 
+	 * @param managed
+	 */
+	protected void dispose(T managed) {
+		// do nothing
+	}
+	
+	/**
 	 * Tell the managed object to update. Wait until the other processes are
 	 * finished.
 	 */
@@ -135,6 +145,35 @@ public abstract class GenericTaskManager<T> {
 				lock.release();
 			}
 		}
+	}
+	
+	public void dispose() {
+		boolean hasLock = false;
+		try {
+			lock.acquire();
+			hasLock = true;
+			if (managed != null) {
+				dispose(managed);
+				managed = null;
+			}
+		} catch (InterruptedException exception) {
+			throw new GenericTaskManagerException("Interrupted during wait.", exception);
+		}
+		finally {
+			if (hasLock) {
+				lock.release();
+			}
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// this is a safe guard. If someone forgets to dispose an objects, 
+		// which needs to be disposed, try to do it in the finalize.
+		if (managed != null) {
+			dispose(managed);
+		}
+		super.finalize();
 	}
 
 	protected abstract void setChanged(boolean reset);

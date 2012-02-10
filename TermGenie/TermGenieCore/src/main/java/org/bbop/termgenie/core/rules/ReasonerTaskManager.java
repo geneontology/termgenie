@@ -41,7 +41,7 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	protected void setChanged(boolean reset) {
 		// do nothing for now
 	}
-
+	
 	/**
 	 * A task which requires a reasoner.
 	 */

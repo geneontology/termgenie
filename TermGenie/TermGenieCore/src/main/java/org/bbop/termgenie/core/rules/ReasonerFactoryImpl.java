@@ -113,6 +113,7 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	
 		@Override
 		protected OWLReasoner updateManaged(OWLReasoner managed) {
+			managed.dispose();
 			return createManaged();
 		}
 	
@@ -129,6 +130,11 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 			// Do nothing as a reasoner cannot change the underlying
 			// ontology
 			return managed;
+		}
+
+		@Override
+		public void dispose(OWLReasoner managed) {
+			managed.dispose();
 		}
 	}
 }

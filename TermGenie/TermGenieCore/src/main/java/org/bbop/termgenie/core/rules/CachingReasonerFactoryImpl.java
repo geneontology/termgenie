@@ -70,7 +70,13 @@ public class CachingReasonerFactoryImpl extends ReasonerFactoryImpl implements
 			for (String reasonerName : allManagers.keySet()) {
 				Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
 				if (managers != null && !managers.isEmpty()) {
-					managers.remove(id);
+					Pair<OWLGraphWrapper,ReasonerTaskManager> pair = managers.remove(id);
+					if (pair != null) {
+						ReasonerTaskManager manager = pair.getTwo();
+						if (manager != null) {
+							manager.dispose();
+						}
+					}
 				}
 			}
 		}
