@@ -85,7 +85,11 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
-		reasonerManager.runManagedTask(task);
+		try {
+			reasonerManager.runManagedTask(task);
+		} finally {
+			reasonerManager.dispose();
+		}
 		return task.getInferredRelations();
 	}
 
