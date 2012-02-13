@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
-import org.bbop.termgenie.core.eventbus.OntologyChangeEvent.SecondaryOntologyChangeEvent;
+import org.bbop.termgenie.core.eventbus.SecondaryOntologyChangeEvent;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.BranchDetails;
@@ -174,7 +174,7 @@ public class BasicLuceneClient implements
 	}
 
 	@Override
-	public void onEvent(SecondaryOntologyChangeEvent event) {
+	public synchronized void onEvent(SecondaryOntologyChangeEvent event) {
 		// ignore event, if it's just a reset
 		if (!event.isReset()) {
 			// check if the changed ontology is the one used for this index

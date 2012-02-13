@@ -3,7 +3,7 @@ package org.bbop.termgenie.core.eventbus;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
-public class OntologyChangeEvent {
+public class SecondaryOntologyChangeEvent {
 
 	static {
 		/*
@@ -12,15 +12,11 @@ public class OntologyChangeEvent {
 		 */
 		TermGenieEventBus.setup();
 	}
-
+	
 	private final OntologyTaskManager manager;
 	private final boolean reset;
 
-	/**
-	 * @param manager
-	 * @param reset
-	 */
-	public OntologyChangeEvent(OntologyTaskManager manager, boolean reset) {
+	public SecondaryOntologyChangeEvent(OntologyTaskManager manager, boolean reset) {
 		super();
 		this.manager = manager;
 		this.reset = reset;
