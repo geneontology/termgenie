@@ -267,18 +267,22 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private void scmCheckout(VersionControlAdapter cvs) throws CommitException {
+	private void scmCheckout(VersionControlAdapter scm) throws CommitException {
 		try {
-			// cvs checkout
-			cvs.connect();
-			cvs.checkout(targetOntologyFileName);
+			// scm checkout
+			scm.connect();
+			boolean success = scm.checkout(targetOntologyFileName);
+			if (!success) {
+				String message = "Could not checkout recent copy of the ontology";
+				throw error(message, true);
+			}
 		} catch (IOException exception) {
 			String message = "Could not checkout recent copy of the ontology";
 			throw error(message, exception, true);
 		}
 		finally {
 			try {
-				cvs.close();
+				scm.close();
 			} catch (IOException exception) {
 				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
 			}
@@ -310,7 +314,7 @@ public abstract class OboScmHelper {
 			// load OBO
 			ontology = loader.loadOBO(scmFile, null);
 		} catch (IOException exception) {
-			String message = "Could load recent copy of the ontology";
+			String message = "Could not load recent copy of the ontology";
 			throw error(message, exception, true);
 		}
 		return ontology;

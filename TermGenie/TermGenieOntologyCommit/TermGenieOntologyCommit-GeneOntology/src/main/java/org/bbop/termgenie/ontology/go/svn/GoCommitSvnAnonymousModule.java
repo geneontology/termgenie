@@ -14,7 +14,7 @@ public class GoCommitSvnAnonymousModule extends AbstractGoCommitSvnModule {
 
 	@Override
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class, GoSvnHelper.GoCvsHelperAnonymous.class);
+		bind(OboScmHelper.class, GoSvnHelper.GoSvnHelperAnonymous.class);
 		
 	}
 

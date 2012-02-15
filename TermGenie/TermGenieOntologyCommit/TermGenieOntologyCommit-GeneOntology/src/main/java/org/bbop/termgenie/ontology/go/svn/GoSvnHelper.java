@@ -85,12 +85,12 @@ public class GoSvnHelper {
 	}
 
 	@Singleton
-	public static final class GoCvsHelperAnonymous extends OboScmHelper {
+	public static final class GoSvnHelperAnonymous extends OboScmHelper {
 
 		private final String svnRepository;
 
 		@Inject
-		GoCvsHelperAnonymous(@Named("GeneOntology") OntologyTaskManager source,
+		GoSvnHelperAnonymous(@Named("GeneOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,@Named("GeneOntologyCommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("GeneOntologyCommitAdapterSVNOntologyFileName") String svnOntologyFileName)

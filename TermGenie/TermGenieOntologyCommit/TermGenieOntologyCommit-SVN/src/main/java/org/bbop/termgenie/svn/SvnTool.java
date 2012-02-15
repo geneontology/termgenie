@@ -88,7 +88,8 @@ public class SvnTool implements VersionControlAdapter {
 			SVNDepth depth = SVNDepth.INFINITY;
 			updateClient.doCheckout(repositoryURL, targetFolder, pegRevision, revision, depth, true);
 			File file = new File(targetFolder, targetFile);
-			return file.isFile() && file.canRead() && file.canWrite();
+			final boolean success = file.isFile() && file.canRead() && file.canWrite();
+			return success;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
 		}
@@ -115,7 +116,8 @@ public class SvnTool implements VersionControlAdapter {
 		checkConnection();
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		try {
-			updateClient.doUpdate(new File(targetFolder, target), SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
+			File path = new File(targetFolder, target).getAbsoluteFile();
+			updateClient.doUpdate(path, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);

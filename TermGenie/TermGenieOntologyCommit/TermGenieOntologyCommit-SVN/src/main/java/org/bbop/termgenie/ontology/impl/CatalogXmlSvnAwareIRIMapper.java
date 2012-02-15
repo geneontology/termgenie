@@ -33,7 +33,10 @@ public class CatalogXmlSvnAwareIRIMapper extends AbstractCatalogXmlScmAwareIRIMa
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				svn.connect();
-				svn.checkout(checkout);
+				boolean success = svn.checkout(checkout);
+				if (!success) {
+					throw new RuntimeException("Checkout not successfull");
+				}
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
