@@ -159,5 +159,9 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			throw exception;
 		}
 	}
+	
+	public void dispose() {
+		syntaxTool.dispose();
+	}
 
 }

@@ -291,6 +291,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			}
 			Integer targetOntologyIndex = null;
 			ChangeTracker changeTracker = null;
+			TermGenieScriptFunctionsMDefImpl functionsImpl = null;
 			try {
 				List<OWLGraphWrapper> auxiliaryOntologies = new ArrayList<OWLGraphWrapper>(ontologies.length);
 				OWLGraphWrapper targetOntology = null;
@@ -312,7 +313,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 					return modified;
 				}
 
-				TermGenieScriptFunctionsMDefImpl functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();
@@ -328,6 +329,10 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				result = createError("Error, script did not contain expected method run:\n" + exception.getMessage());
 			}
 			finally {
+				// properly dispose the script runner
+				if (functionsImpl != null) {
+					functionsImpl.dispose();
+				}
 				// set the target ontology modified flag
 				if (changeTracker != null) {
 					if (changeTracker.hasChanges()) {
