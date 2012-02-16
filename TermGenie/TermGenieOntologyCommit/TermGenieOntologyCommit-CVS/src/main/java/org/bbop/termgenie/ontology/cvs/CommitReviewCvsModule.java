@@ -1,12 +1,12 @@
-package org.bbop.termgenie.ontology.go.cvs;
+package org.bbop.termgenie.ontology.cvs;
 
 import java.util.Properties;
 
+import org.bbop.termgenie.ontology.AbstractCommitModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.go.AbstractGoCommitModule;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
@@ -14,7 +14,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-public class GoCommitReviewCvsModule extends AbstractGoCommitModule {
+public class CommitReviewCvsModule extends AbstractCommitModule {
 
 	private final String cvsOntologyFileName;
 	private final String cvsRoot;
@@ -23,9 +23,10 @@ public class GoCommitReviewCvsModule extends AbstractGoCommitModule {
 	 * @param cvsOntologyFileName
 	 * @param cvsRoot
 	 * @param applicationProperties 
+	 * @param commitTargetOntologyName
 	 */
-	public GoCommitReviewCvsModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties) {
-		super(applicationProperties);
+	public CommitReviewCvsModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties, String commitTargetOntologyName) {
+		super(applicationProperties, commitTargetOntologyName);
 		this.cvsOntologyFileName = cvsOntologyFileName;
 		this.cvsRoot = cvsRoot;
 	}
@@ -33,25 +34,25 @@ public class GoCommitReviewCvsModule extends AbstractGoCommitModule {
 	@Override
 	protected void configure() {
 		super.configure();
-		bind("GeneOntologyCommitAdapterCVSOntologyFileName", cvsOntologyFileName);
-		bind("GeneOntologyCommitAdapterCVSRoot", cvsRoot);
+		bind("CommitAdapterCVSOntologyFileName", cvsOntologyFileName);
+		bind("CommitAdapterCVSRoot", cvsRoot);
 		bindCVSPassword();
 		bindOBOSCMHelper();
 	}
 	
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class, GoCvsHelperPassword.class);
+		bind(OboScmHelper.class, CvsHelperPassword.class);
 	}
 
 	protected void bindCVSPassword() {
 		// bind the password only via a system parameter !
 		// Reason: Do not accidently commit a secret password
-		bindSecret("GeneOntologyCommitAdapterCVSPassword");
+		bindSecret("CommitAdapterCVSPassword");
 	}
 	
 	@Singleton
 	@Provides
-	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("GeneOntology") OntologyTaskManager source,
+	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
 			OboScmHelper helper) {
 		return new OboCommitReviewPipeline(source, store, helper);

@@ -1,8 +1,8 @@
 package org.bbop.termgenie.services.review;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -15,12 +15,12 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class GOTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl {
+public class OboTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl {
 
 	@Inject
-	GOTermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
+	OboTermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("TermCommitReviewServiceOntology") Ontology ontology,
+			@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
 			OntologyCommitReviewPipelineStages stages)
 	{

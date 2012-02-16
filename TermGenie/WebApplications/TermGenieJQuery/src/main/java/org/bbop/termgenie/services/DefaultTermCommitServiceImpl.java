@@ -12,10 +12,12 @@ import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
+import org.bbop.termgenie.ontology.InternalCommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
@@ -39,29 +41,69 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLObject;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
 import owltools.graph.OWLGraphWrapper;
 
-public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
+@Singleton
+public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
 
 	private final Committer committer;
 	private final OntologyIdManager idProvider;
 	protected final UserPermissions permissions;
+	private final OntologyTaskManager source;
+	private String tempIdPrefix;
 
-	protected AbstractTermCommitServiceImpl(OntologyTools ontologyTools,
+	@Inject
+	public DefaultTermCommitServiceImpl(OntologyTools ontologyTools,
 			InternalSessionHandler sessionHandler,
 			Committer committer,
+			final @Named("CommitTargetOntology") OntologyTaskManager source,
 			OntologyIdManager idProvider,
+			final TermGenerationEngine generationEngine,
 			UserPermissions permissions)
 	{
 		super(ontologyTools, sessionHandler);
 		this.committer = committer;
 		this.idProvider = idProvider;
 		this.permissions = permissions;
+		this.source = source;
+		source.runManagedTask(new OntologyTask() {
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				tempIdPrefix = generationEngine.getTempIdPrefix(managed);
+			}
+		});
 	}
 
-	protected abstract Ontology getTargetOntology();
+	protected Ontology getTargetOntology() {
+		return source.getOntology();
+	}
 
-	protected abstract String getTempIdPrefix();
+	protected String getTempIdPrefix() {
+		return tempIdPrefix;
+	}
+
+	/**
+	 * Create {@link CommitInfo} instance for the given modifications. Overwrite
+	 * this method for more complex commitInfo
+	 * 
+	 * @param terms
+	 * @param userData
+	 * @param commitMessage
+	 * @param commitUserData
+	 * @return CommitInfo
+	 */
+	protected CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
+			String commitMessage,
+			UserData userData,
+			CommitUserData commitUserData)
+	{
+		return new InternalCommitInfo(terms, commitMessage, userData);
+	}
 
 	@Override
 	public JsonCommitResult commitTerms(String sessionId,
@@ -95,16 +137,15 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			logger.warn("Insufficient rights for user attempt to commit. User: " + termgenieUser + " with GUID: " + userData.getGuid());
 			return error("Could not commit, the user is not authorized to execute a commit.");
 		}
-		
+
 		String commitMessage = createDefaultCommitMessage(userData);
-		CommitTask task = new CommitTask(manager, terms, commitMessage , userData, permissions.getCommitUserData(userData,
+		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
 				manager.getOntology()));
 		idProvider.runManagedTask(task);
 		return task.result;
 	}
 
-	private String createDefaultCommitMessage(UserData userData)
-	{
+	private String createDefaultCommitMessage(UserData userData) {
 		String name = userData.getScmAlias();
 		if (name == null) {
 			name = userData.getScreenname();
@@ -112,13 +153,13 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 		if (name == null) {
 			name = userData.getEmail();
 		}
-		return "TermGenie commit for user: "+name;
+		return "TermGenie commit for user: " + name;
 	}
 
 	private class CheckTermsTask extends OntologyTask {
 
 		private final JsonOntologyTerm[] terms;
-		
+
 		/**
 		 * @param terms
 		 */
@@ -142,7 +183,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				OWLObject owlObject = managed.getOWLObjectByLabel(label);
 				if (owlObject != null) {
 					String identifier = managed.getIdentifier(owlObject);
-					existing.add(identifier+" "+label);
+					existing.add(identifier + " " + label);
 				}
 			}
 			if (!existing.isEmpty()) {
@@ -203,9 +244,9 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				return;
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * <p>
 	 * This task encapsulates the commit operation and the required creation of
@@ -251,19 +292,19 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 		@Override
 		protected void runSimple(OntologyIdProvider idProvider) {
-			
-			// check terms in the commit 
+
+			// check terms in the commit
 			CheckTermsTask checkTermsTask = new CheckTermsTask(terms);
 			manager.runManagedTask(checkTermsTask);
 			if (checkTermsTask.getException() != null) {
-				result = error("Could not check terms due to an error: "+checkTermsTask.getException().getMessage());
+				result = error("Could not check terms due to an error: " + checkTermsTask.getException().getMessage());
 				return;
 			}
 			else if (checkTermsTask.getMessage() != null) {
 				result = error(checkTermsTask.getMessage());
 				return;
 			}
-			
+
 			// create terms with new termIds
 			Pair<List<CommitObject<TermCommit>>, Integer> pair;
 			try {
@@ -280,11 +321,16 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				if (Modification.add == commitObject.getType()) {
 					TermCommit termCommit = commitObject.getObject();
 					Frame frame = termCommit.getTerm();
-					OboTools.updateClauseValues(frame, OboFormatTag.TAG_CREATED_BY, userData.getScmAlias());
+					OboTools.updateClauseValues(frame,
+							OboFormatTag.TAG_CREATED_BY,
+							userData.getScmAlias());
 				}
 			}
-			
-			CommitInfo commitInfo = createCommitInfo(commitTerms, commitMessage, userData, commitUserData);
+
+			CommitInfo commitInfo = createCommitInfo(commitTerms,
+					commitMessage,
+					userData,
+					commitUserData);
 			try {
 				// commit
 				CommitResult commitResult = committer.commit(commitInfo);
@@ -321,7 +367,7 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 
 			private final List<CommitObject<TermCommit>> commitTerms;
 			private List<JsonOntologyTerm> terms;
-			
+
 			/**
 			 * @param commitTerms
 			 */
@@ -335,12 +381,14 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 				terms = new ArrayList<JsonOntologyTerm>();
 				for (CommitObject<TermCommit> commitObject : commitTerms) {
 					if (commitObject.getType() == Modification.add) {
-						terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(), commitObject.getObject().getChanged(), managed));
+						terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(),
+								commitObject.getObject().getChanged(),
+								managed));
 					}
 				}
 			}
 		}
-		
+
 		private Pair<List<CommitObject<TermCommit>>, Integer> createCommitTerms(JsonOntologyTerm[] terms,
 				Ontology ontology,
 				OntologyIdProvider idProvider) throws CommitException
@@ -348,7 +396,8 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			List<CommitObject<TermCommit>> commits = new ArrayList<CommitObject<TermCommit>>();
 			IdHandler idHandler = new IdHandler(idProvider, ontology, getTempIdPrefix());
 			for (JsonOntologyTerm jsonTerm : terms) {
-				Frame frame = JsonOntologyTerm.createFrame(jsonTerm, idHandler.create(jsonTerm.getTempId()));
+				Frame frame = JsonOntologyTerm.createFrame(jsonTerm,
+						idHandler.create(jsonTerm.getTempId()));
 				updateIdentifiers(frame, idHandler);
 				List<Frame> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
 				if (changed != null && !changed.isEmpty()) {
@@ -369,12 +418,11 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 			}
 			return new Pair<List<CommitObject<TermCommit>>, Integer>(commits, idHandler.base);
 		}
-		
-		
+
 		private void updateIdentifiers(Frame frame, IdHandler idHandler) {
 			updateIdentifiers(OboTools.getRelations(frame), idHandler);
 		}
-		
+
 		private void updateIdentifiers(List<Clause> clauses, IdHandler idHandler) {
 			if (clauses != null && !clauses.isEmpty()) {
 				for (Clause clause : clauses) {
@@ -396,24 +444,10 @@ public abstract class AbstractTermCommitServiceImpl extends NoCommitTermCommitSe
 							}
 						}
 					}
-				} 
+				}
 			}
 		}
 	}
-
-	/**
-	 * Create {@link CommitInfo} instance for the given modifications.
-	 * 
-	 * @param terms
-	 * @param userData
-	 * @param commitMessage
-	 * @param commitUserData
-	 * @return CommitInfo
-	 */
-	protected abstract CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
-			String  commitMessage,
-			UserData userData,
-			CommitUserData commitUserData);
 
 	// ---------------- Helper ----------------
 

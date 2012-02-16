@@ -1,21 +1,22 @@
-package org.bbop.termgenie.ontology.go.svn;
+package org.bbop.termgenie.ontology.svn;
 
 import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
-public class GoCommitSvnUserPasswdModule extends AbstractGoCommitSvnModule {
+public class CommitSvnUserPasswdModule extends AbstractCommitSvnModule {
 
 	private final String svnUsername;
 	private final String svnPassword;
 
-	public GoCommitSvnUserPasswdModule(String svnRepository,
+	public CommitSvnUserPasswdModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			String svnPassword,
-			Properties applicationProperties)
+			Properties applicationProperties,
+			String commitTargetOntologyName)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName);
 		this.svnUsername = svnUsername;
 		this.svnPassword = svnPassword;
 	}
@@ -29,6 +30,6 @@ public class GoCommitSvnUserPasswdModule extends AbstractGoCommitSvnModule {
 
 	@Override
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class, GoSvnHelper.GoSvnHelperPassword.class);
+		bind(OboScmHelper.class, SvnHelper.SvnHelperPassword.class);
 	}
 }

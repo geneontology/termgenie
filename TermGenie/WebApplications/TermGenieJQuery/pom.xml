@@ -41,10 +41,6 @@
 				</exclusion>
 			</exclusions>
    		</dependency>
-   		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieOntologyCommit-Core</artifactId>

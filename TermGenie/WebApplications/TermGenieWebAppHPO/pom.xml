@@ -37,5 +37,10 @@
 			<classifier>classes</classifier>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieOntologyCommit-SVN</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 </project>

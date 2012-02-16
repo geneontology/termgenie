@@ -1,12 +1,12 @@
-package org.bbop.termgenie.ontology.go.svn;
+package org.bbop.termgenie.ontology.svn;
 
 import java.util.Properties;
 
+import org.bbop.termgenie.ontology.AbstractCommitModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.go.AbstractGoCommitModule;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
@@ -14,7 +14,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-public abstract class AbstractGoCommitSvnModule extends AbstractGoCommitModule {
+abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 
 	private final String svnRepository;
 	private final String svnOntologyFileName;
@@ -23,9 +23,14 @@ public abstract class AbstractGoCommitSvnModule extends AbstractGoCommitModule {
 	 * @param svnRepository
 	 * @param svnOntologyFileName
 	 * @param applicationProperties
+	 * @param commitTargetOntologyName
 	 */
-	public AbstractGoCommitSvnModule(String svnRepository, String svnOntologyFileName, Properties applicationProperties) {
-		super(applicationProperties);
+	protected AbstractCommitSvnModule(String svnRepository,
+			String svnOntologyFileName,
+			Properties applicationProperties,
+			String commitTargetOntologyName)
+	{
+		super(applicationProperties, commitTargetOntologyName);
 		this.svnRepository = svnRepository;
 		this.svnOntologyFileName = svnOntologyFileName;
 	}
@@ -33,25 +38,26 @@ public abstract class AbstractGoCommitSvnModule extends AbstractGoCommitModule {
 	@Override
 	protected void configure() {
 		super.configure();
-		bind("GeneOntologyCommitAdapterSVNRepositoryUrl", svnRepository);
-		bind("GeneOntologyCommitAdapterSVNOntologyFileName", svnOntologyFileName);
+		bind("CommitAdapterSVNRepositoryUrl", svnRepository);
+		bind("CommitAdapterSVNOntologyFileName", svnOntologyFileName);
 		bindOBOSCMHelper();
 	}
-	
+
 	@Singleton
 	@Provides
-	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("GeneOntology") OntologyTaskManager source,
+	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
-			OboScmHelper helper) {
+			OboScmHelper helper)
+	{
 		return new OboCommitReviewPipeline(source, store, helper);
 	}
-	
+
 	@Singleton
 	@Provides
 	Committer provideReviewCommitter(OntologyCommitReviewPipelineStages pipeline) {
 		return pipeline.getReviewCommitter();
 	}
-	
+
 	protected abstract void bindOBOSCMHelper();
 
 }

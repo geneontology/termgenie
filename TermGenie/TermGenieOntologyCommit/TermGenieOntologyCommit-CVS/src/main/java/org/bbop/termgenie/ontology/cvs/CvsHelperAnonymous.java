@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.go.cvs;
+package org.bbop.termgenie.ontology.cvs;
 
 import java.io.File;
 
@@ -16,16 +16,16 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public final class GoCvsHelperAnonymous extends OboScmHelper {
+public final class CvsHelperAnonymous extends OboScmHelper {
 
 	private final String cvsRoot;
 
 	@Inject
-	GoCvsHelperAnonymous(@Named("GeneOntology") OntologyTaskManager source,
+	CvsHelperAnonymous(@Named("CommitTargetOntology") OntologyTaskManager source,
 			IRIMapper iriMapper,
 			OntologyCleaner cleaner,
-			@Named("GeneOntologyCommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
-			@Named("GeneOntologyCommitAdapterCVSRoot") String cvsRoot)
+			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
+			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
 		super(source, iriMapper, cleaner, cvsOntologyFileName);
 		this.cvsRoot = cvsRoot;

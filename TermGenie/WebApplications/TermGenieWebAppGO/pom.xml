@@ -39,7 +39,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieOntologyCommit-GeneOntology</artifactId>
+			<artifactId>TermGenieOntologyCommit-CVS</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>

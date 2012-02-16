@@ -20,6 +20,7 @@ import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
@@ -64,14 +65,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("TermCommitReviewServiceOntology") Ontology ontology,
+			@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
 			OntologyCommitReviewPipelineStages stages)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
-		this.ontology = ontology;
+		this.ontology = ontology.getOntology();
 		this.manager = manager;
 		this.stages = stages;
 	}

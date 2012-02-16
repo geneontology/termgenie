@@ -1,4 +1,4 @@
-package org.bbop.termgenie.ontology.go.svn;
+package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
 
@@ -16,26 +16,26 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
- * Main steps for committing ontology changes to an OBO file in an CVS
+ * Main steps for committing ontology changes to an OBO file in an SVN
  * repository.
  */
-public class GoSvnHelper {
+public class SvnHelper {
 
 	@Singleton
-	public static final class GoSvnHelperPassword extends OboScmHelper {
+	public static final class SvnHelperPassword extends OboScmHelper {
 
 		private final String svnRepository;
 		private final String svnUsername;
 		private final String svnPassword;
 
 		@Inject
-		GoSvnHelperPassword(@Named("GeneOntology") OntologyTaskManager source,
+		SvnHelperPassword(@Named("CommitTargetOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
-				@Named("GeneOntologyCommitAdapterSVNRepositoryUrl") String svnRepository,
-				@Named("GeneOntologyCommitAdapterSVNOntologyFileName") String svnOntologyFileName,
-				@Named("GeneOntologyCommitAdapterSVNUsername") String svnUsername,
-				@Named("GeneOntologyCommitAdapterSVNPassword") String svnPassword)
+				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
+				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNUsername") String svnUsername,
+				@Named("CommitAdapterSVNPassword") String svnPassword)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
@@ -85,15 +85,15 @@ public class GoSvnHelper {
 	}
 
 	@Singleton
-	public static final class GoSvnHelperAnonymous extends OboScmHelper {
+	public static final class SvnHelperAnonymous extends OboScmHelper {
 
 		private final String svnRepository;
 
 		@Inject
-		GoSvnHelperAnonymous(@Named("GeneOntology") OntologyTaskManager source,
+		SvnHelperAnonymous(@Named("CommitTargetOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
-				OntologyCleaner cleaner,@Named("GeneOntologyCommitAdapterSVNRepositoryUrl") String svnRepository,
-				@Named("GeneOntologyCommitAdapterSVNOntologyFileName") String svnOntologyFileName)
+				OntologyCleaner cleaner,@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
+				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
@@ -130,7 +130,7 @@ public class GoSvnHelper {
 	}
 
 	@Singleton
-	public static final class GoSvnHelperKeyFile extends OboScmHelper {
+	public static final class SvnHelperKeyFile extends OboScmHelper {
 	
 		private final String svnRepository;
 		private final String svnUsername;
@@ -138,14 +138,14 @@ public class GoSvnHelper {
 		private final String svnPassword;
 	
 		@Inject
-		GoSvnHelperKeyFile(@Named("GeneOntology") OntologyTaskManager source,
+		SvnHelperKeyFile(@Named("CommitTargetOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,
-				@Named("GeneOntologyCommitAdapterSVNRepositoryUrl") String svnRepository,
-				@Named("GeneOntologyCommitAdapterSVNOntologyFileName") String svnOntologyFileName,
-				@Named("GeneOntologyCommitAdapterSVNUsername") String svnUsername,
-				@Named("GeneOntologyCommitAdapterSVNKeyFile") File svnKeyFile,
-				@Named("GeneOntologyCommitAdapterSVNPassword") String svnPassword)
+				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
+				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNUsername") String svnUsername,
+				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
+				@Named("CommitAdapterSVNPassword") String svnPassword)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
@@ -195,7 +195,7 @@ public class GoSvnHelper {
 		}
 	}
 
-	private GoSvnHelper() {
+	private SvnHelper() {
 		// no instances
 	}
 }

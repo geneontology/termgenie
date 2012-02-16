@@ -8,27 +8,22 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.go.cvs.GoCommitReviewCvsModule;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.bbop.termgenie.ontology.cvs.CommitReviewCvsModule;
 import org.bbop.termgenie.ontology.impl.CvsAwareXMLReloadingOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
-import org.bbop.termgenie.services.GoTermCommitServiceImpl;
+import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
-import org.bbop.termgenie.services.review.GOTermCommitReviewServiceImpl;
+import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
-
-import com.google.inject.Singleton;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
 
@@ -49,7 +44,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 			@Override
 			protected void bindTermCommitService() {
-				bind(TermCommitService.class, GoTermCommitServiceImpl.class);
+				bind(TermCommitService.class, DefaultTermCommitServiceImpl.class);
 			}
 			
 			@Override
@@ -76,7 +71,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getCommitModule() {
 		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		return new GoCommitReviewCvsModule(cvsFileName, cvsRoot, applicationProperties);
+		return new CommitReviewCvsModule(cvsFileName, cvsRoot, applicationProperties, "GeneOntology");
 	}
 	
 	
@@ -86,21 +81,13 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		return new TermCommitReviewServiceModule(true, applicationProperties) {
 
 			@Override
-			@Singleton
-			protected Ontology getTermCommitReviewServiceOntology(OntologyConfiguration configuration)
-			{
-				ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get("GeneOntology");
-				return configuredOntology;
-			}
-			
-			@Override
 			public String getModuleName() {
 				return "TermGenieGO-TermCommitReviewServiceModule";
 			}
 			
 			@Override
 			protected void bindEnabled() {
-				bind(TermCommitReviewService.class, GOTermCommitReviewServiceImpl.class);
+				bind(TermCommitReviewService.class, OboTermCommitReviewServiceImpl.class);
 			}
 		};
 	}

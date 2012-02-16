@@ -1,16 +1,16 @@
-package org.bbop.termgenie.ontology.go.svn;
+package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
 import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
-public class GoCommitSvnUserKeyFileModule extends AbstractGoCommitSvnModule {
+public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 
 	private final String svnUsername;
 	private final File svnKeyFile;
 	private final String svnPassword;
-	
+
 	/**
 	 * @param svnRepository
 	 * @param svnOntologyFileName
@@ -18,15 +18,17 @@ public class GoCommitSvnUserKeyFileModule extends AbstractGoCommitSvnModule {
 	 * @param svnKeyFile
 	 * @param svnPassword
 	 * @param applicationProperties
+	 * @param commitTargetOntologyName
 	 */
-	public GoCommitSvnUserKeyFileModule(String svnRepository,
+	public CommitSvnUserKeyFileModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			File svnKeyFile,
 			String svnPassword,
-			Properties applicationProperties)
+			Properties applicationProperties,
+			String commitTargetOntologyName)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName);
 		this.svnUsername = svnUsername;
 		this.svnKeyFile = svnKeyFile;
 		this.svnPassword = svnPassword;
@@ -42,6 +44,6 @@ public class GoCommitSvnUserKeyFileModule extends AbstractGoCommitSvnModule {
 
 	@Override
 	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class, GoSvnHelper.GoSvnHelperKeyFile.class);
+		bind(OboScmHelper.class, SvnHelper.SvnHelperKeyFile.class);
 	}
 }
