@@ -36,6 +36,7 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
+import org.bbop.termgenie.services.review.mail.ReviewMailHandler;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
@@ -61,17 +62,20 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	private final OntologyCommitReviewPipelineStages stages;
 	private final Ontology ontology;
 	private final MultiOntologyTaskManager manager;
+	private final ReviewMailHandler reviewMailHandler;
 	
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
 			@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
-			OntologyCommitReviewPipelineStages stages)
+			OntologyCommitReviewPipelineStages stages,
+			ReviewMailHandler reviewMailHandler)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
+		this.reviewMailHandler = reviewMailHandler;
 		this.ontology = ontology.getOntology();
 		this.manager = manager;
 		this.stages = stages;
@@ -228,7 +232,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		// commit changes to repository
 		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
 		
-		CommitTask task = new CommitTask(entries, this);
+		CommitTask task = new CommitTask(entries, this, reviewMailHandler);
 		afterReviewTaskManager.runManagedTask(task);
 		if (task.exception != null) {
 			logger.error("Error during commit", task.exception);
@@ -244,10 +248,12 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		private List<CommitResult> commits;
 		private CommitException exception;
 		private final TermCommitReviewServiceImpl instance;
+		private final ReviewMailHandler handler;
 	
-		private CommitTask(JsonCommitReviewEntry[] entries, TermCommitReviewServiceImpl instance) {
+		private CommitTask(JsonCommitReviewEntry[] entries, TermCommitReviewServiceImpl instance, ReviewMailHandler handler) {
 			this.entries = entries;
 			this.instance = instance;
+			this.handler = handler;
 		}
 	
 		@Override
@@ -272,6 +278,10 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				}
 				
 				commits = afterReview.commit(historyIds);
+				
+				// send e-mail
+				handler.handleReviewMail(historyIds, afterReview);
+				
 				return Modified.no;
 			} catch (CommitException exception) {
 				this.exception = exception;

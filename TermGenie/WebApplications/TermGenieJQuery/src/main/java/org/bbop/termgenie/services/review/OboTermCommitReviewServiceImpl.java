@@ -6,6 +6,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
+import org.bbop.termgenie.services.review.mail.ReviewMailHandler;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -22,9 +23,10 @@ public class OboTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl 
 			UserPermissions permissions,
 			@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
-			OntologyCommitReviewPipelineStages stages)
+			OntologyCommitReviewPipelineStages stages, 
+			ReviewMailHandler reviewMailHandler)
 	{
-		super(sessionHandler, permissions, ontology, manager, stages);
+		super(sessionHandler, permissions, ontology, manager, stages, reviewMailHandler);
 	}
 
 	/**

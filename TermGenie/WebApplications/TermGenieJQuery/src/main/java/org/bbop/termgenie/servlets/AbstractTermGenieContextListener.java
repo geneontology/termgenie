@@ -30,6 +30,7 @@ import org.bbop.termgenie.services.resources.ResourceProviderModule.EmptyResourc
 import org.bbop.termgenie.services.resources.ResourceProviderService;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+import org.bbop.termgenie.services.review.mail.NoopReviewMailHandler;
 import org.bbop.termgenie.services.visualization.TermHierarchyModule;
 import org.bbop.termgenie.services.visualization.TermHierarchyRenderer;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
@@ -139,6 +140,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getCommitReviewWebModule(), true, "CommitReviewModule");
 		add(modules, getResourceProviderModule(), true, "ResourceProviderModule");
 		add(modules, getTermHierarchyModule(), true, "TermHierarchyModule");
+		add(modules, getReviewMailHandlerModule(), true, "ReviewMailHandlerModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -222,6 +224,13 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 	protected IOCModule getTermHierarchyModule() {
 		return new TermHierarchyModule(applicationProperties);
+	}
+	
+	/**
+	 * @return module providing e-mail functionality
+	 */
+	protected IOCModule getReviewMailHandlerModule() {
+		return new NoopReviewMailHandler.NoopReviewMailHandlerModule(applicationProperties);
 	}
 	
 	/**

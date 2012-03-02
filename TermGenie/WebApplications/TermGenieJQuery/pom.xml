@@ -60,5 +60,10 @@
 			<artifactId>TermGeniePersistence</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGenieMail</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 </project>
