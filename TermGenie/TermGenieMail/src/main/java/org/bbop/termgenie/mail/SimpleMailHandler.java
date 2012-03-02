@@ -15,11 +15,12 @@ public class SimpleMailHandler implements MailHandler {
 		super();
 		this.smtpHost = smtpHost;
 	}
-	
+
 	@Override
 	public void sendEmail(String subject,
 			String body,
 			String from,
+			String fromName,
 			List<String> to,
 			List<String> cc,
 			List<String> bcc) throws EmailException
@@ -27,7 +28,7 @@ public class SimpleMailHandler implements MailHandler {
 		Email email = new SimpleEmail();
 		email.setHostName(smtpHost);
 		email.setSmtpPort(25);
-		email.setFrom(from);
+		email.setFrom(from, fromName);
 		email.setSubject(subject);
 		email.setMsg(body);
 		if (to == null || to.isEmpty()) {
@@ -36,7 +37,7 @@ public class SimpleMailHandler implements MailHandler {
 		for (String emailAddress : to) {
 			email.addTo(emailAddress);
 		}
-		
+
 		if (cc != null) {
 			for (String emailAddress : cc) {
 				email.addCc(emailAddress);
@@ -48,12 +49,14 @@ public class SimpleMailHandler implements MailHandler {
 			}
 		}
 		email.send();
-		
+
 	}
 
 	@Override
-	public void sendEmail(String subject, String body, String from, String to) throws EmailException {
-		sendEmail(subject, body, from, Collections.singletonList(to), null, null);
+	public void sendEmail(String subject, String body, String from, String fromName, String to)
+			throws EmailException
+	{
+		sendEmail(subject, body, from, fromName, Collections.singletonList(to), null, null);
 	}
 
 }
