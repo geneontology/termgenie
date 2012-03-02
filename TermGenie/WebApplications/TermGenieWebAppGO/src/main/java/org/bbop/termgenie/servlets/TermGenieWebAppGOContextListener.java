@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.mail.MailHandler;
+import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.cvs.CommitReviewCvsModule;
 import org.bbop.termgenie.ontology.impl.CvsAwareXMLReloadingOntologyModule;
@@ -23,6 +25,7 @@ import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredRe
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+import org.bbop.termgenie.services.review.mail.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
@@ -127,4 +130,17 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected ResourceProviderModule getResourceProviderModule() {
 		return new ConfiguredResourceProviderModule(applicationProperties);
 	}
+
+	@Override
+	protected IOCModule getReviewMailHandlerModule() {
+		
+		return new DefaultReviewMailHandlerModule(applicationProperties, "help@go.termgenie.org", "GeneOntology TermGenie") {
+			
+			@Override
+			protected MailHandler provideMailHandler() {
+				return new SimpleMailHandler("smtp.lbl.gov");
+			}
+		};
+	}
+	
 }
