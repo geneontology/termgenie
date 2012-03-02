@@ -12,24 +12,31 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 @Singleton
 public class DefaultReviewMailHandler implements ReviewMailHandler {
-	
+
 	private static final Logger logger = Logger.getLogger(DefaultReviewMailHandler.class);
 
-	private MailHandler mailHandler = null;
-	private String fromAddress = null;
-	
+	private final MailHandler mailHandler;
+	private final String fromAddress;
+	private final String fromName;
+
 	/**
 	 * @param mailHandler
 	 * @param fromAddress
+	 * @param fromName
 	 */
 	@Inject
-	public DefaultReviewMailHandler(MailHandler mailHandler, String fromAddress) {
+	public DefaultReviewMailHandler(MailHandler mailHandler,
+			@Named("DefaultReviewMailHandlerFromAddress") String fromAddress,
+			@Named("DefaultReviewMailHandlerFromName") String fromName)
+	{
 		super();
 		this.mailHandler = mailHandler;
 		this.fromAddress = fromAddress;
+		this.fromName = fromName;
 	}
 
 	@Override
@@ -55,14 +62,14 @@ public class DefaultReviewMailHandler implements ReviewMailHandler {
 					body.append('\n');
 				}
 				final String email = historyItem.getEmail();
-				
+
 				try {
-					mailHandler.sendEmail(subject, body.toString(), fromAddress, "TermGenie", email);
+					mailHandler.sendEmail(subject, body.toString(), fromAddress, fromName, email);
 				} catch (EmailException exception) {
-					logger.warn("Could not send e-mail to user: "+email, exception);
+					logger.warn("Could not send e-mail to user: " + email, exception);
 				}
 			} catch (CommitException exception) {
-				logger.warn("Could not fetch history item: "+historyId, exception);
+				logger.warn("Could not fetch history item: " + historyId, exception);
 			}
 		}
 	}
