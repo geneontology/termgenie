@@ -334,5 +334,6 @@
 		<module>TermGenieOntologyCommit</module>
 		<module>WebApplications</module>
 		<module>TermGenieUserManagement</module>
+		<module>TermGenieMail</module>
 	</modules>
 </project>
