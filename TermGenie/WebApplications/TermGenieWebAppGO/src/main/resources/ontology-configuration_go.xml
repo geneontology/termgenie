@@ -9,12 +9,14 @@
 			<root>GO:0003674</root>
 			<root>GO:0005575</root>
 		</roots>
+		<!-- 
 		<requires>
 			<name>ProteinOntology</name>
-			<!-- <name>Uberon</name> -->
-			<!-- <name>PO</name> --> <!-- Plant ontology -->
-			<!-- <name>GOCHE</name> -->
+			<name>Uberon</name>
+			<name>PO</name> <!- - Plant ontology - ->
+			<name>GOCHE</name>
 		</requires>
+		 -->
 		<ontologybranch name="biological_process">
 			<roots>
 				<root>GO:0008150</root>
@@ -31,12 +33,13 @@
 			</roots>
 		</ontologybranch>
 	</ontology>
+	<!-- 
 	<ontology name="ProteinOntology">
 		<source>ftp://ftp.pir.georgetown.edu/databases/ontology/pro_obo/pro.obo</source>
 		<roots>
 			<root>PR:000000001</root>
 		</roots>
-	</ontology>
+	</ontology>  -->
 	<!-- 
 	<ontology name="Uberon">
 		<source>https://raw.github.com/cmungall/uberon/master/uberon.obo</source>

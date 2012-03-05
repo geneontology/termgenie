@@ -373,7 +373,7 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_morphogenesis.js</ruleFile>
 		</ruleFiles>
 	</template> -->
-
+	<!-- 
 	<template name="structural_protein_complex">
 		<description>protein complex defined structurally</description>
 		<ontology name="GeneOntology" />
@@ -396,5 +396,5 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/pro/structural_protein_complex.js</ruleFile>
 		</ruleFiles>
-	</template>
+	</template> -->
 </termgenietemplates>
