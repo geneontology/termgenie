@@ -16,8 +16,8 @@
  	<listener-class>org.bbop.termgenie.servlets.TermGenieWebAppGOContextListener</listener-class>
  </listener>
 
- <session-config>  <!--  changed from 90 minutes to 8 hours, can be reverted after implementing keep alive. -->
-   <session-timeout>480</session-timeout>
+ <session-config>  <!--  30 minutes -->
+   <session-timeout>30</session-timeout>
  </session-config>
 
  <welcome-file-list>

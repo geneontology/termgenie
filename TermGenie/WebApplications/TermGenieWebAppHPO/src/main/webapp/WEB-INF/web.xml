@@ -16,8 +16,8 @@
  	<listener-class>org.bbop.termgenie.servlets.TermGenieWebAppHPOContextListener</listener-class>
  </listener>
 
- <session-config>  <!--  90 minutes -->
-   <session-timeout>90</session-timeout>
+ <session-config>  <!--  30 minutes -->
+   <session-timeout>30</session-timeout>
  </session-config>
 
  <welcome-file-list>
