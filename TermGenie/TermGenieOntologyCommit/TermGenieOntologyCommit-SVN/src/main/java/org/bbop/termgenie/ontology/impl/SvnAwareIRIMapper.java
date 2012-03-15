@@ -23,7 +23,7 @@ public class SvnAwareIRIMapper extends AbstractScmAwareIRIMapper<SvnAwareIRIMapp
 
 	/**
 	 * @param fallBackIRIMapper
-	 * @param repositoryURL
+	 * @param svn
 	 * @param targetFolder
 	 * @param mappedSVNFiles
 	 * @param checkout
@@ -31,12 +31,12 @@ public class SvnAwareIRIMapper extends AbstractScmAwareIRIMapper<SvnAwareIRIMapp
 	// Do not provide an IOC constructor, as there are multiple implementations
 	// use @Provides methods instead
 	public SvnAwareIRIMapper(IRIMapper fallBackIRIMapper,
-			String repositoryURL,
+			SvnTool svn,
 			File targetFolder,
 			Map<String, String> mappedSVNFiles,
 			String checkout)
 	{
-		super(fallBackIRIMapper, new SvnHandler(repositoryURL, targetFolder, mappedSVNFiles, checkout));
+		super(fallBackIRIMapper, new SvnHandler(svn, targetFolder, mappedSVNFiles, checkout));
 	}
 
 	static class SvnHandler implements AbstractScmAwareIRIMapper.ReadOnlyScm {
@@ -44,13 +44,13 @@ public class SvnAwareIRIMapper extends AbstractScmAwareIRIMapper<SvnAwareIRIMapp
 		private final SvnTool svn;
 		private final Map<String, String> mappedSVNFiles;
 
-		SvnHandler(String repositoryURL,
+		SvnHandler(SvnTool svn,
 				File targetFolder,
 				Map<String, String> mappedSVNFiles,
 				String checkout)
 		{
 			this.mappedSVNFiles = mappedSVNFiles;
-			svn = SvnTool.createAnonymousSVN(targetFolder, repositoryURL);
+			this.svn = svn;
 			try {
 				// create work directory
 				targetFolder.mkdirs();

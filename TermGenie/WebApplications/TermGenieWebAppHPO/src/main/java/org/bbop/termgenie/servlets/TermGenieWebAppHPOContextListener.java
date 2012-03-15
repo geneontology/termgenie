@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.AnonymousSvnAwareXMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -52,7 +52,7 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 			File localSVNCache = new File("work/read-only-svn-checkout");
 			localSVNCache.mkdirs();
 			FileUtils.cleanDirectory(localSVNCache);
-			return new SvnAwareXMLReloadingOntologyModule("ontology-configuration_hpo.xml", applicationProperties, localSVNFolder, remoteTargetFile, mappedIRI, localSVNCache.getAbsolutePath());
+			return new AnonymousSvnAwareXMLReloadingOntologyModule("ontology-configuration_hpo.xml", applicationProperties, localSVNFolder, remoteTargetFile, mappedIRI, localSVNCache.getAbsolutePath());
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
