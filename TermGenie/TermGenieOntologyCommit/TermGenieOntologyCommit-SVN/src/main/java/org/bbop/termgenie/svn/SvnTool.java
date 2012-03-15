@@ -3,6 +3,7 @@ package org.bbop.termgenie.svn;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -19,6 +20,8 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 
 public class SvnTool implements VersionControlAdapter {
+	
+	private static final Logger logger = Logger.getLogger(SvnTool.class);
 
 	private final File targetFolder;
 	private final SVNURL repositoryURL;
@@ -82,6 +85,7 @@ public class SvnTool implements VersionControlAdapter {
 	public boolean checkout(String targetFile) throws IOException {
 		checkConnection();
 		try {
+			logger.info("Start checkout for file: "+targetFile);
 			SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 			SVNRevision pegRevision = SVNRevision.HEAD;
 			SVNRevision revision = SVNRevision.HEAD;
@@ -89,6 +93,7 @@ public class SvnTool implements VersionControlAdapter {
 			updateClient.doCheckout(repositoryURL, targetFolder, pegRevision, revision, depth, true);
 			File file = new File(targetFolder, targetFile);
 			final boolean success = file.isFile() && file.canRead() && file.canWrite();
+			logger.info("Finished checkout for file: "+targetFile);
 			return success;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
@@ -98,6 +103,7 @@ public class SvnTool implements VersionControlAdapter {
 	@Override
 	public boolean commit(String message, String target) throws IOException {
 		checkConnection();
+		logger.info("Start commit for target: "+target);
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();
 		try {
 			SVNCommitInfo info = commitClient.doCommit(new File[]{ new File(targetFolder, target) }, false, message, null, null, false, false, SVNDepth.INFINITY);
@@ -105,19 +111,22 @@ public class SvnTool implements VersionControlAdapter {
 			if (errorMessage != null) {
 				throw new IOException(errorMessage.getMessage(), errorMessage.getCause());
 			}
+			logger.info("Finished commit for target: "+target);
+			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
 		}
-		return false;
 	}
 
 	@Override
 	public boolean update(String target) throws IOException {
 		checkConnection();
+		logger.info("Start update for target: "+target);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		try {
 			File path = new File(targetFolder, target).getAbsoluteFile();
 			updateClient.doUpdate(path, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
+			logger.info("Finished update for target: "+target);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
