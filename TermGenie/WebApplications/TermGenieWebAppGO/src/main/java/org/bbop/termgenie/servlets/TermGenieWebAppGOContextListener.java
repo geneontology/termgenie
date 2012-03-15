@@ -60,9 +60,9 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_go.xml";
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
 		String mappedIRI = "http://www.geneontology.org/ontology/editors/gene_ontology_write.obo";
-		String remoteTargetFile = "editors/gene_ontology_write.obo";
+		String remoteTargetFile = "gene_ontology_write.obo";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
 		
@@ -76,8 +76,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getCommitModule() {
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
-		String remoteTargetFile = "editors/gene_ontology_write.obo";
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
+		String remoteTargetFile = "gene_ontology_write.obo";
 		String svnUserName = null; // no default value
 		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology");
 	}
