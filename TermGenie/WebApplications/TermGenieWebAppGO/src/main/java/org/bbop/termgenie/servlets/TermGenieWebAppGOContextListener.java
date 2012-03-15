@@ -12,8 +12,8 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.cvs.CommitReviewCvsModule;
-import org.bbop.termgenie.ontology.impl.CvsAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.PasswordSvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -59,10 +59,14 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getOntologyModule() {
-		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		String remoteTargetFile = "go/ontology/editors/gene_ontology_write.obo";
+		String configFile = "ontology-configuration_go.xml";
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String mappedIRI = "http://www.geneontology.org/ontology/editors/gene_ontology_write.obo";
-		return new CvsAwareXMLReloadingOntologyModule("ontology-configuration_go.xml", applicationProperties, cvsRoot, remoteTargetFile, mappedIRI, null);
+		String remoteTargetFile = "editors/gene_ontology_write.obo";
+		String workFolder = null; // no default value
+		String svnUserName = null; // no default value
+		
+		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, remoteTargetFile, mappedIRI, workFolder, svnUserName);
 	}
 
 	@Override
@@ -72,9 +76,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getCommitModule() {
-		String cvsFileName = "go/ontology/editors/gene_ontology_write.obo";
-		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
-		return new CommitReviewCvsModule(cvsFileName, cvsRoot, applicationProperties, "GeneOntology");
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
+		String remoteTargetFile = "editors/gene_ontology_write.obo";
+		String svnUserName = null; // no default value
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology");
 	}
 	
 	
