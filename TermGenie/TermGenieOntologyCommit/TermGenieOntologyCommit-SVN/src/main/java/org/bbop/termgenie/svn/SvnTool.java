@@ -2,6 +2,8 @@ package org.bbop.termgenie.svn;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -17,11 +19,18 @@ import org.tmatesoft.svn.core.wc.SVNCommitClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.tmatesoft.svn.util.SVNDebugLog;
+import org.tmatesoft.svn.util.SVNDebugLogAdapter;
+import org.tmatesoft.svn.util.SVNLogType;
 
 
 public class SvnTool implements VersionControlAdapter {
 	
 	private static final Logger logger = Logger.getLogger(SvnTool.class);
+	
+	static {
+		SVNDebugLog.setDefaultLog(new SvnLogger());
+	}
 
 	private final File targetFolder;
 	private final SVNURL repositoryURL;
@@ -144,4 +153,55 @@ public class SvnTool implements VersionControlAdapter {
 	public File getTargetFolder() {
 		return targetFolder;
 	}
+
+	private static final class SvnLogger extends SVNDebugLogAdapter {
+
+		private static org.apache.log4j.Level getLog4JLevel(Level level) {
+			if (Level.SEVERE.equals(level)) {
+				return org.apache.log4j.Level.ERROR;
+			}
+			else if (Level.INFO.equals(level)) {
+				return org.apache.log4j.Level.INFO;
+			}
+			else if (Level.WARNING.equals(level)) {
+				return org.apache.log4j.Level.WARN;
+			}
+			else if (Level.FINEST.equals(level) || Level.ALL.equals(level)) {
+				return org.apache.log4j.Level.TRACE;
+			}
+			else if (Level.FINER.equals(level) || Level.FINE.equals(level)) {
+				return org.apache.log4j.Level.DEBUG;
+			}
+			return org.apache.log4j.Level.INFO; // Default if nothing matches
+		}
+		
+		@Override
+		public void log(SVNLogType logType, Throwable th, Level logLevel) {
+			org.apache.log4j.Level level = getLog4JLevel(logLevel);
+			if (logger.isEnabledFor(level)) {
+				logger.log(level, "SVN Exception: "+logType.getName(), th);
+			}
+		}
+
+		@Override
+		public void log(SVNLogType logType, String message, Level logLevel) {
+			org.apache.log4j.Level level = getLog4JLevel(logLevel);
+			if (logger.isEnabledFor(level)) {
+				logger.log(level, message);
+			}
+		}
+
+		@Override
+		public void log(SVNLogType logType, String message, byte[] data) {
+			if (logger.isTraceEnabled()) {
+				try {
+	                logger.trace(message + "\n" + new String(data, "UTF-8"));
+	            } catch (UnsupportedEncodingException e) {
+	                logger.trace(message + "\n" + new String(data));
+	            }
+			}
+		}
+	
+	}
+	
 }
