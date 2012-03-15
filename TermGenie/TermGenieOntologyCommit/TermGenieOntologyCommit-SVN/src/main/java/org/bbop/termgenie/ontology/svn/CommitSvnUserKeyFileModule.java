@@ -33,9 +33,9 @@ public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 	@Override
 	protected void configure() {
 		super.configure();
-		bind("GeneOntologyCommitAdapterSVNUsername", svnUsername);
-		bind("GeneOntologyCommitAdapterSVNKeyFile", svnKeyFile);
-		bindSecret("GeneOntologyCommitAdapterSVNPassword");
+		bind("CommitAdapterSVNUsername", svnUsername);
+		bind("CommitAdapterSVNKeyFile", svnKeyFile);
+		bindSecret("CommitAdapterSVNPassword");
 	}
 
 	@Override

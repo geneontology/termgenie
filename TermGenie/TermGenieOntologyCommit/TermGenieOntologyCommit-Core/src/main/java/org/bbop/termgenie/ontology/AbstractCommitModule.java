@@ -31,7 +31,7 @@ public abstract class AbstractCommitModule extends IOCModule {
 	@Singleton
 	@Provides
 	@Named("CommitTargetOntology")
-	protected OntologyTaskManager provideGeneOntology(OntologyConfiguration configuration,
+	protected OntologyTaskManager provideCommitTargetOntology(OntologyConfiguration configuration,
 			OntologyLoader loader)
 	{
 		ConfiguredOntology configuredOntology = configuration.getOntologyConfigurations().get(commitTargetOntologyName);

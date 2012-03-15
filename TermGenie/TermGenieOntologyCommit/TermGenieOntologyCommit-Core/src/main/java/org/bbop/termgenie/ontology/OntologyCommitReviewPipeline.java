@@ -89,7 +89,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				}
 			}
 			else if (mode == CommitMode.anonymus && !supportAnonymus) {
-				throw new CommitException("Anonymus mode is not supported for the GeneOntology commit.", true);
+				throw new CommitException("Anonymus mode is not supported for the commit.", true);
 			}
 			return commitInternal(historyIds, mode, username, password);
 		}
