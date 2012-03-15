@@ -1,0 +1,22 @@
+<!-- This file creates a web app directory for testing purposes -->
+<project name="TermGenieWebAppGO" basedir="." default="copywebapp">
+	<property name="webapptarget" location="work/ant-webapp"/>
+	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
+	<property name="webapplocal" location="src/main/webapp"/>
+	
+	<target name="copywebapp">
+		<mkdir dir="${webapptarget}"/>
+		<copy todir="${webapptarget}">
+			<fileset dir="${webappjquery}">
+				<exclude name="**/web.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${webapptarget}" overwrite="true">
+			<fileset dir="${webapplocal}"/>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${webapptarget}"/>
+	</target>
+</project>
