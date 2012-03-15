@@ -9,6 +9,7 @@ import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
+import org.bbop.termgenie.svn.SvnTool;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -40,6 +41,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 		super.configure();
 		bind("CommitAdapterSVNRepositoryUrl", svnRepository);
 		bind("CommitAdapterSVNOntologyFileName", svnOntologyFileName);
+		bind("CommitAdapterSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
 		bindOBOSCMHelper();
 	}
 
