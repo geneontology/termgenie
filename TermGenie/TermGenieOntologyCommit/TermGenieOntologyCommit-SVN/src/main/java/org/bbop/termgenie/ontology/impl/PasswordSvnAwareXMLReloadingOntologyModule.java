@@ -53,11 +53,12 @@ public class PasswordSvnAwareXMLReloadingOntologyModule extends AbstractSvnAware
 			@Named("SVNAwareIRIMapperMappedIRI") String mappedIRI,
 			@Named("SVNAwareIRIMapperWorkFolder") String workFolder,
 			@Named("SVNAwareIRIMapperUsername") String svnUsername,
-			@Named("SVNAwareIRIMapperPassword") String svnPassword)
+			@Named("SVNAwareIRIMapperPassword") String svnPassword,
+			@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir)
 	{
 		Map<String, String> mappedCVSFiles = Collections.singletonMap(mappedIRI, remoteTargetFile);
 		final File workFolderFile = new File(workFolder);
-		final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword);
+		final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir);
 		return new SvnAwareIRIMapper(fallbackIRIMapper, svn, workFolderFile, mappedCVSFiles, remoteTargetFile);
 	}
 }

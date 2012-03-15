@@ -27,6 +27,7 @@ public class SvnHelper {
 		private final String svnRepository;
 		private final String svnUsername;
 		private final String svnPassword;
+		private final File svnConfigDir;
 
 		@Inject
 		SvnHelperPassword(@Named("CommitTargetOntology") OntologyTaskManager source,
@@ -35,12 +36,14 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
-				@Named("CommitAdapterSVNPassword") String svnPassword)
+				@Named("CommitAdapterSVNPassword") String svnPassword,
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
+			this.svnConfigDir = svnConfigDir;
 		}
 
 		@Override
@@ -59,7 +62,7 @@ public class SvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword);
+			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword, svnConfigDir);
 			return svn;
 		}
 
@@ -88,15 +91,18 @@ public class SvnHelper {
 	public static final class SvnHelperAnonymous extends OboScmHelper {
 
 		private final String svnRepository;
+		private final File svnConfigDir;
 
 		@Inject
 		SvnHelperAnonymous(@Named("CommitTargetOntology") OntologyTaskManager source,
 				IRIMapper iriMapper,
 				OntologyCleaner cleaner,@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
-				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName)
+				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
+			this.svnConfigDir = svnConfigDir;
 		}
 
 		@Override
@@ -105,7 +111,7 @@ public class SvnHelper {
 				String password,
 				File svnFolder) throws CommitException
 		{
-			return SvnTool.createAnonymousSVN(svnFolder, svnRepository);
+			return SvnTool.createAnonymousSVN(svnFolder, svnRepository, svnConfigDir);
 		}
 
 		@Override
@@ -136,6 +142,7 @@ public class SvnHelper {
 		private final String svnUsername;
 		private final File svnKeyFile;
 		private final String svnPassword;
+		private final File svnConfigDir;
 	
 		@Inject
 		SvnHelperKeyFile(@Named("CommitTargetOntology") OntologyTaskManager source,
@@ -145,13 +152,15 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
-				@Named("CommitAdapterSVNPassword") String svnPassword)
+				@Named("CommitAdapterSVNPassword") String svnPassword,
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
 			super(source, iriMapper, cleaner, svnOntologyFileName);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
 			this.svnPassword = svnPassword;
+			this.svnConfigDir = svnConfigDir;
 		}
 	
 		@Override
@@ -170,7 +179,7 @@ public class SvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword);
+			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword, svnConfigDir);
 			return svn;
 		}
 	

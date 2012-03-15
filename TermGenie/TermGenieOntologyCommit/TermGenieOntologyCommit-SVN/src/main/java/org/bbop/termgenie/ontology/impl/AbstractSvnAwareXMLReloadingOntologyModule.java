@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.svn.SvnTool;
 
 public abstract class AbstractSvnAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModule {
 
@@ -49,6 +50,7 @@ public abstract class AbstractSvnAwareXMLReloadingOntologyModule extends XMLRelo
 		bind("SVNAwareIRIMapperRemoteTargetFile", remoteTargetFileDefault);
 		bind("SVNAwareIRIMapperMappedIRI", mappedIRIDefault);
 		bind("SVNAwareIRIMapperWorkFolder", workFolderDefault);
+		bind("SVNAwareIRIMapperSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
 	}
 
 }

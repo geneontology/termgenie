@@ -39,11 +39,12 @@ public class AnonymousSvnAwareXMLReloadingOntologyModule extends AbstractSvnAwar
 			@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
 			@Named("SVNAwareIRIMapperRemoteTargetFile") String remoteTargetFile,
 			@Named("SVNAwareIRIMapperMappedIRI") String mappedIRI,
-			@Named("SVNAwareIRIMapperWorkFolder") String workFolder)
+			@Named("SVNAwareIRIMapperWorkFolder") String workFolder,
+			@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir)
 	{
 		Map<String, String> mappedCVSFiles = Collections.singletonMap(mappedIRI, remoteTargetFile);
 		final File workFolderFile = new File(workFolder);
-		final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL);
+		final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir);
 		return new SvnAwareIRIMapper(fallbackIRIMapper, svn, workFolderFile, mappedCVSFiles, remoteTargetFile);
 	}
 }

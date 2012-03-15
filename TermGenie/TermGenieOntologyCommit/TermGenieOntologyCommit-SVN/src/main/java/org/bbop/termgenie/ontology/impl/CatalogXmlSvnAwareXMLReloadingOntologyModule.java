@@ -68,6 +68,7 @@ public class CatalogXmlSvnAwareXMLReloadingOntologyModule extends XMLReloadingOn
 		bind("CatalogXmlSvnAwareIRIMapperWorkFolder", workFolderDefault);
 		bind("CatalogXmlSvnAwareIRIMapperCheckout", checkoutDefault);
 		bind("CatalogXmlSvnAwareIRIMapperCatalogXml", catalogXmlDefault);
+		bind("CatalogXmlSvnAwareIRIMapperSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
 	}
 
 	@Provides
@@ -76,9 +77,10 @@ public class CatalogXmlSvnAwareXMLReloadingOntologyModule extends XMLReloadingOn
 			@Named("CatalogXmlSvnAwareIRIMapperRepositoryURL") String repositoryURL,
 			@Named("CatalogXmlSvnAwareIRIMapperWorkFolder") String workFolder,
 			@Named("CatalogXmlSvnAwareIRIMapperCheckout") String checkout,
-			@Named("CatalogXmlSvnAwareIRIMapperCatalogXml") String catalogXml)
+			@Named("CatalogXmlSvnAwareIRIMapperCatalogXml") String catalogXml,
+			@Named("CatalogXmlSvnAwareIRIMapperSVNConfigDir") File svnConfigDir)
 	{
-		SvnTool svnTool = SvnTool.createAnonymousSVN(new File(workFolder), repositoryURL);
+		SvnTool svnTool = SvnTool.createAnonymousSVN(new File(workFolder), repositoryURL, svnConfigDir);
 
 		return new CatalogXmlSvnAwareIRIMapper(fallbackIRIMapper, svnTool, checkout, catalogXml);
 	}

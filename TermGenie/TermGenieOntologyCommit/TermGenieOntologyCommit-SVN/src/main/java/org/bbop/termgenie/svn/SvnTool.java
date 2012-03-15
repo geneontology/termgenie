@@ -38,19 +38,23 @@ public class SvnTool implements VersionControlAdapter {
 	
 	private SVNClientManager ourClientManager;
 
-	public static SvnTool createAnonymousSVN(File targetFolder, String repositoryURL) {
-		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager();
+	public static SvnTool createAnonymousSVN(File targetFolder, String repositoryURL, File svnConfigDir) {
+		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir);
 		return new SvnTool(targetFolder, repositoryURL, authManager);
 	}
 	
-	public static SvnTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password) {
-		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password);
+	public static SvnTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password, File svnConfigDir) {
+		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir, username, password);
 		return new SvnTool(targetFolder, repositoryURL, authManager);
 	}
 	
-	public static SvnTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase) {
-		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(null, username, null, sshKeyFile, passphrase, false);
+	public static SvnTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase, File svnConfigDir) {
+		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir, username, null, sshKeyFile, passphrase, false);
 		return new SvnTool(targetFolder, repositoryURL, authManager);
+	}
+	
+	public static File getDefaultSvnConfigDir() {
+		return SVNWCUtil.getDefaultConfigurationDirectory();
 	}
 	
 	/**
