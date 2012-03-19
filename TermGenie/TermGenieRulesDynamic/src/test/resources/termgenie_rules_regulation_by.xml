@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+	<template name="regulation_by">
+		<description>processes regulated by other regulating processes
+		</description>
+		<hint>
+		Example: regulation of signal transduction by receptor internalization
+&lt;br/&gt;[results in] : regulation of signal transduction   [** MUST BE A REGULATION TERM **]
+&lt;br/&gt;[regulator] : receptor internalization 
+		</hint>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="process" required="true" label="results in">
+				<ontology name="GeneOntology">
+					<branch>regulation_of_biological_process</branch>
+				</ontology>
+			</field>
+			<field name="regulator" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/regulation_by.js</ruleFile>
+		</ruleFiles>
+	</template>
+</termgenietemplates>

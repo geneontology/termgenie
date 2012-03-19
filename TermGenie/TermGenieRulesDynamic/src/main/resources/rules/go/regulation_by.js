@@ -4,12 +4,12 @@ function regulation_by() {
   var go = GeneOntology;
   var p = getSingleTerm("process", go);
   var r = getSingleTerm("regulator", go);
-  var check = checkGenus(p, "GO:0008150", go); // check p is_a 'biological_process'
+  var check = checkGenus(r, "GO:0008150", go); // check r is_a 'biological_process'
   if (check.isGenus() !== true) {
     error(check.error());
     return;
   }
-  check = checkGenus(r, "GO:0050789", go); // check r is_a 'regulation of biological process'
+  check = checkGenus(p, "GO:0050789", go); // check p is_a 'regulation of biological process'
   if (check.isGenus() !== true) {
     error(check.error());
     return;
@@ -27,14 +27,13 @@ function regulation_by() {
 //  }
   
   function subrun(regulator) {
-    var label = "regulation of "+termname(p, go) + " by " + termname(regulator, go);
+    var label = termname(p, go) + " by " + termname(regulator, go);
     var definition = "Any process that modulates the frequency, rate or extent of "+termname(p, go)+", by "+termname(regulator, go)+".";
-    var synonyms = termgenie.synonyms("regulation of ", p, go, " by ", regulator, go, null, null, label);
+    var synonyms = termgenie.synonyms(null, p, go, " by ", regulator, go, null, null, label);
     
-    var mdef = [];
-//    var mdef = createMDef("?R and 'results_in' some ?P");
-//    mdef.addParameter('P', p, go);
-//    mdef.addParameter('P', regulator, go);
+    var mdef = createMDef("?R and 'results_in' some ?P");
+    mdef.addParameter('P', p, go);
+    mdef.addParameter('R', regulator, go);
     termgenie.createTerm(label, definition, synonyms, mdef);
   };
 }
