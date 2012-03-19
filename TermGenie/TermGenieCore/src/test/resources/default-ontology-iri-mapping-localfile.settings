@@ -1,8 +1,8 @@
 # GeneOntology
-http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo	ontologies/gene_ontology_ext-2012-01-23.obo	termgenie-ontologies/gene_ontology.obo
+http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo	ontologies/gene_ontology_write.obo	termgenie-ontologies/gene_ontology.obo
 
 http://purl.obolibrary.org/obo/go/extensions/x-disjoint-importer.owl	ontologies/extensions/x-disjoint-importer.owl	ontologies/extensions/x-disjoint-importer.owl
-http://purl.obolibrary.org/obo/go.owl	ontologies/gene_ontology_ext-2012-01-23.obo	termgenie-ontologies/gene_ontology.owl
+http://purl.obolibrary.org/obo/go.owl	ontologies/gene_ontology_write.obo	termgenie-ontologies/gene_ontology.owl
 http://purl.obolibrary.org/obo/go/extensions/x-disjoint.owl	ontologies/extensions/x-disjoint.owl	ontologies/extensions/x-disjoint.owl
 
 http://www.geneontology.org/scratch/xps/biological_process_xp_self.obo	ontologies/biological_process_xp_self-2011-05-16.obo	termgenie-ontologies/biological_process_xp_self.obo
