@@ -113,12 +113,17 @@
 	<template name="regulation_by">
 		<description>processes regulated by other regulating processes
 		</description>
+		<hint>
+		Example: regulation of signal transduction by receptor internalization
+&lt;br/&gt;[results in] : regulation of signal transduction   [** MUST BE A REGULATION TERM **]
+&lt;br/&gt;[regulator] : receptor internalization 
+		</hint>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
-			<field name="process" required="true">
+			<field name="process" required="true" label="results in">
 				<ontology name="GeneOntology">
-					<branch>biological_process</branch>
+					<branch>regulation of biological process</branch>
 				</ontology>
 			</field>
 			<field name="regulator" required="true">

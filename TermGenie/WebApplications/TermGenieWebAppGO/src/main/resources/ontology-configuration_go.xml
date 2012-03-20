@@ -32,6 +32,11 @@
 				<root>GO:0005575</root>
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="regulation of biological process">
+			<roots>
+				<root>GO:0050789</root>
+			</roots>
+		</ontologybranch>
 	</ontology>
 	<!-- 
 	<ontology name="ProteinOntology">

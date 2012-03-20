@@ -13,7 +13,7 @@
 				<root>GO:0008150</root>
 			</roots>
 		</ontologybranch>
-		<ontologybranch name="regulation_of_biological_process">
+		<ontologybranch name="regulation of biological process">
 			<roots>
 				<root>GO:0050789</root>
 			</roots>

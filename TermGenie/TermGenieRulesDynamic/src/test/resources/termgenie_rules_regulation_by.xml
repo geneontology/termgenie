@@ -14,7 +14,7 @@
 		<fields>
 			<field name="process" required="true" label="results in">
 				<ontology name="GeneOntology">
-					<branch>regulation_of_biological_process</branch>
+					<branch>regulation of biological process</branch>
 				</ontology>
 			</field>
 			<field name="regulator" required="true">
