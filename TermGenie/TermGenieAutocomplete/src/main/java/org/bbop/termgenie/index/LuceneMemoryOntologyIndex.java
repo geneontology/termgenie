@@ -214,7 +214,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		if (branches != null) {
 			branchInfos = new BranchInfos();
 			for (BranchDetails branch : branches) {
-				String name = branch.getName();
+				String name = replaceWhitespaces(branch.getName());
 				String branchDLQuery = branch.getDlQuery();
 				List<String> ids = branch.getRoots();
 				if (ids != null && !ids.isEmpty()) {
@@ -385,7 +385,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				StringBuilder sb = new StringBuilder();
 				sb.append(BRANCH_FIELD);
 				sb.append(":(");
-				sb.append(branch);
+				sb.append(replaceWhitespaces(branch));
 				sb.append(") AND (");
 				sb.append(queryString);
 				sb.append(")");
@@ -435,6 +435,23 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		return Collections.emptyList();
 	}
 
+	static String replaceWhitespaces(String s) {
+		boolean replaced = false;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isWhitespace(c)) {
+				c = '_';
+				replaced = true;
+			}
+			sb.append(c);
+		}
+		if (replaced) {
+			return sb.toString();
+		}
+		return s;
+	}
+	
 	public static class SearchResult {
 
 		public final OWLObject hit;
