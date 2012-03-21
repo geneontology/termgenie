@@ -111,7 +111,7 @@ public class SynonymGenerationToolsTest {
 		tool = new SynonymGenerationTools() {
 
 			@Override
-			protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
+			protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology, String requiredPrefix, boolean ignoreSynonyms) {
 				List<ISynonym> oboSynonyms = source.get(id);
 				if (oboSynonyms != null) {
 					// defensive copy

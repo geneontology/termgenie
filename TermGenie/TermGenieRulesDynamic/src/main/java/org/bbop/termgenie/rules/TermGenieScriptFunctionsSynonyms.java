@@ -74,6 +74,38 @@ public interface TermGenieScriptFunctionsSynonyms {
 			String suffix,
 			String defaultScope,
 			String label);
+	
+	/**
+	 * Create new synonyms for two terms with a prefix, infix, and suffix. The
+	 * new label is required as it is used to prevent accidental creation of a
+	 * synonym with the same label.
+	 * 
+	 * Special case: for more complex composition rules for synonyms, i.e. 'regulation_by'
+	 * 
+	 * @param prefix
+	 * @param x1
+	 * @param ontology1
+	 * @param infix
+	 * @param x2
+	 * @param ontology2
+	 * @param suffix
+	 * @param defaultScope the scope for the new synonym, may be null.
+	 * @param label
+	 * @param requiredPrefixLeft required prefix for synonyms of term x1 (e.g., 'regulation of ')
+	 * @param ignoreSynonymsRight choose to ignore synonyms of x2 for composition
+	 * @return synonyms
+	 */
+	public List<ISynonym> synonyms(String prefix,
+			OWLObject x1,
+			OWLGraphWrapper ontology1,
+			String infix,
+			OWLObject x2,
+			OWLGraphWrapper ontology2,
+			String suffix,
+			String defaultScope,
+			String label,
+			String requiredPrefixLeft,
+			boolean ignoreSynonymsRight);
 
 	/**
 	 * Create new synonyms for a given list of terms with a prefix and suffix.

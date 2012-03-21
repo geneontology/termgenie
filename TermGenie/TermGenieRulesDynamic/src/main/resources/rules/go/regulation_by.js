@@ -27,13 +27,35 @@ function regulation_by() {
 //  }
   
   function subrun(regulator) {
-    var label = termname(p, go) + " by " + termname(regulator, go);
-    var definition = "Any process that modulates the frequency, rate or extent of "+termname(p, go)+", by "+termname(regulator, go)+".";
-    var synonyms = termgenie.synonyms(null, p, go, " by ", regulator, go, null, null, label);
+	var processName = termname(p, go);
+	var regulatorName = termname(regulator, go);
+	
+	// special rule to reduce the number of proposed prefixes for the term
+	// more details see: http://wiki.geneontology.org/index.php/Ontology_meeting_2012-03-21
+	var requiredPrefixLeft = checkRequiredPrefix(processName);
+	var ignoreSynonymsRight = genus(regulator, "GO:0050789", go); // if regulator is_a 'regulation of biological process', ignore synonyms 
+
+    var label = processName + " by " + regulatorName;
+    var definition = "Any process that modulates the frequency, rate or extent of "+processName+", by "+regulatorName+".";
+    var synonyms = termgenie.synonyms(null, p, go, " by ", regulator, go, null, null, label, requiredPrefixLeft, ignoreSynonymsRight);
     
     var mdef = createMDef("?R and 'results_in' some ?P");
     mdef.addParameter('P', p, go);
     mdef.addParameter('R', regulator, go);
     termgenie.createTerm(label, definition, synonyms, mdef);
   };
+  
+  function checkRequiredPrefix(s) {
+    var prefix = null;
+    if (s.indexOf('regulation of ') === 0) {
+    	prefix = 'regulation of ';
+	}
+	else if (s.indexOf('negative regulation of ') === 0) {
+		prefix = 'negative regulation of ';
+	}
+	else if (s.indexOf('regulation of ') === 0) {
+		prefix = 'positive regulation of ';
+	}
+    return prefix;
+  }
 }

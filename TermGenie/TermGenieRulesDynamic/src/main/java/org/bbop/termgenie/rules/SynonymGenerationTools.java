@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bbop.termgenie.tools.Pair;
@@ -23,7 +24,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			String defaultScope,
 			String label)
 	{
-		List<ISynonym> synonyms = getSynonyms(x, ontology);
+		List<ISynonym> synonyms = getSynonyms(x, ontology, null, false);
 		if (synonyms == null || synonyms.isEmpty()) {
 			return null;
 		}
@@ -80,7 +81,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			}
 		}
 		
-		List<ISynonym> synonyms = getSynonyms(x, ontology);
+		List<ISynonym> synonyms = getSynonyms(x, ontology, null, false);
 		if (synonyms != null && !synonyms.isEmpty()) {
 			for (ISynonym synonym : synonyms) {
 				for(String prefix : prefixes) {
@@ -133,8 +134,24 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			String defaultScope,
 			String label)
 	{
-		List<ISynonym> synonyms1 = getSynonyms(x1, ontology1);
-		List<ISynonym> synonyms2 = getSynonyms(x2, ontology2);
+		return synonyms(prefix, x1, ontology1, infix, x2, ontology2, suffix, defaultScope, label, null, false);
+	}
+	
+	@Override
+	public List<ISynonym> synonyms(String prefix,
+			OWLObject x1,
+			OWLGraphWrapper ontology1,
+			String infix,
+			OWLObject x2,
+			OWLGraphWrapper ontology2,
+			String suffix,
+			String defaultScope,
+			String label,
+			String requiredPrefixLeft,
+			boolean ignoreSynonymsRight)
+	{
+		List<ISynonym> synonyms1 = getSynonyms(x1, ontology1, requiredPrefixLeft, false); 
+		List<ISynonym> synonyms2 = getSynonyms(x2, ontology2, null, ignoreSynonymsRight);
 		boolean empty1 = synonyms1 == null || synonyms1.isEmpty();
 		boolean empty2 = synonyms2 == null || synonyms2.isEmpty();
 		if (empty1 && empty2) {
@@ -205,7 +222,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		List<ISynonym> result = new ArrayList<ISynonym>();
 		List<OWLObject> termList = Arrays.asList(terms).subList(1, terms.length);
 		OWLObject term = terms[0];
-		List<ISynonym> synonyms = getSynonyms(term, ontology);
+		List<ISynonym> synonyms = getSynonyms(term, ontology, null, false);
 		synonyms = addLabel(term, ontology, synonyms);
 		for (ISynonym synonym : synonyms) {
 			StringBuilder start = new StringBuilder();
@@ -236,7 +253,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			String infix)
 	{
 		OWLObject term = terms.get(0);
-		List<ISynonym> synonyms = getSynonyms(term, ontology);
+		List<ISynonym> synonyms = getSynonyms(term, ontology, null, false);
 		synonyms = addLabel(term, ontology, synonyms);
 		List<Pair<StringBuilder, String>> result = new ArrayList<Pair<StringBuilder, String>>();
 		for (ISynonym synonym : synonyms) {
@@ -322,12 +339,24 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		}
 	}
 
-	protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology) {
+	protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology, String requiredPrefix, boolean ignoreSynonyms) {
+		if (ignoreSynonyms) {
+			return null;
+		}
 		if (ontology != null) {
 			List<ISynonym> oboSynonyms = ontology.getOBOSynonyms(id);
 			if (oboSynonyms != null) {
 				// defensive copy
 				oboSynonyms = new ArrayList<ISynonym>(oboSynonyms);
+				if (requiredPrefix != null) {
+					Iterator<ISynonym> iterator = oboSynonyms.iterator();
+					while (iterator.hasNext()) {
+						ISynonym synonym = iterator.next();
+						if (!synonym.getLabel().startsWith(requiredPrefix)) {
+							iterator.remove();
+						}
+					}
+				}
 			}
 			return oboSynonyms;
 		}

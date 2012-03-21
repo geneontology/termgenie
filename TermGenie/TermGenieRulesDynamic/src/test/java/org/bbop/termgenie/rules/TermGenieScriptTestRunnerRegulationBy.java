@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 
 		assertEquals("negative regulation of secretion by asymmetric Golgi ribbon formation", term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
-		assertFalse(term.getClauses(OboFormatTag.TAG_SYNONYM).isEmpty());
+		assertTrue(term.getClauses(OboFormatTag.TAG_SYNONYM).isEmpty());
 		
 		List<Clause> clauses = OboTools.getRelations(term);
 		
@@ -98,4 +99,75 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertEquals("GO:0051048", clause4.getValue2());
 	}
 
+	@Test
+	public void test_regulation_by_synonyms1() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		parameters.setTermValues("process", Arrays.asList("GO:0070623")); // regulation of thiamine biosynthetic process
+		parameters.setTermValues("regulator", Arrays.asList("GO:0006357")); // regulation of transcription from RNA polymerase II promoter
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertTrue(output.getMessage(), output.isSuccess());
+		Frame term = output.getTerm();
+
+		assertEquals("regulation of thiamine biosynthetic process by regulation of transcription from RNA polymerase II promoter", 
+				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		
+		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
+		hasExactSynonyms(synonyms, "regulation of thiamine biosynthesis by regulation of transcription from RNA polymerase II promoter",
+				"regulation of thiamine anabolism by regulation of transcription from RNA polymerase II promoter",
+				"regulation of thiamine synthesis by regulation of transcription from RNA polymerase II promoter",
+				"regulation of thiamin biosynthetic process by regulation of transcription from RNA polymerase II promoter",
+				"regulation of thiamine formation by regulation of transcription from RNA polymerase II promoter");
+	}
+	
+	@Test
+	public void test_regulation_by_synonyms2() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		parameters.setTermValues("process", Arrays.asList("GO:1900070")); // negative regulation of cellular hyperosmotic salinity response
+		parameters.setTermValues("regulator", Arrays.asList("GO:0000122")); // negative regulation of transcription from RNA polymerase II promoter
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertTrue(output.getMessage(), output.isSuccess());
+		Frame term = output.getTerm();
+
+		assertEquals("negative regulation of cellular hyperosmotic salinity response by negative regulation of transcription from RNA polymerase II promoter", 
+				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		
+		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
+		hasExactSynonyms(synonyms, "negative regulation of cellular response to hyperosmotic salt stress by negative regulation of transcription from RNA polymerase II promoter");
+	}
+	
+	private void hasExactSynonyms(Collection<Clause> synonyms, String...labels) {
+		assertEquals(labels.length, synonyms.size());
+		for (String label : labels) {
+			boolean found = false;
+			for(Clause clause : synonyms) {
+				final Object synLabel = clause.getValue();
+				final Object scope = clause.getValue2();
+				if (label.equals(synLabel) && OboFormatTag.TAG_EXACT.getTag().equals(scope)) {
+					found = true;
+					break;
+				}
+			}
+			assertTrue("Did not find label: "+label, found);
+		}
+	}
 }
