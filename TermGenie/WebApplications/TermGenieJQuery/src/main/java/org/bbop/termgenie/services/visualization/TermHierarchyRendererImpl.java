@@ -176,7 +176,9 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 		OutputStream fos = null;
 		try {
 			OWLGraphLayoutRenderer r = new OWLGraphLayoutRenderer(graph);
-			r.addObjects(ids);
+			for (OWLObject owlObject : ids) {
+				r.addObject(owlObject);
+			}
 
 			TempFileTools tools = TempFileTools.getInstance(folder,
 					TimeUnit.MINUTES,
