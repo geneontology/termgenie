@@ -9,9 +9,11 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -147,6 +149,13 @@ public class OwlTranslatorTools {
 
 	private static String getId(OWLObject obj, OWLOntology ontology) {
 		return Owl2Obo.getIdentifierFromObject(obj, ontology, null);
+	}
+	
+	public static OWLAxiom createLabelAxiom(String id, String label, OWLGraphWrapper graph) {
+		final OWLDataFactory factory = graph.getManager().getOWLDataFactory();
+		return factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),
+				IRI.create(id), 
+				factory.getOWLLiteral(label));
 	}
 	
 }
