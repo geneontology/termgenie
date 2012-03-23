@@ -26,6 +26,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -39,6 +40,7 @@ import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
  * Implementation for rendering term hierarchies using QuickGO.
@@ -48,6 +50,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 
 	private final Map<String, ConfiguredOntology> configurations;
 	private final OntologyLoader loader;
+	private OntologyTaskManager commitTargetOntology = null;
 
 	/**
 	 * Constructor for test purposes only.
@@ -55,6 +58,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 	TermHierarchyRendererImpl() {
 		super();
 		configurations = Collections.emptyMap();
+		this.commitTargetOntology = null;
 		loader = null;
 	}
 
@@ -69,6 +73,15 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 		super();
 		this.loader = loader;
 		this.configurations = ontologyConfiguration.getOntologyConfigurations();
+	}
+
+	
+	/**
+	 * @param commitTargetOntology the commitTargetOntology to set
+	 */
+	@Inject(optional=true)
+	public void setCommitTargetOntology(@Named("CommitTargetOntology") OntologyTaskManager commitTargetOntology) {
+		this.commitTargetOntology = commitTargetOntology;
 	}
 
 	@Override
@@ -105,6 +118,29 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 	}
 	
 	@Override
+	public JsonResult visualizeDiffTerms(JsonDiff[] jsonDiffs, ServletContext servletContext)
+	{
+		if (commitTargetOntology == null) {
+			return new JsonResult(false, "Feature not enabled.");
+		}
+		
+		final List<String> ids = new ArrayList<String>();
+		final Set<OWLAxiom> allAxioms = new HashSet<OWLAxiom>(); 
+		for(JsonDiff jsonTerm : jsonDiffs) {
+			allAxioms.addAll(OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms()));
+			ids.add(jsonTerm.getId());
+			List<JsonChange> changed = jsonTerm.getRelations();
+			if (changed != null && !changed.isEmpty()) {
+				for (JsonChange change : changed) {
+					allAxioms.addAll(OwlStringTools.translateStringToAxioms(change.getOwlAxioms()));
+					ids.add(change.getId());
+				}
+			}
+		}
+		return renderImage(commitTargetOntology, servletContext, ids, allAxioms);
+	}
+
+	@Override
 	public JsonResult visualizeGeneratedTerms(final List<JsonOntologyTerm> generatedTerms,
 			String ontology,
 			ServletContext servletContext)
@@ -113,29 +149,38 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 		if (configuredOntology == null) {
 			return new JsonResult(false, "Unkown ontology: "+ontology);
 		}
+		OntologyTaskManager taskManager = loader.getOntology(configuredOntology);
+		
+		List<String> ids = new ArrayList<String>();
+		Set<OWLAxiom> allAxioms = new HashSet<OWLAxiom>(); 
+		for(JsonOntologyTerm jsonTerm : generatedTerms) {
+			allAxioms.addAll(OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms()));
+			ids.add(jsonTerm.getTempId());
+			List<JsonChange> changed = jsonTerm.getChanged();
+			if (changed != null && !changed.isEmpty()) {
+				for (JsonChange change : changed) {
+					allAxioms.addAll(OwlStringTools.translateStringToAxioms(change.getOwlAxioms()));
+					ids.add(change.getId());
+				}
+			}
+		}
+		return renderImage(taskManager, servletContext, ids, allAxioms);
+	}
+
+	private JsonResult renderImage(OntologyTaskManager taskManager,
+			ServletContext servletContext,
+			final List<String> ids,
+			final Set<OWLAxiom> allAxioms)
+	{
 		final String realPath = servletContext.getRealPath("generated/index.html");
 		final JsonResult jsonResult = new JsonResult();
-		
-		OntologyTaskManager taskManager = loader.getOntology(configuredOntology);
 		taskManager.runManagedTask(new ManagedTask<OWLGraphWrapper>() {
-
+	
 			@Override
 			public Modified run(OWLGraphWrapper graph)
 			{
 				OWLOntology owlOntology = graph.getSourceOntology();
-				List<String> ids = new ArrayList<String>();
-				Set<OWLAxiom> allAxioms = new HashSet<OWLAxiom>(); 
-				for(JsonOntologyTerm jsonTerm : generatedTerms) {
-					allAxioms.addAll(OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms()));
-					ids.add(jsonTerm.getTempId());
-					List<JsonChange> changed = jsonTerm.getChanged();
-					if (changed != null && !changed.isEmpty()) {
-						for (JsonChange change : changed) {
-							allAxioms.addAll(OwlStringTools.translateStringToAxioms(change.getOwlAxioms()));
-							ids.add(change.getId());
-						}
-					}
-				}
+				
 				final OWLOntologyManager manager = owlOntology.getOWLOntologyManager();
 				List<OWLOntologyChange> changed = manager.addAxioms(owlOntology, allAxioms);
 				

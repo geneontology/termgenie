@@ -125,6 +125,7 @@ public class JsonCommitReviewEntry {
 		private boolean isObsolete = false;
 		private String obsoleteComment = null;
 		private String diff;
+		private String owlAxioms;
 
 		private List<JsonChange> relations = null;
 
@@ -199,6 +200,20 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setDiff(String diff) {
 			this.diff = diff;
+		}
+		
+		/**
+		 * @return the owlAxioms
+		 */
+		public String getOwlAxioms() {
+			return owlAxioms;
+		}
+
+		/**
+		 * @param owlAxioms the owlAxioms to set
+		 */
+		public void setOwlAxioms(String owlAxioms) {
+			this.owlAxioms = owlAxioms;
 		}
 
 		/**

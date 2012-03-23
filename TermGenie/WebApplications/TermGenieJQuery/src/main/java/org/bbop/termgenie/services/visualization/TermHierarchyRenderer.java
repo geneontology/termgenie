@@ -6,6 +6,7 @@ import javax.servlet.ServletContext;
 
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
+import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.json.rpc.server.ServletContextAware;
 
 public interface TermHierarchyRenderer {
@@ -37,4 +38,15 @@ public interface TermHierarchyRenderer {
 	public JsonResult visualizeGeneratedTerms(List<JsonOntologyTerm> generatedTerms,
 			String ontology,
 			ServletContext servletContext);
+	
+	/**
+	 * Render a graph hierarchy for the review terms in the given ontology
+	 * 
+	 * @param jsonDiffs
+	 * @param servletContext
+	 * @return {@link JsonResult} if successful the message contains the URL to
+	 *         the image file, otherwise it contains an error message
+	 */
+	@ServletContextAware
+	public JsonResult visualizeDiffTerms(JsonDiff[] jsonDiffs, ServletContext servletContext);
 }

@@ -27,7 +27,8 @@ function TermGenieReview(){
 	              'review.isEnabled',
 	              'review.isAuthorized',
 	              'review.getPendingCommits',
-	              'review.commit']
+	              'review.commit',
+	              'renderer.visualizeDiffTerms']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -178,6 +179,30 @@ function TermGenieReview(){
 			}
 			addEditableCommitMessage(entry, table);
 			
+			// button for visualizing the future hierarchy
+			var renderHierarchyButton = jQuery('<button>Generate Image</button>');
+			addRow(table, null, 'Term Hierarchy', renderHierarchyButton);
+			
+			renderHierarchyButton.click(function(){
+				jsonService.renderer.visualizeDiffTerms({
+					params: [entry.diffs],
+					onSuccess: function(result) {
+						if(result.success === true) {
+							window.open(result.message);
+						}
+						else {
+							jQuery.logUserMessage('Render Hierarchy service call failed', result.message);
+							jQuery.openLogPanel();
+						}
+						
+					},
+					onException: function(e) {
+						jQuery.logSystemError('Render Hierarchy service call failed', e);
+					}
+				});
+			});
+			
+			// render each diff
 			jQuery.each(entry.diffs, function(diffIndex, diff){
 				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
 				var operation = jQuery('<div></div>');

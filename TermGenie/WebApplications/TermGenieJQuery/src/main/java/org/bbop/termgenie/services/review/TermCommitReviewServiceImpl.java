@@ -192,6 +192,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			if (success) {
 				try {
 					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc));
+					jsonDiff.setOwlAxioms(term.getAxioms());
 					result.add(jsonDiff);
 				} catch (IOException exception) {
 					logger.error("Could not create diff for pending commit", exception);
