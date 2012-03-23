@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -36,6 +37,7 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.services.review.mail.ReviewMailHandler;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -44,6 +46,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import owltools.graph.OWLGraphWrapper;
@@ -184,7 +187,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setUuid(term.getUuid());
 			jsonDiff.setObsolete(OboTools.isObsolete(frame));
 			
-			List<Frame> changed = CommitHistoryTools.translateSimple(term.getChanged());
+			List<Pair<Frame, Set<OWLAxiom>>> changed = CommitHistoryTools.translateSimple(term.getChanged());
 			boolean success = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
 			if (success) {
 				try {

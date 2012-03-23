@@ -1,5 +1,6 @@
 package org.bbop.termgenie.rules;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,11 +9,13 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -62,7 +65,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		OWLOntologyManager owlManager = targetOntology.getManager();
 		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
 		IRI iri = IRI.create(newId);
-		OWLClass owlClass = addClass(iri, changeTracker);
+		Pair<OWLClass,OWLAxiom> pair = addClass(iri, changeTracker);
 		addLabel(iri, label, changeTracker);
 		for (MDef def : logicalDefinitions) {
 			String expression = def.getExpression();
@@ -72,7 +75,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			}
 			try {
 				OWLClassExpression owlClassExpression = syntaxTool.parseManchesterExpression(expression);
-				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(owlClass,
+				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(pair.getOne(),
 						owlClassExpression);
 				changeTracker.apply(new AddAxiom(targetOntology.getSourceOntology(), axiom));
 
@@ -90,15 +93,23 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		} finally {
 			reasonerManager.dispose();
 		}
-		return task.getInferredRelations();
+		InferredRelations inferredRelations = task.getInferredRelations();
+		if (inferredRelations.classRelationAxioms != null) {
+			inferredRelations.classRelationAxioms = new HashSet<OWLAxiom>(inferredRelations.classRelationAxioms);
+		}
+		else {
+			inferredRelations.classRelationAxioms = new HashSet<OWLAxiom>();
+		}
+		inferredRelations.classRelationAxioms.add(pair.getTwo());
+		return inferredRelations;
 	}
 
-	static OWLClass addClass(IRI iri, OWLChangeTracker changeTracker) {
+	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLChangeTracker changeTracker) {
 		OWLDataFactory factory = changeTracker.getTarget().getOWLOntologyManager().getOWLDataFactory();
 		OWLClass owlClass = factory.getOWLClass(iri);
 		OWLDeclarationAxiom owlDeclarationAxiom = factory.getOWLDeclarationAxiom(owlClass);
 		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), owlDeclarationAxiom));
-		return owlClass;
+		return new Pair<OWLClass, OWLAxiom>(owlClass, owlDeclarationAxiom);
 	}
 	
 	static void addLabel(IRI iri,

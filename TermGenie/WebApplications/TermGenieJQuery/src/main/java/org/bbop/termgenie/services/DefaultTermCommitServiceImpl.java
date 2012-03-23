@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -17,35 +18,39 @@ import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo;
-import org.bbop.termgenie.ontology.InternalCommitInfo;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
+import org.bbop.termgenie.ontology.InternalCommitInfo;
 import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
+import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
+
+import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-
-import owltools.graph.OWLGraphWrapper;
 
 @Singleton
 public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
@@ -381,9 +386,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				terms = new ArrayList<JsonOntologyTerm>();
 				for (CommitObject<TermCommit> commitObject : commitTerms) {
 					if (commitObject.getType() == Modification.add) {
-						terms.add(JsonOntologyTerm.createJson(commitObject.getObject().getTerm(),
-								commitObject.getObject().getChanged(),
-								managed));
+						TermCommit object = commitObject.getObject();
+						terms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), managed));
 					}
 				}
 			}
@@ -398,14 +402,15 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			for (JsonOntologyTerm jsonTerm : terms) {
 				Frame frame = JsonOntologyTerm.createFrame(jsonTerm,
 						idHandler.create(jsonTerm.getTempId()));
-				updateIdentifiers(frame, idHandler);
-				List<Frame> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
+				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms());
+				updateIdentifiers(frame, axioms, idHandler);
+				List<Pair<Frame, Set<OWLAxiom>>> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
 				if (changed != null && !changed.isEmpty()) {
-					for (Frame changedFrame : changed) {
-						updateIdentifiers(changedFrame, idHandler);
+					for (Pair<Frame, Set<OWLAxiom>> pair : changed) {
+						updateIdentifiers(pair.getOne(), pair.getTwo(), idHandler);
 					}
 				}
-				TermCommit term = new TermCommit(frame, changed);
+				TermCommit term = new TermCommit(frame, axioms, changed);
 				commits.add(CommitObject.add(term));
 			}
 
@@ -419,11 +424,11 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			return new Pair<List<CommitObject<TermCommit>>, Integer>(commits, idHandler.base);
 		}
 
-		private void updateIdentifiers(Frame frame, IdHandler idHandler) {
-			updateIdentifiers(OboTools.getRelations(frame), idHandler);
+		private void updateIdentifiers(Frame frame, Set<OWLAxiom> axioms, IdHandler idHandler) {
+			updateIdentifiers(OboTools.getRelations(frame), axioms, idHandler);
 		}
 
-		private void updateIdentifiers(List<Clause> clauses, IdHandler idHandler) {
+		private void updateIdentifiers(List<Clause> clauses, Set<OWLAxiom> axioms, IdHandler idHandler) {
 			if (clauses != null && !clauses.isEmpty()) {
 				for (Clause clause : clauses) {
 					Collection<Object> values = clause.getValues();
@@ -446,6 +451,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 					}
 				}
 			}
+			Map<IRI, IRI> replacements = idHandler.createIRIMap();
+			OwlStringTools.replace(axioms, replacements);
 		}
 	}
 
@@ -469,7 +476,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		private boolean isTempId(String s) {
 			return s.toLowerCase().startsWith(tempIdPrefix);
 		}
-
+		
 		/**
 		 * @param idProvider provider of valid/permanent identifiers
 		 * @param ontology targetOntology
@@ -509,7 +516,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			}
 			return id;
 		}
-
+		
 		/**
 		 * Map temporary identifiers into a valid one. Does not modify valid
 		 * identifiers. Additionally, flags the tempId as created.
@@ -538,6 +545,23 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			Set<String> missingIds = new HashSet<String>(tempIdMap.keySet());
 			missingIds.removeAll(used);
 			return missingIds;
+		}
+		
+		/**
+		 * Create a map of temporary IRIs and their new permanent IRIs.
+		 * 
+		 * @return map with temporary IRI mapping
+		 */
+		Map<IRI, IRI> createIRIMap() {
+			final Obo2Owl obo2Owl = new Obo2Owl();
+			obo2Owl.setObodoc(new OBODoc());
+			Map<IRI, IRI> map = new HashMap<IRI, IRI>();
+			for(Entry<String, String> entry : tempIdMap.entrySet()) {
+				IRI keyIRI = obo2Owl.oboIdToIRI(entry.getKey());
+				IRI valueIRI = obo2Owl.oboIdToIRI(entry.getValue());
+				map.put(keyIRI, valueIRI);
+			}
+			return map ;
 		}
 	}
 

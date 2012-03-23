@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
@@ -121,7 +122,8 @@ public class UpdateRelationShipTest {
 				System.out.println(redundant);
 			}
 
-			List<Clause> relations = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
+			Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(exampleClass, wrapper);
+			List<Clause> relations = pair.getOne();
 			System.out.println("------------");
 			System.out.println("Relations for: "+Owl2Obo.getIdentifier(exampleClass.getIRI()));
 			for (Clause relation : relations) {
@@ -133,7 +135,8 @@ public class UpdateRelationShipTest {
 			assertTrue(subClasses.containsEntity(ecprtd));
 			assertTrue(subClasses.isSingleton());
 
-			List<Clause> relations2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
+			Pair<List<Clause>,Set<OWLAxiom>> pair2 = OwlTranslatorTools.extractRelations(ecprtd, wrapper);
+			List<Clause> relations2 = pair2.getOne();
 			System.out.println("------------");
 			System.out.println("Relations for: "+Owl2Obo.getIdentifier(ecprtd.getIRI()));
 			assertEquals(4, relations2.size());

@@ -15,6 +15,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
+import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -22,6 +23,7 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -66,7 +68,8 @@ public class OwlTranslatorToolsTest {
 					for (OWLObject owlObject : allOWLObjects) {
 						if (owlObject instanceof OWLClass) {
 							OWLClass owlClass = (OWLClass) owlObject;
-							List<Clause> relations = OwlTranslatorTools.extractRelations(owlClass, wrapper);
+							Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, wrapper);
+							List<Clause> relations = pair.getOne();
 							List<Clause> oboRelations = getRelations(owlClass, oboDoc);
 							compareRelations(oboRelations, relations, owlClass);
 						}

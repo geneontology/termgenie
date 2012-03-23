@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -24,11 +25,13 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.scm.VersionControlAdapter;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
  * Main steps for committing ontology changes to an OBO file in an SCM
@@ -172,7 +175,7 @@ public abstract class OboScmHelper {
 		if (terms != null && !terms.isEmpty()) {
 			for (CommitedOntologyTerm term : terms) {
 				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
-				List<Frame> changes = CommitHistoryTools.translateSimple(term.getChanged());
+				List<Pair<Frame, Set<OWLAxiom>>> changes = CommitHistoryTools.translateSimple(term.getChanged());
 				boolean csuccess = handleTerm(frame,
 						changes,
 						term.getOperation(),

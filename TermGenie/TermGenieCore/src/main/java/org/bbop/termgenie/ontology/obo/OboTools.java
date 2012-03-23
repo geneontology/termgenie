@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -15,6 +16,7 @@ import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 
 public class OboTools {
@@ -136,11 +138,12 @@ public class OboTools {
 	}
 	
 	public static void fillChangedRelations(OBODoc oboDoc,
-			List<Frame> changed,
+			List<Pair<Frame, Set<OWLAxiom>>> changed,
 			List<String> modIds)
 	{
 		if (changed != null && !changed.isEmpty()) {
-			for(Frame changedFrame : changed) {
+			for(Pair<Frame, Set<OWLAxiom>> pair : changed) {
+				Frame changedFrame = pair.getOne();
 				String modId = changedFrame.getId();
 				if (modIds != null) {
 					modIds.add(modId);

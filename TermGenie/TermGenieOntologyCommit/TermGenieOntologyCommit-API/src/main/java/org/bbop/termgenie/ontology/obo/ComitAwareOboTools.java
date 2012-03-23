@@ -2,14 +2,17 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.FrameMergeException;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class ComitAwareOboTools extends OboTools {
 
@@ -23,7 +26,7 @@ public class ComitAwareOboTools extends OboTools {
 	}
 
 	public static boolean handleTerm(Frame term,
-			List<Frame> changed,
+			List<Pair<Frame, Set<OWLAxiom>>> changed,
 			Modification mode,
 			OBODoc obodoc)
 	{

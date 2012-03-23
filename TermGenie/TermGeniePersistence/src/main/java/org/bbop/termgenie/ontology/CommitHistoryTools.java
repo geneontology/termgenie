@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
@@ -14,11 +15,14 @@ import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
+import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class CommitHistoryTools {
 
@@ -42,10 +46,12 @@ public class CommitHistoryTools {
 		return term;
 	}
 	
-	public static SimpleCommitedOntologyTerm createSimple(Frame frame, Modification operation) {
+	public static SimpleCommitedOntologyTerm createSimple(Pair<Frame, Set<OWLAxiom>> pair, Modification operation) {
+		Frame frame = pair.getOne();
 		SimpleCommitedOntologyTerm term = new SimpleCommitedOntologyTerm();
 		term.setId(frame.getId());
 		term.setOperation(operation);
+		term.setAxioms(create(pair.getTwo()));
 		try {
 			term.setObo(OboWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
@@ -80,12 +86,13 @@ public class CommitHistoryTools {
 				TermCommit termCommit = commitObject.getObject();
 				Frame frame = termCommit.getTerm();
 				CommitedOntologyTerm term = create(frame, commitObject.getType());
+				term.setAxioms(create(commitObject.getObject().getOwlAxioms()));
 				List<SimpleCommitedOntologyTerm> changed = null;
-				List<Frame> changedFrames = termCommit.getChanged();
+				List<Pair<Frame, Set<OWLAxiom>>> changedFrames = termCommit.getChanged();
 				if (changedFrames != null && !changedFrames.isEmpty()) {
 					changed = new ArrayList<SimpleCommitedOntologyTerm>(changedFrames.size());
-					for(Frame changedFrame : changedFrames) {
-						changed.add(createSimple(changedFrame, Modification.modify));
+					for(Pair<Frame, Set<OWLAxiom>> pair : changedFrames) {
+						changed.add(createSimple(pair, Modification.modify));
 					}
 				}
 				term.setChanged(changed);
@@ -97,14 +104,22 @@ public class CommitHistoryTools {
 	}
 
 	
+	private static String create(Set<OWLAxiom> owlAxioms) {
+		if (owlAxioms == null || owlAxioms.isEmpty()) {
+			return null;
+		}
+		return OwlStringTools.translateAxiomsToString(owlAxioms);
+	}
+
 	public static List<CommitObject<TermCommit>> translate(CommitHistoryItem item) {
 		List<CommitObject<TermCommit>> result = new ArrayList<CommitObject<TermCommit>>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm commitedOntologyTerm : terms) {
 			Frame term = translate(commitedOntologyTerm.getId(), commitedOntologyTerm.getObo());
+			Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(commitedOntologyTerm.getAxioms());
 			if (term != null) {
-				List<Frame> changed = translateSimple(commitedOntologyTerm.getChanged());
-				TermCommit termCommit = new TermCommit(term, changed);
+				List<Pair<Frame, Set<OWLAxiom>>> changed = translateSimple(commitedOntologyTerm.getChanged());
+				TermCommit termCommit = new TermCommit(term, axioms, changed);
 				CommitObject<TermCommit> commitObject = new CommitObject<TermCommit>(termCommit, commitedOntologyTerm.getOperation());
 				result.add(commitObject);
 			}
@@ -112,28 +127,30 @@ public class CommitHistoryTools {
 		return result;
 	}
 	
-	public static List<Frame> translate(List<CommitedOntologyTerm> changed) {
-		List<Frame> result = null;
+	public static List<Pair<Frame, Set<OWLAxiom>>> translate(List<CommitedOntologyTerm> changed) {
+		List<Pair<Frame, Set<OWLAxiom>>> result = null;
 		if (changed != null && !changed.isEmpty()) {
-			result = new ArrayList<Frame>(changed.size());
+			result = new ArrayList<Pair<Frame, Set<OWLAxiom>>>(changed.size());
 			for(CommitedOntologyTerm term : changed) {
 				Frame frame = translate(term.getId(), term.getObo());
+				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getAxioms());
 				if (frame != null) {
-					result.add(frame);
+					result.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
 				}
 			}
 		}
 		return result;
 	}
 	
-	public static List<Frame> translateSimple(List<SimpleCommitedOntologyTerm> changed) {
-		List<Frame> result = null;
+	public static List<Pair<Frame, Set<OWLAxiom>>> translateSimple(List<SimpleCommitedOntologyTerm> changed) {
+		List<Pair<Frame, Set<OWLAxiom>>> result = null;
 		if (changed != null && !changed.isEmpty()) {
-			result = new ArrayList<Frame>(changed.size());
+			result = new ArrayList<Pair<Frame, Set<OWLAxiom>>>(changed.size());
 			for(SimpleCommitedOntologyTerm term : changed) {
 				Frame frame = translate(term.getId(), term.getObo());
+				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getAxioms());
 				if (frame != null) {
-					result.add(frame);
+					result.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
 				}
 			}
 		}
@@ -153,4 +170,5 @@ public class CommitHistoryTools {
 		}
 		return obodoc.getTermFrame(id);
 	}
+	
 }

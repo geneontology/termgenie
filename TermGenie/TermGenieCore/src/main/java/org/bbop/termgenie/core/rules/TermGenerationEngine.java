@@ -3,10 +3,13 @@ package org.bbop.termgenie.core.rules;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Frame;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -90,30 +93,34 @@ public interface TermGenerationEngine {
 	public class TermGenerationOutput {
 
 		private final Frame term;
-		private final List<Frame> changedTermRelations;
+		private final Set<OWLAxiom> owlAxioms;
+		private final List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations;
 		private final TermGenerationInput input;
 		private final boolean success;
 		private final String message;
 
 		public static TermGenerationOutput error(TermGenerationInput input, String message) {
-			return new TermGenerationOutput(null, null, input, false, message);
+			return new TermGenerationOutput(null, null, null, input, false, message);
 		}
 		
 		/**
 		 * @param term
+		 * @param owlAxioms
 		 * @param changedTermRelations 
 		 * @param input
 		 * @param success
 		 * @param message
 		 */
 		public TermGenerationOutput(Frame term,
-				List<Frame> changedTermRelations,
+				Set<OWLAxiom> owlAxioms,
+				List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations,
 				TermGenerationInput input,
 				boolean success,
 				String message)
 		{
 			super();
 			this.term = term;
+			this.owlAxioms = owlAxioms;
 			this.changedTermRelations = changedTermRelations;
 			this.input = input;
 			this.success = success;
@@ -125,6 +132,13 @@ public interface TermGenerationEngine {
 		 */
 		public Frame getTerm() {
 			return term;
+		}
+		
+		/**
+		 * @return the owlAxioms
+		 */
+		public Set<OWLAxiom> getOwlAxioms() {
+			return owlAxioms;
 		}
 
 		/**
@@ -151,7 +165,7 @@ public interface TermGenerationEngine {
 		/**
 		 * @return the changedTermRelations
 		 */
-		public final List<Frame> getChangedTermRelations() {
+		public final List<Pair<Frame, Set<OWLAxiom>>> getChangedTermRelations() {
 			return changedTermRelations;
 		}
 

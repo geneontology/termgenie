@@ -182,7 +182,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getChangedTermRelations(), managed);
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getOwlAxioms(), candidate.getChangedTermRelations(), managed);
 					jsonCandidates.add(jsonCandidate);
 				}
 				else {

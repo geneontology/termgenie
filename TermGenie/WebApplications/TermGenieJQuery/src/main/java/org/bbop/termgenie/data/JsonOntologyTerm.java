@@ -13,6 +13,8 @@ import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
+import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Xref;
@@ -20,6 +22,7 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -35,6 +38,7 @@ public class JsonOntologyTerm {
 	private List<String> relations;
 	private List<String> metaData;
 	private List<JsonChange> changed;
+	private String owlAxioms;
 	private boolean isObsolete;
 
 	public JsonOntologyTerm() {
@@ -160,6 +164,20 @@ public class JsonOntologyTerm {
 	public void setObsolete(boolean isObsolete) {
 		this.isObsolete = isObsolete;
 	}
+	
+	/**
+	 * @return the owlAxioms
+	 */
+	public String getOwlAxioms() {
+		return owlAxioms;
+	}
+	
+	/**
+	 * @param owlAxioms the owlAxioms to set
+	 */
+	public void setOwlAxioms(String owlAxioms) {
+		this.owlAxioms = owlAxioms;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -213,7 +231,7 @@ public class JsonOntologyTerm {
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm createJson(Frame source, List<Frame> changed, OWLGraphWrapper wrapper) {
+	public static JsonOntologyTerm createJson(Frame source, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed, OWLGraphWrapper wrapper) {
 		NameProvider nameProvider = new OwlGraphWrapperNameProvider(wrapper);
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setTempId(source.getId());
@@ -265,16 +283,20 @@ public class JsonOntologyTerm {
 		term.setSynonyms(synonyms);
 		term.setRelations(jsonRelations);
 		term.setMetaData(other);
+		if (owlAxioms != null && !owlAxioms.isEmpty()) {
+			term.setOwlAxioms(OwlStringTools.translateAxiomsToString(owlAxioms));
+		}
 		
 		// changed
 		term.setChanged(createJson(changed, nameProvider));
 		return term;
 	}
 
-	public static List<JsonChange> createJson(List<Frame> changed, NameProvider nameProvider) {
+	public static List<JsonChange> createJson(List<Pair<Frame, Set<OWLAxiom>>> changed, NameProvider nameProvider) {
 		if (changed != null && !changed.isEmpty()) {
 			List<JsonChange> jsonChanged = new ArrayList<JsonChange>(changed.size());
-			for (Frame changedFrame : changed) {
+			for (Pair<Frame, Set<OWLAxiom>> pair : changed) {
+				Frame changedFrame = pair.getOne();
 				List<String> frameChanges = null;
 				Collection<Clause> changedClauses = changedFrame.getClauses();
 				if (changedClauses != null) {
@@ -290,6 +312,10 @@ public class JsonOntologyTerm {
 					}
 					jsonChange.setChanges(frameChanges);
 					jsonChanged.add(jsonChange);
+					Set<OWLAxiom> axioms = pair.getTwo();
+					if (axioms != null && !axioms.isEmpty()) {
+						jsonChange.setOwlAxioms(OwlStringTools.translateAxiomsToString(axioms));
+					}
 				}
 			}
 			return jsonChanged;
@@ -334,14 +360,15 @@ public class JsonOntologyTerm {
 		return frame;
 	}
 	
-	public static List<Frame> createChangedFrames(List<JsonChange> jsonChanges) {
-		List<Frame> changed = null;
+	public static List<Pair<Frame, Set<OWLAxiom>>> createChangedFrames(List<JsonChange> jsonChanges) {
+		List<Pair<Frame, Set<OWLAxiom>>> changed = null;
 		if (jsonChanges != null && !jsonChanges.isEmpty()) {
-			changed = new ArrayList<Frame>(jsonChanges.size());
+			changed = new ArrayList<Pair<Frame, Set<OWLAxiom>>>(jsonChanges.size());
 			for (JsonChange jsonChange : jsonChanges) {
 				Frame frame = OboTools.createTermFrame(jsonChange.getId());
 				OboParserTools.parseClauses(frame, jsonChange.getChanges());
-				changed.add(frame);
+				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonChange.getOwlAxioms());
+				changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
 			}
 			
 		}
@@ -476,6 +503,7 @@ public class JsonOntologyTerm {
 		private String id;
 		private String label;
 		private List<String> changes;
+		private String owlAxioms;
 		
 		/**
 		 * @return the id
@@ -517,6 +545,20 @@ public class JsonOntologyTerm {
 		 */
 		public void setChanges(List<String> changes) {
 			this.changes = changes;
+		}
+		
+		/**
+		 * @return the owlAxioms
+		 */
+		public String getOwlAxioms() {
+			return owlAxioms;
+		}
+
+		/**
+		 * @param owlAxioms the owlAxioms to set
+		 */
+		public void setOwlAxioms(String owlAxioms) {
+			this.owlAxioms = owlAxioms;
 		}
 	}
 }

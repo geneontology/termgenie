@@ -9,6 +9,7 @@ import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
 import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
@@ -64,10 +65,10 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			equivalentClassesSet.remove(owlClass);
 			result = new InferredRelations(equivalentClassesSet);
 		} else {
-			List<Frame> changed = null;
+			List<Pair<Frame, Set<OWLAxiom>>> changed = null;
 			NodeSet<OWLClass> subClasses = reasoner.getSubClasses(owlClass, true);
 			if (subClasses != null && !subClasses.isEmpty()) {
-				changed = new ArrayList<Frame>();
+				changed = new ArrayList<Pair<Frame,Set<OWLAxiom>>>();
 				for (OWLClass subClass : subClasses.getFlattened()) {
 					if (subClass.isBottomEntity()) {
 						// skip owl:Nothing
@@ -76,10 +77,11 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 					String subClassIRI = subClass.getIRI().toString();
 					if (!subClassIRI.startsWith(tempIdPrefix)) {
 						Frame frame = OboTools.createTermFrame(subClass);
-						List<Clause> clauses = OwlTranslatorTools.extractRelations(subClass, ontology);
-						OBOFormatWriter.sortTermClauses(clauses);
+						Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(subClass, ontology);
+						List<Clause> clauses = pair.getOne();
+						OBOFormatWriter.sortTermClauses(clauses );
 						frame.getClauses().addAll(clauses);
-						changed.add(frame);
+						changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, pair.getTwo()));
 						
 					}
 				}
@@ -87,8 +89,8 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 					changed = null;
 				}
 			}
-			List<Clause> relations = OwlTranslatorTools.extractRelations(owlClass, ontology);
-			result = new InferredRelations(relations, changed);
+			Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, ontology);
+			result = new InferredRelations(pair.getOne(), pair.getTwo(), changed);
 		}
 		return Modified.no;
 	}

@@ -1,12 +1,15 @@
 package org.bbop.termgenie.ontology.obo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
@@ -24,13 +27,15 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OwlTranslatorTools {
 
-	public static List<Clause> extractRelations(OWLClass owlClass, OWLGraphWrapper wrapper) {
+	public static Pair<List<Clause>, Set<OWLAxiom>> extractRelations(OWLClass owlClass, OWLGraphWrapper wrapper) {
 		OWLOntology ontology = wrapper.getSourceOntology();
 		List<Clause> result = new ArrayList<Clause>();
+		Set<OWLAxiom> relevantAxioms = new HashSet<OWLAxiom>();
 
 		// IS_A
 		Set<OWLSubClassOfAxiom> subClassAxioms = ontology.getSubClassAxiomsForSubClass(owlClass);
 		if (subClassAxioms != null && !subClassAxioms.isEmpty()) {
+			relevantAxioms.addAll(subClassAxioms);
 			for (OWLSubClassOfAxiom axiom : subClassAxioms) {
 				OWLClassExpression sup = axiom.getSuperClass();
 				if (sup instanceof OWLClass) {
@@ -54,6 +59,7 @@ public class OwlTranslatorTools {
 
 		Set<OWLEquivalentClassesAxiom> equivalentClassesAxioms = ontology.getEquivalentClassesAxioms(owlClass);
 		if (equivalentClassesAxioms != null && !equivalentClassesAxioms.isEmpty()) {
+			relevantAxioms.addAll(equivalentClassesAxioms);
 			for (OWLEquivalentClassesAxiom axiom : equivalentClassesAxioms) {
 				List<OWLClassExpression> list = axiom.getClassExpressionsAsList();
 
@@ -122,6 +128,7 @@ public class OwlTranslatorTools {
 		// DISJOINT_FROM
 		Set<OWLDisjointClassesAxiom> disjointClassesAxioms = ontology.getDisjointClassesAxioms(owlClass);
 		if (disjointClassesAxioms != null && !disjointClassesAxioms.isEmpty()) {
+			relevantAxioms.addAll(disjointClassesAxioms);
 			for (OWLDisjointClassesAxiom axiom : disjointClassesAxioms) {
 				Set<OWLClassExpression> expressions = axiom.getClassExpressionsMinus(owlClass);
 				for (OWLClassExpression expression : expressions) {
@@ -135,10 +142,11 @@ public class OwlTranslatorTools {
 				}
 			}
 		}
-		return result;
+		return new Pair<List<Clause>, Set<OWLAxiom>>(result, relevantAxioms);
 	}
 
 	private static String getId(OWLObject obj, OWLOntology ontology) {
 		return Owl2Obo.getIdentifierFromObject(obj, ontology, null);
 	}
+	
 }

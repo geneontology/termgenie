@@ -1,9 +1,12 @@
 package org.bbop.termgenie.ontology;
 
 import java.util.List;
+import java.util.Set;
 
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.oboformat.model.Frame;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 
 public class CommitInfo {
@@ -11,14 +14,17 @@ public class CommitInfo {
 	public static class TermCommit {
 		
 		private Frame term;
-		private List<Frame> changed;
+		private Set<OWLAxiom> owlAxioms;
+		private List<Pair<Frame, Set<OWLAxiom>>> changed;
 		
 		/**
 		 * @param term
+		 * @param owlAxioms
 		 * @param changed
 		 */
-		public TermCommit(Frame term, List<Frame> changed) {
+		public TermCommit(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed) {
 			this.term = term;
+			this.owlAxioms = owlAxioms;
 			this.changed = changed;
 		}
 
@@ -37,16 +43,30 @@ public class CommitInfo {
 		}
 		
 		/**
+		 * @return the owlAxioms
+		 */
+		public Set<OWLAxiom> getOwlAxioms() {
+			return owlAxioms;
+		}
+		
+		/**
+		 * @param owlAxioms the owlAxioms to set
+		 */
+		public void setOwlAxioms(Set<OWLAxiom> owlAxioms) {
+			this.owlAxioms = owlAxioms;
+		}
+
+		/**
 		 * @return the changed
 		 */
-		public List<Frame> getChanged() {
+		public List<Pair<Frame, Set<OWLAxiom>>> getChanged() {
 			return changed;
 		}
 		
 		/**
 		 * @param changed the changed to set
 		 */
-		public void setChanged(List<Frame> changed) {
+		public void setChanged(List<Pair<Frame, Set<OWLAxiom>>> changed) {
 			this.changed = changed;
 		}
 	}

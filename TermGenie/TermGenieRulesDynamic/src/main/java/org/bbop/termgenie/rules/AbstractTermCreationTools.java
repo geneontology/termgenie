@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -24,6 +26,7 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -176,6 +179,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			T logicalDefinition,
 			List<TermGenerationOutput> output)
 	{
+		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
 		Frame term = new Frame(FrameType.TERM);
 
 		// get overwrites from GUI
@@ -272,7 +276,11 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			if (relations != null) {
 				term.getClauses().addAll(relations);
 			}
-			output.add(success(term, inferredRelations.changed, input));
+			if (inferredRelations.classRelationAxioms != null) {
+				axioms.addAll(inferredRelations.classRelationAxioms);
+			}
+			// TODO add all other term details to the axioms?
+			output.add(success(term, axioms , inferredRelations.changed, input));
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
 		}
@@ -303,10 +311,11 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 	static class InferredRelations {
 		
-		static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause>emptyList(), null);
+		static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause>emptyList(), Collections.<OWLAxiom>emptySet(), null);
 		
 		List<Clause> classRelations = null;
-		List<Frame> changed = null;
+		Set<OWLAxiom> classRelationAxioms = null;
+		List<Pair<Frame, Set<OWLAxiom>>> changed = null;
 		Set<OWLClass> equivalentClasses = null;
 		
 		/**
@@ -318,10 +327,12 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		
 		/**
 		 * @param classRelations
-		 * @param directSubClasses
+		 * @param classRelationAxioms
+		 * @param changed
 		 */
-		InferredRelations(List<Clause> classRelations, List<Frame> changed) {
+		InferredRelations(List<Clause> classRelations, Set<OWLAxiom> classRelationAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed) {
 			this.classRelations = classRelations;
+			this.classRelationAxioms = classRelationAxioms;
 			this.changed = changed;
 		}
 	}
@@ -348,8 +359,12 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		return TermGenerationOutput.error(input, message);
 	}
 
-	protected TermGenerationOutput success(Frame term, List<Frame> changed, TermGenerationInput input) {
-		return new TermGenerationOutput(term, changed, input, true, null);
+	protected TermGenerationOutput success(Frame term,
+			Set<OWLAxiom> owlAxioms,
+			List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations,
+			TermGenerationInput input)
+	{
+		return new TermGenerationOutput(term, owlAxioms, changedTermRelations, input, true, null);
 	}
 	
 	@Override

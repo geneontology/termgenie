@@ -19,6 +19,7 @@ public class SimpleCommitedOntologyTerm
 	private String id;
 	
 	private String obo;
+	private String axioms;
 
 	private Modification operation;
 
@@ -84,5 +85,23 @@ public class SimpleCommitedOntologyTerm
 	 */
 	public void setObo(String obo) {
 		this.obo = obo;
+	}
+
+	
+	/**
+	 * @return the axioms
+	 */
+	@Column(length = Integer.MAX_VALUE)
+	@Basic(optional = false)
+	public String getAxioms() {
+		return axioms;
+	}
+
+	
+	/**
+	 * @param axioms the axioms to set
+	 */
+	public void setAxioms(String axioms) {
+		this.axioms = axioms;
 	}
 }
