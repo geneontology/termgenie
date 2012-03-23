@@ -88,7 +88,9 @@ function termgenie(){
 	              'user.setValues',
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
-	              'resource.getLinesFromResource']
+	              'resource.getLinesFromResource',
+	              'renderer.renderHierarchy',
+	              'renderer.visualizeGeneratedTerms']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -1445,6 +1447,7 @@ function termgenie(){
 			
 			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>');
 			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>');
+			generatedTermContainer.append('<div>Optional: Create an image with the generated term hierarchy: <button id="Generated-Terms-Hierarchy-Preview-Button">Generate Image</button> (Opens a new window.)</div>');
 			var layout = jQuery('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
@@ -1461,6 +1464,28 @@ function termgenie(){
 				termPanels.push(termPanel);
 			});
 			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>');
+			
+			
+			// add button to render terms in hierarchy image
+			var renderHierarchyButton = jQuery('#Generated-Terms-Hierarchy-Preview-Button');
+			renderHierarchyButton.click(function(){
+				jsonService.renderer.visualizeGeneratedTerms({
+					params: [generatedTerms, ontology],
+					onSuccess: function(result) {
+						if(result.success === true) {
+							window.open(result.message);
+						}
+						else {
+							jQuery.logUserMessage('Render Hierarchy service call failed', result.message);
+							jQuery.openLogPanel();
+						}
+						
+					},
+					onException: function(e) {
+						jQuery.logSystemError('Render Hierarchy service call failed', e);
+					}
+				});
+			});
 			
 			return {
 				checkBoxes: checkBoxes,

@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.data.JsonOntologyTerm.JsonChange;
 import org.bbop.termgenie.data.JsonResult;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -25,11 +26,13 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.RemoveAxiom;
 
 import owltools.gfx.OWLGraphLayoutRenderer;
 import owltools.graph.OWLGraphWrapper;
@@ -125,8 +128,17 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 				for(JsonOntologyTerm jsonTerm : generatedTerms) {
 					allAxioms.addAll(OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms()));
 					ids.add(jsonTerm.getTempId());
+					List<JsonChange> changed = jsonTerm.getChanged();
+					if (changed != null && !changed.isEmpty()) {
+						for (JsonChange change : changed) {
+							allAxioms.addAll(OwlStringTools.translateStringToAxioms(change.getOwlAxioms()));
+							ids.add(change.getId());
+						}
+					}
 				}
-				List<OWLOntologyChange> changed = owlOntology.getOWLOntologyManager().addAxioms(owlOntology, allAxioms);
+				final OWLOntologyManager manager = owlOntology.getOWLOntologyManager();
+				List<OWLOntologyChange> changed = manager.addAxioms(owlOntology, allAxioms);
+				
 				try {
 					File workDirectory = new File(new File(realPath).getParentFile(), "data");
 					File resultFile = renderHierarchy(ids, graph, workDirectory, true);
@@ -136,9 +148,13 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 					jsonResult.setSuccess(false);
 					jsonResult.setMessage(exception.getMessage());
 				} finally {
-					OWLOntologyManager manager = owlOntology.getOWLOntologyManager();
 					for(OWLOntologyChange c : changed) {
-						manager.removeAxiom(owlOntology, c.getAxiom());
+						if (c instanceof AddAxiom) {
+							manager.removeAxiom(owlOntology, c.getAxiom());
+						}
+						else if (c instanceof RemoveAxiom) {
+							manager.addAxiom(owlOntology, c.getAxiom());
+						}
 					}
 				}
 				return Modified.no;
@@ -176,9 +192,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 		OutputStream fos = null;
 		try {
 			OWLGraphLayoutRenderer r = new OWLGraphLayoutRenderer(graph);
-			for (OWLObject owlObject : ids) {
-				r.addObject(owlObject);
-			}
+			r.addObjects(ids);
 
 			TempFileTools tools = TempFileTools.getInstance(folder,
 					TimeUnit.MINUTES,
