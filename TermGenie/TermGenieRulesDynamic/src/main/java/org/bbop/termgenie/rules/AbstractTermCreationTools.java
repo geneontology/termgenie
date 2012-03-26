@@ -17,7 +17,6 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.ontology.obo.OboTools;
-import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
