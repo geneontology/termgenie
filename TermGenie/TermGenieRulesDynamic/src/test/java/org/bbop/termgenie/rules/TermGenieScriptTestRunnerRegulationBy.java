@@ -100,7 +100,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 	}
 
 	@Test
-	public void test_regulation_by_synonyms1() throws Exception {
+	public void test_regulation_by_synonyms_and_def1() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
@@ -121,6 +121,9 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertEquals("regulation of thiamine biosynthetic process by regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
+		assertEquals("Any process that modulates the frequency, rate or extent of regulation of thiamine biosynthetic process, by regulation of transcription from RNA polymerase II promoter.", 
+				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
+		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
 		hasExactSynonyms(synonyms, "regulation of thiamine biosynthesis by regulation of transcription from RNA polymerase II promoter",
 				"regulation of thiamine anabolism by regulation of transcription from RNA polymerase II promoter",
@@ -130,7 +133,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 	}
 	
 	@Test
-	public void test_regulation_by_synonyms2() throws Exception {
+	public void test_regulation_by_synonyms_and_def2() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
@@ -150,6 +153,9 @@ public class TermGenieScriptTestRunnerRegulationBy {
 
 		assertEquals("negative regulation of cellular hyperosmotic salinity response by negative regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		
+		assertEquals("Any process that deactivates or decreases the frequency, rate or extent of negative regulation of cellular hyperosmotic salinity response, by negative regulation of transcription from RNA polymerase II promoter.", 
+				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
 		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
 		hasExactSynonyms(synonyms, "negative regulation of cellular response to hyperosmotic salt stress by negative regulation of transcription from RNA polymerase II promoter");
