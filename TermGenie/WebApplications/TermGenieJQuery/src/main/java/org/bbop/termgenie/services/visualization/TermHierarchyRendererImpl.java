@@ -16,6 +16,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonChange;
@@ -48,6 +49,8 @@ import com.google.inject.name.Named;
 @Singleton
 public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 
+	private static final Logger logger = Logger.getLogger(TermHierarchyRendererImpl.class);
+	
 	private final Map<String, ConfiguredOntology> configurations;
 	private final OntologyLoader loader;
 	private OntologyTaskManager commitTargetOntology = null;
@@ -224,6 +227,9 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 			OWLObject owlObject = graph.getOWLObjectByIdentifier(id);
 			if (owlObject != null) {
 				objs.add(owlObject);
+			}
+			else {
+				logger.warn("Skipping id: '"+id+"' for hierarchy image generation.");
 			}
 		}
 		return renderHierarchy(objs, graph, folder, useCleaner);
