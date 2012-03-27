@@ -38,13 +38,13 @@ function regulation_by() {
     var label = processName + " by " + regulatorName;
     
     var definitionVerb = 'modulates';
-    if (genus(p, 'GO:0048518', go) === true) {
+    if (genus(regulator, 'GO:0048518', go) === true) {
     	// if it is_a 'positive regulation of biological process'
     	definitionVerb = 'activates or increases';
     } 
-    else if (genus(p, 'GO:0048519', go) === true) { 
+    else if (genus(regulator, 'GO:0048519', go) === true) { 
     	// if it is_a 'negative regulation of biological process'
-    	definitionVerb = 'deactivates or decreases';
+    	definitionVerb = 'decreases';
     }
     
     var definition = "Any process that "+definitionVerb+" the frequency, rate or extent of "+processName+", by "+regulatorName+".";
