@@ -154,7 +154,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertEquals("negative regulation of cellular hyperosmotic salinity response by negative regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
-		assertEquals("Any process that deactivates or decreases the frequency, rate or extent of negative regulation of cellular hyperosmotic salinity response, by negative regulation of transcription from RNA polymerase II promoter.", 
+		assertEquals("Any process that decreases the frequency, rate or extent of negative regulation of cellular hyperosmotic salinity response, by negative regulation of transcription from RNA polymerase II promoter.", 
 				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
 		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
