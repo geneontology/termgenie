@@ -54,6 +54,7 @@ class TempFileTools {
 		TempFileTools instance = instances.get(targetFolder);
 		if (instance == null) {
 			instance = new TempFileTools(targetFolder, timeUnit, time, useCleaner);
+			instances.put(targetFolder, instance);
 		}
 		return instance;
 	}
