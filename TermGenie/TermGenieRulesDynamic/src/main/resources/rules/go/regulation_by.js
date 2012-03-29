@@ -40,7 +40,7 @@ function regulation_by() {
     var definitionVerb = 'modulates';
     if (genus(regulator, 'GO:0048518', go) === true) {
     	// if it is_a 'positive regulation of biological process'
-    	definitionVerb = 'activates or increases';
+    	definitionVerb = 'increases';
     } 
     else if (genus(regulator, 'GO:0048519', go) === true) { 
     	// if it is_a 'negative regulation of biological process'
