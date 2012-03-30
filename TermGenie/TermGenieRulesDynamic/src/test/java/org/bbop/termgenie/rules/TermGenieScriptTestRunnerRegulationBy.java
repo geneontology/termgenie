@@ -121,7 +121,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertEquals("regulation of thiamine biosynthetic process by regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
-		assertEquals("Any process that modulates the frequency, rate or extent of regulation of thiamine biosynthetic process, by regulation of transcription from RNA polymerase II promoter.", 
+		assertEquals("A regulation of transcription from RNA polymerase II promoter that results in regulation of thiamine biosynthetic process.", 
 				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
 		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
@@ -154,7 +154,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertEquals("negative regulation of cellular hyperosmotic salinity response by negative regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
-		assertEquals("Any process that decreases the frequency, rate or extent of negative regulation of cellular hyperosmotic salinity response, by negative regulation of transcription from RNA polymerase II promoter.", 
+		assertEquals("A negative regulation of transcription from RNA polymerase II promoter that results in negative regulation of cellular hyperosmotic salinity response.", 
 				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
 		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
