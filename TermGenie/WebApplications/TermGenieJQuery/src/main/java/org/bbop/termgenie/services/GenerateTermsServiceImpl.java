@@ -95,34 +95,34 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	{
 		// sanity checks
 		if (ontologyName == null || ontologyName.isEmpty()) {
-			return new JsonGenerationResponse(NO_ONTOLOGY, null, null);
+			return new JsonGenerationResponse(NO_ONTOLOGY, null, null, null);
 		}
 		if (allParameters == null) {
-			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null);
+			return new JsonGenerationResponse(NO_TERM_GENERATION_PARAMETERS, null, null, null);
 		}
 
 		// retrieve target ontology
 		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
 		if (manager == null) {
-			return new JsonGenerationResponse(NO_ONTOLOGY, null, null);
+			return new JsonGenerationResponse(NO_ONTOLOGY, null, null, null);
 		}
 
 		// term generation parameter validation
 		List<JsonValidationHint> allErrors = new ArrayList<JsonValidationHint>();
 		for (JsonTermGenerationInput input : allParameters) {
 			if (input == null) {
-				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
+				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null, null);
 			}
 			JsonTermTemplate one = input.getTermTemplate();
 			JsonTermGenerationParameter parameter = input.getTermGenerationParameter();
 			if (one == null || parameter == null) {
-				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null);
+				return new JsonGenerationResponse(UNEXPECTED_NULL_VALUE, null, null, null);
 			}
 			// retrieve the template from the server, do not trust the submitted
 			// one.
 			TermTemplate template = getTermTemplate(ontologyName, one.getName());
 			if (template == null) {
-				return new JsonGenerationResponse("Unknow template specified: " + one.getName(), null, null);
+				return new JsonGenerationResponse("Unknow template specified: " + one.getName(), null, null, null);
 			}
 			JsonTermTemplate jsonTermTemplate = jsonTools.createJsonTermTemplate(template);
 
@@ -135,7 +135,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		}
 		// return validation errors
 		if (!allErrors.isEmpty()) {
-			return new JsonGenerationResponse(null, allErrors, null);
+			return new JsonGenerationResponse(null, allErrors, null, null);
 		}
 
 		try {
@@ -146,7 +146,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 			// validate candidates
 			if (candidates == null || candidates.isEmpty()) {
-				return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null);
+				return new JsonGenerationResponse(NO_TERMS_GENERATED, null, null, null);
 			}
 
 			GenerateJsonResponse task = new GenerateJsonResponse(candidates);
@@ -158,7 +158,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		} catch (Exception exception) {
 			logger.warn("An error occured during the term generation for the parameters: {ontologyName: " + ontologyName + ", allParameters: " + allParameters + "}",
 					exception);
-			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null);
+			return new JsonGenerationResponse("An internal error occured on the server. Please contact the developers if the problem persists.", null, null, null);
 		}
 	}
 	
@@ -179,18 +179,21 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 			List<JsonOntologyTerm> jsonCandidates = new ArrayList<JsonOntologyTerm>();
 			List<JsonValidationHint> jsonHints = new ArrayList<JsonValidationHint>();
+			List<JsonTermTemplate> jsonTermTemplates = new ArrayList<JsonTermTemplate>();
 			
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
 					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getOwlAxioms(), candidate.getChangedTermRelations(), managed);
 					jsonCandidates.add(jsonCandidate);
+					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+					jsonTermTemplates.add(template);
 				}
 				else {
 					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
 					jsonHints.add(new JsonValidationHint(template, -1, candidate.getMessage()));
 				}
 			}
-			generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates);
+			generationResponse = new JsonGenerationResponse(null, jsonHints, jsonCandidates, jsonTermTemplates);
 		}
 		
 	}

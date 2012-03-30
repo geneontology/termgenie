@@ -7,6 +7,7 @@ public class JsonGenerationResponse {
 	private String generalError;
 	private List<JsonValidationHint> errors;
 	private List<JsonOntologyTerm> generatedTerms;
+	private List<JsonTermTemplate> termTemplates;
 
 	/**
 	 * Default constructor.
@@ -17,7 +18,8 @@ public class JsonGenerationResponse {
 
 	public JsonGenerationResponse(String generalError,
 			List<JsonValidationHint> errors,
-			List<JsonOntologyTerm> terms)
+			List<JsonOntologyTerm> terms,
+			List<JsonTermTemplate> termTemplates)
 	{
 		if (errors != null) {
 			this.errors = errors;
@@ -26,6 +28,7 @@ public class JsonGenerationResponse {
 			this.generatedTerms = terms;
 		}
 		this.generalError = generalError;
+		this.termTemplates = termTemplates;
 	}
 
 	/**
@@ -68,6 +71,20 @@ public class JsonGenerationResponse {
 	 */
 	public void setGeneralError(String generalError) {
 		this.generalError = generalError;
+	}
+
+	/**
+	 * @return the termTemplates
+	 */
+	public List<JsonTermTemplate> getTermTemplates() {
+		return termTemplates;
+	}
+
+	/**
+	 * @param termTemplates the termTemplates to set
+	 */
+	public void setTermTemplates(List<JsonTermTemplate> termTemplates) {
+		this.termTemplates = termTemplates;
 	}
 
 	/*
