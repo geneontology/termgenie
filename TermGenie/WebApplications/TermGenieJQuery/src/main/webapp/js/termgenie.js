@@ -1368,7 +1368,7 @@ function termgenie(){
 		var reviewTerms = null;
 
 		if(isValid(generationResponse.generatedTerms)) {
-			reviewTerms = renderGeneratedTerms(parent, generationResponse.generatedTerms);
+			reviewTerms = renderGeneratedTerms(parent, generationResponse.generatedTerms, generationResponse.termTemplates);
 
 			setSubmitHandler(reviewTerms, generationResponse.generatedTerms, ontology);
 
@@ -1439,7 +1439,7 @@ function termgenie(){
 		 * 		termPanels: TermReviewPanel[]
 		 * }
 		 */
-		function renderGeneratedTerms(parent, generatedTerms) {
+		function renderGeneratedTerms(parent, generatedTerms, termTemplates) {
 			var checkBoxes = [];
 			var termPanels = [];
 			var generatedTermContainer = jQuery('<div class="term-generation-details"></div>');
@@ -1460,7 +1460,7 @@ function termgenie(){
 				checkBox.appendTo(tdElement);
 				checkBoxes.push(checkBox);
 
-				var termPanel = TermReviewPanel(trElement, term);
+				var termPanel = TermReviewPanel(trElement, term, termTemplates[index]);
 				termPanels.push(termPanel);
 			});
 			generatedTermContainer.append('<div class="term-generation-details-description">Please select the term(s) for the final step.</div>');
@@ -1500,7 +1500,7 @@ function termgenie(){
 		 * @param term
 		 * @returns methods of the panel
 		 */
-		function TermReviewPanel(parent, term) {
+		function TermReviewPanel(parent, term, template) {
 			// clone term, preserve original term for comparison
 			var newTerm = jQuery.extend(true, {}, term);
 			
@@ -1546,7 +1546,7 @@ function termgenie(){
 			// synonyms
 			tdElement  = jQuery('<td></td>');
 			trElement.append(tdElement);
-			fieldPanels.synonyms = SynonymListReviewPanel(tdElement, term.synonyms);
+			fieldPanels.synonyms = SynonymListReviewPanel(tdElement, term.synonyms, template);
 			
 			// Metadata
 			tdElement  = jQuery('<td></td>');
@@ -1666,22 +1666,24 @@ function termgenie(){
 			 * 
 			 * @param parent
 			 * @param synonyms
+			 * @param template
 			 * @returns method for selected synonyms
 			 */
-			function SynonymListReviewPanel(parent, synonyms) {
+			function SynonymListReviewPanel(parent, synonyms, template) {
 				
 				parent.css('height','100%');
 				var divElem = jQuery('<div></div>');
 				parent.append(divElem);
 				
+				
+				var listParent = createLayoutTable();
+				listParent.css('width','350px');
+				var rows = [];
+				listParent.appendTo(divElem);
+				
+				var showCategory = false;
+				
 				if (synonyms && synonyms.length > 0) {
-					var listParent = createLayoutTable();
-					listParent.css('width','350px');
-					
-					var rows = [];
-					listParent.appendTo(divElem);
-					
-					var showCategory = false;
 					jQuery.each(synonyms, function(index, synonym){
 						showCategory = showCategory || (synonym.category && synonym.category.length > 0);
 					});
@@ -1696,31 +1698,207 @@ function termgenie(){
 					jQuery.each(synonyms, function(index, synonym){
 						addLine(synonym, showCategory);
 					});
-					
-					return {
-						getValue : function () {
-							var synonyms = [];
-							jQuery.each(rows, function(index, row){
-								if(row.checkbox.is(':checked')) {
-									row.synonym.scope = row.getScope();
-									synonyms.push(row.synonym);
-								}
-							});
-							if (synonyms.length > 0) {
-								return synonyms;
+				}
+				
+				// button for additional synonyms
+				var addSynonymButton = jQuery('<button>Add synonym</button>');
+				addSynonymButton.appendTo(parent);
+				
+				// get remote resources for xref auto-complete
+				var choices;
+				var xrefRemoteResource;
+				
+				jQuery.each(template.fields, function(index, field){
+					if('DefX_Ref' === field.name) {
+						xrefRemoteResource = field.remoteResource;
+					}
+				});
+				
+				if(xrefRemoteResource !== null) {
+					fetchLinesFromRemoteResource(xrefRemoteResource, function(lines) {
+						// process lines into choices
+						choices = [];
+						jQuery.each(lines, function(index, line){
+							if (index === 0) {
+								// skip the first line
+								return;
 							}
-							return null;
+							// get the first substring until a tab
+							var charPos = line.indexOf('\t');
+							if(charPos > 0) {
+								choices.push(line.substring(0,charPos));
+							}
+							else {
+								// or take the whole string if no tab is available
+								choices.push(line);
+							}
+						});
+					});
+				}
+				
+				// implement add synonym dialog
+				addSynonymButton.click(function(){
+					var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+					var newSynonymFields = [];
+					
+					editDialog.append('<div class="termgenie-add-synonym-hint">This dialog allows to create additonal synonyms. '+
+							'Invalid entry lines are ignored. This includes empty or redundant labels and malformed xrefs</div>');
+					var editDialogTable = createLayoutTable();
+					editDialogTable.append('<tr>'
+							+'<th>Synonym Label</th>'
+							+'<th>Scope</th>'
+							+'<th>XRef</th>'
+							+'</tr>');
+					editDialog.append(editDialogTable);
+					
+					// create first synonymsField
+					newSynonymFields.push(synonymField(editDialogTable));
+					
+					editDialog.dialog({
+						title: "Add Synonyms",
+						resizable: true,
+						height:400,
+						width: 700,
+						minHeight: 200,
+						minWidth: 600,
+						modal: true,
+						closeOnEscape: false,
+						buttons: {
+							"More": function() {
+								newSynonymFields.push(synonymField(editDialog));
+							},
+							"Done": function() {
+								jQuery.each(newSynonymFields, function(index, newSynonymField) {
+									var newSynonym = newSynonymField.getSynonym();
+									if (newSynonym && newSynonym !== null) {
+										addLine(newSynonym, showCategory);
+									}
+								});
+								$( this ).dialog( "close" );
+							},
+							"Cancel": function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+					
+					/**
+					 * Object holding the input data for an additional synonym.
+					 * 
+					 * @param editDialog the parent object
+					 */
+					function synonymField(editDialogRow) {
+						
+						// TODO implement
+						
+						var synonymFieldRow = jQuery('<tr class="termgenie-add-synonym-line"></tr>');
+						editDialogRow.append(synonymFieldRow);
+						
+						// input fields
+						// label
+						var labelField = jQuery('<input type="text" style="width:350px"/>');
+						var labelTD = jQuery('<td></td>');
+						labelTD.append(labelField);
+						synonymFieldRow.append(labelTD);
+						
+						// scope selector
+						var scopeSelector = jQuery('<select>'+
+								'<option value="RELATED">RELATED</option>'+
+								'<option value="NARROW">NARROW</option>'+
+								'<option value="EXACT">EXACT</option>'+
+								'<option value="BROAD">BROAD</option>'+
+								'</select>');
+						var scopeTD = jQuery('<td></td>');
+						scopeTD.append(scopeSelector);
+						synonymFieldRow.append(scopeTD);
+						
+						// list of xrefs, provide autocomplete and sanity check
+						
+						
+						var xrefInputElement = jQuery('<input type="text"/>');
+						if (choices && choices !== null) {
+							xrefInputElement.autocomplete({
+								source: choices
+							});
+						}
+						var xrefTD = jQuery('<td></td>');
+						xrefTD.append(xrefInputElement);
+						synonymFieldRow.append(xrefTD);
+						
+						return {
+							
+							/**
+							 * return JsonSynonym or null
+							 */
+							getSynonym : function() {
+								// check that a valid label is selected
+								var newLabel = labelField.val();
+								if (!newLabel || newLabel === null || newLabel.length <= 1) {
+									return null;
+								}
+								var redundant = false;
+								
+								// check if label already exists
+								jQuery.each(rows, function(index, row){
+									if(row.synonym.label === newLabel) {
+										redundant = true;
+									}
+								});
+								if (redundant === true) {
+									return null;
+								}
+								
+								// scope
+								var newScope = scopeSelector.val();
+								
+								// check that the xref conforms to the pattern
+								var newXref = xrefInputElement.val();
+								var newXrefs = null;
+								if (newXref && newXref !== null && newXref.length >= 3) {
+									var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
+									var matching = pattern.test(newXref); 
+									if (matching === true) {
+										newXrefs = [];
+										newXrefs.push(newXref);
+									}
+								}
+								
+								// otherwise create a new instance of JsonSynonym
+								/*
+								 * JsonSynonym {
+								 *     label : String,
+								 *     scope : String,
+								 *     category: String, // usually null;
+								 *     xrefs : Set<String> // implemented as String[]
+								 * }
+								 */
+								return {
+									label: newLabel,
+									scope: newScope,
+									category: null,
+									xrefs: newXrefs
+								};
+							}
 						}
 					};
-				}
-				else {
-					divElem.text('No synonyms')
-					return {
-						getValue : function () {
-							return null;
+				});
+				
+				
+				return {
+					getValue : function () {
+						var synonyms = [];
+						jQuery.each(rows, function(index, row){
+							if(row.checkbox.is(':checked')) {
+								row.synonym.scope = row.getScope();
+								synonyms.push(row.synonym);
+							}
+						});
+						if (synonyms.length > 0) {
+							return synonyms;
 						}
-					};
-				}
+						return null;
+					}
+				};
 				
 				function addLine(synonym, showCategory) {
 					var tableRow = jQuery('<tr></tr>');

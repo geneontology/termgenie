@@ -311,3 +311,14 @@ h1 {
 .termgenie-changes-to-ontology pre {
 	margin-left: 20px;
 }
+
+.termgenie-add-synonym-hint {
+	font-size: 0.8em;
+	padding: 10px;
+}
+
+.termgenie-add-synonym-line td {
+	padding-top: 5px;
+	padding-right: 3px;
+	padding-left: 3px;
+}
