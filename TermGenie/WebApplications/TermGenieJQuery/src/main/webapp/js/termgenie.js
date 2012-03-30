@@ -1702,7 +1702,7 @@ function termgenie(){
 				
 				// button for additional synonyms
 				var addSynonymButton = jQuery('<button>Add synonym</button>');
-				addSynonymButton.appendTo(parent);
+				addSynonymButton.appendTo(divElem);
 				
 				// get remote resources for xref auto-complete
 				var choices;
