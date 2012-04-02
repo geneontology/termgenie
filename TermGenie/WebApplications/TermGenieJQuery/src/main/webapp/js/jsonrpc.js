@@ -104,6 +104,7 @@ JsonRpc.ServiceProxy = function (serviceUrl, options) {
                                 arguments[0].params,
                                 arguments[0].onSuccess,
                                 arguments[0].onException,
+                                arguments[0].onProgress,
                                 arguments[0].onComplete);
                     }
                     else {
@@ -111,7 +112,8 @@ JsonRpc.ServiceProxy = function (serviceUrl, options) {
                                 arguments[0],
                                 arguments[1],
                                 arguments[2],
-                                arguments[3]);
+                                arguments[3],
+                                arguments[4]);
                     }
                     return undefined;
                 }
@@ -127,19 +129,33 @@ JsonRpc.setAsynchronous = function(serviceProxy, isAsynchronous) {
 };
 
 
-JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, successHandler, exceptionHandler, completeHandler) {
+JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, successHandler, exceptionHandler, progressHandler, completeHandler) {
     JsonRpc.requestCount++;
 
-    //Verify that successHandler, exceptionHandler, and completeHandler are functions
+    //Verify that successHandler, exceptionHandler, progressHandler, and completeHandler are functions
     if (this.__isAsynchronous) {
         if (successHandler && typeof successHandler != 'function')
             throw Error('The asynchronous onSuccess handler callback function you provided is invalid; the value you provided (' + successHandler.toString() + ') is of type "' + typeof(successHandler) + '".');
         if (exceptionHandler && typeof exceptionHandler != 'function')
             throw Error('The asynchronous onException handler callback function you provided is invalid; the value you provided (' + exceptionHandler.toString() + ') is of type "' + typeof(exceptionHandler) + '".');
+        if (progressHandler && typeof progressHandler != 'function')
+            throw Error('The asynchronous onException handler callback function you provided is invalid; the value you provided (' + progressHandler.toString() + ') is of type "' + typeof(progressHandler) + '".');
         if (completeHandler && typeof completeHandler != 'function')
             throw Error('The asynchronous onComplete handler callback function you provided is invalid; the value you provided (' + completeHandler.toString() + ') is of type "' + typeof(completeHandler) + '".');
     }
 
+    var completeHandlerWrapper = completeHandler;
+    var progressHandlerIntervalID = null;
+    if (progressHandler) {
+		completeHandlerWrapper = function() {
+			if (progressHandlerIntervalID && progressHandlerIntervalID !== null) {
+				clearInterval(progressHandlerIntervalID);
+			}
+			if (completeHandler) {
+				return completeHandler();
+			}
+		}
+	}
     try {
         //Assign the provided callback function to the response lookup table
         if (this.__isAsynchronous) {
@@ -147,7 +163,7 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
                 //method:methodName,
                 onSuccess:successHandler,
                 onException:exceptionHandler,
-                onComplete:completeHandler
+                onComplete:completeHandlerWrapper
             };
         }
 
@@ -155,12 +171,15 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
         if (params && (!(params instanceof Object) || params instanceof Date)) //JSON-RPC 1.1 allows params to be a hash not just an array
             throw Error('When making asynchronous calls, the parameters for the method must be passed as an array (or a hash); the value you supplied (' + String(params) + ') is of type "' + typeof(params) + '".');
 
+        var generatedUUID = createUUID();
+        
         //Prepare the XML-RPC request
         var request,postData;
         request = {
             version:"2.0",
             method:methodName,
-            id:JsonRpc.requestCount
+            id:JsonRpc.requestCount,
+            uuid:generatedUUID
         };
         if (params)
             request.params = params;
@@ -199,6 +218,13 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
                 }
             };
 
+            // call progressHandler
+            if (progressHandler) {
+            	progressHandlerIntervalID = setInterval(function(){
+            		progressHandler(generatedUUID);
+            	}, 750);
+			}
+            
             return undefined;
         } else {
             //Send the request
@@ -219,12 +245,33 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
         var isCaught = false;
         if (exceptionHandler)
             isCaught = exceptionHandler(err); //add error location
-        if (completeHandler)
-            completeHandler();
+        if (completeHandlerWrapper)
+        	completeHandlerWrapper();
 
         if (!isCaught)
             throw err;
     }
+    
+    /*
+     * Function:
+     *
+     * RFC 4122 v4 compliant UUID generator.
+     * From: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+     *
+     * Parameters:
+     *
+     * Returns: string
+     */
+    function createUUID(){
+
+        // Replace x (and y) in string.
+        function replacer(c) {
+    	var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    	return v.toString(16);
+        }
+        var target_str = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+        return target_str.replace(/[xy]/g, replacer);
+    };
 };
 
 

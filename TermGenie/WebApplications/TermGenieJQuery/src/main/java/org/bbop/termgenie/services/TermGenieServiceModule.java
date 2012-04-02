@@ -32,6 +32,7 @@ public class TermGenieServiceModule extends IOCModule {
 	protected void configure() {
 		bind(GenerateTermsService.class, GenerateTermsServiceImpl.class);
 		bind(OntologyService.class, OntologyServiceImpl.class);
+		bind(ProgressMonitor.class, ProgressMonitorImpl.class);
 		bindSessionHandler();
 		bindTermCommitService();
 	}

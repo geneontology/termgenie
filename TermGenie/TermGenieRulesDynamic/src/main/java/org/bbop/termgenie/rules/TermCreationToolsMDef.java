@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -39,15 +40,17 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	 * @param patternID
 	 * @param factory
 	 * @param syntaxTool
+	 * @param state 
 	 */
 	TermCreationToolsMDef(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
-			ManchesterSyntaxTool syntaxTool)
+			ManchesterSyntaxTool syntaxTool,
+			ProcessState state)
 	{
-		super(input, targetOntology, tempIdPrefix, patternID, factory);
+		super(input, targetOntology, tempIdPrefix, patternID, factory, state);
 		this.tempIdPrefix = tempIdPrefix;
 		this.targetOntologyId = targetOntology.getOntologyId();
 		this.syntaxTool = syntaxTool;
@@ -62,6 +65,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		if (logicalDefinitions == null || logicalDefinitions.isEmpty()) {
 			return InferredRelations.EMPTY;
 		}
+		ProcessState.addMessage(state, "Start inferring relationships from logical definition.");
 		OWLOntologyManager owlManager = targetOntology.getManager();
 		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
 		IRI iri = IRI.create(newId);
@@ -101,6 +105,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			inferredRelations.classRelationAxioms = new HashSet<OWLAxiom>();
 		}
 		inferredRelations.classRelationAxioms.add(pair.getTwo());
+		ProcessState.addMessage(state, "Finished inferring relationships from logical definition.");
 		return inferredRelations;
 	}
 

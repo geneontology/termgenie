@@ -90,7 +90,8 @@ function termgenie(){
 	              'browserid.verifyAssertion',
 	              'resource.getLinesFromResource',
 	              'renderer.renderHierarchy',
-	              'renderer.visualizeGeneratedTerms']
+	              'renderer.visualizeGeneratedTerms',
+	              'progress.getProgress']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -323,19 +324,31 @@ function termgenie(){
 						'"-Button again, to proceed to the next step.');
 					return;
 				}
-				busyElement.append(createBusyMessage('Verifing your request and generating terms on the server.'));
+				var busyMessage = jQuery(createBusyMessage('Verifing your request and generating terms on the server.'));
+				busyElement.append(busyMessage);
+				var progressInfo = ProgressInfoWidget(busyMessage, 6, false);
+				
 				setStep2HeaderInfo(status.parameters);
 				mySession.getSessionId(function(sessionId){
 					jsonService.generate.generateTerms({
 						params:[sessionId, ontology, status.parameters],
 						onSuccess: function(result) {
-							busyElement.empty();
 							renderStep3(result, ontology);
 						},
 						onException: function(e) {
-							busyElement.empty();
 							jQuery.logSystemError("GenerateTerms service call failed", e);
 							return true;
+						},
+						onProgress: function(uuid) {
+							jsonService.progress.getProgress({
+								params:[uuid],
+								onSuccess: function(messages) {
+									progressInfo.addMessages(messages);
+								}
+							});
+						},
+						onComplete: function() {
+							busyElement.empty();
 						}
 					});
 				});
@@ -1270,6 +1283,7 @@ function termgenie(){
 				// open next tab in the accordion
 				var step4Container = jQuery('#termgenie-step4-content-container');
 				step4Container.empty();
+				var progressInfo = ProgressInfoWidget(step4Container, 6, false);
 				myAccordion.enablePane(3);
 				myAccordion.activatePane(3);
 				
@@ -1287,6 +1301,14 @@ function termgenie(){
 								step4Container.empty();
 								jQuery.logSystemError("CommitTerms service call failed", e);
 								return true;
+							},
+							onProgress: function(uuid) {
+								jsonService.progress.getProgress({
+									params:[uuid],
+									onSuccess: function(messages) {
+										progressInfo.addMessages(messages);
+									}
+								});
 							}
 						});
 					});
@@ -2388,6 +2410,47 @@ function termgenie(){
 			'<img src="icon/wait26trans.gif" alt="Busy Icon"/>'+
 			'<span class="termgenie-busy-message-text">Please wait.</span>'+
 			'<div class="termgenie-busy-additional-text">'+additionalText+'</div><div>';
+	}
+	
+	/**
+	 * Widget for rendering process status messages provided by the TermGenie server.
+	 * 
+	 * @param parentElem parent DOM element
+	 * @param limit max number of messages shown, if less or equals zero, all messages are shown
+	 * @param renderDetails boolean flag, if true render optional message details
+	 * @returns {
+	 * 	  addMessages: function(messages)
+	 *  }
+	 */
+	function ProgressInfoWidget(parentElem, limit, renderDetails) {
+		
+		var lineParent = jQuery('<div class="termgenie-progress-infos"></div>');
+		parentElem.append(lineParent);
+		
+		return {
+			addMessages: function(messages) {
+				if (messages !== null) {
+					jQuery.each(messages, function(index, progressMessage){
+						var line = '<div>'
+							+ '<span class="termgenie-progress-info-time">' + progressMessage.time + '</span>'
+							+ '<span class="termgenie-progress-info-message">' + progressMessage.message + '</span>';
+						if (renderDetails === true && progressMessage.details !== null) {
+							line += '<div class="termgenie-progress-info-details">'
+								+ '<span>Details:</span>'
+								+ '<pre>'+progressMessage.details+'</pre>'
+								+ '</div>';
+						}
+						line += '</div>'
+						lineParent.append(line);
+					});
+					if (limit && limit > 0) {
+						while (lineParent.children().length > limit) {
+							lineParent.children().first().remove();
+						}
+					}
+				}
+			}
+		};
 	}
 	
 	/**

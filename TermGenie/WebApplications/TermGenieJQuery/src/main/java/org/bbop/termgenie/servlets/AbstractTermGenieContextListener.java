@@ -17,6 +17,7 @@ import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
+import org.bbop.termgenie.services.ProgressMonitor;
 import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
@@ -71,9 +72,11 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				TermCommitReviewService review,
 				ManagementServices management,
 				ResourceProviderService resource,
-				TermHierarchyRenderer renderer)
+				TermHierarchyRenderer renderer,
+				ProgressMonitor progress)
 		{
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor(getInjector());
+			executor.addHandler("progress", progress, ProgressMonitor.class);
 			executor.addHandler("generate", generate, GenerateTermsService.class);
 			executor.addHandler("ontology", ontology, OntologyService.class);
 			executor.addHandler("commit", commit, TermCommitService.class);

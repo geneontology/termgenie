@@ -15,6 +15,7 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -91,7 +92,8 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	@Override
 	public JsonGenerationResponse generateTerms(String sessionId,
 			String ontologyName,
-			List<JsonTermGenerationInput> allParameters)
+			List<JsonTermGenerationInput> allParameters,
+			ProcessState processState)
 	{
 		// sanity checks
 		if (ontologyName == null || ontologyName.isEmpty()) {
@@ -142,7 +144,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			// generate term candidates
 			List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName,
 					allParameters);
-			List<TermGenerationOutput> candidates = termGeneration.generateTerms(manager.getOntology(), generationTasks);
+			List<TermGenerationOutput> candidates = termGeneration.generateTerms(manager.getOntology(), generationTasks, processState);
 
 			// validate candidates
 			if (candidates == null || candidates.isEmpty()) {

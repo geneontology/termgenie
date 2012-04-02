@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
@@ -141,7 +142,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	
 	@Override
 	public List<TermGenerationOutput> generateTerms(Ontology ontology,
-			List<TermGenerationInput> generationTasks)
+			List<TermGenerationInput> generationTasks,
+			ProcessState processState)
 	{
 		if (ontology == null || generationTasks == null || generationTasks.isEmpty()) {
 			// do nothing
@@ -202,7 +204,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				if (methodName == null) {
 					methodName = termTemplate.getName();
 				}
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState);
 				multiOntologyTaskManager.runManagedTask(task, ontologies);
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
@@ -262,7 +264,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		private final TermGenerationInput input;
 		private final String templateId;
 		private final ReasonerFactory factory;
-
+		private final ProcessState state;
+		
 		List<TermGenerationOutput> result = null;
 
 		private GenerationTask(Ontology[] ontologies,
@@ -271,7 +274,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				String script,
 				String methodName,
 				String templateId,
-				ReasonerFactory factory)
+				ReasonerFactory factory,
+				ProcessState state)
 		{
 			this.ontologies = ontologies;
 			this.targetOntology = targetOntology;
@@ -280,6 +284,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			this.methodName = methodName;
 			this.templateId = templateId;
 			this.factory = factory;
+			this.state = state;
 		}
 
 		@Override
@@ -313,7 +318,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 					return modified;
 				}
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory, state);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

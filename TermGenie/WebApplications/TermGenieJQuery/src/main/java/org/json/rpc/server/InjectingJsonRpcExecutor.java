@@ -36,12 +36,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.core.process.ProcessState.DuplicateUUIDException;
 import org.json.rpc.commons.JsonRpcErrorCodes;
 import org.json.rpc.commons.JsonRpcException;
 import org.json.rpc.commons.JsonRpcRemoteException;
 import org.json.rpc.commons.RpcIntroSpection;
 import org.json.rpc.commons.TypeChecker;
-import org.json.rpc.server.JsonRpcServerTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.google.inject.Injector;
 
 /**
@@ -111,6 +113,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
             LOG.info("locking executor to avoid modification");
         }
 
+        String uuid = null;
         String methodName = null;
         JsonArray params = null;
 
@@ -124,7 +127,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         JsonObject req = null;
         try {
             String requestData = transport.readRequest();
-            LOG.debug("JSON-RPC >>  {}", requestData);
+            if(LOG.isDebugEnabled()) {
+            	LOG.debug("JSON-RPC >>  {}", requestData);
+            }
             JsonParser parser = new JsonParser();
             req = (JsonObject) parser.parse(new StringReader(requestData));
         } catch (Throwable t) {
@@ -142,8 +147,11 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         try {
             assert req != null;
             resp.add("id", req.get("id"));
-
-            methodName = req.getAsJsonPrimitive("method").getAsString();
+            JsonPrimitive uuidPrimitive = req.getAsJsonPrimitive("uuid");
+			if (uuidPrimitive != null) {
+				uuid = uuidPrimitive.getAsString();
+			}
+			methodName = req.getAsJsonPrimitive("method").getAsString();
             params = (JsonArray) req.get("params");
             if (params == null) {
                 params = new JsonArray();
@@ -160,7 +168,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         }
 
         try {
-            JsonElement result = executeMethod(methodName, params, httpReq, httpResp, servletContext);
+            JsonElement result = executeMethod(methodName, params, uuid, httpReq, httpResp, servletContext);
             resp.add("result", result);
         } catch (Throwable t) {
             LOG.warn("exception occured while executing : " + methodName, t);
@@ -222,7 +230,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         return str.toString();
     }
 
-    private JsonElement executeMethod(String methodName, JsonArray params, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) throws Throwable {
+    private JsonElement executeMethod(String methodName, JsonArray params, String uuid, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) throws Throwable {
         try {
             Matcher mat = METHOD_PATTERN.matcher(methodName);
             if (!mat.find()) {
@@ -254,7 +262,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
             }
 
             Object result = executableMethod.invoke(
-                    handleEntry.getHandler(), getParameters(executableMethod, params, req, resp, servletContext));
+                    handleEntry.getHandler(), getParameters(executableMethod, params, uuid, req, resp, servletContext));
 
             return new Gson().toJsonTree(result);
         } catch (Throwable t) {
@@ -266,12 +274,18 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
             }
             throw new JsonRpcRemoteException(JsonRpcErrorCodes.getServerError(0), t.getMessage(), getStackTrace(t));
         }
+        finally {
+        	ProcessState.stop(uuid);
+        }
     }
 
     public boolean canExecute(Method method, JsonArray params) {
         int parameterLength = params.size(); 
     	if (isServletAwareMethod(method)) {
 			parameterLength += InjectedParameters.getParameterCount(ServletAware.class);
+		}
+    	if (isProcessStateAware(method)) {
+			parameterLength += InjectedParameters.getParameterCount(ProcessStateAware.class);
 		}
     	if (isSessionAwareMethod(method)) {
     		parameterLength += InjectedParameters.getParameterCount(SessionAware.class);
@@ -280,7 +294,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
     		parameterLength += InjectedParameters.getParameterCount(ServletContextAware.class);
 		}
     	if (isIOCInjectorAwareMethod(method)) {
-    		parameterLength += InjectedParameters.getParameterCount(ServletContextAware.class);
+    		parameterLength += InjectedParameters.getParameterCount(IOCInjectorAware.class);
 		}
         return method.getParameterTypes().length == parameterLength;
     }
@@ -297,6 +311,10 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		return isInjectMethod(method, SessionAware.class);
 	}
 	
+	static boolean isProcessStateAware(Method method) {
+		return isInjectMethod(method, ProcessStateAware.class);
+	}
+	
 	static boolean isIOCInjectorAwareMethod(Method method) {
 		return isInjectMethod(method, IOCInjectorAware.class);
 	}
@@ -304,8 +322,8 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 	static boolean isInjectMethod(Method method, Class<? extends Annotation> annotationClass) {
 		return method.getAnnotation(annotationClass) != null;
 	}
-
-    public Object[] getParameters(Method method, JsonArray params, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
+	
+    public Object[] getParameters(Method method, JsonArray params, String uuid, HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) throws DuplicateUUIDException {
         List<Object> list = new ArrayList<Object>();
         Gson gson = GSON_BUILDER.create();
         Type[] types = method.getGenericParameterTypes();
@@ -314,6 +332,7 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         final boolean isSessionAware = isSessionAwareMethod(method);
         final boolean isServletAware = isServletAwareMethod(method);
         final boolean isServletContextAware = isServletContextAwareMethod(method);
+        final boolean isProcessStateAware = isProcessStateAware(method);
         final boolean isIOCInjectorAware = isIOCInjectorAwareMethod(method);
         if (isSessionAware) {
 			length = length - InjectedParameters.getParameterCount(SessionAware.class);
@@ -323,6 +342,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		}
 		if (isServletContextAware) {
         	length = length - InjectedParameters.getParameterCount(ServletContextAware.class);
+		}
+		if (isProcessStateAware) {
+			length = length - InjectedParameters.getParameterCount(ProcessStateAware.class);
 		}
 		if (isIOCInjectorAware) {
         	length = length - InjectedParameters.getParameterCount(IOCInjectorAware.class);
@@ -343,6 +365,9 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
 		}
         if (isServletContextAware) {
 			list.add(servletContext);
+		}
+        if (isProcessStateAware) {
+			list.add(ProcessState.start(uuid));
 		}
         if (isIOCInjectorAware) {
 			list.add(injector);

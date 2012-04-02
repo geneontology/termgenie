@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology;
 import java.util.List;
 
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 
@@ -28,7 +29,7 @@ public interface OntologyCommitReviewPipelineStages {
 		
 		public void updateItem(CommitHistoryItem item) throws CommitException;
 
-		public List<CommitResult> commit(List<Integer> historyIds) throws CommitException;
+		public List<CommitResult> commit(List<Integer> historyIds, ProcessState state) throws CommitException;
 	}
 
 }

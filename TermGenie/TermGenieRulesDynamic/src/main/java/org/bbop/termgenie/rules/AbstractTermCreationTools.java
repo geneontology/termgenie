@@ -13,6 +13,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
@@ -52,27 +53,30 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	protected final ReasonerFactory factory;
 	protected final TermGenerationInput input;
 	protected final OWLGraphWrapper targetOntology;
+	protected final ProcessState state;
 	private final String patternID;
 	private final OWLChangeTracker changeTracker;
 	private int count = 0;
 
-	
 	/**
 	 * @param input
 	 * @param targetOntology
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
+	 * @param state
 	 */
 	AbstractTermCreationTools(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			ProcessState state)
 	{
 		super();
 		this.input = input;
 		this.targetOntology = targetOntology;
+		this.state = state;
 		this.patternID = tempIdPrefix + patternID;
 		this.factory = factory;
 		changeTracker = new OWLChangeTracker(targetOntology.getSourceOntology());
@@ -180,6 +184,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			T logicalDefinition,
 			List<TermGenerationOutput> output)
 	{
+		ProcessState.addMessage(state, "Start creating term.");
 		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
 		Frame term = new Frame(FrameType.TERM);
 
@@ -283,6 +288,8 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			axioms.add(OwlTranslatorTools.createLabelAxiom(owlNewId, label, targetOntology));
 			// TODO add all other term details to the axioms?
 			output.add(success(term, axioms , inferredRelations.changed, input));
+			
+			ProcessState.addMessage(state, "Finished creating term.");
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
 		}

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Frame;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -21,10 +22,12 @@ public interface TermGenerationEngine {
 	 * 
 	 * @param ontology
 	 * @param generationTasks
+	 * @param processState
 	 * @return candidates
 	 */
 	public List<TermGenerationOutput> generateTerms(Ontology ontology,
-			List<TermGenerationInput> generationTasks);
+			List<TermGenerationInput> generationTasks,
+			ProcessState processState);
 
 	/**
 	 * Retrieve all patterns available for this term generation engine.

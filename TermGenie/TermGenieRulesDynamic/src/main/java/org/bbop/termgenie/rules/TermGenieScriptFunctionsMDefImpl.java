@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
@@ -34,15 +35,17 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	 * @param patternID
 	 * @param factory
 	 * @param auxiliaryOntologies 
+	 * @param state 
 	 */
 	TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			ProcessState state)
 	{
-		super(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory);
+		super(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory, state);
 	}
 
 	
@@ -52,7 +55,8 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			ProcessState state)
 	{
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
@@ -60,7 +64,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			ontologies.addAll(wrapper.getAllOntologies());
 		}
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
-		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool);
+		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state);
 	}
 	
 	class MDefImpl implements MDef {

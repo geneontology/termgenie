@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -73,7 +74,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	}
 
 	@Override
-	public List<CommitResult> commit(List<Integer> historyIds) throws CommitException
+	public List<CommitResult> commit(List<Integer> historyIds, ProcessState state) throws CommitException
 	{
 		// check commit info mode
 		if (historyIds != null && !historyIds.isEmpty()) {
@@ -91,7 +92,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			else if (mode == CommitMode.anonymus && !supportAnonymus) {
 				throw new CommitException("Anonymus mode is not supported for the commit.", true);
 			}
-			return commitInternal(historyIds, mode, username, password);
+			return commitInternal(historyIds, mode, username, password, state);
 		}
 		return Collections.singletonList(CommitResult.ERROR);
 	}
@@ -138,13 +139,14 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	private List<CommitResult> commitInternal(List<Integer> historyIds,
 			CommitMode mode,
 			String username,
-			String password) throws CommitException
+			String password,
+			ProcessState state) throws CommitException
 	{
 		// setup temporary work folder
 		final WorkFolders workFolders = createTempDir();
 
 		try {
-			return commitInternal(historyIds, mode, username, password, workFolders);
+			return commitInternal(historyIds, mode, username, password, workFolders, state);
 		}
 		finally {
 			// delete temp folder
@@ -198,12 +200,15 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			CommitMode mode,
 			String username,
 			String password,
-			final WorkFolders workFolders) throws CommitException
+			final WorkFolders workFolders, 
+			final ProcessState state) throws CommitException
 	{
+		ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
 		WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
 
 		VersionControlAdapter scm = prepareSCM(mode, username, password, data);
 
+		ProcessState.addMessage(state, "Preparing target ontology.");
 		ONTOLOGY targetOntology = retrieveTargetOntology(scm, data);
 		// check for valid ontology file
 		if (data.getSCMTargetFile() == null) {
@@ -220,10 +225,12 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
 				continue;
 			}
+			ProcessState.addMessage(state, "Updating target ontology from repository.");
 			updateSCM(scm, targetOntology, data);
 
 			checkTargetOntology(data, targetOntology);
 
+			ProcessState.addMessage(state, "Apply changes for commit item '"+item.getId()+"' to ontology.");
 			// apply changes to ontology in memory
 			final boolean success = applyChanges(item.getTerms(), targetOntology);
 			if (!success) {
@@ -247,20 +254,25 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				throw error("modified scm target file is null");
 			}
 
+			ProcessState.addMessage(state, "Creating ontology diff patch.");
 			// create the diff from the written and round-trip file
 			Pair<String, Patch> pair = createUnifiedDiff(targetFile,
 					modifiedTargetFile,
 					"original",
 					"termgenie-changes");
 
+			ProcessState.addMessage(state, "Create patched ontology.");
 			// apply the patch to the original file, write to a new temp file
 			createPatchedFile(data, pair.getTwo());
 
 			// commit the changes to the repository
+			ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
 			String diff = pair.getOne();
 			commitToRepository(item.getCommitMessage(), scm, data, diff);
+			ProcessState.addMessage(state, "Successfull commit of patch", diff);
 
 			// set the commit also to success in the commit history
+			ProcessState.addMessage(state, "Updating internal database.");
 			finalizeCommitHistory(item);
 
 			results.add(new CommitResult(true, null, CommitHistoryTools.translate(item), diff));
@@ -273,11 +285,13 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 
 				@Override
 				public void run() {
+					ProcessState.addMessage(state, "Start reloading ontology.");
 					source.updateManaged();
 				}
 			};
 			thread.start();
 		}
+		ProcessState.addMessage(state, "Done committing changes.");
 		return results;
 	}
 

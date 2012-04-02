@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.core.process.ProcessState;
+
 import com.google.inject.Injector;
 
 /**
@@ -50,6 +52,7 @@ class InjectedParameters {
 		map.put(ServletContextAware.class, new Class<?>[] { ServletContext.class });
 		map.put(SessionAware.class, new Class<?>[] { HttpSession.class });
 		map.put(IOCInjectorAware.class, new Class<?>[] { Injector.class });
+		map.put(ProcessStateAware.class, new Class<?>[] { ProcessState.class });
 		return Collections.unmodifiableMap(map);
 	}
 

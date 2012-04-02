@@ -322,3 +322,16 @@ h1 {
 	padding-right: 3px;
 	padding-left: 3px;
 }
+
+.termgenie-progress-infos {
+	margin-top: 10px;
+}
+
+.termgenie-progress-info-message{
+	margin-left: 10px;	
+}
+
+.termgenie-progress-info-time {
+	font-size: 0.8em;
+	font-family: courier, "courier new", monospace;
+}

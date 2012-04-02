@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
@@ -114,7 +115,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontologyName,
-			HttpSession session)
+			HttpSession session,
+			ProcessState processState)
 	{
 		// check if its the correct ontology
 		OntologyTaskManager manager = getOntologyManager(ontologyName);
@@ -145,7 +147,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 		String commitMessage = createDefaultCommitMessage(userData);
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()));
+				manager.getOntology()), processState);
 		idProvider.runManagedTask(task);
 		return task.result;
 	}
@@ -266,6 +268,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	private class CommitTask extends OntologyIdManagerTask {
 
 		private final String commitMessage;
+		private final ProcessState processState;
 
 		/**
 		 * @param manager
@@ -273,12 +276,14 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		 * @param commitMessage
 		 * @param userData
 		 * @param commitUserData
+		 * @param processState
 		 */
 		CommitTask(OntologyTaskManager manager,
 				JsonOntologyTerm[] terms,
 				String commitMessage,
 				UserData userData,
-				CommitUserData commitUserData)
+				CommitUserData commitUserData,
+				ProcessState processState)
 		{
 			super();
 			this.manager = manager;
@@ -286,6 +291,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			this.commitMessage = commitMessage;
 			this.userData = userData;
 			this.commitUserData = commitUserData;
+			this.processState = processState;
 		}
 
 		private final OntologyTaskManager manager;
@@ -298,6 +304,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		@Override
 		protected void runSimple(OntologyIdProvider idProvider) {
 
+			ProcessState.addMessage(processState, "Verifying terms for commit.");
+			
 			// check terms in the commit
 			CheckTermsTask checkTermsTask = new CheckTermsTask(terms);
 			manager.runManagedTask(checkTermsTask);
@@ -310,6 +318,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				return;
 			}
 
+			ProcessState.addMessage(processState, "Generating permanent identifier for terms.");
 			// create terms with new termIds
 			Pair<List<CommitObject<TermCommit>>, Integer> pair;
 			try {
@@ -332,6 +341,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				}
 			}
 
+			ProcessState.addMessage(processState, "Start - Writing terms to internal database for review.");
 			CommitInfo commitInfo = createCommitInfo(commitTerms,
 					commitMessage,
 					userData,

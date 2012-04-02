@@ -2,6 +2,8 @@ package org.bbop.termgenie.services.review;
 
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.core.process.ProcessState;
+import org.json.rpc.server.ProcessStateAware;
 import org.json.rpc.server.SessionAware;
 
 public interface TermCommitReviewService {
@@ -41,8 +43,13 @@ public interface TermCommitReviewService {
 	 * @param sessionId
 	 * @param entries
 	 * @param session
+	 * @param state
 	 * @return commitResult
 	 */
 	@SessionAware
-	public JsonCommitReviewCommitResult commit(String sessionId, JsonCommitReviewEntry[] entries, HttpSession session);
+	@ProcessStateAware
+	public JsonCommitReviewCommitResult commit(String sessionId,
+			JsonCommitReviewEntry[] entries,
+			HttpSession session,
+			ProcessState state);
 }

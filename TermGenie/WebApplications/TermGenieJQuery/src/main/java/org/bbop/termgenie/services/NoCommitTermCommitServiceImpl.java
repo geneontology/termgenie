@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
@@ -139,7 +140,8 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontology,
-			HttpSession session)
+			HttpSession session,
+			ProcessState processState)
 	{
 		JsonCommitResult result = new JsonCommitResult();
 		result.setSuccess(false);

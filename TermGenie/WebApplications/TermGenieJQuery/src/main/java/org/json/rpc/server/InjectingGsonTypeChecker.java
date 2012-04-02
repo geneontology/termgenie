@@ -68,6 +68,10 @@ public class InjectingGsonTypeChecker extends GsonTypeChecker {
 		length = checkInjectAnnotation(parameterTypes,
 				length,
 				method,
+				ProcessStateAware.class);
+		length = checkInjectAnnotation(parameterTypes,
+				length,
+				method,
 				SessionAware.class);
 		length = checkInjectAnnotation(parameterTypes,
 				length,

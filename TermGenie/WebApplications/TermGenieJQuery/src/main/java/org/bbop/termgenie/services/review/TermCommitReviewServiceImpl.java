@@ -17,17 +17,18 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
@@ -37,8 +38,8 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
-import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.services.review.mail.ReviewMailHandler;
+import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
@@ -224,7 +225,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	@Override
 	public JsonCommitReviewCommitResult commit(String sessionId,
 			JsonCommitReviewEntry[] entries,
-			HttpSession session)
+			HttpSession session,
+			ProcessState state)
 	{
 		if (!isAuthorized(sessionId, session)) {
 			return JsonCommitReviewCommitResult.error("Error: This commit is not authorized.");
@@ -236,7 +238,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		// commit changes to repository
 		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
 		
-		CommitTask task = new CommitTask(entries, this, reviewMailHandler);
+		CommitTask task = new CommitTask(entries, this, reviewMailHandler, state);
 		afterReviewTaskManager.runManagedTask(task);
 		if (task.exception != null) {
 			logger.error("Error during commit", task.exception);
@@ -253,17 +255,24 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		private CommitException exception;
 		private final TermCommitReviewServiceImpl instance;
 		private final ReviewMailHandler handler;
+		private final ProcessState state;
 	
-		private CommitTask(JsonCommitReviewEntry[] entries, TermCommitReviewServiceImpl instance, ReviewMailHandler handler) {
+		private CommitTask(JsonCommitReviewEntry[] entries,
+				TermCommitReviewServiceImpl instance,
+				ReviewMailHandler handler,
+				ProcessState state)
+		{
 			this.entries = entries;
 			this.instance = instance;
 			this.handler = handler;
+			this.state = state;
 		}
 	
 		@Override
 		public Modified run(AfterReview afterReview)
 		{
 			try {
+				ProcessState.addMessage(state, "Start updating internal database");
 				historyIds = new ArrayList<Integer>(entries.length);
 				for (JsonCommitReviewEntry entry : entries) {
 					if (entry.isCommitMessageChanged()) {
@@ -280,8 +289,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					}
 					historyIds.add(entry.getHistoryId());
 				}
+				ProcessState.addMessage(state, "Finished updating internal database");
 				
-				commits = afterReview.commit(historyIds);
+				commits = afterReview.commit(historyIds, state);
 				
 				// send e-mail
 				handler.handleReviewMail(historyIds, afterReview);

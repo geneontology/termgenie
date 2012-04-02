@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -41,13 +42,15 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
+	 * @param state 
 	 */
 	AbstractTermGenieScriptFunctionsImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
 			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory)
+			ReasonerFactory factory,
+			ProcessState state)
 	{
 		super();
 		tools = createTermCreationTool(input,
@@ -55,7 +58,8 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 				auxiliaryOntologies,
 				tempIdPrefix,
 				patternID,
-				factory);
+				factory,
+				state);
 	}
 
 	protected abstract AbstractTermCreationTools<T> createTermCreationTool(TermGenerationInput input,
@@ -63,7 +67,8 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
-			ReasonerFactory factory);
+			ReasonerFactory factory,
+			ProcessState state);
 
 	protected synchronized List<TermGenerationOutput> getResultList() {
 		if (result == null) {

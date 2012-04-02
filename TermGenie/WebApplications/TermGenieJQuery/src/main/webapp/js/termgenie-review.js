@@ -28,7 +28,8 @@ function TermGenieReview(){
 	              'review.isAuthorized',
 	              'review.getPendingCommits',
 	              'review.commit',
-	              'renderer.visualizeDiffTerms']
+	              'renderer.visualizeDiffTerms',
+	              'progress.getProgress']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -144,6 +145,47 @@ function TermGenieReview(){
 			'<img src="icon/wait26trans.gif" alt="Busy Icon"/>'+
 			'<span class="termgenie-busy-message-text">Please wait.</span>'+
 			'<div class="termgenie-busy-additional-text">'+additionalText+'</div><div>';
+	}
+	
+	/**
+	 * Widget for rendering process status messages provided by the TermGenie server.
+	 * 
+	 * @param parentElem parent DOM element
+	 * @param limit max number of messages shown, if less or equals zero, all messages are shown
+	 * @param renderDetails boolean flag, if true render optional message details
+	 * @returns {
+	 * 	  addMessages: function(messages)
+	 *  }
+	 */
+	function ProgressInfoWidget(parentElem, limit, renderDetails) {
+		
+		var lineParent = jQuery('<div class="termgenie-progress-infos"></div>');
+		parentElem.append(lineParent);
+		
+		return {
+			addMessages: function(messages) {
+				if (messages !== null) {
+					jQuery.each(messages, function(index, progressMessage){
+						var line = '<div>'
+							+ '<span class="termgenie-progress-info-time">' + progressMessage.time + '</span>'
+							+ '<span class="termgenie-progress-info-message">' + progressMessage.message + '</span>';
+						if (renderDetails === true && progressMessage.details !== null) {
+							line += '<div class="termgenie-progress-info-details">'
+								+ '<span>Details:</span>'
+								+ '<pre>'+progressMessage.details+'</pre>'
+								+ '</div>';
+						}
+						line += '</div>'
+						lineParent.append(line);
+					});
+					if (limit && limit > 0) {
+						while (lineParent.children().length > limit) {
+							lineParent.children().first().remove();
+						}
+					}
+				}
+			}
+		};
 	}
 	
 	/**
@@ -450,7 +492,9 @@ function TermGenieReview(){
 		
 		// set busy message
 		mainReviewPanel.empty();
-		mainReviewPanel.append(createBusyMessage('Executing commit on server.'));
+		var busyMessage = jQuery(createBusyMessage('Executing commit on server.'));
+		mainReviewPanel.append(busyMessage);
+		var progressInfo = ProgressInfoWidget(busyMessage, 10, true);
 		
 		// make rpc call
 		mySession.getSessionId(function(sessionId){
@@ -473,6 +517,14 @@ function TermGenieReview(){
 					mainReviewPanel.append('Reload page to restart commit review process.');
 					jQuery.logSystemError('Could not commit terms.',e);
 					return true;
+				},
+				onProgress: function(uuid) {
+					jsonService.progress.getProgress({
+						params:[uuid],
+						onSuccess: function(messages) {
+							progressInfo.addMessages(messages);
+						}
+					});
 				}
 			});	
 		});
