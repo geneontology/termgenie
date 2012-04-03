@@ -321,7 +321,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				Frame termFrame = parseDiff(jsonDiff);
 				CommitedOntologyTerm term;
 				if (jsonDiff.isModified()) {
-					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff));
+					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff), jsonDiff.getOwlAxioms());
 					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
 				}
 				else {

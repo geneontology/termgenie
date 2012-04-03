@@ -99,7 +99,8 @@ public class CommitHistoryStoreImplTest {
 		}
 		OboTools.addSynonym(frame, "Syn Label " + i + "_1", "EXACT", Collections.singleton("Syn Xref " + i + "_1"));
 		OboTools.addSynonym(frame, "Syn Label " + i + "_2", "BROADER", null);
-		return CommitHistoryTools.create(frame, Modification.add);
+		final CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add, "");
+		return term;
 	}
 
 	private void assertEqualsItem(CommitHistoryItem expected, CommitHistoryItem actual) {

@@ -16,6 +16,8 @@ import javax.persistence.QueryTimeoutException;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
+import org.apache.openjpa.persistence.InvalidStateException;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -26,6 +28,8 @@ import com.google.inject.name.Named;
 
 public class CommitHistoryStoreImpl implements CommitHistoryStore {
 
+	private static final Logger logger = Logger.getLogger(CommitHistoryStoreImpl.class);
+	
 	private EntityManagerFactory entityManagerFactory;
 
 	/**
@@ -39,6 +43,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 
 	@Override
 	public void add(CommitHistoryItem item, String ontology) throws CommitHistoryStoreException {
+		Throwable e = null;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
@@ -60,20 +65,40 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			}
 			entityManager.getTransaction().commit();
 		} catch (IllegalStateException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (IllegalArgumentException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (EntityExistsException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
+		} catch (CommitHistoryStoreException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
+			throw exception;
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
 	@Override
 	public void update(CommitHistoryItem item, String ontology) throws CommitHistoryStoreException {
+		Throwable e = null;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
@@ -81,18 +106,32 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			entityManager.flush();
 			entityManager.getTransaction().commit();
 		} catch (IllegalStateException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} catch (IllegalArgumentException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
 	@Override
 	public void remove(final CommitHistoryItem item, final String ontology) throws CommitHistoryStoreException {
+		Throwable e = null;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
@@ -112,16 +151,32 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			entityManager.flush();
 			entityManager.getTransaction().commit();
 		} catch (IllegalArgumentException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update (delete)", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
 			throw new CommitHistoryStoreException("Could not execute db update (delete)", exception);
+		} catch (CommitHistoryStoreException exception) {
+			e = exception;
+			entityManager.getTransaction().rollback();
+			throw exception;
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
 	@Override
 	public CommitHistory loadHistory(String ontology) throws CommitHistoryStoreException {
+		Throwable e = null;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 			CommitHistory find = loadHistory(ontology, entityManager);
@@ -132,8 +187,18 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 				entityManager.detach(find);
 			}
 			return find;
+		} catch (CommitHistoryStoreException exception) {
+			e = exception;
+			throw exception;
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 	
@@ -169,6 +234,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 	public List<CommitHistoryItem> load(String ontology, Date from, Date to)
 			throws CommitHistoryStoreException
 	{
+		Throwable e = null;
 		boolean hasFrom = from != null;
 		boolean hasTo = to != null;
 		StringBuilder sb = new StringBuilder();
@@ -199,26 +265,41 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			}
 			return null;
 		} catch (IllegalArgumentException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (IllegalStateException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (QueryTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PessimisticLockException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (LockTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PersistenceException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
 	@Override
 	public List<CommitHistoryItem> load(List<Integer> itemIds) throws CommitHistoryStoreException {
+		Throwable e = null;
 		String queryString = "SELECT items FROM CommitHistory history, IN(history.items) items WHERE items.id IN (?1)";
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
@@ -230,21 +311,35 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			}
 			return null;
 		} catch (IllegalArgumentException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (IllegalStateException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (QueryTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PessimisticLockException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (LockTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PersistenceException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
@@ -258,6 +353,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 	List<CommitHistoryItem> getItems(String ontology, boolean committed)
 			throws CommitHistoryStoreException
 	{
+		Throwable e = null;
 		String queryString = "SELECT items FROM CommitHistory history, IN(history.items) items WHERE (history.ontology = ?1) AND (items.committed=?2)";
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
@@ -270,26 +366,41 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			}
 			return null;
 		} catch (IllegalArgumentException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (IllegalStateException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (QueryTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PessimisticLockException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (LockTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PersistenceException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 
 	@Override
 	public List<Pair<String, String>> checkRecentCommits(String ontology, List<String> labels) throws CommitHistoryStoreException {
+		Throwable e = null;
 		String queryString = "SELECT terms FROM CommitHistory history, IN(history.items) items, IN(items.terms) terms WHERE (history.ontology = ?1) AND (items.committed=false) AND (terms.label IN ?2)";
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
@@ -306,21 +417,35 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			}
 			return Collections.emptyList();
 		} catch (IllegalArgumentException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (IllegalStateException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (QueryTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (TransactionRequiredException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PessimisticLockException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (LockTimeoutException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} catch (PersistenceException exception) {
+			e = exception;
 			throw new CommitHistoryStoreException("Could not execute db load", exception);
 		} finally {
-			entityManager.close();
+			try {
+				entityManager.close();
+			} catch (InvalidStateException exception) {
+				if (e == null) {
+					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
+				}
+				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
 		}
 	}
 }

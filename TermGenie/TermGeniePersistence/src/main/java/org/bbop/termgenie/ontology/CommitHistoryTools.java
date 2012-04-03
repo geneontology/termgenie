@@ -32,7 +32,13 @@ public class CommitHistoryTools {
 		// no instances allowed
 	}
 	
-	public static CommitedOntologyTerm create(Frame frame, Modification operation) {
+	public static CommitedOntologyTerm create(Frame frame, Modification operation, String owlAxioms) {
+		CommitedOntologyTerm term = create(frame, operation);
+		term.setAxioms(owlAxioms);
+		return term;
+	}
+	
+	private static CommitedOntologyTerm create(Frame frame, Modification operation) {
 		CommitedOntologyTerm term = new CommitedOntologyTerm();
 		term.setId(frame.getId());
 		term.setOperation(operation);
