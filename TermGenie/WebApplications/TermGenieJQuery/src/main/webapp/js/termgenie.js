@@ -2434,7 +2434,7 @@ function termgenie(){
 						var line = '<div>'
 							+ '<span class="termgenie-progress-info-time">' + progressMessage.time + '</span>'
 							+ '<span class="termgenie-progress-info-message">' + progressMessage.message + '</span>';
-						if (renderDetails === true && progressMessage.details !== null) {
+						if (renderDetails === true && progressMessage.details && progressMessage.details !== null) {
 							line += '<div class="termgenie-progress-info-details">'
 								+ '<span>Details:</span>'
 								+ '<pre>'+progressMessage.details+'</pre>'
