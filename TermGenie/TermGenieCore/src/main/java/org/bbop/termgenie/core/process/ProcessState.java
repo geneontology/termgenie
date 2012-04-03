@@ -56,14 +56,14 @@ public class ProcessState {
 		}
 	}
 	
-	private static String renderTimeString(long startTime, long currentTime) {
+	static String renderTimeString(long startTime, long currentTime) {
 		long elapsed = currentTime - startTime;
 		StringBuilder sb = new StringBuilder(Long.toString(elapsed/1000)).append('.');
 		long ms = elapsed % 1000;
-		if (elapsed < 100) {
+		if (ms < 100) {
 			sb.append('0');
 		}
-		if (elapsed < 10) {
+		if (ms < 10) {
 			sb.append('0');
 		}
 		sb.append(ms).append('s');
