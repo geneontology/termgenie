@@ -32,6 +32,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		OntologyCommitReviewPipelineStages.BeforeReview,
 		Committer
 {
+	private static final Logger logger = Logger.getLogger(OntologyCommitReviewPipeline.class);
+	
 
 	protected final OntologyTaskManager source;
 	private final CommitHistoryStore store;
@@ -220,6 +222,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 
 		boolean changed = false;
 		
+		logger.info("Start - Commiting, count: "+items.size());
+		
 		for (CommitHistoryItem item : items) {
 			if (item.isCommitted()) {
 				results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
@@ -278,7 +282,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			results.add(new CommitResult(true, null, CommitHistoryTools.translate(item), diff));
 			changed = true;
 		}
-		
+		logger.info("Finished - Commiting, count: "+items.size());
 		// Reload ontology after committing the changes
 		if (changed) {
 			Thread thread = new Thread() {
