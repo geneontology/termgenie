@@ -24,6 +24,7 @@ import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.QueryParser;
@@ -259,10 +260,9 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 		}
 
-		writer.optimize();
 		writer.close();
 
-		searcher = new IndexSearcher(directory);
+		searcher = new IndexSearcher(IndexReader.open(directory));
 		if (logger.isInfoEnabled()) {
 			logger.info("Finished creating index for: " + ontology.getOntologyId());
 			if (branchInfos != null && branchInfos.isValid()) {
