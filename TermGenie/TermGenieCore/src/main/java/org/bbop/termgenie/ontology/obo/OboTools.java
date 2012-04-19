@@ -67,13 +67,18 @@ public class OboTools {
 		if (scope != null) {
 			cl.addValue(scope);
 		}
+		List<Xref> xrefList;
 		if (xrefs != null) {
-			List<Xref> xrefList = new ArrayList<Xref>(xrefs.size());
+			xrefList = new ArrayList<Xref>(xrefs.size());
 			for (String idRef : xrefs) {
 				xrefList.add(new Xref(idRef));
 			}
-			cl.setXrefs(xrefList);
+			
 		}
+		else {
+			xrefList = Collections.emptyList();
+		}
+		cl.setXrefs(xrefList);
 		frame.addClause(cl);
 	}
 	
