@@ -1875,12 +1875,11 @@ function termgenie(){
 								
 								// check that the xref conforms to the pattern
 								var newXref = xrefInputElement.val();
-								var newXrefs = null;
+								var newXrefs = [];
 								if (newXref && newXref !== null && newXref.length >= 3) {
 									var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
 									var matching = pattern.test(newXref); 
 									if (matching === true) {
-										newXrefs = [];
 										newXrefs.push(newXref);
 									}
 								}
