@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
 import javax.persistence.PessimisticLockException;
@@ -36,7 +37,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 	 * @param entityManagerFactory
 	 */
 	@Inject
-	CommitHistoryStoreImpl(@Named("DefaultEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+	public CommitHistoryStoreImpl(@Named("DefaultEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		super();
 		this.entityManagerFactory = entityManagerFactory;
 	}
@@ -66,23 +67,23 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			entityManager.getTransaction().commit();
 		} catch (IllegalStateException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (IllegalArgumentException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (TransactionRequiredException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (EntityExistsException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update", exception);
 		} catch (CommitHistoryStoreException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw exception;
 		} finally {
 			try {
@@ -107,15 +108,15 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			entityManager.getTransaction().commit();
 		} catch (IllegalStateException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} catch (IllegalArgumentException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} catch (TransactionRequiredException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 		} finally {
 			try {
@@ -152,15 +153,15 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			entityManager.getTransaction().commit();
 		} catch (IllegalArgumentException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update (delete)", exception);
 		} catch (TransactionRequiredException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw new CommitHistoryStoreException("Could not execute db update (delete)", exception);
 		} catch (CommitHistoryStoreException exception) {
 			e = exception;
-			entityManager.getTransaction().rollback();
+			rollback(entityManager);
 			throw exception;
 		} finally {
 			try {
@@ -445,6 +446,23 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 					throw new CommitHistoryStoreException("Could not execute db update (merge)", exception);
 				}
 				logger.error("Could not close manager, after exception "+e.getMessage(), exception);
+			}
+		}
+	}
+
+	private void rollback(EntityManager entityManager) {
+		if (entityManager == null) {
+			return;
+		}
+		final EntityTransaction transaction = entityManager.getTransaction();
+		if (transaction == null) {
+			return;
+		}
+		if(transaction.isActive()) {
+			try {
+				transaction.rollback();
+			} catch (IllegalStateException exception) {
+				logger.error("Couldn't rollback", exception);
 			}
 		}
 	}
