@@ -1,7 +1,6 @@
 package org.bbop.termgenie.ontology.cvs;
 
 import java.io.File;
-import java.util.Collections;
 
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.IRIMapper;
@@ -27,7 +26,7 @@ public final class CvsHelperPassword extends OboScmHelper {
 			@Named("CommitAdapterCVSPassword") String cvsPassword,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cleaner, Collections.singletonList(cvsOntologyFileName));
+		super(iriMapper, cleaner, cvsOntologyFileName, null);
 		this.cvsPassword = cvsPassword;
 		this.cvsRoot = cvsRoot;
 	}

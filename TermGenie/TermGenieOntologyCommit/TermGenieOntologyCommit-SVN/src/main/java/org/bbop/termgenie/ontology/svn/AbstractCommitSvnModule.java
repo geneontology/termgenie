@@ -1,5 +1,6 @@
 package org.bbop.termgenie.ontology.svn;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.ontology.AbstractCommitModule;
@@ -22,6 +23,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 
 	private final String svnRepository;
 	private final String svnOntologyFileName;
+	private final List<String> additionalOntologyFileNames;
 
 	/**
 	 * @param svnRepository
@@ -32,11 +34,13 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	protected AbstractCommitSvnModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
-			String commitTargetOntologyName)
+			String commitTargetOntologyName,
+			List<String> additionalOntologyFileNames)
 	{
 		super(applicationProperties, commitTargetOntologyName);
 		this.svnRepository = svnRepository;
 		this.svnOntologyFileName = svnOntologyFileName;
+		this.additionalOntologyFileNames = additionalOntologyFileNames;
 	}
 
 	@Override
@@ -44,6 +48,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 		super.configure();
 		bind("CommitAdapterSVNRepositoryUrl", svnRepository);
 		bind("CommitAdapterSVNOntologyFileName", svnOntologyFileName);
+		bindList("CommitAdapterSVNAdditionalOntologyFileNames", additionalOntologyFileNames, true);
 		bind("CommitAdapterSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
 		bindOBOSCMHelper();
 	}

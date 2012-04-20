@@ -121,10 +121,9 @@ public class SvnCommitTest extends TempTestFolderTools {
 		
 		IRIMapper iriMapper = new NoopIRIMapper();
 		OntologyCleaner cleaner = new NoopOntologyCleaner();
-		List<String> targetOntologyFileNames = Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo");
 		
-		OboScmHelper helper = new TestSvnHelper(iriMapper, cleaner, targetOntologyFileNames, svnTools.getTwo(), svnTools.getThree());
-		
+		OboScmHelper helper = new TestSvnHelper(iriMapper, cleaner, "trunk/ontology/svn-test-main.obo", Collections.singletonList("trunk/extensions/svn-test-extension.obo"), svnTools.getTwo(), svnTools.getThree());
+
 		// create commit pipeline with custom temp folder
 		final File checkoutDirectory = new File(testFolder, "checkout");
 		FileUtils.forceMkdir(checkoutDirectory);
@@ -365,7 +364,6 @@ public class SvnCommitTest extends TempTestFolderTools {
 					filtered.setObo(OboWriterTools.writeFrame(newFrame, null));
 					allFiltered.add(filtered);
 				} catch (IOException exception) {
-					// TODO Auto-generated catch block
 					throw new RuntimeException(exception);
 				}
 			}
@@ -397,11 +395,12 @@ public class SvnCommitTest extends TempTestFolderTools {
 
 		private TestSvnHelper(IRIMapper iriMapper,
 				OntologyCleaner cleaner,
-				List<String> targetOntologyFileNames,
+				String mainOntology,
+				List<String> otherOntologyFileNames,
 				SVNURL repositoryURL,
 				ISVNAuthenticationManager authManager)
 		{
-			super(iriMapper, cleaner, targetOntologyFileNames);
+			super(iriMapper, cleaner, mainOntology, otherOntologyFileNames);
 			this.repositoryURL = repositoryURL;
 			this.authManager = authManager;
 		}

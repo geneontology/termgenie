@@ -9,14 +9,17 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.tools.Pair;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Wrapper for guice configuration modules. E.g., allow overwrites for some
@@ -256,6 +259,60 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(File.class).annotatedWith(Names.named(name)).toInstance(value);
 		configuredParameters.put(name, value.getAbsolutePath());
+	}
+	
+	/**
+	 * Convenience method for binding a String {@link List} parameter. Check system
+	 * properties for overwrites.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	protected void bindList(String name, List<String> value) {
+		bindList(name, value, false);
+	}
+
+	/**
+	 * Convenience method for binding a String {@link List} parameter. Check system
+	 * properties for overwrites. Allow null values, if optional is true. 
+	 * 
+	 * @param name
+	 * @param value
+	 * @param optional
+	 */
+	protected void bindList(String name, List<String> value, boolean optional) {
+		String property = getProperty(name);
+		if (property != null) {
+			property = StringUtils.trimToNull(property);
+			if (property != null) {
+				String[] split = StringUtils.split(property, ",;|");
+				value = new ArrayList<String>(split.length);
+				for (String string : split) {
+					string = StringUtils.trimToNull(string);
+					if (string != null) {
+						value.add(string);
+					}
+				}
+			}
+		}
+		String reportedValue;
+		if (value == null) {
+			if (!optional) {
+				Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+				throw new RuntimeException("No value found for file key: " + name);
+			}
+			reportedValue = "null";
+			bind(new TypeLiteral<List<String>>() { /* Intentionally empty */}).
+				annotatedWith(Names.named(name)).
+				toProvider(Providers.<List<String>>of(null));
+		}
+		else {
+			reportedValue = value.toString();
+			bind(new TypeLiteral<List<String>>() { /* Intentionally empty */}).
+					annotatedWith(Names.named(name)).
+					toInstance(value);
+		}
+		configuredParameters.put(name, reportedValue);
 	}
 	
 	protected <T> void bind(Class<T> interfaceClass, Class<? extends T> implementationClass) {

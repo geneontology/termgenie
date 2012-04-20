@@ -79,7 +79,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
 		String remoteTargetFile = "gene_ontology_write.obo";
 		String svnUserName = null; // no default value
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology");
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", null);
 	}
 	
 	

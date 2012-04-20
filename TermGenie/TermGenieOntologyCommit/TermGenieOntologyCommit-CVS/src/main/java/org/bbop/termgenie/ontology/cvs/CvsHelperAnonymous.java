@@ -1,7 +1,6 @@
 package org.bbop.termgenie.ontology.cvs;
 
 import java.io.File;
-import java.util.Collections;
 
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.CommitException;
@@ -26,7 +25,7 @@ public final class CvsHelperAnonymous extends OboScmHelper {
 			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cleaner, Collections.singletonList(cvsOntologyFileName));
+		super(iriMapper, cleaner, cvsOntologyFileName, null);
 		this.cvsRoot = cvsRoot;
 	}
 

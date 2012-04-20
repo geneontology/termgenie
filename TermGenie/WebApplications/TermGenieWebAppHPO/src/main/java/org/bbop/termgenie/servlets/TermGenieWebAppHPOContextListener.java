@@ -85,7 +85,7 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 	// configure module for access to scm
 	@Override
 	protected IOCModule getCommitModule() {
-		return new CommitSvnAnonymousModule(localSVNFolder, remoteTargetFile, applicationProperties, "HumanPhenotype");
+		return new CommitSvnAnonymousModule(localSVNFolder, remoteTargetFile, applicationProperties, "HumanPhenotype", null);
 	}
 
 	// configure module to review terms before final commit

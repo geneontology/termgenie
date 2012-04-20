@@ -1,7 +1,9 @@
 package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
@@ -34,11 +36,12 @@ public class SvnHelper {
 				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
+			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -97,9 +100,10 @@ public class SvnHelper {
 				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
+			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 		}
@@ -148,12 +152,13 @@ public class SvnHelper {
 				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
+				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
+			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;

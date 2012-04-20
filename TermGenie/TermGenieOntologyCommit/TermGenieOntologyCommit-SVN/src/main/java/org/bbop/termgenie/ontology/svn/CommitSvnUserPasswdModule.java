@@ -1,5 +1,6 @@
 package org.bbop.termgenie.ontology.svn;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
@@ -12,9 +13,10 @@ public class CommitSvnUserPasswdModule extends AbstractCommitSvnModule {
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
-			String commitTargetOntologyName)
+			String commitTargetOntologyName,
+			List<String> additionalOntologyFileNames)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames);
 		this.svnUsername = svnUsername;
 	}
 

@@ -40,15 +40,18 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 public abstract class OboScmHelper {
 
 	private final DirectOntologyLoader loader;
-//	private final String targetOntologyFolder;
 	private final List<String> targetOntologyFileNames;
 
 	protected OboScmHelper(IRIMapper iriMapper,
 			OntologyCleaner cleaner,
-			List<String> targetOntologyFileNames)
+			String svnOntologyFileName,
+			List<String> svnAdditionalOntologyFileNames)
 	{
-//		this.targetOntologyFolder = targetOntologyFolder;
-		this.targetOntologyFileNames = targetOntologyFileNames;
+		this.targetOntologyFileNames = new ArrayList<String>(1);
+		targetOntologyFileNames.add(svnOntologyFileName);
+		if (svnAdditionalOntologyFileNames != null) {
+			targetOntologyFileNames.addAll(svnAdditionalOntologyFileNames);
+		}
 		loader = new DirectOntologyLoader(iriMapper, cleaner);
 	}
 
