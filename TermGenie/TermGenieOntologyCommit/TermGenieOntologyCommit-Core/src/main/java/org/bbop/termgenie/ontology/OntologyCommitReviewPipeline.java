@@ -37,14 +37,17 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 
 	protected final OntologyTaskManager source;
 	private final CommitHistoryStore store;
+	private final TermFilter<ONTOLOGY> termFilter;
 	private final boolean supportAnonymus;
 
 	protected OntologyCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
+			TermFilter<ONTOLOGY> termFilter,
 			boolean supportAnonymus)
 	{
 		super();
 		this.source = source;
+		this.termFilter = termFilter;
 		this.supportAnonymus = supportAnonymus;
 		this.store = store;
 	}
@@ -155,7 +158,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			workFolders.clean();
 		}
 	}
-
+	
 	protected static class WorkFolders {
 
 		private final File lockFile;
@@ -211,9 +214,10 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		VersionControlAdapter scm = prepareSCM(mode, username, password, data);
 
 		ProcessState.addMessage(state, "Preparing target ontology.");
-		ONTOLOGY targetOntology = retrieveTargetOntology(scm, data);
+		List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data);
 		// check for valid ontology file
-		if (data.getSCMTargetFile() == null) {
+		final List<File> scmTargetFiles = data.getSCMTargetFiles();
+		if (scmTargetFiles == null || scmTargetFiles.isEmpty()) {
 			throw error("scm target file is null");
 		}
 
@@ -229,58 +233,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
 				continue;
 			}
-			ProcessState.addMessage(state, "Updating target ontology from repository.");
-			updateSCM(scm, targetOntology, data);
-
-			checkTargetOntology(data, targetOntology);
-
-			ProcessState.addMessage(state, "Apply changes for commit item '"+item.getId()+"' to ontology.");
-			// apply changes to ontology in memory
-			final boolean success = applyChanges(item.getTerms(), targetOntology);
-			if (!success) {
-				String message = "Could not apply changes to ontology.";
-				throw new CommitException(message, true);
+			CommitResult result = handleItem(item, state, targetOntologies, scm, data);
+			if (result != null) {
+				results.add(result);
+				changed = true;
 			}
-
-			// write changed ontology to a file
-			createModifiedTargetFile(data, targetOntology, item.getSavedBy());
-
-			// check for valid ontology files
-			File targetFile = data.getTargetFile();
-			if (targetFile == null) {
-				throw error("target file is null");
-			}
-			File modifiedTargetFile = data.getModifiedTargetFile();
-			if (modifiedTargetFile == null) {
-				throw error("modified target file is null");
-			}
-			if (data.getModifiedSCMTargetFile() == null) {
-				throw error("modified scm target file is null");
-			}
-
-			ProcessState.addMessage(state, "Creating ontology diff patch.");
-			// create the diff from the written and round-trip file
-			Pair<String, Patch> pair = createUnifiedDiff(targetFile,
-					modifiedTargetFile,
-					"original",
-					"termgenie-changes");
-
-			ProcessState.addMessage(state, "Create patched ontology.");
-			// apply the patch to the original file, write to a new temp file
-			createPatchedFile(data, pair.getTwo());
-
-			// commit the changes to the repository
-			ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
-			String diff = pair.getOne();
-			commitToRepository(item.getCommitMessage(), scm, data, diff);
-			ProcessState.addMessage(state, "Successfull commit of patch", diff);
-
-			// set the commit also to success in the commit history
-			ProcessState.addMessage(state, "Updating internal database.");
-			finalizeCommitHistory(item);
-
-			results.add(new CommitResult(true, null, CommitHistoryTools.translate(item), diff));
-			changed = true;
 		}
 		logger.info("Finished - Commiting, count: "+items.size());
 		// Reload ontology after committing the changes
@@ -299,6 +256,120 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		return results;
 	}
 
+	
+	protected CommitResult handleItem(CommitHistoryItem item,
+			ProcessState state,
+			List<ONTOLOGY> targetOntologies,
+			VersionControlAdapter scm,
+			WORKFLOWDATA data) throws CommitException
+	{
+		ProcessState.addMessage(state, "Updating target ontology from repository.");
+		updateSCM(scm, targetOntologies, data);
+
+		checkTargetOntology(data, targetOntologies);
+
+		ProcessState.addMessage(state, "Apply changes for commit item '"+item.getId()+"' to ontology.");
+		
+		final int ontologyCount = targetOntologies.size();
+		
+		List<File> targetFiles = data.getTargetFiles();
+		assertFiles(targetFiles, ontologyCount, "targetFiles");
+		List<File> scmTargetFiles = data.getSCMTargetFiles();
+		assertFiles(scmTargetFiles, ontologyCount, "scmTargetFiles");
+		
+		List<File> modifiedSCMTargetFiles = data.getModifiedSCMTargetFiles();
+		assertFiles(modifiedSCMTargetFiles, ontologyCount, "modifiedSCMTargetFiles");
+		
+		StringBuilder diffBuilder = new StringBuilder();
+		for (int i = 0; i < ontologyCount; i++) {
+			ONTOLOGY targetOntology = targetOntologies.get(i);
+
+			List<CommitedOntologyTerm> changes;
+			if (ontologyCount > 1) {
+				changes = termFilter.filterTerms(item, targetOntology, targetOntologies, i);
+			}
+			else {
+				changes = item.getTerms();
+			}
+			
+			if (changes != null && !changes.isEmpty()) {
+				// apply changes to ontology in memory
+				final boolean success = applyChanges(changes, targetOntology);
+				if (!success) {
+					String message = "Could not apply changes to ontology.";
+					throw new CommitException(message, true);
+				}
+			}
+		}
+		
+		// write changed ontology to a file
+		createModifiedTargetFiles(data, targetOntologies, item.getSavedBy());
+		
+		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
+		assertFiles(modifiedTargetFiles, ontologyCount, "modifiedTargetFiles");
+		
+		for (int i = 0; i < ontologyCount; i++) {	
+			// check for valid ontology files
+			File targetFile = targetFiles.get(i);
+			if (targetFile == null) {
+				throw error("target file is null");
+			}
+			File scmTargetFile = scmTargetFiles.get(i);
+			if (scmTargetFile == null) {
+				throw error("scm target file is null");
+			}
+			File modifiedTargetFile = modifiedTargetFiles.get(i);
+			if (modifiedTargetFile == null) {
+				throw error("modified target file is null");
+			}
+			File modifiedSCMTargetFile = modifiedSCMTargetFiles.get(i);
+			if (modifiedSCMTargetFile == null) {
+				throw error("modified scm target file is null");
+			}
+
+			ProcessState.addMessage(state, "Creating ontology diff patch.");
+			// create the diff from the written and round-trip file
+			Pair<String, Patch> pair = createUnifiedDiff(targetFile,
+					modifiedTargetFile,
+					"original",
+					"termgenie-changes");
+	
+			ProcessState.addMessage(state, "Create patched ontology.");
+			// apply the patch to the original file, write to a new temp file
+			createPatchedFile(pair.getTwo(), scmTargetFile, modifiedSCMTargetFile);
+			
+			// append diff to buffer
+			if (diffBuilder.length() > 0) {
+				diffBuilder.append("\n\n");
+				diffBuilder.append(pair.getOne());
+			}
+
+		}
+		// commit the changes to the repository
+		ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
+		String diff = diffBuilder.toString();
+		commitToRepository(item.getCommitMessage(), scm, data, diff);
+		ProcessState.addMessage(state, "Successfull commit of patch", diff);
+
+		// set the commit also to success in the commit history
+		ProcessState.addMessage(state, "Updating internal database.");
+		finalizeCommitHistory(item);
+
+		return new CommitResult(true, null, CommitHistoryTools.translate(item), diff);
+	}
+	
+	private void assertFiles(List<File> files, int length, String name) throws CommitException {
+		if (files == null) {
+			throw error(name+" file list is null");
+		}
+		if (files.isEmpty()) {
+			throw error(name+" file list is empty");
+		}
+		if (files.size() != length) {
+			throw error(name+" file list has unexpected length, expected: "+length+" but was: "+files.size());
+		}
+	}
+	
 	private List<CommitHistoryItem> retrieveItems(List<Integer> historyIds) throws CommitException {
 		try {
 			List<CommitHistoryItem> load = store.load(historyIds);
@@ -345,7 +416,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @param data
 	 * @throws CommitException
 	 */
-	protected abstract void updateSCM(VersionControlAdapter scm, ONTOLOGY targetOntology, WORKFLOWDATA data)
+	protected abstract void updateSCM(VersionControlAdapter scm, List<ONTOLOGY> targetOntologies, WORKFLOWDATA data)
 			throws CommitException;
 
 	/**
@@ -355,7 +426,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @return ONTOLOGY
 	 * @throws CommitException
 	 */
-	protected abstract ONTOLOGY retrieveTargetOntology(VersionControlAdapter scm, WORKFLOWDATA data)
+	protected abstract List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, WORKFLOWDATA data)
 			throws CommitException;
 
 	/**
@@ -365,7 +436,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @param data
 	 * @throws CommitException
 	 */
-	protected abstract void checkTargetOntology(WORKFLOWDATA data, ONTOLOGY targetOntology)
+	protected abstract void checkTargetOntology(WORKFLOWDATA data, List<ONTOLOGY> targetOntologies)
 			throws CommitException;
 
 	/**
@@ -384,11 +455,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * Write the ontology to file.
 	 * 
 	 * @param data
-	 * @param ontology
+	 * @param ontologies
 	 * @param savedBy
 	 * @throws CommitException
 	 */
-	protected abstract void createModifiedTargetFile(WORKFLOWDATA data, ONTOLOGY ontology, String savedBy)
+	protected abstract void createModifiedTargetFiles(WORKFLOWDATA data, List<ONTOLOGY> ontologies, String savedBy)
 			throws CommitException;
 
 	/**
@@ -433,11 +504,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		return null;
 	}
 
-	private void createPatchedFile(WORKFLOWDATA data, Patch patch) throws CommitException {
+	private void createPatchedFile(Patch patch, File scmTargetFile, File modifiedSCMTargetFile) throws CommitException {
 		try {
-			List<String> originalLines = FileUtils.readLines(data.getSCMTargetFile());
+			List<String> originalLines = FileUtils.readLines(scmTargetFile);
 			List<?> patched = DiffUtils.patch(originalLines, patch);
-			FileUtils.writeLines(data.getModifiedSCMTargetFile(), patched);
+			FileUtils.writeLines(modifiedSCMTargetFile, patched);
 		} catch (Exception exception) {
 			String message = "Could not create patched file for commit";
 			throw error(message, exception);

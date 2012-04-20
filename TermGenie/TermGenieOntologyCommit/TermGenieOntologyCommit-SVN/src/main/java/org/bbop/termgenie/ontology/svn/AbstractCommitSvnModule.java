@@ -7,9 +7,12 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.TermFilter;
+import org.bbop.termgenie.ontology.obo.DefaultOboTermFilter;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.svn.SvnTool;
+import org.obolibrary.oboformat.model.OBODoc;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -49,9 +52,10 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	@Provides
 	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
+			TermFilter<OBODoc> filter,
 			OboScmHelper helper)
 	{
-		return new OboCommitReviewPipeline(source, store, helper);
+		return new OboCommitReviewPipeline(source, store, filter, helper);
 	}
 
 	@Singleton
@@ -62,4 +66,9 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 
 	protected abstract void bindOBOSCMHelper();
 
+	@Singleton
+	@Provides
+	protected TermFilter<OBODoc> provideTermFilter() {
+		return new DefaultOboTermFilter();
+	}
 }

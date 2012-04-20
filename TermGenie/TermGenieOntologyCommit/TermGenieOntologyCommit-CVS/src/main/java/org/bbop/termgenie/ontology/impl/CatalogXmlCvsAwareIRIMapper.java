@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class CatalogXmlCvsAwareIRIMapper extends AbstractCatalogXmlScmAwareIRIMa
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				cvs.connect();
-				cvs.checkout(checkout);
+				cvs.checkout(Collections.singletonList(checkout));
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
@@ -67,7 +68,7 @@ public class CatalogXmlCvsAwareIRIMapper extends AbstractCatalogXmlScmAwareIRIMa
 			if (path.startsWith(targetPath)) {
 				path = path.substring(targetPath.length());
 			}
-			cvs.update(path);
+			cvs.update(Collections.singletonList(path));
 		}
 		
 	}

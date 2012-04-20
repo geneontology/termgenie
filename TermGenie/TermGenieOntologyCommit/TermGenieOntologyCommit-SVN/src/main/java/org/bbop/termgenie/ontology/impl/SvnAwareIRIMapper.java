@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -57,7 +58,7 @@ public class SvnAwareIRIMapper extends AbstractScmAwareIRIMapper<SvnAwareIRIMapp
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				svn.connect();
-				boolean success = svn.checkout(checkout);
+				boolean success = svn.checkout(Collections.singletonList(checkout));
 				if (!success) {
 					throw new RuntimeException("Checkout not successfull");
 				}
@@ -78,7 +79,7 @@ public class SvnAwareIRIMapper extends AbstractScmAwareIRIMapper<SvnAwareIRIMapp
 			String file = mappedSVNFiles.get(url);
 			try {
 				svn.connect();
-				svn.update(file);
+				svn.update(Collections.singletonList(file));
 			} catch (IOException exception) {
 				throw exception;
 			}

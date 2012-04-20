@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
@@ -33,13 +34,13 @@ public class SvnToolTest {
 		SvnTool svnTool = SvnTool.createAnonymousSVN(svnfolder, repositoryURL+targetFolder, SvnTool.getDefaultSvnConfigDir());
 		svnTool.connect();
 		String targetFileName = SvnTool.class.getSimpleName()+".java";
-		assertTrue(svnTool.checkout(targetFileName));
+		assertTrue(svnTool.checkout(Collections.singletonList(targetFileName)));
 		File testFile = new File(svnfolder, targetFileName);
 		assertTrue(testFile.exists());
 		assertTrue(testFile.isFile());
 		assertTrue(testFile.canRead());
 		assertTrue(testFile.canWrite());
-		assertTrue(svnTool.update(targetFileName));
+		assertTrue(svnTool.update(Collections.singletonList(targetFileName)));
 		svnTool.close();
 		svnTool.close();
 		svnTool.close();

@@ -13,6 +13,7 @@ public class CommitInfo {
 	
 	public static class TermCommit {
 		
+		private String pattern;
 		private Frame term;
 		private Set<OWLAxiom> owlAxioms;
 		private List<Pair<Frame, Set<OWLAxiom>>> changed;
@@ -21,11 +22,13 @@ public class CommitInfo {
 		 * @param term
 		 * @param owlAxioms
 		 * @param changed
+		 * @param pattern
 		 */
-		public TermCommit(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed) {
+		public TermCommit(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed, String pattern) {
 			this.term = term;
 			this.owlAxioms = owlAxioms;
 			this.changed = changed;
+			this.pattern = pattern;
 		}
 
 		/**
@@ -68,6 +71,20 @@ public class CommitInfo {
 		 */
 		public void setChanged(List<Pair<Frame, Set<OWLAxiom>>> changed) {
 			this.changed = changed;
+		}
+		
+		/**
+		 * @return the pattern
+		 */
+		public String getPattern() {
+			return pattern;
+		}
+
+		/**
+		 * @param pattern the pattern to set
+		 */
+		public void setPattern(String pattern) {
+			this.pattern = pattern;
 		}
 	}
 
@@ -150,5 +167,5 @@ public class CommitInfo {
 	public String getCommitMessage() {
 		return commitMessage;
 	}
-	
+
 }

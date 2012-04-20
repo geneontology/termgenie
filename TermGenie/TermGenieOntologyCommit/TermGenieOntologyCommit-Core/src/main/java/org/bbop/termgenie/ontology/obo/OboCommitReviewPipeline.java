@@ -12,6 +12,7 @@ import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -32,9 +33,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 
 	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
+			TermFilter<OBODoc> termFilter,
 			OboScmHelper helper)
 	{
-		super(source, store, helper.isSupportAnonymus());
+		super(source, store, termFilter, helper.isSupportAnonymus());
 		this.helper = helper;
 		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
 	}
@@ -97,24 +99,24 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void updateSCM(VersionControlAdapter scm, OBODoc targetOntology, OboCommitData data)
+	protected void updateSCM(VersionControlAdapter scm, List<OBODoc> targetOntologies, OboCommitData data)
 			throws CommitException
 	{
 		helper.updateSCM(scm);
 	}
 
 	@Override
-	protected OBODoc retrieveTargetOntology(VersionControlAdapter scm, OboCommitData data)
+	protected List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data)
 			throws CommitException
 	{
-		return helper.retrieveTargetOntology(scm, data);
+		return helper.retrieveTargetOntologies(scm, data);
 	}
 
 	@Override
-	protected void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
+	protected void checkTargetOntology(OboCommitData data, List<OBODoc> targetOntologies)
 			throws CommitException
 	{
-		helper.checkTargetOntology(data, targetOntology);
+		helper.checkTargetOntologies(data, targetOntologies);
 	}
 
 	@Override
@@ -125,10 +127,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void createModifiedTargetFile(OboCommitData data, OBODoc ontology, String savedBy)
+	protected void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontology, String savedBy)
 			throws CommitException
 	{
-		helper.createModifiedTargetFile(data, ontology, savedBy);
+		helper.createModifiedTargetFiles(data, ontology, savedBy);
 	}
 
 	@Override

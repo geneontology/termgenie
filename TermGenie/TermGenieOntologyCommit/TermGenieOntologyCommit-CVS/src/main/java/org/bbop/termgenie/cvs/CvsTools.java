@@ -2,6 +2,7 @@ package org.bbop.termgenie.cvs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -139,16 +140,16 @@ public class CvsTools implements VersionControlAdapter {
 	 * 
 	 * @see #connect()
 	 * @see #close()
-	 * @param cvsFile
+	 * @param cvsFiles
 	 * @return true, if the CVS check out operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
 	@Override
-	public boolean checkout(String cvsFile) throws IOException {
+	public boolean checkout(List<String> cvsFiles) throws IOException {
 		checkConnection();
 		CheckoutCommand co = new CheckoutCommand();
-		co.setModule(cvsFile);
+		co.setModule(cvsFiles.get(0)); // TODO write a warning or throw an error is list is longer than 1
 		co.setRecursive(true);
 		co.setBuilder(null);
 		co.setPruneDirectories(true);
@@ -173,11 +174,15 @@ public class CvsTools implements VersionControlAdapter {
 	 * @throws IllegalStateException in case the connection is not open
 	 */
 	@Override
-	public boolean commit(String message, String cvsFile) throws IOException {
+	public boolean commit(String message, List<String> cvsFiles) throws IOException {
 		checkConnection();
 		CommitCommand commit = new CommitCommand();
 		commit.setMessage(message);
-		commit.setFiles(new File[]{new File(targetFolder, cvsFile)});
+		File[] paths = new File[cvsFiles.size()];
+		for (int i = 0; i < cvsFiles.size(); i++) {
+			paths[i] = new File(targetFolder, cvsFiles.get(i)).getAbsoluteFile();
+		}
+		commit.setFiles(paths);
 		try {
 			return client.executeCommand(commit, options);
 		} catch (CommandAbortedException exception) {
@@ -190,11 +195,15 @@ public class CvsTools implements VersionControlAdapter {
 	}
 	
 	@Override
-	public boolean update(String cvsFile) throws IOException {
+	public boolean update(List<String> cvsFiles) throws IOException {
 		checkConnection();
 		UpdateCommand update = new UpdateCommand();
 		update.setRecursive(true);
-		update.setFiles(new File[]{new File(targetFolder, cvsFile)});
+		File[] paths = new File[cvsFiles.size()];
+		for (int i = 0; i < cvsFiles.size(); i++) {
+			paths[i] = new File(targetFolder, cvsFiles.get(i)).getAbsoluteFile();
+		}
+		update.setFiles(paths);
 		try {
 			return client.executeCommand(update, options);
 		} catch (CommandAbortedException exception) {

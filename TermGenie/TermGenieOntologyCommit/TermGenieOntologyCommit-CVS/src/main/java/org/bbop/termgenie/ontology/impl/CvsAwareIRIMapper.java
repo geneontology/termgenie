@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -60,7 +61,7 @@ public class CvsAwareIRIMapper extends AbstractScmAwareIRIMapper<CvsAwareIRIMapp
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				cvs.connect();
-				cvs.checkout(checkout);
+				cvs.checkout(Collections.singletonList(checkout));
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
@@ -78,7 +79,7 @@ public class CvsAwareIRIMapper extends AbstractScmAwareIRIMapper<CvsAwareIRIMapp
 			String cvsFile = mappedCVSFiles.get(url);
 			try {
 				cvs.connect();
-				cvs.update(cvsFile);
+				cvs.update(Collections.singletonList(cvsFile));
 			} catch (IOException exception) {
 				throw exception;
 			}

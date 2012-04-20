@@ -2,6 +2,7 @@ package org.bbop.termgenie.scm;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 
 public interface VersionControlAdapter extends Closeable {
 
@@ -25,35 +26,35 @@ public interface VersionControlAdapter extends Closeable {
 	public void close() throws IOException;
 
 	/**
-	 * Checkout the given file from the VC repository.
+	 * Checkout the given files from the VC repository.
 	 * 
 	 * @see #connect()
 	 * @see #close()
-	 * @param targetFile
+	 * @param targetFiles
 	 * @return true, if the VC check out operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
-	public boolean checkout(String targetFile) throws IOException;
+	public boolean checkout(List<String> targetFiles) throws IOException;
 
 	/**
 	 * Commit the current checkout with the given message.
 	 * 
 	 * @param message the commit message
-	 * @param targetFile the file or folder to commit
+	 * @param targetFiles the files or folders to commit
 	 * @return true, if the VC commit operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
-	public boolean commit(String message, String targetFile) throws IOException;
+	public boolean commit(String message, List<String> targetFiles) throws IOException;
 
 	/**
 	 * Update the current working copy from the VC repository.
 	 * 
-	 * @param targetFile the file or folder to update
+	 * @param targetFiles the file or folder to update
 	 * @return true, if the VC update operation successfully finished
 	 * @throws IOException
 	 */
-	public boolean update(String targetFile) throws IOException;
+	public boolean update(List<String> targetFiles) throws IOException;
 
 }

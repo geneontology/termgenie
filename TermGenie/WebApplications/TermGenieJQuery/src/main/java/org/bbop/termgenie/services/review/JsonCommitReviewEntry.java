@@ -114,7 +114,7 @@ public class JsonCommitReviewEntry {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
 	public static class JsonDiff {
 
 		private int uuid;
@@ -126,6 +126,7 @@ public class JsonCommitReviewEntry {
 		private String obsoleteComment = null;
 		private String diff;
 		private String owlAxioms;
+		private String pattern;
 
 		private List<JsonChange> relations = null;
 
@@ -270,6 +271,20 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setObsoleteComment(String obsoleteComment) {
 			this.obsoleteComment = obsoleteComment;
-		}		
+		}
+
+		/**
+		 * @return the pattern
+		 */
+		public String getPattern() {
+			return pattern;
+		}
+
+		/**
+		 * @param pattern the pattern to set
+		 */
+		public void setPattern(String pattern) {
+			this.pattern = pattern;
+		}
 	}
 }

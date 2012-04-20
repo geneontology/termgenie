@@ -142,7 +142,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		List<JsonOntologyTerm> jsonTerms = new ArrayList<JsonOntologyTerm>();
 		for (CommitObject<TermCommit> commitObject : terms) {
 			TermCommit object = commitObject.getObject();
-			jsonTerms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), wrapper));
+			jsonTerms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), wrapper, object.getPattern()));
 		}
 		return jsonTerms;
 	}

@@ -187,6 +187,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setId(term.getId());
 			jsonDiff.setUuid(term.getUuid());
 			jsonDiff.setObsolete(OboTools.isObsolete(frame));
+			jsonDiff.setPattern(term.getPattern());
 			
 			List<Pair<Frame, Set<OWLAxiom>>> changed = CommitHistoryTools.translateSimple(term.getChanged());
 			boolean success = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
@@ -321,7 +322,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				Frame termFrame = parseDiff(jsonDiff);
 				CommitedOntologyTerm term;
 				if (jsonDiff.isModified()) {
-					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff), jsonDiff.getOwlAxioms());
+					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff), jsonDiff.getOwlAxioms(), jsonDiff.getPattern());
 					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
 				}
 				else {

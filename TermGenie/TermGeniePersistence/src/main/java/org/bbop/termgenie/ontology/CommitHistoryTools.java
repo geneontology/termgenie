@@ -32,17 +32,18 @@ public class CommitHistoryTools {
 		// no instances allowed
 	}
 	
-	public static CommitedOntologyTerm create(Frame frame, Modification operation, String owlAxioms) {
-		CommitedOntologyTerm term = create(frame, operation);
+	public static CommitedOntologyTerm create(Frame frame, Modification operation, String owlAxioms, String pattern) {
+		CommitedOntologyTerm term = create(frame, operation, pattern);
 		term.setAxioms(owlAxioms);
 		return term;
 	}
 	
-	private static CommitedOntologyTerm create(Frame frame, Modification operation) {
+	private static CommitedOntologyTerm create(Frame frame, Modification operation, String pattern) {
 		CommitedOntologyTerm term = new CommitedOntologyTerm();
 		term.setId(frame.getId());
 		term.setOperation(operation);
 		term.setLabel(frame.getTagValue(OboFormatTag.TAG_NAME, String.class));
+		term.setPattern(pattern);
 		try {
 			term.setObo(OboWriterTools.writeFrame(frame, null));
 		} catch (IOException exception) {
@@ -79,7 +80,6 @@ public class CommitHistoryTools {
 		item.setEmail(userData.getEmail());
 		item.setSavedBy(userData.getScmAlias());
 		item.setDate(date);
-
 		return item;
 	}
 	
@@ -91,7 +91,7 @@ public class CommitHistoryTools {
 			for (CommitObject<TermCommit> commitObject : terms) {
 				TermCommit termCommit = commitObject.getObject();
 				Frame frame = termCommit.getTerm();
-				CommitedOntologyTerm term = create(frame, commitObject.getType());
+				CommitedOntologyTerm term = create(frame, commitObject.getType(), commitObject.getObject().getPattern());
 				term.setAxioms(create(commitObject.getObject().getOwlAxioms()));
 				List<SimpleCommitedOntologyTerm> changed = null;
 				List<Pair<Frame, Set<OWLAxiom>>> changedFrames = termCommit.getChanged();
@@ -125,7 +125,7 @@ public class CommitHistoryTools {
 			Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(commitedOntologyTerm.getAxioms());
 			if (term != null) {
 				List<Pair<Frame, Set<OWLAxiom>>> changed = translateSimple(commitedOntologyTerm.getChanged());
-				TermCommit termCommit = new TermCommit(term, axioms, changed);
+				TermCommit termCommit = new TermCommit(term, axioms, changed, commitedOntologyTerm.getPattern());
 				CommitObject<TermCommit> commitObject = new CommitObject<TermCommit>(termCommit, commitedOntologyTerm.getOperation());
 				result.add(commitObject);
 			}

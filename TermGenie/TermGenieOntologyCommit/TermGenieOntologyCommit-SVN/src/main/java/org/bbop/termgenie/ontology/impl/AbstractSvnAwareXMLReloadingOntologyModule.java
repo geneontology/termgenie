@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.ontology.TermFilter;
+import org.bbop.termgenie.ontology.obo.DefaultOboTermFilter;
 import org.bbop.termgenie.svn.SvnTool;
 
 public abstract class AbstractSvnAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModule {

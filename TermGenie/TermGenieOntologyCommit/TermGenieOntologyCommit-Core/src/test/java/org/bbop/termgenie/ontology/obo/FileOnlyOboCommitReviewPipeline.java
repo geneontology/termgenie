@@ -1,13 +1,17 @@
 package org.bbop.termgenie.ontology.obo;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
 import org.bbop.termgenie.scm.VersionControlAdapter;
+import org.obolibrary.oboformat.model.OBODoc;
 
 /**
  * Extend the {@link OboCommitReviewPipeline} to write to a file instead of a
@@ -17,15 +21,17 @@ import org.bbop.termgenie.scm.VersionControlAdapter;
  */
 public class FileOnlyOboCommitReviewPipeline extends OboCommitReviewPipeline {
 
-	private final File localFile;
+	private final File localFolder;
 
 	public FileOnlyOboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			OboScmHelper helper,
-			final String localFile)
+			TermFilter<OBODoc> termFilter,
+			final String localFolder) throws IOException
 	{
-		super(source, store, helper);
-		this.localFile = new File(localFile);
+		super(source, store, termFilter, helper);
+		this.localFolder = new File(localFolder);
+		FileUtils.forceMkdir(this.localFolder);
 	}
 
 	@Override
@@ -35,6 +41,9 @@ public class FileOnlyOboCommitReviewPipeline extends OboCommitReviewPipeline {
 			String diff) throws CommitException
 	{
 		Logger.getLogger(getClass()).info("Commit to file. Message:\n" + commitMessage);
-		helper.copyFileForCommit(data.getModifiedSCMTargetFile(), localFile);
+		for(File modifiedSCMTargetFile : data.getModifiedSCMTargetFiles()) {
+			File localFile = new File(localFolder, modifiedSCMTargetFile.getName());
+			helper.copyFileForCommit(modifiedSCMTargetFile, localFile );
+		}
 	}
 }

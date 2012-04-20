@@ -397,7 +397,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				for (CommitObject<TermCommit> commitObject : commitTerms) {
 					if (commitObject.getType() == Modification.add) {
 						TermCommit object = commitObject.getObject();
-						terms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), managed));
+						terms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), managed, object.getPattern()));
 					}
 				}
 			}
@@ -420,7 +420,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 						updateIdentifiers(pair.getOne(), pair.getTwo(), idHandler);
 					}
 				}
-				TermCommit term = new TermCommit(frame, axioms, changed);
+				TermCommit term = new TermCommit(frame, axioms, changed, jsonTerm.getPattern());
 				commits.add(CommitObject.add(term));
 			}
 

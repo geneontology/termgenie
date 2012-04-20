@@ -3,6 +3,7 @@ package org.bbop.termgenie.svn;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
@@ -29,7 +30,11 @@ public class SvnTool implements VersionControlAdapter {
 	private static final Logger logger = Logger.getLogger(SvnTool.class);
 	
 	static {
-		SVNDebugLog.setDefaultLog(new SvnLogger());
+		synchronized (SVNDebugLog.class) {
+			if (SVNDebugLog.getDefaultLog() != SvnLogger.INSTANCE) {
+				SVNDebugLog.setDefaultLog(SvnLogger.INSTANCE);
+			}
+		}
 	}
 
 	private final File targetFolder;
@@ -72,6 +77,18 @@ public class SvnTool implements VersionControlAdapter {
 		}
 		this.authManager = authManager;
 	}
+	
+	/**
+	 * @param targetFolder 
+	 * @param repositoryURL 
+	 * @param authManager
+	 */
+	SvnTool(File targetFolder, SVNURL repositoryURL, ISVNAuthenticationManager authManager) {
+		super();
+		this.targetFolder = targetFolder;
+		this.repositoryURL = repositoryURL;
+		this.authManager = authManager;
+	}
 
 	@Override
 	public synchronized void connect() throws IOException {
@@ -95,18 +112,22 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean checkout(String targetFile) throws IOException {
+	public boolean checkout(List<String> targetFiles) throws IOException {
 		checkConnection();
 		try {
-			logger.info("Start checkout for file: "+targetFile);
+			logger.info("Start checkout for files: "+targetFiles);
 			SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 			SVNRevision pegRevision = SVNRevision.HEAD;
 			SVNRevision revision = SVNRevision.HEAD;
 			SVNDepth depth = SVNDepth.INFINITY;
 			updateClient.doCheckout(repositoryURL, targetFolder, pegRevision, revision, depth, true);
-			File file = new File(targetFolder, targetFile);
-			final boolean success = file.isFile() && file.canRead() && file.canWrite();
-			logger.info("Finished checkout for file: "+targetFile);
+			
+			boolean success = true;
+			for(String targetFile : targetFiles) {
+				File file = new File(targetFolder, targetFile);
+				success = success && file.isFile() && file.canRead() && file.canWrite();
+			}
+			logger.info("Finished checkout for files: "+targetFiles);
 			return success;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
@@ -114,17 +135,21 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean commit(String message, String target) throws IOException {
+	public boolean commit(String message, List<String> targets) throws IOException {
 		checkConnection();
-		logger.info("Start commit for target: "+target);
+		logger.info("Start commit for targets: "+targets);
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();
 		try {
-			SVNCommitInfo info = commitClient.doCommit(new File[]{ new File(targetFolder, target) }, false, message, null, null, false, false, SVNDepth.INFINITY);
+			File[] paths = new File[targets.size()];
+			for (int i = 0; i < targets.size(); i++) {
+				paths[i] = new File(targetFolder, targets.get(i)).getAbsoluteFile();
+			}
+			SVNCommitInfo info = commitClient.doCommit(paths, false, message, null, null, false, false, SVNDepth.INFINITY);
 			SVNErrorMessage errorMessage = info.getErrorMessage();
 			if (errorMessage != null) {
 				throw new IOException(errorMessage.getMessage(), errorMessage.getCause());
 			}
-			logger.info("Finished commit for target: "+target);
+			logger.info("Finished commit for targets: "+targets);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
@@ -132,14 +157,17 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean update(String target) throws IOException {
+	public boolean update(List<String> targets) throws IOException {
 		checkConnection();
-		logger.info("Start update for target: "+target);
+		logger.info("Start update for targets: "+targets);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		try {
-			File path = new File(targetFolder, target).getAbsoluteFile();
-			updateClient.doUpdate(path, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
-			logger.info("Finished update for target: "+target);
+			File[] paths = new File[targets.size()];
+			for (int i = 0; i < targets.size(); i++) {
+				paths[i] = new File(targetFolder, targets.get(i)).getAbsoluteFile();
+			}
+			updateClient.doUpdate(paths, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
+			logger.info("Finished update for targets: "+targets);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
@@ -158,8 +186,17 @@ public class SvnTool implements VersionControlAdapter {
 		return targetFolder;
 	}
 
-	private static final class SvnLogger extends SVNDebugLogAdapter {
+	static final class SvnLogger extends SVNDebugLogAdapter {
+		
+		static final SvnLogger INSTANCE = new SvnLogger();
 
+		/**
+		 * Only allow one instance via static INSTANCE variable.
+		 */
+		private SvnLogger() {
+			super();
+		}
+		
 		private static org.apache.log4j.Level getLog4JLevel(Level level) {
 			if (Level.SEVERE.equals(level)) {
 				return org.apache.log4j.Level.ERROR;

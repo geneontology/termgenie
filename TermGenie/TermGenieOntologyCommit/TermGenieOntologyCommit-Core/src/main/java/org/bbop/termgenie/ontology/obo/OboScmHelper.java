@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,6 @@ import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -39,17 +39,16 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  */
 public abstract class OboScmHelper {
 
-	private final OntologyTaskManager source;
 	private final DirectOntologyLoader loader;
-	private final String targetOntologyFileName;
+//	private final String targetOntologyFolder;
+	private final List<String> targetOntologyFileNames;
 
-	protected OboScmHelper(OntologyTaskManager source,
-			IRIMapper iriMapper,
+	protected OboScmHelper(IRIMapper iriMapper,
 			OntologyCleaner cleaner,
-			String targetOntologyFileName)
+			List<String> targetOntologyFileNames)
 	{
-		this.source = source;
-		this.targetOntologyFileName = targetOntologyFileName;
+//		this.targetOntologyFolder = targetOntologyFolder;
+		this.targetOntologyFileNames = targetOntologyFileNames;
 		loader = new DirectOntologyLoader(iriMapper, cleaner);
 	}
 
@@ -67,29 +66,29 @@ public abstract class OboScmHelper {
 		File oboFolder = null;
 		File oboRoundTripFolder = null;
 
-		File scmTargetOntology = null;
-		File targetOntology = null;
-		File modifiedTargetOntology = null;
-		File modifiedSCMTargetOntology = null;
+		List<File> scmTargetOntologies = null;
+		List<File> targetOntologies = null;
+		List<File> modifiedTargetOntologies = null;
+		List<File> modifiedSCMTargetOntologies = null;
 
 		@Override
-		public File getSCMTargetFile() {
-			return scmTargetOntology;
+		public List<File> getSCMTargetFiles() {
+			return scmTargetOntologies;
 		}
 
 		@Override
-		public File getTargetFile() {
-			return targetOntology;
+		public List<File> getTargetFiles() {
+			return targetOntologies;
 		}
 
 		@Override
-		public File getModifiedTargetFile() {
-			return modifiedTargetOntology;
+		public List<File> getModifiedTargetFiles() {
+			return modifiedTargetOntologies;
 		}
 
 		@Override
-		public File getModifiedSCMTargetFile() {
-			return modifiedSCMTargetOntology;
+		public List<File> getModifiedSCMTargetFiles() {
+			return modifiedSCMTargetOntologies;
 		}
 
 		/**
@@ -108,8 +107,10 @@ public abstract class OboScmHelper {
 		data.oboFolder = createFolder(workFolder, "obo");
 		data.oboRoundTripFolder = createFolder(workFolder, "obo-roundtrip");
 		final File patchedFolder = createFolder(workFolder, "obo-patched");
-		data.modifiedSCMTargetOntology = new File(patchedFolder, source.getOntology().getUniqueName() + ".obo");
-
+		data.modifiedSCMTargetOntologies =  new ArrayList<File>(targetOntologyFileNames.size());
+		for(String name : targetOntologyFileNames) {
+			data.modifiedSCMTargetOntologies.add(new File(patchedFolder, name));
+		}
 		return data;
 	}
 
@@ -118,15 +119,18 @@ public abstract class OboScmHelper {
 			String password,
 			File scmFolder) throws CommitException;
 
-	public OBODoc retrieveTargetOntology(VersionControlAdapter scm, OboCommitData data)
+	public List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data)
 			throws CommitException
 	{
 		// check-out ontology from SCM repository
 		scmCheckout(scm);
-		data.scmTargetOntology = new File(data.scmFolder, targetOntologyFileName);
+		data.scmTargetOntologies = new ArrayList<File>(targetOntologyFileNames.size());
+		for(String name : targetOntologyFileNames) {
+			data.scmTargetOntologies.add(new File(data.scmFolder, name));
+		}
 
 		// load ontology
-		return loadOntology(data.scmTargetOntology);
+		return loadOntologies(data.scmTargetOntologies);
 	}
 	
 	public void updateSCM(VersionControlAdapter scm)
@@ -134,7 +138,7 @@ public abstract class OboScmHelper {
 	{
 		try {
 			scm.connect();
-			scm.update(targetOntologyFileName);
+			scm.update(targetOntologyFileNames);
 		} catch (IOException exception) {
 			throw error("Could not update scm repository", exception, false);
 		} finally {
@@ -146,19 +150,22 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public void checkTargetOntology(OboCommitData data, OBODoc targetOntology)
+	public void checkTargetOntologies(OboCommitData data, List<OBODoc> targetOntologies)
 			throws CommitException
 	{
-
-		// round trip ontology
-		// This step is required to create a minimal patch.
-		data.targetOntology = createOBOFile(data.oboRoundTripFolder, targetOntology);
-		// check that the round trip leads to major changes
-		// This is a requirement for applying the diff to the original scm file
-		boolean noMajorChanges = compareRoundTripFile(data.scmTargetOntology, data.targetOntology);
-		if (noMajorChanges == false) {
-			String message = "Can write ontology for commit. Too many format changes cannot create diff.";
-			throw error(message, true);
+		data.targetOntologies = new ArrayList<File>();
+		for (int i = 0; i < targetOntologies.size(); i++) {
+			// round trip ontology
+			// This step is required to create a minimal patch.
+			File oboFile = createOBOFile(data.oboRoundTripFolder, targetOntologyFileNames.get(i), targetOntologies.get(i));
+			data.targetOntologies.add(oboFile);
+			// check that the round trip leads to major changes
+			// This is a requirement for applying the diff to the original scm file
+			boolean noMajorChanges = compareRoundTripFile(data.scmTargetOntologies.get(i), oboFile);
+			if (noMajorChanges == false) {
+				String message = "Can write ontology for commit. Too many format changes cannot create diff.";
+				throw error(message, true);
+			}
 		}
 	}
 
@@ -186,22 +193,28 @@ public abstract class OboScmHelper {
 		return success;
 	}
 
-	public void createModifiedTargetFile(OboCommitData data, OBODoc ontology, String savedBy)
+	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, String savedBy)
 			throws CommitException
 	{
-		// write changed ontology to a file
-		Frame headerFrame = ontology.getHeaderFrame();
-		if (headerFrame != null) {
-			// set date
-			updateClause(headerFrame, OboFormatTag.TAG_DATE, new Date());
-			
-			// set saved-by
-			updateClause(headerFrame, OboFormatTag.TAG_SAVED_BY, savedBy);
-			
-			// set auto-generated-by
-			updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
+		int ontologyCount = ontologies.size();
+		data.modifiedTargetOntologies = new ArrayList<File>(ontologyCount);
+		for (int i = 0; i < ontologyCount; i++) {
+			// write changed ontology to a file
+			final OBODoc ontology = ontologies.get(i);
+			Frame headerFrame = ontology.getHeaderFrame();
+			if (headerFrame != null) {
+				// set date
+				updateClause(headerFrame, OboFormatTag.TAG_DATE, new Date());
+				
+				// set saved-by
+				updateClause(headerFrame, OboFormatTag.TAG_SAVED_BY, savedBy);
+				
+				// set auto-generated-by
+				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
+			}
+			File oboFile = createOBOFile(data.oboFolder, targetOntologyFileNames.get(i), ontology);
+			data.modifiedTargetOntologies.add(oboFile);
 		}
-		data.modifiedTargetOntology = createOBOFile(data.oboFolder, ontology);
 	}
 	
 	private void updateClause(Frame frame, OboFormatTag tag, Object value) {
@@ -225,11 +238,15 @@ public abstract class OboScmHelper {
 			OboCommitData data,
 			String diff) throws CommitException
 	{
-		copyFileForCommit(data.getModifiedSCMTargetFile(), data.getSCMTargetFile());
+		final List<File> modifiedSCMTargetFiles = data.getModifiedSCMTargetFiles();
+		final List<File> scmTargetFiles = data.getSCMTargetFiles();
+		for (int i = 0; i < modifiedSCMTargetFiles.size(); i++) {
+			copyFileForCommit(modifiedSCMTargetFiles.get(i), scmTargetFiles.get(i));
+		}
 
 		try {
 			scm.connect();
-			scm.commit(commitMessage, targetOntologyFileName);
+			scm.commit(commitMessage, targetOntologyFileNames);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}
@@ -274,7 +291,8 @@ public abstract class OboScmHelper {
 		try {
 			// scm checkout
 			scm.connect();
-			boolean success = scm.checkout(targetOntologyFileName);
+			
+			boolean success = scm.checkout(targetOntologyFileNames);
 			if (!success) {
 				String message = "Could not checkout recent copy of the ontology";
 				throw error(message, true);
@@ -292,13 +310,14 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private File createOBOFile(File oboFolder, OBODoc oboDoc) throws CommitException {
+	private File createOBOFile(File oboFolder, String name, OBODoc oboDoc) throws CommitException {
 		BufferedWriter bufferedWriter = null;
 		try {
 			// write OBO file to temp
 			OBOFormatWriter writer = new OBOFormatWriter();
 
-			File oboFile = new File(oboFolder, source.getOntology().getUniqueName() + ".obo");
+			File oboFile = new File(oboFolder, name);
+			oboFile.getParentFile().mkdirs();
 			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
 			writer.write(oboDoc, bufferedWriter);
 			return oboFile;
@@ -311,16 +330,19 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private OBODoc loadOntology(File scmFile) throws CommitException {
-		OBODoc ontology;
+	private List<OBODoc> loadOntologies(List<File> scmFiles) throws CommitException {
+		List<OBODoc> ontologies = new ArrayList<OBODoc>(scmFiles.size());
 		try {
 			// load OBO
-			ontology = loader.loadOBO(scmFile, null);
+			for(File scmFile : scmFiles) {
+				OBODoc ontology = loader.loadOBO(scmFile, null);
+				ontologies.add(ontology);
+			}
 		} catch (IOException exception) {
 			String message = "Could not load recent copy of the ontology";
 			throw error(message, exception, true);
 		}
-		return ontology;
+		return ontologies;
 	}
 
 	private static final class DirectOntologyLoader extends BaseOntologyLoader {

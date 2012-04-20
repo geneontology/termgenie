@@ -1,13 +1,13 @@
 package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
+import java.util.Collections;
 
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.svn.SvnTool;
 
@@ -30,8 +30,7 @@ public class SvnHelper {
 		private final File svnConfigDir;
 
 		@Inject
-		SvnHelperPassword(@Named("CommitTargetOntology") OntologyTaskManager source,
-				IRIMapper iriMapper,
+		SvnHelperPassword(IRIMapper iriMapper,
 				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
@@ -39,7 +38,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(source, iriMapper, cleaner, svnOntologyFileName);
+			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -94,13 +93,13 @@ public class SvnHelper {
 		private final File svnConfigDir;
 
 		@Inject
-		SvnHelperAnonymous(@Named("CommitTargetOntology") OntologyTaskManager source,
-				IRIMapper iriMapper,
-				OntologyCleaner cleaner,@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
+		SvnHelperAnonymous(IRIMapper iriMapper,
+				OntologyCleaner cleaner,
+				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(source, iriMapper, cleaner, svnOntologyFileName);
+			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 		}
@@ -145,8 +144,7 @@ public class SvnHelper {
 		private final File svnConfigDir;
 	
 		@Inject
-		SvnHelperKeyFile(@Named("CommitTargetOntology") OntologyTaskManager source,
-				IRIMapper iriMapper,
+		SvnHelperKeyFile(IRIMapper iriMapper,
 				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
@@ -155,7 +153,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
 		{
-			super(source, iriMapper, cleaner, svnOntologyFileName);
+			super(iriMapper, cleaner, Collections.singletonList(svnOntologyFileName));
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;

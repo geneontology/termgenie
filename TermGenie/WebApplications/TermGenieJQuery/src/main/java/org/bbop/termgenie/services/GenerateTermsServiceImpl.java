@@ -185,9 +185,10 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			
 			for (TermGenerationOutput candidate : candidates) {
 				if (candidate.isSuccess()) {
-					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getOwlAxioms(), candidate.getChangedTermRelations(), managed);
+					TermTemplate termTemplate = candidate.getInput().getTermTemplate();
+					JsonOntologyTerm jsonCandidate = JsonOntologyTerm.createJson(candidate.getTerm(), candidate.getOwlAxioms(), candidate.getChangedTermRelations(), managed, termTemplate.getName());
 					jsonCandidates.add(jsonCandidate);
-					JsonTermTemplate template = jsonTools.createJsonTermTemplate(candidate.getInput().getTermTemplate());
+					JsonTermTemplate template = jsonTools.createJsonTermTemplate(termTemplate);
 					jsonTermTemplates.add(template);
 				}
 				else {

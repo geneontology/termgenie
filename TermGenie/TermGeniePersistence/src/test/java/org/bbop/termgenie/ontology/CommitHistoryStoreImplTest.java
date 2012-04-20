@@ -99,7 +99,7 @@ public class CommitHistoryStoreImplTest {
 		}
 		OboTools.addSynonym(frame, "Syn Label " + i + "_1", "EXACT", Collections.singleton("Syn Xref " + i + "_1"));
 		OboTools.addSynonym(frame, "Syn Label " + i + "_2", "BROADER", null);
-		final CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add, "");
+		final CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add, "", "test-pattern");
 		return term;
 	}
 
@@ -121,6 +121,7 @@ public class CommitHistoryStoreImplTest {
 			assertEquals(t1.getId(), t2.getId());
 			assertEquals(t1.getLabel(), t2.getLabel());
 			assertEquals(t1.getObo(), t2.getObo());
+			assertEquals(t1.getPattern(), t2.getPattern());
 		}
 	}
 }

@@ -14,6 +14,7 @@ import org.apache.openjpa.persistence.PersistentCollection;
 public class CommitedOntologyTerm extends SimpleCommitedOntologyTerm
 {
 	private String label;
+	private String pattern;
 	
 	private List<SimpleCommitedOntologyTerm> changed;
 
@@ -46,5 +47,21 @@ public class CommitedOntologyTerm extends SimpleCommitedOntologyTerm
 	 */
 	public void setChanged(List<SimpleCommitedOntologyTerm> changed) {
 		this.changed = changed;
+	}
+	
+	/**
+	 * @return the pattern
+	 */
+	@Column(length=1023) // increase default length from 255
+	@Basic(optional=true)
+	public String getPattern() {
+		return pattern;
+	}
+	
+	/**
+	 * @param pattern the pattern to set
+	 */
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
 	}
 }

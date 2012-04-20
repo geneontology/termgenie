@@ -40,6 +40,7 @@ public class JsonOntologyTerm {
 	private List<JsonChange> changed;
 	private String owlAxioms;
 	private boolean isObsolete;
+	private String pattern;
 
 	public JsonOntologyTerm() {
 		super();
@@ -178,6 +179,20 @@ public class JsonOntologyTerm {
 	public void setOwlAxioms(String owlAxioms) {
 		this.owlAxioms = owlAxioms;
 	}
+	
+	/**
+	 * @return the pattern
+	 */
+	public String getPattern() {
+		return pattern;
+	}
+
+	/**
+	 * @param pattern the pattern to set
+	 */
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -224,6 +239,11 @@ public class JsonOntologyTerm {
 			builder.append("changed=");
 			builder.append(changed);
 		}
+		if (pattern != null) {
+			builder.append(", ");
+			builder.append("pattern=");
+			builder.append(pattern);
+		}
 		if (isObsolete) {
 			builder.append("isObsolete=true");
 		}
@@ -231,7 +251,7 @@ public class JsonOntologyTerm {
 		return builder.toString();
 	}
 
-	public static JsonOntologyTerm createJson(Frame source, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed, OWLGraphWrapper wrapper) {
+	public static JsonOntologyTerm createJson(Frame source, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed, OWLGraphWrapper wrapper, String pattern) {
 		NameProvider nameProvider = new OwlGraphWrapperNameProvider(wrapper);
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setTempId(source.getId());
@@ -280,6 +300,7 @@ public class JsonOntologyTerm {
 					break;
 			}
 		}
+		term.setPattern(pattern);
 		term.setSynonyms(synonyms);
 		term.setRelations(jsonRelations);
 		term.setMetaData(other);

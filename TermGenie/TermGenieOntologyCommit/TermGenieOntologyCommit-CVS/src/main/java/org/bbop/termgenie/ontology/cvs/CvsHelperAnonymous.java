@@ -1,12 +1,12 @@
 package org.bbop.termgenie.ontology.cvs;
 
 import java.io.File;
+import java.util.Collections;
 
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -21,13 +21,12 @@ public final class CvsHelperAnonymous extends OboScmHelper {
 	private final String cvsRoot;
 
 	@Inject
-	CvsHelperAnonymous(@Named("CommitTargetOntology") OntologyTaskManager source,
-			IRIMapper iriMapper,
+	CvsHelperAnonymous(IRIMapper iriMapper,
 			OntologyCleaner cleaner,
 			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(source, iriMapper, cleaner, cvsOntologyFileName);
+		super(iriMapper, cleaner, Collections.singletonList(cvsOntologyFileName));
 		this.cvsRoot = cvsRoot;
 	}
 
