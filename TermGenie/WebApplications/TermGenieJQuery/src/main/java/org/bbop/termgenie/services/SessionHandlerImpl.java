@@ -1,5 +1,6 @@
 package org.bbop.termgenie.services;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +22,10 @@ public class SessionHandlerImpl implements SessionHandler {
 	private static final String TERM_GENIE_SESSION_OBJECT = "TERM_GENIE_SESSION_OBJECT";
 	private static final Logger logger = Logger.getLogger(SessionHandlerImpl.class);
 
-	protected static class SessionObject {
+	protected static class SessionObject implements Serializable {
+
+		// generated
+		private static final long serialVersionUID = -3200919422080908002L;
 
 		private boolean authenticated = false;
 		private UserData userData = null;
