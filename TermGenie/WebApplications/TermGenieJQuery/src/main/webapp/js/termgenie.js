@@ -1385,6 +1385,7 @@ function termgenie(){
 
 		if(isValid(generationResponse.errors)) {
 			renderErrors(container, generationResponse.errors);
+			return;
 		}
 
 		var reviewTerms = null;
@@ -1727,7 +1728,7 @@ function termgenie(){
 				addSynonymButton.appendTo(divElem);
 				
 				// get remote resources for xref auto-complete
-				var choices;
+				var choices = null;
 				var xrefRemoteResource;
 				
 				jQuery.each(template.fields, function(index, field){
@@ -1736,7 +1737,7 @@ function termgenie(){
 					}
 				});
 				
-				if(xrefRemoteResource !== null) {
+				if(xrefRemoteResource && xrefRemoteResource !== null) {
 					fetchLinesFromRemoteResource(xrefRemoteResource, function(lines) {
 						// process lines into choices
 						choices = [];
