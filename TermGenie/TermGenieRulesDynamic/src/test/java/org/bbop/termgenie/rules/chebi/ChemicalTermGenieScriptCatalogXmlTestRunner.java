@@ -3,11 +3,11 @@ package org.bbop.termgenie.rules.chebi;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.TemplateField;
@@ -26,14 +26,11 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.FileCachingIRIMapper;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
-import org.bbop.termgenie.ontology.obo.OboWriterTools;
-import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.obolibrary.oboformat.model.Frame;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 import owltools.graph.OWLGraphWrapper;
@@ -60,20 +57,34 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 
 		@Override
 		protected void bindIRIMapper() {
-			bind(IRIMapper.class, "FallbackIRIMapper", FileCachingIRIMapper.class);
-			bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(),"termgenie-download-cache").getAbsolutePath());
-			bind("FileCachingIRIMapperPeriod", 6L);
-			bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);
+			bind(IRIMapper.class, "FallbackIRIMapper", NoExternalMapper.class);
 		}
 		
 		@Provides
 		@Singleton
 		public IRIMapper getDefaultIRIMapper(@Named("FallbackIRIMapper") IRIMapper fallBackIRIMapper) {
-			String catalogXml = "/data/hdietze/svn/go-trunk/ontology/extensions/catalog-v001.xml";
+			File homeDir = FileUtils.getUserDirectory();
+			String catalogXml = homeDir.getAbsolutePath()+"/svn/committer/go-trunk/ontology/extensions/catalog-v001.xml";
 			return new CatalogXmlIRIMapper(fallBackIRIMapper, catalogXml);
 		}
 	}
 
+	public static final class NoExternalMapper implements IRIMapper {
+
+		@Override
+		public IRI getDocumentIRI(IRI ontologyIRI) {
+			fail("No external imports allowed: "+ontologyIRI);
+			throw new RuntimeException("No external imports allowed: "+ontologyIRI);
+		}
+
+		@Override
+		public URL mapUrl(String url) {
+			fail("No external imports allowed: "+url);
+			throw new RuntimeException("No external imports allowed: "+url);
+		}
+		
+	}
+	
 	private static TermGenerationEngine generationEngine;
 	private static OntologyLoader loader;
 	private static OntologyConfiguration configuration;
@@ -117,8 +128,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 		TemplateField field = termTemplate.getFields().get(0);
 
-		parameters.setTermValues(field.getName(), Arrays.asList("CHEBI:35808")); // Citrate(2-)
-//		parameters.setTermValues(field.getName(), Arrays.asList("CHEBI:16947")); // Citrate(3-) has a synonym Citrate, but is not equivalent to Citrate(2-)
+		parameters.setTermValues(field.getName(), Arrays.asList("UCHEBI:30769")); // citric acid or conjugate
 		parameters.setStringValues(field.getName(), Arrays.asList("metabolism"));
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
@@ -127,19 +137,9 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		System.out.println(output);
-
-		final Frame frame = list.get(0).getTerm();
-		taskManager.runManagedTask(new OntologyTask(){
-
-			@Override
-			protected void runCatching(OWLGraphWrapper managed) throws Exception {
-				System.out.println("--------");
-				System.out.println(OboWriterTools.writeFrame(frame, new OwlGraphWrapperNameProvider(managed)));
-				System.out.println("--------");
-			}
-		});
-		assertNotNull(frame);
+		
+		assertFalse(output.isSuccess());
+		assertEquals("The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
 	}
 
 }

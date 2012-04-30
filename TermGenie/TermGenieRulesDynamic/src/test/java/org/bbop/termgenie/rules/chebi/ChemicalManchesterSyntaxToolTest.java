@@ -8,7 +8,7 @@ import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.rules.chebi.ChemicalTermGenieScriptTestRunner.ChemicalTestOntologyModule;
+import org.bbop.termgenie.rules.chebi.ChemicalTermGenieScriptCatalogXmlTestRunner.ChemicalTestOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
@@ -43,10 +43,10 @@ public class ChemicalManchesterSyntaxToolTest {
 				
 				assertNotNull(managed.getOWLObjectByLabel("has participant"));
 				
-				assertNotNull(tool.parseManchesterExpression("CHEBI_35808"));
+				assertNotNull(tool.parseManchesterExpression("UCHEBI_30769"));
 				assertNotNull(tool.parseManchesterExpression("GO_0008152"));
 				
-				OWLClassExpression expression = tool.parseManchesterExpression("GO_0008152 and 'has participant' some CHEBI_35808");
+				OWLClassExpression expression = tool.parseManchesterExpression("GO_0008152 and 'has participant' some UCHEBI_30769");
 				assertNotNull(expression);
 			}
 		};
