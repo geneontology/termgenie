@@ -123,7 +123,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	}
 
 	@Override
-	public void createTerm(String label,
+	public boolean createTerm(String label,
 			String definition,
 			List<ISynonym> synonyms,
 			MDef logicalDefinition)
@@ -136,7 +136,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			else {
 				defs = Collections.emptyList();
 			}
-			tools.addTerm(label, definition, synonyms, defs, getResultList());
+			return tools.addTerm(label, definition, synonyms, defs, getResultList());
 		} catch (NullPointerException exception) {
 			Logger.getLogger(getClass()).error("NPE", exception);
 			throw exception;
@@ -144,7 +144,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 	}
 
 	@Override
-	public void createTerm(String label,
+	public boolean createTerm(String label,
 			String definition,
 			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions)
@@ -157,7 +157,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			else {
 				logicalDefinitionList = Collections.emptyList();
 			}
-			tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
+			return tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
 		} catch (NullPointerException exception) {
 			Logger.getLogger(getClass()).error("NPE", exception);
 			throw exception;

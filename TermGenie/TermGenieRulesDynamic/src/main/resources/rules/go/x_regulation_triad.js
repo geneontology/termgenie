@@ -27,8 +27,13 @@ function regulation_triad(x, parent) {
 		var synonyms = termgenie.synonyms("regulation of ", x, go, null, null, label);
 		var mdef = createMDef("GO_0065007 and 'regulates' some ?X");
 		mdef.addParameter('X', x, go);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (termgenie.contains(prefixes, "negative_regulation")) {
 		var label = "negative regulation of " + termname(x, go);
@@ -40,8 +45,13 @@ function regulation_triad(x, parent) {
 				x, go, [], label);
 		var mdef = createMDef("GO_0065007 and 'negatively_regulates' some ?X");
 		mdef.addParameter('X', x, go);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (termgenie.contains(prefixes, "positive_regulation")) {
 		var label = "positive regulation of " + termname(x, go);
@@ -53,8 +63,13 @@ function regulation_triad(x, parent) {
 				x, go, [], label);
 		var mdef = createMDef("GO_0065007 and 'positively_regulates' some ?X");
 		mdef.addParameter('X', x, go);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (count === 0) {
 		error("Could not create a term for X, as no known prefix was selected");

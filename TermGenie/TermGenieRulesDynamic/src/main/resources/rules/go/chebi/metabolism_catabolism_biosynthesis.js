@@ -1,7 +1,7 @@
 // @requires rules/common.js
 
 function metabolism_catabolism_biosynthesis() {
-	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
+	var ont = GeneOntology; // the graph wrapper contains all info, including UCHEBI
 	var x = getSingleTerm("target", ont);
 	var prefixes = getInputs("target");
 	if (!prefixes || prefixes === null || prefixes.length === 0) {
@@ -17,8 +17,13 @@ function metabolism_catabolism_biosynthesis() {
 				" metabolic process" ], null, label);
 		var mdef = createMDef("GO_0008152 and 'has participant' some ?X");
 		mdef.addParameter('X', x, ont);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (termgenie.contains(prefixes, "catabolism")) {
 		var label = termname(x, ont) + " catabolic process";
@@ -28,8 +33,13 @@ function metabolism_catabolism_biosynthesis() {
 				" catabolic process" ], null, label);
 		var mdef = createMDef("GO_0009056 and 'has input' some ?X");
 		mdef.addParameter('X', x, ont);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (termgenie.contains(prefixes, "biosynthesis")) {
 		var label = termname(x, ont) + " biosynthetic process";
@@ -39,8 +49,13 @@ function metabolism_catabolism_biosynthesis() {
 				" biosynthetic process" ], null, label);
 		var mdef = createMDef("GO_0009058 and 'has output' some ?X");
 		mdef.addParameter('X', x, ont);
-		createTerm(label, definition, synonyms, mdef);
-		count += 1;
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			count += 1;
+		}
+		else {
+			return;
+		}
 	}
 	if (count === 0) {
 		error("Could not create a term for X, as no known subtemplate was selected");

@@ -178,7 +178,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 
-	protected void addTerm(String label,
+	protected boolean addTerm(String label,
 			String definition,
 			List<ISynonym> synonyms,
 			T logicalDefinition,
@@ -203,7 +203,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		if (sameName != null) {
 			output.add(singleError("The term " + targetOntology.getIdentifier(sameName) + " with the same label already exists",
 					input));
-			return;
+			return false;
 		}
 		OboTools.addTermLabel(term, label);
 		
@@ -276,7 +276,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 					output.add(singleError("The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +"' with the same logic definition already exists",
 							input));					
 				}
-				return;
+				return false;
 			}
 			List<Clause> relations = inferredRelations.classRelations;
 			if (relations != null) {
@@ -290,8 +290,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			output.add(success(term, axioms , inferredRelations.changed, input));
 			
 			ProcessState.addMessage(state, "Finished creating term.");
+			return true;
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
+			return false;
 		}
 	}
 

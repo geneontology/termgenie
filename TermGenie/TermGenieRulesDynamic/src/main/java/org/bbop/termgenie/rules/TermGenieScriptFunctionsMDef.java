@@ -62,8 +62,9 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 	 * @param definition
 	 * @param synonyms
 	 * @param logicalDefinition
+	 * @return true, if successful
 	 */
-	public void createTerm(String label,
+	public boolean createTerm(String label,
 			String definition,
 			List<ISynonym> synonyms,
 			MDef logicalDefinition);
@@ -75,8 +76,9 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 	 * @param definition
 	 * @param synonyms
 	 * @param logicalDefinitions
+	 * @return true, if successful
 	 */
-	public void createTerm(String label,
+	public boolean createTerm(String label,
 			String definition,
 			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions);

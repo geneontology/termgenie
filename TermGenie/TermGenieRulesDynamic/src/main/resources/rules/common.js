@@ -18,9 +18,10 @@ function error(msg) {
  * @param definition
  * @param synonyms
  * @param logicalDefinition
+ * @return true, if successful, otherwise false
  */
 function createTerm(label, definition, synonyms, logicalDefinition) {
-	termgenie.createTerm(label, definition, synonyms, logicalDefinition);
+	return termgenie.createTerm(label, definition, synonyms, logicalDefinition);
 }
 
 /**
