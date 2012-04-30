@@ -23,9 +23,6 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 
 	@Inject
 	public CatalogXmlIRIMapper(IRIMapper fallBackIRIMapper, String catalogXml) {
-		if (fallBackIRIMapper == null) {
-			throw new IllegalArgumentException("IRIMapper may never be null");
-		}
 		this.fallBackIRIMapper = fallBackIRIMapper;
 		this.catalogXml = catalogXml;
 		catalogXMLMapper = createCatalogMapper();
@@ -47,7 +44,9 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 		if (iri != null) {
 			return iri;
 		}
-		iri = fallBackIRIMapper.getDocumentIRI(ontologyIRI);
+		if (fallBackIRIMapper != null) {
+			iri = fallBackIRIMapper.getDocumentIRI(ontologyIRI);
+		}
 		return iri;
 	}
 
@@ -58,8 +57,11 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 			if (iri != null) {
 				return iri.toURI().toURL();
 			}
-			URL result = fallBackIRIMapper.mapUrl(url);
-			return result;
+			if (fallBackIRIMapper != null) {
+				URL result = fallBackIRIMapper.mapUrl(url);
+				return result;
+			}
+			return new URL(url);
 		} catch (MalformedURLException exception) {
 			throw new RuntimeException(exception);
 		}
