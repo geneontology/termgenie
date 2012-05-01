@@ -92,10 +92,12 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
+		reasonerManager.setProcessState(state);
 		try {
 			reasonerManager.runManagedTask(task);
 		} finally {
 			reasonerManager.dispose();
+			reasonerManager.removeProcessState();
 		}
 		InferredRelations inferredRelations = task.getInferredRelations();
 		if (inferredRelations.classRelationAxioms != null) {
