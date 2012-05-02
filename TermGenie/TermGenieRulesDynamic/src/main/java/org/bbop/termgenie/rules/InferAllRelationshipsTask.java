@@ -47,6 +47,17 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 
 	@Override
 	public Modified run(OWLReasoner reasoner) {
+		// First check for equivalent classes
+		OWLClass owlClass = ontology.getOWLClass(iri);
+		Node<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass);
+		if (equivalentClasses != null && equivalentClasses.getSize() > 1) {
+			Set<OWLClass> equivalentClassesSet = equivalentClasses.getEntities();
+			equivalentClassesSet.remove(owlClass);
+			result = new InferredRelations(equivalentClassesSet);
+			return Modified.no;
+		}
+		
+		// remove redundant links and assert inferred ones
 		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
@@ -58,36 +69,29 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 			RemoveAxiom addAx = new RemoveAxiom(ontology.getSourceOntology(), redundant);
 			changeTracker.apply(addAx);
 		}
-		OWLClass owlClass = ontology.getOWLClass(iri);
-		Node<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass);
-		if (equivalentClasses != null && equivalentClasses.getSize() > 1) {
-			Set<OWLClass> equivalentClassesSet = equivalentClasses.getEntities();
-			equivalentClassesSet.remove(owlClass);
-			result = new InferredRelations(equivalentClassesSet);
-		} else {
-			List<Pair<Frame, Set<OWLAxiom>>> changed = null;
-			NodeSet<OWLClass> subClasses = reasoner.getSubClasses(owlClass, true);
-			if (subClasses != null && !subClasses.isEmpty()) {
-				changed = new ArrayList<Pair<Frame,Set<OWLAxiom>>>();
-				for (OWLClass subClass : subClasses.getFlattened()) {
-					if (subClass.isBottomEntity()) {
-						// skip owl:Nothing
-						continue;
-					}
-					String subClassIRI = subClass.getIRI().toString();
-					if (!subClassIRI.startsWith(tempIdPrefix)) {
-						Frame frame = OboTools.createTermFrame(subClass);
-						Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(subClass, ontology);
-						List<Clause> clauses = pair.getOne();
-						OBOFormatWriter.sortTermClauses(clauses );
-						frame.getClauses().addAll(clauses);
-						changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, pair.getTwo()));
-						
-					}
+		List<Pair<Frame, Set<OWLAxiom>>> changed = null;
+		NodeSet<OWLClass> subClasses = reasoner.getSubClasses(owlClass, true);
+		if (subClasses != null && !subClasses.isEmpty()) {
+			changed = new ArrayList<Pair<Frame, Set<OWLAxiom>>>();
+			for (OWLClass subClass : subClasses.getFlattened()) {
+				if (subClass.isBottomEntity()) {
+					// skip owl:Nothing
+					continue;
 				}
-				if (changed.isEmpty()) {
-					changed = null;
+				String subClassIRI = subClass.getIRI().toString();
+				if (!subClassIRI.startsWith(tempIdPrefix)) {
+					Frame frame = OboTools.createTermFrame(subClass);
+					Pair<List<Clause>, Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(subClass,
+							ontology);
+					List<Clause> clauses = pair.getOne();
+					OBOFormatWriter.sortTermClauses(clauses);
+					frame.getClauses().addAll(clauses);
+					changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, pair.getTwo()));
+
 				}
+			}
+			if (changed.isEmpty()) {
+				changed = null;
 			}
 			Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, ontology);
 			result = new InferredRelations(pair.getOne(), pair.getTwo(), changed);
