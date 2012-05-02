@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
@@ -33,21 +34,24 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private final IRI iri;
 	private final OWLChangeTracker changeTracker;
 	private final String tempIdPrefix;
+	private final ProcessState state;
 	
 	private InferredRelations result;
 	
 
-	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix) {
+	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
 		this.changeTracker = changeTracker;
 		this.tempIdPrefix = tempIdPrefix;
+		this.state = state;
 	}
 
 	@Override
 	public Modified run(OWLReasoner reasoner) {
 		// First check for equivalent classes
+		ProcessState.addMessage(state, "Check for equivalent classes of new term");
 		OWLClass owlClass = ontology.getOWLClass(iri);
 		Node<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass);
 		if (equivalentClasses != null && equivalentClasses.getSize() > 1) {
@@ -58,6 +62,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		}
 		
 		// remove redundant links and assert inferred ones
+		ProcessState.addMessage(state, "Check for update relations with new term");
 		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();

@@ -88,7 +88,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			}
 		}
 
-		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix);
+		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state);
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
