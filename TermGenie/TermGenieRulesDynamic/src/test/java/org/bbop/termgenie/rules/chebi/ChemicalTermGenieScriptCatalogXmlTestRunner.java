@@ -2,14 +2,10 @@ package org.bbop.termgenie.rules.chebi;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -30,15 +26,14 @@ import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.obolibrary.macro.ManchesterSyntaxTool;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 
@@ -57,37 +52,20 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 
 		@Override
 		protected void bindIRIMapper() {
-			bind(IRIMapper.class, "FallbackIRIMapper", NoExternalMapper.class);
+			// do nothing, use @Provides instead
 		}
-		
-		@Provides
-		@Singleton
-		public IRIMapper getDefaultIRIMapper(@Named("FallbackIRIMapper") IRIMapper fallBackIRIMapper) {
-			File homeDir = FileUtils.getUserDirectory();
-			String catalogXml = homeDir.getAbsolutePath()+"/svn/committer/go-trunk/ontology/extensions/catalog-v001.xml";
-			return new CatalogXmlIRIMapper(fallBackIRIMapper, catalogXml);
-		}
-	}
-
-	public static final class NoExternalMapper implements IRIMapper {
-
-		@Override
-		public IRI getDocumentIRI(IRI ontologyIRI) {
-			fail("No external imports allowed: "+ontologyIRI);
-			throw new RuntimeException("No external imports allowed: "+ontologyIRI);
-		}
-
-		@Override
-		public URL mapUrl(String url) {
-			fail("No external imports allowed: "+url);
-			throw new RuntimeException("No external imports allowed: "+url);
-		}
-		
-	}
 	
+		@Singleton
+		@Provides
+		protected IRIMapper provideIRIMapper() {
+			String catalogXml = "src/test/resources/ontologies/catalog-v001.xml";
+			return new CatalogXmlIRIMapper(null, catalogXml);
+		}
+	}
+
 	private static TermGenerationEngine generationEngine;
+	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
-	private static OntologyConfiguration configuration;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -96,50 +74,109 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
-		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
+		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
+	}
+	
+	@Test
+	public void testManchesterSyntaxTool() {
+		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), managed.getSupportOntologySet());
+				
+				assertNotNull(managed.getOWLObjectByLabel("has participant"));
+				
+				assertNotNull(tool.parseManchesterExpression("CHEBI_16947"));
+				assertNotNull(tool.parseManchesterExpression("GO_0008152"));
+				
+				OWLClassExpression expression = tool.parseManchesterExpression("GO_0008152 and 'has participant' some CHEBI_16947");
+				assertNotNull(expression);
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
+		
 	}
 
 	@Test
-	public void test_metabolism_catabolism_biosynthesis() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
-		TermGenerationParameters parameters = new TermGenerationParameters();
-
-		OntologyTaskManager taskManager = loader.getOntology(ontology);
-		taskManager.runManagedTask(new OntologyTask(){
-
-			@Override
-			protected void runCatching(OWLGraphWrapper managed) throws Exception {
-				List<OWLOntology> supports = new ArrayList<OWLOntology>(managed.getSupportOntologySet());
-				System.out.println("--------Supports--------");
-				for (OWLOntology owlOntology : supports) {
-					System.out.println(owlOntology.getOntologyID());
-				}
-				System.out.println("--------");
-				System.out.println("--------Import Closure--------");
-				List<OWLOntology> importsClosure = new ArrayList<OWLOntology>(managed.getSourceOntology().getImportsClosure());
-				for (OWLOntology owlOntology : importsClosure) {
-					System.out.println(owlOntology.getOntologyID());
-				}
-				System.out.println("--------");
-			}
-		});
-		
-		TemplateField field = termTemplate.getFields().get(0);
-
-		parameters.setTermValues(field.getName(), Arrays.asList("UCHEBI:30769")); // citric acid or conjugate
-		parameters.setStringValues(field.getName(), Arrays.asList("metabolism"));
-
-		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
-		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+	public void test_metabolism_citrate3() {
+		TermTemplate termTemplate = getMetabolismTemplate();
+		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:16947"); // citrate(3-)
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
 		assertFalse(output.isSuccess());
 		assertEquals("The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+		
+		
+	}
+
+	@Test
+	public void test_metabolism_citrate2() {
+		TermTemplate termTemplate = getMetabolismTemplate();
+		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:35808"); // citrate(2-)
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		
+		assertFalse(output.isSuccess());
+		assertEquals("The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+		
+		
+	}
+	
+	@Test
+	public void test_metabolism_citrate1() {
+		TermTemplate termTemplate = getMetabolismTemplate();
+		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:35804"); // citrate(1-)
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		
+		assertFalse(output.isSuccess());
+		assertEquals("The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+		
+		
+	}
+	
+	@Test
+	public void test_metabolism_citric_acid() {
+		TermTemplate termTemplate = getMetabolismTemplate();
+		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:30769"); // citric acid
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		
+		assertFalse(output.isSuccess());
+		assertEquals("The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+		
+		
+	}
+
+	private TermTemplate getMetabolismTemplate() {
+		return generationEngine.getAvailableTemplates().get(0);
+	}
+
+	private List<TermGenerationInput> createMetabolismTask(TermTemplate termTemplate, final String term) {
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		TemplateField field = termTemplate.getFields().get(0);
+		parameters.setTermValues(field.getName(), Arrays.asList(term)); 
+		parameters.setStringValues(field.getName(), Arrays.asList("metabolism"));
+	
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		return generationTasks;
 	}
 
 }

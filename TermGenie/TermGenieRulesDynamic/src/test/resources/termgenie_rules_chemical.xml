@@ -9,7 +9,9 @@ generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
-				<ontology name="ChemicalImporter"></ontology>
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
 				<prefixes>
 					<prefix>metabolism</prefix>
 					<prefix>catabolism</prefix>

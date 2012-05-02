@@ -2,14 +2,16 @@
 <ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="GeneOntology">
-		<source>http://purl.obolibrary.org/obo/go.owl</source>
+		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo</source>
 		<supports>
-			<support>http://purl.obolibrary.org/obo/go/extensions/x-chemical-importer.owl</support>
+			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
+			<support>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
 			<root>GO:0003674</root>
 			<root>GO:0005575</root>
+			<root>CHEBI:24431</root>
 		</roots>
 		<ontologybranch name="biological_process">
 			<roots>
@@ -26,7 +28,7 @@
 				<root>GO:0005575</root>
 			</roots>
 		</ontologybranch>
-		<ontologybranch name="ChemicalImporter">
+		<ontologybranch name="chebi">
 			<roots>
 				<root>CHEBI:24431</root> <!-- chemical entity -->
 			</roots>
