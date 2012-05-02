@@ -62,7 +62,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		}
 		
 		// remove redundant links and assert inferred ones
-		ProcessState.addMessage(state, "Check for update relations with new term");
+		ProcessState.addMessage(state, "Check for changed relations");
 		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
