@@ -1,7 +1,7 @@
 // @requires rules/common.js
 
 function metabolism_catabolism_biosynthesis() {
-	var ont = GeneOntology; // the graph wrapper contains all info, including UCHEBI
+	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
 	var x = getSingleTerm("target", ont);
 	var prefixes = getInputs("target");
 	if (!prefixes || prefixes === null || prefixes.length === 0) {
