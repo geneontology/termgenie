@@ -2,6 +2,8 @@ package org.bbop.termgenie.rules.chebi;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +23,14 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
+import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
+import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
@@ -37,17 +41,10 @@ import com.google.inject.Singleton;
 
 public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 
-	static final class ChemicalTestOntologyModule extends DefaultOntologyModule {
+	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
 		ChemicalTestOntologyModule() {
-			super(null);
-		}
-
-		@Override
-		protected void bindOntologyConfiguration() {
-			bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-			bind("XMLOntologyConfigurationResource",
-					"ontology-configuration_chemical.xml");
+			super("ontology-configuration_chemical.xml", null);
 		}
 
 		@Override
@@ -79,6 +76,31 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	}
 	
 	@Test
+	public void testOWL2OBO() throws Exception {
+		
+		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				Owl2Obo owl2Obo = new Owl2Obo();
+				OBODoc oboDoc = owl2Obo.convert(managed.getSourceOntology());
+				OBOFormatWriter writer = new OBOFormatWriter();
+				StringWriter stringWriter = new StringWriter();
+				writer.write(oboDoc, new BufferedWriter(stringWriter));
+				
+				String oboString = stringWriter.getBuffer().toString();
+				assertNotNull(oboString);
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
+	}
+	
+	@Test
 	public void testManchesterSyntaxTool() {
 		OntologyTaskManager ontologyManager = loader.getOntology(go);
 		OntologyTask task = new OntologyTask(){
@@ -88,11 +110,19 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), managed.getSupportOntologySet());
 				
 				assertNotNull(managed.getOWLObjectByLabel("has participant"));
+				assertNotNull(managed.getOWLObjectByLabel("has input"));
+				assertNotNull(managed.getOWLObjectByLabel("has output"));
 				
 				assertNotNull(tool.parseManchesterExpression("CHEBI_16947"));
 				assertNotNull(tool.parseManchesterExpression("GO_0008152"));
 				
 				OWLClassExpression expression = tool.parseManchesterExpression("GO_0008152 and 'has participant' some CHEBI_16947");
+				assertNotNull(expression);
+				
+				expression = tool.parseManchesterExpression("GO_0008152 and 'has input' some CHEBI_16947");
+				assertNotNull(expression);
+				
+				expression = tool.parseManchesterExpression("GO_0008152 and 'has output' some CHEBI_16947");
 				assertNotNull(expression);
 			}
 		};
