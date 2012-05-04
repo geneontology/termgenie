@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <uri id="User Entered Import Resolution" name="http://www.geneontology.org/ontology/editors/gene_ontology_write.obo" uri="gene_ontology_write.obo"/>
-    <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/ro.owl" uri="ro-edit.owl"/>
-    <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/iao/ontology-metadata.owl" uri="ontology-metadata.owl"/>
     <uri id="User Entered Import Resolution" name="http://www.geneontology.org/ontology/editors/go_xp_chebi.obo" uri="go_xp_chebi.obo"/>
     <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl" uri="bio-chebi.owl"/>
     <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/chebi.owl" uri="chebi.owl"/>

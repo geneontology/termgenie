@@ -1,6 +1,6 @@
 ontology: go/extensions/x-chemical
 
-[Term] 
+[Term]
 id: GO:2001077 ! beta-1,3-1,4-glucan binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:18504 ! beta-1,3-1,4-glucan
@@ -733,7 +733,7 @@ intersection_of: has_input CHEBI:16618  ! phosphatidylinositol-3,4,5-trisphospha
 [Term]
 id: GO:0005975  ! carbohydrate metabolic process
 intersection_of: GO:0008152  ! metabolic process
-intersection_of: has_participant CHEBI:23008  ! carbohydrate
+intersection_of: has_participant CHEBI:16646  ! carbohydrate
 
 [Term]
 id: GO:0005976  ! polysaccharide metabolic process
@@ -2918,7 +2918,7 @@ intersection_of: has_participant CHEBI:20794  ! 7-methylguanosine
 [Term]
 id: GO:0008643  ! carbohydrate transport
 intersection_of: GO:0006810  ! transport
-intersection_of: results_in_transport_of CHEBI:23008  ! carbohydrate
+intersection_of: results_in_transport_of CHEBI:16646  ! carbohydrate
 
 [Term]
 id: GO:0008645  ! hexose transport
@@ -4203,7 +4203,7 @@ intersection_of: has_output CHEBI:33234  ! vitamin E
 [Term]
 id: GO:0010236  ! plastoquinone biosynthetic process
 intersection_of: GO:0009058  ! biosynthetic process
-intersection_of: has_output CHEBI:26163  ! plastoquinone
+intersection_of: has_output CHEBI:17757  ! plastoquinone
 
 [Term]
 id: GO:0010250  ! S-methylmethionine biosynthetic process
@@ -4368,7 +4368,7 @@ intersection_of: has_output CHEBI:26893  ! tetracyclic triterpenoid
 [Term]
 id: GO:0010816  ! calcitonin catabolic process
 intersection_of: GO:0009056  ! catabolic process
-intersection_of: has_input GOCHE:0000235  ! calcitonin
+intersection_of: has_input CHEBI:399295  ! calcitonin
 
 [Term]
 id: GO:0014046  ! dopamine secretion
@@ -5608,12 +5608,12 @@ intersection_of: has_input CHEBI:18059  ! lipid
 [Term]
 id: GO:0016051  ! carbohydrate biosynthetic process
 intersection_of: GO:0009058  ! biosynthetic process
-intersection_of: has_output CHEBI:23008  ! carbohydrate
+intersection_of: has_output CHEBI:16646  ! carbohydrate
 
 [Term]
 id: GO:0016052  ! carbohydrate catabolic process
 intersection_of: GO:0009056  ! catabolic process
-intersection_of: has_input CHEBI:23008  ! carbohydrate
+intersection_of: has_input CHEBI:16646  ! carbohydrate
 
 [Term]
 id: GO:0016070  ! RNA metabolic process
@@ -7706,11 +7706,6 @@ intersection_of: GO:0006810  ! transport
 intersection_of: results_in_transport_of CHEBI:25213  ! metal ion
 
 [Term]
-id: GO:0030073  ! insulin secretion
-intersection_of: GO:0046903  ! secretion
-intersection_of: results_in_transport_of GOCHE:0000192  ! insulin
-
-[Term]
 id: GO:0030145  ! manganese ion binding
 intersection_of: GO:0005488  ! binding
 intersection_of: has_input CHEBI:25155  ! manganese ion
@@ -7863,7 +7858,7 @@ intersection_of: has_input CHEBI:18246  ! cellulose
 [Term]
 id: GO:0030246  ! carbohydrate binding
 intersection_of: GO:0005488  ! binding
-intersection_of: has_input CHEBI:23008  ! carbohydrate
+intersection_of: has_input CHEBI:16646  ! carbohydrate
 
 [Term]
 id: GO:0030247  ! polysaccharide binding
@@ -8288,7 +8283,7 @@ intersection_of: results_in_transport_of CHEBI:32439  ! alanine
 [Term]
 id: GO:0032329  ! serine transport
 intersection_of: GO:0006810  ! transport
-intersection_of: results_in_transport_of CHEBI:32845  ! serine
+intersection_of: results_in_transport_of CHEBI:32836 ! L-serinate
 
 [Term]
 id: GO:0032341  ! aldosterone metabolic process
@@ -8458,7 +8453,7 @@ intersection_of: has_input CHEBI:60252  ! lead ion
 [Term]
 id: GO:0032841  ! calcitonin binding
 intersection_of: GO:0005488  ! binding
-intersection_of: has_input GOCHE:0000235  ! calcitonin
+intersection_of: has_input CHEBI:399295  ! calcitonin
 
 [Term]
 id: GO:0032923  ! organophosphonate biosynthetic process
@@ -11011,11 +11006,6 @@ intersection_of: GO:0005488  ! binding
 intersection_of: has_input CHEBI:25372  ! molybdopterin cofactor
 
 [Term]
-id: GO:0043559  ! insulin binding
-intersection_of: GO:0005488  ! binding
-intersection_of: has_input GOCHE:0000192  ! insulin
-
-[Term]
 id: GO:0043602  ! nitrate catabolic process
 intersection_of: GO:0009056  ! catabolic process
 intersection_of: has_input CHEBI:17632  ! nitrate
@@ -13311,11 +13301,6 @@ intersection_of: GO:0005488  ! binding
 intersection_of: has_input CHEBI:28537  ! 3,4-didehydroretinal
 
 [Term]
-id: GO:0046884  ! follicle-stimulating hormone secretion
-intersection_of: GO:0046903  ! secretion
-intersection_of: results_in_transport_of GOCHE:0000187  ! follicle-stimulating hormone
-
-[Term]
 id: GO:0046900  ! tetrahydrofolylpolyglutamate metabolic process
 intersection_of: GO:0008152  ! metabolic process
 intersection_of: has_participant CHEBI:28624  ! tetrahydrofolyl-[Glu]n
@@ -13449,11 +13434,6 @@ intersection_of: results_in_transport_of CHEBI:33569  ! norepinephrine
 id: GO:0048252  ! lauric acid metabolic process
 intersection_of: GO:0008152  ! metabolic process
 intersection_of: has_participant CHEBI:18262  ! lauric acid
-
-[Term]
-id: GO:0048408  ! epidermal growth factor binding
-intersection_of: GO:0005488  ! binding
-intersection_of: has_input GOCHE:0000347  ! epidermal growth factor
 
 [Term]
 id: GO:0048473  ! D-methionine transport
@@ -14148,7 +14128,7 @@ intersection_of: has_input CHEBI:28757  ! fructose
 [Term]
 id: GO:0070091  ! glucagon secretion
 intersection_of: GO:0046903  ! secretion
-intersection_of: results_in_transport_of GOCHE:0000191  ! glucagon
+intersection_of: results_in_transport_of CHEBI:140542  ! glucagon
 
 [Term]
 id: GO:0070095  ! fructose-6-phosphate binding
@@ -14294,11 +14274,6 @@ intersection_of: has_participant CHEBI:17672  ! carbamoyl phosphate
 id: GO:0070409  ! carbamoyl phosphate biosynthetic process
 intersection_of: GO:0009058  ! biosynthetic process
 intersection_of: has_output CHEBI:17672  ! carbamoyl phosphate
-
-[Term]
-id: GO:0070459  ! prolactin secretion
-intersection_of: GO:0046903  ! secretion
-intersection_of: results_in_transport_of GOCHE:0000304  ! prolactin
 
 [Term]
 id: GO:0070484  ! dehydro-D-arabinono-1,4-lactone metabolic process
@@ -14864,7 +14839,7 @@ intersection_of: has_output CHEBI:16497  ! dGTP
 [Term]
 id: GO:0006535  ! cysteine biosynthetic process from serine
 intersection_of: GO:0009058  ! biosynthetic process
-intersection_of: has_input CHEBI:32845  ! serine
+intersection_of: has_input CHEBI:32836 ! L-serinate
 intersection_of: has_output CHEBI:32458 ! cysteine
 
 [Term]
@@ -14889,7 +14864,7 @@ intersection_of: has_output CHEBI:28790  ! serotonin
 id: GO:0010144  ! pyridoxal phosphate biosynthetic process from pyridoxamine
 intersection_of: GO:0009058  ! biosynthetic process
 intersection_of: has_input CHEBI:16410  ! pyridoxamine
-intersection_of: has_output CHEBI:27306  ! vitamin B6
+intersection_of: has_output CHEBI:18405 ! pyridoxal 5'-phosphate
 
 [Term]
 id: GO:0019244  ! lactate biosynthetic process from pyruvate
@@ -14900,7 +14875,7 @@ intersection_of: has_output CHEBI:24996  ! lactic acid
 [Term]
 id: GO:0019264  ! glycine biosynthetic process from serine
 intersection_of: GO:0009058  ! biosynthetic process
-intersection_of: has_input CHEBI:32845  ! serine
+intersection_of: has_input CHEBI:32836 ! L-serinate
 intersection_of: has_output CHEBI:32508  ! glycine
 
 [Term]
@@ -15133,7 +15108,7 @@ intersection_of: results_in_transport_of CHEBI:50126 ! tetrasaccharide
 [Term]
 id: GO:2001099 ! maltotetraose transport
 intersection_of: GO:0006810  ! transport
-intersection_of: results_in_transport_of CHEBI:2846 ! maltotetraose
+intersection_of: results_in_transport_of CHEBI:28460 ! maltotetraose
 
 [Term]
 id: GO:2001100 ! pentasaccharide transport
@@ -15375,7 +15350,7 @@ id: GO:2001227 ! quercitrin binding
 intersection_of: GO:0005488  ! binding
 intersection_of: has_input CHEBI:17558 ! quercitrin
 
-[Term] 
+[Term]
 id: GO:0097216 ! guanosine tetraphosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17633 ! guanosine tetraphosphate
@@ -15430,27 +15405,27 @@ id: GO:2001299 ! N(omega),N(omega)-dimethyl-L-arginine catabolic process
 intersection_of: GO:0009056  ! catabolic process
 intersection_of: has_input CHEBI:17929 ! N(omega),N(omega)-dimethyl-L-arginine
 
-[Term] 
+[Term]
 id: GO:0097243 ! flavonoid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:47916 ! flavonoid
 
-[Term] 
+[Term]
 id: GO:0097244 ! flavonol binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:5078 ! flavonol
 
-[Term] 
+[Term]
 id: GO:0097245 ! flavanol binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24036 ! flavanol
  
-[Term] 
+[Term]
 id: GO:0097246 ! catechin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:23053 ! catechin
 
-[Term] 
+[Term]
 id: GO:0097247 ! epigallocatechin 3-gallate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:4806 ! epigallocatechin 3-gallate
@@ -15510,24 +15485,60 @@ id: GO:2001317 ! kojic acid biosynthetic process
 intersection_of: GO:0009058  ! biosynthetic process
 intersection_of: has_output CHEBI:43572 ! kojic acid
 
+[Term]
+id: GO:0097287 ! 7-cyano-7-deazaguanine metabolic process
+intersection_of: GO:0008152  ! metabolic process
+intersection_of: has_participant CHEBI:45075 ! 7-cyano-7-deazaguanine
+
+[Term]
+id: GO:0097288  ! 7-cyano-7-deazaguanine biosynthetic process
+intersection_of: GO:0009058  ! biosynthetic process
+intersection_of: has_output CHEBI:45075 ! 7-cyano-7-deazaguanine
+
+[Term]
+id: GO:0097289 ! alpha-ribazole metabolic process
+intersection_of: GO:0008152  ! metabolic process
+intersection_of: has_participant CHEBI:10329 ! alpha-ribazole
+
+[Term]
+id: GO:0097290  ! alpha-ribazole biosynthetic process
+intersection_of: GO:0009058  ! biosynthetic process
+intersection_of: has_output CHEBI:10329 ! alpha-ribazole
+
+[Term]
+id: GO:0097292 ! XMP metabolic process
+intersection_of: GO:0008152  ! metabolic process
+intersection_of: has_participant CHEBI:15652 ! 5'-xanthylic acid
+
+[Term]
+id: GO:0097293  ! XMP biosynthetic process
+intersection_of: GO:0009058  ! biosynthetic process
+intersection_of: has_output CHEBI:15652 ! 5'-xanthylic acid
+
+[Term]
+id: GO:0097295  ! morphine biosynthetic process
+intersection_of: GO:0009058  ! biosynthetic process
+intersection_of: has_output CHEBI:17303 ! morphine
+
+
 [Typedef]
 id: has_participant
-name: has_participant
+name: has participant
 xref: BFO:0000057
 
 [Typedef]
 id: has_input
-name: has_input
+name: has input
 is_a: has_participant
 xref: RO:0002233
 
 [Typedef]
 id: has_output
-name: has_output
+name: has output
 is_a: has_participant
 xref: RO:0002234
 
 [Typedef]
 id: results_in_transport_of
-name: results_in_transport_of
+name: results in transport of
 
