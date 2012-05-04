@@ -1,7 +1,6 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 
@@ -125,7 +124,7 @@ public class BaseOntologyLoader {
 			return loadOBO2OWL(ontology, realUrl);
 		}
 		else if ((path != null && path.endsWith(".owl")) || (query != null && query.endsWith(".owl"))) {
-			return loadOWLPure(ontology, realUrl);
+			return loadOWLPure(ontology, url, realUrl);
 		}
 		else {
 			throw new RuntimeException("Unable to load ontology from url, as no known suffix ('.obo' or '.owl') was detected: " + url);
@@ -136,16 +135,18 @@ public class BaseOntologyLoader {
 	 * Load an owl ontology from a given URL.
 	 * 
 	 * @param ontology
+	 * @param original
 	 * @param realUrl
 	 * @return OWLOntology
 	 * @throws OWLOntologyCreationException
 	 */
-	protected OWLOntology loadOWLPure(String ontology, URL realUrl) throws OWLOntologyCreationException {
+	protected OWLOntology loadOWLPure(String ontology, String original, URL realUrl) throws OWLOntologyCreationException {
 		OWLOntology ont;
 		try {
-			ont = manager.loadOntologyFromOntologyDocument(IRI.create(realUrl));
-		} catch (URISyntaxException exception) {
-			throw new OWLOntologyCreationException(exception);
+			// Use the original as IRI,
+			// the OWL-API use the IRIMapper to resolve it
+			IRI iri = IRI.create(original); 
+			ont = manager.loadOntology(iri);
 		} catch (OWLOntologyAlreadyExistsException exception) {
 			// Trying to recover from exception
 			ont = handleException(exception);
