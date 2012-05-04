@@ -47,7 +47,7 @@ public class CatalogXmlIRIMapper implements IRIMapper {
 		if (fallBackIRIMapper != null) {
 			iri = fallBackIRIMapper.getDocumentIRI(ontologyIRI);
 		}
-		return iri;
+		return ontologyIRI;
 	}
 
 	@Override
