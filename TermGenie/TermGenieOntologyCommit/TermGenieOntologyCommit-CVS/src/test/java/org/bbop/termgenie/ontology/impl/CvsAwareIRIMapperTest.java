@@ -3,7 +3,6 @@ package org.bbop.termgenie.ontology.impl;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,43 +29,40 @@ public class CvsAwareIRIMapperTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-//		TempTestFolderTools.deleteTestFolder(testFolder);
+		TempTestFolderTools.deleteTestFolder(testFolder);
 	}
 
 	@Test
 	public void testMapUrl() throws Exception {
-		final String acceptedURL = "http://test.test/single_accepted_url";
+		final IRI acceptedIRI = IRI.create("http://test.test/single_accepted_url");
 		IRIMapper fallBackIRIMapper = new IRIMapper() {
 			
 			@Override
 			public IRI getDocumentIRI(IRI ontologyIRI) {
+				if (acceptedIRI.equals(ontologyIRI)) {
+					return acceptedIRI;
+				}
 				throw new RuntimeException("Unexpected call to fallback mapper with IRI: "+ontologyIRI);
 			}
 			
 			@Override
 			public URL mapUrl(String url) {
-				if (acceptedURL.equals(url)) {
-					try {
-						return new URL(acceptedURL);
-					} catch (MalformedURLException exception) {
-						throw new RuntimeException(exception);
-					}
-				}
 				throw new RuntimeException("Unexpected call to fallback mapper with URL: "+url);
 			}
 		};
 		String cvsRoot = ":pserver:anonymous@cvs.geneontology.org:/anoncvs";
 		String cvsPassword = null;
-		Map<String, String> mappedCVSFiles = Collections.singletonMap("http://purl.obolibrary.org/obo/go.obo", "go/ontology/editors/gene_ontology_write.obo");
+		Map<IRI, String> mappedCVSFiles = Collections.singletonMap(IRI.create("http://purl.obolibrary.org/obo/go.obo"), "go/ontology/editors/gene_ontology_write.obo");
 		String checkout = "go/ontology/editors";
 		
-		final List<String> scmMappedURLs = new ArrayList<String>();
-		CvsAwareIRIMapper mapper = new CvsAwareIRIMapper(fallBackIRIMapper, cvsRoot, cvsPassword , testFolder, mappedCVSFiles, checkout) {
+		final List<IRI> scmMappedIRIs = new ArrayList<IRI>();
+		CvsIRIMapper mapper = new CvsIRIMapper(fallBackIRIMapper, cvsRoot, cvsPassword , testFolder, checkout, mappedCVSFiles, null) {
 
+			
 			@Override
-			protected URL mapUrlUsingScm(String url) {
-				scmMappedURLs.add(url);
-				return super.mapUrlUsingScm(url);
+			public IRI getDocumentIRI(IRI ontologyIRI) {
+				scmMappedIRIs.add(ontologyIRI);
+				return super.getDocumentIRI(ontologyIRI);
 			}
 			
 		};
@@ -77,9 +73,9 @@ public class CvsAwareIRIMapperTest {
 		assertTrue(file.isFile());
 		assertTrue(file.canRead());
 		mapper.mapUrl("http://purl.obolibrary.org/obo/go.obo");
-		mapper.mapUrl(acceptedURL);
-		mapper.mapUrl(acceptedURL);
-		assertEquals(2, scmMappedURLs.size());
+		mapper.mapUrl(acceptedIRI.toString());
+		mapper.mapUrl(acceptedIRI.toString());
+		assertEquals(4, scmMappedIRIs.size());
 	}
 
 }

@@ -3,33 +3,34 @@ package org.bbop.termgenie.ontology.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.semanticweb.owlapi.model.IRI;
 
 
-public class CatalogXmlCvsAwareIRIMapper extends AbstractCatalogXmlScmAwareIRIMapper<CatalogXmlCvsAwareIRIMapper.CatalogXmlAwareCvsHandler> {
+public class CvsIRIMapper extends AbstractScmIRIMapper<CvsIRIMapper.CvsHandler> {
 
 	
-	public CatalogXmlCvsAwareIRIMapper(IRIMapper fallBackIRIMapper,
+	public CvsIRIMapper(IRIMapper fallBackIRIMapper,
 			String cvsRoot,
 			String cvsPassword,
 			File workFolder,
 			String checkout,
+			Map<IRI, String> mappedCVSFiles,
 			String catalogXml)
 	{
-		super(fallBackIRIMapper, new CatalogXmlAwareCvsHandler(cvsRoot, cvsPassword, workFolder, checkout), catalogXml);
+		super(fallBackIRIMapper, new CvsHandler(cvsRoot, cvsPassword, workFolder, checkout), mappedCVSFiles, catalogXml);
 	}
 	
-	
-
-	static class CatalogXmlAwareCvsHandler implements AbstractCatalogXmlScmAwareIRIMapper.FileAwareReadOnlyScm {
+	static class CvsHandler implements AbstractScmIRIMapper.FileAwareReadOnlyScm {
 
 		private final CvsTools cvs;
 		
-		CatalogXmlAwareCvsHandler(String cvsRoot,
+		CvsHandler(String cvsRoot,
 				String cvsPassword,
 				File targetFolder,
 				String checkout)
@@ -68,8 +69,13 @@ public class CatalogXmlCvsAwareIRIMapper extends AbstractCatalogXmlScmAwareIRIMa
 			if (path.startsWith(targetPath)) {
 				path = path.substring(targetPath.length());
 			}
-			cvs.update(Collections.singletonList(path));
+			try {
+				cvs.connect();
+				cvs.update(Collections.singletonList(path));
+			}
+			finally {
+				cvs.close();
+			}
 		}
-		
 	}
 }

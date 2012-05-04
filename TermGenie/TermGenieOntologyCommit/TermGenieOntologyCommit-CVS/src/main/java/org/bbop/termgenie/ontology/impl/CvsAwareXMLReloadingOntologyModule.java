@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.semanticweb.owlapi.model.IRI;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -81,10 +82,10 @@ public class CvsAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModu
 			throw new RuntimeException("Could not process remote target file: " + remoteTargetFile);
 		}
 		String checkout = remoteTargetFile.substring(0, i);
-		Map<String, String> mappedCVSFiles = Collections.singletonMap(mappedIRI, remoteTargetFile);
+		Map<IRI, String> mappedCVSFiles = Collections.singletonMap(IRI.create(mappedIRI), remoteTargetFile);
 
 		String password = null; // assume anonymous access
-		return new CvsAwareIRIMapper(fallbackIRIMapper, cvsRoot, password, new File(workFolder), mappedCVSFiles, checkout);
+		return new CvsIRIMapper(fallbackIRIMapper, cvsRoot, password, new File(workFolder), checkout, mappedCVSFiles, null);
 	}
 
 }

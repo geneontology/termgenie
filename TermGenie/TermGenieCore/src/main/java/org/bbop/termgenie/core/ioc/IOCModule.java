@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.tools.Pair;
+import org.semanticweb.owlapi.model.IRI;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -94,16 +95,36 @@ public abstract class IOCModule extends AbstractModule {
 	 * @param value
 	 */
 	protected void bind(String name, String value) {
+		bind(name, value, false);
+	}
+	
+	/**
+	 * Convenience method for binding a {@link String} parameter. Check system
+	 * properties for overwrites. Allow null values, if optional is true.
+	 * 
+	 * @param name
+	 * @param value
+	 * @param optional
+	 */
+	protected void bind(String name, String value, boolean optional) {
 		String property = getProperty(name);
 		if (property != null) {
 			value = property;
 		}
 		if (value == null) {
-			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
-			throw new RuntimeException("No value found for key: " + name);
+			if(optional) {
+				bind(String.class).annotatedWith(Names.named(name)).toProvider(Providers.<String>of(null));
+				configuredParameters.put(name, "null");
+			}
+			else {
+				Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+				throw new RuntimeException("No value found for key: " + name);
+			}
 		}
-		bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
-		configuredParameters.put(name, value);
+		else {
+			bind(String.class).annotatedWith(Names.named(name)).toInstance(value);
+			configuredParameters.put(name, value);
+		}
 	}
 	
 	/**
@@ -259,6 +280,46 @@ public abstract class IOCModule extends AbstractModule {
 		}
 		bind(File.class).annotatedWith(Names.named(name)).toInstance(value);
 		configuredParameters.put(name, value.getAbsolutePath());
+	}
+	
+	/**
+	 * Convenience method for binding a Map<IRI, String> parameter. Check system
+	 * properties for overwrites.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	protected void bindIRIMap(String name, Map<IRI, String> value) {
+		String property = getProperty(name);
+		if (property != null) {
+			property = StringUtils.trimToNull(property);
+			if (property != null) {
+				String[] split = StringUtils.split(property, ",;");
+				value = new HashMap<IRI, String>();
+				for (String string : split) {
+					String[] pair = StringUtils.split(string, "|");
+					if (pair != null && pair.length >= 2) {
+						String p1 = pair[0];
+						String p2 = pair[1];
+						if(p1 != null && p2 != null) {
+							p1 = StringUtils.trimToNull(p1);
+							p2 = StringUtils.trimToNull(p2);
+							if(p1 != null && p2 != null) {
+								value.put(IRI.create(p1), p2);
+							}
+						}
+					}
+				}
+			}
+		}
+		if (value == null) {
+			Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
+			throw new RuntimeException("No value found for file key: " + name);
+		}
+		bind(new TypeLiteral<Map<IRI, String>>() { /* Intentionally empty */}).
+					annotatedWith(Names.named(name)).
+					toInstance(value);
+		configuredParameters.put(name, value.toString());
 	}
 	
 	/**

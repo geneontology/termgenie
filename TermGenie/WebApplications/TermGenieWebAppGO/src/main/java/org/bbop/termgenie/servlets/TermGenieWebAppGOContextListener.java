@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -12,7 +14,7 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.PasswordSvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -27,6 +29,7 @@ import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.services.review.mail.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
+import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
 
@@ -61,12 +64,16 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_go.xml";
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
-		String mappedIRI = "http://www.geneontology.org/ontology/editors/gene_ontology_write.obo";
-		String remoteTargetFile = "gene_ontology_write.obo";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
 		
-		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, remoteTargetFile, mappedIRI, workFolder, svnUserName);
+		// http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
+		// gene_ontology_write.obo
+		Map<IRI, String> mappedIRIs = Collections.singletonMap(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "gene_ontology_write.obo");
+		String catalogXML = null; // no default value
+		
+		
+		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName);
 	}
 
 	@Override
