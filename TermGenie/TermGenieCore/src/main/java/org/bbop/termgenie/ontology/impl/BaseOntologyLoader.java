@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -87,10 +88,13 @@ public class BaseOntologyLoader {
 		if (w == null) {
 			return null;
 		}
-		for (String support : ontology.getSupports()) {
-			OWLOntology owl = loadOntology("support", support);
-			if (support != null) {
-				w.mergeOntology(owl);
+		final List<String> supports = ontology.getSupports();
+		if (supports != null) {
+			for (String support : supports) {
+				OWLOntology owl = loadOntology("support", support);
+				if (owl != null) {
+					w.mergeOntology(owl);
+				}
 			}
 		}
 		w.addSupportOntologiesFromImportsClosure();
