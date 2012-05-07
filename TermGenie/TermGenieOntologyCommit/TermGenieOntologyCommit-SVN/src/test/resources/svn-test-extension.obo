@@ -5,7 +5,6 @@ ontology: foo
 id: FOO:2000
 intersection_of: FOO:0003 
 intersection_of: part_of FOO:1001 
-relationship: part_of FOO:1001 
 
 [Typedef]
 id: part_of

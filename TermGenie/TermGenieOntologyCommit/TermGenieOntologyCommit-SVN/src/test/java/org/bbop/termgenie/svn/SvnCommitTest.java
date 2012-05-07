@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -26,11 +25,11 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
+import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.OntologyCleaner.NoopOntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
@@ -39,9 +38,8 @@ import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
-import org.bbop.termgenie.ontology.obo.OboParserTools;
+import org.bbop.termgenie.ontology.obo.OboPatternSpecificTermFilter;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
-import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -54,8 +52,8 @@ import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.semanticweb.owlapi.model.IRI;
@@ -127,7 +125,13 @@ public class SvnCommitTest extends TempTestFolderTools {
 		// create commit pipeline with custom temp folder
 		final File checkoutDirectory = new File(testFolder, "checkout");
 		FileUtils.forceMkdir(checkoutDirectory);
-		TermFilter<OBODoc> filter = new TestFilter("test-pattern");
+		TermFilter<OBODoc> filter = new OboPatternSpecificTermFilter(Collections.singletonMap("test-pattern", 1)){
+
+			@Override
+			protected boolean isExternalIdentifier(String id, Frame frame) {
+				return id.startsWith("FOO:1");
+			}
+		};
 		OboCommitReviewPipeline p = new OboCommitReviewPipeline(source, store, filter , helper) {
 
 			@Override
@@ -193,7 +197,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		Frame extensionTermFrame = extensionObo.getTermFrame("FOO:2001");
 		assertNotNull(extensionTermFrame);
 		assertEquals(2, extensionTermFrame.getClauses(OboFormatTag.TAG_INTERSECTION_OF).size());
-		assertEquals(1, extensionTermFrame.getClauses(OboFormatTag.TAG_RELATIONSHIP).size());
+		assertEquals(0, extensionTermFrame.getClauses(OboFormatTag.TAG_RELATIONSHIP).size());
 		
 		assertNull(extensionObo.getTermFrame("FOO:0005"));
 	}
@@ -305,72 +309,6 @@ public class SvnCommitTest extends TempTestFolderTools {
 	}
 	
 	
-	private static final class TestFilter implements TermFilter<OBODoc> {
-		
-		private final String pattern;
-		
-		public TestFilter(String pattern) {
-			super();
-			this.pattern = pattern;
-		}
-
-		@Override
-		public List<CommitedOntologyTerm> filterTerms(CommitHistoryItem item,
-				OBODoc targetOntology,
-				List<OBODoc> allOntologies, int position)
-		{
-			List<CommitedOntologyTerm> allFiltered = new ArrayList<CommitedOntologyTerm>();
-			for (CommitedOntologyTerm term : item.getTerms()) {
-				if (!pattern.equals(term.getPattern())) {
-					if (position == 0) {
-						allFiltered.add(term);
-					}
-					continue;
-				}
-				// split and remove
-				try {
-					CommitedOntologyTerm filtered = new CommitedOntologyTerm();
-					filtered.setAxioms(term.getAxioms());
-					
-					filtered.setId(term.getId());
-					filtered.setLabel(term.getLabel());
-					filtered.setOperation(term.getOperation());
-					Frame frame = OboParserTools.parseFrame(term.getId(), term.getObo());
-					boolean keepCrossProduct;
-					if (position == 0) {
-						keepCrossProduct = false;
-						filtered.setChanged(term.getChanged());
-					}
-					else {
-						keepCrossProduct = true;
-					}
-					Frame newFrame = new Frame(frame.getType());
-					newFrame.setId(frame.getId());
-					for(Clause clause : frame.getClauses()) {
-						String tag = clause.getTag();
-						if (OboFormatTag.TAG_ID.getTag().equals(tag)) {
-							newFrame.addClause(clause);
-						}
-						else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag) ||
-								OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
-							if (keepCrossProduct) {
-								newFrame.addClause(clause);
-							}
-						}
-						else if (!keepCrossProduct) {
-							newFrame.addClause(clause);
-						}
-					}
-					filtered.setObo(OboWriterTools.writeFrame(newFrame, null));
-					allFiltered.add(filtered);
-				} catch (IOException exception) {
-					throw new RuntimeException(exception);
-				}
-			}
-			return allFiltered;
-		}
-	}
-
 	private static final class NoopIRIMapper implements IRIMapper {
 
 		@Override
