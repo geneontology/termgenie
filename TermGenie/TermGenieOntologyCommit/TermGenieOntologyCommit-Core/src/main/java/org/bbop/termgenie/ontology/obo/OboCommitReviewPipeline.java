@@ -21,6 +21,7 @@ import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -85,8 +86,8 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected OboCommitData prepareWorkflow(File workFolder) throws CommitException {
-		return helper.prepareWorkflow(workFolder);
+	protected OboCommitData prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException {
+		return helper.prepareWorkflow(workFolder, nameProvider);
 	}
 
 	@Override

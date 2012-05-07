@@ -9,14 +9,18 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
+import owltools.graph.OWLGraphWrapper;
 import difflib.DiffUtils;
 import difflib.Patch;
 
@@ -209,53 +213,88 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			final ProcessState state) throws CommitException
 	{
 		ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
-		WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
-
-		VersionControlAdapter scm = prepareSCM(mode, username, password, data);
-
-		ProcessState.addMessage(state, "Preparing target ontology.");
-		List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data);
-		// check for valid ontology file
-		final List<File> scmTargetFiles = data.getSCMTargetFiles();
-		if (scmTargetFiles == null || scmTargetFiles.isEmpty()) {
-			throw error("scm target file is null");
-		}
-
-		List<CommitHistoryItem> items = retrieveItems(historyIds);
-		List<CommitResult> results = new ArrayList<Committer.CommitResult>(items.size());
-
-		boolean changed = false;
-		
-		logger.info("Start - Commiting, count: "+items.size());
-		
-		for (CommitHistoryItem item : items) {
-			if (item.isCommitted()) {
-				results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
-				continue;
-			}
-			CommitResult result = handleItem(item, state, targetOntologies, scm, data);
-			if (result != null) {
-				results.add(result);
-				changed = true;
-			}
-		}
-		logger.info("Finished - Commiting, count: "+items.size());
-		// Reload ontology after committing the changes
-		if (changed) {
-			Thread thread = new Thread() {
-
-				@Override
-				public void run() {
-					ProcessState.addMessage(state, "Start reloading ontology.");
-					source.updateManaged();
-				}
-			};
-			thread.start();
+		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, mode, username, password, workFolders, state);
+		source.runManagedTask(task);
+		if (task.exception != null) {
+			throw task.exception;
 		}
 		ProcessState.addMessage(state, "Done committing changes.");
-		return results;
+		return task.results;
 	}
 
+	private class CommittingNameProviderTask implements ManagedTask<OWLGraphWrapper> {
+
+		private final List<Integer> historyIds;
+		private final CommitMode mode;
+		private final String username;
+		private final String password;
+		private final WorkFolders workFolders;
+		private final ProcessState state;
+		private List<CommitResult> results;
+		private CommitException exception;
+
+		CommittingNameProviderTask(List<Integer> historyIds,
+				CommitMode mode,
+				String username,
+				String password,
+				final WorkFolders workFolders, 
+				final ProcessState state)
+		{
+			this.historyIds = historyIds;
+			this.mode = mode;
+			this.username = username;
+			this.password = password;
+			this.workFolders = workFolders;
+			this.state = state;
+		}
+		
+		@Override
+		public Modified run(OWLGraphWrapper graph) {
+			try {
+				ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
+				WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder, new OwlGraphWrapperNameProvider(graph));
+
+				VersionControlAdapter scm = prepareSCM(mode, username, password, data);
+
+				ProcessState.addMessage(state, "Preparing target ontology.");
+				List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data);
+				// check for valid ontology file
+				final List<File> scmTargetFiles = data.getSCMTargetFiles();
+				if (scmTargetFiles == null || scmTargetFiles.isEmpty()) {
+					throw error("scm target file is null");
+				}
+
+				List<CommitHistoryItem> items = retrieveItems(historyIds);
+				results = new ArrayList<Committer.CommitResult>(items.size());
+
+				boolean changed = false;
+				
+				logger.info("Start - Commiting, count: "+items.size());
+				
+				for (CommitHistoryItem item : items) {
+					if (item.isCommitted()) {
+						results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
+						continue;
+					}
+					CommitResult result = handleItem(item, state, targetOntologies, scm, data);
+					if (result != null) {
+						results.add(result);
+						changed = true;
+					}
+				}
+				logger.info("Finished - Commiting, count: "+items.size());
+				// Reload ontology after committing the changes
+				if (changed) {
+					ProcessState.addMessage(state, "Start reloading ontology.");
+					return Modified.update;
+				}
+			} catch (CommitException exception) {
+				this.exception = exception;
+			}
+			return Modified.no;
+		}
+		
+	}
 	
 	protected CommitResult handleItem(CommitHistoryItem item,
 			ProcessState state,
@@ -388,10 +427,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * setup of sub folders.
 	 * 
 	 * @param workFolder
+	 * @param nameProvider
 	 * @return WORKFLOWDATA
 	 * @throws CommitException
 	 */
-	protected abstract WORKFLOWDATA prepareWorkflow(File workFolder) throws CommitException;
+	protected abstract WORKFLOWDATA prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException;
 
 	/**
 	 * Prepare the SCM module for retrieving the target ontology.

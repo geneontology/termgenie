@@ -31,6 +31,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -65,6 +66,8 @@ public abstract class OboScmHelper {
 
 	public static class OboCommitData implements OntologyCommitPipelineData {
 
+		final NameProvider nameProvider;
+		
 		File scmFolder = null;
 		File oboFolder = null;
 		File oboRoundTripFolder = null;
@@ -73,6 +76,14 @@ public abstract class OboScmHelper {
 		List<File> targetOntologies = null;
 		List<File> modifiedTargetOntologies = null;
 		List<File> modifiedSCMTargetOntologies = null;
+
+		/**
+		 * @param nameProvider
+		 */
+		public OboCommitData(NameProvider nameProvider) {
+			super();
+			this.nameProvider = nameProvider;
+		}
 
 		@Override
 		public List<File> getSCMTargetFiles() {
@@ -103,8 +114,8 @@ public abstract class OboScmHelper {
 
 	}
 
-	public OboCommitData prepareWorkflow(File workFolder) throws CommitException {
-		OboCommitData data = new OboCommitData();
+	public OboCommitData prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException {
+		OboCommitData data = new OboCommitData(nameProvider);
 
 		data.scmFolder = createFolder(workFolder, "scm");
 		data.oboFolder = createFolder(workFolder, "obo");
@@ -161,7 +172,7 @@ public abstract class OboScmHelper {
 			// round trip ontology
 			// This step is required to create a minimal patch.
 			final String fileName = targetOntologyFileNames.get(i);
-			File oboFile = createOBOFile(data.oboRoundTripFolder, fileName, targetOntologies.get(i));
+			File oboFile = createOBOFile(data.oboRoundTripFolder, fileName, targetOntologies.get(i), data.nameProvider);
 			data.targetOntologies.add(oboFile);
 			// check that the round trip leads to major changes
 			// This is a requirement for applying the diff to the original scm file
@@ -216,7 +227,7 @@ public abstract class OboScmHelper {
 				// set auto-generated-by
 				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 			}
-			File oboFile = createOBOFile(data.oboFolder, targetOntologyFileNames.get(i), ontology);
+			File oboFile = createOBOFile(data.oboFolder, targetOntologyFileNames.get(i), ontology, data.nameProvider);
 			data.modifiedTargetOntologies.add(oboFile);
 		}
 	}
@@ -314,7 +325,7 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private File createOBOFile(File oboFolder, String name, OBODoc oboDoc) throws CommitException {
+	private File createOBOFile(File oboFolder, String name, OBODoc oboDoc, NameProvider nameProvider) throws CommitException {
 		BufferedWriter bufferedWriter = null;
 		try {
 			// write OBO file to temp
@@ -323,7 +334,7 @@ public abstract class OboScmHelper {
 			File oboFile = new File(oboFolder, name);
 			oboFile.getParentFile().mkdirs();
 			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
-			writer.write(oboDoc, bufferedWriter);
+			writer.write(oboDoc, bufferedWriter, nameProvider);
 			return oboFile;
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
