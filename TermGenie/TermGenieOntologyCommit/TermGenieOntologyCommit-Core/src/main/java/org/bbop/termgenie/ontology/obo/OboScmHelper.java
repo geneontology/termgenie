@@ -160,13 +160,14 @@ public abstract class OboScmHelper {
 		for (int i = 0; i < targetOntologies.size(); i++) {
 			// round trip ontology
 			// This step is required to create a minimal patch.
-			File oboFile = createOBOFile(data.oboRoundTripFolder, targetOntologyFileNames.get(i), targetOntologies.get(i));
+			final String fileName = targetOntologyFileNames.get(i);
+			File oboFile = createOBOFile(data.oboRoundTripFolder, fileName, targetOntologies.get(i));
 			data.targetOntologies.add(oboFile);
 			// check that the round trip leads to major changes
 			// This is a requirement for applying the diff to the original scm file
 			boolean noMajorChanges = compareRoundTripFile(data.scmTargetOntologies.get(i), oboFile);
 			if (noMajorChanges == false) {
-				String message = "Can write ontology for commit. Too many format changes cannot create diff.";
+				String message = "Can write ontology for commit. Too many format changes cannot create diff: "+fileName;
 				throw error(message, true);
 			}
 		}
