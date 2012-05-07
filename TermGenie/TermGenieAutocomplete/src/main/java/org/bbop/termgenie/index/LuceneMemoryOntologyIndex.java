@@ -51,35 +51,21 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	private static final String DEFAULT_FIELD = "label";
 	private static final String BRANCH_FIELD = "branch";
 	private static final String ID_FIELD = "id";
+	private static final String LENGTH_FIELD = "length";
 	private static final FieldSelector FIELD_SELECTOR = new FieldSelector() {
 
 		private static final long serialVersionUID = 139300915748750525L;
 
 		@Override
 		public FieldSelectorResult accept(String fieldName) {
-			// only load the id field
-			if (ID_FIELD.equals(fieldName)) {
+			// only load the id and length field
+			if (ID_FIELD.equals(fieldName) || LENGTH_FIELD.equals(fieldName)) {
 				return FieldSelectorResult.LOAD;
 			}
 			return FieldSelectorResult.NO_LOAD;
 		}
 	};
 
-	private final AutoCompletionTools<SearchResult> tools = new AutoCompletionTools<SearchResult>()
-	{
-
-		@Override
-		protected String getLabel(SearchResult t) {
-			return ontology.getLabel(t.hit);
-		}
-
-		@Override
-		protected String escape(String string) {
-			return QueryParser.escape(string);
-		}
-	};
-
-	private final OWLGraphWrapper ontology;
 	private final Analyzer analyzer;
 	private final IndexSearcher searcher;
 
@@ -185,7 +171,6 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			}
 			logger.info(message.toString());
 		}
-		this.ontology = ontology;
 
 		Map<String, Analyzer> alternatives = new HashMap<String, Analyzer>();
 		WhitespaceAnalyzer whitespaceAnalyzer = new WhitespaceAnalyzer(version);
@@ -205,10 +190,10 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		}
 		else {
 			if (roots == null || roots.isEmpty()) {
-				allOWLObjects = this.ontology.getAllOWLObjects();
+				allOWLObjects = ontology.getAllOWLObjects();
 			}
 			else {
-				allOWLObjects = getDecendantsReflexive(roots, taskManager);
+				allOWLObjects = getDecendantsReflexive(roots, ontology, taskManager);
 			}
 		}
 		BranchInfos branchInfos = null;
@@ -219,7 +204,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				String branchDLQuery = branch.getDlQuery();
 				List<String> ids = branch.getRoots();
 				if (ids != null && !ids.isEmpty()) {
-					branchInfos.add(name, getDecendantsReflexive(ids, taskManager));
+					branchInfos.add(name, getDecendantsReflexive(ids, ontology, taskManager));
 				}
 				else if (branchDLQuery != null) {
 					branchInfos.add(name, taskManager.executeDLQuery(branchDLQuery, ontology));
@@ -231,17 +216,18 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		int obsoleteCounter = 0;
 
 		for (OWLObject owlObject : allOWLObjects) {
-			boolean isObsolete = this.ontology.getIsObsolete(owlObject);
+			boolean isObsolete = ontology.getIsObsolete(owlObject);
 			if (isObsolete) {
 				obsoleteCounter += 1;
 				continue;
 			}
-			String value = this.ontology.getLabel(owlObject);
+			String value = ontology.getLabel(owlObject);
 			if (value != null) {
 				Document doc = new Document();
 				doc.add(new Field(DEFAULT_FIELD, value, Store.NO, Index.ANALYZED));
+				doc.add(new Field(LENGTH_FIELD, Integer.toString(value.length()), Store.YES, Index.NO));
 				try {
-					String identifier = this.ontology.getIdentifier(owlObject);
+					String identifier = ontology.getIdentifier(owlObject);
 					doc.add(new Field(ID_FIELD, identifier, Store.YES, Index.NOT_ANALYZED));
 					if (branchInfos != null && branchInfos.isValid()) {
 						List<String> brancheNames = branchInfos.getBranches(owlObject);
@@ -341,16 +327,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 	}
 
-	private Set<OWLObject> getDecendantsReflexive(List<String> ids, ReasonerTaskManager taskManager)
+	private Set<OWLObject> getDecendantsReflexive(List<String> ids, OWLGraphWrapper ontology, ReasonerTaskManager taskManager)
 	{
 		Set<OWLObject> result = new HashSet<OWLObject>();
 		for (String id : ids) {
-			OWLObject x = this.ontology.getOWLObjectByIdentifier(id);
-			if (x == null || this.ontology.getLabel(x) == null) {
+			OWLObject x = ontology.getOWLObjectByIdentifier(id);
+			if (x == null || ontology.getLabel(x) == null) {
 				throw new RuntimeException("Error: could not find term with id: " + id);
 			}
 			result.add(x);
-			Collection<OWLObject> owlObjects = taskManager.getDescendants(x, this.ontology);
+			Collection<OWLObject> owlObjects = taskManager.getDescendants(x, ontology);
 			if (owlObjects != null && !owlObjects.isEmpty()) {
 				for (OWLObject owlObject : owlObjects) {
 					if (!owlObject.isBottomEntity() && !owlObject.isTopEntity()) {
@@ -374,7 +360,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				// do not search for strings with only one char
 				return Collections.emptyList();
 			}
-			queryString = tools.preprocessQuery(queryString, ID_FIELD);
+			queryString = AutoCompletionTools.preprocessQuery(queryString, ID_FIELD);
 			if (queryString == null) {
 				// do not search for strings with no tokens
 				return Collections.emptyList();
@@ -414,16 +400,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 			for (ScoreDoc scoreDoc : scoreDocs) {
 				Document doc = searcher.doc(scoreDoc.doc, FIELD_SELECTOR);
-				String id = doc.get("id");
-				OWLObject owlObject = ontology.getOWLObjectByIdentifier(id);
-				if (owlObject != null && ontology.getLabel(owlObject) != null) {
-					if (!rerank || fEquals(maxScore, scoreDoc.score)) {
-						results.add(new SearchResult(owlObject, scoreDoc.score));
-					}
+				String id = doc.get(ID_FIELD);
+				String lengthString = doc.get(LENGTH_FIELD);
+				int length = Integer.parseInt(lengthString);
+				
+				if (!rerank || fEquals(maxScore, scoreDoc.score)) {
+					results.add(new SearchResult(id, length, scoreDoc.score));
 				}
 			}
 			if (rerank) {
-				tools.sortbyLabelLength(results);
+				AutoCompletionTools.sortbyLabelLength(results);
 			}
 			if (results.size() > maxCount) {
 				results = results.subList(0, maxCount);
@@ -454,16 +440,18 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	
 	public static class SearchResult {
 
-		public final OWLObject hit;
+		public final String id;
+		public final int length;
 		public final float score;
 
 		/**
 		 * @param hit
 		 * @param score
 		 */
-		SearchResult(OWLObject hit, float score) {
+		SearchResult(String id, int length, float score) {
 			super();
-			this.hit = hit;
+			this.id = id;
+			this.length = length;
 			this.score = score;
 		}
 	}

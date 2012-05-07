@@ -1,16 +1,18 @@
 package org.bbop.termgenie.index;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.queryParser.QueryParser;
+import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
+
 /**
  * Tools for auto-completion.
- * 
- * @param <T>
  */
-public abstract class AutoCompletionTools<T> {
+public class AutoCompletionTools {
 
 	/**
 	 * Split the string into tokens using white spaces. Ignore multiple white
@@ -23,35 +25,8 @@ public abstract class AutoCompletionTools<T> {
 		if (s.isEmpty()) {
 			return Collections.emptyList();
 		}
-
-		int start = -1;
-		for (int i = 0; i < s.length(); i++) {
-			if (!Character.isWhitespace(s.charAt(i))) {
-				start = i;
-				break;
-			}
-		}
-		if (start < 0) {
-			return Collections.emptyList();
-		}
-		List<String> tokens = new ArrayList<String>();
-		for (int i = start; i < s.length(); i++) {
-			if (Character.isWhitespace(s.charAt(i))) {
-				if (start >= 0) {
-					tokens.add(s.substring(start, i));
-					start = -1;
-				}
-			}
-			else {
-				if (start < 0) {
-					start = i;
-				}
-			}
-		}
-		if (start >= 0) {
-			tokens.add(s.substring(start, s.length()));
-		}
-		return tokens;
+		String[] split = StringUtils.split(s);
+		return Arrays.asList(split);
 	}
 
 	/**
@@ -62,7 +37,7 @@ public abstract class AutoCompletionTools<T> {
 	 * @param idField name of the ID Field
 	 * @return string or null
 	 */
-	public String preprocessQuery(String queryString, String idField) {
+	public static String preprocessQuery(String queryString, String idField) {
 		StringBuilder subquery1 = new StringBuilder();
 		StringBuilder subquery2 = new StringBuilder();
 		StringBuilder subquery3 = new StringBuilder();
@@ -73,7 +48,7 @@ public abstract class AutoCompletionTools<T> {
 		int charCount = 0;
 		for (String string : list) {
 			charCount += string.length();
-			string = escape(string);
+			string = QueryParser.escape(string);
 			if (subquery1.length() == 0) {
 				subquery1.append('(');
 				subquery2.append("(\"");
@@ -116,17 +91,14 @@ public abstract class AutoCompletionTools<T> {
 		return sb.toString();
 	}
 
-	protected abstract String escape(String string);
-
-	public void sortbyLabelLength(List<T> documents) {
-		Collections.sort(documents, new Comparator<T>() {
+	public static void sortbyLabelLength(List<SearchResult> documents) {
+		
+		Collections.sort(documents, new Comparator<SearchResult>() {
 
 			@Override
-			public int compare(T o1, T o2) {
-				final String label1 = getLabel(o1);
-				final String label2 = getLabel(o2);
-				int l1 = label1.length();
-				int l2 = label2.length();
+			public int compare(SearchResult o1, SearchResult o2) {
+				final int l1 = o1.length;
+				final int l2 = o2.length;
 				return (l1 < l2 ? -1 : (l1 == l2 ? 0 : 1));
 			}
 		});
@@ -136,5 +108,4 @@ public abstract class AutoCompletionTools<T> {
 		return Math.abs(f1 - f2) < 0.0001f;
 	}
 
-	protected abstract String getLabel(T t);
 }

@@ -1,6 +1,5 @@
 package org.bbop.termgenie.solr;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
-import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -31,9 +29,10 @@ public class BasicLuceneClient implements
 	private final String dlQuery;
 	private final List<BranchDetails> branches;
 	private final ReasonerFactory factory;
+	private OntologyTaskManager ontologyManager;
 
 	private LuceneMemoryOntologyIndex index;
-	private OWLGraphWrapper ontology;
+	
 
 	/**
 	 * Create a new instance of an {@link OntologyTermSuggestor} using a lucene
@@ -111,31 +110,9 @@ public class BasicLuceneClient implements
 			List<BranchDetails> branches,
 			ReasonerFactory factory)
 	{
-		BasicLuceneClient client = new BasicLuceneClient(name, roots, dlQuery, branches, factory);
-		LuceneClientSetupTask task = new LuceneClientSetupTask(client);
-		ontology.runManagedTask(task);
-		if (task.getException() != null) {
-			throw new RuntimeException(task.getException());
-		}
-		return task.client;
-	}
-
-	static class LuceneClientSetupTask extends OntologyTask {
-
-		BasicLuceneClient client = null;
-
-		/**
-		 * @param client
-		 */
-		LuceneClientSetupTask(BasicLuceneClient client) {
-			super();
-			this.client = client;
-		}
-
-		@Override
-		protected void runCatching(OWLGraphWrapper managed) throws Exception {
-			client.setup(managed);
-		}
+		final BasicLuceneClient client = new BasicLuceneClient(name, roots, dlQuery, branches, ontology, factory);
+		client.setup();
+		return client;
 	}
 
 	/**
@@ -143,11 +120,14 @@ public class BasicLuceneClient implements
 	 * @param roots
 	 * @param dlQuery
 	 * @param branches
+	 * @param ontologyManager
+	 * @param factory
 	 */
 	protected BasicLuceneClient(String name,
 			List<String> roots,
 			String dlQuery,
 			List<BranchDetails> branches,
+			OntologyTaskManager ontologyManager,
 			ReasonerFactory factory)
 	{
 		super();
@@ -155,32 +135,40 @@ public class BasicLuceneClient implements
 		this.roots = roots;
 		this.dlQuery = dlQuery;
 		this.branches = branches;
+		this.ontologyManager = ontologyManager;
 		this.factory = factory;
 		EventBus.subscribe(SecondaryOntologyChangeEvent.class, this);
 	}
 
-	void setup(OWLGraphWrapper ontology) {
-		this.ontology = ontology;
+	void setup() {
 		LuceneMemoryOntologyIndex old = index;
 		try {
-			index = new LuceneMemoryOntologyIndex(ontology, roots, dlQuery, branches, factory);
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
+			OntologyTask task = new OntologyTask() {
+
+				@Override
+				protected void runCatching(OWLGraphWrapper graph) throws TaskException, Exception {
+					index = new LuceneMemoryOntologyIndex(graph, roots, dlQuery, branches, factory);
+				}
+			};
+			ontologyManager.runManagedTask(task);
+			if (task.getException() != null) {
+				throw new RuntimeException(task.getException());
+			}
 		} finally {
 			if (old != null) {
 				old.close();
 			}
 		}
 	}
-
+	
 	@Override
 	public synchronized void onEvent(SecondaryOntologyChangeEvent event) {
 		// ignore event, if it's just a reset
 		if (!event.isReset()) {
 			// check if the changed ontology is the one used for this index
 			if (this.name.equals(event.getOntology().getUniqueName())) {
-				LuceneClientSetupTask task = new LuceneClientSetupTask(this);
-				event.getManager().runManagedTask(task);
+				this.ontologyManager = event.getManager();
+				setup();
 			}
 		}
 	}
@@ -192,18 +180,14 @@ public class BasicLuceneClient implements
 					maxCount,
 					ontology.getBranch());
 			if (searchResults != null && !searchResults.isEmpty()) {
-				List<String> suggestions = new ArrayList<String>(searchResults.size());
+				final List<String> suggestions = new ArrayList<String>(searchResults.size());
 				for (SearchResult searchResult : searchResults) {
-					suggestions.add(createHit(searchResult.hit));
+					suggestions.add(searchResult.id);
 				}
 				return suggestions;
 			}
 		}
 		return null;
-	}
-
-	private String createHit(OWLObject hit) {
-		return ontology.getIdentifier(hit);
 	}
 
 }

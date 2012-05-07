@@ -15,6 +15,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
 import org.junit.Test;
+import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -39,8 +40,9 @@ public class LuceneMemoryOntologyIndexTest {
 				LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
 				Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
 				for (SearchResult searchResult : results) {
-					String id = managed.getIdentifier(searchResult.hit);
-					String label = managed.getLabel(searchResult.hit);
+					String id = searchResult.id;
+					OWLObject owlObject = managed.getOWLObjectByIdentifier(id);
+					String label = managed.getLabel(owlObject);
 					System.out.println(id + "  " + searchResult.score + "  " + label);
 				}
 				assertEquals(2, results.size());
