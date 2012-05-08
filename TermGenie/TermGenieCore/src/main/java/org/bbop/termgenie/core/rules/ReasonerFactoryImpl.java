@@ -93,14 +93,9 @@ public class ReasonerFactoryImpl implements ReasonerFactory {
 	private ReasonerTaskManager createManager(OWLGraphWrapper graph,
 			final OWLReasonerFactory reasonerFactory)
 	{
-		final OWLOntology ontology = graph.getSourceOntology();
-		Set<OWLOntology> importsClosure = ontology.getImportsClosure();
-		Set<OWLOntology> supportOntologies = graph.getSupportOntologySet();
-		if (importsClosure.containsAll(supportOntologies) == false) {
-			throw new RuntimeException("Import closure for: "+ontology.getOntologyID()+" does not contain all support ontologies.");
-		}
-		
-		return new ReasonerTaskManagerImpl("reasoner-manager-" + reasonerFactory.getReasonerName() + "-" + ontology.getOntologyID(), reasonerFactory, ontology);
+		OWLOntology ontology = graph.getSourceOntology();
+		String name = "reasoner-manager-" + reasonerFactory.getReasonerName() + "-" + ontology.getOntologyID();
+		return new ReasonerTaskManagerImpl(name, reasonerFactory, ontology);
 	}
 
 	private static final class ReasonerTaskManagerImpl extends ReasonerTaskManager {

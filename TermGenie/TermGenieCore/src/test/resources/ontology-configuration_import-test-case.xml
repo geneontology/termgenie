@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="GeneOntology">
+		<source>http://test.purl.obolibrary.org/obo/base.obo</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
+			<support>http://test.purl.obolibrary.org/obo/base_xp.obo</support>
+		</supports>
+		<roots>
+			<root>FOO:0001</root>
+			<root>CHEBI:24309</root>
+		</roots>
+		<ontologybranch name="foo">
+			<roots>
+				<root>GO:0008150</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="chebi">
+			<roots>
+				<root>CHEBI:24309</root>
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>

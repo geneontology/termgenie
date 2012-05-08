@@ -1,0 +1,11 @@
+format-version: 1.2
+ontology: foo
+
+[Term]
+id: FOO:0001
+name: foo-0001
+
+[Term]
+id: FOO:0002
+name: foo-0002
+is_a: FOO:0001

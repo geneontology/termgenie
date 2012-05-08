@@ -93,6 +93,7 @@ public class BaseOntologyLoader {
 			for (String support : supports) {
 				OWLOntology owl = loadOntology("support", support);
 				if (owl != null) {
+					w.addSupportOntology(owl);
 					w.mergeOntology(owl);
 				}
 			}
