@@ -234,21 +234,17 @@
 		</ruleFiles>
 	</template>
 	-->
-	<!--
 	<template name="metabolism_catabolism_biosynthesis">
 		<description>Select all three subtemplates to generate
 terms for the "metabolic triad". Names, synonyms and definitions are all
 generated automatically</description>
 		<ontology name="GeneOntology"></ontology>
-		<external>
-			<ontology name="GOCHE"></ontology>
-			<ontology name="CHEBI"></ontology>
-		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
 		<fields>
 			<field name="target" required="true">
-				<ontology name="CHEBI"></ontology>
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
 				<prefixes>
 					<prefix>metabolism</prefix>
 					<prefix>catabolism</prefix>
@@ -260,7 +256,6 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 	</template>
-	-->
 	<!--
 	<template name="biosynthesis_from">
 		<description>biosynthetic process</description>

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,10 +68,17 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
 		
+		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
+		
 		// http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
-		// gene_ontology_write.obo
-		Map<IRI, String> mappedIRIs = Collections.singletonMap(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "gene_ontology_write.obo");
-		String catalogXML = null; // no default value
+		// editors/gene_ontology_write.obo
+		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "editors/gene_ontology_write.obo");
+			
+		// http://www.geneontology.org/ontology/editors/go_xp_chebi.obo
+		// editors/go_xp_chebi.obo
+		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/go_xp_chebi.obo"), "editors/go_xp_chebi.obo");
+					
+		String catalogXML = "extension/catalog-v001.xml";
 		
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName);
@@ -83,10 +91,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getCommitModule() {
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
-		String remoteTargetFile = "gene_ontology_write.obo";
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
+		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", null);
+		List<String> additional = Collections.singletonList("editors/go_xp_chebi.obo");
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", additional );
 	}
 	
 	

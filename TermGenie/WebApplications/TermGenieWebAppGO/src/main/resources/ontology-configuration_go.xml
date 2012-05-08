@@ -2,21 +2,17 @@
 <ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="GeneOntology">
-		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
-		</source>
+		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
+			<support>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</support>
+		</supports>
 		<roots>
 			<root>GO:0008150</root>
 			<root>GO:0003674</root>
 			<root>GO:0005575</root>
+			<root>CHEBI:24431</root>
 		</roots>
-		<!-- 
-		<requires>
-			<name>ProteinOntology</name>
-			<name>Uberon</name>
-			<name>PO</name> <!- - Plant ontology - ->
-			<name>GOCHE</name>
-		</requires>
-		 -->
 		<ontologybranch name="biological_process">
 			<roots>
 				<root>GO:0008150</root>
@@ -37,48 +33,10 @@
 				<root>GO:0050789</root>
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="chebi">
+			<roots>
+				<root>CHEBI:24431</root> <!-- chemical entity -->
+			</roots>
+		</ontologybranch>
 	</ontology>
-	<!-- 
-	<ontology name="ProteinOntology">
-		<source>ftp://ftp.pir.georgetown.edu/databases/ontology/pro_obo/pro.obo</source>
-		<roots>
-			<root>PR:000000001</root>
-		</roots>
-	</ontology>  -->
-	<!-- 
-	<ontology name="Uberon">
-		<source>https://raw.github.com/cmungall/uberon/master/uberon.obo</source>
-		<roots>
-			<root>UBERON:0001062</root>
-		</roots>
-	</ontology>
-	 -->
-	 <!-- 
-	<ontology name="PO" longName="Plant ontology">
-		<source>http://palea.cgrb.oregonstate.edu/viewsvn/Poc/tags/live/plant_ontology.obo?view=co</source>
-		<roots>
-			<root>PO:0025131</root>
-			<root>PO:0009012</root>
-		</roots>
-	</ontology>
-	 -->
-	<!-- 
-	<ontology name="CHEBI" longName="Chemical Entities of Biological Interest">
-		<source>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/chemical/chebi.obo</source>
-		<roots>
-			<root>CHEBI:24431</root> <!- - chemical entity - ->
-		</roots>
-	</ontology>
-	 -->
-	<!-- 
-	<ontology name="GOCHE">
-		<source>http://www.geneontology.org/ontology/editors/goche.obo</source>
-		<requires>
-			<name>CHEBI</name>
-		</requires>
-		<roots>
-			<root>CHEBI:24431</root> <!- - chemical entity - ->
-		</roots>
-	</ontology>
-	 -->
 </ontologyconfiguration>
