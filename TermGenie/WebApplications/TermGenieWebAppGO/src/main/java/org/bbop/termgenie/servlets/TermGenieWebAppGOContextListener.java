@@ -81,7 +81,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		// editors/go_xp_chebi.obo
 		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/go_xp_chebi.obo"), "editors/go_xp_chebi.obo");
 					
-		String catalogXML = "extension/catalog-v001.xml";
+		String catalogXML = "extensions/catalog-v001.xml";
 		
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName);
