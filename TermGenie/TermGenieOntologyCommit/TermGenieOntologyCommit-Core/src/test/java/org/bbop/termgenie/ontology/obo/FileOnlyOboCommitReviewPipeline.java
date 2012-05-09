@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -29,7 +30,7 @@ public class FileOnlyOboCommitReviewPipeline extends OboCommitReviewPipeline {
 			TermFilter<OBODoc> termFilter,
 			final String localFolder) throws IOException
 	{
-		super(source, store, termFilter, helper);
+		super(source, store, termFilter, new NoopReviewMailHandler(), helper);
 		this.localFolder = new File(localFolder);
 		FileUtils.forceMkdir(this.localFolder);
 	}

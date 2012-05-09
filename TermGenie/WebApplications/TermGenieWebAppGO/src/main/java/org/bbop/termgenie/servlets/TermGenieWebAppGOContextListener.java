@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
+import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
@@ -30,7 +31,6 @@ import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredRe
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
-import org.bbop.termgenie.services.review.mail.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.IRI;

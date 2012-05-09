@@ -1,10 +1,9 @@
-package org.bbop.termgenie.services.review.mail;
+package org.bbop.termgenie.mail.review;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
-import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
+import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 
 import com.google.inject.Singleton;
 
@@ -12,7 +11,7 @@ import com.google.inject.Singleton;
 public class NoopReviewMailHandler implements ReviewMailHandler {
 
 	@Override
-	public void handleReviewMail(List<Integer> historyIds, AfterReview afterReview) {
+	public void handleReviewMail(CommitHistoryItem item) {
 		// do nothing
 	}
 

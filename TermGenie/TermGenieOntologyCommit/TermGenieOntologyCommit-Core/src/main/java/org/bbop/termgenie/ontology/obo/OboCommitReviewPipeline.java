@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
@@ -35,9 +36,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<OBODoc> termFilter,
+			ReviewMailHandler handler,
 			OboScmHelper helper)
 	{
-		super(source, store, termFilter, helper.isSupportAnonymus());
+		super(source, store, termFilter, handler, helper.isSupportAnonymus());
 		this.helper = helper;
 		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
 	}
@@ -125,6 +127,11 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 			throws CommitException
 	{
 		return helper.applyHistoryChanges(terms, ontology);
+	}
+
+	@Override
+	protected void updateNameProvider(OboCommitData data, List<OBODoc> targetOntologies) {
+		helper.updateNameProvider(data, targetOntologies);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -42,16 +43,19 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	protected final OntologyTaskManager source;
 	private final CommitHistoryStore store;
 	private final TermFilter<ONTOLOGY> termFilter;
+	private final ReviewMailHandler handler;
 	private final boolean supportAnonymus;
 
 	protected OntologyCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<ONTOLOGY> termFilter,
+			ReviewMailHandler handler,
 			boolean supportAnonymus)
 	{
 		super();
 		this.source = source;
 		this.termFilter = termFilter;
+		this.handler = handler;
 		this.supportAnonymus = supportAnonymus;
 		this.store = store;
 	}
@@ -213,7 +217,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			final ProcessState state) throws CommitException
 	{
 		ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
-		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, mode, username, password, workFolders, state);
+		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, mode, username, password, workFolders, handler, state);
 		source.runManagedTask(task);
 		if (task.exception != null) {
 			throw task.exception;
@@ -230,6 +234,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		private final String password;
 		private final WorkFolders workFolders;
 		private final ProcessState state;
+		private final ReviewMailHandler handler;
 		private List<CommitResult> results;
 		private CommitException exception;
 
@@ -237,7 +242,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				CommitMode mode,
 				String username,
 				String password,
-				final WorkFolders workFolders, 
+				final WorkFolders workFolders,
+				ReviewMailHandler handler,
 				final ProcessState state)
 		{
 			this.historyIds = historyIds;
@@ -245,6 +251,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			this.username = username;
 			this.password = password;
 			this.workFolders = workFolders;
+			this.handler = handler;
 			this.state = state;
 		}
 		
@@ -280,6 +287,9 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 					if (result != null) {
 						results.add(result);
 						changed = true;
+						if (result.isSuccess()) {
+							handler.handleReviewMail(item);
+						}
 					}
 				}
 				logger.info("Finished - Commiting, count: "+items.size());
@@ -340,6 +350,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				}
 			}
 		}
+		updateNameProvider(data, targetOntologies);
 		
 		// write changed ontology to a file
 		createModifiedTargetFiles(data, targetOntologies, item.getSavedBy());
@@ -491,6 +502,15 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	protected abstract boolean applyChanges(List<CommitedOntologyTerm> terms,
 			ONTOLOGY ontology) throws CommitException;
 
+	/**
+	 * Update the name provider with the given set of ontologies. Is called
+	 * after {@link #applyChanges(List, Object)}.
+	 * 
+	 * @param data
+	 * @param targetOntologies
+	 */
+	protected abstract void updateNameProvider(WORKFLOWDATA data, List<ONTOLOGY> targetOntologies);
+	
 	/**
 	 * Write the ontology to file.
 	 * 

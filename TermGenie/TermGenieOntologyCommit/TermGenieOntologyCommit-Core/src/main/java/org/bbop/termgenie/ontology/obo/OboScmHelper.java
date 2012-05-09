@@ -32,6 +32,7 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -66,7 +67,7 @@ public abstract class OboScmHelper {
 
 	public static class OboCommitData implements OntologyCommitPipelineData {
 
-		final NameProvider nameProvider;
+		final MixingNameProvider nameProvider;
 		
 		File scmFolder = null;
 		File oboFolder = null;
@@ -82,7 +83,7 @@ public abstract class OboScmHelper {
 		 */
 		public OboCommitData(NameProvider nameProvider) {
 			super();
-			this.nameProvider = nameProvider;
+			this.nameProvider = new MixingNameProvider(nameProvider);
 		}
 
 		@Override
@@ -112,6 +113,47 @@ public abstract class OboScmHelper {
 			return scmFolder;
 		}
 
+		
+		static class MixingNameProvider implements NameProvider {
+
+			private final NameProvider mainProvider;
+			private List<OBODocNameProvider> otherProvider = null;
+
+			MixingNameProvider(NameProvider mainProvider) {
+				this.mainProvider = mainProvider;
+			}
+
+			@Override
+			public String getName(String id) {
+				String name = mainProvider.getName(id);
+				if (name != null) {
+					return name;
+				}
+				if (otherProvider != null) {
+					for (OBODocNameProvider oboDocNameProvider : otherProvider) {
+						name = oboDocNameProvider.getName(id);
+						if (name != null) {
+							return name;
+						}
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public String getDefaultOboNamespace() {
+				return mainProvider.getDefaultOboNamespace();
+			}
+			
+			public void updateOntologies(List<OBODoc> ontologies) {
+				List<OBODocNameProvider> otherProvider = new ArrayList<OBODocNameProvider>(ontologies.size());
+				for (OBODoc oboDoc : ontologies) {
+					otherProvider.add(new OBODocNameProvider(oboDoc));
+				}				
+				this.otherProvider = otherProvider;
+			}
+			
+		}
 	}
 
 	public OboCommitData prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException {
@@ -208,6 +250,10 @@ public abstract class OboScmHelper {
 		return success;
 	}
 
+	public void updateNameProvider(OboCommitData data, List<OBODoc> targetOntologies) {
+		data.nameProvider.updateOntologies(targetOntologies);
+	}
+
 	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, String savedBy)
 			throws CommitException
 	{
@@ -284,7 +330,7 @@ public abstract class OboScmHelper {
 		// the overall structure of the document
 		int lineDiffCount = Math.abs(sourceCount - roundTripCount);
 		Logger.getLogger(getClass()).info("Line diffs: "+lineDiffCount+ " Original: "+sourceCount+" RoundTrip: "+roundTripCount);
-		return lineDiffCount <= 1;
+		return lineDiffCount == 0;
 	}
 
 	private int countLines(File file) throws CommitException {

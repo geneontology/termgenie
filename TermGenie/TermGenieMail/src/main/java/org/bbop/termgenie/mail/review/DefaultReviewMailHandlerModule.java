@@ -1,4 +1,4 @@
-package org.bbop.termgenie.services.review.mail;
+package org.bbop.termgenie.mail.review;
 
 import java.util.Properties;
 

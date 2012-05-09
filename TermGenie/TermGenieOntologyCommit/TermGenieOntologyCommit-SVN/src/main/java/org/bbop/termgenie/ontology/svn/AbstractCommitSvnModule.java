@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology.svn;
 import java.util.List;
 import java.util.Properties;
 
+import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.AbstractCommitModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
@@ -58,9 +59,10 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<OBODoc> filter,
+			ReviewMailHandler handler,
 			OboScmHelper helper)
 	{
-		return new OboCommitReviewPipeline(source, store, filter, helper);
+		return new OboCommitReviewPipeline(source, store, filter, handler, helper);
 	}
 
 	@Singleton

@@ -32,5 +32,10 @@
 			<artifactId>commons-email</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bbop.termgenie</groupId>
+			<artifactId>TermGeniePersistence</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 </project>

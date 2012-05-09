@@ -20,6 +20,7 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
@@ -132,7 +133,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 				return id.startsWith("FOO:1");
 			}
 		};
-		OboCommitReviewPipeline p = new OboCommitReviewPipeline(source, store, filter , helper) {
+		OboCommitReviewPipeline p = new OboCommitReviewPipeline(source, store, filter, new NoopReviewMailHandler(), helper) {
 
 			@Override
 			protected WorkFolders createTempDir() throws CommitException {

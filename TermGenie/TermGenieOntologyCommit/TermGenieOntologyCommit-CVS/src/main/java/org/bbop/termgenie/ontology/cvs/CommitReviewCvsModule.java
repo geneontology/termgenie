@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.cvs;
 
 import java.util.Properties;
 
+import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.AbstractCommitModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
@@ -57,9 +58,10 @@ public class CommitReviewCvsModule extends AbstractCommitModule {
 	@Provides
 	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
 			CommitHistoryStore store,
+			ReviewMailHandler handler,
 			OboScmHelper helper) {
 		TermFilter<OBODoc> filter = new DefaultOboTermFilter();
-		return new OboCommitReviewPipeline(source, store, filter , helper);
+		return new OboCommitReviewPipeline(source, store, filter, handler, helper);
 	}
 
 	@Singleton

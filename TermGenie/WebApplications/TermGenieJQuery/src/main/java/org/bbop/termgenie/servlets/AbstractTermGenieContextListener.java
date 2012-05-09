@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
+import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.services.GenerateTermsService;
 import org.bbop.termgenie.services.OntologyService;
 import org.bbop.termgenie.services.ProgressMonitor;
@@ -31,7 +32,6 @@ import org.bbop.termgenie.services.resources.ResourceProviderModule.EmptyResourc
 import org.bbop.termgenie.services.resources.ResourceProviderService;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
-import org.bbop.termgenie.services.review.mail.NoopReviewMailHandler;
 import org.bbop.termgenie.services.visualization.TermHierarchyModule;
 import org.bbop.termgenie.services.visualization.TermHierarchyRenderer;
 import org.bbop.termgenie.tools.TermGenieToolsModule;
