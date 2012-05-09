@@ -84,6 +84,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		bindIRIMap("SVNAwareIRIMapperMappedIRIs", mappedIRIs);
 		bind("SVNAwareIRIMapperCatalogXML", catalogXML, true);
 		bind("SVNAwareIRIMapperSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
+		bindAdditional();
 	}
 	
 	protected void bindAdditional() {
