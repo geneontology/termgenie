@@ -115,7 +115,7 @@ public class SvnTool implements VersionControlAdapter {
 	public boolean checkout(List<String> targetFiles) throws IOException {
 		checkConnection();
 		try {
-			logger.info("Start checkout for files: "+targetFiles);
+			logger.info("Start checkout for files: "+targetFiles+" URL: "+repositoryURL+" Folder: "+targetFolder);
 			SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 			SVNRevision pegRevision = SVNRevision.HEAD;
 			SVNRevision revision = SVNRevision.HEAD;
@@ -137,7 +137,7 @@ public class SvnTool implements VersionControlAdapter {
 	@Override
 	public boolean commit(String message, List<String> targets) throws IOException {
 		checkConnection();
-		logger.info("Start commit for targets: "+targets);
+		logger.info("Start commit for targets: "+targets+" URL: "+repositoryURL);
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();
 		try {
 			File[] paths = new File[targets.size()];
@@ -159,7 +159,7 @@ public class SvnTool implements VersionControlAdapter {
 	@Override
 	public boolean update(List<String> targets) throws IOException {
 		checkConnection();
-		logger.info("Start update for targets: "+targets);
+		logger.info("Start update for targets: "+targets+" URL: "+repositoryURL);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		try {
 			File[] paths = new File[targets.size()];
