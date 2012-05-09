@@ -96,10 +96,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	
 	
 	protected AbstractTermGenieContextListener(String applicationPropertyConfigName) {
-		applicationProperties = new Properties();
-		applicationProperties.isEmpty();
-		String property = IOCModule.getSystemProperty(applicationPropertyConfigName);
 		final Logger logger = Logger.getLogger(getClass());
+		logger.info("Checking for global application configuration property: "+applicationPropertyConfigName);
+		applicationProperties = new Properties();
+		String property = IOCModule.getSystemProperty(applicationPropertyConfigName);
 		if (property != null) {
 			File propertyFile = new File(property);
 			if (propertyFile.isFile() && propertyFile.canRead()) {
