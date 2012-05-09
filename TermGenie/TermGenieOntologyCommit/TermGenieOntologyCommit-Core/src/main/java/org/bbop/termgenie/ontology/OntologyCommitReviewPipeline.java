@@ -264,7 +264,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				VersionControlAdapter scm = prepareSCM(mode, username, password, data);
 
 				ProcessState.addMessage(state, "Preparing target ontology.");
-				List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data);
+				List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data, state);
 				// check for valid ontology file
 				final List<File> scmTargetFiles = data.getSCMTargetFiles();
 				if (scmTargetFiles == null || scmTargetFiles.isEmpty()) {
@@ -313,7 +313,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			WORKFLOWDATA data) throws CommitException
 	{
 		ProcessState.addMessage(state, "Updating target ontology from repository.");
-		updateSCM(scm, targetOntologies, data);
+		updateSCM(scm, targetOntologies, data, state);
 
 		checkTargetOntology(data, targetOntologies);
 
@@ -398,7 +398,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		// commit the changes to the repository
 		ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
 		String diff = diffBuilder.toString();
-		commitToRepository(item.getCommitMessage(), scm, data, diff);
+		commitToRepository(item.getCommitMessage(), scm, data, diff, state);
 		ProcessState.addMessage(state, "Successfull commit of patch", diff);
 
 		// set the commit also to success in the commit history
@@ -467,7 +467,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @param data
 	 * @throws CommitException
 	 */
-	protected abstract void updateSCM(VersionControlAdapter scm, List<ONTOLOGY> targetOntologies, WORKFLOWDATA data)
+	protected abstract void updateSCM(VersionControlAdapter scm, List<ONTOLOGY> targetOntologies, WORKFLOWDATA data, ProcessState state)
 			throws CommitException;
 
 	/**
@@ -477,7 +477,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @return ONTOLOGY
 	 * @throws CommitException
 	 */
-	protected abstract List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, WORKFLOWDATA data)
+	protected abstract List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, WORKFLOWDATA data, ProcessState state)
 			throws CommitException;
 
 	/**
@@ -534,7 +534,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	protected abstract void commitToRepository(String username,
 			VersionControlAdapter scm,
 			WORKFLOWDATA data,
-			String diff) throws CommitException;
+			String diff, 
+			ProcessState state) throws CommitException;
 
 	private Pair<String, Patch> createUnifiedDiff(File originalFile,
 			File revisedFile,

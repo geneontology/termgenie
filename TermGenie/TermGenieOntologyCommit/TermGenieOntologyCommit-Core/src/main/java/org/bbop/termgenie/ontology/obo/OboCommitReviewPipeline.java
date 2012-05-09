@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -102,17 +103,17 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void updateSCM(VersionControlAdapter scm, List<OBODoc> targetOntologies, OboCommitData data)
+	protected void updateSCM(VersionControlAdapter scm, List<OBODoc> targetOntologies, OboCommitData data, ProcessState state)
 			throws CommitException
 	{
-		helper.updateSCM(scm);
+		helper.updateSCM(scm, state);
 	}
 
 	@Override
-	protected List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data)
+	protected List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data, ProcessState state)
 			throws CommitException
 	{
-		return helper.retrieveTargetOntologies(scm, data);
+		return helper.retrieveTargetOntologies(scm, data, state);
 	}
 
 	@Override
@@ -142,10 +143,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void commitToRepository(String commitMessage, VersionControlAdapter scm, OboCommitData data, String diff)
+	protected void commitToRepository(String commitMessage, VersionControlAdapter scm, OboCommitData data, String diff, ProcessState state)
 			throws CommitException
 	{
-		helper.commitToRepository(commitMessage, scm, data, diff);
+		helper.commitToRepository(commitMessage, scm, data, diff, state);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -112,7 +113,7 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean checkout(List<String> targetFiles) throws IOException {
+	public boolean checkout(List<String> targetFiles, ProcessState state) throws IOException {
 		checkConnection();
 		try {
 			logger.info("Start checkout for files: "+targetFiles+" URL: "+repositoryURL+" Folder: "+targetFolder);
@@ -135,7 +136,7 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean commit(String message, List<String> targets) throws IOException {
+	public boolean commit(String message, List<String> targets, ProcessState state) throws IOException {
 		checkConnection();
 		logger.info("Start commit for targets: "+targets+" URL: "+repositoryURL);
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();
@@ -157,7 +158,7 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean update(List<String> targets) throws IOException {
+	public boolean update(List<String> targets, ProcessState state) throws IOException {
 		checkConnection();
 		logger.info("Start update for targets: "+targets+" URL: "+repositoryURL);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();

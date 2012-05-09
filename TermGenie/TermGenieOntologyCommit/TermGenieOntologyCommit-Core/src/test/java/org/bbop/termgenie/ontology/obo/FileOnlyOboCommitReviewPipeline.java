@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
@@ -39,7 +40,8 @@ public class FileOnlyOboCommitReviewPipeline extends OboCommitReviewPipeline {
 	protected void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
 			OboCommitData data,
-			String diff) throws CommitException
+			String diff,
+			ProcessState state) throws CommitException
 	{
 		Logger.getLogger(getClass()).info("Commit to file. Message:\n" + commitMessage);
 		for(File modifiedSCMTargetFile : data.getModifiedSCMTargetFiles()) {

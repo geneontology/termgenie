@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.semanticweb.owlapi.model.IRI;
@@ -43,7 +44,7 @@ public class CvsIRIMapper extends AbstractScmIRIMapper<CvsIRIMapper.CvsHandler> 
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				cvs.connect();
-				cvs.checkout(Collections.singletonList(checkout));
+				cvs.checkout(Collections.singletonList(checkout), ProcessState.NO);
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
@@ -71,7 +72,7 @@ public class CvsIRIMapper extends AbstractScmIRIMapper<CvsIRIMapper.CvsHandler> 
 			}
 			try {
 				cvs.connect();
-				cvs.update(Collections.singletonList(path));
+				cvs.update(Collections.singletonList(path), ProcessState.NO);
 			}
 			finally {
 				cvs.close();

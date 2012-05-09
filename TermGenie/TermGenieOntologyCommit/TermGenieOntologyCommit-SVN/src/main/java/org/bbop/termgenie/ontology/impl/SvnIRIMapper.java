@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.svn.SvnTool;
 import org.semanticweb.owlapi.model.IRI;
@@ -38,7 +39,7 @@ public class SvnIRIMapper extends AbstractScmIRIMapper<SvnIRIMapper.SvnHandler>
 				// always clean the work directory.
 				FileUtils.cleanDirectory(targetFolder);
 				svn.connect();
-				boolean success = svn.checkout(checkouts);
+				boolean success = svn.checkout(checkouts, ProcessState.NO);
 				if (!success) {
 					throw new RuntimeException("Checkout not successfull");
 				}
@@ -69,7 +70,7 @@ public class SvnIRIMapper extends AbstractScmIRIMapper<SvnIRIMapper.SvnHandler>
 			}
 			try {
 				svn.connect();
-				svn.update(Collections.singletonList(path));
+				svn.update(Collections.singletonList(path), ProcessState.NO);
 			}
 			finally {
 				try {

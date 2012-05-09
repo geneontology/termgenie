@@ -162,7 +162,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 			public Modified run(AfterReview afterReview)
 			{
 				try {
-					List<CommitResult> results = afterReview.commit(Collections.singletonList(commitID), ProcessState.getProcessState(null));
+					List<CommitResult> results = afterReview.commit(Collections.singletonList(commitID), ProcessState.NO);
 					assertEquals(1, results.size());
 					
 					CommitResult commitResult = results.get(0);
@@ -179,7 +179,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		
 		SvnTool svnTool = new SvnTool(new File(testFolder, "verification"), svnTools.getTwo(), svnTools.getThree());
 		svnTool.connect();
-		boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"));
+		boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"), ProcessState.NO);
 		svnTool.close();
 		assertTrue(checkout);
 		
@@ -207,7 +207,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		final SvnTool svnTool = svnTools.getOne();
 		try {
 			svnTool.connect();
-			boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"));
+			boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"), ProcessState.NO);
 			svnTool.close();
 			assertTrue(checkout);
 		} catch (IOException exception) {
@@ -221,7 +221,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 				try {
 					OBOFormatParser p = new OBOFormatParser();
 					svnTool.connect();
-					boolean update = svnTool.update(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"));
+					boolean update = svnTool.update(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"), ProcessState.NO);
 					assertTrue(update);
 					svnTool.close();
 					File local = svnTool.getTargetFolder();

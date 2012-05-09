@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
@@ -175,11 +176,11 @@ public abstract class OboScmHelper {
 			String password,
 			File scmFolder) throws CommitException;
 
-	public List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data)
+	public List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data, ProcessState state)
 			throws CommitException
 	{
 		// check-out ontology from SCM repository
-		scmCheckout(scm);
+		scmCheckout(scm, state);
 		data.scmTargetOntologies = new ArrayList<File>(targetOntologyFileNames.size());
 		for(String name : targetOntologyFileNames) {
 			data.scmTargetOntologies.add(new File(data.scmFolder, name));
@@ -189,12 +190,12 @@ public abstract class OboScmHelper {
 		return loadOntologies(data.scmTargetOntologies);
 	}
 	
-	public void updateSCM(VersionControlAdapter scm)
+	public void updateSCM(VersionControlAdapter scm, ProcessState state)
 			throws CommitException
 	{
 		try {
 			scm.connect();
-			scm.update(targetOntologyFileNames);
+			scm.update(targetOntologyFileNames, state);
 		} catch (IOException exception) {
 			throw error("Could not update scm repository", exception, false);
 		} finally {
@@ -292,12 +293,14 @@ public abstract class OboScmHelper {
 	 * @param scm
 	 * @param data
 	 * @param diff
+	 * @param state
 	 * @throws CommitException
 	 */
 	public void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
 			OboCommitData data,
-			String diff) throws CommitException
+			String diff,
+			ProcessState state) throws CommitException
 	{
 		final List<File> modifiedSCMTargetFiles = data.getModifiedSCMTargetFiles();
 		final List<File> scmTargetFiles = data.getSCMTargetFiles();
@@ -307,7 +310,7 @@ public abstract class OboScmHelper {
 
 		try {
 			scm.connect();
-			scm.commit(commitMessage, targetOntologyFileNames);
+			scm.commit(commitMessage, targetOntologyFileNames, state);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}
@@ -348,12 +351,12 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private void scmCheckout(VersionControlAdapter scm) throws CommitException {
+	private void scmCheckout(VersionControlAdapter scm, ProcessState state) throws CommitException {
 		try {
 			// scm checkout
 			scm.connect();
 			
-			boolean success = scm.checkout(targetOntologyFileNames);
+			boolean success = scm.checkout(targetOntologyFileNames, state);
 			if (!success) {
 				String message = "Could not checkout recent copy of the ontology";
 				throw error(message, true);

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.netbeans.lib.cvsclient.CVSRoot;
 import org.netbeans.lib.cvsclient.Client;
@@ -141,12 +142,13 @@ public class CvsTools implements VersionControlAdapter {
 	 * @see #connect()
 	 * @see #close()
 	 * @param cvsFiles
+	 * @param state
 	 * @return true, if the CVS check out operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
 	@Override
-	public boolean checkout(List<String> cvsFiles) throws IOException {
+	public boolean checkout(List<String> cvsFiles, ProcessState state) throws IOException {
 		checkConnection();
 		CheckoutCommand co = new CheckoutCommand();
 		co.setModule(cvsFiles.get(0)); // TODO write a warning or throw an error is list is longer than 1
@@ -169,12 +171,13 @@ public class CvsTools implements VersionControlAdapter {
 	 * Commit the current checkout with the given message. 
 	 * 
 	 * @param message the commit message
+	 * @param state
 	 * @return true, if the CVS commit operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
 	@Override
-	public boolean commit(String message, List<String> cvsFiles) throws IOException {
+	public boolean commit(String message, List<String> cvsFiles, ProcessState state) throws IOException {
 		checkConnection();
 		CommitCommand commit = new CommitCommand();
 		commit.setMessage(message);
@@ -195,7 +198,7 @@ public class CvsTools implements VersionControlAdapter {
 	}
 	
 	@Override
-	public boolean update(List<String> cvsFiles) throws IOException {
+	public boolean update(List<String> cvsFiles, ProcessState state) throws IOException {
 		checkConnection();
 		UpdateCommand update = new UpdateCommand();
 		update.setRecursive(true);

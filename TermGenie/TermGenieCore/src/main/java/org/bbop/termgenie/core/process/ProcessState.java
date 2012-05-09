@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ProcessState {
 
-	private static final ProcessState NO = null;
+	public static final ProcessState NO = null;
 	private static final Map<String, ProcessState> REGISTRY = new HashMap<String, ProcessState>();
 
 	private final List<ProcessStateMessage> messages = new ArrayList<ProcessStateMessage>();
