@@ -15,7 +15,9 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
+import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.obo.OboPatternSpecificTermFilter;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -30,6 +32,7 @@ import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.services.review.mail.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
@@ -91,11 +94,20 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getCommitModule() {
+		final Map<String, Integer> specialPatterns = Collections.singletonMap("metabolism_catabolism_biosynthesis", 1);
+		
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value
 		List<String> additional = Collections.singletonList("editors/go_xp_chebi.obo");
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", additional );
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", additional ){
+
+			@Override
+			protected TermFilter<OBODoc> provideTermFilter() {
+				return new OboPatternSpecificTermFilter(specialPatterns);
+			}
+			
+		};
 	}
 	
 	
