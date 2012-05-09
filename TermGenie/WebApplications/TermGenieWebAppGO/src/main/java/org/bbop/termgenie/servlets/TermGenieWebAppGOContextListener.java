@@ -67,7 +67,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_go.xml";
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology/editors";
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
 		
