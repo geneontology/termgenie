@@ -9,15 +9,19 @@ import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.scm.VersionControlAdapter;
+import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.wc.ISVNEventHandler;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCommitClient;
+import org.tmatesoft.svn.core.wc.SVNEvent;
+import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
@@ -113,22 +117,55 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean checkout(List<String> targetFiles, ProcessState state) throws IOException {
+	public boolean checkout(List<String> targetFiles, final ProcessState state) throws IOException {
 		checkConnection();
 		try {
-			logger.info("Start checkout for files: "+targetFiles+" URL: "+repositoryURL+" Folder: "+targetFolder);
+			String startMessage = "Start checkout for files: "+targetFiles+" URL: "+repositoryURL;
+			ProcessState.addMessage(state, startMessage);
+			logger.info(startMessage+" Folder: "+targetFolder);
 			SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 			SVNRevision pegRevision = SVNRevision.HEAD;
 			SVNRevision revision = SVNRevision.HEAD;
 			SVNDepth depth = SVNDepth.INFINITY;
+			ISVNEventHandler handler = new ISVNEventHandler() {
+
+				@Override
+				public void checkCancelled() throws SVNCancelException {
+					// do nothing
+				}
+
+				@Override
+				public void handleEvent(SVNEvent event, double progress) throws SVNException {
+					SVNEventAction action = event.getAction();
+					if (action != null) {
+						if (SVNEventAction.UPDATE_ADD.equals(action)) {
+							// add
+							String message = "A   " + getRelativePath(event.getFile());
+							ProcessState.addMessage(state, message);
+							logger.info(message);
+
+						}
+						else if (SVNEventAction.UPDATE_EXTERNAL.equals(action)) {
+							// external
+							String message = "External   "+ getRelativePath(event.getFile());
+							ProcessState.addMessage(state, message);
+							logger.info(message);
+						}
+					}
+				}
+			};
+			updateClient.setEventHandler(handler);
 			updateClient.doCheckout(repositoryURL, targetFolder, pegRevision, revision, depth, true);
+			
 			
 			boolean success = true;
 			for(String targetFile : targetFiles) {
 				File file = new File(targetFolder, targetFile);
 				success = success && file.isFile() && file.canRead() && file.canWrite();
 			}
-			logger.info("Finished checkout for files: "+targetFiles);
+			String endMessage = "Finished checkout for files: "+targetFiles;
+			ProcessState.addMessage(state, endMessage);
+			logger.info(endMessage);
 			return success;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
@@ -185,6 +222,11 @@ public class SvnTool implements VersionControlAdapter {
 
 	public File getTargetFolder() {
 		return targetFolder;
+	}
+	
+	private String getRelativePath(File subPath) {
+		String relative = targetFolder.toURI().relativize(subPath.toURI()).getPath();
+		return relative;
 	}
 
 	static final class SvnLogger extends SVNDebugLogAdapter {
