@@ -235,7 +235,9 @@ public abstract class OboScmHelper {
 						changes,
 						term.getOperation(),
 						oboDoc);
-				data.nameProvider.addName(frame.getId(), term.getLabel());
+				if (data != null && data.nameProvider != null) {
+					data.nameProvider.addName(frame.getId(), term.getLabel());
+				}
 				success = success && csuccess;
 			}
 		}
