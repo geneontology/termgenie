@@ -79,8 +79,8 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 				response = client.execute(post);
 			}
 			StatusLine statusLine = response.getStatusLine();
+			HttpEntity entity = response.getEntity();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-				HttpEntity entity = response.getEntity();
 				String json = EntityUtils.toString(entity);
 				BrowserIdVerificationResponse details = gson.fromJson(json,
 						BrowserIdVerificationResponse.class);
@@ -98,6 +98,9 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 						return new JsonUserData("BrowserID could not be verified status: " + details.status + " reason: " + details.reason);
 					}
 				}
+			}
+			else {
+				EntityUtils.consume(entity);
 			}
 			return new JsonUserData("BrowserID could not be verified.");
 		} catch (Exception exception) {
