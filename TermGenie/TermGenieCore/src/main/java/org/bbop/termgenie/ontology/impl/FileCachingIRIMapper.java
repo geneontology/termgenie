@@ -28,6 +28,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.semanticweb.owlapi.model.IRI;
@@ -84,11 +85,12 @@ public class FileCachingIRIMapper implements IRIMapper {
 		}
 		DefaultHttpClient client = new DefaultHttpClient();
 		try {
-			DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+			final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 			client.setRedirectStrategy(redirectStrategy);
-			HttpGet request = new HttpGet(url.toURI());
-			HttpResponse response = client.execute(request);
-			StatusLine statusLine = response.getStatusLine();
+			final HttpGet request = new HttpGet(url.toURI());
+			final HttpResponse response = client.execute(request);
+			final HttpEntity entity = response.getEntity();
+			final StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
 				StringBuilder message = new StringBuilder();
 				message.append("Web request failed with status code: ");
@@ -98,9 +100,9 @@ public class FileCachingIRIMapper implements IRIMapper {
 					message.append(" reason: ");
 					message.append(reasonPhrase);
 				}
+				EntityUtils.consume(entity);
 				return handleError(url, new IOException(message.toString()));
 			}
-			HttpEntity entity = response.getEntity();
 			return entity.getContent();
 		} catch (URISyntaxException exception) {
 			// non-recoverable error
