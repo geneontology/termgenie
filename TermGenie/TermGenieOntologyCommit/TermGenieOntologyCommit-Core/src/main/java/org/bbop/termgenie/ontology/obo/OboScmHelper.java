@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -33,7 +35,6 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
-import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -118,7 +119,7 @@ public abstract class OboScmHelper {
 		static class MixingNameProvider implements NameProvider {
 
 			private final NameProvider mainProvider;
-			private List<OBODocNameProvider> otherProvider = null;
+			private Map<String, String> otherNames = new HashMap<String, String>();
 
 			MixingNameProvider(NameProvider mainProvider) {
 				this.mainProvider = mainProvider;
@@ -130,15 +131,7 @@ public abstract class OboScmHelper {
 				if (name != null) {
 					return name;
 				}
-				if (otherProvider != null) {
-					for (OBODocNameProvider oboDocNameProvider : otherProvider) {
-						name = oboDocNameProvider.getName(id);
-						if (name != null) {
-							return name;
-						}
-					}
-				}
-				return null;
+				return otherNames.get(id);
 			}
 
 			@Override
@@ -146,12 +139,8 @@ public abstract class OboScmHelper {
 				return mainProvider.getDefaultOboNamespace();
 			}
 			
-			public void updateOntologies(List<OBODoc> ontologies) {
-				List<OBODocNameProvider> otherProvider = new ArrayList<OBODocNameProvider>(ontologies.size());
-				for (OBODoc oboDoc : ontologies) {
-					otherProvider.add(new OBODocNameProvider(oboDoc));
-				}				
-				this.otherProvider = otherProvider;
+			public void addName(String id, String name) {
+				otherNames.put(id, name);
 			}
 			
 		}
@@ -228,12 +217,13 @@ public abstract class OboScmHelper {
 	}
 
 	/**
+	 * @param data
 	 * @param terms
 	 * @param oboDoc
 	 * @return true, if changes have been apply successfully
 	 * @throws CommitException
 	 */
-	public boolean applyHistoryChanges(List<CommitedOntologyTerm> terms, OBODoc oboDoc)
+	public boolean applyHistoryChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc oboDoc)
 			throws CommitException
 	{
 		boolean success = true;
@@ -245,14 +235,11 @@ public abstract class OboScmHelper {
 						changes,
 						term.getOperation(),
 						oboDoc);
+				data.nameProvider.addName(frame.getId(), term.getLabel());
 				success = success && csuccess;
 			}
 		}
 		return success;
-	}
-
-	public void updateNameProvider(OboCommitData data, List<OBODoc> targetOntologies) {
-		data.nameProvider.updateOntologies(targetOntologies);
 	}
 
 	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, String savedBy)

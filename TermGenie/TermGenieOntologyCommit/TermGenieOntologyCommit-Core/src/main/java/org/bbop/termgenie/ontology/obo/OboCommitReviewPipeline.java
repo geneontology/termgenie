@@ -77,7 +77,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 			OBODoc oboDoc = owl2Obo.convert(managed.getSourceOntology());
 
 			List<CommitedOntologyTerm> terms = historyItem.getTerms();
-			boolean succcess = applyChanges(terms, oboDoc);
+			boolean succcess = applyChanges(null, terms, oboDoc);
 			if (succcess) {
 				List<String> ids = new ArrayList<String>(terms.size());
 				for (CommitedOntologyTerm term : terms) {
@@ -124,15 +124,10 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected boolean applyChanges(List<CommitedOntologyTerm> terms, OBODoc ontology)
+	protected boolean applyChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc ontology)
 			throws CommitException
 	{
-		return helper.applyHistoryChanges(terms, ontology);
-	}
-
-	@Override
-	protected void updateNameProvider(OboCommitData data, List<OBODoc> targetOntologies) {
-		helper.updateNameProvider(data, targetOntologies);
+		return helper.applyHistoryChanges(data, terms, ontology);
 	}
 
 	@Override

@@ -343,14 +343,13 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			
 			if (changes != null && !changes.isEmpty()) {
 				// apply changes to ontology in memory
-				final boolean success = applyChanges(changes, targetOntology);
+				final boolean success = applyChanges(data, changes, targetOntology);
 				if (!success) {
 					String message = "Could not apply changes to ontology.";
 					throw new CommitException(message, true);
 				}
 			}
 		}
-		updateNameProvider(data, targetOntologies);
 		
 		// write changed ontology to a file
 		createModifiedTargetFiles(data, targetOntologies, item.getSavedBy());
@@ -493,24 +492,16 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	/**
 	 * Apply the given changes to the ontology.
 	 * 
+	 * @param data
 	 * @param terms
-	 * @param relations
 	 * @param ontology
 	 * @return true, if the changes have been applied successfully
 	 * @throws CommitException
 	 */
-	protected abstract boolean applyChanges(List<CommitedOntologyTerm> terms,
+	protected abstract boolean applyChanges(WORKFLOWDATA data,
+			List<CommitedOntologyTerm> terms,
 			ONTOLOGY ontology) throws CommitException;
 
-	/**
-	 * Update the name provider with the given set of ontologies. Is called
-	 * after {@link #applyChanges(List, Object)}.
-	 * 
-	 * @param data
-	 * @param targetOntologies
-	 */
-	protected abstract void updateNameProvider(WORKFLOWDATA data, List<ONTOLOGY> targetOntologies);
-	
 	/**
 	 * Write the ontology to file.
 	 * 
