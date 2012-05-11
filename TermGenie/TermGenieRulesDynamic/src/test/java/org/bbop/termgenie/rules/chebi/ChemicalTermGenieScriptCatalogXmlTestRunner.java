@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.io.BufferedWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bbop.termgenie.core.TemplateField;
@@ -29,7 +31,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.obo2owl.Owl2Obo;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
@@ -193,16 +198,83 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 		
 	}
+	
+	
+	@Test
+	public void test_chebi_60481() {
+		TermTemplate termTemplate = getMetabolismTemplate();
+		List<String> prefixes = Arrays.asList("metabolism", "catabolism", "biosynthesis");
+		String id = "CHEBI:60481"; // N',N'',N'''-triacetylfusarinine C
+		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, id, prefixes); 
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(3, list.size());
+		TermGenerationOutput output1 = list.get(0);
+		TermGenerationOutput output2 = list.get(1);
+		TermGenerationOutput output3 = list.get(2);
+		
+		assertTrue(output1.isSuccess());
+		Frame term1 = output1.getTerm();
+		assertEquals("N',N'',N'''-triacetylfusarinine C metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
+		Collection<Clause> synonyms1 = term1.getClauses(OboFormatTag.TAG_SYNONYM);
+		assertEquals(1, synonyms1.size());
+		Clause clause11 = synonyms1.iterator().next();
+		assertEquals("N',N'',N'''-triacetylfusarinine C metabolism", clause11.getValue());
+		assertEquals("EXACT", clause11.getValue2());
+		
+		assertTrue(output2.isSuccess());
+		Frame term2 = output2.getTerm();
+		assertEquals("N',N'',N'''-triacetylfusarinine C catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
+		Collection<Clause> synonyms2 = term2.getClauses(OboFormatTag.TAG_SYNONYM);
+		assertEquals(3, synonyms2.size());
+		
+		Iterator<Clause> iterator2 = synonyms2.iterator();
+		Clause clause21 = iterator2.next();
+		Clause clause22 = iterator2.next();
+		Clause clause23 = iterator2.next();
+		assertEquals("N',N'',N'''-triacetylfusarinine C catabolism", clause21.getValue());
+		assertEquals("EXACT", clause21.getValue2());
+		assertEquals("N',N'',N'''-triacetylfusarinine C breakdown", clause22.getValue());
+		assertEquals("EXACT", clause22.getValue2());
+		assertEquals("N',N'',N'''-triacetylfusarinine C degradation", clause23.getValue());
+		assertEquals("EXACT", clause23.getValue2());
+		
+		assertTrue(output3.isSuccess());
+		Frame term3 = output3.getTerm();
+		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
+		Collection<Clause> synonyms3 = term3.getClauses(OboFormatTag.TAG_SYNONYM);
+		assertEquals(4, synonyms3.size());
+		
+		Iterator<Clause> iterator3 = synonyms3.iterator();
+		Clause clause31 = iterator3.next();
+		Clause clause32 = iterator3.next();
+		Clause clause33 = iterator3.next();
+		Clause clause34 = iterator3.next();
+		
+		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthesis", clause31.getValue());
+		assertEquals("EXACT", clause31.getValue2());
+		assertEquals("N',N'',N'''-triacetylfusarinine C anabolism", clause32.getValue());
+		assertEquals("EXACT", clause32.getValue2());
+		assertEquals("N',N'',N'''-triacetylfusarinine C formation", clause33.getValue());
+		assertEquals("EXACT", clause33.getValue2());
+		assertEquals("N',N'',N'''-triacetylfusarinine C synthesis", clause34.getValue());
+		assertEquals("EXACT", clause34.getValue2());
+		
+	}
 
 	private TermTemplate getMetabolismTemplate() {
 		return generationEngine.getAvailableTemplates().get(0);
 	}
 
 	private List<TermGenerationInput> createMetabolismTask(TermTemplate termTemplate, final String term) {
+		return createMetabolismTask(termTemplate, term, Arrays.asList("metabolism"));
+	}
+	
+	private List<TermGenerationInput> createMetabolismTask(TermTemplate termTemplate, final String term, List<String> prefixes) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = termTemplate.getFields().get(0);
 		parameters.setTermValues(field.getName(), Arrays.asList(term)); 
-		parameters.setStringValues(field.getName(), Arrays.asList("metabolism"));
+		parameters.setStringValues(field.getName(), prefixes);
 	
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);

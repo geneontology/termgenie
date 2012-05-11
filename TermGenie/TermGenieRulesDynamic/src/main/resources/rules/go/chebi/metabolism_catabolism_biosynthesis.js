@@ -13,8 +13,8 @@ function metabolism_catabolism_biosynthesis() {
 		var label = termname(x, ont) + " metabolic process";
 		var definition = "The chemical reactions and pathways involving "
 				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms("", x, ont, [ " metabolism",
-				" metabolic process" ], null, label);
+		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " metabolism",
+				" metabolic process" ], label);
 		var mdef = createMDef("GO_0008152 and 'has participant' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -29,8 +29,8 @@ function metabolism_catabolism_biosynthesis() {
 		var label = termname(x, ont) + " catabolic process";
 		var definition = "The chemical reactions and pathways resulting in the breakdown of "
 				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms("", x, ont, [ " catabolism",
-				" catabolic process" ], null, label);
+		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " catabolism",
+				" catabolic process", " breakdown", " degradation" ], label);
 		var mdef = createMDef("GO_0009056 and 'has input' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -45,8 +45,8 @@ function metabolism_catabolism_biosynthesis() {
 		var label = termname(x, ont) + " biosynthetic process";
 		var definition = "The chemical reactions and pathways resulting in the formation of "
 				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms("", x, ont, [ " biosynthesis",
-				" biosynthetic process" ], null, label);
+		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " biosynthesis",
+				" biosynthetic process", " anabolism", " formation", " synthesis" ], label);
 		var mdef = createMDef("GO_0009058 and 'has output' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
