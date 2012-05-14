@@ -2,8 +2,8 @@ package org.bbop.termgenie.tools;
 
 public class Pair<A, B> {
 
-	private final A one;
-	private final B two;
+	private A one;
+	private B two;
 
 	/**
 	 * @param one
@@ -27,6 +27,20 @@ public class Pair<A, B> {
 	 */
 	public B getTwo() {
 		return two;
+	}
+	
+	/**
+	 * @param one the one to set
+	 */
+	public void setOne(A one) {
+		this.one = one;
+	}
+	
+	/**
+	 * @param two the two to set
+	 */
+	public void setTwo(B two) {
+		this.two = two;
 	}
 
 	@Override
