@@ -177,7 +177,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		});
 	
 		
-		SvnTool svnTool = new SvnTool(new File(testFolder, "verification"), svnTools.getTwo(), svnTools.getThree());
+		SvnTool svnTool = new SvnTool(new File(testFolder, "verification"), svnTools.getTwo(), svnTools.getThree(), true);
 		svnTool.connect();
 		boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo", "trunk/extensions/svn-test-extension.obo"), ProcessState.NO);
 		svnTool.close();
@@ -370,7 +370,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 				String password,
 				File scmFolder) throws CommitException
 		{
-			return new SvnTool(scmFolder, repositoryURL, authManager);
+			return new SvnTool(scmFolder, repositoryURL, authManager, true);
 		}
 	}
 

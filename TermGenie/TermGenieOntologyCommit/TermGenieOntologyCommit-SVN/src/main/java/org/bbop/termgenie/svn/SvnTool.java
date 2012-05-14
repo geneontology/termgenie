@@ -45,22 +45,23 @@ public class SvnTool implements VersionControlAdapter {
 	private final File targetFolder;
 	private final SVNURL repositoryURL;
 	private final ISVNAuthenticationManager authManager;
+	private final boolean loadExternal;
 	
 	private SVNClientManager ourClientManager;
 
-	public static SvnTool createAnonymousSVN(File targetFolder, String repositoryURL, File svnConfigDir) {
+	public static SvnTool createAnonymousSVN(File targetFolder, String repositoryURL, File svnConfigDir, boolean loadExternal) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir);
-		return new SvnTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager, loadExternal);
 	}
 	
-	public static SvnTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password, File svnConfigDir) {
+	public static SvnTool createUsernamePasswordSVN(File targetFolder, String repositoryURL, String username, String password, File svnConfigDir, boolean loadExternal) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir, username, password);
-		return new SvnTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager, loadExternal);
 	}
 	
-	public static SvnTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase, File svnConfigDir) {
+	public static SvnTool createSSHKeySVN(File targetFolder, String repositoryURL, String username, File sshKeyFile, String passphrase, File svnConfigDir, boolean loadExternal) {
 		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnConfigDir, username, null, sshKeyFile, passphrase, false);
-		return new SvnTool(targetFolder, repositoryURL, authManager);
+		return new SvnTool(targetFolder, repositoryURL, authManager, loadExternal);
 	}
 	
 	public static File getDefaultSvnConfigDir() {
@@ -68,11 +69,12 @@ public class SvnTool implements VersionControlAdapter {
 	}
 	
 	/**
-	 * @param targetFolder 
-	 * @param repositoryURL 
+	 * @param targetFolder
+	 * @param repositoryURL
 	 * @param authManager
+	 * @param loadExternal
 	 */
-	SvnTool(File targetFolder, String repositoryURL, ISVNAuthenticationManager authManager) {
+	SvnTool(File targetFolder, String repositoryURL, ISVNAuthenticationManager authManager, boolean loadExternal) {
 		super();
 		this.targetFolder = targetFolder;
 		try {
@@ -81,18 +83,21 @@ public class SvnTool implements VersionControlAdapter {
 			throw new RuntimeException(exception);
 		}
 		this.authManager = authManager;
+		this.loadExternal = loadExternal;
 	}
 	
 	/**
-	 * @param targetFolder 
-	 * @param repositoryURL 
+	 * @param targetFolder
+	 * @param repositoryURL
 	 * @param authManager
+	 * @param loadExternal
 	 */
-	SvnTool(File targetFolder, SVNURL repositoryURL, ISVNAuthenticationManager authManager) {
+	SvnTool(File targetFolder, SVNURL repositoryURL, ISVNAuthenticationManager authManager, boolean loadExternal) {
 		super();
 		this.targetFolder = targetFolder;
 		this.repositoryURL = repositoryURL;
 		this.authManager = authManager;
+		this.loadExternal = loadExternal;
 	}
 
 	@Override
@@ -124,6 +129,7 @@ public class SvnTool implements VersionControlAdapter {
 			ProcessState.addMessage(state, startMessage);
 			logger.info(startMessage+" Folder: "+targetFolder);
 			SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
+			updateClient.setIgnoreExternals(!loadExternal);
 			SVNRevision pegRevision = SVNRevision.HEAD;
 			SVNRevision revision = SVNRevision.HEAD;
 			SVNDepth depth = SVNDepth.INFINITY;
@@ -199,6 +205,7 @@ public class SvnTool implements VersionControlAdapter {
 		checkConnection();
 		logger.info("Start update for targets: "+targets+" URL: "+repositoryURL);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
+		updateClient.setIgnoreExternals(!loadExternal);
 		try {
 			File[] paths = new File[targets.size()];
 			for (int i = 0; i < targets.size(); i++) {

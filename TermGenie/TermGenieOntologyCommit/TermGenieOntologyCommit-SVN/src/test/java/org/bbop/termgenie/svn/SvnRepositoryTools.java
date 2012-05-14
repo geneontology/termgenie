@@ -42,7 +42,7 @@ public class SvnRepositoryTools {
 			final SVNCommitClient commitClient = new SVNCommitClient(authManager, options);
 			final SVNURL dstURL = SVNURL.fromFile(repositoryDirectory);
 			commitClient.doImport(stagingDirectory, dstURL, "Initial Import", null, false, true, SVNDepth.INFINITY);
-			SvnTool tool= new SvnTool(checkoutDirectory, dstURL, authManager);
+			SvnTool tool= new SvnTool(checkoutDirectory, dstURL, authManager, true);
 			return new Triple<SvnTool, SVNURL, ISVNAuthenticationManager>(tool, dstURL, authManager);
 		} catch (SVNException exception) {
 			throw new RuntimeException(exception);

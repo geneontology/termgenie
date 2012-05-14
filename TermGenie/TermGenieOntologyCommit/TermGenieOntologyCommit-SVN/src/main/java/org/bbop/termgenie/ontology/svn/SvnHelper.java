@@ -30,6 +30,7 @@ public class SvnHelper {
 		private final String svnUsername;
 		private final String svnPassword;
 		private final File svnConfigDir;
+		private final boolean svnLoadExternals;
 
 		@Inject
 		SvnHelperPassword(IRIMapper iriMapper,
@@ -39,13 +40,15 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
-				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
+				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
 			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
 			this.svnConfigDir = svnConfigDir;
+			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
 		}
 
 		@Override
@@ -64,7 +67,7 @@ public class SvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword, svnConfigDir);
+			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword, svnConfigDir, svnLoadExternals);
 			return svn;
 		}
 
@@ -94,6 +97,7 @@ public class SvnHelper {
 
 		private final String svnRepository;
 		private final File svnConfigDir;
+		private final boolean svnLoadExternals;
 
 		@Inject
 		SvnHelperAnonymous(IRIMapper iriMapper,
@@ -101,11 +105,13 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
-				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
+				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
 			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
+			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
 		}
 
 		@Override
@@ -114,7 +120,7 @@ public class SvnHelper {
 				String password,
 				File svnFolder) throws CommitException
 		{
-			return SvnTool.createAnonymousSVN(svnFolder, svnRepository, svnConfigDir);
+			return SvnTool.createAnonymousSVN(svnFolder, svnRepository, svnConfigDir, svnLoadExternals);
 		}
 
 		@Override
@@ -146,6 +152,7 @@ public class SvnHelper {
 		private final File svnKeyFile;
 		private final String svnPassword;
 		private final File svnConfigDir;
+		private final boolean svnLoadExternals;
 	
 		@Inject
 		SvnHelperKeyFile(IRIMapper iriMapper,
@@ -156,7 +163,8 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
-				@Named("CommitAdapterSVNConfigDir") File svnConfigDir)
+				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
+				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
 			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
@@ -164,6 +172,7 @@ public class SvnHelper {
 			this.svnKeyFile = svnKeyFile;
 			this.svnPassword = svnPassword;
 			this.svnConfigDir = svnConfigDir;
+			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
 		}
 	
 		@Override
@@ -182,7 +191,7 @@ public class SvnHelper {
 				realUsername = username;
 				realPassword = password;
 			}
-			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword, svnConfigDir);
+			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword, svnConfigDir, svnLoadExternals);
 			return svn;
 		}
 	

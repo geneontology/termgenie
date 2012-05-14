@@ -70,6 +70,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
+		boolean loadExternal = false;
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
@@ -84,7 +85,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String catalogXML = "extensions/catalog-v001.xml";
 		
 		
-		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName);
+		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal);
 	}
 
 	@Override

@@ -27,9 +27,10 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			Map<IRI, String> mappedIRIs,
 			String catalogXML,
 			String workFolder,
-			String fileCachingFolder)
+			String fileCachingFolder,
+			boolean loadExternal)
 	{
-		return new AnonymousSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder);
+		return new AnonymousSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder, loadExternal);
 	}
 	
 	public static SvnAwareXMLReloadingOntologyModule createUsernamePasswordSvnModule(String configFile,
@@ -38,9 +39,10 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			Map<IRI, String> mappedIRIs,
 			String catalogXML,
 			String workFolder,
-			String svnUsername)
+			String svnUsername,
+			boolean loadExternal)
 	{
-		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername);
+		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, loadExternal);
 	}
 	
 
@@ -49,6 +51,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 	private final String catalogXML;
 	private final String workFolderDefault;
 	private final String fileCachingFolder;
+	private final boolean loadExternal;
 	
 	private SvnAwareXMLReloadingOntologyModule(String configFile,
 			Properties applicationProperties,
@@ -56,7 +59,8 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			Map<IRI, String> mappedIRIs,
 			String catalogXML,
 			String workFolder,
-			String fileCachingFolder)
+			String fileCachingFolder,
+			boolean loadExternal)
 	{
 		super(configFile, applicationProperties);
 		this.repositoryURLDefault = repositoryURL;
@@ -69,6 +73,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		else {
 			this.fileCachingFolder = fileCachingFolder;
 		}
+		this.loadExternal = loadExternal;
 
 	}
 
@@ -84,6 +89,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		bindIRIMap("SVNAwareIRIMapperMappedIRIs", mappedIRIs);
 		bind("SVNAwareIRIMapperCatalogXML", catalogXML, true);
 		bind("SVNAwareIRIMapperSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
+		bind("SVNAwareIRIMapperSVNLoadExternal", loadExternal);
 		bindAdditional();
 	}
 	
@@ -100,9 +106,10 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 				Map<IRI, String> mappedIRIs,
 				String catalogXML,
 				String workFolder,
-				String fileCachingFolder)
+				String fileCachingFolder,
+				boolean svnLoadExternal)
 		{
-			super(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder);
+			super(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder, svnLoadExternal);
 			
 		}
 		
@@ -114,10 +121,11 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
 				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
 				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String workFolder,
-				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir)
+				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
+				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
 		{
 			final File workFolderFile = new File(workFolder);
-			final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir);
+			final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
 			return new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
 		}
@@ -133,9 +141,10 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 				Map<IRI, String> mappedIRIs,
 				String catalogXML,
 				String workFolder,
-				String svnUsername)
+				String svnUsername,
+				boolean svnLoadExternal)
 		{
-			super(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, null);
+			super(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, null, svnLoadExternal);
 			this.svnUsername = svnUsername;
 		}
 		
@@ -156,10 +165,11 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String workFolder,
 				@Named("SVNAwareIRIMapperUsername") String svnUsername,
 				@Named("SVNAwareIRIMapperPassword") String svnPassword,
-				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir)
+				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
+				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
 		{
 			final File workFolderFile = new File(workFolder);
-			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir);
+			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
 			return new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
 		}

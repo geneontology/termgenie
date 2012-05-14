@@ -53,11 +53,12 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 	@Override
 	protected IOCModule getOntologyModule() {
 		try {
+			boolean svnLoadExternal = true;
 			File localSVNCache = new File("work/read-only-svn-checkout");
 			localSVNCache.mkdirs();
 			FileUtils.cleanDirectory(localSVNCache);
 			String fileCache = new File("./work/termgenie-download-cache").getAbsolutePath();
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties, localSVNFolder, mappedIRIs, null, localSVNCache.getAbsolutePath(), fileCache );
+			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties, localSVNFolder, mappedIRIs, null, localSVNCache.getAbsolutePath(), fileCache, svnLoadExternal);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
