@@ -25,23 +25,28 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	private final String svnRepository;
 	private final String svnOntologyFileName;
 	private final List<String> additionalOntologyFileNames;
+	private final boolean svnLoadExternals;
 
 	/**
 	 * @param svnRepository
 	 * @param svnOntologyFileName
 	 * @param applicationProperties
 	 * @param commitTargetOntologyName
+	 * @param additionalOntologyFileNames
+	 * @param svnLoadExternals
 	 */
 	protected AbstractCommitSvnModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
 			String commitTargetOntologyName,
-			List<String> additionalOntologyFileNames)
+			List<String> additionalOntologyFileNames,
+			boolean svnLoadExternals)
 	{
 		super(applicationProperties, commitTargetOntologyName);
 		this.svnRepository = svnRepository;
 		this.svnOntologyFileName = svnOntologyFileName;
 		this.additionalOntologyFileNames = additionalOntologyFileNames;
+		this.svnLoadExternals = svnLoadExternals;
 	}
 
 	@Override
@@ -51,6 +56,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 		bind("CommitAdapterSVNOntologyFileName", svnOntologyFileName);
 		bindList("CommitAdapterSVNAdditionalOntologyFileNames", additionalOntologyFileNames, true);
 		bind("CommitAdapterSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
+		bind("CommitAdapterSVNLoadExternals", svnLoadExternals);
 		bindOBOSCMHelper();
 	}
 

@@ -9,14 +9,24 @@ public class CommitSvnUserPasswdModule extends AbstractCommitSvnModule {
 
 	private final String svnUsername;
 
+	/**
+	 * @param svnRepository
+	 * @param svnOntologyFileName
+	 * @param svnUsername
+	 * @param applicationProperties
+	 * @param commitTargetOntologyName
+	 * @param additionalOntologyFileNames
+	 * @param svnLoadExternals
+	 */
 	public CommitSvnUserPasswdModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
 			String commitTargetOntologyName,
-			List<String> additionalOntologyFileNames)
+			List<String> additionalOntologyFileNames,
+			boolean svnLoadExternals)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames, svnLoadExternals);
 		this.svnUsername = svnUsername;
 	}
 

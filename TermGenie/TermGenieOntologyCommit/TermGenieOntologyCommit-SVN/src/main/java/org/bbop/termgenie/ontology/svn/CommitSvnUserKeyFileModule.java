@@ -19,6 +19,7 @@ public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 	 * @param applicationProperties
 	 * @param commitTargetOntologyName
 	 * @param additionalOntologyFileNames 
+	 * @param svnLoadExternals
 	 */
 	public CommitSvnUserKeyFileModule(String svnRepository,
 			String svnOntologyFileName,
@@ -26,9 +27,10 @@ public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 			File svnKeyFile,
 			Properties applicationProperties,
 			String commitTargetOntologyName,
-			List<String> additionalOntologyFileNames)
+			List<String> additionalOntologyFileNames,
+			boolean svnLoadExternals)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames, svnLoadExternals);
 		this.svnUsername = svnUsername;
 		this.svnKeyFile = svnKeyFile;
 	}

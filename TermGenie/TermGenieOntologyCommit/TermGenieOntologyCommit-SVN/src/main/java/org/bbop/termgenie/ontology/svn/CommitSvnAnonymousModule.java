@@ -7,13 +7,22 @@ import org.bbop.termgenie.ontology.obo.OboScmHelper;
 
 public class CommitSvnAnonymousModule extends AbstractCommitSvnModule {
 
+	/**
+	 * @param svnRepository
+	 * @param svnOntologyFileName
+	 * @param applicationProperties
+	 * @param commitTargetOntologyName
+	 * @param additionalOntologyFileNames
+	 * @param svnLoadExternals
+	 */
 	public CommitSvnAnonymousModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
 			String commitTargetOntologyName,
-			List<String> additionalOntologyFileNames)
+			List<String> additionalOntologyFileNames,
+			boolean svnLoadExternals)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames);
+		super(svnRepository, svnOntologyFileName, applicationProperties, commitTargetOntologyName, additionalOntologyFileNames, svnLoadExternals);
 	}
 
 	@Override
