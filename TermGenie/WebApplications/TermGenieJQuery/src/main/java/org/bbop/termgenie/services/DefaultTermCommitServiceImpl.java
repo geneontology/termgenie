@@ -413,11 +413,11 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				Frame frame = JsonOntologyTerm.createFrame(jsonTerm,
 						idHandler.create(jsonTerm.getTempId()));
 				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms());
-				updateIdentifiers(frame, axioms, idHandler);
+				axioms = updateIdentifiers(frame, axioms, idHandler);
 				List<Pair<Frame, Set<OWLAxiom>>> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
 				if (changed != null && !changed.isEmpty()) {
 					for (Pair<Frame, Set<OWLAxiom>> pair : changed) {
-						updateIdentifiers(pair.getOne(), pair.getTwo(), idHandler);
+						pair.setTwo(updateIdentifiers(pair.getOne(), pair.getTwo(), idHandler));
 					}
 				}
 				TermCommit term = new TermCommit(frame, axioms, changed, jsonTerm.getPattern());
@@ -434,11 +434,11 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			return new Pair<List<CommitObject<TermCommit>>, Integer>(commits, idHandler.base);
 		}
 
-		private void updateIdentifiers(Frame frame, Set<OWLAxiom> axioms, IdHandler idHandler) {
-			updateIdentifiers(OboTools.getRelations(frame), axioms, idHandler);
+		private Set<OWLAxiom> updateIdentifiers(Frame frame, Set<OWLAxiom> axioms, IdHandler idHandler) {
+			return updateIdentifiers(OboTools.getRelations(frame), axioms, idHandler);
 		}
 
-		private void updateIdentifiers(List<Clause> clauses, Set<OWLAxiom> axioms, IdHandler idHandler) {
+		private Set<OWLAxiom> updateIdentifiers(List<Clause> clauses, Set<OWLAxiom> axioms, IdHandler idHandler) {
 			if (clauses != null && !clauses.isEmpty()) {
 				for (Clause clause : clauses) {
 					Collection<Object> values = clause.getValues();
@@ -462,7 +462,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				}
 			}
 			Map<IRI, IRI> replacements = idHandler.createIRIMap();
-			OwlStringTools.replace(axioms, replacements);
+			return OwlStringTools.replace(axioms, replacements);
 		}
 	}
 

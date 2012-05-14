@@ -2,12 +2,14 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.obolibrary.oboformat.model.Clause;
@@ -61,20 +63,24 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			// check that term contains references to external ontologies
 			// use id prefix of OBO identifier for that
 			Frame frame = OboParserTools.parseFrame(term.getId(), term.getObo());
-			boolean doSplitAndRemove = false;
-			for (Clause clause : frame.getClauses(OboFormatTag.TAG_INTERSECTION_OF)) {
-				String targetId = clause.getValue2(String.class);
-				if (targetId == null) {
-					targetId = clause.getValue(String.class);
-				}
-				if (targetId != null) {
-					if(isExternalIdentifier(targetId, frame)) {
-						doSplitAndRemove = true;
-						break;
+			boolean doSplitAndRemoveMain = hasExternalIntersection(frame);
+			
+			// also check in the changed terms for that, add or preserve existing split
+			Map<SimpleCommitedOntologyTerm, Frame> filteringChanges = null;
+			List<SimpleCommitedOntologyTerm> changedTerms = term.getChanged();
+			if (changedTerms != null && !changedTerms.isEmpty()) {
+				filteringChanges = new HashMap<SimpleCommitedOntologyTerm, Frame>();
+				for (SimpleCommitedOntologyTerm changedTerm : changedTerms) {
+					Frame changedFrame = OboParserTools.parseFrame(changedTerm.getId(), changedTerm.getObo());
+					boolean hasExtenalXP = hasExternalIntersection(changedFrame);
+					if (hasExtenalXP) {
+						filteringChanges.put(changedTerm, changedFrame);
 					}
 				}
 			}
-			if (!doSplitAndRemove) {
+			
+			// if no splits are required, only return terms for main ontology (position zero)
+			if (!doSplitAndRemoveMain && (filteringChanges == null || filteringChanges.isEmpty())) {
 				if (position == 0) {
 					allFiltered.add(term);
 				}
@@ -88,37 +94,100 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				filtered.setLabel(term.getLabel());
 				filtered.setOperation(term.getOperation());
 
-				Frame newFrame = new Frame(frame.getType());
-				newFrame.setId(frame.getId());
-				for (Clause clause : frame.getClauses()) {
-					String tag = clause.getTag();
-					if (OboFormatTag.TAG_ID.getTag().equals(tag)) {
-						// always add the id to the newFrame
-						newFrame.addClause(clause);
-					}
-					else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
-						// only add intersection of clauses if position match
-						// (xp file),
-						// otherwise do nothing
-						if (position == requiredPosition) {
-							newFrame.addClause(clause);
+				// process main term
+				if (doSplitAndRemoveMain) {
+					Frame newFrame = filterFrame(position, requiredPosition, frame);
+					filtered.setObo(OboWriterTools.writeFrame(newFrame, null));
+				}
+				else {
+					filtered.setObo(term.getObo());
+				}
+				
+				// process changes to other terms
+				if (filteringChanges != null && !filteringChanges.isEmpty() && changedTerms != null) {
+					// create a new list of changes
+					List<SimpleCommitedOntologyTerm> newChangedTerms = new ArrayList<SimpleCommitedOntologyTerm>(changedTerms.size());
+					for (SimpleCommitedOntologyTerm changedTerm : changedTerms) {
+						Frame changedFrame = filteringChanges.get(changedTerm);
+						if (changedFrame != null) {
+							Frame newFrame = filterFrame(position, requiredPosition, changedFrame);
+							SimpleCommitedOntologyTerm newChangedTerm = new SimpleCommitedOntologyTerm();
+							newChangedTerm.setId(changedTerm.getId());
+							newChangedTerm.setOperation(changedTerm.getOperation());
+							newChangedTerm.setAxioms(changedTerm.getAxioms());
+							newChangedTerm.setUuid(changedTerm.getUuid());
+							newChangedTerm.setObo(OboWriterTools.writeFrame(newFrame, null));
+							newChangedTerms.add(newChangedTerm);
+						}
+						else {
+							// unmodified changes are only applied to the main ontology
+							if (position == 0) {
+								newChangedTerms.add(changedTerm);
+							}
 						}
 					}
-					else if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
-						// remove relationship tags, when writing to xp file
-					}
-					else if (position == 0) {
-						// add the rest of the clause only to the main file
-						newFrame.addClause(clause);
+					if (!newChangedTerms.isEmpty()) {
+						// add modified list to filtered term
+						filtered.setChanged(newChangedTerms);
 					}
 				}
-				filtered.setObo(OboWriterTools.writeFrame(newFrame, null));
+				else {
+					// if no modifications in the change list are required just put them in the main one
+					if (position == 0) {
+						filtered.setChanged(term.getChanged());
+					}
+				}
 				allFiltered.add(filtered);
 			} catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
 		}
 		return allFiltered;
+	}
+
+	private Frame filterFrame(int position, int requiredPosition, Frame frame) {
+		Frame newFrame = new Frame(frame.getType());
+		newFrame.setId(frame.getId());
+		for (Clause clause : frame.getClauses()) {
+			String tag = clause.getTag();
+			if (OboFormatTag.TAG_ID.getTag().equals(tag)) {
+				// always add the id to the newFrame
+				newFrame.addClause(clause);
+			}
+			else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
+				// only add intersection of clauses if position match
+				// (xp file),
+				// otherwise do nothing
+				if (position == requiredPosition) {
+					newFrame.addClause(clause);
+				}
+			}
+			else if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
+				// remove relationship tags, when writing to xp file
+			}
+			else if (position == 0) {
+				// add the rest of the clause only to the main file
+				newFrame.addClause(clause);
+			}
+		}
+		return newFrame;
+	}
+	
+	private boolean hasExternalIntersection(Frame frame) {
+		boolean hasExternal = false;
+		for (Clause clause : frame.getClauses(OboFormatTag.TAG_INTERSECTION_OF)) {
+			String targetId = clause.getValue2(String.class);
+			if (targetId == null) {
+				targetId = clause.getValue(String.class);
+			}
+			if (targetId != null) {
+				if(isExternalIdentifier(targetId, frame)) {
+					hasExternal = true;
+					break;
+				}
+			}
+		}
+		return hasExternal;
 	}
 
 	protected boolean isExternalIdentifier(String id, Frame frame) {
