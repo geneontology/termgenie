@@ -171,7 +171,7 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
         if (params && (!(params instanceof Object) || params instanceof Date)) //JSON-RPC 1.1 allows params to be a hash not just an array
             throw Error('When making asynchronous calls, the parameters for the method must be passed as an array (or a hash); the value you supplied (' + String(params) + ') is of type "' + typeof(params) + '".');
 
-        var generatedUUID = createUUID();
+        var generatedUUID = createUUID(JsonRpc.requestCount, methodName);
         
         //Prepare the XML-RPC request
         var request,postData;
@@ -257,19 +257,21 @@ JsonRpc.ServiceProxy.prototype.__callMethod = function(methodName, params, succe
      *
      * RFC 4122 v4 compliant UUID generator.
      * From: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
-     *
-     * Parameters:
+     * 
+     * Modification: append the current request count to minimize conflicts with low-resolution Math.random()
+     * 
+     * Parameters: counter, methodName
      *
      * Returns: string
      */
-    function createUUID(){
+    function createUUID(counter, methodName){
 
         // Replace x (and y) in string.
         function replacer(c) {
-    	var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-    	return v.toString(16);
+        	var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        	return v.toString(16);
         }
-        var target_str = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+        var target_str = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx-'+counter+'-'+methodName;
         return target_str.replace(/[xy]/g, replacer);
     };
 };
