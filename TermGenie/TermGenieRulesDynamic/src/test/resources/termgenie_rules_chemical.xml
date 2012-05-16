@@ -18,6 +18,9 @@ generated automatically</description>
 					<prefix>biosynthesis</prefix>
 				</prefixes>
 			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
@@ -33,6 +36,9 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
@@ -47,6 +53,9 @@ generated automatically</description>
 				<ontology name="GeneOntology">
 					<branch>chebi</branch>
 				</ontology>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
 		<ruleFiles>
