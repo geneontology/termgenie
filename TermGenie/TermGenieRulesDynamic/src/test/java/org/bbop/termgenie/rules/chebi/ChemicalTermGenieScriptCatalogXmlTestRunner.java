@@ -26,6 +26,8 @@ import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
+import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,6 +38,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
@@ -213,7 +216,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		TermGenerationOutput output2 = list.get(1);
 		TermGenerationOutput output3 = list.get(2);
 		
-		assertTrue(output1.isSuccess());
+		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
 		Collection<Clause> synonyms1 = term1.getClauses(OboFormatTag.TAG_SYNONYM);
@@ -222,7 +225,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		assertEquals("N',N'',N'''-triacetylfusarinine C metabolism", clause11.getValue());
 		assertEquals("EXACT", clause11.getValue2());
 		
-		assertTrue(output2.isSuccess());
+		assertTrue(output2.getMessage(), output2.isSuccess());
 		Frame term2 = output2.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
 		Collection<Clause> synonyms2 = term2.getClauses(OboFormatTag.TAG_SYNONYM);
@@ -239,7 +242,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		assertEquals("N',N'',N'''-triacetylfusarinine C degradation", clause23.getValue());
 		assertEquals("EXACT", clause23.getValue2());
 		
-		assertTrue(output3.isSuccess());
+		assertTrue(output3.getMessage(), output3.isSuccess());
 		Frame term3 = output3.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
 		Collection<Clause> synonyms3 = term3.getClauses(OboFormatTag.TAG_SYNONYM);
@@ -262,8 +265,88 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 	}
 
+	@Test
+	public void test_transport() {
+		TermTemplate template = getChemicalTransportTemplate();
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		TemplateField field = template.getFields().get(0);
+		String term = "CHEBI:35808"; // citrate(2-)
+		parameters.setTermValues(field.getName(), Arrays.asList(term )); 
+	
+		TermGenerationInput input = new TermGenerationInput(template, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		
+		assertTrue(output.getMessage(), output.isSuccess());
+		Frame frame = output.getTerm();
+		renderFrame(frame);
+		
+		assertEquals("citrate(2-) transport", frame.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("biological_process", frame.getTagValue(OboFormatTag.TAG_NAMESPACE));
+		assertEquals("GO:0006842", frame.getTagValue(OboFormatTag.TAG_IS_A)); // tricarboxylic acid transport
+		
+	}
+
+	private void renderFrame(final Frame frame) {
+		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				NameProvider provider = new  OwlGraphWrapperNameProvider(managed);
+				String obo = OboWriterTools.writeFrame(frame, provider);
+				System.out.println("-----------");
+				System.out.println(obo);
+				System.out.println("-----------");
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
+	}
+	
+	@Test
+	public void test_binding() {
+		TermTemplate template = getChemicalBindingTemplate();
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		TemplateField field = template.getFields().get(0);
+		String term = "CHEBI:35808"; // citrate(2-)
+		parameters.setTermValues(field.getName(), Arrays.asList(term )); 
+	
+		TermGenerationInput input = new TermGenerationInput(template, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		
+		assertTrue(output.getMessage(), output.isSuccess());
+		Frame frame = output.getTerm();
+		renderFrame(frame);
+		
+		assertEquals("citrate(2-) binding", frame.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("molecular_function", frame.getTagValue(OboFormatTag.TAG_NAMESPACE));
+		assertEquals("GO:0031406", frame.getTagValue(OboFormatTag.TAG_IS_A)); // carboxylic acid binding
+		
+	}
+	
 	private TermTemplate getMetabolismTemplate() {
 		return generationEngine.getAvailableTemplates().get(0);
+	}
+	
+	private TermTemplate getChemicalTransportTemplate() {
+		return generationEngine.getAvailableTemplates().get(1);
+	}
+	
+	private TermTemplate getChemicalBindingTemplate() {
+		return generationEngine.getAvailableTemplates().get(2);
 	}
 
 	private List<TermGenerationInput> createMetabolismTask(TermTemplate termTemplate, final String term) {

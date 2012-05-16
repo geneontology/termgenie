@@ -23,4 +23,34 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="chemical_transport">
+		<description>transport of a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
+		</ruleFiles>
+	</template>
+	<template name="chemical_binding">
+		<description>binding to a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>molecular_function</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
+		</ruleFiles>
+	</template>
 </termgenietemplates>
