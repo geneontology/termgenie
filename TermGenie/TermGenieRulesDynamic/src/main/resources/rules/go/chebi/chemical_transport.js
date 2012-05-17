@@ -7,7 +7,7 @@ function chemical_transport() {
 	var label = termname(x, ont) + " transport";
 	var definition = "The directed movement of "
 			+ refname(x, ont)
-			+ " acetate into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
+			+ " into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
 	var synonyms = null; // No synonyms
 	var mdef = createMDef("GO_0006810 and 'results in transport of' some ?X");
 	mdef.addParameter('X', x, ont);
