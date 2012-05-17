@@ -104,7 +104,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	protected final Ontology ontology;
 	private String ontologyId = null;
 
-	public OntologyTaskManager(Ontology ontology) {
+	public OntologyTaskManager(Ontology ontology) throws InvalidManagedInstanceException {
 		super("OntologyTaskManager-" + ontology.getUniqueName());
 		this.ontology = ontology;
 		runManagedTask(new OntologyTask() {
@@ -126,7 +126,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	}
 
 	@Override
-	protected OWLGraphWrapper resetManaged(OWLGraphWrapper managed) {
+	protected OWLGraphWrapper resetManaged(OWLGraphWrapper managed) throws InstanceCreationException {
 		return createManaged();
 	}
 

@@ -5,16 +5,10 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
-import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.tools.OntologyTools;
-import org.semanticweb.owlapi.model.OWLClass;
-
-import owltools.graph.OWLGraphWrapper;
-import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -24,7 +18,6 @@ public class OntologyServiceImpl implements OntologyService {
 
 	private final OntologyTools ontologyTools;
 	private final OntologyTermSuggestor suggestor;
-	private final MultiOntologyTaskManager multiOntologyTaskManager;
 
 	/**
 	 * @param ontologyTools
@@ -32,11 +25,10 @@ public class OntologyServiceImpl implements OntologyService {
 	 * @param multiOntologyTaskManager
 	 */
 	@Inject
-	OntologyServiceImpl(OntologyTools ontologyTools, OntologyTermSuggestor suggestor, MultiOntologyTaskManager multiOntologyTaskManager) {
+	OntologyServiceImpl(OntologyTools ontologyTools, OntologyTermSuggestor suggestor) {
 		super();
 		this.ontologyTools = ontologyTools;
 		this.suggestor = suggestor;
-		this.multiOntologyTaskManager = multiOntologyTaskManager;
 	}
 
 	@Override
@@ -68,15 +60,19 @@ public class OntologyServiceImpl implements OntologyService {
 				continue;
 			}
 			// query for terms
-			List<String> autocompleteList = suggestor.suggestTerms(query, ontology, max);
+			List<TermSuggestion> autocompleteList = suggestor.suggestTerms(query, ontology, max);
 			if (autocompleteList == null || autocompleteList.isEmpty()) {
 				// no terms found, do nothing
 				continue;
 			}
 			// prepare suggestions
-			CreateJsonTermSuggestionTask task = new CreateJsonTermSuggestionTask(autocompleteList, ontologyTools.getOntologyName(ontology));
-			multiOntologyTaskManager.runManagedTask(task, ontology);
-			mergeLists(suggestions, task.result);
+			List<JsonTermSuggestion> current = new ArrayList<JsonTermSuggestion>(autocompleteList.size());
+			//String ontologyName = ontologyTools.getOntologyName(ontology);
+			for (TermSuggestion termSuggestion : autocompleteList) {
+				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontologyTools.getOntologyName(ontology), termSuggestion.getIdentifier());
+				current.add(new JsonTermSuggestion(termSuggestion.getLabel(), jsonId , termSuggestion.getDescription(), termSuggestion.getSynonyms()));
+			}
+			mergeLists(suggestions, current);
 		}
 		if (suggestions.size() > max) {
 			suggestions = suggestions.subList(0, max);
@@ -84,48 +80,9 @@ public class OntologyServiceImpl implements OntologyService {
 		return suggestions.toArray(new JsonTermSuggestion[suggestions.size()]);
 	}
 	
-	private static class CreateJsonTermSuggestionTask  implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {
-
-		private final String ontologyName;
-		private final List<String> ids; 
-		List<JsonTermSuggestion> result = new ArrayList<JsonTermSuggestion>();
-		
-		
-		public CreateJsonTermSuggestionTask(List<String> ids, String ontologyName) {
-			this.ids = ids;
-			this.ontologyName = ontologyName;
-		}
-		
-		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested) {
-			OWLGraphWrapper wrapper = requested.get(0);
-			for(String id : ids) {
-				JsonOntologyTermIdentifier identifier = new JsonOntologyTermIdentifier(ontologyName, id);
-				OWLClass owlClass = wrapper.getOWLClassByIdentifier(id);
-				String label = wrapper.getLabel(owlClass);
-				String def = wrapper.getDef(owlClass);
-				List<String> synonyms = getSynonyms(wrapper.getOBOSynonyms(owlClass));
-				result.add(new JsonTermSuggestion(label, identifier, def, synonyms));
-			}
-			return null;
-		}
-		
-		private List<String> getSynonyms(List<ISynonym> synonyms) {
-			if (synonyms != null && !synonyms.isEmpty()) {
-				List<String> strings = new ArrayList<String>(synonyms.size());
-				for (ISynonym synonym : synonyms) {
-					strings.add(synonym.getLabel());
-				}
-				return strings;
-			}
-			return null;
-		}
-		
-	}
-
 	/**
 	 * Merge two list by inserting it after the corresponding element in the
-	 * target list. See {@link OntologyServiceImplTest} for details.
+	 * target list.
 	 * 
 	 * @param <T>
 	 * @param target

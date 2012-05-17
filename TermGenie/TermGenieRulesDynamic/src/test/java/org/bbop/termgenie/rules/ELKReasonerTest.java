@@ -51,7 +51,7 @@ public class ELKReasonerTest {
 	}
 
 	@Test
-	public void test1() {
+	public void test1() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
 		ontologyManager.runManagedTask(new OntologyTask(){

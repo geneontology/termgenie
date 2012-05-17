@@ -203,7 +203,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		assertNull(extensionObo.getTermFrame("FOO:0005"));
 	}
 
-	private OntologyTaskManager loadOntology(Ontology ontology) {
+	private OntologyTaskManager loadOntology(Ontology ontology) throws Exception {
 		final SvnTool svnTool = svnTools.getOne();
 		try {
 			svnTool.connect();
@@ -240,6 +240,11 @@ public class SvnCommitTest extends TempTestFolderTools {
 			@Override
 			protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) {
 				return createManaged();
+			}
+
+			@Override
+			protected void dispose(OWLGraphWrapper managed) {
+				// do nothing
 			}
 		};
 		

@@ -13,6 +13,7 @@ import java.util.List;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
@@ -109,7 +110,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	}
 	
 	@Test
-	public void testManchesterSyntaxTool() {
+	public void testManchesterSyntaxTool() throws Exception {
 		OntologyTaskManager ontologyManager = loader.getOntology(go);
 		OntologyTask task = new OntologyTask(){
 
@@ -266,7 +267,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	}
 
 	@Test
-	public void test_transport() {
+	public void test_transport() throws Exception {
 		TermTemplate template = getChemicalTransportTemplate();
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = template.getFields().get(0);
@@ -291,7 +292,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 	}
 
-	private void renderFrame(final Frame frame) {
+	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
 		OntologyTaskManager ontologyManager = loader.getOntology(go);
 		OntologyTask task = new OntologyTask(){
 
@@ -312,7 +313,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	}
 	
 	@Test
-	public void test_binding() {
+	public void test_binding() throws Exception {
 		TermTemplate template = getChemicalBindingTemplate();
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = template.getFields().get(0);

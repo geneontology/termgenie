@@ -43,7 +43,7 @@ public class PlantOntologyIndexTest {
 	}
 
 	@Test
-	public void testPlantOntologyIndex() {
+	public void testPlantOntologyIndex() throws Exception {
 		OntologyTask task = new OntologyTask() {
 
 			@Override

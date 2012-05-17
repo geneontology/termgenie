@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
@@ -76,7 +77,11 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 	private synchronized void reloadOntologies() {
 		for (OntologyTaskManager manager : managers.values()) {
-			manager.updateManaged();
+			try {
+				manager.updateManaged();
+			} catch (InvalidManagedInstanceException exception) {
+				throw new RuntimeException(exception);
+			}
 		}
 	}
 
@@ -102,26 +107,35 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		return getManager(configuredOntology);
 	}
 
-	private OntologyTaskManager getManager(final ConfiguredOntology configuredOntology) {
+	private OntologyTaskManager getManager(final ConfiguredOntology configuredOntology)  {
 		if (!hasRealInstance(configuredOntology)) {
 			return null;
 		}
 		String uniqueName = configuredOntology.getUniqueName();
 		OntologyTaskManager manager = managers.get(uniqueName);
 		if (manager == null) {
-			manager = new OntologyTaskManager(configuredOntology) {
+			try {
+				manager = new OntologyTaskManager(configuredOntology) {
 
-				@Override
-				protected OWLGraphWrapper createManaged() {
-					return loadOntology(configuredOntology);
-				}
+					@Override
+					protected OWLGraphWrapper createManaged() throws InstanceCreationException {
+						return loadOntology(configuredOntology);
+					}
 
-				@Override
-				protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) {
-					return reloadOntology(configuredOntology, managed);
-				}
-				
-			};
+					@Override
+					protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) throws InstanceCreationException {
+						return reloadOntology(configuredOntology, managed);
+					}
+
+					@Override
+					protected void dispose(OWLGraphWrapper managed) {
+						disposeResource(managed);
+					}
+					
+				};
+			} catch (InvalidManagedInstanceException exception) {
+				throw new RuntimeException(exception);
+			}
 			managers.put(uniqueName, manager);
 		}
 		return manager;

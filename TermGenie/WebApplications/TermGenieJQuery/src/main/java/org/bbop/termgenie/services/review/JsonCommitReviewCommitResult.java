@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
@@ -89,7 +90,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		return result;
 	}
 
-	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, Ontology ontology, MultiOntologyTaskManager manager) {
+	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, Ontology ontology, MultiOntologyTaskManager manager) throws InvalidManagedInstanceException {
 		GenerateSuccessTask task = new GenerateSuccessTask(ids, commits);
 		manager.runManagedTask(task, ontology);
 		return task.result;

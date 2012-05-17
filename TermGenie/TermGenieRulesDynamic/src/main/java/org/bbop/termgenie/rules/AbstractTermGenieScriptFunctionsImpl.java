@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -266,7 +267,11 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 			}
 			
 		};
-		manager.runManagedTask(task);
+		try {
+			manager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 		return result;
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
@@ -51,7 +52,11 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	{
 
 		CreateDiffTask task = new CreateDiffTask(historyItem);
-		source.runManagedTask(task);
+		try {
+			source.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw error("Could not create diff", exception);
+		}
 		if (task.getException() != null) {
 			throw error("Could not create diff", task.getException());
 		}
@@ -205,6 +210,11 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 
 		@Override
 		protected void setChanged(boolean reset) {
+			// do nothing
+		}
+
+		@Override
+		protected void dispose(AfterReview managed) {
 			// do nothing
 		}
 	}

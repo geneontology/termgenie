@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.junit.Test;
 
 /**
@@ -83,6 +84,11 @@ public class GenericTaskManagerTest {
 		protected void setChanged(boolean reset) {
 			// Do nothing in tests
 		}
+
+		@Override
+		protected void dispose(String managed) {
+			// Do nothing in tests
+		}
 	}
 
 	private static class TestGenericTask extends Thread {
@@ -125,6 +131,8 @@ public class GenericTaskManagerTest {
 					}
 				});
 			} catch (InterruptedException exception) {
+				throw new RuntimeException(exception);
+			} catch (InvalidManagedInstanceException exception) {
 				throw new RuntimeException(exception);
 			}
 		}
@@ -171,6 +179,8 @@ public class GenericTaskManagerTest {
 				});
 			} catch (InterruptedException exception) {
 				throw new RuntimeException(exception);
+			} catch (InvalidManagedInstanceException exception) {
+				throw new RuntimeException(exception);
 			}
 		}
 	}
@@ -192,6 +202,8 @@ public class GenericTaskManagerTest {
 				sleep(startSleep);
 				manager.updateManaged();
 			} catch (InterruptedException exception) {
+				throw new RuntimeException(exception);
+			} catch (InvalidManagedInstanceException exception) {
 				throw new RuntimeException(exception);
 			}
 		}

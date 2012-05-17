@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -25,7 +26,7 @@ import com.google.inject.Injector;
 public class LuceneMemoryOntologyIndexTest {
 
 	@Test
-	public void testLuceneMemoryOntologyIndex() {
+	public void testLuceneMemoryOntologyIndex() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
 				new ReasonerModule(null));
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
@@ -40,7 +41,10 @@ public class LuceneMemoryOntologyIndexTest {
 				LuceneMemoryOntologyIndex index = new LuceneMemoryOntologyIndex(managed, null, null, null, factory);
 				Collection<SearchResult> results = index.search(" me  pigmentation ", 5, null);
 				for (SearchResult searchResult : results) {
-					String id = searchResult.id;
+					TermSuggestion suggestion = searchResult.term;
+					String id = suggestion.getIdentifier();
+					assertNotNull(suggestion.getLabel());
+					assertNotNull(suggestion.getDescription());
 					OWLObject owlObject = managed.getOWLObjectByIdentifier(id);
 					String label = managed.getLabel(owlObject);
 					System.out.println(id + "  " + searchResult.score + "  " + label);

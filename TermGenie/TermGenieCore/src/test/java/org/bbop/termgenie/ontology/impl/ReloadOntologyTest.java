@@ -40,7 +40,7 @@ public class ReloadOntologyTest {
 	}
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		manager.runManagedTask(new ManagedTask<OWLGraphWrapper>() {
 
 			@Override

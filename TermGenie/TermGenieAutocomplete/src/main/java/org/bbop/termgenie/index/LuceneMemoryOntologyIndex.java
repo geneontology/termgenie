@@ -34,11 +34,14 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 /**
  * Basic auto-completion using an in-memory lucene index.
@@ -48,10 +51,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	private static final Logger logger = Logger.getLogger(LuceneMemoryOntologyIndex.class);
 
 	private static final Version version = Version.LUCENE_33;
-	private static final String DEFAULT_FIELD = "label";
+	private static final String LABEL_FIELD = "label";
+	private static final String SYNOYM_FIELD_EXACT = "synonyms_exact";
+	private static final String SYNOYM_FIELD_NARROW = "synonyms_narrow";
+	private static final String SYNOYM_FIELD_RELATED = "synonyms_related";
+	private static final String SYNOYM_FIELD_BROAD = "synonyms_broad";
+	private static final String DESCRIPTION_FIELD = "description";
 	private static final String BRANCH_FIELD = "branch";
 	private static final String ID_FIELD = "id";
 	private static final String LENGTH_FIELD = "length";
+	
 	private static final FieldSelector FIELD_SELECTOR = new FieldSelector() {
 
 		private static final long serialVersionUID = 139300915748750525L;
@@ -59,10 +68,10 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		@Override
 		public FieldSelectorResult accept(String fieldName) {
 			// only load the id and length field
-			if (ID_FIELD.equals(fieldName) || LENGTH_FIELD.equals(fieldName)) {
-				return FieldSelectorResult.LOAD;
+			if (BRANCH_FIELD.equals(fieldName)) {
+				return FieldSelectorResult.NO_LOAD;
 			}
-			return FieldSelectorResult.NO_LOAD;
+			return FieldSelectorResult.LOAD;
 		}
 	};
 
@@ -224,8 +233,35 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			String value = ontology.getLabel(owlObject);
 			if (value != null) {
 				Document doc = new Document();
-				doc.add(new Field(DEFAULT_FIELD, value, Store.NO, Index.ANALYZED));
+				doc.add(new Field(LABEL_FIELD, value, Store.YES, Index.ANALYZED));
 				doc.add(new Field(LENGTH_FIELD, Integer.toString(value.length()), Store.YES, Index.NO));
+				
+				List<ISynonym> synonyms = ontology.getOBOSynonyms(owlObject);
+				if (synonyms != null && !synonyms.isEmpty()) {
+					for (ISynonym synonym : synonyms) {
+						String label = synonym.getLabel();
+						String scope = synonym.getScope();
+						if (label != null && label.length() > 1) {
+							if (scope == null || OboFormatTag.TAG_RELATED.getTag().equals(scope)) {
+								doc.add(new Field(SYNOYM_FIELD_RELATED, label, Store.YES, Index.NO));
+							}
+							else if (OboFormatTag.TAG_NARROW.getTag().equals(scope)) {
+								doc.add(new Field(SYNOYM_FIELD_NARROW, label, Store.YES, Index.NO));
+							}
+							else if (OboFormatTag.TAG_EXACT.getTag().equals(scope)) {
+								doc.add(new Field(SYNOYM_FIELD_EXACT, label, Store.YES, Index.NO));
+							}
+							else if (OboFormatTag.TAG_BROAD.getTag().equals(scope)) {
+								doc.add(new Field(SYNOYM_FIELD_BROAD, label, Store.YES, Index.NO));
+							}
+						}
+					}
+				}
+				String def = ontology.getDef(owlObject);
+				if (def != null && def.length() > 1) {
+					doc.add(new Field(DESCRIPTION_FIELD, def, Store.YES, Index.NO));
+				}
+				
 				try {
 					String identifier = ontology.getIdentifier(owlObject);
 					doc.add(new Field(ID_FIELD, identifier, Store.YES, Index.NOT_ANALYZED));
@@ -366,7 +402,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				return Collections.emptyList();
 			}
 
-			QueryParser p = new QueryParser(version, DEFAULT_FIELD, analyzer);
+			QueryParser p = new QueryParser(version, LABEL_FIELD, analyzer);
 			if (branch != null) {
 				StringBuilder sb = new StringBuilder();
 				sb.append(BRANCH_FIELD);
@@ -399,13 +435,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			List<SearchResult> results = new ArrayList<SearchResult>(scoreDocs.length);
 
 			for (ScoreDoc scoreDoc : scoreDocs) {
-				Document doc = searcher.doc(scoreDoc.doc, FIELD_SELECTOR);
-				String id = doc.get(ID_FIELD);
-				String lengthString = doc.get(LENGTH_FIELD);
-				int length = Integer.parseInt(lengthString);
-				
 				if (!rerank || fEquals(maxScore, scoreDoc.score)) {
-					results.add(new SearchResult(id, length, scoreDoc.score));
+					Document doc = searcher.doc(scoreDoc.doc, FIELD_SELECTOR);
+					String id = doc.get(ID_FIELD);
+					String label = doc.get(LABEL_FIELD);
+					String lengthString = doc.get(LENGTH_FIELD);
+					int length = Integer.parseInt(lengthString);
+					List<String> synonyms = getSynonyms(doc);
+					String description = doc.get(DESCRIPTION_FIELD);
+					TermSuggestion term = new TermSuggestion(label, id, description, synonyms);
+					results.add(new SearchResult(term , length, scoreDoc.score));
 				}
 			}
 			if (rerank) {
@@ -419,6 +458,28 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 			logger.warn("Could not execute search", exception);
 		}
 		return Collections.emptyList();
+	}
+
+	private List<String> getSynonyms(Document doc) {
+		List<String> synonymList = null;
+		synonymList = addSynonyms(synonymList, SYNOYM_FIELD_EXACT, doc);
+		synonymList = addSynonyms(synonymList, SYNOYM_FIELD_NARROW, doc);
+		synonymList = addSynonyms(synonymList, SYNOYM_FIELD_RELATED, doc);
+		synonymList = addSynonyms(synonymList, SYNOYM_FIELD_BROAD, doc);
+		return synonymList;
+	}
+	
+	private List<String> addSynonyms(List<String> synonymList, String field, Document doc) {
+		String[] synonyms = doc.getValues(field);
+		if (synonyms != null && synonyms.length > 0) {
+			if (synonymList == null) {
+				synonymList = new ArrayList<String>(synonyms.length);
+			}
+			for (String synonym : synonyms) {
+				synonymList.add(synonym);
+			}
+		}
+		return synonymList;
 	}
 
 	static String replaceWhitespaces(String s) {
@@ -440,17 +501,18 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 	
 	public static class SearchResult {
 
-		public final String id;
+		public final TermSuggestion term;
 		public final int length;
 		public final float score;
 
 		/**
-		 * @param hit
+		 * @param term
+		 * @param length
 		 * @param score
 		 */
-		SearchResult(String id, int length, float score) {
+		SearchResult(TermSuggestion term, int length, float score) {
 			super();
-			this.id = id;
+			this.term = term;
 			this.length = length;
 			this.score = score;
 		}

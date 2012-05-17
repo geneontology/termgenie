@@ -77,7 +77,7 @@ public class AnatomyTermGenieScriptTestRunner {
 	}
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();

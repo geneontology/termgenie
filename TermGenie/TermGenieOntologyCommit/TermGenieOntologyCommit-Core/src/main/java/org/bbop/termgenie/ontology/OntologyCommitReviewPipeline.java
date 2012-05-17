@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
@@ -218,7 +219,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	{
 		ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
 		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, mode, username, password, workFolders, handler, state);
-		source.runManagedTask(task);
+		try {
+			source.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new CommitException("Could not commit due to an invalid ontology state.", exception, false);
+		}
 		if (task.exception != null) {
 			throw task.exception;
 		}

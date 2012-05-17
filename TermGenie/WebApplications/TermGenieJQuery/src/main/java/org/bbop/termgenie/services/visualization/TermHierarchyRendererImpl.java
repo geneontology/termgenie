@@ -17,6 +17,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonChange;
@@ -116,10 +117,20 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 			}
 
 		};
-		taskManager.runManagedTask(task);
+		try {
+			taskManager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			return error("Could not create hierarchy to due an invalid ontology", exception);
+		}
 		return jsonResult;
 	}
 	
+	private JsonResult error(String message, Exception exception) {
+		logger.error(message, exception);
+		JsonResult json = new JsonResult(false, message+": "+exception.getMessage());
+		return json;
+	}
+
 	@Override
 	public JsonResult visualizeDiffTerms(JsonDiff[] jsonDiffs, ServletContext servletContext)
 	{
@@ -140,7 +151,11 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 				}
 			}
 		}
-		return renderImage(commitTargetOntology, servletContext, ids, allAxioms);
+		try {
+			return renderImage(commitTargetOntology, servletContext, ids, allAxioms);
+		} catch (InvalidManagedInstanceException exception) {
+			return error("Could not create hierarchy to due an invalid ontology", exception);
+		}
 	}
 
 	@Override
@@ -167,13 +182,17 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 				}
 			}
 		}
-		return renderImage(taskManager, servletContext, ids, allAxioms);
+		try {
+			return renderImage(taskManager, servletContext, ids, allAxioms);
+		} catch (InvalidManagedInstanceException exception) {
+			return error("Could not create hierarchy to due an invalid ontology", exception);
+		}
 	}
 
 	private JsonResult renderImage(OntologyTaskManager taskManager,
 			ServletContext servletContext,
 			final List<String> ids,
-			final Set<OWLAxiom> allAxioms)
+			final Set<OWLAxiom> allAxioms) throws InvalidManagedInstanceException
 	{
 		final String realPath = servletContext.getRealPath("generated/index.html");
 		final JsonResult jsonResult = new JsonResult();

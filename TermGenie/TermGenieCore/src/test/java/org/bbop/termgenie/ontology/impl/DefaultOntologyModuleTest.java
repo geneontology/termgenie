@@ -8,8 +8,8 @@ import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
+import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.junit.Test;
 
 import owltools.graph.OWLGraphWrapper;
@@ -33,7 +33,7 @@ public class DefaultOntologyModuleTest {
 	}
 
 	@Test
-	public void testDefaultOntologyModuleStringString() {
+	public void testDefaultOntologyModuleStringString() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule());
 		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
 		MultiOntologyTaskManager manager = injector.getInstance(MultiOntologyTaskManager.class);

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.process.ProcessState;
@@ -130,12 +131,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				logger.error("Could not retrieve pending commits for db", exception);
 			} catch (OWLOntologyCreationException exception) {
 				logger.error("Could not create entries for items", exception);
+			} catch (InvalidManagedInstanceException exception) {
+				logger.error("Could not create entries for items due to invalid ontology", exception);
 			}
 		}
 		return null;
 	}
 
-	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException {
+	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException, InvalidManagedInstanceException {
 		CreateOboDocTask task = new CreateOboDocTask();
 		manager.runManagedTask(task, ontology);
 		List<JsonCommitReviewEntry> result = new ArrayList<JsonCommitReviewEntry>(items.size());
@@ -236,12 +239,24 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		GenericTaskManager<AfterReview> afterReviewTaskManager = stages.getAfterReview();
 		
 		CommitTask task = new CommitTask(entries, this, state);
-		afterReviewTaskManager.runManagedTask(task);
+		try {
+			afterReviewTaskManager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			logger.error("Error during commit", exception);
+			return JsonCommitReviewCommitResult.error("Error during commit: "+exception.getMessage());
+		}
 		if (task.exception != null) {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology, manager);
+		JsonCommitReviewCommitResult json;
+		try {
+			json = JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology, manager);
+		} catch (InvalidManagedInstanceException exception) {
+			logger.error("Could not create data for successfull commit result", exception);
+			return JsonCommitReviewCommitResult.error("Commit successfull, but could not create data for successfull commit result display: "+exception.getMessage());
+		}
+		return json;
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

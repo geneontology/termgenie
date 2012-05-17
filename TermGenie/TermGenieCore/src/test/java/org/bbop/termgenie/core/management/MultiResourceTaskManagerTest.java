@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
@@ -146,7 +147,11 @@ public class MultiResourceTaskManagerTest {
 		@Override
 		public void run() {
 			startTime = System.currentTimeMillis();
-			testManager.runManagedTask(task, requested);
+			try {
+				testManager.runManagedTask(task, requested);
+			} catch (InvalidManagedInstanceException exception) {
+				throw new RuntimeException(exception);
+			}
 		}
 
 		private class TestTask implements MultiResourceManagedTask<String, String> {
@@ -199,7 +204,11 @@ public class MultiResourceTaskManagerTest {
 		@Override
 		public void run() {
 			startTime = System.currentTimeMillis();
-			testManager.runManagedTask(task);
+			try {
+				testManager.runManagedTask(task);
+			} catch (InvalidManagedInstanceException exception) {
+				throw new RuntimeException(exception);
+			}
 		}
 
 		private class TestTask implements ManagedTask<String> {
@@ -259,6 +268,11 @@ public class MultiResourceTaskManagerTest {
 
 		@Override
 		protected void setChanged(boolean reset) {
+			// Do nothing in tests
+		}
+
+		@Override
+		protected void dispose(String managed) {
 			// Do nothing in tests
 		}
 	}

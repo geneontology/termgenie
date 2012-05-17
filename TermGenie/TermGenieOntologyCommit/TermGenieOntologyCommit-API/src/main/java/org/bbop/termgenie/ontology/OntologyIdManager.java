@@ -46,6 +46,11 @@ public class OntologyIdManager extends GenericTaskManager<OntologyIdProvider> {
 		return idProvider;
 	}
 
+	@Override
+	protected void dispose(OntologyIdProvider managed) {
+		// Do nothing
+	}
+
 	/**
 	 * Convenience class to simplify the implementation of {@link ManagedTask}
 	 * for {@link OntologyIdManager}.

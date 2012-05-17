@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.eventbus.SecondaryOntologyChangeEvent;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.BranchDetails;
@@ -154,6 +156,8 @@ public class BasicLuceneClient implements
 			if (task.getException() != null) {
 				throw new RuntimeException(task.getException());
 			}
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
 		} finally {
 			if (old != null) {
 				old.close();
@@ -174,15 +178,15 @@ public class BasicLuceneClient implements
 	}
 
 	@Override
-	public List<String> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<TermSuggestion> suggestTerms(String query, Ontology ontology, int maxCount) {
 		if (this.name.equals(ontology.getUniqueName())) {
 			Collection<SearchResult> searchResults = index.search(query,
 					maxCount,
 					ontology.getBranch());
 			if (searchResults != null && !searchResults.isEmpty()) {
-				final List<String> suggestions = new ArrayList<String>(searchResults.size());
+				final List<TermSuggestion> suggestions = new ArrayList<TermSuggestion>(searchResults.size());
 				for (SearchResult searchResult : searchResults) {
-					suggestions.add(searchResult.id);
+					suggestions.add(searchResult.term);
 				}
 				return suggestions;
 			}

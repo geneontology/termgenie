@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonExportResult;
@@ -63,7 +64,14 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		}
 		UserData userData = sessionHandler.getUserData(session);
 		CreateExportDiffTask task = new CreateExportDiffTask(terms, userData);
-		manager.runManagedTask(task);
+		try {
+			manager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			logger.error("Could not create OBO export due to an invalid ontology state", exception);
+			result.setSuccess(false);
+			result.setMessage("Could not create OBO export due to an invalid ontology state: " + task.getException().getMessage());
+			return result;
+		}
 		if (task.getException() != null) {
 			result.setSuccess(false);
 			result.setMessage("Could not create OBO export: " + task.getException().getMessage());

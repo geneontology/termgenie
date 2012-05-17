@@ -12,6 +12,7 @@ import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modifie
  */
 public abstract class GenericTaskManager<T> {
 
+	private volatile boolean inValid = false;
 	private volatile T managed = null;
 	private final Semaphore lock;
 	final String name;
@@ -41,10 +42,14 @@ public abstract class GenericTaskManager<T> {
 	 * Low level method to lock. Only to be used in this package
 	 * 
 	 * @return managed
+	 * @throws InvalidManagedInstanceException 
 	 */
-	T getManaged() {
+	T getManaged() throws InvalidManagedInstanceException {
 		try {
 			lock.acquire();
+			if (inValid) {
+				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
+			}
 			if (managed == null) {
 				managed = createManaged();
 				if (managed == null) {
@@ -54,6 +59,9 @@ public abstract class GenericTaskManager<T> {
 			return managed;
 		} catch (InterruptedException exception) {
 			throw new GenericTaskManagerException("Interrupted during wait.", exception);
+		} catch (InstanceCreationException exception) {
+			inValid = true;
+			throw new InvalidManagedInstanceException("Could not create managed instance: "+exception.getMessage(), exception.getCause());
 		}
 	}
 
@@ -62,8 +70,9 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @param managed
 	 * @param modified
+	 * @throws InvalidManagedInstanceException 
 	 */
-	void returnManaged(T managed, Modified modified) {
+	void returnManaged(T managed, Modified modified) throws InvalidManagedInstanceException {
 		if (this.managed != managed) {
 			throw new GenericTaskManagerException("Trying to return the wrong managed object for manager: " + name);
 		}
@@ -76,6 +85,9 @@ public abstract class GenericTaskManager<T> {
 			}
 		} catch (GenericTaskManagerException exception) {
 			throw exception;
+		} catch (InstanceCreationException exception) {
+			inValid = true;
+			throw new InvalidManagedInstanceException("Could not create managed instance: "+exception.getMessage(), exception.getCause());
 		}
 		finally {
 			lock.release();
@@ -93,7 +105,7 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @return managed instance
 	 */
-	protected abstract T createManaged();
+	protected abstract T createManaged() throws InstanceCreationException;
 
 	/**
 	 * Update the current managed instance.
@@ -101,7 +113,7 @@ public abstract class GenericTaskManager<T> {
 	 * @param managed current managed instance
 	 * @return updated managed instance
 	 */
-	protected abstract T updateManaged(T managed);
+	protected abstract T updateManaged(T managed) throws InstanceCreationException;
 
 	/**
 	 * Update the current managed instance.
@@ -109,7 +121,7 @@ public abstract class GenericTaskManager<T> {
 	 * @param managed current managed instance
 	 * @return updated managed instance
 	 */
-	protected abstract T resetManaged(T managed);
+	protected abstract T resetManaged(T managed) throws InstanceCreationException;
 
 	/**
 	 * Called for disposing the managed instance.
@@ -117,19 +129,22 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @param managed
 	 */
-	protected void dispose(T managed) {
-		// do nothing
-	}
+	protected abstract void dispose(T managed);
 	
 	/**
 	 * Tell the managed object to update. Wait until the other processes are
 	 * finished.
+	 * 
+	 * @throws InvalidManagedInstanceException 
 	 */
-	public void updateManaged() {
+	public final void updateManaged() throws InvalidManagedInstanceException {
 		boolean hasLock = false;
 		try {
 			lock.acquire();
 			hasLock = true;
+			if (inValid) {
+				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
+			}
 			if (managed == null) {
 				managed = createManaged();
 			}
@@ -139,6 +154,9 @@ public abstract class GenericTaskManager<T> {
 			}
 		} catch (InterruptedException exception) {
 			throw new GenericTaskManagerException("Interrupted during wait.", exception);
+		} catch (InstanceCreationException exception) {
+			inValid = true;
+			throw new InvalidManagedInstanceException("Could not create managed instance: "+exception.getMessage(), exception.getCause());
 		}
 		finally {
 			if (hasLock) {
@@ -147,7 +165,7 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 	
-	public void dispose() {
+	public final void dispose() {
 		boolean hasLock = false;
 		try {
 			lock.acquire();
@@ -183,8 +201,9 @@ public abstract class GenericTaskManager<T> {
 	 * managed instance.
 	 * 
 	 * @param task
+	 * @throws InvalidManagedInstanceException 
 	 */
-	public void runManagedTask(ManagedTask<T> task) {
+	public final void runManagedTask(ManagedTask<T> task) throws InvalidManagedInstanceException {
 		T managed = null;
 		Modified modified = Modified.no;
 		try {
@@ -194,6 +213,28 @@ public abstract class GenericTaskManager<T> {
 		finally {
 			if (managed != null) {
 				returnManaged(managed, modified);
+			}
+		}
+	}
+	
+	public final void recoverInvalid() {
+		boolean hasLock = false;
+		try {
+			lock.acquire();
+			hasLock = true;
+			
+			// try to silently dispose invalid instance
+			T current = managed;
+			managed = null;
+			inValid = false;
+			
+			dispose(current);
+		} catch (InterruptedException exception) {
+			throw new RuntimeException(exception);
+		}
+		finally {
+			if (hasLock) {
+				lock.release();
 			}
 		}
 	}
@@ -230,5 +271,39 @@ public abstract class GenericTaskManager<T> {
 		public GenericTaskManagerException(String message, Throwable exception) {
 			super(message, exception);
 		}
+	}
+	
+	public static class InstanceCreationException extends Exception {
+
+		// generated
+		private static final long serialVersionUID = 3685882108945684588L;
+
+		public InstanceCreationException(String message, Throwable cause) {
+			super(message, cause);
+			// TODO Auto-generated constructor stub
+		}
+		
+	}
+	
+	public static class InvalidManagedInstanceException extends Exception {
+
+		// generated
+		private static final long serialVersionUID = 8453914129313031825L;
+
+		public InvalidManagedInstanceException(String message, Throwable cause) {
+			super(message, cause);
+			// TODO Auto-generated constructor stub
+		}
+
+		public InvalidManagedInstanceException(String message) {
+			super(message);
+			// TODO Auto-generated constructor stub
+		}
+
+		public InvalidManagedInstanceException(Throwable cause) {
+			super(cause);
+			// TODO Auto-generated constructor stub
+		}
+		
 	}
 }

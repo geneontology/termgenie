@@ -38,7 +38,7 @@ public class OWLImportTest {
 	}
 	
 	@Test
-	public void testImport() {
+	public void testImport() throws Exception {
 		List<String> converted = new ArrayList<String>();
 		LocalFileIRIMapper mapper = new TestLocalFileIRIMapper(testFolder, converted);
 		OntologyConfiguration c = new DefaultOntologyConfiguration("owlimport-test-ontology-configuration.settings", false);

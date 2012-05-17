@@ -21,6 +21,7 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -31,6 +32,8 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -205,7 +208,12 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 					methodName = termTemplate.getName();
 				}
 				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState);
-				multiOntologyTaskManager.runManagedTask(task, ontologies);
+				try {
+					multiOntologyTaskManager.runManagedTask(task, ontologies);
+				} catch (InvalidManagedInstanceException exception) {
+					logger.error("Could not create terms due to an invalid ontology", exception);
+					generationOutputs.add(TermGenerationOutput.error(input,"Could not create terms due to an invalid ontology: "+exception.getMessage()));
+				}
 				if (task.result != null && !task.result.isEmpty()) {
 					generationOutputs.addAll(task.result);
 				}
@@ -288,10 +296,16 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		}
 
 		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested) {
+		public List<Modified> run(List<OWLGraphWrapper> requested) throws InvalidManagedInstanceException {
 
 			List<Modified> modified = new ArrayList<Modified>(requested.size());
-			for (int i = 0; i < requested.size(); i++) {
+			for (OWLGraphWrapper graph : requested) {
+				OWLOntology sourceOntology = graph.getSourceOntology();
+				try {
+					sourceOntology.getImportsClosure();
+				} catch (UnknownOWLOntologyException exception) {
+					throw new InvalidManagedInstanceException("Can't create terms, inconsistent ontology state: "+sourceOntology.getOntologyID().getOntologyIRI(), exception);
+				}
 				modified.add(Modified.no);
 			}
 			Integer targetOntologyIndex = null;

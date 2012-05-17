@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.GenericTaskManagerException;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 
 /**
@@ -52,7 +53,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		return null;
 	}
 
-	private List<RESOURCETYPE> getManaged(INFOTYPE[] infos) {
+	private List<RESOURCETYPE> getManaged(INFOTYPE[] infos) throws InvalidManagedInstanceException {
 		List<RESOURCETYPE> resources = new ArrayList<RESOURCETYPE>(infos.length);
 		boolean hasLock = false;
 		try {
@@ -90,7 +91,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 
 	private void returnManaged(List<RESOURCETYPE> resources,
 			List<Modified> modifieds,
-			INFOTYPE[] infos)
+			INFOTYPE[] infos) throws InvalidManagedInstanceException
 	{
 		// no locking required for releasing
 		if (infos.length != resources.size()) {
@@ -126,9 +127,10 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	 * 
 	 * @param task
 	 * @param requested
+	 * @throws InvalidManagedInstanceException 
 	 */
-	public void runManagedTask(MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task,
-			INFOTYPE...requested)
+	public final void runManagedTask(MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task,
+			INFOTYPE...requested) throws InvalidManagedInstanceException
 	{
 		List<RESOURCETYPE> managed = null;
 		List<Modified> modifiedList = null;
@@ -156,8 +158,9 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		 * 
 		 * @param requested
 		 * @return list of modified flags
+		 * @throws InvalidManagedInstanceException
 		 */
-		public List<Modified> run(List<RESOURCETYPE> requested);
+		public List<Modified> run(List<RESOURCETYPE> requested) throws InvalidManagedInstanceException;
 
 	}
 

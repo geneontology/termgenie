@@ -40,7 +40,7 @@ public class CheckEquivalentClassesAxiomsTest {
 	}
 
 	@Test
-	public void test_check_for_regulation_in_axioms() {
+	public void test_check_for_regulation_in_axioms() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontologyTaskManager = loader.getOntology(ontology);
 		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {

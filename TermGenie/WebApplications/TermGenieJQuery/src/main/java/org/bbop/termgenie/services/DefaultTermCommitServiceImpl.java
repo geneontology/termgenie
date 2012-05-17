@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
@@ -76,13 +77,17 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		this.idProvider = idProvider;
 		this.permissions = permissions;
 		this.source = source;
-		source.runManagedTask(new OntologyTask() {
+		try {
+			source.runManagedTask(new OntologyTask() {
 
-			@Override
-			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
-				tempIdPrefix = generationEngine.getTempIdPrefix(managed);
-			}
-		});
+				@Override
+				protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+					tempIdPrefix = generationEngine.getTempIdPrefix(managed);
+				}
+			});
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	protected Ontology getTargetOntology() {
@@ -148,7 +153,12 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		String commitMessage = createDefaultCommitMessage(userData);
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
 				manager.getOntology()), processState);
-		idProvider.runManagedTask(task);
+		try {
+			idProvider.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			logger.error("Could not commit term due to an invalid ontology state", exception);
+			return error("Could not commit term due to an invalid ontology state: "+exception.getMessage());
+		}
 		return task.result;
 	}
 
@@ -308,7 +318,13 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			
 			// check terms in the commit
 			CheckTermsTask checkTermsTask = new CheckTermsTask(terms);
-			manager.runManagedTask(checkTermsTask);
+			try {
+				manager.runManagedTask(checkTermsTask);
+			} catch (InvalidManagedInstanceException exception) {
+				logger.error("Could not check terms due to an error", exception);
+				result = error("Could not check terms due to an error: " + checkTermsTask.getException().getMessage());
+				return;
+			}
 			if (checkTermsTask.getException() != null) {
 				result = error("Could not check terms due to an error: " + checkTermsTask.getException().getMessage());
 				return;
@@ -373,6 +389,10 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 					idProvider.rollbackId(manager.getOntology(), base);
 				}
 				result = error(exception);
+				return;
+			} catch (InvalidManagedInstanceException exception) {
+				logger.error("Could not create data for successfull commit result", exception);
+				result = error("Commit successfull, but could not create data for successfull commit result display: "+exception.getMessage());
 				return;
 			}
 			return;

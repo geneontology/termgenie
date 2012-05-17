@@ -21,6 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyDocumentAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyLoaderListener;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -70,19 +71,10 @@ public class BaseOntologyLoader {
 	}
 
 	protected OWLGraphWrapper getResource(ConfiguredOntology ontology, OWLGraphWrapper update)
-			throws OWLOntologyCreationException, IOException
+			throws OWLOntologyCreationException, IOException, UnknownOWLOntologyException
 	{
 		if (update != null) {
-			Set<OWLOntology> closure = update.getSourceOntology().getImportsClosure();
-			for (OWLOntology owlOntology : closure) {
-				manager.removeOntology(owlOntology);	
-			}
-			Set<OWLOntology> supports = update.getSupportOntologySet();
-			if (supports != null) {
-				for (OWLOntology support : supports) {
-					manager.removeOntology(support);
-				}
-			}
+			disposeResource(update);
 		}
 		OWLGraphWrapper w = load(ontology, ontology.source);
 		if (w == null) {
@@ -99,7 +91,24 @@ public class BaseOntologyLoader {
 			}
 		}
 		w.addSupportOntologiesFromImportsClosure();
+		
+		// throws UnknownOWLOntologyException
+		w.getAllOntologies();
+		
 		return w;
+	}
+
+	protected void disposeResource(OWLGraphWrapper graph) throws UnknownOWLOntologyException {
+		Set<OWLOntology> closure = graph.getSourceOntology().getImportsClosure();
+		for (OWLOntology owlOntology : closure) {
+			manager.removeOntology(owlOntology);	
+		}
+		Set<OWLOntology> supports = graph.getSupportOntologySet();
+		if (supports != null) {
+			for (OWLOntology support : supports) {
+				manager.removeOntology(support);
+			}
+		}
 	}
 
 	protected OWLGraphWrapper load(Ontology ontology, String url)

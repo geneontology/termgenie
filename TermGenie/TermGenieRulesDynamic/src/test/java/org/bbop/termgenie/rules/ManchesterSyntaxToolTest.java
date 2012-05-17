@@ -45,7 +45,7 @@ public class ManchesterSyntaxToolTest {
 	}
 
 	@Test
-	public void testManchesterSyntaxTool() {
+	public void testManchesterSyntaxTool() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
 		OntologyTask task = new OntologyTask(){
@@ -66,7 +66,7 @@ public class ManchesterSyntaxToolTest {
 	}
 	
 	@Test
-	public void testManchesterSyntaxTool2() {
+	public void testManchesterSyntaxTool2() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
 		OntologyTask task = new OntologyTask(){

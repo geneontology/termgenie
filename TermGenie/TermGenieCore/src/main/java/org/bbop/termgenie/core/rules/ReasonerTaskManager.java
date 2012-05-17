@@ -75,7 +75,11 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 				return Modified.no;
 			}
 		};
-		runManagedTask(task);
+		try {
+			runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 		return result;
 	}
 
@@ -91,7 +95,11 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 				return Modified.no;
 			}
 		};
-		runManagedTask(task);
+		try {
+			runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 		return result;
 	}
 	
@@ -145,7 +153,11 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 
 	public Set<OWLObject> executeDLQuery(final String queryString, final OWLGraphWrapper wrapper) {
 		DLQueryExecutor task = new DLQueryExecutor(queryString, wrapper);
-		runManagedTask(task);
+		try {
+			runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 		if (task.exception == null && task.result != null) {
 			return task.result;
 		}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
@@ -95,6 +96,8 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		reasonerManager.setProcessState(state);
 		try {
 			reasonerManager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RelationCreationException("Could not create releations due to an invalid reasoner.", exception);
 		} finally {
 			reasonerManager.dispose();
 			reasonerManager.removeProcessState();

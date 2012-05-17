@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 
@@ -68,7 +69,7 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 	}
 
 	@Override
-	public List<String> suggestTerms(String query, Ontology ontology, int maxCount) {
+	public List<TermSuggestion> suggestTerms(String query, Ontology ontology, int maxCount) {
 		BasicLuceneClient index = luceneIndices.get(ontology.getUniqueName());
 		if (index != null) {
 			return index.suggestTerms(query, ontology, maxCount);
