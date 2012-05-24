@@ -7,8 +7,9 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
@@ -220,50 +221,36 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
-		Collection<Clause> synonyms1 = term1.getClauses(OboFormatTag.TAG_SYNONYM);
-		assertEquals(1, synonyms1.size());
-		Clause clause11 = synonyms1.iterator().next();
-		assertEquals("N',N'',N'''-triacetylfusarinine C metabolism", clause11.getValue());
-		assertEquals("EXACT", clause11.getValue2());
-		
+		containsSynonym(term1, "N',N'',N'''-triacetylfusarinine C metabolism");
+
 		assertTrue(output2.getMessage(), output2.isSuccess());
 		Frame term2 = output2.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
-		Collection<Clause> synonyms2 = term2.getClauses(OboFormatTag.TAG_SYNONYM);
-		assertEquals(3, synonyms2.size());
-		
-		Iterator<Clause> iterator2 = synonyms2.iterator();
-		Clause clause21 = iterator2.next();
-		Clause clause22 = iterator2.next();
-		Clause clause23 = iterator2.next();
-		assertEquals("N',N'',N'''-triacetylfusarinine C catabolism", clause21.getValue());
-		assertEquals("EXACT", clause21.getValue2());
-		assertEquals("N',N'',N'''-triacetylfusarinine C breakdown", clause22.getValue());
-		assertEquals("EXACT", clause22.getValue2());
-		assertEquals("N',N'',N'''-triacetylfusarinine C degradation", clause23.getValue());
-		assertEquals("EXACT", clause23.getValue2());
+		containsSynonym(term2, "N',N'',N'''-triacetylfusarinine C catabolism", 
+				"N',N'',N'''-triacetylfusarinine C breakdown", 
+				"N',N'',N'''-triacetylfusarinine C degradation");
 		
 		assertTrue(output3.getMessage(), output3.isSuccess());
 		Frame term3 = output3.getTerm();
 		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
-		Collection<Clause> synonyms3 = term3.getClauses(OboFormatTag.TAG_SYNONYM);
-		assertEquals(4, synonyms3.size());
-		
-		Iterator<Clause> iterator3 = synonyms3.iterator();
-		Clause clause31 = iterator3.next();
-		Clause clause32 = iterator3.next();
-		Clause clause33 = iterator3.next();
-		Clause clause34 = iterator3.next();
-		
-		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthesis", clause31.getValue());
-		assertEquals("EXACT", clause31.getValue2());
-		assertEquals("N',N'',N'''-triacetylfusarinine C anabolism", clause32.getValue());
-		assertEquals("EXACT", clause32.getValue2());
-		assertEquals("N',N'',N'''-triacetylfusarinine C formation", clause33.getValue());
-		assertEquals("EXACT", clause33.getValue2());
-		assertEquals("N',N'',N'''-triacetylfusarinine C synthesis", clause34.getValue());
-		assertEquals("EXACT", clause34.getValue2());
-		
+		containsSynonym(term3, "N',N'',N'''-triacetylfusarinine C biosynthesis", 
+				"N',N'',N'''-triacetylfusarinine C anabolism",
+				"N',N'',N'''-triacetylfusarinine C formation",
+				"N',N'',N'''-triacetylfusarinine C synthesis");
+	}
+	
+	private void containsSynonym(Frame frame, String...synonymsStrings) {
+		Set<String> requiredSynonyms = new HashSet<String>(Arrays.asList(synonymsStrings));
+		Collection<Clause> synonyms = frame.getClauses(OboFormatTag.TAG_SYNONYM);
+		System.out.println("-----------------");
+		for (Clause clause : synonyms) {
+			String value = clause.getValue(String.class);
+			requiredSynonyms.remove(value);
+			System.out.println(value+" "+clause.getValue2());
+		}
+		if (!requiredSynonyms.isEmpty()) {
+			fail("Missing synonyms: "+requiredSynonyms);
+		}
 	}
 
 	@Test

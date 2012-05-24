@@ -8,7 +8,7 @@ function chemical_transport() {
 	var definition = "The directed movement of "
 			+ refname(x, ont)
 			+ " into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
-	var synonyms = null; // No synonyms
+	var synonyms = termgenie.synonyms(null, x, ont, " transport", null, label);
 	var mdef = createMDef("GO_0006810 and 'results in transport of' some ?X");
 	mdef.addParameter('X', x, ont);
 	createTerm(label, definition, synonyms, mdef);
