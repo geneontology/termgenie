@@ -2219,6 +2219,7 @@ function termgenie(){
 				});
 				container.append(termList);
 			}
+//			renderResetButton(container);
 		}
 		else {
 			container.append('<div>The commit of the generated terms did not complete normally with the following reason:</div>');
@@ -2269,7 +2270,7 @@ function termgenie(){
 			container.append('<div>The export of the generated terms did not complete normally with the following reason:</div>');
 			container.append('<div class="term-generation-export-error-details">'+exportResult.message+'</div>');
 		}
-		
+//		renderResetButton(container);
 		
 		function renderExport(name, content, exportsContainer) {
 			exportsContainer.append('<div>'+name+'</div>');
@@ -2295,6 +2296,20 @@ function termgenie(){
 			});
 			exportsContainer.append('<div class="termgenie-pre nobr">'+replaced+'</div>');
 		}
+	}
+	
+	function renderResetButton(container) {
+		var restartDiv = jQuery('<div class="term-generation-commit-restart"><span>Need to create more terms or select templates: </span></div>');
+		var restartButton = jQuery('<button type="button">GoTo Step 2</button>');
+		restartButton.click(function(){
+			myAccordion.activatePane(1);
+			myAccordion.disablePane(2);
+			jQuery('#span-step2-additional-header').empty();
+			myAccordion.disablePane(3);
+			jQuery('#span-step3-additional-header').empty();
+		});
+		restartDiv.append(restartButton);
+		container.append(restartDiv);
 	}
 	
 	// Helper functions
