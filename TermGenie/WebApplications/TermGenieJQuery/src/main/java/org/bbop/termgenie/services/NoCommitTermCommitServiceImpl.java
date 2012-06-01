@@ -148,6 +148,7 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontology,
+			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState)
 	{

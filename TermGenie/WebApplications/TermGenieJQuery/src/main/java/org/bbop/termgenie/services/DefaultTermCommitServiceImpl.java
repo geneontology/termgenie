@@ -106,20 +106,23 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	 * @param userData
 	 * @param commitMessage
 	 * @param commitUserData
+	 * @param sendConfirmationEMail
 	 * @return CommitInfo
 	 */
 	protected CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
 			String commitMessage,
 			UserData userData,
-			CommitUserData commitUserData)
+			CommitUserData commitUserData,
+			boolean sendConfirmationEMail)
 	{
-		return new InternalCommitInfo(terms, commitMessage, userData);
+		return new InternalCommitInfo(terms, commitMessage, userData, sendConfirmationEMail);
 	}
 
 	@Override
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontologyName,
+			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState)
 	{
@@ -152,7 +155,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 		String commitMessage = createDefaultCommitMessage(userData);
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()), processState);
+				manager.getOntology()), sendConfirmationEMail, processState);
 		try {
 			idProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -279,6 +282,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 		private final String commitMessage;
 		private final ProcessState processState;
+		private final boolean sendConfirmationEMail;
 
 		/**
 		 * @param manager
@@ -286,6 +290,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		 * @param commitMessage
 		 * @param userData
 		 * @param commitUserData
+		 * @param sendConfirmationEMail
 		 * @param processState
 		 */
 		CommitTask(OntologyTaskManager manager,
@@ -293,6 +298,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				String commitMessage,
 				UserData userData,
 				CommitUserData commitUserData,
+				boolean sendConfirmationEMail,
 				ProcessState processState)
 		{
 			super();
@@ -301,6 +307,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			this.commitMessage = commitMessage;
 			this.userData = userData;
 			this.commitUserData = commitUserData;
+			this.sendConfirmationEMail = sendConfirmationEMail;
 			this.processState = processState;
 		}
 
@@ -361,7 +368,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			CommitInfo commitInfo = createCommitInfo(commitTerms,
 					commitMessage,
 					userData,
-					commitUserData);
+					commitUserData,
+					sendConfirmationEMail);
 			try {
 				// commit
 				CommitResult commitResult = committer.commit(commitInfo);

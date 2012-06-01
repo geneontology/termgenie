@@ -34,6 +34,7 @@ public interface TermCommitService {
 	 * @param sessionId an id which can be used to retrieve the session object.
 	 * @param terms
 	 * @param ontology
+	 * @param sendConfirmationEMail
 	 * @param session introduced via {@link SessionAware}, do not send in rpc
 	 *            call.
 	 * @param processState introduced via {@link ProcessStateAware}, do not send in rpc
@@ -45,6 +46,7 @@ public interface TermCommitService {
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontology,
+			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState);
 }

@@ -73,8 +73,18 @@
 						a valid user name and password are required.<br/>
 						If 'Submit for Review' is disabled the generated terms are not commited and formated for export in the following step.</span>
 					<div>
-						<span><button type="button" id="button-submit-for-commit-or-export">Preview</button></span>
-						<span><input type="checkbox" id="checkbox-try-commit" /> Submit for Review</span>
+						<table>
+							<tbody>
+								<tr>
+									<td><button type="button" id="button-submit-for-commit-or-export">Preview</button></td>
+									<td><input type="checkbox" id="checkbox-try-commit" /> Submit for Review</td>
+								</tr>
+								<tr id="div-checkbox-send-submit-email">
+									<td></td>
+									<td><input type="checkbox" id="checkbox-send-submit-email" /> Send confirmation e-mail and details of requested terms</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

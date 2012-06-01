@@ -1256,6 +1256,7 @@ function termgenie(){
 	 */
 	function createUserPanel() {
 		var checkBoxElem = jQuery('#checkbox-try-commit');
+		var checkBoxSendSubmitEmail = jQuery('#checkbox-send-submit-email');
 		return {
 			submit : function (terms, ontology) {
 				// select mode
@@ -1280,6 +1281,8 @@ function termgenie(){
 				}
 				step3AdditionalHeader.append(headerMessage);
 				
+				var sendConfirmationEMail = checkBoxSendSubmitEmail.is(':checked');
+				
 				// open next tab in the accordion
 				var step4Container = jQuery('#termgenie-step4-content-container');
 				step4Container.empty();
@@ -1292,7 +1295,7 @@ function termgenie(){
 					// try to commit
 					mySession.getSessionId(function(sessionId){
 						jsonService.commit.commitTerms({
-							params: [sessionId, terms, ontology],
+							params: [sessionId, terms, ontology, sendConfirmationEMail],
 							onSuccess: function(result) {
 								step4Container.empty();
 								renderCommitResult(result, step4Container);
@@ -2183,6 +2186,11 @@ function termgenie(){
 			});
 			
 			/*
+			 * hide e-mail select
+			 */
+			jQuery('#div-checkbox-send-submit-email').hide();
+			
+			/*
 			 * change label of submit button depending state of commit checkbox
 			 */
 			var checkBoxElem = jQuery('#checkbox-try-commit');
@@ -2190,8 +2198,13 @@ function termgenie(){
 				var label = 'Preview';
 				if (checkBoxElem.is(':checked')) {
 					label = 'Submit';
+					jQuery('#div-checkbox-send-submit-email').show();
+				}
+				else {
+					jQuery('#div-checkbox-send-submit-email').hide();
 				}
 				jQuery('#button-submit-for-commit-or-export').text(label);
+				
 			});
 		}
 	}

@@ -102,6 +102,8 @@ public class CommitInfo {
 	private final String username;
 	private final String password;
 	
+	private final boolean sendConfirmationEMail;
+	
 	/**
 	 * @param terms
 	 * @param userData
@@ -109,13 +111,15 @@ public class CommitInfo {
 	 * @param commitMessage
 	 * @param username
 	 * @param password
+	 * @param sendConfirmationEMail
 	 */
 	public CommitInfo(List<CommitObject<TermCommit>> terms,
 			UserData userData,
 			CommitMode commitMode,
 			String commitMessage,
 			String username,
-			String password)
+			String password,
+			boolean sendConfirmationEMail)
 	{
 		super();
 		this.terms = terms;
@@ -124,6 +128,7 @@ public class CommitInfo {
 		this.commitMessage = commitMessage;
 		this.username = username;
 		this.password = password;
+		this.sendConfirmationEMail = sendConfirmationEMail;
 	}
 
 	/**
@@ -166,6 +171,13 @@ public class CommitInfo {
 	 */
 	public String getCommitMessage() {
 		return commitMessage;
+	}
+	
+	/**
+	 * @return the sendConfirmationEMail
+	 */
+	public boolean isSendConfirmationEMail() {
+		return sendConfirmationEMail;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.mail.EmailException;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.mail.MailHandler;
+import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 
@@ -50,6 +51,34 @@ public class DefaultReviewMailHandler implements ReviewMailHandler {
 		else {
 			subject = "Your requested term has been committed to the ontology.";
 			init = "Hello,\n\nafter a review the following requested term has been committed to ontology:\n\n";
+		}
+		body.append(init);
+		for (CommitedOntologyTerm commitedOntologyTerm : terms) {
+			body.append(commitedOntologyTerm.getObo());
+			body.append('\n');
+		}
+		final String email = item.getEmail();
+
+		try {
+			mailHandler.sendEmail(subject, body.toString(), fromAddress, fromName, email);
+		} catch (EmailException exception) {
+			logger.warn("Could not send e-mail to user: " + email, exception);
+		}
+	}
+
+	@Override
+	public void handleSubmitMail(CommitHistoryItem item, CommitResult commitResult) {
+		List<CommitedOntologyTerm> terms = item.getTerms();
+		StringBuilder body = new StringBuilder();
+		final String init;
+		final String subject;
+		if (terms.size() > 1) {
+			subject = "Confirmation of your new term request in TermGenie.";
+			init = "Hello,\n\nthis is a confirmation that the following term has been submitted for review in TermGenie:\n\n";
+		}
+		else {
+			subject = "Confirmation of your new term requests in TermGenie.";
+			init = "Hello,\n\nthis is a confirmation that the following terms have been submitted for review in TermGenie:\n\n";
 		}
 		body.append(init);
 		for (CommitedOntologyTerm commitedOntologyTerm : terms) {

@@ -15,12 +15,14 @@ public class InternalCommitInfo extends CommitInfo {
 	 * @param terms
 	 * @param commitMessage
 	 * @param userData
+	 * @param sendConfirmationEMail
 	 */
 	public InternalCommitInfo(List<CommitObject<TermCommit>> terms,
 			String commitMessage,
-			UserData userData)
+			UserData userData,
+			boolean sendConfirmationEMail)
 	{
-		super(terms, userData, CommitMode.internal, commitMessage, null, null);
+		super(terms, userData, CommitMode.internal, commitMessage, null, null, sendConfirmationEMail);
 	}
 
 }

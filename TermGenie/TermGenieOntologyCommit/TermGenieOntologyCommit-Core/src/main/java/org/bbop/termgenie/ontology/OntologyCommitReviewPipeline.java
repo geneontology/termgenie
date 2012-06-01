@@ -69,7 +69,13 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getCommitMessage(), commitInfo.getUserData(), date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
-			return new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
+			CommitResult commitResult = new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
+			
+			// send confirmation e-mail (if requested)
+			if (commitInfo.isSendConfirmationEMail()) {
+				handler.handleSubmitMail(historyItem, commitResult);
+			}
+			return commitResult;
 		} catch (CommitHistoryStoreException exception) {
 			String message = "Problems handling commit history for ontology: " + source.getOntology().getUniqueName();
 			throw error(message, exception);
