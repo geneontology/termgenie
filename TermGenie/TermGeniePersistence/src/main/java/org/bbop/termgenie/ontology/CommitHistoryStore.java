@@ -117,4 +117,14 @@ public interface CommitHistoryStore {
 	 */
 	public List<Pair<String, String>> checkRecentCommits(String ontology, List<String> labels)
 			throws CommitHistoryStoreException;
+	
+	/**
+	 * Check the history for term ids;
+	 * 
+	 * @param ids
+	 * @return list of id, label pairs for already existing items
+	 * @throws CommitHistoryStoreException
+	 */
+	public List<Pair<String, String>> checkRecentCommitIds(List<String> ids)
+			throws CommitHistoryStoreException;
 }

@@ -25,6 +25,7 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.lookup.TermLookupServiceDefaultModule;
 import org.bbop.termgenie.services.management.ManagementServiceModule;
 import org.bbop.termgenie.services.management.ManagementServices;
 import org.bbop.termgenie.services.resources.ResourceProviderModule;
@@ -58,6 +59,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		protected void configureServlets() {
 			serve("/jsonrpc").with(TermGenieJsonRPCServlet.class);
 			serve(OPENID_SERVLET_PATH).with(OpenIdResponseServlet.class);
+			serve("/termlookup").with(TermLookupServlet.class);
 		}
 
 		@Provides
@@ -151,6 +153,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getResourceProviderModule(), true, "ResourceProviderModule");
 		add(modules, getTermHierarchyModule(), true, "TermHierarchyModule");
 		add(modules, getReviewMailHandlerModule(), true, "ReviewMailHandlerModule");
+		add(modules, getTermLookupModule(), true, "TermLookupModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -234,6 +237,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 	protected IOCModule getTermHierarchyModule() {
 		return new TermHierarchyModule(applicationProperties);
+	}
+	
+	protected IOCModule getTermLookupModule() {
+		return new TermLookupServiceDefaultModule(applicationProperties);
 	}
 	
 	/**
