@@ -73,11 +73,11 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			}
 			if (suffixes != null && suffixes.length > 0) {
 				for(String suffix : suffixes) {
-					addSynonym(label, results, termLabel, prefix, scope, suffix);
+					results = addSynonym(label, results, prefix, termLabel, suffix, scope);
 				}
 			}
 			else {
-				addSynonym(label, results, termLabel, prefix, scope, null);
+				results = addSynonym(label, results, prefix, termLabel, null, scope);
 			}
 		}
 		
@@ -105,22 +105,23 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		return results;
 	}
 
-	private void addSynonym(String label,
+	@Override
+	public List<ISynonym> addSynonym(String label,
 			List<ISynonym> results,
-			String synonymLabel,
 			String prefix,
-			String scope,
-			String suffix)
+			String infix,
+			String suffix,
+			String scope)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (prefix != null) {
 			sb.append(prefix);
 		}
-		sb.append(synonymLabel);
+		sb.append(infix);
 		if (suffix != null) {
 			sb.append(suffix);
 		}
-		addSynonym(results, scope, sb.toString(), label);
+		return addSynonym(results, scope, sb.toString(), label);
 	}
 
 	@Override
@@ -324,7 +325,7 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		return label;
 	}
 
-	void addSynonym(List<ISynonym> results,
+	List<ISynonym> addSynonym(List<ISynonym> results,
 			String scope,
 			String newLabel,
 			String label)
@@ -335,8 +336,12 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			if (scope == null) {
 				scope = OboFormatTag.TAG_RELATED.getTag();
 			}
+			if (results == null) {
+				results = new ArrayList<ISynonym>();
+			}
 			results.add(new Synonym(newLabel, scope, null, Collections.singleton("GOC:TermGenie")));
 		}
+		return results;
 	}
 
 	protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology, String requiredPrefix, boolean ignoreSynonyms) {

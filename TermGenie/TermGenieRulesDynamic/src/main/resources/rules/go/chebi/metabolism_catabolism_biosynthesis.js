@@ -9,12 +9,15 @@ function metabolism_catabolism_biosynthesis() {
 		return;
 	}
 	var count = 0;
+	var name = termname(x, ont);
 	if (termgenie.contains(prefixes, "metabolism")) {
-		var label = termname(x, ont) + " metabolic process";
+		var label = name + " metabolic process";
 		var definition = "The chemical reactions and pathways involving "
-				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " metabolism",
-				" metabolic process" ], label);
+				+ name + ".";
+		
+		var synonyms = termgenie.addSynonym(label, null, null, name, ' metabolism', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' metabolic process', 'EXACT');
+		
 		var mdef = createMDef("GO_0008152 and 'has participant' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -26,11 +29,15 @@ function metabolism_catabolism_biosynthesis() {
 		}
 	}
 	if (termgenie.contains(prefixes, "catabolism")) {
-		var label = termname(x, ont) + " catabolic process";
+		var label = name + " catabolic process";
 		var definition = "The chemical reactions and pathways resulting in the breakdown of "
-				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " catabolism",
-				" catabolic process", " breakdown", " degradation" ], label);
+				+ name + ".";
+
+		var synonyms = termgenie.addSynonym(label, null, null, name, ' catabolism', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' catabolic process', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' breakdown', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' degradation', 'EXACT');
+		
 		var mdef = createMDef("GO_0009056 and 'has input' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -42,11 +49,16 @@ function metabolism_catabolism_biosynthesis() {
 		}
 	}
 	if (termgenie.contains(prefixes, "biosynthesis")) {
-		var label = termname(x, ont) + " biosynthetic process";
+		var label = name + " biosynthetic process";
 		var definition = "The chemical reactions and pathways resulting in the formation of "
-				+ termname(x, ont) + ".";
-		var synonyms = termgenie.synonyms([''], ['EXACT'], x, ont, [ " biosynthesis",
-				" biosynthetic process", " anabolism", " formation", " synthesis" ], label);
+				+ name + ".";
+
+		var synonyms = termgenie.addSynonym(label, null, null, name, ' biosynthesis', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' biosynthetic process', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' anabolism', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' formation', 'EXACT');
+		synonyms = termgenie.addSynonym(label, synonyms, null, name, ' synthesis', 'EXACT');
+		
 		var mdef = createMDef("GO_0009058 and 'has output' some ?X");
 		mdef.addParameter('X', x, ont);
 		var success = createTerm(label, definition, synonyms, mdef);
