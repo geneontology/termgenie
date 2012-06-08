@@ -120,6 +120,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 	 * @throws IOException
 	 */
 	protected InputStream handleError(URL url, IOException exception) throws IOException {
+		logger.error("IOException during fetch of URL: "+url, exception);
 		throw exception;
 	}
 	
