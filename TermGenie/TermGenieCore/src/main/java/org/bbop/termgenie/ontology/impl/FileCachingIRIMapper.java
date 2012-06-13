@@ -215,6 +215,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 				}
 			}
 			if (prevException != null) {
+				logger.warn("Could not download url: "+originalURL, prevException);
 				throw new RuntimeException(prevException);
 			}
 			/*
