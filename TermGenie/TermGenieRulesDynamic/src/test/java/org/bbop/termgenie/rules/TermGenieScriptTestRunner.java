@@ -3,8 +3,11 @@ package org.bbop.termgenie.rules;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
@@ -76,6 +79,61 @@ public class TermGenieScriptTestRunner {
 		assertEquals("down regulation of pigmentation", term2.getTagValue(OboFormatTag.TAG_SYNONYM));
 		assertEquals("negative regulation of pigmentation", term2.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		assertEquals("positive regulation of pigmentation", list.get(2).getTerm().getTagValue(OboFormatTag.TAG_NAME, String.class));
+	}
+	
+	@Test
+	public void test_regulation_of_extended_synonyms() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0051553")); // flavone biosynthetic process
+		parameters.setStringValues(field.getName(), Arrays.asList("negative_regulation"));
+		
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+
+		final TermGenerationOutput output = list.get(0);
+		assertTrue(output.isSuccess());
+		Frame term = output.getTerm();
+		
+		Set<String> validSynonyms = new HashSet<String>(Arrays.asList("down regulation of flavone biosynthetic process",
+				"down-regulation of flavone biosynthetic process",
+				"downregulation of flavone biosynthetic process",
+				"inhibition of flavone biosynthetic process",
+				"negative regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthetic process",
+				"down regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthetic process",
+				"down-regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthetic process",
+				"downregulation of 2-phenyl-4H-1-benzopyran-4-one biosynthetic process",
+				"inhibition of 2-phenyl-4H-1-benzopyran-4-one biosynthetic process",
+				"negative regulation of 2-phenylchromone biosynthesis",
+				"down regulation of 2-phenylchromone biosynthesis",
+				"down-regulation of 2-phenylchromone biosynthesis",
+				"downregulation of 2-phenylchromone biosynthesis",
+				"inhibition of 2-phenylchromone biosynthesis",
+				"negative regulation of 2-phenylchromone biosynthetic process",
+				"down regulation of 2-phenylchromone biosynthetic process",
+				"down-regulation of 2-phenylchromone biosynthetic process",
+				"downregulation of 2-phenylchromone biosynthetic process",
+				"inhibition of 2-phenylchromone biosynthetic process",
+				"negative regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthesis",
+				"down regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthesis",
+				"down-regulation of 2-phenyl-4H-1-benzopyran-4-one biosynthesis",
+				"downregulation of 2-phenyl-4H-1-benzopyran-4-one biosynthesis",
+				"inhibition of 2-phenyl-4H-1-benzopyran-4-one biosynthesis"));
+		
+		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
+		for (Clause synonym : synonyms) {
+			String label = synonym.getValue(String.class);
+			assertTrue("Not a valid synonym label: "+label, validSynonyms.contains(label));
+		}
+		
 	}
 	
 	@Test

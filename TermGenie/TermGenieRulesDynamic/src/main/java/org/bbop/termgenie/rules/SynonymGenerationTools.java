@@ -88,11 +88,11 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 					String scope = synonym.getScope();
 					if (suffixes != null && suffixes.length > 0) {
 						for(String suffix : suffixes) {
-							addSynonym(label, results, synonym.getLabel(), prefix, scope, suffix);
+							addSynonym(label, results, prefix, synonym.getLabel(), suffix, scope);
 						}
 					}
 					else {
-						addSynonym(label, results, synonym.getLabel(), prefix, scope, null);
+						addSynonym(label, results, prefix, synonym.getLabel(), null, scope);
 					}
 				}
 				

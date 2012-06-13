@@ -20,6 +20,7 @@ import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOnt
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -100,6 +101,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 	}
 
 	@Test
+	@Ignore("The term already exists now.")
 	public void test_regulation_by_synonyms_and_def1() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
