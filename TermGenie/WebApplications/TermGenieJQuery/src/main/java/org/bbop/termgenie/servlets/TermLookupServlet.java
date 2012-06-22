@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,11 +42,36 @@ public class TermLookupServlet extends HttpServlet {
 	}
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse response)
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		response.setContentType("text/html");
-		response.getWriter().write("/termlookup service is running...");
+		Map<?,?> parameterMap = req.getParameterMap();
+		if (parameterMap.isEmpty()) {
+			resp.setContentType("text/html");
+			resp.getWriter().write("/termlookup service is running...");
+			return;
+		}
+		JsonLookupRequest jsonRequest = new JsonLookupRequest();
+		jsonRequest.action = getParameter(parameterMap, "action");
+		jsonRequest.id = getParameter(parameterMap, "id");
+		
+		handleRequest(resp, jsonRequest);
+	}
+	
+	private String getParameter(Map<?,?> map, String name) {
+		Object object = map.get(name);
+		if (object != null) {
+			if (object instanceof String) {
+				return (String) object;
+			}
+			if (object instanceof String[]) {
+				String[] values = (String[]) object;
+				if (values.length > 0) {
+					return values[0];
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -53,7 +79,23 @@ public class TermLookupServlet extends HttpServlet {
 			throws ServletException, IOException
 	{
 		String json = readRequest(req);
-		final JsonLookupRequest request = gson.fromJson(json, JsonLookupRequest.class);
+		JsonLookupRequest request = gson.fromJson(json, JsonLookupRequest.class);
+		handleRequest(resp, request);
+	}
+
+	private void handleRequest(final HttpServletResponse resp, final JsonLookupRequest request) throws IOException {
+		if (request.action == null) {
+			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "No action specified.");
+			return;
+		}
+		if (!"lookup".equals(request.action)) {
+			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Wrong action specified: "+request.action);
+			return;
+		}
+		if (request.id == null || request.id.isEmpty()) {
+			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "No id specified.");
+			return;
+		}
 		final JsonLookupResponse jsonResponse = new JsonLookupResponse();
 		jsonResponse.request = request;
 		LookupCallBack callback = new LookupCallBack() {
