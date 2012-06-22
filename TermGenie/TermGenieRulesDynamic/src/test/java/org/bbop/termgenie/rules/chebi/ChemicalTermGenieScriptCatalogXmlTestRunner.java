@@ -122,6 +122,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 				assertNotNull(managed.getOWLObjectByLabel("has participant"));
 				assertNotNull(managed.getOWLObjectByLabel("has input"));
 				assertNotNull(managed.getOWLObjectByLabel("has output"));
+				assertNotNull(managed.getOWLObjectByLabel("transports or maintains localization of"));
 				
 				assertNotNull(tool.parseManchesterExpression("CHEBI_16947"));
 				assertNotNull(tool.parseManchesterExpression("GO_0008152"));
@@ -206,10 +207,10 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	
 	
 	@Test
-	public void test_chebi_60481() {
+	public void test_chebi_difenoxin() {
 		TermTemplate termTemplate = getMetabolismTemplate();
 		List<String> prefixes = Arrays.asList("metabolism", "catabolism", "biosynthesis");
-		String id = "CHEBI:60481"; // N',N'',N'''-triacetylfusarinine C
+		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, id, prefixes); 
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
 		assertNotNull(list);
@@ -220,23 +221,23 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
-		assertEquals("N',N'',N'''-triacetylfusarinine C metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
-		containsSynonym(term1, "N',N'',N'''-triacetylfusarinine C metabolism");
+		assertEquals("difenoxin metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
+		containsSynonym(term1, "difenoxin metabolism");
 
 		assertTrue(output2.getMessage(), output2.isSuccess());
 		Frame term2 = output2.getTerm();
-		assertEquals("N',N'',N'''-triacetylfusarinine C catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
-		containsSynonym(term2, "N',N'',N'''-triacetylfusarinine C catabolism", 
-				"N',N'',N'''-triacetylfusarinine C breakdown", 
-				"N',N'',N'''-triacetylfusarinine C degradation");
+		assertEquals("difenoxin catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
+		containsSynonym(term2, "difenoxin catabolism", 
+				"difenoxin breakdown", 
+				"difenoxin degradation");
 		
 		assertTrue(output3.getMessage(), output3.isSuccess());
 		Frame term3 = output3.getTerm();
-		assertEquals("N',N'',N'''-triacetylfusarinine C biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
-		containsSynonym(term3, "N',N'',N'''-triacetylfusarinine C biosynthesis", 
-				"N',N'',N'''-triacetylfusarinine C anabolism",
-				"N',N'',N'''-triacetylfusarinine C formation",
-				"N',N'',N'''-triacetylfusarinine C synthesis");
+		assertEquals("difenoxin biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
+		containsSynonym(term3, "difenoxin biosynthesis", 
+				"difenoxin anabolism",
+				"difenoxin formation",
+				"difenoxin synthesis");
 	}
 	
 	private void containsSynonym(Frame frame, String...synonymsStrings) {

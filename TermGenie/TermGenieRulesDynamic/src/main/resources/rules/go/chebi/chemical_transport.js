@@ -11,7 +11,7 @@ function chemical_transport() {
 			+ " into, out of or within a cell, or between cells, by means of some agent such as a transporter or pore.";
 //	var synonyms = termgenie.synonyms(null, x, ont, " transport", null, label);
 	var synonyms = null;
-	var mdef = createMDef("GO_0006810 and 'results in transport of' some ?X");
+	var mdef = createMDef("GO_0006810 and 'transports or maintains localization of' some ?X");
 	mdef.addParameter('X', x, ont);
 	createTerm(label, definition, synonyms, mdef);
 }
