@@ -16,7 +16,9 @@ public class TermLookupServletMain {
 
 	public static void main(String[] args) throws Exception {
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://localhost:8080/termgenie/termlookup");
+		String url = "http://localhost:8080/termgenie/termlookup";
+		//String url = "http://go.termgenie.org/termlookup";
+		HttpPost post = new HttpPost(url);
 		Gson gson = new Gson();
 		JsonLookupRequest request = new JsonLookupRequest();
 		request.id = "GO:1900040";
