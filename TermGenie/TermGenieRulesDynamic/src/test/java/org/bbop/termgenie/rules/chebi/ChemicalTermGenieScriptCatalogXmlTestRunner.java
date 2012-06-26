@@ -259,7 +259,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		TermTemplate template = getChemicalTransportTemplate();
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = template.getFields().get(0);
-		String term = "CHEBI:35808"; // citrate(2-)
+		String term = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		parameters.setTermValues(field.getName(), Arrays.asList(term )); 
 	
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
@@ -274,9 +274,9 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		
-		assertEquals("citrate(2-) transport", frame.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("difenoxin transport", frame.getTagValue(OboFormatTag.TAG_NAME));
 		assertEquals("biological_process", frame.getTagValue(OboFormatTag.TAG_NAMESPACE));
-		assertEquals("GO:0006842", frame.getTagValue(OboFormatTag.TAG_IS_A)); // tricarboxylic acid transport
+		assertEquals("GO:0015718", frame.getTagValue(OboFormatTag.TAG_IS_A)); // monocarboxylic acid transport
 		
 	}
 

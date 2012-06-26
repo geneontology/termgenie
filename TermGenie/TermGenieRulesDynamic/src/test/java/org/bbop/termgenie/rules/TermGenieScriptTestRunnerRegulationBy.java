@@ -140,7 +140,7 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
-		parameters.setTermValues("process", Arrays.asList("GO:1900070")); // negative regulation of cellular hyperosmotic salinity response
+		parameters.setTermValues("process", Arrays.asList("GO:1901002")); // positive regulation of response to salt stress
 		parameters.setTermValues("regulator", Arrays.asList("GO:0000122")); // negative regulation of transcription from RNA polymerase II promoter
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
@@ -153,29 +153,50 @@ public class TermGenieScriptTestRunnerRegulationBy {
 		assertTrue(output.getMessage(), output.isSuccess());
 		Frame term = output.getTerm();
 
-		assertEquals("negative regulation of cellular hyperosmotic salinity response by negative regulation of transcription from RNA polymerase II promoter", 
+		assertEquals("positive regulation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter", 
 				term.getTagValue(OboFormatTag.TAG_NAME, String.class));
 		
-		assertEquals("A negative regulation of transcription from RNA polymerase II promoter that results in negative regulation of cellular hyperosmotic salinity response.", 
+		assertEquals("A negative regulation of transcription from RNA polymerase II promoter that results in positive regulation of response to salt stress.", 
 				term.getTagValue(OboFormatTag.TAG_DEF, String.class));
 		
 		Collection<Clause> synonyms = term.getClauses(OboFormatTag.TAG_SYNONYM);
-		hasExactSynonyms(synonyms, "negative regulation of cellular response to hyperosmotic salt stress by negative regulation of transcription from RNA polymerase II promoter");
+		int count = hasExactSynonyms(synonyms, 
+				"activation of response to ionic osmotic stress by negative regulation of transcription from RNA polymerase II promoter",
+				"activation of salinity response by negative regulation of transcription from RNA polymerase II promoter",
+				"positive regulation of response to ionic osmotic stress by negative regulation of transcription from RNA polymerase II promoter",
+				"positive regulation of salinity response by negative regulation of transcription from RNA polymerase II promoter",
+				"up regulation of salinity response by negative regulation of transcription from RNA polymerase II promoter",
+				"up regulation of response to ionic osmotic stress by negative regulation of transcription from RNA polymerase II promoter",
+				"up regulation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter",
+				"up-regulation of response to ionic osmotic stress by negative regulation of transcription from RNA polymerase II promoter", 
+				"up-regulation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter", 
+				"up-regulation of salinity response by negative regulation of transcription from RNA polymerase II promoter", 
+				"upregulation of response to ionic osmotic stress by negative regulation of transcription from RNA polymerase II promoter", 
+				"upregulation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter", 
+				"upregulation of salinity response by negative regulation of transcription from RNA polymerase II promoter"); 
+		count += hasSynonyms(synonyms, OboFormatTag.TAG_NARROW, 
+				"activation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter");
+		assertEquals(14, count);
 	}
 	
-	private void hasExactSynonyms(Collection<Clause> synonyms, String...labels) {
-		assertEquals(labels.length, synonyms.size());
+	private int hasExactSynonyms(Collection<Clause> synonyms, String...labels) {
+		return hasSynonyms(synonyms, OboFormatTag.TAG_EXACT, labels);
+	}
+	
+	private int hasSynonyms(Collection<Clause> synonyms, OboFormatTag tag, String...labels) {
+		final String tagString = tag.getTag();
 		for (String label : labels) {
 			boolean found = false;
 			for(Clause clause : synonyms) {
 				final Object synLabel = clause.getValue();
 				final Object scope = clause.getValue2();
-				if (label.equals(synLabel) && OboFormatTag.TAG_EXACT.getTag().equals(scope)) {
+				if (label.equals(synLabel) && tagString.equals(scope)) {
 					found = true;
 					break;
 				}
 			}
-			assertTrue("Did not find label: "+label, found);
+			assertTrue("Did not find label: '"+label+"' and tag: "+tagString, found);
 		}
+		return labels.length;
 	}
 }
