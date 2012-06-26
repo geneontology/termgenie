@@ -276,8 +276,12 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 		
 		assertEquals("difenoxin transport", frame.getTagValue(OboFormatTag.TAG_NAME));
 		assertEquals("biological_process", frame.getTagValue(OboFormatTag.TAG_NAMESPACE));
-		assertEquals("GO:0015718", frame.getTagValue(OboFormatTag.TAG_IS_A)); // monocarboxylic acid transport
-		
+		Collection<String> values = frame.getTagValues(OboFormatTag.TAG_IS_A, String.class);
+		String[] array = values.toArray(new String[values.size()]);
+		Arrays.sort(array);
+		// monocarboxylic acid transport
+		// amine transport
+		assertArrayEquals(new String[]{"GO:0015718","GO:0015837"}, array);
 	}
 
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
