@@ -67,11 +67,15 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 				@Override
 				public void run() {
+					LOGGER.info("Scheduled Event - Start reloading ontologies");
 					reloadOntologies();
 				}
 			};
 			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 			scheduler.scheduleWithFixedDelay(command, period, period, unit);
+		}
+		else {
+			LOGGER.warn("Ontology Reloading is deactivated, due to invalid settings: period="+period+" unit="+unit);
 		}
 	}
 

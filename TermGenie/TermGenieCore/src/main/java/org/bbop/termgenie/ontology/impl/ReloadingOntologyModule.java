@@ -23,7 +23,7 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 	protected void bindOntologyLoader() {
 		bind(OntologyLoader.class, ReloadingOntologyLoader.class);
 		bind("ReloadingOntologyLoaderPeriod", new Long(6L));
-		bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
+		bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.MINUTES);
 	}
 
 	@Override
