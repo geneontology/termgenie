@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -113,10 +114,10 @@ public class UpdateRelationShipTest {
 
 			reasoner.flush();
 
-			Pair<List<OWLAxiom>, List<OWLAxiom>> inferences = buildInferences(reasoner);
+			Pair<Collection<OWLAxiom>, Collection<OWLAxiom>> inferences = buildInferences(reasoner);
 
 			System.out.println("Inferred Axioms: " + inferences.getOne().size());
-			List<OWLAxiom> redundantAxioms = inferences.getTwo();
+			Collection<OWLAxiom> redundantAxioms = inferences.getTwo();
 			System.out.println("Redundant axioms: " + redundantAxioms.size());
 			for (OWLAxiom redundant : redundantAxioms) {
 				System.out.println(redundant);
@@ -150,7 +151,7 @@ public class UpdateRelationShipTest {
 			return Modified.no;
 		}
 
-		private Pair<List<OWLAxiom>, List<OWLAxiom>> buildInferences(OWLReasoner reasoner) {
+		private Pair<Collection<OWLAxiom>, Collection<OWLAxiom>> buildInferences(OWLReasoner reasoner) {
 			assertTrue(reasoner.isConsistent());
 			InferenceBuilder inferenceBuilder = new InferenceBuilder(wrapper, (OWLReasonerFactory) null, false);
 			inferenceBuilder.setReasoner(reasoner);
@@ -160,12 +161,12 @@ public class UpdateRelationShipTest {
 				AddAxiom addAx = new AddAxiom(ontology, owlAxiom);
 				ontology.getOWLOntologyManager().applyChange(addAx);
 			}
-			List<OWLAxiom> redundants = inferenceBuilder.getRedundantAxioms();
+			Collection<OWLAxiom> redundants = inferenceBuilder.getRedundantAxioms();
 			for (OWLAxiom redundant : redundants) {
 				RemoveAxiom removeAx = new RemoveAxiom(ontology, redundant);
 				ontology.getOWLOntologyManager().applyChange(removeAx);
 			}
-			return new Pair<List<OWLAxiom>, List<OWLAxiom>>(inferences, redundants);
+			return new Pair<Collection<OWLAxiom>, Collection<OWLAxiom>>(inferences, redundants);
 		}
 
 		private OWLClass createInvolvedInExample(OWLClass rsd, OWLClass ecp, String label) {
