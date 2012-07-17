@@ -335,3 +335,7 @@ h1 {
 	font-size: 0.8em;
 	font-family: courier, "courier new", monospace;
 }
+
+.prefixInputFieldCell {
+	width: 200px;
+}

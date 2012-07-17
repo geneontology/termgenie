@@ -1149,13 +1149,18 @@ function termgenie(){
 			
 			var container = createLayoutTable();
 			container.appendTo(elem);
-			var inputContainer = jQuery('<tr><td></td></tr>');
+			var inputContainer = jQuery('<tr><td class="prefixInputFieldCell"></td></tr>');
 			inputContainer.appendTo(container);
+			
+			var prefixContainer = jQuery('<tr><td class="prefixInputFieldCell"></td></tr>');
+			prefixContainer.appendTo(container);
 			
 			var inputField = AutoCompleteOntologyInput(inputContainer.children(":first"), templatePos, ontologies);
 			
+			var internalTable = createLayoutTable();
 			var checkboxes = [];
 			for ( i = 0; i < prefixes.length; i++) {
+				var row = jQuery('<tr><td></td></tr>');
 				if (preselect === true) {
 					checkbox = jQuery('<input type="checkbox" checked="true"/>');
 				}
@@ -1164,11 +1169,12 @@ function termgenie(){
 				}
 				
 				checkboxes[i] = checkbox;
-				inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
-				inputContainer.children(":first").append(checkbox);
-				inputContainer.children(":first").append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
-				inputContainer.appendTo(container);
+				
+				row.children(":first").append(checkbox);
+				row.append('<td><span class="term-prefix-label"> '+prefixes[i]+' </span></td>');
+				internalTable.append(row);
 			}
+			internalTable.appendTo(prefixContainer.children(":first"));
 			
 			function clearErrorState() {
 				container.removeClass('termgenie-input-field-error');	
