@@ -1,8 +1,1613 @@
 format-version: 1.2
-date: 22:06:2012 13:41
-saved-by: bf
+date: 17:07:2012 02:13
+saved-by: dhl
 auto-generated-by: TermGenie 1.0
 ontology: go/extensions/x-chemical
+
+[Term]
+id: GO:0000064 ! L-ornithine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15729 ! L-ornithine
+
+[Term]
+id: GO:0000095 ! S-adenosylmethionine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15414 ! S-adenosyl-L-methionine
+
+[Term]
+id: GO:0000099 ! sulfur amino acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26834 ! sulfur-containing amino acid
+
+[Term]
+id: GO:0000102 ! L-methionine secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16643 ! L-methionine
+
+[Term]
+id: GO:0000227 ! oxaloacetate secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16452 ! oxaloacetate(2-)
+
+[Term]
+id: GO:0000295 ! adenine nucleotide transmembrane transporter activity
+intersection_of: GO:0015215 ! nucleotide transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16708 ! adenine
+
+[Term]
+id: GO:0000297 ! spermine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15746 ! spermine
+
+[Term]
+id: GO:0000319 ! sulfite transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17359 ! sulfite
+
+[Term]
+id: GO:0001409 ! guanine nucleotide transmembrane transporter activity
+intersection_of: GO:0015215 ! nucleotide transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:61292 ! guanyl nucleotide
+
+[Term]
+id: GO:0001761 ! beta-alanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16958 ! beta-alanine
+
+[Term]
+id: GO:0005274 ! allantoin uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15676 ! allantoin
+
+[Term]
+id: GO:0005275 ! amine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:32952 ! amine
+
+[Term]
+id: GO:0005277 ! acetylcholine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15355 ! acetylcholine
+
+[Term]
+id: GO:0005290 ! L-histidine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15971 ! L-histidine
+
+[Term]
+id: GO:0005302 ! L-tyrosine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17895 ! L-tyrosine
+
+[Term]
+id: GO:0005304 ! L-valine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16414 ! L-valine
+
+[Term]
+id: GO:0005308 ! creatine transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16919 ! creatine
+
+[Term]
+id: GO:0005310 ! dicarboxylic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35692 ! dicarboxylic acid
+
+[Term]
+id: GO:0005313 ! L-glutamate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29988 ! L-glutamate(2-)
+
+[Term]
+id: GO:0005315 ! inorganic phosphate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24838 ! inorganic phosphate
+
+[Term]
+id: GO:0005319 ! lipid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18059 ! lipid
+
+[Term]
+id: GO:0005324 ! long-chain fatty acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15904 ! long-chain fatty acid
+
+[Term]
+id: GO:0005326 ! neurotransmitter transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25512 ! neurotransmitter
+
+[Term]
+id: GO:0005329 ! dopamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18243 ! dopamine
+
+[Term]
+id: GO:0005333 ! norepinephrine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33569 ! noradrenaline
+
+[Term]
+id: GO:0005337 ! nucleoside transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33838 ! nucleoside
+
+[Term]
+id: GO:0005338 ! nucleotide-sugar transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25609 ! nucleotide-sugar
+
+[Term]
+id: GO:0005344 ! oxygen transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15379 ! dioxygen
+
+[Term]
+id: GO:0005345 ! purine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35584 ! purine
+
+[Term]
+id: GO:0005346 ! purine ribonucleotide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26400 ! purine ribonucleotide
+
+[Term]
+id: GO:0005347 ! ATP transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15422 ! ATP
+
+[Term]
+id: GO:0005350 ! pyrimidine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16898 ! pyrimidine
+
+[Term]
+id: GO:0005353 ! fructose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28757 ! fructose
+
+[Term]
+id: GO:0005354 ! galactose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28260 ! galactose
+
+[Term]
+id: GO:0005355 ! glucose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17234 ! glucose
+
+[Term]
+id: GO:0005363 ! maltose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17306 ! maltose
+
+[Term]
+id: GO:0005365 ! myo-inositol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17268 ! myo-inositol
+
+[Term]
+id: GO:0005368 ! taurine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15891 ! taurine
+
+[Term]
+id: GO:0005371 ! tricarboxylate secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27092 ! tricarboxylic acid trianion
+
+[Term]
+id: GO:0005372 ! water transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15377 ! water
+
+[Term]
+id: GO:0005375 ! copper ion transmembrane transporter activity
+intersection_of: GO:0015075 ! ion transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:23378 ! copper cation
+
+[Term]
+id: GO:0005381 ! iron ion transmembrane transporter activity
+intersection_of: GO:0015075 ! ion transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24875 ! iron cation
+
+[Term]
+id: GO:0005384 ! manganese ion transmembrane transporter activity
+intersection_of: GO:0015075 ! ion transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25155 ! manganese cation
+
+[Term]
+id: GO:0005385 ! zinc ion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27365 ! zinc ion
+
+[Term]
+id: GO:0005458 ! GDP-mannose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:21168 ! GDP-mannose
+
+[Term]
+id: GO:0005460 ! UDP-glucose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18066 ! UDP-D-glucose
+
+[Term]
+id: GO:0005462 ! UDP-N-acetylglucosamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16264 ! UDP-N-acetyl-alpha-D-glucosamine
+
+[Term]
+id: GO:0005472 ! FAD carrier activity
+intersection_of: GO:0022804 ! active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24040 ! flavin adenine dinucleotide
+
+[Term]
+id: GO:0005477 ! pyruvate secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15361 ! pyruvate
+
+[Term]
+id: GO:0005548 ! phospholipid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16247 ! phospholipid
+
+[Term]
+id: GO:0008028 ! monocarboxylic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25384 ! monocarboxylic acid
+
+[Term]
+id: GO:0008271 ! secondary active sulfate transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16189 ! sulfate
+
+[Term]
+id: GO:0008320 ! protein transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
+
+[Term]
+id: GO:0008324 ! cation transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36916 ! cation
+
+[Term]
+id: GO:0008490 ! arsenite secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29866 ! arsenite(3-)
+
+[Term]
+id: GO:0008493 ! tetracycline transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27902 ! tetracycline
+
+[Term]
+id: GO:0008504 ! monoamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:63534 ! monoamine
+
+[Term]
+id: GO:0008509 ! anion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22563 ! anion
+
+[Term]
+id: GO:0008514 ! organic anion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25696 ! organic anion
+
+[Term]
+id: GO:0008515 ! sucrose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17992 ! sucrose
+
+[Term]
+id: GO:0008517 ! folic acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27470 ! folic acid
+
+[Term]
+id: GO:0008519 ! ammonium transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28938 ! ammonium
+
+[Term]
+id: GO:0008521 ! acetyl-CoA transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15351 ! acetyl-CoA
+
+[Term]
+id: GO:0008525 ! phosphatidylcholine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:49183 ! phosphatidylcholine
+
+[Term]
+id: GO:0008526 ! phosphatidylinositol transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28874 ! phosphatidylinositol
+
+[Term]
+id: GO:0008565 ! protein transporter activity
+intersection_of: GO:0022804 ! active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
+
+[Term]
+id: GO:0010175 ! sphingosine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16393 ! sphingosine
+
+[Term]
+id: GO:0010329 ! auxin efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22676 ! auxin
+
+[Term]
+id: GO:0010542 ! nitrate efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17632 ! nitrate
+
+[Term]
+id: GO:0015075 ! ion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24870 ! ion
+
+[Term]
+id: GO:0015095 ! magnesium ion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:39128 ! magnesium ion
+
+[Term]
+id: GO:0015104 ! antimonite transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30297 ! antimonite
+
+[Term]
+id: GO:0015105 ! arsenite transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29866 ! arsenite(3-)
+
+[Term]
+id: GO:0015107 ! chlorate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:49709 ! chlorate
+
+[Term]
+id: GO:0015108 ! chloride transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17996 ! chloride
+
+[Term]
+id: GO:0015109 ! chromate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35404 ! chromate(2-)
+
+[Term]
+id: GO:0015110 ! cyanate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29195 ! cyanate
+
+[Term]
+id: GO:0015111 ! iodide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16382 ! iodide
+
+[Term]
+id: GO:0015112 ! nitrate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17632 ! nitrate
+
+[Term]
+id: GO:0015113 ! nitrite transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16301 ! nitrite
+
+[Term]
+id: GO:0015114 ! phosphate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+
+[Term]
+id: GO:0015115 ! silicate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29241 ! silicate(4-)
+
+[Term]
+id: GO:0015116 ! sulfate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16189 ! sulfate
+
+[Term]
+id: GO:0015117 ! thiosulfate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26977 ! thiosulfate
+
+[Term]
+id: GO:0015118 ! tellurite transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30477 ! tellurite
+
+[Term]
+id: GO:0015119 ! hexose phosphate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:47878 ! hexose phosphate
+
+[Term]
+id: GO:0015121 ! phosphoenolpyruvate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18021 ! phosphoenolpyruvate
+
+[Term]
+id: GO:0015123 ! acetate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30089 ! acetate
+
+[Term]
+id: GO:0015124 ! allantoate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17536 ! allantoate
+
+[Term]
+id: GO:0015125 ! bile acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:3098 ! bile acid
+
+[Term]
+id: GO:0015127 ! bilirubin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16990 ! bilirubin
+
+[Term]
+id: GO:0015128 ! gluconate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24265 ! gluconate
+
+[Term]
+id: GO:0015129 ! lactate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24996 ! lactate
+
+[Term]
+id: GO:0015130 ! mevalonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25350 ! mevalonate
+
+[Term]
+id: GO:0015131 ! oxaloacetate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16452 ! oxaloacetate(2-)
+
+[Term]
+id: GO:0015132 ! prostaglandin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26333 ! prostaglandin
+
+[Term]
+id: GO:0015133 ! uronic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27252 ! uronic acid
+
+[Term]
+id: GO:0015134 ! hexuronate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24591 ! hexuronate
+
+[Term]
+id: GO:0015135 ! glucuronate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24297 ! glucuronate
+
+[Term]
+id: GO:0015136 ! sialic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26667 ! sialic acid
+
+[Term]
+id: GO:0015137 ! citrate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16947 ! citrate(3-)
+
+[Term]
+id: GO:0015138 ! fumarate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29806 ! fumarate(2-)
+
+[Term]
+id: GO:0015139 ! alpha-ketoglutarate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16810 ! 2-oxoglutarate(2-)
+
+[Term]
+id: GO:0015140 ! malate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15595 ! malate(2-)
+
+[Term]
+id: GO:0015141 ! succinate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30031 ! succinate(2-)
+
+[Term]
+id: GO:0015142 ! tricarboxylic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27093 ! tricarboxylic acid
+
+[Term]
+id: GO:0015143 ! urate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:46819 ! urate
+
+[Term]
+id: GO:0015144 ! carbohydrate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:23008 ! carbohydrate
+
+[Term]
+id: GO:0015145 ! monosaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35381 ! monosaccharide
+
+[Term]
+id: GO:0015146 ! pentose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25901 ! pentose
+
+[Term]
+id: GO:0015147 ! L-arabinose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30849 ! L-arabinose
+
+[Term]
+id: GO:0015148 ! D-xylose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18222 ! xylose
+
+[Term]
+id: GO:0015149 ! hexose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18133 ! hexose
+
+[Term]
+id: GO:0015150 ! fucose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33984 ! fucose
+
+[Term]
+id: GO:0015153 ! rhamnose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26546 ! rhamnose
+
+[Term]
+id: GO:0015154 ! disaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36233 ! disaccharide
+
+[Term]
+id: GO:0015155 ! lactose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17716 ! lactose
+
+[Term]
+id: GO:0015156 ! melibiose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28053 ! melibiose
+
+[Term]
+id: GO:0015157 ! oligosaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:50699 ! oligosaccharide
+
+[Term]
+id: GO:0015158 ! raffinose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16634 ! raffinose
+
+[Term]
+id: GO:0015159 ! polysaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18154 ! polysaccharide
+
+[Term]
+id: GO:0015162 ! teichoic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26866 ! teichoic acid
+
+[Term]
+id: GO:0015164 ! glucuronoside transmembrane transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24302 ! glucosiduronic acid
+
+[Term]
+id: GO:0015166 ! polyol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26191 ! polyol
+
+[Term]
+id: GO:0015167 ! arabitol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22605 ! arabinitol
+
+[Term]
+id: GO:0015168 ! glycerol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17754 ! glycerol
+
+[Term]
+id: GO:0015170 ! propanediol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26288 ! propanediol
+
+[Term]
+id: GO:0015171 ! amino acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0015173 ! aromatic amino acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33856 ! aromatic amino acid
+
+[Term]
+id: GO:0015179 ! L-amino acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15705 ! L-alpha-amino acid
+
+[Term]
+id: GO:0015180 ! L-alanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16977 ! L-alanine
+
+[Term]
+id: GO:0015181 ! arginine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29016 ! arginine
+
+[Term]
+id: GO:0015182 ! L-asparagine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17196 ! L-asparagine
+
+[Term]
+id: GO:0015183 ! L-aspartate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29993 ! L-aspartate(2-)
+
+[Term]
+id: GO:0015184 ! L-cystine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16283 ! L-cystine
+
+[Term]
+id: GO:0015185 ! L-gamma-aminobutyric acid transmembrane transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30566 ! gamma-aminobutyrate
+
+[Term]
+id: GO:0015186 ! L-glutamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18050 ! L-glutamine
+
+[Term]
+id: GO:0015187 ! glycine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15428 ! glycine
+
+[Term]
+id: GO:0015188 ! L-isoleucine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17191 ! L-isoleucine
+
+[Term]
+id: GO:0015189 ! L-lysine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18019 ! L-lysine
+
+[Term]
+id: GO:0015190 ! L-leucine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15603 ! L-leucine
+
+[Term]
+id: GO:0015191 ! L-methionine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16643 ! L-methionine
+
+[Term]
+id: GO:0015192 ! L-phenylalanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17295 ! L-phenylalanine
+
+[Term]
+id: GO:0015193 ! L-proline transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17203 ! L-proline
+
+[Term]
+id: GO:0015194 ! L-serine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17115 ! L-serine
+
+[Term]
+id: GO:0015195 ! L-threonine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16857 ! L-threonine
+
+[Term]
+id: GO:0015196 ! L-tryptophan transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16828 ! L-tryptophan
+
+[Term]
+id: GO:0015197 ! peptide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16670 ! peptide
+
+[Term]
+id: GO:0015198 ! oligopeptide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25676 ! oligopeptide
+
+[Term]
+id: GO:0015199 ! betaine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17750 ! glycine betaine
+
+[Term]
+id: GO:0015203 ! polyamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:51349 ! polyamine macromolecule
+
+[Term]
+id: GO:0015204 ! urea transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16199 ! urea
+
+[Term]
+id: GO:0015205 ! nucleobase transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18282 ! nucleobase
+
+[Term]
+id: GO:0015207 ! adenine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16708 ! adenine
+
+[Term]
+id: GO:0015208 ! guanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16235 ! guanine
+
+[Term]
+id: GO:0015209 ! cytosine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16040 ! cytosine
+
+[Term]
+id: GO:0015210 ! uracil transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17568 ! uracil
+
+[Term]
+id: GO:0015211 ! purine nucleoside transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26394 ! purine nucleoside
+
+[Term]
+id: GO:0015212 ! cytidine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17562 ! cytidine
+
+[Term]
+id: GO:0015213 ! uridine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16704 ! uridine
+
+[Term]
+id: GO:0015214 ! pyrimidine nucleoside transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26440 ! pyrimidine nucleoside
+
+[Term]
+id: GO:0015215 ! nucleotide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36976 ! nucleotide
+
+[Term]
+id: GO:0015216 ! purine nucleotide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26395 ! purine nucleotide
+
+[Term]
+id: GO:0015217 ! ADP transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16761 ! ADP
+
+[Term]
+id: GO:0015218 ! pyrimidine nucleotide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26441 ! pyrimidine nucleotide
+
+[Term]
+id: GO:0015220 ! choline transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15354 ! choline
+
+[Term]
+id: GO:0015221 ! lipopolysaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16412 ! lipopolysaccharide
+
+[Term]
+id: GO:0015222 ! serotonin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28790 ! serotonin
+
+[Term]
+id: GO:0015224 ! biopterin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15373 ! biopterin
+
+[Term]
+id: GO:0015225 ! biotin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15956 ! biotin
+
+[Term]
+id: GO:0015226 ! carnitine transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17126 ! carnitine
+
+[Term]
+id: GO:0015228 ! coenzyme A transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15346 ! coenzyme A
+
+[Term]
+id: GO:0015229 ! L-ascorbic acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:38290 ! L-ascorbate
+
+[Term]
+id: GO:0015230 ! FAD transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24040 ! flavin adenine dinucleotide
+
+[Term]
+id: GO:0015232 ! heme transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30413 ! heme
+
+[Term]
+id: GO:0015233 ! pantothenate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:46905 ! (R)-pantothenic acid
+
+[Term]
+id: GO:0015234 ! thiamin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26948 ! thiamine
+
+[Term]
+id: GO:0015235 ! cobalamin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30411 ! cobalamin
+
+[Term]
+id: GO:0015238 ! drug transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:23888 ! drug
+
+[Term]
+id: GO:0015240 ! amiloride transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:2639 ! amiloride
+
+[Term]
+id: GO:0015242 ! benomyl transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:3015 ! benomyl
+
+[Term]
+id: GO:0015243 ! cycloheximide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27641 ! cycloheximide
+
+[Term]
+id: GO:0015244 ! fluconazole transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:46081 ! fluconazole
+
+[Term]
+id: GO:0015245 ! fatty acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35366 ! fatty acid
+
+[Term]
+id: GO:0015248 ! sterol transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15889 ! sterol
+
+[Term]
+id: GO:0015251 ! ammonium channel activity
+intersection_of: GO:0015267 ! channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28938 ! ammonium
+
+[Term]
+id: GO:0015252 ! hydrogen ion channel activity
+intersection_of: GO:0005216 ! ion channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29239 ! hydride
+
+[Term]
+id: GO:0015254 ! glycerol channel activity
+intersection_of: GO:0015267 ! channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17754 ! glycerol
+
+[Term]
+id: GO:0015255 ! propanediol channel activity
+intersection_of: GO:0015267 ! channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26288 ! propanediol
+
+[Term]
+id: GO:0015265 ! urea channel activity
+intersection_of: GO:0015267 ! channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16199 ! urea
+
+[Term]
+id: GO:0015266 ! protein channel activity
+intersection_of: GO:0015267 ! channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
+
+[Term]
+id: GO:0015284 ! fructose uniporter activity
+intersection_of: GO:0015292 ! uniporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28757 ! fructose
+
+[Term]
+id: GO:0015304 ! glucose uniporter activity
+intersection_of: GO:0015292 ! uniporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17234 ! glucose
+
+[Term]
+id: GO:0015328 ! cystine secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17376 ! cystine
+
+[Term]
+id: GO:0015350 ! methotrexate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:44185 ! methotrexate
+
+[Term]
+id: GO:0015351 ! bilirubin secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16990 ! bilirubin
+
+[Term]
+id: GO:0015388 ! potassium uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29103 ! potassium(1+)
+
+[Term]
+id: GO:0015412 ! molybdate transmembrane-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:36264 ! molybdate
+
+[Term]
+id: GO:0015413 ! nickel-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:49786 ! nickel(2+)
+
+[Term]
+id: GO:0015415 ! phosphate transmembrane-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+
+[Term]
+id: GO:0015417 ! polyamine-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:51349 ! polyamine
+
+[Term]
+id: GO:0015420 ! cobalamin-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:30411 ! cobalamin
+
+[Term]
+id: GO:0015489 ! putrescine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17148 ! putrescine
+
+[Term]
+id: GO:0015490 ! cadaverine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18127 ! cadaverine
+
+[Term]
+id: GO:0015499 ! formate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15740 ! formate
+
+[Term]
+id: GO:0015513 ! nitrite uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16301 ! nitrite
+
+[Term]
+id: GO:0015514 ! nitrite efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16301 ! nitrite
+
+[Term]
+id: GO:0015523 ! arabinose efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22599 ! arabinose
+
+[Term]
+id: GO:0015530 ! shikimate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36208 ! shikimate
+
+[Term]
+id: GO:0015546 ! sulfathiazole transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:9337 ! sulfathiazole
+
+[Term]
+id: GO:0015549 ! carbonyl cyanide m-chlorophenylhydrazone transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:3259 ! CCCP
+
+[Term]
+id: GO:0015550 ! galacturonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24175 ! galacturonate
+
+[Term]
+id: GO:0015552 ! propionate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17272 ! propionate
+
+[Term]
+id: GO:0015553 ! xanthosine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18107 ! xanthosine
+
+[Term]
+id: GO:0015554 ! tartrate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:50562 ! tartrate
+
+[Term]
+id: GO:0015565 ! threonine efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26986 ! threonine
+
+[Term]
+id: GO:0015567 ! alkane transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18310 ! alkane
+
+[Term]
+id: GO:0015568 ! L-idonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17796 ! L-idonate
+
+[Term]
+id: GO:0015571 ! N-acetylgalactosamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28800 ! N-acetylgalactosamine
+
+[Term]
+id: GO:0015572 ! N-acetylglucosamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:59640 ! N-acetylglucosamine
+
+[Term]
+id: GO:0015574 ! trehalose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27082 ! trehalose
+
+[Term]
+id: GO:0015575 ! mannitol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:29864 ! mannitol
+
+[Term]
+id: GO:0015576 ! sorbitol transmembrane transporter activity
+intersection_of: GO:0022804 ! active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30911 ! glucitol
+
+[Term]
+id: GO:0015577 ! galactitol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16813 ! galactitol
+
+[Term]
+id: GO:0015578 ! mannose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:37684 ! mannose
+
+[Term]
+id: GO:0015591 ! D-ribose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16988 ! D-ribose
+
+[Term]
+id: GO:0015593 ! allose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:37690 ! allose
+
+[Term]
+id: GO:0015604 ! phosphonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26066 ! phosphonate
+
+[Term]
+id: GO:0015606 ! spermidine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16610 ! spermidine
+
+[Term]
+id: GO:0015635 ! short-chain fatty acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26666 ! short-chain fatty acid
+
+[Term]
+id: GO:0015640 ! peptidoglycan peptide transporter activity
+intersection_of: GO:0015197 ! peptide transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:8005 ! peptidoglycan
+
+[Term]
+id: GO:0015647 ! peptidoglycan transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:8005 ! peptidoglycan
+
+[Term]
+id: GO:0015651 ! quaternary ammonium group transmembrane transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35273 ! quaternary ammonium salt
+
+[Term]
+id: GO:0015654 ! tellurite uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30477 ! tellurite
+
+[Term]
+id: GO:0015659 ! formate uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15740 ! formate
+
+[Term]
+id: GO:0015660 ! formate efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15740 ! formate
+
+[Term]
+id: GO:0015661 ! L-lysine efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18019 ! L-lysine
+
+[Term]
+id: GO:0015663 ! nicotinamide mononucleotide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:50383 ! nicotinamide mononucleotide
+
+[Term]
+id: GO:0015665 ! alcohol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30879 ! alcohol
+
+[Term]
+id: GO:0017089 ! glycolipid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33563 ! glycolipid
+
+[Term]
+id: GO:0017127 ! cholesterol transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16113 ! cholesterol
+
+[Term]
+id: GO:0019191 ! cellobiose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17057 ! cellobiose
+
+[Term]
+id: GO:0019194 ! sorbose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27922 ! sorbose
+
+[Term]
+id: GO:0019196 ! galactosamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24156 ! galactosamine
+
+[Term]
+id: GO:0019531 ! oxalate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30623 ! oxalate(2-)
+
+[Term]
+id: GO:0019534 ! toxin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27026 ! toxin
+
+[Term]
+id: GO:0022839 ! ion gated channel activity
+intersection_of: GO:0022836 ! gated channel activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24870 ! ion
+
+[Term]
+id: GO:0022858 ! alanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16449 ! alanine
+
+[Term]
+id: GO:0022884 ! macromolecule transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33839 ! macromolecule
+
+[Term]
+id: GO:0022885 ! bacteriocin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:48081 ! bacteriocin
+
+[Term]
+id: GO:0022889 ! serine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17822 ! serine
+
+[Term]
+id: GO:0022890 ! inorganic cation transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36915 ! inorganic cation
+
+[Term]
+id: GO:0030184 ! nitric oxide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16480 ! nitric oxide
+
+[Term]
+id: GO:0031924 ! vitamin B6 transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27306 ! vitamin B6
+
+[Term]
+id: GO:0031925 ! pyridoxal transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17310 ! pyridoxal
+
+[Term]
+id: GO:0031926 ! pyridoxal phosphate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:18405 ! pyridoxal 5'-phosphate
+
+[Term]
+id: GO:0031927 ! pyridoxamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16410 ! pyridoxamine
+
+[Term]
+id: GO:0031928 ! pyridoxine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16709 ! pyridoxine
+
+[Term]
+id: GO:0032217 ! riboflavin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17015 ! riboflavin
+
+[Term]
+id: GO:0032523 ! silicon efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30584 ! silicon(4+)
+
+[Term]
+id: GO:0033224 ! 2-aminoethylphosphonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:19470 ! 2-aminoethylphosphonate
+
+[Term]
+id: GO:0033229 ! cysteine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15356 ! cysteine
+
+[Term]
+id: GO:0033300 ! dehydroascorbic acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17242 ! dehydroascorbic acid
+
+[Term]
+id: GO:0034228 ! ethanolamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16000 ! ethanolamine
+
+[Term]
+id: GO:0034437 ! glycoprotein transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17089 ! glycoprotein
+
+[Term]
+id: GO:0034632 ! retinol transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:50211 ! retinol
+
+[Term]
+id: GO:0034634 ! glutathione transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16856 ! glutathione
+
+[Term]
+id: GO:0034639 ! L-amino acid efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15705 ! L-alpha-amino acid
+
+[Term]
+id: GO:0042876 ! aldarate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22289 ! aldaric acid anion
+
+[Term]
+id: GO:0042878 ! D-glucarate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30612 ! D-glucarate(2-)
+
+[Term]
+id: GO:0042879 ! aldonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22299 ! aldonate
+
+[Term]
+id: GO:0042880 ! D-glucuronate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15748 ! D-glucuronate
+
+[Term]
+id: GO:0042881 ! D-galactonate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:12931 ! D-galactonate
+
+[Term]
+id: GO:0042887 ! amide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:32988 ! amide
+
+[Term]
+id: GO:0042890 ! 3-phenylpropionic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28631 ! 3-phenylpropionic acid
+
+[Term]
+id: GO:0042895 ! antibiotic transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22582 ! antibiotic
+
+[Term]
+id: GO:0042896 ! chloramphenicol transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17698 ! chloramphenicol
+
+[Term]
+id: GO:0042900 ! arabinose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22599 ! arabinose
+
+[Term]
+id: GO:0042907 ! xanthine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15318 ! xanthine
+
+[Term]
+id: GO:0042910 ! xenobiotic transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:35703 ! xenobiotic
+
+[Term]
+id: GO:0042911 ! acridine transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:36420 ! acridine
+
+[Term]
+id: GO:0042925 ! benzoate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16150 ! benzoate
+
+[Term]
+id: GO:0042926 ! 3-hydroxyphenylpropionic acid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:1427 ! 3-(3-hydroxyphenyl)propanoic acid
+
+[Term]
+id: GO:0042927 ! siderophore transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26672 ! siderophore
+
+[Term]
+id: GO:0042931 ! enterobactin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28855 ! enterobactin
+
+[Term]
+id: GO:0042936 ! dipeptide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:46761 ! dipeptide
+
+[Term]
+id: GO:0042937 ! tripeptide transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:47923 ! tripeptide
+
+[Term]
+id: GO:0042943 ! D-amino acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16733 ! D-alpha-amino acid
+
+[Term]
+id: GO:0042944 ! D-alanine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15570 ! D-alanine
+
+[Term]
+id: GO:0042945 ! D-serine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16523 ! D-serine
+
+[Term]
+id: GO:0042947 ! glucoside transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24278 ! glucoside
+
+[Term]
+id: GO:0042950 ! salicin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17814 ! salicin
+
+[Term]
+id: GO:0042954 ! lipoprotein transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:6495 ! lipoprotein
+
+[Term]
+id: GO:0042957 ! dextrin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:28675 ! dextrin
+
+[Term]
+id: GO:0042958 ! maltodextrin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25140 ! maltodextrin
+
+[Term]
+id: GO:0042959 ! alkanesulfonate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22318 ! alkanesulfonate
+
+[Term]
+id: GO:0042970 ! homoserine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30653 ! homoserine
+
+[Term]
+id: GO:0042971 ! lactone transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:25000 ! lactone
+
+[Term]
+id: GO:0043865 ! methionine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16811 ! methionine
+
+[Term]
+id: GO:0043879 ! glycolate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17497 ! glycolic acid
+
+[Term]
+id: GO:0046624 ! sphingolipid transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26739 ! sphingolipid
+
+[Term]
+id: GO:0046715 ! boron transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30168 ! boron(3+)
+
+[Term]
+id: GO:0046943 ! carboxylic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33575 ! carboxylic acid
+
+[Term]
+id: GO:0046964 ! 3'-phosphoadenosine 5'-phosphosulfate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17980 ! 3'-phospho-5'-adenylyl sulfate
+
+[Term]
+id: GO:0048474 ! D-methionine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16867 ! D-methionine
+
+[Term]
+id: GO:0050833 ! pyruvate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15361 ! pyruvate
+
+[Term]
+id: GO:0051032 ! nucleic acid transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33696 ! nucleic acid
+
+[Term]
+id: GO:0051033 ! RNA transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33697 ! ribonucleic acid
+
+[Term]
+id: GO:0051034 ! tRNA transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17843 ! transfer RNA
+
+[Term]
+id: GO:0051035 ! DNA transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16991 ! deoxyribonucleic acid
+
+[Term]
+id: GO:0051183 ! vitamin transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33229 ! vitamin
+
+[Term]
+id: GO:0051184 ! cofactor transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:23357 ! cofactor
+
+[Term]
+id: GO:0051185 ! coenzyme transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:23354 ! coenzyme
+
+[Term]
+id: GO:0051471 ! ectoine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27592 ! ectoine
+
+[Term]
+id: GO:0051474 ! glucosylglycerol transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24287 ! glucosylglycerol
+
+[Term]
+id: GO:0051724 ! NAD transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
+
+[Term]
+id: GO:0051739 ! ammonia transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16134 ! ammonia
+
+[Term]
+id: GO:0055056 ! D-glucose transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:17634 ! D-glucose
+
+[Term]
+id: GO:0080122 ! AMP transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16027 ! AMP
+
+[Term]
+id: GO:0080138 ! boron uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27560 ! boron
+
+[Term]
+id: GO:0080139 ! boron efflux transmembrane transporter activity
+intersection_of: GO:0015562 ! efflux transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:27560 ! boron
 
 [Term]
 id: GO:0000017 ! alpha-glucoside transport
@@ -4790,7 +6395,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:17272 ! propionat
 [Term]
 id: GO:0015731 ! 3-hydroxyphenyl propanoate transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:57277 ! 3-(3-hydroxyphenyl)propanoate
+intersection_of: transports_or_maintains_localization_of CHEBI:65228 ! 3-hydroxyphenyl propanoate
 
 [Term]
 id: GO:0015732 ! prostaglandin transport
@@ -5128,11 +6733,6 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33856 ! aromatic amino acid
 
 [Term]
-id: GO:0015803 ! branched-chain aliphatic amino acid transport
-intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:22918 ! branched-chain amino acid
-
-[Term]
 id: GO:0015805 ! S-adenosylmethionine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:15414 ! S-adenosyl-L-methionine
@@ -5325,7 +6925,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:64709 ! organic a
 [Term]
 id: GO:0015850 ! organic alcohol transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:64710 ! organic alcohol
+intersection_of: transports_or_maintains_localization_of CHEBI:33822 ! organic hydroxy compound
 
 [Term]
 id: GO:0015851 ! nucleobase transport
@@ -15327,11 +16927,6 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:29241 ! silicate(4-)
 
 [Term]
-id: GO:0051207 ! silicic acid transport
-intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:26675 ! silicic acid
-
-[Term]
 id: GO:0051212 ! vanadium ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:35172 ! vanadium cation
@@ -17967,6 +19562,361 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28426 ! cyanidin 3-O-beta-D-glucoside
 
 [Term]
+id: GO:1901049 ! atropine metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:16684 ! atropine
+
+[Term]
+id: GO:1901050 ! atropine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:16684 ! atropine
+
+[Term]
+id: GO:1901051 ! atropine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:16684 ! atropine
+
+[Term]
+id: GO:1901052 ! sarcosine metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:15611 ! sarcosine
+
+[Term]
+id: GO:1901053 ! sarcosine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:15611 ! sarcosine
+
+[Term]
+id: GO:1901054 ! sarcosine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15611 ! sarcosine
+
+[Term]
+id: GO:1901055 ! trimethylenediamine metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:15725 ! trimethylenediamine
+
+[Term]
+id: GO:1901056 ! trimethylenediamine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:15725 ! trimethylenediamine
+
+[Term]
+id: GO:1901057 ! trimethylenediamine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15725 ! trimethylenediamine
+
+[Term]
+id: GO:1901058 ! p-hydroxyphenyl lignin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64474 ! p-hydroxyphenyl lignin
+
+[Term]
+id: GO:1901059 ! p-hydroxyphenyl lignin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64474 ! p-hydroxyphenyl lignin
+
+[Term]
+id: GO:1901060 ! p-hydroxyphenyl lignin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64474 ! p-hydroxyphenyl lignin
+
+[Term]
+id: GO:1901061 ! guaiacyl lignin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64475 ! guaiacyl lignin
+
+[Term]
+id: GO:1901062 ! guaiacyl lignin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64475 ! guaiacyl lignin
+
+[Term]
+id: GO:1901063 ! guaiacyl lignin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64475 ! guaiacyl lignin
+
+[Term]
+id: GO:1901064 ! syringal lignin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64476 ! syringal lignin
+
+[Term]
+id: GO:1901065 ! syringal lignin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64476 ! syringal lignin
+
+[Term]
+id: GO:1901066 ! syringal lignin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64476 ! syringal lignin
+
+[Term]
+id: GO:1901067 ! ferulate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:29749 ! ferulate
+
+[Term]
+id: GO:1901068 ! guanosine-containing compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:24458 ! guanosines
+
+[Term]
+id: GO:1901069 ! guanosine-containing compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:24458 ! guanosines
+
+[Term]
+id: GO:1901070 ! guanosine-containing compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:24458 ! guanosines
+
+[Term]
+id: GO:1901071 ! glucosamine-containing compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:24271 ! glucosamines
+
+[Term]
+id: GO:1901072 ! glucosamine-containing compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:24271 ! glucosamines
+
+[Term]
+id: GO:1901073 ! glucosamine-containing compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:24271 ! glucosamines
+
+[Term]
+id: GO:1901083 ! pyrrolizidine alkaloid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64948 ! pyrrolizidine alkaloid
+
+[Term]
+id: GO:1901084 ! pyrrolizidine alkaloid catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64948 ! pyrrolizidine alkaloid
+
+[Term]
+id: GO:1901085 ! pyrrolizidine alkaloid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64948 ! pyrrolizidine alkaloid
+
+[Term]
+id: GO:1901086 ! benzylpenicillin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:18208 ! benzylpenicillin
+
+[Term]
+id: GO:1901087 ! benzylpenicillin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:18208 ! benzylpenicillin
+
+[Term]
+id: GO:1901088 ! benzylpenicillin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:18208 ! benzylpenicillin
+
+[Term]
+id: GO:1901101 ! gramicidin S metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:5530 ! gramicidin S
+
+[Term]
+id: GO:1901102 ! gramicidin S catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:5530 ! gramicidin S
+
+[Term]
+id: GO:1901103 ! gramicidin S biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:5530 ! gramicidin S
+
+[Term]
+id: GO:1901104 ! tetracenomycin C metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:9470 ! tetracenomycin C
+
+[Term]
+id: GO:1901105 ! tetracenomycin C catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:9470 ! tetracenomycin C
+
+[Term]
+id: GO:1901106 ! tetracenomycin C biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:9470 ! tetracenomycin C
+
+[Term]
+id: GO:1901107 ! granaticin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:5533 ! granaticin
+
+[Term]
+id: GO:1901108 ! granaticin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:5533 ! granaticin
+
+[Term]
+id: GO:1901109 ! granaticin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:5533 ! granaticin
+
+[Term]
+id: GO:1901110 ! actinorhodin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:2448 ! actinorhodin
+
+[Term]
+id: GO:1901111 ! actinorhodin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:2448 ! actinorhodin
+
+[Term]
+id: GO:1901112 ! actinorhodin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:2448 ! actinorhodin
+
+[Term]
+id: GO:1901113 ! erythromycin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:48923 ! erythromycin
+
+[Term]
+id: GO:1901114 ! erythromycin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:48923 ! erythromycin
+
+[Term]
+id: GO:1901115 ! erythromycin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:48923 ! erythromycin
+
+[Term]
+id: GO:1901116 ! cephamycin C metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:3543 ! cephamycin C
+
+[Term]
+id: GO:1901117 ! cephamycin C catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:3543 ! cephamycin C
+
+[Term]
+id: GO:1901118 ! cephamycin C biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:3543 ! cephamycin C
+
+[Term]
+id: GO:1901119 ! tobramycin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:28864 ! tobramycin
+
+[Term]
+id: GO:1901120 ! tobramycin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:28864 ! tobramycin
+
+[Term]
+id: GO:1901121 ! tobramycin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28864 ! tobramycin
+
+[Term]
+id: GO:1901122 ! bacitracin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:28669 ! bacitracin
+
+[Term]
+id: GO:1901123 ! bacitracin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:28669 ! bacitracin
+
+[Term]
+id: GO:1901124 ! bacitracin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28669 ! bacitracin
+
+[Term]
+id: GO:1901125 ! candicidin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:354984 ! candicidin
+
+[Term]
+id: GO:1901126 ! candicidin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:354984 ! candicidin
+
+[Term]
+id: GO:1901127 ! candicidin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:354984 ! candicidin
+
+[Term]
+id: GO:1901128 ! gentamycin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:17833 ! gentamycin
+
+[Term]
+id: GO:1901129 ! gentamycin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:17833 ! gentamycin
+
+[Term]
+id: GO:1901130 ! gentamycin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:17833 ! gentamycin
+
+[Term]
+id: GO:1901131 ! kanamycin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:6104 ! kanamycin
+
+[Term]
+id: GO:1901132 ! kanamycin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:6104 ! kanamycin
+
+[Term]
+id: GO:1901133 ! kanamycin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:6104 ! kanamycin
+
+[Term]
+id: GO:1901135 ! carbohydrate derivative metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63299 ! carbohydrate derivative
+
+[Term]
+id: GO:1901136 ! carbohydrate derivative catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63299 ! carbohydrate derivative
+
+[Term]
+id: GO:1901137 ! carbohydrate derivative biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:63299 ! carbohydrate derivative
+
+[Term]
+id: GO:1901142 ! insulin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:5931 ! insulin
+
+[Term]
+id: GO:1901143 ! insulin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:5931 ! insulin
+
+[Term]
+id: GO:1901144 ! insulin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:5931 ! insulin
+
+[Term]
+id: GO:1901149 ! salicylic acid binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:16914 ! salicylic acid
+
+[Term]
 id: GO:2000884 ! glucomannan catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17020 ! glucomannan
@@ -18569,5 +20519,4 @@ xref: BFO:0000057
 id: transports_or_maintains_localization_of
 name: transports or maintains localization of
 xref: RO:0002313
-
 

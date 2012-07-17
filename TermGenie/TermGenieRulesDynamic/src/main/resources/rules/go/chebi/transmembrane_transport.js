@@ -1,14 +1,14 @@
 // @requires rules/common.js
 
 
-function transmembrane_transport() {
-	var go = GeneOntology;
+function chemical_transmembrane_transport() {
+	var ont = GeneOntology;
 	
 	// transport subject: chebi
 	var x = getSingleTerm("subject", ont);
 	
 	// list of requested genus
-	var geni;
+	var geni = getInputs("subject");
 	if (!geni || geni === null || geni.length === 0) {
 		error("Could not create a term for X, as no genus was selected");
 		return;
@@ -18,7 +18,7 @@ function transmembrane_transport() {
 	var name = termname(x, ont);
 	
 	// GO:0022857 ! transmembrane transporter activity
-	if (termgenie.contains(prefixes, "GO:0022857")) {
+	if (termgenie.contains(geni, "GO:0022857")) {
 		var label = name + " transmembrane transporter activity";
 		var definition = "Catalysis of the transfer of "+name+" from one side of the membrane to the other.";
 		var synonyms = null;
@@ -35,7 +35,7 @@ function transmembrane_transport() {
 	}
 	
 	// GO:0015291 ! secondary active transmembrane transporter activity
-	if (termgenie.contains(prefixes, "GO:0015291")) {
+	if (termgenie.contains(geni, "GO:0015291")) {
 		var label = name + " secondary active transmembrane transporter activity";
 		// TODO improve/specialize definition
 		var definition = "Catalysis of the transfer of "+name+" from one side of the membrane to the other, up its concentration gradient. The transporter binds the solute and undergoes a series of conformational changes. Transport works equally well in either direction and is driven by a chemiosmotic source of energy. Chemiosmotic sources of energy include uniport, symport or antiport.";
@@ -53,7 +53,7 @@ function transmembrane_transport() {
 	}
 	
 	// GO:0015563 ! uptake transmembrane transporter activity
-	if (termgenie.contains(prefixes, "GO:0015563")) {
+	if (termgenie.contains(geni, "GO:0015563")) {
 		var label = name + " uptake transmembrane transporter activity";
 		// TODO improve/specialize definition
 		var definition = "Catalysis of the transfer of "+name+" from the outside of a cell to the inside across a membrane.";
@@ -71,7 +71,7 @@ function transmembrane_transport() {
 	}
 
 	// GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
-	if (termgenie.contains(prefixes, "GO:0042626")) {
+	if (termgenie.contains(geni, "GO:0042626")) {
 		var label = name + " transmembrane-transporting ATPase activity";
 		var definition = "Catalysis of the transfer of a solute or solutes from one side of a membrane to the other according to the reaction: ATP + H2O + "+name+"(in) = ADP + phosphate + "+name+"(out)";
 		var synonyms = null;
