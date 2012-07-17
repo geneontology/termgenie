@@ -12,7 +12,11 @@ public class TemplateField {
 	private final String label;
 	private final boolean required;
 	private final Cardinality cardinality;
+	
 	private final List<String> functionalPrefixes;
+	private final List<String> functionalPrefixesIds;
+	private final boolean preSelected;
+	
 	private final List<Ontology> correspondingOntologies;
 	private final String remoteResource;
 
@@ -82,66 +86,6 @@ public class TemplateField {
 		}
 	}
 
-	public TemplateField(String name, Ontology ontology) {
-		this(name, null, true, ontology == null ? null : Collections.singletonList(ontology));
-	}
-
-	public TemplateField(String name, List<Ontology> ontologies) {
-		this(name, null, true, ontologies);
-	}
-
-	/**
-	 * Convenience constructor, for fields without prefixes, single cardinality,
-	 * no corresponding ontology, and no label.
-	 * 
-	 * @param name
-	 */
-	public TemplateField(String name) {
-		this(name, null, false, SINGLE_FIELD_CARDINALITY, null);
-	}
-	
-	/**
-	 * Convenience constructor, for fields without prefixes, single cardinality,
-	 * and no corresponding ontology.
-	 * 
-	 * @param name
-	 * @param label
-	 */
-	public TemplateField(String name, String label) {
-		this(name, label, false, SINGLE_FIELD_CARDINALITY, null);
-	}
-
-	/**
-	 * Convenience constructor, for fields without prefixes and single
-	 * cardinality.
-	 * 
-	 * @param name
-	 * @param label
-	 * @param required
-	 * @param correspondingOntologies
-	 */
-	public TemplateField(String name, String label, boolean required, List<Ontology> correspondingOntologies) {
-		this(name, label, required, SINGLE_FIELD_CARDINALITY, correspondingOntologies);
-	}
-
-	/**
-	 * Convenience constructor, for fields without prefixes.
-	 * 
-	 * @param name
-	 * @param label
-	 * @param required
-	 * @param cardinality
-	 * @param correspondingOntologies
-	 */
-	public TemplateField(String name,
-			String label,
-			boolean required,
-			Cardinality cardinality,
-			List<Ontology> correspondingOntologies)
-	{
-		this(name, label, required, cardinality, null, correspondingOntologies, null);
-	}
-
 	/**
 	 * Standard constructor for specifying all parameters of a field.
 	 * 
@@ -150,26 +94,8 @@ public class TemplateField {
 	 * @param required
 	 * @param cardinality
 	 * @param functionalPrefixes
-	 * @param correspondingOntology
-	 */
-	public TemplateField(String name,
-			String label,
-			boolean required,
-			Cardinality cardinality,
-			List<String> functionalPrefixes,
-			Ontology correspondingOntology)
-	{
-		this(name, label, required, cardinality, functionalPrefixes, correspondingOntology == null ? null : Collections.singletonList(correspondingOntology), null);
-	}
-
-	/**
-	 * Standard constructor for specifying all parameters of a field.
-	 * 
-	 * @param name
-	 * @param label
-	 * @param required
-	 * @param cardinality
-	 * @param functionalPrefixes
+	 * @param functionalPrefixesIds
+	 * @param preSelected
 	 * @param correspondingOntologies
 	 * @param remoteResource 
 	 */
@@ -178,6 +104,8 @@ public class TemplateField {
 			boolean required,
 			Cardinality cardinality,
 			List<String> functionalPrefixes,
+			List<String> functionalPrefixesIds,
+			boolean preSelected,
 			List<Ontology> correspondingOntologies,
 			String remoteResource)
 	{
@@ -192,6 +120,13 @@ public class TemplateField {
 		else {
 			this.functionalPrefixes = Collections.unmodifiableList(functionalPrefixes);
 		}
+		if (functionalPrefixesIds == null || functionalPrefixesIds.isEmpty()) {
+			this.functionalPrefixesIds = Collections.emptyList();
+		}
+		else {
+			this.functionalPrefixesIds = Collections.unmodifiableList(functionalPrefixes);
+		}
+		this.preSelected = preSelected;
 		this.correspondingOntologies = correspondingOntologies;
 		this.remoteResource = remoteResource;
 	}
@@ -230,6 +165,20 @@ public class TemplateField {
 	 */
 	public List<String> getFunctionalPrefixes() {
 		return functionalPrefixes;
+	}
+	
+	/**
+	 * @return the functionalPrefixesIds
+	 */
+	public List<String> getFunctionalPrefixesIds() {
+		return functionalPrefixesIds;
+	}
+
+	/**
+	 * @return the preSelected
+	 */
+	public boolean isPreSelected() {
+		return preSelected;
 	}
 
 	public List<Ontology> getCorrespondingOntologies() {

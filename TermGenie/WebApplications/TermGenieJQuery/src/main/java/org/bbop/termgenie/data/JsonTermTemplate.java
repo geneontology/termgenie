@@ -131,39 +131,15 @@ public class JsonTermTemplate {
 		private String label;
 		private boolean required;
 		private JsonCardinality cardinality;
+		
+		private boolean preSelected;
 		private String[] functionalPrefixes;
+		private String[] functionalPrefixesIds;
 		private String[] ontologies;
 		private String remoteResource;
 
 		public JsonTemplateField() {
 			super();
-		}
-
-		/**
-		 * @param name
-		 * @param label
-		 * @param required
-		 * @param cardinality
-		 * @param functionalPrefixes
-		 * @param ontologies
-		 * @param remoteResource 
-		 */
-		public JsonTemplateField(String name,
-				String label,
-				boolean required,
-				JsonCardinality cardinality,
-				String[] functionalPrefixes,
-				String[] ontologies,
-				String remoteResource)
-		{
-			super();
-			this.name = name;
-			this.label = label;
-			this.required = required;
-			this.cardinality = cardinality;
-			this.functionalPrefixes = functionalPrefixes;
-			this.ontologies = ontologies;
-			this.remoteResource = remoteResource;
 		}
 
 		/**
@@ -235,6 +211,20 @@ public class JsonTermTemplate {
 		public void setFunctionalPrefixes(String[] functionalPrefixes) {
 			this.functionalPrefixes = functionalPrefixes;
 		}
+		
+		/**
+		 * @return the functionalPrefixesIds
+		 */
+		public String[] getFunctionalPrefixesIds() {
+			return functionalPrefixesIds;
+		}
+		
+		/**
+		 * @param functionalPrefixesIds the functionalPrefixesIds to set
+		 */
+		public void setFunctionalPrefixesIds(String[] functionalPrefixesIds) {
+			this.functionalPrefixesIds = functionalPrefixesIds;
+		}
 
 		/**
 		 * @return the ontologies
@@ -262,6 +252,20 @@ public class JsonTermTemplate {
 		 */
 		public void setRemoteResource(String remoteResource) {
 			this.remoteResource = remoteResource;
+		}
+		
+		/**
+		 * @return the preSelected
+		 */
+		public boolean isPreSelected() {
+			return preSelected;
+		}
+
+		/**
+		 * @param preSelected the preSelected to set
+		 */
+		public void setPreSelected(boolean preSelected) {
+			this.preSelected = preSelected;
 		}
 
 		/*

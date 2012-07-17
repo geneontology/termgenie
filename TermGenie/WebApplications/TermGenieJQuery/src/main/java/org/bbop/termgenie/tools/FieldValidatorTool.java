@@ -53,9 +53,10 @@ public class FieldValidatorTool {
 					// check if strings correspond to the given prefixes in the
 					// template
 					Set<String> prefixes = new HashSet<String>(field.getFunctionalPrefixes());
+					Set<String> ids = new HashSet<String>(field.getFunctionalPrefixesIds());
 					for (String string : fieldStrings) {
-						if (!prefixes.contains(string)) {
-							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix: " + string));
+						if (prefixes.contains(string) == false && ids.contains(string) == false) {
+							errors.add(new JsonValidationHint(jsonTemplate, i, "Unknown prefix or Id: " + string));
 						}
 					}
 				}

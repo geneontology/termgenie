@@ -304,6 +304,11 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			Cardinality c = field.getCardinality();
 			jsonField.setCardinality(new JsonCardinality(c.getMinimum(), c.getMaximum()));
 			jsonField.setFunctionalPrefixes(field.getFunctionalPrefixes().toArray(new String[0]));
+			final List<String> ids = field.getFunctionalPrefixesIds();
+			if (ids != null && !ids.isEmpty()) {
+				jsonField.setFunctionalPrefixes(ids.toArray(new String[0]));
+			}
+			jsonField.setPreSelected(field.isPreSelected());
 			if (field.hasCorrespondingOntologies()) {
 				List<Ontology> ontologies = field.getCorrespondingOntologies();
 				String[] ontologyNames = new String[ontologies.size()];

@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -273,7 +275,10 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		boolean required = stringRequired != null ? Boolean.parseBoolean(stringRequired) : false;
 		Cardinality cardinality = null;
 		List<String> functionalPrefixes = null;
+		List<String> functionalPrefixesIds = null;
 		List<Ontology> correspondingOntologies = null;
+		String preSelectedString = getAttribute(parser, ATTR_preselected, true);
+		boolean preSelected = preSelectedString != null ? Boolean.parseBoolean(preSelectedString) : true;
 
 		while (true) {
 			switch (parser.next()) {
@@ -283,7 +288,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (cardinality == null) {
 							cardinality = TemplateField.SINGLE_FIELD_CARDINALITY;
 						}
-						return new TemplateField(name, label, required, cardinality, functionalPrefixes, correspondingOntologies, remoteResource);
+						return new TemplateField(name, label, required, cardinality, functionalPrefixes, functionalPrefixesIds, preSelected, correspondingOntologies, remoteResource);
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:
@@ -312,7 +317,15 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (functionalPrefixes != null) {
 							error("Multiple " + TAG_prefixes + " tags found", parser);
 						}
-						functionalPrefixes = parseList(parser, TAG_prefixes, TAG_prefix);
+						Map<String, String> map = parsePrefixList(parser, TAG_prefixes, TAG_prefix);
+						if (map != null && !map.isEmpty()) {
+							functionalPrefixes = new ArrayList<String>(map.size());
+							functionalPrefixesIds = new ArrayList<String>(map.size());
+							for (Entry<String, String> entry : map.entrySet()) {
+								functionalPrefixes.add(entry.getKey());
+								functionalPrefixesIds.add(entry.getValue());
+							}
+						}
 					}
 					else {
 						error("Unexpected tag: " + element, parser);
@@ -441,29 +454,30 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		}
 	}
 
-	static List<String> parseList(XMLStreamReader parser, String tag, String subTag)
+	static Map<String, String> parsePrefixList(XMLStreamReader parser, String tag, String subTag)
 			throws XMLStreamException
 	{
-		List<String> result = null;
+		Map<String, String> prefixIds = null;
 		while (true) {
 			switch (parser.next()) {
 				case XMLStreamConstants.END_ELEMENT:
 					if (tag.equals(parser.getLocalName())) {
-						return result;
+						return prefixIds;
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:
 					if (subTag.equals(parser.getLocalName())) {
+						String id = parser.getAttributeValue(null, ATTR_id);
 						String text = parseElementText(parser, subTag);
-						if (result == null) {
-							result = Collections.singletonList(text);
+						if (prefixIds == null) {
+							prefixIds = Collections.singletonMap(text, id);
 						}
-						else if (result.size() == 1) {
-							result = new ArrayList<String>(result);
-							result.add(text);
+						else if (prefixIds.size() == 1) {
+							prefixIds = new LinkedHashMap<String, String>(prefixIds);
+							prefixIds.put(text, id);
 						}
 						else {
-							result.add(text);
+							prefixIds.put(text, id);
 						}
 					}
 					break;

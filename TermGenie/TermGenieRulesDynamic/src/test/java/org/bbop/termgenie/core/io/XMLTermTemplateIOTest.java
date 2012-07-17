@@ -57,7 +57,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 
 		assertEquals(xmlString1, xmlString2);
 	}
-
+	
 	private void assertTemplateList(List<TermTemplate> templates1, List<TermTemplate> templates2) {
 		assertEquals(templates1.size(), templates2.size());
 		for (int i = 0; i < templates1.size(); i++) {
@@ -97,6 +97,8 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 		assertEquals(field1.getCardinality(), field2.getCardinality());
 		assertOntologies(field1.getCorrespondingOntologies(), field2.getCorrespondingOntologies());
 		assertList(field1.getFunctionalPrefixes(), field2.getFunctionalPrefixes());
+		assertList(field1.getFunctionalPrefixesIds(), field2.getFunctionalPrefixesIds());
+		assertEquals(field1.isPreSelected(), field2.isPreSelected());
 	}
 
 	private void assertList(List<String> l1, List<String> l2) {

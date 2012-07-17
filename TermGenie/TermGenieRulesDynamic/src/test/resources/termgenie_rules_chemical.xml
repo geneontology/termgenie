@@ -62,4 +62,29 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="chemical_transmembrane_transport">
+		<description>Create trans-membrane transport terms with chemical entities. 
+		Select at least one type of genus.</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>molecular_function</obonamespace>
+		<fields>
+			<field name="subject" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix id="GO:0022857">transmembrane transporter activity</prefix>
+					<prefix id="GO:0015291">secondary active transmembrane transporter activity</prefix>
+					<prefix id="GO:0015563">uptake transmembrane transporter activity</prefix>
+					<prefix id="GO:0042626">ATPase activity, coupled to transmembrane movement of substances</prefix>
+				</prefixes>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/transmembrane_transport.js</ruleFile>
+		</ruleFiles>
+	</template>
 </termgenietemplates>

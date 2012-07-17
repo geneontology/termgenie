@@ -13,10 +13,10 @@
 				<ontology name="GeneOntology">
 					<branch>biological_process</branch>
 				</ontology>
-				<prefixes>
-					<prefix>regulation</prefix>
-					<prefix>negative_regulation</prefix>
-					<prefix>positive_regulation</prefix>
+				<prefixes preselected="false">
+					<prefix id="regulation">regulation</prefix>
+					<prefix id="negative_regulation">negative_regulation</prefix>
+					<prefix id="positive_regulation">positive_regulation</prefix>
 				</prefixes>
 			</field>
 			<field name="DefX_Ref" remoteResource="test_remote">
