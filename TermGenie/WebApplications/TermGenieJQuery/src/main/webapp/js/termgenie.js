@@ -1138,7 +1138,7 @@ function termgenie(){
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
 		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes, prefixesIds, preselect) {
-			if (!preselect) {
+			if (preselect === undefined || preselect === null) {
 				preselect = true;
 			}
 			if (!prefixesIds || prefixesIds == null || prefixesIds.length < prefixes.length) {
@@ -1152,15 +1152,21 @@ function termgenie(){
 			var inputContainer = jQuery('<tr><td></td></tr>');
 			inputContainer.appendTo(container);
 			
-			var inputField = AutoCompleteOntologyInput(inputContainer, templatePos, ontologies);
+			var inputField = AutoCompleteOntologyInput(inputContainer.children(":first"), templatePos, ontologies);
 			
 			var checkboxes = [];
 			for ( i = 0; i < prefixes.length; i++) {
-				checkbox = jQuery('<input type="checkbox" checked="'+preselect+'"/>');
+				if (preselect === true) {
+					checkbox = jQuery('<input type="checkbox" checked="true"/>');
+				}
+				else {
+					checkbox = jQuery('<input type="checkbox"/>');
+				}
+				
 				checkboxes[i] = checkbox;
 				inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
-				inputContainer.append(checkbox);
-				inputContainer.append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
+				inputContainer.children(":first").append(checkbox);
+				inputContainer.children(":first").append('<span class="term-prefix-label"> '+prefixes[i]+' </span>');
 				inputContainer.appendTo(container);
 			}
 			

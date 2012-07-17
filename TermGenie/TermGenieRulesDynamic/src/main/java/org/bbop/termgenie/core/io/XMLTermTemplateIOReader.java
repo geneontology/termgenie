@@ -277,8 +277,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		List<String> functionalPrefixes = null;
 		List<String> functionalPrefixesIds = null;
 		List<Ontology> correspondingOntologies = null;
-		String preSelectedString = getAttribute(parser, ATTR_preselected, true);
-		boolean preSelected = preSelectedString != null ? Boolean.parseBoolean(preSelectedString) : true;
+		String preSelectedString = null;
 
 		while (true) {
 			switch (parser.next()) {
@@ -288,6 +287,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (cardinality == null) {
 							cardinality = TemplateField.SINGLE_FIELD_CARDINALITY;
 						}
+						boolean preSelected = preSelectedString != null ? Boolean.parseBoolean(preSelectedString) : true;
 						return new TemplateField(name, label, required, cardinality, functionalPrefixes, functionalPrefixesIds, preSelected, correspondingOntologies, remoteResource);
 					}
 					break;
@@ -317,7 +317,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (functionalPrefixes != null) {
 							error("Multiple " + TAG_prefixes + " tags found", parser);
 						}
-						preSelectedString = getAttribute(parser, ATTR_preselected);
+						preSelectedString = getAttribute(parser, ATTR_preselected, true);
 						Map<String, String> map = parsePrefixList(parser, TAG_prefixes, TAG_prefix);
 						if (map != null && !map.isEmpty()) {
 							functionalPrefixes = new ArrayList<String>(map.size());
