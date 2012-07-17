@@ -306,7 +306,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			jsonField.setFunctionalPrefixes(field.getFunctionalPrefixes().toArray(new String[0]));
 			final List<String> ids = field.getFunctionalPrefixesIds();
 			if (ids != null && !ids.isEmpty()) {
-				jsonField.setFunctionalPrefixes(ids.toArray(new String[0]));
+				jsonField.setFunctionalPrefixesIds(ids.toArray(new String[0]));
 			}
 			jsonField.setPreSelected(field.isPreSelected());
 			if (field.hasCorrespondingOntologies()) {

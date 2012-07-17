@@ -317,6 +317,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 						if (functionalPrefixes != null) {
 							error("Multiple " + TAG_prefixes + " tags found", parser);
 						}
+						preSelectedString = getAttribute(parser, ATTR_preselected);
 						Map<String, String> map = parsePrefixList(parser, TAG_prefixes, TAG_prefix);
 						if (map != null && !map.isEmpty()) {
 							functionalPrefixes = new ArrayList<String>(map.size());

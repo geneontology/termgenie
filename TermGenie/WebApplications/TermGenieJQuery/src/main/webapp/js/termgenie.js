@@ -707,7 +707,7 @@ function termgenie(){
 						if (cardinality.min === 1 && cardinality.max === 1) {
 							var prefixes = field.functionalPrefixes;
 							if (prefixes && prefixes.length > 0) {
-								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontologies, prefixes);
+								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontologies, prefixes, field.functionalPrefixesIds, field.preSelected);
 							}
 							else {
 								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontologies);	
@@ -1132,10 +1132,19 @@ function termgenie(){
 		 * @param templatePos {int} position in the term template
 		 * @param ontologies {String[]} ontologies to be searched
 		 * @param prefixes {String[]} list of prefixes
+		 * @param prefixesIds {String[]} list of prefixesIds
+		 * @param preselect {boolean} pre-select prefix checkboxes
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes) {
+		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes, prefixesIds, preselect) {
+			if (!preselect) {
+				preselect = true;
+			}
+			if (!prefixesIds || prefixesIds == null || prefixesIds.length < prefixes.length) {
+				prefixesIds = prefixes
+			}
+			
 			var checkbox, i, j;
 			
 			var container = createLayoutTable();
@@ -1147,7 +1156,7 @@ function termgenie(){
 			
 			var checkboxes = [];
 			for ( i = 0; i < prefixes.length; i++) {
-				checkbox = jQuery('<input type="checkbox" checked="true"/>');
+				checkbox = jQuery('<input type="checkbox" checked="'+preselect+'"/>');
 				checkboxes[i] = checkbox;
 				inputContainer = jQuery('<tr><td class="prefixCheckbox"></td></tr>');
 				inputContainer.append(checkbox);
@@ -1187,7 +1196,7 @@ function termgenie(){
 					for ( j = 0; j < checkboxes.length; j++) {
 						checkbox = checkboxes[j];
 						if(checkbox.is(':checked')) {
-							cPrefixes.push(prefixes[j]);
+							cPrefixes.push(prefixesIds[j]);
 						}
 					}
 					if (cPrefixes.length === 0) {

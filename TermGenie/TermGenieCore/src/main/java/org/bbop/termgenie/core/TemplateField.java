@@ -124,7 +124,7 @@ public class TemplateField {
 			this.functionalPrefixesIds = Collections.emptyList();
 		}
 		else {
-			this.functionalPrefixesIds = Collections.unmodifiableList(functionalPrefixes);
+			this.functionalPrefixesIds = Collections.unmodifiableList(functionalPrefixesIds);
 		}
 		this.preSelected = preSelected;
 		this.correspondingOntologies = correspondingOntologies;
