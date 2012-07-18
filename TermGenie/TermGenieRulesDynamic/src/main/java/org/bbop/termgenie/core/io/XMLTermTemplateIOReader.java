@@ -324,7 +324,14 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 							functionalPrefixesIds = new ArrayList<String>(map.size());
 							for (Entry<String, String> entry : map.entrySet()) {
 								functionalPrefixes.add(entry.getKey());
-								functionalPrefixesIds.add(entry.getValue());
+								final String value = entry.getValue();
+								if (value != null) {
+									functionalPrefixesIds.add(value);
+								}
+							}
+							if (functionalPrefixesIds.size() < functionalPrefixes.size()) {
+								// either all have an id or none, no middle ground!
+								functionalPrefixesIds = null;
 							}
 						}
 					}
