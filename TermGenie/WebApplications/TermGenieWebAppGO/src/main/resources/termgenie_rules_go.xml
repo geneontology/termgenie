@@ -255,7 +255,7 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 	</template>
-	<template name="chemical_transmembrane_transport" displayname="chemical_transmembrane_transport_activity">
+	<template name="chemical_transmembrane_transport" displayname="chemical_transmembrane_transporter_activity">
 		<description>Create transmembrane transport activity terms with chemical entities.&lt;br/&gt;
 		Select &lt;b&gt;at least one&lt;/b&gt; type of genus. &lt;br/&gt;
 		If in doubt, use the first one: transmembrane transporter activity</description>
