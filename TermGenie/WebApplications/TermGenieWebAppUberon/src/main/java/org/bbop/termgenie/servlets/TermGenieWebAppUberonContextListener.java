@@ -18,7 +18,7 @@ public class TermGenieWebAppUberonContextListener extends AbstractTermGenieConte
 	
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_uberon.xml", applicationProperties);
+		return new XMLReloadingOntologyModule("ontology-configuration_uberon.xml", null, applicationProperties);
 	}
 
 	@Override

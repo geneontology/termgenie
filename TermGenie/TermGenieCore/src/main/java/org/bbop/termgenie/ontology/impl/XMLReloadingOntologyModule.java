@@ -28,15 +28,16 @@ public class XMLReloadingOntologyModule extends ReloadingOntologyModule {
 	
 	/**
 	 * @param configFile
+	 * @param ignoreMappings
 	 * @param applicationProperties 
 	 */
-	public XMLReloadingOntologyModule(String configFile, Properties applicationProperties) {
-		super(applicationProperties);
+	public XMLReloadingOntologyModule(String configFile, List<String> ignoreMappings, Properties applicationProperties) {
+		super(ignoreMappings, applicationProperties);
 		this.configFile = configFile;
 	}
 
-	public XMLReloadingOntologyModule(Properties applicationProperties) {
-		this(XMLOntologyConfiguration.SETTINGS_FILE, applicationProperties);
+	public XMLReloadingOntologyModule(List<String> ignoreMappings, Properties applicationProperties) {
+		this(XMLOntologyConfiguration.SETTINGS_FILE, ignoreMappings, applicationProperties);
 	}
 
 	@Override

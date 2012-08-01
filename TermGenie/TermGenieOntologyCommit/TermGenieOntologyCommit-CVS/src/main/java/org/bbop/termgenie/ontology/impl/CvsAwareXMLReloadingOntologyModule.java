@@ -44,7 +44,7 @@ public class CvsAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModu
 			String mappedIRI,
 			String workFolder)
 	{
-		super(configFile, applicationProperties);
+		super(configFile, null, applicationProperties);
 		this.cvsRootDefault = cvsRoot;
 		this.remoteTargetFileDefault = remoteTargetFile;
 		this.mappedIRIDefault = mappedIRI;

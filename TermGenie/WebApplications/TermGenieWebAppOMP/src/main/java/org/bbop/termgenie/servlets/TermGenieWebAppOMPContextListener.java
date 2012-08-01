@@ -18,7 +18,7 @@ public class TermGenieWebAppOMPContextListener extends AbstractTermGenieContextL
 	
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_omp.xml", applicationProperties);
+		return new XMLReloadingOntologyModule("ontology-configuration_omp.xml", null, applicationProperties);
 	}
 
 	@Override

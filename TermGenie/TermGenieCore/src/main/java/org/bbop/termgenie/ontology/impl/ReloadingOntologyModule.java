@@ -2,6 +2,7 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -15,8 +16,11 @@ import org.bbop.termgenie.ontology.OntologyLoader;
  */
 public class ReloadingOntologyModule extends DefaultOntologyModule {
 
-	public ReloadingOntologyModule(Properties applicationProperties) {
+	protected final List<String> ignoreMappings;
+
+	public ReloadingOntologyModule(List<String> ignoreMappings, Properties applicationProperties) {
 		super(applicationProperties);
+		this.ignoreMappings = ignoreMappings;
 	}
 
 	@Override
@@ -32,6 +36,7 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 		bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(),"termgenie-download-cache").getAbsolutePath());
 		bind("FileCachingIRIMapperPeriod", new Long(6L));
 		bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);
+		bindList("FileCachingIRIMapperIgnoreMappings", ignoreMappings, true);
 	}
 
 	@Override

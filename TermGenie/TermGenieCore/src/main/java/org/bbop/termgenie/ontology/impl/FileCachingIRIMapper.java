@@ -13,6 +13,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +50,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 
 	private final FileValidity validityHelper;
 	private final File cacheDirectory;
+	private final Set<String> ignores;
 
 	@Inject
 	FileCachingIRIMapper(@Named("FileCachingIRIMapperLocalCache") String localCache,
@@ -54,6 +58,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			@Named("FileCachingIRIMapperTimeUnit") TimeUnit unit)
 	{
 		super();
+		ignores = new HashSet<String>();
 		cacheDirectory = new File(localCache);
 		createFolder(cacheDirectory);
 		validityHelper = new FileValidity(TimeUnit.MILLISECONDS.convert(period, unit));
@@ -69,6 +74,16 @@ public class FileCachingIRIMapper implements IRIMapper {
 		};
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		scheduler.scheduleWithFixedDelay(command, period, period, unit);
+	}
+	
+	@Inject(optional=true)
+	public void setIgnores(@Named("FileCachingIRIMapperIgnoreMappings") List<String> ignoreMappings) {
+		if (ignoreMappings != null) {
+			synchronized (ignores) {
+				ignores.clear();
+				ignores.addAll(ignoreMappings);
+			}
+		}
 	}
 
 	protected void reloadIRIs() {
@@ -127,6 +142,9 @@ public class FileCachingIRIMapper implements IRIMapper {
 	@Override
 	public IRI getDocumentIRI(IRI ontologyIRI) {
 		URL url = mapUrl(ontologyIRI.toString());
+		if (url == null) {
+			return null;
+		}
 		try {
 			return IRI.create(url);
 		} catch (URISyntaxException exception) {
@@ -137,6 +155,9 @@ public class FileCachingIRIMapper implements IRIMapper {
 
 	@Override
 	public URL mapUrl(String url) {
+		if (ignores.contains(url)) {
+			return null;
+		}
 		try {
 			final URL originalURL = new URL(url);
 			String protocol = originalURL.getProtocol().toLowerCase();

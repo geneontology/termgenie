@@ -3,6 +3,7 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,8 +85,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 					
 		String catalogXML = "extensions/catalog-v001.xml";
 		
+		List<String> ignoreIRIs = Arrays.asList("http://purl.obolibrary.org/obo/go.owl",
+				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
+				"http://purl.obolibrary.org/obo/TEMP");
 		
-		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal);
+		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
 	}
 
 	@Override

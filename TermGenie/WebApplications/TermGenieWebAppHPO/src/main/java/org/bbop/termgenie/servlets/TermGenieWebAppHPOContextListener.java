@@ -58,7 +58,8 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 			localSVNCache.mkdirs();
 			FileUtils.cleanDirectory(localSVNCache);
 			String fileCache = new File("./work/termgenie-download-cache").getAbsolutePath();
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties, localSVNFolder, mappedIRIs, null, localSVNCache.getAbsolutePath(), fileCache, svnLoadExternal);
+			List<String> ignoreIRIs = null;
+			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties, localSVNFolder, mappedIRIs, null, localSVNCache.getAbsolutePath(), fileCache, svnLoadExternal, ignoreIRIs );
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}

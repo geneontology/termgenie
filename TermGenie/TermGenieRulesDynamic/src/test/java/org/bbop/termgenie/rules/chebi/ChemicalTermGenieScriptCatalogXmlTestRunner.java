@@ -54,7 +54,7 @@ public class ChemicalTermGenieScriptCatalogXmlTestRunner {
 	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
 		ChemicalTestOntologyModule() {
-			super("ontology-configuration_chemical.xml", null);
+			super("ontology-configuration_chemical.xml", null, null);
 		}
 
 		@Override
