@@ -73,7 +73,7 @@ function chemical_transmembrane_transport() {
 	// GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
 	if (termgenie.contains(geni, "GO:0042626")) {
 		var label = name + " transmembrane-transporting ATPase activity";
-		var definition = "Catalysis of the transfer of a solute or solutes from one side of a membrane to the other according to the reaction: ATP + H2O + "+name+"(in) = ADP + phosphate + "+name+"(out)";
+		var definition = "Catalysis of the transfer of a solute or solutes from one side of a membrane to the other according to the reaction: ATP + H2O + "+name+"(in) = ADP + phosphate + "+name+"(out).";
 		var synonyms = null;
 		var mdef = createMDef("GO_0042626 and 'transports or maintains localization of' some ?X");
 		mdef.addParameter('X', x, ont);
