@@ -16,6 +16,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -101,6 +102,11 @@ public class SynonymGenerationToolsTest {
 		@Override
 		public boolean isBottomEntity() {
 			return false;
+		}
+
+		@Override
+		public Set<OWLAnonymousIndividual> getAnonymousIndividuals() {
+			return null;
 		}
 	}
 

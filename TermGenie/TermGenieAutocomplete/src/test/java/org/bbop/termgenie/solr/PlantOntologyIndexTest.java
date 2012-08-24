@@ -67,7 +67,7 @@ public class PlantOntologyIndexTest {
 			protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology,
 					ReasonerFactory reasonerFactory)
 			{
-				return reasonerFactory.getTaskManager(ontology, "jcel");
+				return reasonerFactory.getTaskManager(ontology);
 			}
 
 		};

@@ -33,18 +33,6 @@
 			<artifactId>OWLTools-Core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>jcel</groupId>
-			<artifactId>jcel.owlapi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>owlapi</groupId>
-			<artifactId>owlapi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.semanticweb</groupId>
-			<artifactId>HermiT</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>

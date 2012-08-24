@@ -14,36 +14,29 @@ import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 @Singleton
 public class CachingReasonerFactoryImpl extends ReasonerFactoryImpl implements
 		EventSubscriber<OntologyChangeEvent>
 {
 
-	private final Map<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>> allManagers;
+	private final Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> allManagers;
 
 	@Inject
-	CachingReasonerFactoryImpl(@Named("ReasonerFactoryDefaultReasoner") String defaultReasoner) {
-		super(defaultReasoner);
-		allManagers = new HashMap<String, Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>>();
+	CachingReasonerFactoryImpl() {
+		super();
+		allManagers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
 		EventBus.subscribe(OntologyChangeEvent.class, this);
 	}
 
 	@Override
-	protected ReasonerTaskManager getManager(OWLGraphWrapper ontology, String reasonerName) {
+	protected ReasonerTaskManager getManager(OWLGraphWrapper ontology) {
 		synchronized (allManagers) {
-			Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
-			if (managers == null) {
-				managers = new HashMap<String, Pair<OWLGraphWrapper, ReasonerTaskManager>>();
-				allManagers.put(reasonerName, managers);
-			}
 			String ontologyName = ontology.getOntologyId();
-			Pair<OWLGraphWrapper, ReasonerTaskManager> pair = managers.get(ontologyName);
+			Pair<OWLGraphWrapper, ReasonerTaskManager> pair = allManagers.get(ontologyName);
 			if (pair == null || pair.getOne() != ontology) {
-				pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, super.getManager(ontology,
-						reasonerName));
-				managers.put(ontologyName, pair);
+				pair = new Pair<OWLGraphWrapper, ReasonerTaskManager>(ontology, super.getManager(ontology));
+				allManagers.put(ontologyName, pair);
 			}
 			return pair.getTwo();
 		}
@@ -67,16 +60,11 @@ public class CachingReasonerFactoryImpl extends ReasonerFactoryImpl implements
 	@Override
 	public void updateBuffered(String id) {
 		synchronized (allManagers) {
-			for (String reasonerName : allManagers.keySet()) {
-				Map<String, Pair<OWLGraphWrapper, ReasonerTaskManager>> managers = allManagers.get(reasonerName);
-				if (managers != null && !managers.isEmpty()) {
-					Pair<OWLGraphWrapper,ReasonerTaskManager> pair = managers.remove(id);
-					if (pair != null) {
-						ReasonerTaskManager manager = pair.getTwo();
-						if (manager != null) {
-							manager.dispose();
-						}
-					}
+			Pair<OWLGraphWrapper, ReasonerTaskManager> pair = allManagers.remove(id);
+			if (pair != null) {
+				ReasonerTaskManager manager = pair.getTwo();
+				if (manager != null) {
+					manager.dispose();
 				}
 			}
 		}

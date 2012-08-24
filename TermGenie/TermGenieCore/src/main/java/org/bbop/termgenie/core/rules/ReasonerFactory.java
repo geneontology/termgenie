@@ -1,7 +1,5 @@
 package org.bbop.termgenie.core.rules;
 
-import java.util.Collection;
-
 import owltools.graph.OWLGraphWrapper;
 
 /**
@@ -24,18 +22,10 @@ public interface ReasonerFactory {
 	 * Get a task manager for a given ontology and reasoner.
 	 * 
 	 * @param ontology
-	 * @param reasonerName
 	 * @return taskManager
 	 */
-	public ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology, String reasonerName);
+	public ReasonerTaskManager getTaskManager(OWLGraphWrapper ontology);
 
-	/**
-	 * Retrieve a collection of all available reasoners in this factory.
-	 * 
-	 * @return reasoner names
-	 */
-	public Collection<String> getSupportedReasoners();
-	
 	/**
 	 * Update the buffered reasoners to reload the underlying ontology.
 	 * 

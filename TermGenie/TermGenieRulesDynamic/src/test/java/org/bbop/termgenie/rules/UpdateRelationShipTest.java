@@ -66,7 +66,7 @@ public class UpdateRelationShipTest {
 				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
 				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
 			}
-		}, new ReasonerModule("elk", null));
+		}, new ReasonerModule(null));
 
 		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
