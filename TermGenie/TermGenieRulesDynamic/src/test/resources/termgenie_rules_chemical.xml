@@ -87,4 +87,22 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/transmembrane_transport.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="chemical_response_to">
+		<description>response to a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
+		</ruleFiles>
+	</template>
 </termgenietemplates>
