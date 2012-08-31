@@ -341,6 +341,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		assertFiles(modifiedSCMTargetFiles, ontologyCount, "modifiedSCMTargetFiles");
 		
 		StringBuilder diffBuilder = new StringBuilder();
+		List<Boolean> changedOntology = new ArrayList<Boolean>(ontologyCount);
 		for (int i = 0; i < ontologyCount; i++) {
 			ONTOLOGY targetOntology = targetOntologies.get(i);
 
@@ -359,6 +360,10 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 					String message = "Could not apply changes to ontology.";
 					throw new CommitException(message, true);
 				}
+				changedOntology.add(Boolean.TRUE);
+			}
+			else {
+				changedOntology.add(Boolean.FALSE);
 			}
 		}
 		
@@ -369,6 +374,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		assertFiles(modifiedTargetFiles, ontologyCount, "modifiedTargetFiles");
 		
 		for (int i = 0; i < ontologyCount; i++) {	
+			final boolean changed = changedOntology.get(i).booleanValue();
+			
 			// check for valid ontology files
 			File targetFile = targetFiles.get(i);
 			if (targetFile == null) {
@@ -386,22 +393,33 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			if (modifiedSCMTargetFile == null) {
 				throw error("modified scm target file is null");
 			}
-
-			ProcessState.addMessage(state, "Creating ontology diff patch.");
-			// create the diff from the written and round-trip file
-			Pair<String, Patch> pair = createUnifiedDiff(targetFile,
-					modifiedTargetFile,
-					"original",
-					"termgenie-changes");
-	
-			ProcessState.addMessage(state, "Create patched ontology.");
-			// apply the patch to the original file, write to a new temp file
-			createPatchedFile(pair.getTwo(), scmTargetFile, modifiedSCMTargetFile);
 			
-			// append diff to buffer
-			if (diffBuilder.length() > 0) {
-				diffBuilder.append("\n\n");
-				diffBuilder.append(pair.getOne());
+			if (changed == false) {
+				// only copy, do not patch unchanged ontologies
+				try {
+					FileUtils.copyFile(scmTargetFile, modifiedSCMTargetFile);
+				} catch (IOException exception) {
+					String message = "Could not prepare files for commit";
+					throw error(message, exception);
+				}
+			}
+			else {
+				ProcessState.addMessage(state, "Creating ontology diff patch.");
+				// create the diff from the written and round-trip file
+				Pair<String, Patch> pair = createUnifiedDiff(targetFile,
+						modifiedTargetFile,
+						"original",
+						"termgenie-changes");
+		
+				ProcessState.addMessage(state, "Create patched ontology.");
+				// apply the patch to the original file, write to a new temp file
+				createPatchedFile(pair.getTwo(), scmTargetFile, modifiedSCMTargetFile);
+				
+				// append diff to buffer
+				if (diffBuilder.length() > 0) {
+					diffBuilder.append("\n\n");
+					diffBuilder.append(pair.getOne());
+				}
 			}
 
 		}
