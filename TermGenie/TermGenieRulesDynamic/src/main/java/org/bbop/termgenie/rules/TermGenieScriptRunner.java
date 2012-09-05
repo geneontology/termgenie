@@ -38,11 +38,14 @@ import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class TermGenieScriptRunner extends ResourceLoader implements TermGenerationEngine {
 
 	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
+	static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
+	
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
 	final Map<TermTemplate, String> scripts;
@@ -52,12 +55,15 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	private final ReasonerFactory factory;
 
 	private final OntologyConfiguration ontologyConfiguration;
+	
+	private final boolean useIsInferred;
 
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates,
 			MultiOntologyTaskManager multiOntologyTaskManager,
 			ReasonerFactory factory,
-			OntologyConfiguration ontologyConfiguration)
+			OntologyConfiguration ontologyConfiguration,
+			@Named(USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred)
 	{
 		super(false);
 		this.factory = factory;
@@ -67,6 +73,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		this.templateOntologyManagers = new HashMap<TermTemplate, Ontology[]>();
 		this.templates = templates;
 		this.scripts = new HashMap<TermTemplate, String>();
+		this.useIsInferred = useIsInferred;
 		for (TermTemplate termTemplate : templates) {
 			List<Ontology> requiredOntologies = new ArrayList<Ontology>();
 			Ontology targetOntology = termTemplate.getCorrespondingOntology();
@@ -207,7 +214,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				if (methodName == null) {
 					methodName = termTemplate.getName();
 				}
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState, useIsInferred);
 				try {
 					multiOntologyTaskManager.runManagedTask(task, ontologies);
 				} catch (InvalidManagedInstanceException exception) {
@@ -273,6 +280,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		private final String templateId;
 		private final ReasonerFactory factory;
 		private final ProcessState state;
+		private final boolean useIsInferred;
 		
 		List<TermGenerationOutput> result = null;
 
@@ -283,7 +291,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				String methodName,
 				String templateId,
 				ReasonerFactory factory,
-				ProcessState state)
+				ProcessState state,
+				boolean useIsInferred)
 		{
 			this.ontologies = ontologies;
 			this.targetOntology = targetOntology;
@@ -293,6 +302,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			this.templateId = templateId;
 			this.factory = factory;
 			this.state = state;
+			this.useIsInferred = useIsInferred;
 		}
 
 		@Override
@@ -332,7 +342,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 					return modified;
 				}
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory, state);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory, state, useIsInferred);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

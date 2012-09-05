@@ -26,6 +26,7 @@ import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.QualifierValue;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -47,6 +48,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import owltools.InferenceBuilder;
+import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Injector;
@@ -129,6 +131,14 @@ public class UpdateRelationShipTest {
 			System.out.println("Relations for: "+Owl2Obo.getIdentifier(exampleClass.getIRI()));
 			for (Clause relation : relations) {
 				System.out.println(relation);
+				if (OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag())) {
+					assertEquals("GO:0050673", relation.getValue());
+					Collection<QualifierValue> values = relation.getQualifierValues();
+					assertEquals(1, values.size());
+					QualifierValue qv = values.iterator().next();
+					assertEquals("is_inferred", qv.getQualifier());
+					assertEquals("true", qv.getValue());
+				}
 			}
 			assertEquals(4, relations.size());
 
@@ -146,6 +156,14 @@ public class UpdateRelationShipTest {
 				if(relation.getValue().equals("GO:0050673")){
 					assertFalse(OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag()));
 				}
+				if (OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag())) {
+					assertEquals("GO:TEMP-0001", relation.getValue());
+					Collection<QualifierValue> values = relation.getQualifierValues();
+					assertEquals(1, values.size());
+					QualifierValue qv = values.iterator().next();
+					assertEquals("is_inferred", qv.getQualifier());
+					assertEquals("true", qv.getValue());
+				}
 			}
 
 			return Modified.no;
@@ -157,7 +175,9 @@ public class UpdateRelationShipTest {
 			inferenceBuilder.setReasoner(reasoner);
 		
 			List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
+			OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
 			for (OWLAxiom owlAxiom : inferences) {
+				owlAxiom = AxiomAnnotationTools.markAsInferredAxiom(owlAxiom, factory);
 				AddAxiom addAx = new AddAxiom(ontology, owlAxiom);
 				ontology.getOWLOntologyManager().applyChange(addAx);
 			}

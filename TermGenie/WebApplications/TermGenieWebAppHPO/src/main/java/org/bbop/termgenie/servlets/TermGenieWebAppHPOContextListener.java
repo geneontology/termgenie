@@ -68,7 +68,7 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 	// configure rule file name
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_hpo.xml", applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_hpo.xml", false, applicationProperties);
 	}
 
 	

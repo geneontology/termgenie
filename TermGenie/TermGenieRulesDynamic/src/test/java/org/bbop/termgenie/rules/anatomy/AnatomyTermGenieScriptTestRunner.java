@@ -67,7 +67,7 @@ public class AnatomyTermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_anatomy.xml", null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_anatomy.xml", false, null),
 				new AnatomyTestOntologyModule(),
 				new ReasonerModule(null));
 

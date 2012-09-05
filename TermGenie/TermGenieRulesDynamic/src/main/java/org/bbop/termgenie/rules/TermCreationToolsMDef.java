@@ -33,6 +33,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	private final ManchesterSyntaxTool syntaxTool;
 	private final String targetOntologyId;
 	private final String tempIdPrefix;
+	private final boolean useIsInferred;
 
 	/**
 	 * @param input
@@ -49,12 +50,14 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			String patternID,
 			ReasonerFactory factory,
 			ManchesterSyntaxTool syntaxTool,
-			ProcessState state)
+			ProcessState state,
+			boolean useIsInferred)
 	{
 		super(input, targetOntology, tempIdPrefix, patternID, factory, state);
 		this.tempIdPrefix = tempIdPrefix;
 		this.targetOntologyId = targetOntology.getOntologyId();
 		this.syntaxTool = syntaxTool;
+		this.useIsInferred = useIsInferred;
 	}
 
 	@Override
@@ -89,7 +92,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			}
 		}
 
-		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state);
+		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
 
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);

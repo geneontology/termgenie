@@ -18,6 +18,8 @@ import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
@@ -25,6 +27,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import owltools.InferenceBuilder;
+import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
 
@@ -35,17 +38,18 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	private final OWLChangeTracker changeTracker;
 	private final String tempIdPrefix;
 	private final ProcessState state;
+	private final boolean useIsInferred;
 	
 	private InferredRelations result;
-	
 
-	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state) {
+	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state, boolean useIsInferred) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
 		this.changeTracker = changeTracker;
 		this.tempIdPrefix = tempIdPrefix;
 		this.state = state;
+		this.useIsInferred = useIsInferred;
 	}
 
 	@Override
@@ -66,7 +70,12 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
+		OWLOntologyManager manager = ontology.getSourceOntology().getOWLOntologyManager();
+		OWLDataFactory factory = manager.getOWLDataFactory();
 		for (OWLAxiom owlAxiom : inferences) {
+			if (useIsInferred) {
+				owlAxiom = AxiomAnnotationTools.markAsInferredAxiom(owlAxiom, factory);
+			}
 			AddAxiom addAx = new AddAxiom(ontology.getSourceOntology(), owlAxiom);
 			changeTracker.apply(addAx);
 		}

@@ -43,9 +43,10 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
-			ProcessState state)
+			ProcessState state,
+			boolean useIsInferred)
 	{
-		super(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory, state);
+		super(input, targetOntology, auxiliaryOntologies, tempIdPrefix, patternID, factory, state, useIsInferred);
 	}
 
 	
@@ -56,7 +57,8 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
-			ProcessState state)
+			ProcessState state,
+			boolean useIsInferred)
 	{
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
@@ -64,7 +66,7 @@ public class TermGenieScriptFunctionsMDefImpl extends AbstractTermGenieScriptFun
 			ontologies.addAll(wrapper.getAllOntologies());
 		}
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
-		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state);
+		return new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, useIsInferred);
 	}
 	
 	class MDefImpl implements MDef {

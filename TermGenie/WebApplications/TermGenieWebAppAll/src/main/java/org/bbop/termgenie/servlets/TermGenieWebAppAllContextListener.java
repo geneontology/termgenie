@@ -23,7 +23,7 @@ public class TermGenieWebAppAllContextListener extends AbstractTermGenieContextL
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_all.xml", applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_all.xml", false, applicationProperties);
 	}
 
 }

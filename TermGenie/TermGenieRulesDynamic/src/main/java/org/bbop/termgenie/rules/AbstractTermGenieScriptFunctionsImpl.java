@@ -51,7 +51,8 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
-			ProcessState state)
+			ProcessState state,
+			boolean useIsInferred)
 	{
 		super();
 		tools = createTermCreationTool(input,
@@ -60,7 +61,8 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 				tempIdPrefix,
 				patternID,
 				factory,
-				state);
+				state,
+				useIsInferred);
 	}
 
 	protected abstract AbstractTermCreationTools<T> createTermCreationTool(TermGenerationInput input,
@@ -69,7 +71,8 @@ public abstract class AbstractTermGenieScriptFunctionsImpl<T> extends SynonymGen
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
-			ProcessState state);
+			ProcessState state,
+			boolean useIsInferred);
 
 	protected synchronized List<TermGenerationOutput> getResultList() {
 		if (result == null) {

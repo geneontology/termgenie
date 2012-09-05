@@ -34,20 +34,24 @@ public class XMLDynamicRulesModule extends IOCModule {
 
 	private static final String DynamicRulesTemplateResourceName = "DynamicRulesTemplateResource";
 	
+	private final boolean useIsInferred;
 	private final String ruleFile;
 	
 	@Override
 	protected void configure() {
+		bind(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME, useIsInferred);
 		bind(TermGenerationEngine.class, TermGenieScriptRunner.class);
 		bindTemplateIO();
 	}
 	
 	/**
 	 * @param ruleFile
+	 * @param useIsInferred
 	 * @param applicationProperties
 	 */
-	public XMLDynamicRulesModule(String ruleFile, Properties applicationProperties) {
+	public XMLDynamicRulesModule(String ruleFile, boolean useIsInferred, Properties applicationProperties) {
 		super(applicationProperties);
+		this.useIsInferred = useIsInferred;
 		this.ruleFile = ruleFile;
 	}
 	

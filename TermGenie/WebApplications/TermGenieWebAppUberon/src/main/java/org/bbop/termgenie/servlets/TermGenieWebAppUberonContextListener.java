@@ -23,7 +23,7 @@ public class TermGenieWebAppUberonContextListener extends AbstractTermGenieConte
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_uberon.xml", applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_uberon.xml", false, applicationProperties);
 	}
 
 }

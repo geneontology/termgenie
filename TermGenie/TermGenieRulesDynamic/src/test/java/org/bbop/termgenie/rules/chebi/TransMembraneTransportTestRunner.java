@@ -65,7 +65,7 @@ public class TransMembraneTransportTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_chemical.xml", null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_chemical.xml", false, null),
 				new ChemicalTestOntologyModule(),
 				new ReasonerModule(null));
 
