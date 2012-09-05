@@ -29,6 +29,7 @@ public class OboParserTools {
 		BufferedReader reader = new BufferedReader(new StringReader(clause));
 		p.setReader(reader);
 		p.parseTermFrameClause(result);
+		p.parseEOL(result);
 		IOUtils.closeQuietly(reader);
 		if (result.getValue() == null) {
 			return result;
