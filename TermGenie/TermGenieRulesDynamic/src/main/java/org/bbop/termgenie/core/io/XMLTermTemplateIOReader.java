@@ -434,26 +434,24 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 	}
 
 	static String parseElementText(XMLStreamReader parser, String tag) throws XMLStreamException {
-		String text = null;
+		final StringBuilder sb = new StringBuilder();
 		while (true) {
 			switch (parser.next()) {
 				case XMLStreamConstants.END_ELEMENT:
 					String element = parser.getLocalName();
 					if (tag.equals(element)) {
-						if (text == null || text.isEmpty()) {
+						if (sb.length() == 0) {
 							error("Empty" + tag + " tag", parser);
 						}
-						if (text != null) {
-							text = text.trim();
-						}
+						String text = sb.toString().trim();
 						return text;
 					}
 					break;
 				case XMLStreamConstants.CHARACTERS:
-					text = parser.getText();
+					sb.append(parser.getText());
 					break;
 				case XMLStreamConstants.CDATA:
-					text = parser.getText();
+					sb.append(parser.getText());
 					break;
 				case XMLStreamConstants.START_ELEMENT:
 					error("Unexpected element: " + parser.getLocalName(), parser);
@@ -465,7 +463,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 	static Map<String, String> parsePrefixList(XMLStreamReader parser, String tag, String subTag)
 			throws XMLStreamException
 	{
-		Map<String, String> prefixIds = null;
+		final Map<String, String> prefixIds = new LinkedHashMap<String, String>();
 		while (true) {
 			switch (parser.next()) {
 				case XMLStreamConstants.END_ELEMENT:
@@ -477,16 +475,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					if (subTag.equals(parser.getLocalName())) {
 						String id = parser.getAttributeValue(null, ATTR_id);
 						String text = parseElementText(parser, subTag);
-						if (prefixIds == null) {
-							prefixIds = Collections.singletonMap(text, id);
-						}
-						else if (prefixIds.size() == 1) {
-							prefixIds = new LinkedHashMap<String, String>(prefixIds);
-							prefixIds.put(text, id);
-						}
-						else {
-							prefixIds.put(text, id);
-						}
+						prefixIds.put(text, id);
 					}
 					break;
 			}

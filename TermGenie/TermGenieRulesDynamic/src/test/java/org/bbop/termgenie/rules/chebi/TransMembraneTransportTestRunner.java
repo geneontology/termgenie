@@ -40,9 +40,9 @@ import com.google.inject.Singleton;
 
 public class TransMembraneTransportTestRunner {
 
-	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
+	public static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
-		ChemicalTestOntologyModule() {
+		public ChemicalTestOntologyModule() {
 			super("ontology-configuration_chemical.xml", null, null);
 		}
 
@@ -74,6 +74,23 @@ public class TransMembraneTransportTestRunner {
 		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
+	@Test
+	public void test_loaded_pattern() {
+		TermTemplate template = getTransmembraneTransportTemplate();
+		List<TemplateField> fields = template.getFields();
+		assertEquals(2, fields.size());
+		TemplateField field = fields.get(0);
+		assertEquals(4, field.getFunctionalPrefixes().size());
+		assertArrayEquals(new String[]{"transmembrane transporter activity",
+				"<b>secondary active</b> transmembrane transporter activity",
+				"<b>uptake</b> transmembrane transporter activity",
+				"<b>ATPase activity</b>, coupled to transmembrane movement of substances"}, field.getFunctionalPrefixes().toArray());
+		assertEquals(4, field.getFunctionalPrefixesIds().size());
+		assertArrayEquals(new String[]{"GO:0022857",
+				"GO:0015291",
+				"GO:0015563",
+				"GO:0042626"}, field.getFunctionalPrefixesIds().toArray());
+	}
 
 	@Test
 	public void test_transmembrane_transport() throws Exception {
