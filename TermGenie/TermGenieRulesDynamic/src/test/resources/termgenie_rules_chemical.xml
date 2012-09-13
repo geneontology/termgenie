@@ -106,4 +106,26 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="chemical_homeostasis">
+		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+				<prefixes>
+					<prefix id="GO:0048878">chemical homeostasis</prefix>
+					<prefix id="GO:0055082">cellular chemical homeostasis</prefix>
+				</prefixes>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
+		</ruleFiles>
+	</template>
 </termgenietemplates>

@@ -1,6 +1,6 @@
 format-version: 1.2
-date: 28:08:2012 14:35
-saved-by: bf
+date: 10:09:2012 03:02
+saved-by: mah
 auto-generated-by: TermGenie 1.0
 ontology: go/extensions/x-chemical
 
@@ -789,7 +789,7 @@ intersection_of: has_input CHEBI:16336 ! hyaluronic acid
 [Term]
 id: GO:0005542 ! folic acid binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:37445 ! folate
+intersection_of: has_input CHEBI:27470 ! folic acid
 
 [Term]
 id: GO:0005543 ! phospholipid binding
@@ -2705,12 +2705,12 @@ intersection_of: has_output CHEBI:15422 ! ATP
 [Term]
 id: GO:0006760 ! folic acid-containing compound metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:37445 ! folate
+intersection_of: has_participant CHEBI:37445 ! folic acids
 
 [Term]
 id: GO:0006761 ! dihydrofolate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:23743 ! dihydrofolate
+intersection_of: has_output CHEBI:15633 ! dihydrofolic acid
 
 [Term]
 id: GO:0006768 ! biotin metabolic process
@@ -4212,12 +4212,12 @@ intersection_of: has_input CHEBI:16247 ! phospholipid
 [Term]
 id: GO:0009396 ! folic acid-containing compound biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:37445 ! folate
+intersection_of: has_output CHEBI:37445 ! folic acids
 
 [Term]
 id: GO:0009397 ! folic acid-containing compound catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:37445 ! folate
+intersection_of: has_input CHEBI:37445 ! folic acids
 
 [Term]
 id: GO:0009398 ! FMN biosynthetic process
@@ -4865,6 +4865,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:17728 ! S-methyl-L-methionine
 
 [Term]
+id: GO:0010252 ! auxin homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:22676 ! auxin
+
+[Term]
 id: GO:0010253 ! UDP-rhamnose biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:60981 ! UDP-rhamnose(2-)
@@ -4883,6 +4888,11 @@ intersection_of: has_output CHEBI:17401 ! myo-inositol hexakisphosphate
 id: GO:0010266 ! response to vitamin B1
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18385 ! thiamine(1+)
+
+[Term]
+id: GO:0010268 ! brassinosteroid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:22921 ! brassinosteroid
 
 [Term]
 id: GO:0010269 ! response to selenium ion
@@ -4928,6 +4938,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:22676 ! auxin
 id: GO:0010331 ! gibberellin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:59139 ! gibberellin carboxylic acid anion
+
+[Term]
+id: GO:0010336 ! gibberellic acid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0010345 ! suberin biosynthetic process
@@ -5045,6 +5060,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:59295 ! beta-D-Galp-(1->3)-[alpha-L-Fucp-(1->4)]-beta-D-GlcpNAc
 
 [Term]
+id: GO:0010509 ! polyamine homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:51349 ! polyamine macromolecule
+
+[Term]
 id: GO:0010542 ! nitrate efflux transmembrane transporter activity
 intersection_of: GO:0015562 ! efflux transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17632 ! nitrate
@@ -5100,6 +5120,11 @@ intersection_of: has_input CHEBI:3165 ! bradykinin
 id: GO:0010816 ! calcitonin catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:3306 ! calcitonin
+
+[Term]
+id: GO:0010960 ! magnesium ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:39128 ! magnesium ion
 
 [Term]
 id: GO:0014046 ! dopamine secretion
@@ -6984,7 +7009,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16238 ! FAD
 [Term]
 id: GO:0015884 ! folic acid transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:37445 ! folate
+intersection_of: transports_or_maintains_localization_of CHEBI:27470 ! folic acid
 
 [Term]
 id: GO:0015885 ! 5-formyltetrahydrofolate transport
@@ -9774,12 +9799,12 @@ intersection_of: has_participant CHEBI:25710 ! organophosphorus compound
 [Term]
 id: GO:0019638 ! 6-hydroxycineole metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:16271 ! 6-endo-hydroxycineole
+intersection_of: has_participant CHEBI:16271 ! 2-exo-hydroxy-1,8-cineole
 
 [Term]
 id: GO:0019639 ! 6-hydroxycineole catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:16271 ! 6-endo-hydroxycineole
+intersection_of: has_input CHEBI:16271 ! 2-exo-hydroxy-1,8-cineole
 
 [Term]
 id: GO:0019640 ! glucuronate catabolic process to xylulose 5-phosphate
@@ -10161,6 +10186,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:25213 ! metal cation
 
 [Term]
+id: GO:0030104 ! water homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:15377 ! water
+
+[Term]
 id: GO:0030145 ! manganese ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:25155 ! manganese cation
@@ -10489,6 +10519,11 @@ intersection_of: has_output CHEBI:26188 ! polyketide
 id: GO:0030640 ! polyketide catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:26188 ! polyketide
+
+[Term]
+id: GO:0030641 ! regulation of cellular pH
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:24636 ! proton
 
 [Term]
 id: GO:0030645 ! glucose catabolic process to butyrate
@@ -10846,7 +10881,7 @@ intersection_of: has_output CHEBI:16389 ! ubiquinones
 [Term]
 id: GO:0032193 ! ubiquinone biosynthetic process via 2-polyprenylphenol
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_intermediate CHEBI:1269
+intersection_of: has_intermediate CHEBI:1269 ! 2-polyprenylphenol
 intersection_of: has_output CHEBI:16389 ! ubiquinones
 
 [Term]
@@ -10959,6 +10994,11 @@ intersection_of: has_input CHEBI:16238 ! FAD
 id: GO:0032363 ! FMN catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17621 ! FMN
+
+[Term]
+id: GO:0032364 ! oxygen homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:15379 ! dioxygen
 
 [Term]
 id: GO:0032494 ! response to peptidoglycan
@@ -11149,11 +11189,6 @@ intersection_of: has_input CHEBI:60252 ! lead cation
 id: GO:0032841 ! calcitonin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:3306 ! calcitonin
-
-[Term]
-id: GO:0032868 ! response to insulin stimulus
-intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:5931 ! insulin
 
 [Term]
 id: GO:0032923 ! organic phosphonate biosynthetic process
@@ -11763,6 +11798,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:12952 ! aldehydo-D-galacturonate
 
 [Term]
+id: GO:0033484 ! nitric oxide homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:16480 ! nitric oxide
+
+[Term]
 id: GO:0033485 ! cyanidin 3-O-glucoside biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:28426 ! cyanidin 3-O-beta-D-glucoside
@@ -11841,6 +11881,16 @@ id: GO:0033499 ! galactose catabolic process via UDP-galactose
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:28260 ! galactose
 intersection_of: has_intermediate CHEBI:18307 ! UDP-D-galactose
+
+[Term]
+id: GO:0033500 ! carbohydrate homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:16646 ! carbohydrate
+
+[Term]
+id: GO:0033501 ! galactose homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:28260 ! galactose
 
 [Term]
 id: GO:0033506 ! glucosinolate biosynthetic process from homomethionine
@@ -12580,6 +12630,11 @@ intersection_of: has_input CHEBI:50091 ! S-nitrosoglutathione
 id: GO:0035731 ! dinitrosyl-iron complex binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:64609 ! dinitrosyl-iron complex
+
+[Term]
+id: GO:0035784 ! nickel cation homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:25516 ! nickel cation
 
 [Term]
 id: GO:0035826 ! rubidium ion transport
@@ -13588,6 +13643,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15035 ! retinal
 
 [Term]
+id: GO:0042593 ! glucose homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:17234 ! glucose
+
+[Term]
 id: GO:0042616 ! paclitaxel metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:45863 ! paclitaxel
@@ -13616,6 +13676,11 @@ intersection_of: has_participant CHEBI:61162 ! poly(3-hydroxycarboxylic acid) ma
 id: GO:0042621 ! poly(3-hydroxyalkanoate) biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:61162 ! poly(3-hydroxycarboxylic acid) macromolecule
+
+[Term]
+id: GO:0042632 ! cholesterol homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:16113 ! cholesterol
 
 [Term]
 id: GO:0042701 ! progesterone secretion
@@ -13875,17 +13940,17 @@ intersection_of: has_input CHEBI:61346 ! achromobactin
 [Term]
 id: GO:0042863 ! pyochelin metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:29669
+intersection_of: has_participant CHEBI:29669 ! pyochelin
 
 [Term]
 id: GO:0042864 ! pyochelin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:29669
+intersection_of: has_output CHEBI:29669 ! pyochelin
 
 [Term]
 id: GO:0042865 ! pyochelin catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:29669
+intersection_of: has_input CHEBI:29669 ! pyochelin
 
 [Term]
 id: GO:0042866 ! pyruvate biosynthetic process
@@ -14288,6 +14353,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16214 ! dolichyl phosphate
 
 [Term]
+id: GO:0043129 ! surfactant homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:35195 ! surfactant
+
+[Term]
 id: GO:0043132 ! NAD transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
@@ -14410,7 +14480,7 @@ intersection_of: has_input CHEBI:57658 ! 1-phosphatidyl-1D-myo-inositol 3,4-bisp
 [Term]
 id: GO:0043331 ! response to dsRNA
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:
+intersection_of: has_input CHEBI:67208 ! dsRNA
 
 [Term]
 id: GO:0043390 ! aflatoxin B1 metabolic process
@@ -16511,7 +16581,7 @@ intersection_of: has_participant CHEBI:23671 ! 2,6-diaminopimelate(2-)
 [Term]
 id: GO:0046452 ! dihydrofolate metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:23743 ! dihydrofolate
+intersection_of: has_participant CHEBI:15633 ! dihydrofolic acid
 
 [Term]
 id: GO:0046453 ! dipyrrin metabolic process
@@ -16812,12 +16882,12 @@ intersection_of: has_input CHEBI:26739 ! sphingolipid
 [Term]
 id: GO:0046653 ! tetrahydrofolate metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:26907 ! tetrahydrofolate
+intersection_of: has_participant CHEBI:26907 ! tetrahydrofolic acid
 
 [Term]
 id: GO:0046654 ! tetrahydrofolate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:26907 ! tetrahydrofolate
+intersection_of: has_output CHEBI:26907 ! tetrahydrofolic acid
 
 [Term]
 id: GO:0046655 ! folic acid metabolic process
@@ -17358,6 +17428,11 @@ intersection_of: has_input CHEBI:27958 ! cocaine
 id: GO:0050799 ! cocaine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:27958 ! cocaine
+
+[Term]
+id: GO:0050801 ! ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:24870 ! ion
 
 [Term]
 id: GO:0050809 ! diazepam binding
@@ -18203,7 +18278,77 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17634 ! D-glucose
 
 [Term]
-id: GO:0055094 ! response to lipoprotein stimulus
+id: GO:0055062 ! phosphate ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:35780 ! phosphate ion
+
+[Term]
+id: GO:0055063 ! sulfate ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:16189 ! sulfate
+
+[Term]
+id: GO:0055067 ! monovalent inorganic cation homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:60242 ! monovalent inorganic cation
+
+[Term]
+id: GO:0055069 ! zinc ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:27365 ! zinc ion
+
+[Term]
+id: GO:0055073 ! cadmium ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:22977 ! cadmium atom
+
+[Term]
+id: GO:0055074 ! calcium ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:39124 ! calcium ion
+
+[Term]
+id: GO:0055079 ! aluminum ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:60272 ! aluminium ion
+
+[Term]
+id: GO:0055080 ! cation homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:36916 ! cation
+
+[Term]
+id: GO:0055081 ! anion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:22563 ! anion
+
+[Term]
+id: GO:0055088 ! lipid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:18059 ! lipid
+
+[Term]
+id: GO:0055089 ! fatty acid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:35366 ! fatty acid
+
+[Term]
+id: GO:0055090 ! acylglycerol homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:47778 ! glyceride
+
+[Term]
+id: GO:0055091 ! phospholipid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:16247 ! phospholipid
+
+[Term]
+id: GO:0055092 ! sterol homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:15889 ! sterol
+
+[Term]
+id: GO:0055094 ! response to lipoprotein particle stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:6495 ! lipoprotein
 
@@ -18283,6 +18428,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28683 ! kynurenine
 
 [Term]
+id: GO:0070218 ! sulfide ion homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:26822 ! sulfide
+
+[Term]
 id: GO:0070273 ! phosphatidylinositol-4-phosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:37530 ! phosphatidylinositol 4-phosphate
@@ -18331,6 +18481,11 @@ intersection_of: has_input CHEBI:57739 ! phosphatidate(2-)
 id: GO:0070305 ! response to cGMP
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:16356 ! 3',5'-cyclic GMP
+
+[Term]
+id: GO:0070328 ! triglyceride homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:17855 ! triglyceride
 
 [Term]
 id: GO:0070335 ! aspartate binding
@@ -19139,6 +19294,16 @@ intersection_of: transports_or_maintains_localization_of CHEBI:22908 ! borate
 id: GO:0080139 ! borate efflux transmembrane transporter activity
 intersection_of: GO:0015562 ! efflux transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:22908 ! borate
+
+[Term]
+id: GO:0080144 ! amino acid homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0080145 ! cysteine homeostasis
+intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:15356 ! cysteine
 
 [Term]
 id: GO:0080160 ! selenate transport
@@ -20811,21 +20976,6 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:28386 ! 4-hydroxycinnamyl alcohol
 
 [Term]
-id: GO:1901142 ! insulin metabolic process
-intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:5931 ! insulin
-
-[Term]
-id: GO:1901143 ! insulin catabolic process
-intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:5931 ! insulin
-
-[Term]
-id: GO:1901144 ! insulin biosynthetic process
-intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:5931 ! insulin
-
-[Term]
 id: GO:1901149 ! salicylic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16914 ! salicylic acid
@@ -20833,17 +20983,17 @@ intersection_of: has_input CHEBI:16914 ! salicylic acid
 [Term]
 id: GO:1901150 ! vistamycin metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:10003 ! vistamycin
+intersection_of: has_participant CHEBI:10003 ! ribostamycin sulfate
 
 [Term]
 id: GO:1901151 ! vistamycin catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:10003 ! vistamycin
+intersection_of: has_input CHEBI:10003 ! ribostamycin sulfate
 
 [Term]
 id: GO:1901152 ! vistamycin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:10003 ! vistamycin
+intersection_of: has_output CHEBI:10003 ! ribostamycin sulfate
 
 [Term]
 id: GO:1901153 ! paromomycin metabolic process
@@ -21149,6 +21299,81 @@ intersection_of: has_input CHEBI:25608 ! nucleoside phosphate
 id: GO:1901293 ! nucleoside phosphate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:25608 ! nucleoside phosphate
+
+[Term]
+id: GO:1901322 ! response to chloramphenicol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:17698 ! chloramphenicol
+
+[Term]
+id: GO:1901323 ! response to erythromycin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:48923 ! erythromycin
+
+[Term]
+id: GO:1901324 ! response to trichodermin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:9688 ! trichodermin
+
+[Term]
+id: GO:1901325 ! response to antimycin A
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:22584 ! antimycin A
+
+[Term]
+id: GO:1901326 ! response to tetracycline
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27902 ! tetracycline
+
+[Term]
+id: GO:1901327 ! response to tacrolimus
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:61057 ! tacrolimus hydrate
+
+[Term]
+id: GO:1901328 ! response to cytochalasin B
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:23527 ! cytochalasin B
+
+[Term]
+id: GO:1901334 ! lactone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:25000 ! lactone
+
+[Term]
+id: GO:1901335 ! lactone catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:25000 ! lactone
+
+[Term]
+id: GO:1901336 ! lactone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:25000 ! lactone
+
+[Term]
+id: GO:1901337 ! thioester transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:51277 ! thioester
+
+[Term]
+id: GO:1901338 ! catecholamine binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:33567 ! catecholamine
+
+[Term]
+id: GO:1901344 ! response to leptomycin B
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:52646 ! leptomycin B
+
+[Term]
+id: GO:1901345 ! response to L-thialysine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:497734 ! L-thialysine
+
+[Term]
+id: GO:1901349 ! glucosinolate transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:24279 ! glucosinolate
 
 [Term]
 id: GO:2000884 ! glucomannan catabolic process
@@ -21753,4 +21978,8 @@ xref: BFO:0000057
 id: transports_or_maintains_localization_of
 name: transports or maintains localization of
 xref: RO:0002313
+
+[Typedef]
+id: regulates_level_of
+name: regulates level of
 
