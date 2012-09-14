@@ -48,6 +48,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import owltools.InferenceBuilder;
+import owltools.ThreadedInferenceBuilder;
 import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
@@ -154,7 +155,7 @@ public class UpdateRelationShipTest {
 			for (Clause relation : relations2) {
 				System.out.println(relation);
 				if(relation.getValue().equals("GO:0050673")){
-					assertFalse(OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag()));
+					assertNotSame(OboFormatTag.TAG_IS_A.getTag(), relation.getTag());
 				}
 				if (OboFormatTag.TAG_IS_A.getTag().equals(relation.getTag())) {
 					assertEquals("GO:TEMP-0001", relation.getValue());
@@ -165,13 +166,20 @@ public class UpdateRelationShipTest {
 					assertEquals("true", qv.getValue());
 				}
 			}
-
 			return Modified.no;
 		}
 
 		private Pair<Collection<OWLAxiom>, Collection<OWLAxiom>> buildInferences(OWLReasoner reasoner) {
 			assertTrue(reasoner.isConsistent());
-			InferenceBuilder inferenceBuilder = new InferenceBuilder(wrapper, (OWLReasonerFactory) null, false);
+			InferenceBuilder inferenceBuilder = new ThreadedInferenceBuilder(wrapper, (OWLReasonerFactory) null, false, 4) {
+
+				@Override
+				public synchronized void dispose() {
+					disposeThreadPool();
+					// do not call super here
+				}
+				
+			};
 			inferenceBuilder.setReasoner(reasoner);
 		
 			List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
@@ -186,6 +194,7 @@ public class UpdateRelationShipTest {
 				RemoveAxiom removeAx = new RemoveAxiom(ontology, redundant);
 				ontology.getOWLOntologyManager().applyChange(removeAx);
 			}
+			inferenceBuilder.dispose();
 			return new Pair<Collection<OWLAxiom>, Collection<OWLAxiom>>(inferences, redundants);
 		}
 
