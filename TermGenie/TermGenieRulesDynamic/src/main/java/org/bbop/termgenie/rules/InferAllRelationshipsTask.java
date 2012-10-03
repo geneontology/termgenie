@@ -27,7 +27,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import owltools.InferenceBuilder;
-import owltools.ThreadedInferenceBuilder;
 import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
@@ -68,8 +67,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 		
 		// remove redundant links and assert inferred ones
 		ProcessState.addMessage(state, "Check for changed relations");
-//		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
-		InferenceBuilder inferenceBuilder = new ThreadedInferenceBuilder(ontology, (OWLReasonerFactory) null, false, 4);
+		InferenceBuilder inferenceBuilder = new InferenceBuilder(ontology, (OWLReasonerFactory) null, false);
 		inferenceBuilder.setReasoner(reasoner);
 		List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
 		OWLOntologyManager manager = ontology.getSourceOntology().getOWLOntologyManager();
