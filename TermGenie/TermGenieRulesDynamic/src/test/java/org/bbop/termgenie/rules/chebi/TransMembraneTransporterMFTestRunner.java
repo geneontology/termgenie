@@ -38,7 +38,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class TransMembraneTransportTestRunner {
+public class TransMembraneTransporterMFTestRunner {
 
 	public static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
@@ -76,7 +76,7 @@ public class TransMembraneTransportTestRunner {
 	
 	@Test
 	public void test_loaded_pattern() {
-		TermTemplate template = getTransmembraneTransportTemplate();
+		TermTemplate template = getTransmembraneTransporterMFTemplate();
 		List<TemplateField> fields = template.getFields();
 		assertEquals(2, fields.size());
 		TemplateField field = fields.get(0);
@@ -94,7 +94,7 @@ public class TransMembraneTransportTestRunner {
 
 	@Test
 	public void test_transmembrane_transport() throws Exception {
-		TermTemplate termTemplate = getTransmembraneTransportTemplate();
+		TermTemplate termTemplate = getTransmembraneTransporterMFTemplate();
 		List<String> prefixIds = Arrays.asList("GO:0022857","GO:0015291","GO:0015563","GO:0042626");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
@@ -129,7 +129,7 @@ public class TransMembraneTransportTestRunner {
 	
 	@Test
 	public void test_equivalent_existing() throws Exception {
-		TermTemplate termTemplate = getTransmembraneTransportTemplate();
+		TermTemplate termTemplate = getTransmembraneTransporterMFTemplate();
 		List<String> prefixIds = Arrays.asList("GO:0022857");
 		String id = "CHEBI:29988"; // L-glutamate(2−)
 		
@@ -145,7 +145,7 @@ public class TransMembraneTransportTestRunner {
 	
 	@Test
 	public void test_equivalent_existing_via_gci() throws Exception {
-		TermTemplate termTemplate = getTransmembraneTransportTemplate();
+		TermTemplate termTemplate = getTransmembraneTransporterMFTemplate();
 		List<String> prefixIds = Arrays.asList("GO:0022857");
 		String id = "CHEBI:29985"; // L-glutamate(1−)
 		
@@ -179,7 +179,7 @@ public class TransMembraneTransportTestRunner {
 		}
 	}
 	
-	private TermTemplate getTransmembraneTransportTemplate() {
+	private TermTemplate getTransmembraneTransporterMFTemplate() {
 		return generationEngine.getAvailableTemplates().get(3);
 	}
 

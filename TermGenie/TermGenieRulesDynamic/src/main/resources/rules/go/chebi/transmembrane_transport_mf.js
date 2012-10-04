@@ -1,7 +1,7 @@
 // @requires rules/common.js
 
 
-function chemical_transmembrane_transport() {
+function chemical_transmembrane_transport_mf() {
 	var ont = GeneOntology;
 	
 	// transport subject: chebi

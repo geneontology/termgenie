@@ -195,7 +195,7 @@
 	</template>
 	-->
 	<template name="chemical_transport">
-		<description>transport of a chemical entity</description>
+		<description>transport of a chemical entity (biological process)</description>
 		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
@@ -210,6 +210,24 @@
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
+		</ruleFiles>
+	</template>
+	<template name="chemical_transporter_activity">
+		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>molecular_function</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
 		</ruleFiles>
 	</template>
 	<template name="chemical_binding">
@@ -255,8 +273,26 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 	</template>
-	<template name="chemical_transmembrane_transport" displayname="chemical_transmembrane_transporter_activity">
-		<description>Create transmembrane transporter activity terms with chemical entities.&lt;br/&gt;
+	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transporter">
+		<description>Create transmembrane transporter terms (biological process) with chemical entities.</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="subject" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/transmembrane_transport_bp.js</ruleFile>
+		</ruleFiles>
+	</template>
+	<template name="chemical_transmembrane_transport_mf" displayname="chemical_transmembrane_transporter_activity">
+		<description>Create transmembrane transporter activity terms (molecular function) with chemical entities.&lt;br/&gt;
 		Select &lt;b&gt;at least one&lt;/b&gt; type of genus. &lt;br/&gt;
 		If in doubt, use the first one: transmembrane transporter activity</description>
 		<ontology name="GeneOntology"></ontology>
@@ -278,7 +314,7 @@ generated automatically</description>
 			</field>
 		</fields>
 		<ruleFiles>
-			<ruleFile>rules/go/chebi/transmembrane_transport.js</ruleFile>
+			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
 		</ruleFiles>
 	</template>
 	<template name="chemical_response_to">
