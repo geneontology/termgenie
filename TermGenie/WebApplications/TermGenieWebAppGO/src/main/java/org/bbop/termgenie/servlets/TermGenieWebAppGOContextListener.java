@@ -100,10 +100,12 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getCommitModule() {
 		final Map<String, Integer> specialPatterns = new HashMap<String, Integer>();
-		specialPatterns.put("metabolism_catabolism_biosynthesis", 1);
 		specialPatterns.put("chemical_transport", 1);
+		specialPatterns.put("chemical_transporter_activity", 1);
 		specialPatterns.put("chemical_binding", 1);
-		specialPatterns.put("chemical_transmembrane_transport", 1);
+		specialPatterns.put("metabolism_catabolism_biosynthesis", 1);
+		specialPatterns.put("chemical_transmembrane_transport_bp", 1);
+		specialPatterns.put("chemical_transmembrane_transport_mf", 1);
 		specialPatterns.put("chemical_response_to", 1);
 		
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";

@@ -194,6 +194,10 @@
 		</ruleFiles>
 	</template>
 	-->
+	<!-- 
+		If adding new templates using an xp file, do not forget to update the 
+		CommitModule configuration in TermGenieWebAppGOContextListener 
+	-->
 	<template name="chemical_transport">
 		<description>transport of a chemical entity (biological process)</description>
 		<ontology name="GeneOntology"></ontology>
@@ -335,6 +339,10 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<!-- 
+		If adding new templates using an xp file, do not forget to update the 
+		CommitModule configuration in TermGenieWebAppGOContextListener 
+	-->
 	<!--
 	<template name="biosynthesis_from">
 		<description>biosynthetic process</description>
