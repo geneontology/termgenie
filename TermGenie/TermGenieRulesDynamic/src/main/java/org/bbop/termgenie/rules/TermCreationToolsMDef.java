@@ -61,6 +61,31 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 	}
 
 	@Override
+	protected String renderLogicalDefinition(List<MDef> logicalDefinitions) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < logicalDefinitions.size(); i++) {
+			MDef mDef = logicalDefinitions.get(i);
+			String expression = getFullExpression(mDef);
+			if (i > 0) {
+				sb.append(", ");
+			}
+			sb.append('"');
+			sb.append(expression);
+			sb.append('"');
+		}
+		return sb.toString();
+	}
+
+	private String getFullExpression(MDef mDef) {
+		String expression = mDef.getExpression();
+		Map<String, String> parameters = mDef.getParameters();
+		for (Entry<String, String> parameter : parameters.entrySet()) {
+			expression = expression.replaceAll("\\?" + parameter.getKey(), parameter.getValue());
+		}
+		return expression;
+	}
+
+	@Override
 	protected InferredRelations createRelations(List<MDef> logicalDefinitions,
 			String newId,
 			String label,
@@ -76,11 +101,7 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 		Pair<OWLClass,OWLAxiom> pair = addClass(iri, changeTracker);
 		addLabel(iri, label, changeTracker);
 		for (MDef def : logicalDefinitions) {
-			String expression = def.getExpression();
-			Map<String, String> parameters = def.getParameters();
-			for (Entry<String, String> parameter : parameters.entrySet()) {
-				expression = expression.replaceAll("\\?" + parameter.getKey(), parameter.getValue());
-			}
+			String expression = getFullExpression(def);
 			try {
 				OWLClassExpression owlClassExpression = syntaxTool.parseManchesterExpression(expression);
 				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(pair.getOne(),

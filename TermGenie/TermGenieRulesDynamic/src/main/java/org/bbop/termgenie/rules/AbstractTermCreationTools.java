@@ -201,7 +201,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		// check label
 		OWLObject sameName = targetOntology.getOWLObjectByLabel(label);
 		if (sameName != null) {
-			output.add(singleError("The term " + targetOntology.getIdentifier(sameName) + " with the same label already exists",
+			output.add(singleError("The term " + targetOntology.getIdentifier(sameName) + " with the same label '"+label+"' already exists",
 					input));
 			return false;
 		}
@@ -273,7 +273,10 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
 			if (inferredRelations.equivalentClasses != null) {
 				for (OWLClass owlClass : inferredRelations.equivalentClasses) {
-					output.add(singleError("The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +"' with the same logic definition already exists",
+					output.add(singleError("Falied to create the term "+label+
+							" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
+							" The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +
+							"' with the same logic definition already exists",
 							input));					
 				}
 				return false;
@@ -320,6 +323,8 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	
 	protected abstract InferredRelations createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
+	protected abstract String renderLogicalDefinition(T logicalDefinition);
+	
 	static class InferredRelations {
 		
 		static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause>emptyList(), Collections.<OWLAxiom>emptySet(), null);
