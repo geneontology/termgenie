@@ -277,8 +277,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 	</template>
-	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transporter">
-		<description>Create transmembrane transporter terms (biological process) with chemical entities.</description>
+	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
+		<description>Create transmembrane transport terms (biological process) with chemical entities.</description>
 		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
