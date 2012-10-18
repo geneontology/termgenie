@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>TermGenieOntologyCommit</artifactId>
 		<groupId>org.bbop.termgenie</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieOntologyCommit-SVN</artifactId>
 	<name>TermGenieOntologyCommit-SVN</name>

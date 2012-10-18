@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>TermGenie</artifactId>
 		<groupId>org.bbop.termgenie</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>TermGenieRulesDynamic</artifactId>
