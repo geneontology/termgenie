@@ -3,7 +3,7 @@
   <parent>
     <artifactId>TermGenie</artifactId>
     <groupId>org.bbop.termgenie</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>TermGenieUserManagement</artifactId>
