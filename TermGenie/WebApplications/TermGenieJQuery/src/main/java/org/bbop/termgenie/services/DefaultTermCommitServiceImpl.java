@@ -58,7 +58,8 @@ import com.google.inject.name.Named;
 public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
 
 	private final Committer committer;
-	private final OntologyIdManager idProvider;
+	private final OntologyIdManager primaryIdProvider;
+	private final OntologyIdManager secondaryIdProvider;
 	protected final UserPermissions permissions;
 	private final OntologyTaskManager source;
 	private String tempIdPrefix;
@@ -68,13 +69,15 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			InternalSessionHandler sessionHandler,
 			Committer committer,
 			final @Named("CommitTargetOntology") OntologyTaskManager source,
-			OntologyIdManager idProvider,
+			final @Named("PrimaryOntologyIdManager") OntologyIdManager primaryIdProvider,
+			final @Named("SecondaryOntologyIdManager") OntologyIdManager secondaryIdProvider,
 			final TermGenerationEngine generationEngine,
 			UserPermissions permissions)
 	{
 		super(ontologyTools, sessionHandler);
 		this.committer = committer;
-		this.idProvider = idProvider;
+		this.primaryIdProvider = primaryIdProvider;
+		this.secondaryIdProvider = secondaryIdProvider;
 		this.permissions = permissions;
 		this.source = source;
 		try {
@@ -119,6 +122,53 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	}
 
 	@Override
+	public JsonCommitResult commitFreeFormTerms(String sessionId,
+			JsonOntologyTerm[] terms,
+			String ontologyName,
+			boolean sendConfirmationEMail,
+			HttpSession session,
+			ProcessState processState)
+	{
+		// check if its the correct ontology
+		OntologyTaskManager manager = getOntologyManager(ontologyName);
+		if (manager == null) {
+			return error("Unknown ontology: " + ontologyName);
+		}
+		if (!getTargetOntology().getUniqueName().equals(manager.getOntology().getUniqueName())) {
+			return error("Can only commit to " + getTargetOntology().getUniqueName() + ", but requested ontology was: " + ontologyName);
+		}
+
+		// check if session is valid, get user name
+		boolean validSession = sessionHandler.isValidSession(sessionId, session);
+		if (!validSession) {
+			return error("Could not commit as the session is not valid.");
+		}
+
+		String termgenieUser = sessionHandler.isAuthenticated(sessionId, session);
+		if (termgenieUser == null) {
+			return error("Could not commit as the user is not logged.");
+		}
+
+		UserData userData = sessionHandler.getUserData(session);
+		boolean allowCommit = permissions.allowFreeFormCommit(userData, manager.getOntology());
+		if (!allowCommit) {
+			logger.warn("Insufficient rights for user attempt to a free from term commit. User: " + termgenieUser + " with GUID: " + userData.getGuid());
+			return error("Could not commit, the user is not authorized to execute a free form term commit.");
+		}
+		
+		String commitMessage = createDefaultCommitMessage(userData);
+		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
+				manager.getOntology()), sendConfirmationEMail, processState);
+		try {
+			secondaryIdProvider.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			logger.error("Could not commit term due to an invalid ontology state", exception);
+			return error("Could not commit term due to an invalid ontology state: "+exception.getMessage());
+		}
+		return task.result;
+	}
+
+	@Override
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
 			String ontologyName,
@@ -157,7 +207,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
 				manager.getOntology()), sendConfirmationEMail, processState);
 		try {
-			idProvider.runManagedTask(task);
+			primaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
 			logger.error("Could not commit term due to an invalid ontology state", exception);
 			return error("Could not commit term due to an invalid ontology state: "+exception.getMessage());

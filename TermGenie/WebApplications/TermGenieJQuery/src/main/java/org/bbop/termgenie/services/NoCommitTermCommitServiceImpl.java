@@ -158,4 +158,18 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		return result;
 	}
 
+	@Override
+	public JsonCommitResult commitFreeFormTerms(String sessionId,
+			JsonOntologyTerm[] terms,
+			String ontology,
+			boolean sendConfirmationEMail,
+			HttpSession session,
+			ProcessState processState)
+	{
+		JsonCommitResult result = new JsonCommitResult();
+		result.setSuccess(false);
+		result.setMessage("The commit operation is not enabled.");
+		return result;
+	}
+
 }

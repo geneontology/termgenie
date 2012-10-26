@@ -3,6 +3,7 @@ package org.bbop.termgenie.services.permissions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -22,6 +23,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
 	private static final String FLAG_ALLOW_MANAGEMENT = "allowManagement";
+	private static final String FLAG_ALLOW_FREE_FORM = "allowFreeForm";
 
 	private final String applicationName;
 	private final File jsonPermissionsFile;
@@ -74,7 +76,17 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
 	}
 
-	private boolean checkPermissions(UserData userData, String group, String flag) {
+	@Override
+	public boolean allowFreeForm(UserData userData, Ontology ontology) {
+		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM);
+	}
+
+	@Override
+	public boolean allowFreeFormCommit(UserData userData, Ontology ontology) {
+		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM, FLAG_ALLOW_WRITE);
+	}
+
+	private boolean checkPermissions(UserData userData, String group, String...flags) {
 		PermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null && userData != null) {
 			String guid = userData.getGuid();
@@ -83,14 +95,30 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 			if (termgeniePermissions != null) {
 				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
 				if (groupFlags != null) {
-					String value = groupFlags.get(flag);
-					if (value != null) {
-						return "true".equals(value.toLowerCase());
-					}
+					return hasAllFlags(groupFlags, flags);
 				}
 			}
 		}
 		return false;
+	}
+	
+	boolean hasAllFlags(Map<String, String> groupFlags, String[] flags) {
+		boolean[] results = new boolean[flags.length];
+		Arrays.fill(results, false);
+		for (int i = 0; i < flags.length; i++) {
+			String flag = flags[i];
+			String value = groupFlags.get(flag);
+			if (value != null) {
+				results[i] = "true".equals(value.toLowerCase());
+			}
+		}
+		boolean result = results[0];
+		if (results.length > 1) {
+			for (int i = 1; i < results.length; i++) {
+				result = result && results[i];
+			}
+		}
+		return result;
 	}
 
 	@Override
