@@ -25,6 +25,7 @@ import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.graph.OWLGraphWrapper.ISynonym;
 
 public class JsonOntologyTerm {
 	
@@ -396,7 +397,7 @@ public class JsonOntologyTerm {
 		return changed;
 	}
 	
-	public static class JsonSynonym {
+	public static class JsonSynonym implements ISynonym {
 
 		private String label;
 		private String scope;
@@ -406,6 +407,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the label
 		 */
+		@Override
 		public String getLabel() {
 			return label;
 		}
@@ -420,6 +422,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the scope
 		 */
+		@Override
 		public String getScope() {
 			return scope;
 		}
@@ -434,6 +437,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the xrefs
 		 */
+		@Override
 		public Set<String> getXrefs() {
 			return xrefs;
 		}
@@ -448,6 +452,7 @@ public class JsonOntologyTerm {
 		/**
 		 * @return the category
 		 */
+		@Override
 		public String getCategory() {
 			return category;
 		}

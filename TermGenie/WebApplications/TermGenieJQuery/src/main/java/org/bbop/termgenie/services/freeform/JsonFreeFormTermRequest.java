@@ -3,8 +3,11 @@ package org.bbop.termgenie.services.freeform;
 import java.util.List;
 
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
+import org.bbop.termgenie.freeform.FreeFormTermRequest;
 
-public class JsonFreeFormTermRequest {
+import owltools.graph.OWLGraphWrapper.ISynonym;
+
+public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 
 	private String label;
 	private String namespace;
@@ -17,9 +20,7 @@ public class JsonFreeFormTermRequest {
 
 	private List<JsonSynonym> synonyms;
 
-	/**
-	 * @return the label
-	 */
+	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -31,9 +32,7 @@ public class JsonFreeFormTermRequest {
 		this.label = label;
 	}
 
-	/**
-	 * @return the namespace
-	 */
+	@Override
 	public String getNamespace() {
 		return namespace;
 	}
@@ -45,9 +44,7 @@ public class JsonFreeFormTermRequest {
 		this.namespace = namespace;
 	}
 
-	/**
-	 * @return the definition
-	 */
+	@Override
 	public String getDefinition() {
 		return definition;
 	}
@@ -59,9 +56,7 @@ public class JsonFreeFormTermRequest {
 		this.definition = definition;
 	}
 
-	/**
-	 * @return the dbxrefs
-	 */
+	@Override
 	public List<String> getDbxrefs() {
 		return dbxrefs;
 	}
@@ -73,9 +68,7 @@ public class JsonFreeFormTermRequest {
 		this.dbxrefs = dbxrefs;
 	}
 
-	/**
-	 * @return the isA
-	 */
+	@Override
 	public List<String> getIsA() {
 		return isA;
 	}
@@ -87,9 +80,7 @@ public class JsonFreeFormTermRequest {
 		this.isA = isA;
 	}
 
-	/**
-	 * @return the partOf
-	 */
+	@Override
 	public List<String> getPartOf() {
 		return partOf;
 	}
@@ -105,6 +96,11 @@ public class JsonFreeFormTermRequest {
 	 * @return the synonyms
 	 */
 	public List<JsonSynonym> getSynonyms() {
+		return synonyms;
+	}
+	
+	@Override
+	public List<? extends ISynonym> getISynonyms() {
 		return synonyms;
 	}
 

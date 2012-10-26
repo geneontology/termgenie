@@ -1,14 +1,22 @@
 package org.bbop.termgenie.services.freeform;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.freeform.FreeFormHint;
+import org.bbop.termgenie.freeform.FreeFormValidationResponse;
+import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.oboformat.model.Frame;
+import org.semanticweb.owlapi.model.OWLAxiom;
+
+import owltools.graph.OWLGraphWrapper;
 
 
 public class JsonFreeFormValidationResponse {
 
 	private String generalError;
-	private List<JsonFreeFormHint> errors;
+	private List<FreeFormHint> errors;
 	private JsonOntologyTerm generatedTerm;
 	
 	/**
@@ -28,14 +36,14 @@ public class JsonFreeFormValidationResponse {
 	/**
 	 * @return the errors
 	 */
-	public List<JsonFreeFormHint> getErrors() {
+	public List<FreeFormHint> getErrors() {
 		return errors;
 	}
 	
 	/**
 	 * @param errors the errors to set
 	 */
-	public void setErrors(List<JsonFreeFormHint> errors) {
+	public void setErrors(List<FreeFormHint> errors) {
 		this.errors = errors;
 	}
 	
@@ -51,5 +59,15 @@ public class JsonFreeFormValidationResponse {
 	 */
 	public void setGeneratedTerm(JsonOntologyTerm generatedTerm) {
 		this.generatedTerm = generatedTerm;
+	}
+	
+	static JsonFreeFormValidationResponse convert(FreeFormValidationResponse response, OWLGraphWrapper graph) {
+		JsonFreeFormValidationResponse json = new JsonFreeFormValidationResponse();
+		json.setGeneralError(response.getGeneralError());
+		json.setErrors(response.getErrors());
+		Pair<Frame,Set<OWLAxiom>> pair = response.getGeneratedTerm();
+		JsonOntologyTerm term = JsonOntologyTerm.createJson(pair.getOne(), pair.getTwo(), null, graph, "freeform");
+		json.setGeneratedTerm(term);
+		return json;
 	}
 }

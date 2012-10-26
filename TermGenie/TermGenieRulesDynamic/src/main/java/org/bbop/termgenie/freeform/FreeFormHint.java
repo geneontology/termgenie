@@ -1,6 +1,9 @@
-package org.bbop.termgenie.services.freeform;
+package org.bbop.termgenie.freeform;
 
-public class JsonFreeFormHint {
+/**
+ * Individual remark for an hint or error during a free form request validation.
+ */
+public class FreeFormHint {
 
 	private String field;
 	private String hint;
@@ -8,7 +11,7 @@ public class JsonFreeFormHint {
 	/**
 	 * Default constructor required for serialization.
 	 */
-	public JsonFreeFormHint() {
+	public FreeFormHint() {
 		super();
 	}
 
@@ -16,7 +19,7 @@ public class JsonFreeFormHint {
 	 * @param field
 	 * @param hint
 	 */
-	public JsonFreeFormHint(String field, String hint) {
+	public FreeFormHint(String field, String hint) {
 		this.field = field;
 		this.hint = hint;
 	}
@@ -31,7 +34,7 @@ public class JsonFreeFormHint {
 	/**
 	 * @param field the field to set
 	 */
-	public void setField(int String) {
+	public void setField(String field) {
 		this.field = field;
 	}
 
@@ -48,4 +51,5 @@ public class JsonFreeFormHint {
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
+
 }
