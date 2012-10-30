@@ -89,10 +89,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	static class ValidationTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology>
 	{
 		private final FreeFormTermRequest request;
-		private List<FreeFormHint> errors = null;
-		private Pair<Frame, Set<OWLAxiom>> term;
+		List<FreeFormHint> errors = null;
+		Pair<Frame, Set<OWLAxiom>> term;
 	
-		private ValidationTask(FreeFormTermRequest request) {
+		ValidationTask(FreeFormTermRequest request) {
 			this.request = request;
 		}
 	
@@ -171,11 +171,14 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					return;
 				}
 				List<ISynonym> oboSynonyms = graph.getOBOSynonyms(current);
-				for (ISynonym synonym : oboSynonyms) {
-					String synLabel = synonym.getLabel();
-					if (similar(normalizedLabel, normalizeLabel(synLabel))) {
-						setError("label", "The requested label is similar to the synonym: '"+synLabel+"' of term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
-						return;
+				if (oboSynonyms != null) {
+					for (ISynonym synonym : oboSynonyms) {
+						String synLabel = synonym.getLabel();
+						if (similar(normalizedLabel, normalizeLabel(synLabel))) {
+							setError("label",
+									"The requested label is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+							return;
+						}
 					}
 				}
 			}
@@ -254,7 +257,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			Set<String> xrefs = new HashSet<String>();
 			for(String  xref : xrefsList) {
 				String dbxref = StringUtils.trimToNull(xref);
-				if (dbxref != null) {
+				if (dbxref == null) {
 					continue;
 				}
 				// TODO validate xref
