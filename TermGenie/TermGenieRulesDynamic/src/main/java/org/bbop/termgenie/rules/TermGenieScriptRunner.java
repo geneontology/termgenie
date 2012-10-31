@@ -30,6 +30,9 @@ import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.bbop.termgenie.rules.api.ChangeTracker;
+import org.bbop.termgenie.rules.api.TermGenieScriptFunctions;
+import org.bbop.termgenie.rules.impl.TermGenieScriptFunctionsMDefImpl;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -44,7 +47,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 
 	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
-	static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
+	public static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
 	
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;

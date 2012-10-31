@@ -1,4 +1,4 @@
-package org.bbop.termgenie.rules;
+package org.bbop.termgenie.rules.impl;
 
 import static org.junit.Assert.*;
 

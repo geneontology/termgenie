@@ -1,4 +1,4 @@
-package org.bbop.termgenie.rules;
+package org.bbop.termgenie.rules.api;
 
 /**
  * Methods for tracking changes of an object, i.e. an ontology.

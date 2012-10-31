@@ -28,7 +28,7 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
 import com.google.inject.Injector;
 
-public class TermGenieScriptTestRunnerRegulationBy {
+public class RegulationByTest {
 
 	private static TermGenerationEngine generationEngine;
 	private static OntologyConfiguration configuration;

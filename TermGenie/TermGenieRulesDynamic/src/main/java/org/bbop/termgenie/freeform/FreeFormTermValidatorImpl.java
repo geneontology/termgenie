@@ -31,6 +31,7 @@ import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
 import org.bbop.termgenie.owl.OWLChangeTracker;
+import org.bbop.termgenie.rules.TermGenieScriptRunner;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -72,7 +73,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	public FreeFormTermValidatorImpl(@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
 			@Named("FreeFormTermValidatorRequireLiteratureReference") boolean requireLiteratureReference,
-			boolean useIsInferred,
+			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
 			ReasonerFactory factory)
 	{
 		super();

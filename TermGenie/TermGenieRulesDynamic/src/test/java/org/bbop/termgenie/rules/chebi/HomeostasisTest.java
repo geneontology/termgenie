@@ -38,7 +38,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class TransMembraneTransportBPTestRunner {
+public class HomeostasisTest {
 
 	public static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
@@ -75,19 +75,42 @@ public class TransMembraneTransportBPTestRunner {
 	}
 	
 	@Test
-	public void test_transmembrane_transport() throws Exception {
-		TermTemplate termTemplate = getTransmembraneTransportBPTemplate();
+	public void test_homeostasis() throws Exception {
+		TermTemplate termTemplate = getTemplate();
+		List<String> prefixIds = Arrays.asList("GO:0048878","GO:0055082");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
-		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id);
+		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
 		assertNotNull(list);
-		assertEquals(1, list.size());
+		assertEquals(2, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
 		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
-		assertEquals("difenoxin transmembrane transport", term1.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("difenoxin homeostasis", term1.getTagValue(OboFormatTag.TAG_NAME));
+		
+		TermGenerationOutput output2 = list.get(1);
+		assertTrue(output2.getMessage(), output2.isSuccess());
+		Frame term2 = output2.getTerm();
+		renderFrame(term2);
+		assertEquals("cellular difenoxin homeostasis", term2.getTagValue(OboFormatTag.TAG_NAME));
+		
+	}
+	
+	@Test
+	public void test_equivalent_existing1() throws Exception {
+		TermTemplate termTemplate = getTemplate();
+		List<String> prefixIds = Arrays.asList("GO:0048878");
+		String id = "CHEBI:15377"; // water
+		
+		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output1 = list.get(0);
+		assertFalse(output1.isSuccess());
+		assertEquals("The term GO:0030104 with the same label 'water homeostasis' already exists", output1.getMessage());
 		
 	}
 	
@@ -111,14 +134,15 @@ public class TransMembraneTransportBPTestRunner {
 		}
 	}
 	
-	private TermTemplate getTransmembraneTransportBPTemplate() {
-		return generationEngine.getAvailableTemplates().get(6);
+	private TermTemplate getTemplate() {
+		return generationEngine.getAvailableTemplates().get(5);
 	}
 
-	private List<TermGenerationInput> createTransmembraneTransportTask(TermTemplate termTemplate, final String term) {
+	private List<TermGenerationInput> createTransmembraneTransportTask(TermTemplate termTemplate, final String term, List<String> prefixIds) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = termTemplate.getFields().get(0);
 		parameters.setTermValues(field.getName(), Arrays.asList(term)); 
+		parameters.setStringValues(field.getName(), prefixIds);
 	
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);

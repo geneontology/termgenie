@@ -38,11 +38,11 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class HomeostasisTestRunner {
+public class ResponseToTest {
 
-	public static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
+	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
-		public ChemicalTestOntologyModule() {
+		ChemicalTestOntologyModule() {
 			super("ontology-configuration_chemical.xml", null, null);
 		}
 
@@ -74,43 +74,37 @@ public class HomeostasisTestRunner {
 		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
+
 	@Test
-	public void test_homeostasis() throws Exception {
-		TermTemplate termTemplate = getTemplate();
-		List<String> prefixIds = Arrays.asList("GO:0048878","GO:0055082");
+	public void test_response_to() throws Exception {
+		TermTemplate termTemplate = getResponseToTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
-		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
+		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
 		assertNotNull(list);
-		assertEquals(2, list.size());
+		assertEquals(1, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
 		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
-		assertEquals("difenoxin homeostasis", term1.getTagValue(OboFormatTag.TAG_NAME));
-		
-		TermGenerationOutput output2 = list.get(1);
-		assertTrue(output2.getMessage(), output2.isSuccess());
-		Frame term2 = output2.getTerm();
-		renderFrame(term2);
-		assertEquals("cellular difenoxin homeostasis", term2.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("response to difenoxin", term1.getTagValue(OboFormatTag.TAG_NAME));
 		
 	}
 	
 	@Test
-	public void test_equivalent_existing1() throws Exception {
-		TermTemplate termTemplate = getTemplate();
-		List<String> prefixIds = Arrays.asList("GO:0048878");
-		String id = "CHEBI:15377"; // water
+	public void test_equivalent_existing() throws Exception {
+		TermTemplate termTemplate = getResponseToTemplate();
+		String id = "CHEBI:22152"; // 2-cis-abscisic acid
 		
-		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
+		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("The term GO:0030104 with the same label 'water homeostasis' already exists", output1.getMessage());
+		assertEquals("Falied to create the term response to 2-cis-abscisic acid with the logical definition: \"GO_0050896 and 'has input' some CHEBI_22152\" " +
+				"The term GO:0009737 'response to abscisic acid stimulus' with the same logic definition already exists", output1.getMessage());
 		
 	}
 	
@@ -134,15 +128,14 @@ public class HomeostasisTestRunner {
 		}
 	}
 	
-	private TermTemplate getTemplate() {
-		return generationEngine.getAvailableTemplates().get(5);
+	private TermTemplate getResponseToTemplate() {
+		return generationEngine.getAvailableTemplates().get(4);
 	}
 
-	private List<TermGenerationInput> createTransmembraneTransportTask(TermTemplate termTemplate, final String term, List<String> prefixIds) {
+	private List<TermGenerationInput> createResponseToTask(TermTemplate termTemplate, final String term) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		TemplateField field = termTemplate.getFields().get(0);
 		parameters.setTermValues(field.getName(), Arrays.asList(term)); 
-		parameters.setStringValues(field.getName(), prefixIds);
 	
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);

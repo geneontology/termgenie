@@ -1,4 +1,4 @@
-package org.bbop.termgenie.rules;
+package org.bbop.termgenie.rules.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsSynonyms;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;

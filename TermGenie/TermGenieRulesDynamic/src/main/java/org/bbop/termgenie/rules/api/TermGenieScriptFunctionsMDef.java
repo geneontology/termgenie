@@ -1,4 +1,4 @@
-package org.bbop.termgenie.rules;
+package org.bbop.termgenie.rules.api;
 
 import java.util.List;
 import java.util.Map;
