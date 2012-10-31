@@ -1,4 +1,4 @@
-package org.bbop.termgenie.rules;
+package org.bbop.termgenie.owl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,6 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
-import org.bbop.termgenie.rules.AbstractTermCreationTools.InferredRelations;
-import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -42,7 +40,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	
 	private InferredRelations result;
 
-	InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state, boolean useIsInferred) {
+	public InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state, boolean useIsInferred) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;

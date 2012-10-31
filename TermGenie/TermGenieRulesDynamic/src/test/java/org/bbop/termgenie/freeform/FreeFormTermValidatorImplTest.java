@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerFactoryImpl;
 import org.bbop.termgenie.freeform.FreeFormTermValidatorImpl.ValidationTask;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
@@ -27,6 +30,7 @@ import owltools.io.ParserWrapper;
 public class FreeFormTermValidatorImplTest {
 	
 	private static OWLGraphWrapper graph = null;
+	private static ReasonerFactory factory = null;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -34,6 +38,7 @@ public class FreeFormTermValidatorImplTest {
 		
 		IRI iri = IRI.create((new File("src/test/resources/ontologies/gene_ontology_write.obo")).getCanonicalFile());
 		graph = pw.parseToOWLGraph(iri.toString());
+		factory = new ReasonerFactoryImpl();
 	}
 	
 	@Test
@@ -66,13 +71,19 @@ public class FreeFormTermValidatorImplTest {
 		request.setDefinition("Term definition for fake term.");
 		errors(request, "definition db xref");
 		
+		request.setDbxrefs(Arrays.asList("GOC:fake"));
+		errors(request, "definition db xref");
+		
 		request.setDbxrefs(Arrays.asList("GOC:fake", "PMID:0000001"));
 		
-		noErrors(request);
+		Pair<Frame,Set<OWLAxiom>> pair = noErrors(request);
+		
+		assertNotNull(pair.getOne());
+		assertNotNull(pair.getTwo());
 	}
 	
 	private void errors(FreeFormTermRequest request, String field) {
-		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request);
+		ValidationTask task = createTask(request);
 		task.runInternal(graph);
 		List<FreeFormHint> errors = task.errors;
 		if (errors != null && !errors.isEmpty()) {
@@ -85,9 +96,14 @@ public class FreeFormTermValidatorImplTest {
 			fail("Errors expected.");
 		}
 	}
+
+	protected ValidationTask createTask(FreeFormTermRequest request) {
+		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, factory, ProcessState.NO);
+		return task;
+	}
 	
 	private Pair<Frame,Set<OWLAxiom>> noErrors(FreeFormTermRequest request) {
-		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request);
+		ValidationTask task = createTask(request);
 		task.runInternal(graph);
 		List<FreeFormHint> errors = task.errors;
 		if (errors != null && !errors.isEmpty()) {

@@ -12,31 +12,24 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
+import org.bbop.termgenie.owl.InferredRelations;
+import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyRenameException;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
@@ -48,8 +41,6 @@ import owltools.graph.OWLGraphWrapper.ISynonym;
  */
 public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	
-	private static final Logger logger = Logger.getLogger(AbstractTermCreationTools.class);
-
 	protected final ReasonerFactory factory;
 	protected final TermGenerationInput input;
 	protected final OWLGraphWrapper targetOntology;
@@ -82,73 +73,6 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 		changeTracker = new OWLChangeTracker(targetOntology.getSourceOntology());
 	}
 
-	protected static final class OWLChangeTracker {
-		
-		ArrayList<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-		private final OWLOntology owlOntology;
-		private final OWLOntologyManager manager;
-	
-		OWLChangeTracker(OWLOntology owlOntology) {
-			this.owlOntology = owlOntology;
-			this.manager = owlOntology.getOWLOntologyManager();
-		}
-	
-		protected synchronized void apply(OWLOntologyChange change) {
-			List<OWLOntologyChange> changes = manager.applyChange(change);
-			if (changes != null && !changes.isEmpty()) {
-				this.changes.addAll(changes);
-			}
-		}
-	
-		/**
-		 * @return true if all changes have been reverted.
-		 */
-		protected synchronized boolean undoChanges() {
-			boolean success = true;
-			if (!changes.isEmpty()) {
-				for (int i = changes.size() - 1; i >= 0 && success ; i--) {
-					OWLOntologyChange change = changes.get(i);
-					if (change instanceof AddAxiom) {
-						AddAxiom addAxiom = (AddAxiom) change;
-						success = applyChange(new RemoveAxiom(owlOntology, addAxiom.getAxiom()));
-					}
-					else if (change instanceof RemoveAxiom) {
-						RemoveAxiom removeAxiom = (RemoveAxiom) change;
-						success = applyChange(new AddAxiom(owlOntology, removeAxiom.getAxiom()));
-					}
-					else if (change instanceof AddOntologyAnnotation) {
-						AddOntologyAnnotation addOntologyAnnotation = (AddOntologyAnnotation) change;
-						success = applyChange(new RemoveOntologyAnnotation(owlOntology, addOntologyAnnotation.getAnnotation()));
-					}
-					else if (change instanceof RemoveOntologyAnnotation) {
-						RemoveOntologyAnnotation removeOntologyAnnotation = (RemoveOntologyAnnotation) change;
-						success = applyChange(new AddOntologyAnnotation(owlOntology, removeOntologyAnnotation.getAnnotation()));
-					}
-					else {
-						success = false;
-					}
-				}
-				if (success) {
-					changes.clear();
-				}
-			}
-			return success;
-		}
-		
-		private boolean applyChange(OWLOntologyChange change) {
-			try {
-				manager.applyChange(change);
-				return true;
-			} catch (OWLOntologyRenameException exception) {
-				logger.warn("Can not apply change", exception);
-				return false;
-			}
-		}
-		
-		protected OWLOntology getTarget() {
-			return owlOntology;
-		}
-	}
 
 	private String getNewId() {
 		String id = patternID + count;
@@ -271,8 +195,8 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 
 		try {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
-			if (inferredRelations.equivalentClasses != null) {
-				for (OWLClass owlClass : inferredRelations.equivalentClasses) {
+			if (inferredRelations.getEquivalentClasses() != null) {
+				for (OWLClass owlClass : inferredRelations.getEquivalentClasses()) {
 					output.add(singleError("Falied to create the term "+label+
 							" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
 							" The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +
@@ -281,16 +205,16 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 				}
 				return false;
 			}
-			List<Clause> relations = inferredRelations.classRelations;
+			List<Clause> relations = inferredRelations.getClassRelations();
 			if (relations != null) {
 				term.getClauses().addAll(relations);
 			}
-			if (inferredRelations.classRelationAxioms != null) {
-				axioms.addAll(inferredRelations.classRelationAxioms);
+			if (inferredRelations.getClassRelationAxioms() != null) {
+				axioms.addAll(inferredRelations.getClassRelationAxioms());
 			}
 			axioms.add(OwlTranslatorTools.createLabelAxiom(owlNewId, label, targetOntology));
 			// TODO add all other term details to the axioms?
-			output.add(success(term, axioms , inferredRelations.changed, input));
+			output.add(success(term, axioms , inferredRelations.getChanged(), input));
 			
 			ProcessState.addMessage(state, "Finished creating term.");
 			return true;
@@ -324,34 +248,6 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 	protected abstract InferredRelations createRelations(T logicalDefinition, String newId, String label, OWLChangeTracker changeTracker) throws RelationCreationException;
 
 	protected abstract String renderLogicalDefinition(T logicalDefinition);
-	
-	static class InferredRelations {
-		
-		static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause>emptyList(), Collections.<OWLAxiom>emptySet(), null);
-		
-		List<Clause> classRelations = null;
-		Set<OWLAxiom> classRelationAxioms = null;
-		List<Pair<Frame, Set<OWLAxiom>>> changed = null;
-		Set<OWLClass> equivalentClasses = null;
-		
-		/**
-		 * @param equivalentClasses
-		 */
-		InferredRelations(Set<OWLClass> equivalentClasses) {
-			this.equivalentClasses = equivalentClasses;
-		}
-		
-		/**
-		 * @param classRelations
-		 * @param classRelationAxioms
-		 * @param changed
-		 */
-		InferredRelations(List<Clause> classRelations, Set<OWLAxiom> classRelationAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed) {
-			this.classRelations = classRelations;
-			this.classRelationAxioms = classRelationAxioms;
-			this.changed = changed;
-		}
-	}
 	
 	private List<String> getDefXref() {
 		return getInputs("DefX_Ref");

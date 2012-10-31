@@ -103,7 +103,8 @@ public class ResponseToTestRunner {
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("The term GO:0009737 'response to abscisic acid stimulus' with the same logic definition already exists", output1.getMessage());
+		assertEquals("Falied to create the term response to 2-cis-abscisic acid with the logical definition: \"GO_0050896 and 'has input' some CHEBI_22152\" " +
+				"The term GO:0009737 'response to abscisic acid stimulus' with the same logic definition already exists", output1.getMessage());
 		
 	}
 	

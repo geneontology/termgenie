@@ -110,7 +110,7 @@ public class HomeostasisTestRunner {
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("The term GO:0030104 with the same label already exists", output1.getMessage());
+		assertEquals("The term GO:0030104 with the same label 'water homeostasis' already exists", output1.getMessage());
 		
 	}
 	

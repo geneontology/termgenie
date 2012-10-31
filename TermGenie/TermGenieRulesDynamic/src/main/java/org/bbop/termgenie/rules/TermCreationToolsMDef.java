@@ -4,12 +4,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
+import org.bbop.termgenie.owl.InferAllRelationshipsTask;
+import org.bbop.termgenie.owl.InferredRelations;
+import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.TermGenieScriptFunctionsMDef.MDef;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.macro.ManchesterSyntaxTool;
@@ -127,13 +131,16 @@ public class TermCreationToolsMDef extends AbstractTermCreationTools<List<MDef>>
 			reasonerManager.removeProcessState();
 		}
 		InferredRelations inferredRelations = task.getInferredRelations();
-		if (inferredRelations.classRelationAxioms != null) {
-			inferredRelations.classRelationAxioms = new HashSet<OWLAxiom>(inferredRelations.classRelationAxioms);
+		Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();
+		if (classRelationAxioms != null) {
+			// defensive copy
+			classRelationAxioms = new HashSet<OWLAxiom>(classRelationAxioms);
 		}
 		else {
-			inferredRelations.classRelationAxioms = new HashSet<OWLAxiom>();
+			classRelationAxioms = new HashSet<OWLAxiom>();
 		}
-		inferredRelations.classRelationAxioms.add(pair.getTwo());
+		classRelationAxioms.add(pair.getTwo());
+		inferredRelations.setClassRelationAxioms(classRelationAxioms);
 		ProcessState.addMessage(state, "Finished inferring relationships from logical definition.");
 		return inferredRelations;
 	}

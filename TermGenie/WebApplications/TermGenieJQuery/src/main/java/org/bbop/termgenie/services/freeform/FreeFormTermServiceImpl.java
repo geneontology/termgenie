@@ -76,7 +76,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			ProcessState state)
 	{
 		if (canView(sessionId, session)) {
-			final FreeFormValidationResponse response = validator.validate(request);
+			final FreeFormValidationResponse response = validator.validate(request, state);
 			ConvertToJson task = new ConvertToJson(response);
 			try {
 				manager.runManagedTask(task, ontology);

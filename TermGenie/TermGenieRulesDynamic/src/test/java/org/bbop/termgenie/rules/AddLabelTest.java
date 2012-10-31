@@ -3,7 +3,7 @@ package org.bbop.termgenie.rules;
 import static org.junit.Assert.*;
 
 import org.bbop.termgenie.ontology.obo.OboTools;
-import org.bbop.termgenie.rules.AbstractTermCreationTools.OWLChangeTracker;
+import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.obo2owl.Obo2Owl;

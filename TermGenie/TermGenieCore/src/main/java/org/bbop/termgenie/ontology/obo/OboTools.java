@@ -50,7 +50,7 @@ public class OboTools {
 		frame.addClause(new Clause(OboFormatTag.TAG_NAME, label));
 	}
 	
-	public static void addDefinition(Frame frame, String def, List<String> xrefs) {
+	public static void addDefinition(Frame frame, String def, Collection<String> xrefs) {
 		Clause cl = new Clause(OboFormatTag.TAG_DEF, def);
 		if (xrefs != null) {
 			List<Xref> xrefList = new ArrayList<Xref>(xrefs.size());
