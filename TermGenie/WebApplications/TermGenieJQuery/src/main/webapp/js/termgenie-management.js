@@ -1,5 +1,5 @@
 /**
- * Setup term review page.
+ * Setup the TermGenie management page.
  * 
  * @returns empty object
  */
