@@ -20,7 +20,6 @@ import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
 
 /**
  * Wrapper for guice configuration modules. E.g., allow overwrites for some
@@ -112,11 +111,7 @@ public abstract class IOCModule extends AbstractModule {
 			value = property;
 		}
 		if (value == null) {
-			if(optional) {
-				bind(String.class).annotatedWith(Names.named(name)).toProvider(Providers.<String>of(null));
-				configuredParameters.put(name, "null");
-			}
-			else {
+			if(!optional) {
 				Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
 				throw new RuntimeException("No value found for key: " + name);
 			}
@@ -356,24 +351,18 @@ public abstract class IOCModule extends AbstractModule {
 				}
 			}
 		}
-		String reportedValue;
 		if (value == null) {
 			if (!optional) {
 				Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
 				throw new RuntimeException("No value found for file key: " + name);
 			}
-			reportedValue = "null";
-			bind(new TypeLiteral<List<String>>() { /* Intentionally empty */}).
-				annotatedWith(Names.named(name)).
-				toProvider(Providers.<List<String>>of(null));
 		}
 		else {
-			reportedValue = value.toString();
 			bind(new TypeLiteral<List<String>>() { /* Intentionally empty */}).
 					annotatedWith(Names.named(name)).
 					toInstance(value);
+			configuredParameters.put(name, value.toString());
 		}
-		configuredParameters.put(name, reportedValue);
 	}
 	
 	protected <T> void bind(Class<T> interfaceClass, Class<? extends T> implementationClass) {
