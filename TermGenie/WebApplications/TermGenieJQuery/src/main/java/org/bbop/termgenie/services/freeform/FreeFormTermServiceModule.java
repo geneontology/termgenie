@@ -4,11 +4,14 @@ import java.util.Properties;
 
 import org.bbop.termgenie.freeform.FreeFormTermValidatorModule;
 
-
 public class FreeFormTermServiceModule extends FreeFormTermValidatorModule {
 
-	public FreeFormTermServiceModule(Properties applicationProperties) {
-		super(applicationProperties);
+	public FreeFormTermServiceModule(Properties applicationProperties,
+			boolean requireLiteratureReference,
+			boolean addSubsetTag,
+			String subset)
+	{
+		super(applicationProperties, requireLiteratureReference, addSubsetTag, subset);
 	}
 
 	@Override

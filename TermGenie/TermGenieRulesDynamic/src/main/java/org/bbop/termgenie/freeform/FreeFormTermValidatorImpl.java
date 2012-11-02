@@ -61,6 +61,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	
 	private static final Logger logger = Logger.getLogger(FreeFormTermValidatorImpl.class);
 	
+	static final String REQ_LIT_REF_PARAM = "FreeFormTermValidatorRequireLiteratureReference";
+	static final String ADD_SUBSET_TAG_PARAM = "FreeFormTermValidatorAddSubsetTag";
+	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
+	
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
 	private final Ontology ontology;
@@ -68,20 +72,36 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private final ReasonerFactory factory;
 	private final boolean requireLiteratureReference;
 	private final boolean useIsInferred;
+	private final boolean addSubsetTag;
+	
+	private String subset = null;
 
 	@Inject
 	public FreeFormTermValidatorImpl(@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
-			@Named("FreeFormTermValidatorRequireLiteratureReference") boolean requireLiteratureReference,
+			@Named(REQ_LIT_REF_PARAM) boolean requireLiteratureReference,
+			@Named(ADD_SUBSET_TAG_PARAM) boolean addSubsetTag,
 			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
 			ReasonerFactory factory)
 	{
 		super();
+		this.addSubsetTag = addSubsetTag;
 		this.ontology = ontology.getOntology();
 		this.manager = manager;
 		this.factory = factory;
 		this.requireLiteratureReference = requireLiteratureReference;
 		this.useIsInferred = useIsInferred;
+	}
+
+	
+	/**
+	 * @param subset the subset to set
+	 * 
+	 * only effective if addSubsetTag is also set to true, see constructor.
+	 */
+	@Inject(optional=true)
+	public void setSubset(@Named(SUBSET_PARAM) String subset) {
+		this.subset = subset;
 	}
 
 	private FreeFormValidationResponse error(String message) {
@@ -105,7 +125,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	@Override
 	public FreeFormValidationResponse validate(final FreeFormTermRequest request, ProcessState state) {
 		
-		ValidationTask task = new ValidationTask(request, requireLiteratureReference, useIsInferred, factory, state);
+		String subset = null;
+		if (this.subset != null && addSubsetTag) {
+			subset = this.subset;
+		}
+		ValidationTask task = new ValidationTask(request, requireLiteratureReference, useIsInferred, subset, factory, state);
 		try {
 			manager.runManagedTask(task, ontology);
 		} catch (InvalidManagedInstanceException exception) {
@@ -135,18 +159,21 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		Pair<Frame, Set<OWLAxiom>> term;
 		
 		List<Modified> modified = null;
+		private final String subset;
 		
 		
 	
 		ValidationTask(FreeFormTermRequest request,
 				boolean requireLiteratureReference,
 				boolean useIsInferred,
+				String subset,
 				ReasonerFactory factory,
 				ProcessState state)
 		{
 			this.request = request;
 			this.requireLiteratureReference = requireLiteratureReference;
 			this.useIsInferred = useIsInferred;
+			this.subset = subset;
 			this.reasonerFactory = factory;
 			this.state = state;
 		}
@@ -430,6 +457,9 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						OboTools.addSynonym(frame, synonym.getLabel(), synonym.getScope(), synonym.getXrefs());
 					}
 				}
+				if (subset != null) {
+					frame.addClause(new Clause(OboFormatTag.TAG_SUBSET, subset));
+				}
 	
 				OboTools.addTermId(frame, oboNewId);
 				
@@ -491,11 +521,16 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 		
 		final static Pattern PMID_PATTERN = Pattern.compile("PMID:\\d+", Pattern.CASE_INSENSITIVE);
+		final static Pattern ISBN_PATTERN = Pattern.compile("ISBN:\\d+", Pattern.CASE_INSENSITIVE);
 		final static Pattern DOI_PATTERN = Pattern.compile("DOI:\\S+", Pattern.CASE_INSENSITIVE);
 		
 		static boolean isLiteratureReference(String s) {
 			Matcher pmidMatcher = PMID_PATTERN.matcher(s);
 			if (pmidMatcher.matches()) {
+				return true;
+			}
+			Matcher isbnMatcher = ISBN_PATTERN.matcher(s);
+			if (isbnMatcher.matches()) {
 				return true;
 			}
 			Matcher doiMatcher = DOI_PATTERN.matcher(s);

@@ -98,7 +98,7 @@ public class FreeFormTermValidatorImplTest {
 	}
 
 	protected ValidationTask createTask(FreeFormTermRequest request) {
-		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, factory, ProcessState.NO);
+		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, "freeform", factory, ProcessState.NO);
 		return task;
 	}
 	

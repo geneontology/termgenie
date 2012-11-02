@@ -25,6 +25,8 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.freeform.FreeFormTermService;
+import org.bbop.termgenie.services.freeform.NoopFreeFormModule;
 import org.bbop.termgenie.services.lookup.TermLookupServiceDefaultModule;
 import org.bbop.termgenie.services.management.ManagementServiceModule;
 import org.bbop.termgenie.services.management.ManagementServices;
@@ -75,6 +77,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				ManagementServices management,
 				ResourceProviderService resource,
 				TermHierarchyRenderer renderer,
+				FreeFormTermService freeform,
 				ProgressMonitor progress)
 		{
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor(getInjector());
@@ -89,6 +92,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("management", management, ManagementServices.class);
 			executor.addHandler("resource", resource, ResourceProviderService.class);
 			executor.addHandler("renderer", renderer, TermHierarchyRenderer.class);
+			executor.addHandler("freeform", freeform, FreeFormTermService.class);
 			return executor;
 		}
 	}
@@ -154,6 +158,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getTermHierarchyModule(), true, "TermHierarchyModule");
 		add(modules, getReviewMailHandlerModule(), true, "ReviewMailHandlerModule");
 		add(modules, getTermLookupModule(), true, "TermLookupModule");
+		add(modules, getFreeFormTermModule(), true, "FreeFormModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -248,6 +253,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 */
 	protected IOCModule getReviewMailHandlerModule() {
 		return new NoopReviewMailHandler.NoopReviewMailHandlerModule(applicationProperties);
+	}
+	
+	protected IOCModule getFreeFormTermModule() {
+		return new NoopFreeFormModule(applicationProperties);
 	}
 	
 	/**
