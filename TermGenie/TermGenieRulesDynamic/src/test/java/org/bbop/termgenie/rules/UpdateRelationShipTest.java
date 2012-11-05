@@ -48,7 +48,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import owltools.InferenceBuilder;
-import owltools.ThreadedInferenceBuilder;
 import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
@@ -171,15 +170,7 @@ public class UpdateRelationShipTest {
 
 		private Pair<Collection<OWLAxiom>, Collection<OWLAxiom>> buildInferences(OWLReasoner reasoner) {
 			assertTrue(reasoner.isConsistent());
-			InferenceBuilder inferenceBuilder = new ThreadedInferenceBuilder(wrapper, (OWLReasonerFactory) null, false, 4) {
-
-				@Override
-				public synchronized void dispose() {
-					disposeThreadPool();
-					// do not call super here
-				}
-				
-			};
+			InferenceBuilder inferenceBuilder = new InferenceBuilder(wrapper, (OWLReasonerFactory) null, false);
 			inferenceBuilder.setReasoner(reasoner);
 		
 			List<OWLAxiom> inferences = inferenceBuilder.buildInferences();
