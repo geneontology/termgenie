@@ -15,6 +15,7 @@ import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OboTools;
+import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.TempTestFolderTools;
@@ -74,6 +75,23 @@ public class CommitHistoryStoreImplTest {
 		List<Pair<String, String>> existing = store.checkRecentCommits("Test", Arrays.asList("Term label 1", "Term label -1"));
 		assertEquals(1, existing.size());
 		assertEquals("t:01", existing.get(0).getOne());
+		
+		itemsForReview = store.getItemsForReview("Test");
+		assertEquals(3, itemsForReview.size());
+		final CommitHistoryItem change = itemsForReview.get(0);
+		assertEqualsItem(item1, change);
+		List<CommitedOntologyTerm> terms = change.getTerms();
+		for (CommitedOntologyTerm term : terms) {
+			Frame f = CommitHistoryTools.translate(term.getId(), term.getObo());
+			String def = f.getTagValue(OboFormatTag.TAG_DEF, String.class);
+			f.setClauses(Collections.singletonList(new Clause(OboFormatTag.TAG_DEF, "OBOSOLETE. "+def)));
+			OboTools.removeAllRelations(f);
+			term.setObo(OboWriterTools.writeFrame(f, null));
+		}
+		store.update(change, "Test");
+		
+		itemsForReview = store.getItemsForReview("Test");
+		assertEquals(3, itemsForReview.size());
 	}
 
 	private CommitHistoryItem createTestItem(int i, int childrenStart, int childrenCount) {

@@ -53,6 +53,27 @@ public class CommitHistoryTools {
 		return term;
 	}
 	
+	public static boolean update(CommitedOntologyTerm term, Frame frame, Set<OWLAxiom> axioms, Modification operation) {
+		return update(term, frame, create(axioms), operation);
+	}
+	
+	public static boolean update(CommitedOntologyTerm term, Frame frame, String owlAxioms, Modification operation) {
+		try {
+			String obo = OboWriterTools.writeFrame(frame, null);
+			term.setObo(obo);
+		} catch (IOException exception) {
+			logger.error("Could not translate term: "+frame.getId(), exception);
+			return false;
+		}
+		term.setOperation(operation);
+		term.setAxioms(owlAxioms);
+		String label = frame.getTagValue(OboFormatTag.TAG_NAME, String.class);
+		if (label != null) {
+			term.setLabel(label);
+		}
+		return true;
+	}
+	
 	public static SimpleCommitedOntologyTerm createSimple(Pair<Frame, Set<OWLAxiom>> pair, Modification operation) {
 		Frame frame = pair.getOne();
 		SimpleCommitedOntologyTerm term = new SimpleCommitedOntologyTerm();

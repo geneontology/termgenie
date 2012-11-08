@@ -363,9 +363,6 @@ public abstract class IOCModule extends AbstractModule {
 				throw new RuntimeException("No value found for file key: " + name);
 			}
 			reportedValue = "null";
-			bind(new TypeLiteral<List<String>>() { /* Intentionally empty */}).
-				annotatedWith(Names.named(name)).
-				toProvider(Providers.<List<String>>of(null));
 		}
 		else {
 			reportedValue = value.toString();

@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
 import org.apache.commons.io.FileUtils;
@@ -76,6 +77,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 		scheduler.scheduleWithFixedDelay(command, period, period, unit);
 	}
 	
+	@Nullable
 	@Inject(optional=true)
 	public void setIgnores(@Named("FileCachingIRIMapperIgnoreMappings") List<String> ignoreMappings) {
 		if (ignoreMappings != null) {
