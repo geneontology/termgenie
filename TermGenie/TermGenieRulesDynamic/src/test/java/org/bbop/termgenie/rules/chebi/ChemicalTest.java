@@ -155,7 +155,7 @@ public class ChemicalTest {
 		TermGenerationOutput output = list.get(0);
 		
 		assertFalse(output.isSuccess());
-		assertEquals("Falied to create the term citrate(3-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_16947\" " +
+		assertEquals("Failed to create the term citrate(3-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_16947\" " +
 				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
 		
 		
@@ -171,7 +171,7 @@ public class ChemicalTest {
 		TermGenerationOutput output = list.get(0);
 		
 		assertFalse(output.isSuccess());
-		assertEquals("Falied to create the term citrate(2-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35808\" " +
+		assertEquals("Failed to create the term citrate(2-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35808\" " +
 				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
 		
 		
@@ -187,7 +187,7 @@ public class ChemicalTest {
 		TermGenerationOutput output = list.get(0);
 		
 		assertFalse(output.isSuccess());
-		assertEquals("Falied to create the term citrate(1-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35804\" " +
+		assertEquals("Failed to create the term citrate(1-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35804\" " +
 				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
 		
 		
@@ -203,7 +203,7 @@ public class ChemicalTest {
 		TermGenerationOutput output = list.get(0);
 		
 		assertFalse(output.isSuccess());
-		assertEquals("Falied to create the term citric acid metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_30769\" " +
+		assertEquals("Failed to create the term citric acid metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_30769\" " +
 				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
 		
 		

@@ -139,7 +139,7 @@ public class TransMembraneTransporterMFTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("Falied to create the term L-glutamate(2-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29988\" " +
+		assertEquals("Failed to create the term L-glutamate(2-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29988\" " +
 				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getMessage());
 		
 	}
@@ -156,7 +156,7 @@ public class TransMembraneTransporterMFTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("Falied to create the term L-glutamate(1-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29985\" " +
+		assertEquals("Failed to create the term L-glutamate(1-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29985\" " +
 				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getMessage());
 		
 	}

@@ -44,6 +44,9 @@ public class SynonymGenerationToolsTest {
 
 	private static class DummyOWLObject implements OWLObject {
 
+		// default
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public int compareTo(OWLObject o) {
 			return 0;
