@@ -273,7 +273,7 @@ public abstract class AbstractTermCreationTools<T> implements ChangeTracker {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
 			if (inferredRelations.equivalentClasses != null) {
 				for (OWLClass owlClass : inferredRelations.equivalentClasses) {
-					output.add(singleError("Falied to create the term "+label+
+					output.add(singleError("Failed to create the term "+label+
 							" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
 							" The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +
 							"' with the same logic definition already exists",

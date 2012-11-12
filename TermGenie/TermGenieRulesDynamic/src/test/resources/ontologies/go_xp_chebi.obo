@@ -1,6 +1,6 @@
 format-version: 1.2
-date: 10:09:2012 03:02
-saved-by: mah
+date: 08:11:2012 09:50
+saved-by: tb
 auto-generated-by: TermGenie 1.0
 ontology: go/extensions/x-chemical
 
@@ -157,7 +157,7 @@ intersection_of: has_input CHEBI:18420 ! magnesium(2+)
 [Term]
 id: GO:0000295 ! adenine nucleotide transmembrane transporter activity
 intersection_of: GO:0015215 ! nucleotide transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:16708 ! adenine
+intersection_of: transports_or_maintains_localization_of CHEBI:61293 ! adenyl nucleotide
 
 [Term]
 id: GO:0000296 ! spermine transport
@@ -200,6 +200,11 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17359 ! sulfite
 
 [Term]
+id: GO:0000770 ! peptide pheromone export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:38579 ! peptide pheromone
+
+[Term]
 id: GO:0000822 ! inositol hexakisphosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17401 ! myo-inositol hexakisphosphate
@@ -235,6 +240,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:37121 ! guanosine
 id: GO:0001409 ! guanine nucleotide transmembrane transporter activity
 intersection_of: GO:0015215 ! nucleotide transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:61292 ! guanyl nucleotide
+
+[Term]
+id: GO:0001504 ! neurotransmitter uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:25512 ! neurotransmitter
 
 [Term]
 id: GO:0001516 ! prostaglandin biosynthetic process
@@ -285,6 +295,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:59558 ! medium-ch
 id: GO:0001676 ! long-chain fatty acid metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:57560 ! long-chain fatty acid anion
+
+[Term]
+id: GO:0001678 ! cellular glucose homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:17234 ! glucose
 
 [Term]
 id: GO:0001692 ! histamine metabolic process
@@ -457,6 +472,11 @@ intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:16670 ! peptide
 
 [Term]
+id: GO:0003333 ! amino acid transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:33709 ! amino acid
+
+[Term]
 id: GO:0003676 ! nucleic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:33696 ! nucleic acid
@@ -517,7 +537,7 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16414 ! L-valine
 
 [Term]
-id: GO:0005308 ! creatine transporter activity
+id: GO:0005308 ! creatine transmembrane transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16919 ! creatine
 
@@ -579,7 +599,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:15379 ! dioxygen
 [Term]
 id: GO:0005345 ! purine nucleobase transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:35584 ! purine
+intersection_of: transports_or_maintains_localization_of CHEBI:26386 ! purine nucleobase
 
 [Term]
 id: GO:0005346 ! purine ribonucleotide transmembrane transporter activity
@@ -594,7 +614,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:15422 ! ATP
 [Term]
 id: GO:0005350 ! pyrimidine nucleobase transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:16898 ! pyrimidine
+intersection_of: transports_or_maintains_localization_of CHEBI:26432 ! pyrimidine nucleobase
 
 [Term]
 id: GO:0005353 ! fructose transmembrane transporter activity
@@ -633,7 +653,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:27092 ! tricarbox
 
 [Term]
 id: GO:0005372 ! water transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15377 ! water
 
 [Term]
@@ -1164,17 +1184,17 @@ intersection_of: has_participant CHEBI:24583 ! hexitol
 [Term]
 id: GO:0006060 ! sorbitol metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:17924 ! D-glucitol
+intersection_of: has_participant CHEBI:30911 ! glucitol
 
 [Term]
 id: GO:0006061 ! sorbitol biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:17924 ! D-glucitol
+intersection_of: has_output CHEBI:30911 ! glucitol
 
 [Term]
 id: GO:0006062 ! sorbitol catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:17924 ! D-glucitol
+intersection_of: has_input CHEBI:30911 ! glucitol
 
 [Term]
 id: GO:0006063 ! uronic acid metabolic process
@@ -2860,12 +2880,12 @@ intersection_of: transports_or_maintains_localization_of CHEBI:29108 ! calcium(2
 [Term]
 id: GO:0006817 ! phosphate ion transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+intersection_of: transports_or_maintains_localization_of CHEBI:35780 ! phosphate ion
 
 [Term]
 id: GO:0006818 ! hydrogen transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:49637 ! hydrogen atom
+intersection_of: transports_or_maintains_localization_of CHEBI:33260 ! elemental hydrogen
 
 [Term]
 id: GO:0006820 ! anion transport
@@ -2976,6 +2996,21 @@ intersection_of: transports_or_maintains_localization_of CHEBI:32678 ! glutamina
 id: GO:0006869 ! lipid transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:18059 ! lipid
+
+[Term]
+id: GO:0006873 ! cellular ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:24870 ! ion
+
+[Term]
+id: GO:0006874 ! cellular calcium ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:39124 ! calcium ion
+
+[Term]
+id: GO:0006882 ! cellular zinc ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:27365 ! zinc ion
 
 [Term]
 id: GO:0006982 ! response to lipid hydroperoxide
@@ -4332,12 +4367,12 @@ intersection_of: has_output CHEBI:30854 ! indole-3-acetate
 [Term]
 id: GO:0009685 ! gibberellin metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:59139 ! gibberellin carboxylic acid anion
+intersection_of: has_participant CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0009686 ! gibberellin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:59139 ! gibberellin carboxylic acid anion
+intersection_of: has_output CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0009687 ! abscisic acid metabolic process
@@ -4482,7 +4517,7 @@ intersection_of: has_input CHEBI:22152 ! 2-cis-abscisic acid
 [Term]
 id: GO:0009739 ! response to gibberellin stimulus
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:59139 ! gibberellin carboxylic acid anion
+intersection_of: has_input CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0009741 ! response to brassinosteroid stimulus
@@ -4625,6 +4660,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:18233 ! xyloglucan
 
 [Term]
+id: GO:0009992 ! cellular water homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:15377 ! water
+
+[Term]
 id: GO:0010013 ! N-1-naphthylphthalamic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:60833 ! naptalam
@@ -4713,6 +4753,11 @@ intersection_of: has_input CHEBI:25516 ! nickel cation
 id: GO:0010046 ! response to mycotoxin
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25442 ! mycotoxin
+
+[Term]
+id: GO:0010107 ! potassium ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29103 ! potassium(1+)
 
 [Term]
 id: GO:0010120 ! camalexin biosynthetic process
@@ -4820,6 +4865,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17621 ! FMN
 
 [Term]
+id: GO:0010184 ! cytokinin transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:23530 ! cytokinin
+
+[Term]
 id: GO:0010189 ! vitamin E biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:33234 ! vitamin E
@@ -4833,6 +4883,11 @@ intersection_of: has_input CHEBI:25812 ! ozone
 id: GO:0010200 ! response to chitin
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:17029 ! chitin
+
+[Term]
+id: GO:0010217 ! cellular aluminum ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:60272 ! aluminium ion
 
 [Term]
 id: GO:0010226 ! response to lithium ion
@@ -4930,6 +4985,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:37329 ! phosphatidylinositol 5-phosphate
 
 [Term]
+id: GO:0010315 ! auxin efflux
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:22676 ! auxin
+
+[Term]
 id: GO:0010329 ! auxin efflux transmembrane transporter activity
 intersection_of: GO:0015562 ! efflux transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:22676 ! auxin
@@ -4937,7 +4997,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:22676 ! auxin
 [Term]
 id: GO:0010331 ! gibberellin binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:59139 ! gibberellin carboxylic acid anion
+intersection_of: has_input CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0010336 ! gibberellic acid homeostasis
@@ -4953,6 +5013,11 @@ intersection_of: has_output CHEBI:60973 ! suberin
 id: GO:0010351 ! lithium ion transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:49713 ! lithium(1+)
+
+[Term]
+id: GO:0010352 ! lithium ion export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:49713 ! lithium(1+)
 
 [Term]
 id: GO:0010353 ! response to trehalose stimulus
@@ -5127,6 +5192,11 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:39128 ! magnesium ion
 
 [Term]
+id: GO:0010961 ! cellular magnesium ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:39128 ! magnesium ion
+
+[Term]
 id: GO:0014046 ! dopamine secretion
 intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:18243 ! dopamine
@@ -5264,7 +5334,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16301 ! nitrite
 [Term]
 id: GO:0015114 ! phosphate ion transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+intersection_of: transports_or_maintains_localization_of CHEBI:35780 ! phosphate ion
 
 [Term]
 id: GO:0015115 ! silicate transmembrane transporter activity
@@ -5349,7 +5419,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:27252 ! uronic ac
 [Term]
 id: GO:0015134 ! hexuronate transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:24591 ! hexuronate
+intersection_of: transports_or_maintains_localization_of CHEBI:24592 ! hexuronic acid
 
 [Term]
 id: GO:0015135 ! glucuronate transmembrane transporter activity
@@ -5473,7 +5543,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:30049 ! teichoic 
 
 [Term]
 id: GO:0015164 ! glucuronoside transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:24302 ! glucosiduronic acid
 
 [Term]
@@ -5538,8 +5608,8 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16283 ! L-cystine
 
 [Term]
 id: GO:0015185 ! L-gamma-aminobutyric acid transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:30566 ! gamma-aminobutyrate
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16865 ! gamma-aminobutyric acid
 
 [Term]
 id: GO:0015186 ! L-glutamine transmembrane transporter activity
@@ -5712,7 +5782,7 @@ intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15956 ! biotin
 
 [Term]
-id: GO:0015226 ! carnitine transporter activity
+id: GO:0015226 ! carnitine transmembrane transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17126 ! carnitine
 
@@ -5738,7 +5808,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:30413 ! heme
 
 [Term]
 id: GO:0015233 ! pantothenate transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:46905 ! (R)-pantothenic acid
 
 [Term]
@@ -5753,7 +5823,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:30411 ! cobalamin
 
 [Term]
 id: GO:0015238 ! drug transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:23888 ! drug
 
 [Term]
@@ -5859,7 +5929,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:49786 ! nickel(2+
 [Term]
 id: GO:0015415 ! phosphate ion transmembrane-transporting ATPase activity
 intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
-intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+intersection_of: transports_or_maintains_localization_of CHEBI:35780 ! phosphate ion
 
 [Term]
 id: GO:0015417 ! polyamine-transporting ATPase activity
@@ -5912,7 +5982,7 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:36208 ! shikimate
 
 [Term]
-id: GO:0015546 ! sulfathiazole transporter activity
+id: GO:0015546 ! sulfathiazole transmembrane transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:9337 ! sulfathiazole
 
@@ -6028,8 +6098,8 @@ intersection_of: transports_or_maintains_localization_of CHEBI:8005 ! peptidogly
 
 [Term]
 id: GO:0015651 ! quaternary ammonium group transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:35273 ! quaternary ammonium salt
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26469 ! quaternary nitrogen compound
 
 [Term]
 id: GO:0015654 ! tellurite uptake transmembrane transporter activity
@@ -6134,7 +6204,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:36264 ! molybdate
 [Term]
 id: GO:0015690 ! aluminum cation transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:63062 ! aluminium cation
+intersection_of: transports_or_maintains_localization_of CHEBI:49470 ! aluminium(3+)
 
 [Term]
 id: GO:0015691 ! cadmium ion transport
@@ -6639,7 +6709,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:15978 ! sn-glycer
 [Term]
 id: GO:0015795 ! sorbitol transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:17924 ! D-glucitol
+intersection_of: transports_or_maintains_localization_of CHEBI:30911 ! glucitol
 
 [Term]
 id: GO:0015796 ! galactitol transport
@@ -6794,7 +6864,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:32859 ! valinate
 [Term]
 id: GO:0015830 ! diaminopimelate transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:23671 ! 2,6-diaminopimelate(2-)
+intersection_of: transports_or_maintains_localization_of CHEBI:23673 ! 2,6-diaminopimelic acid
 
 [Term]
 id: GO:0015833 ! peptide transport
@@ -6862,7 +6932,7 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:64709 ! organic acid
 
 [Term]
-id: GO:0015850 ! organic alcohol transport
+id: GO:0015850 ! organic hydroxy compound transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33822 ! organic hydroxy compound
 
@@ -6902,8 +6972,8 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33838 ! nucleoside
 
 [Term]
-id: GO:0015860 ! purine nucleoside transport
-intersection_of: GO:0006810 ! transport
+id: GO:0015860 ! purine nucleoside transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:26394 ! purine nucleoside
 
 [Term]
@@ -7127,6 +7197,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:58951 ! short-chain fatty acid anion
 
 [Term]
+id: GO:0015913 ! short-chain fatty acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:26666 ! short-chain fatty acid
+
+[Term]
 id: GO:0015914 ! phospholipid transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16247 ! phospholipid
@@ -7155,6 +7230,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:15889 ! sterol
 id: GO:0015920 ! lipopolysaccharide transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16412 ! lipopolysaccharide
+
+[Term]
+id: GO:0015921 ! lipopolysaccharide export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:16412 ! lipopolysaccharide
 
 [Term]
 id: GO:0015931 ! nucleobase-containing compound transport
@@ -7717,6 +7797,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24163 ! galactoside
 
 [Term]
+id: GO:0017038 ! protein import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:36080 ! protein
+
+[Term]
 id: GO:0017076 ! purine nucleotide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26395 ! purine nucleotide
@@ -7947,7 +8032,7 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:18918 ! 1,3-dichloropropene
 
 [Term]
-id: GO:0018904 ! organic ether metabolic process
+id: GO:0018904 ! ether metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:25698 ! ether
 
@@ -9595,11 +9680,6 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:48871 ! galactaric acid anion
 
 [Term]
-id: GO:0019582 ! D-galactarate catabolic process
-intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:16537 ! galactarate(2-)
-
-[Term]
 id: GO:0019583 ! galactonate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:24148 ! galactonate
@@ -10146,6 +10226,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:35143 ! hemoglobin
 
 [Term]
+id: GO:0020028 ! hemoglobin import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:35143 ! hemoglobin
+
+[Term]
 id: GO:0020037 ! heme binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:30413 ! heme
@@ -10184,6 +10269,21 @@ intersection_of: transports_or_maintains_localization_of CHEBI:36915 ! inorganic
 id: GO:0030001 ! metal ion transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:25213 ! metal cation
+
+[Term]
+id: GO:0030002 ! cellular anion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:22563 ! anion
+
+[Term]
+id: GO:0030003 ! cellular cation homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:36916 ! cation
+
+[Term]
+id: GO:0030004 ! cellular monovalent inorganic cation homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:60242 ! monovalent inorganic cation
 
 [Term]
 id: GO:0030104 ! water homeostasis
@@ -10237,7 +10337,7 @@ intersection_of: has_input CHEBI:597326 ! pyridoxal 5'-phosphate(2-)
 
 [Term]
 id: GO:0030184 ! nitric oxide transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16480 ! nitric oxide
 
 [Term]
@@ -10526,6 +10626,11 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:24636 ! proton
 
 [Term]
+id: GO:0030643 ! cellular phosphate ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:35780 ! phosphate ion
+
+[Term]
 id: GO:0030645 ! glucose catabolic process to butyrate
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17234 ! glucose
@@ -10777,6 +10882,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:10415 ! beta-endorphin
 
 [Term]
+id: GO:0031670 ! cellular response to nutrient
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33284 ! nutrient
+
+[Term]
 id: GO:0031919 ! vitamin B6 transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:27306 ! vitamin B6
@@ -11001,6 +11111,11 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:15379 ! dioxygen
 
 [Term]
+id: GO:0032445 ! fructose import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:28757 ! fructose
+
+[Term]
 id: GO:0032494 ! response to peptidoglycan
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:8005 ! peptidoglycan
@@ -11191,6 +11306,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:3306 ! calcitonin
 
 [Term]
+id: GO:0032870 ! cellular response to hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24621 ! hormone
+
+[Term]
 id: GO:0032923 ! organic phosphonate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:37592 ! organic phosphonate
@@ -11214,6 +11334,11 @@ intersection_of: has_output CHEBI:24846 ! inositol phosphate
 id: GO:0032959 ! inositol trisphosphate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:25450 ! myo-inositol trisphosphate
+
+[Term]
+id: GO:0032973 ! amino acid export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:33709 ! amino acid
 
 [Term]
 id: GO:0033013 ! tetrapyrrole metabolic process
@@ -11366,6 +11491,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:15422 ! ATP
 
 [Term]
+id: GO:0033216 ! ferric iron import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29034 ! iron(3+)
+
+[Term]
 id: GO:0033218 ! amide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:32988 ! amide
@@ -11396,9 +11526,19 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:15573 ! (2-aminoethyl)phosphonic acid
 
 [Term]
+id: GO:0033228 ! cysteine export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:15356 ! cysteine
+
+[Term]
 id: GO:0033229 ! cysteine transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15356 ! cysteine
+
+[Term]
+id: GO:0033231 ! carbohydrate export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:16646 ! carbohydrate
 
 [Term]
 id: GO:0033265 ! choline binding
@@ -11493,14 +11633,14 @@ intersection_of: has_input CHEBI:18230 ! chlorophyll a
 [Term]
 id: GO:0033311 ! chlorophyll a biosynthetic process via phytyl diphosphate
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_input CHEBI:18230 ! chlorophyll a
 intersection_of: has_intermediate CHEBI:18187 ! phytyl diphosphate
+intersection_of: has_output CHEBI:18230 ! chlorophyll a
 
 [Term]
 id: GO:0033312 ! chlorophyll a biosynthetic process via geranylgeranyl-chlorophyll a
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_input CHEBI:18230 ! chlorophyll a
 intersection_of: has_intermediate CHEBI:64668 ! geranylgeranyl-chlorophyll a
+intersection_of: has_output CHEBI:18230 ! chlorophyll a
 
 [Term]
 id: GO:0033317 ! pantothenate biosynthetic process from valine
@@ -11561,6 +11701,11 @@ intersection_of: has_participant CHEBI:15415 ! ent-kaurene
 id: GO:0033332 ! ent-kaurene biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:15415 ! ent-kaurene
+
+[Term]
+id: GO:0033344 ! cholesterol efflux
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:16113 ! cholesterol
 
 [Term]
 id: GO:0033345 ! asparagine catabolic process via L-aspartate
@@ -11893,6 +12038,11 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:28260 ! galactose
 
 [Term]
+id: GO:0033502 ! cellular galactose homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:28260 ! galactose
+
+[Term]
 id: GO:0033506 ! glucosinolate biosynthetic process from homomethionine
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_input CHEBI:62936 ! homomethioninate
@@ -12092,6 +12242,16 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:62944 ! sialic acid anion
 
 [Term]
+id: GO:0033700 ! phospholipid efflux
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:16247 ! phospholipid
+
+[Term]
+id: GO:0033762 ! response to glucagon stimulus
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:5391 ! glucagon
+
+[Term]
 id: GO:0033859 ! furaldehyde metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:34768 ! furfural
@@ -12232,6 +12392,21 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:29959 ! quinolinate(2-)
 
 [Term]
+id: GO:0034219 ! carbohydrate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16646 ! carbohydrate
+
+[Term]
+id: GO:0034220 ! ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:24870 ! ion
+
+[Term]
+id: GO:0034226 ! lysine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:25094 ! lysine
+
+[Term]
 id: GO:0034228 ! ethanolamine transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16000 ! ethanolamine
@@ -12245,6 +12420,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16000 ! ethanolam
 id: GO:0034235 ! GPI anchor binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24410 ! glycosylphosphatidylinositol
+
+[Term]
+id: GO:0034257 ! nicotinamide riboside transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15927 ! N-ribosylnicotinamide
 
 [Term]
 id: GO:0034258 ! nicotinamide riboside transport
@@ -12377,6 +12557,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:20392 ! 4-hydroxyproline
 
 [Term]
+id: GO:0034614 ! cellular response to reactive oxygen species
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26523 ! reactive oxygen species
+
+[Term]
 id: GO:0034617 ! tetrahydrobiopterin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:15372 ! 5,6,7,8-tetrahydrobiopterin
@@ -12467,6 +12652,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26345 ! prostaglandins I
 
 [Term]
+id: GO:0034775 ! glutathione transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16856 ! glutathione
+
+[Term]
 id: GO:0034776 ! response to histamine
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18295 ! histamine
@@ -12547,6 +12737,41 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:17368 ! hypoxanthine
 
 [Term]
+id: GO:0035348 ! acetyl-CoA transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15351 ! acetyl-CoA
+
+[Term]
+id: GO:0035349 ! coenzyme A transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15346 ! coenzyme A
+
+[Term]
+id: GO:0035350 ! FAD transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16238 ! FAD
+
+[Term]
+id: GO:0035351 ! heme transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:30413 ! heme
+
+[Term]
+id: GO:0035352 ! NAD transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
+
+[Term]
+id: GO:0035353 ! nicotinamide mononucleotide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:50383 ! nicotinamide mononucleotide
+
+[Term]
+id: GO:0035356 ! cellular triglyceride homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:17855 ! triglyceride
+
+[Term]
 id: GO:0035364 ! thymine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:17821 ! thymine
@@ -12562,6 +12787,21 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:37397 ! chondroitin sulfate
 
 [Term]
+id: GO:0035376 ! sterol import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15889 ! sterol
+
+[Term]
+id: GO:0035378 ! carbon dioxide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16526 ! carbon dioxide
+
+[Term]
+id: GO:0035382 ! sterol transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15889 ! sterol
+
+[Term]
 id: GO:0035383 ! thioester metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:51277 ! thioester
@@ -12570,6 +12810,31 @@ intersection_of: has_participant CHEBI:51277 ! thioester
 id: GO:0035384 ! thioester biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:51277 ! thioester
+
+[Term]
+id: GO:0035428 ! hexose transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:18133 ! hexose
+
+[Term]
+id: GO:0035429 ! gluconate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:24265 ! gluconate
+
+[Term]
+id: GO:0035433 ! acetate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:30089 ! acetate
+
+[Term]
+id: GO:0035434 ! copper ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:23378 ! copper cation
+
+[Term]
+id: GO:0035435 ! phosphate ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:35780 ! phosphate ion
 
 [Term]
 id: GO:0035438 ! cyclic-di-GMP binding
@@ -12582,6 +12847,31 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:50387 ! tuberculosinol
 
 [Term]
+id: GO:0035442 ! dipeptide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:46761 ! dipeptide
+
+[Term]
+id: GO:0035443 ! tripeptide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:47923 ! tripeptide
+
+[Term]
+id: GO:0035444 ! nickel cation transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:25516 ! nickel cation
+
+[Term]
+id: GO:0035445 ! borate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:22908 ! borate
+
+[Term]
+id: GO:0035461 ! vitamin transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:33229 ! vitamin
+
+[Term]
 id: GO:0035498 ! carnosine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15727 ! carnosine
@@ -12590,6 +12880,11 @@ intersection_of: has_participant CHEBI:15727 ! carnosine
 id: GO:0035499 ! carnosine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:15727 ! carnosine
+
+[Term]
+id: GO:0035524 ! proline transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:26271 ! proline
 
 [Term]
 id: GO:0035594 ! ganglioside binding
@@ -12612,8 +12907,28 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26398 ! purine ribonucleoside triphosphate
 
 [Term]
+id: GO:0035672 ! oligopeptide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:25676 ! oligopeptide
+
+[Term]
+id: GO:0035674 ! tricarboxylic acid transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:27093 ! tricarboxylic acid
+
+[Term]
+id: GO:0035690 ! cellular response to drug
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23888 ! drug
+
+[Term]
 id: GO:0035713 ! response to nitrogen dioxide
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:33101 ! nitrogen dioxide
+
+[Term]
+id: GO:0035714 ! cellular response to nitrogen dioxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:33101 ! nitrogen dioxide
 
 [Term]
@@ -12634,6 +12949,11 @@ intersection_of: has_input CHEBI:64609 ! dinitrosyl-iron complex
 [Term]
 id: GO:0035784 ! nickel cation homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
+intersection_of: regulates_level_of CHEBI:25516 ! nickel cation
+
+[Term]
+id: GO:0035785 ! cellular nickel ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
 intersection_of: regulates_level_of CHEBI:25516 ! nickel cation
 
 [Term]
@@ -12695,6 +13015,16 @@ intersection_of: has_input CHEBI:28807 ! dITP
 id: GO:0035864 ! response to potassium ion
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:29103 ! potassium(1+)
+
+[Term]
+id: GO:0035865 ! cellular response to potassium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:29103 ! potassium(1+)
+
+[Term]
+id: GO:0035873 ! lactate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:24996 ! lactate
 
 [Term]
 id: GO:0035884 ! arabinan biosynthetic process
@@ -12769,6 +13099,11 @@ intersection_of: has_input CHEBI:17672 ! carbamoyl  phosphate
 [Term]
 id: GO:0035983 ! response to trichostatin A
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:46024 ! trichostatin A
+
+[Term]
+id: GO:0035984 ! cellular response to trichostatin A
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:46024 ! trichostatin A
 
 [Term]
@@ -12894,6 +13229,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16345 ! 3-sulfino-L-alanine
 
 [Term]
+id: GO:0036146 ! cellular response to mycotoxin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25442 ! mycotoxin
+
+[Term]
 id: GO:0036182 ! asperthecin metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:64161 ! asperthecin
@@ -12919,6 +13259,121 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:18252 ! zymosterol
 
 [Term]
+id: GO:0036229 ! L-glutamine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:18050 ! L-glutamine
+
+[Term]
+id: GO:0036231 ! L-threonine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16857 ! L-threonine
+
+[Term]
+id: GO:0036232 ! L-tyrosine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17895 ! L-tyrosine
+
+[Term]
+id: GO:0036233 ! glycine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15428 ! glycine
+
+[Term]
+id: GO:0036245 ! cellular response to menadione
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28869 ! menadione
+
+[Term]
+id: GO:0036253 ! response to amiloride
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:2639 ! amiloride
+
+[Term]
+id: GO:0036254 ! cellular response to amiloride
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:2639 ! amiloride
+
+[Term]
+id: GO:0036255 ! response to methylamine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16830 ! methylamine
+
+[Term]
+id: GO:0036256 ! cellular response to methylamine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16830 ! methylamine
+
+[Term]
+id: GO:0036270 ! response to diuretic
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35498 ! diuretic
+
+[Term]
+id: GO:0036271 ! response to methylphenidate
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:6887 ! methylphenidate
+
+[Term]
+id: GO:0036272 ! response to gemcitabine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:175901 ! gemcitabine
+
+[Term]
+id: GO:0036273 ! response to statin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35664 ! hydroxymethylglutaryl-CoA reductase inhibitor
+
+[Term]
+id: GO:0036274 ! response to lapatinib
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:49603 ! lapatinib
+
+[Term]
+id: GO:0036275 ! response to 5-fluorouracil
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:46345 ! 5-fluorouracil
+
+[Term]
+id: GO:0036276 ! response to antidepressant
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35469 ! antidepressant
+
+[Term]
+id: GO:0036277 ! response to anticonvulsant
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35623 ! anticonvulsant
+
+[Term]
+id: GO:0036280 ! cellular response to L-canavanine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:609827 ! L-canavanine
+
+[Term]
+id: GO:0036287 ! response to iloperidone
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:65173 ! iloperidone
+
+[Term]
+id: GO:0036288 ! response to ximelagatran
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:65172 ! ximelagatran
+
+[Term]
+id: GO:0036314 ! response to sterol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:15889 ! sterol
+
+[Term]
+id: GO:0036315 ! cellular response to sterol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:15889 ! sterol
+
+[Term]
+id: GO:0036346 ! cellular response to L-cysteine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17561 ! L-cysteine
+
+[Term]
 id: GO:0042046 ! W-molybdopterin cofactor metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:60215 ! W-molybdopterin cofactor
@@ -12927,6 +13382,11 @@ intersection_of: has_participant CHEBI:60215 ! W-molybdopterin cofactor
 id: GO:0042047 ! W-molybdopterin cofactor biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:60215 ! W-molybdopterin cofactor
+
+[Term]
+id: GO:0042049 ! cellular acyl-CoA homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:17984 ! acyl-CoA
 
 [Term]
 id: GO:0042120 ! alginic acid metabolic process
@@ -13182,7 +13642,7 @@ intersection_of: has_input CHEBI:27958 ! cocaine
 [Term]
 id: GO:0042221 ! response to chemical stimulus
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:59999 ! chemical substance
+intersection_of: has_input CHEBI:24431 ! chemical entity
 
 [Term]
 id: GO:0042277 ! peptide binding
@@ -13973,16 +14433,6 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:30612 ! D-glucarate(2-)
 
 [Term]
-id: GO:0042871 ! D-galactarate transport
-intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:16537 ! galactarate(2-)
-
-[Term]
-id: GO:0042872 ! D-galactarate biosynthetic process
-intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:16537 ! galactarate(2-)
-
-[Term]
 id: GO:0042873 ! aldonate transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:22299 ! aldonate
@@ -14049,7 +14499,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:32988 ! amide
 
 [Term]
 id: GO:0042887 ! amide transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:32988 ! amide
 
 [Term]
@@ -14339,7 +14789,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:30653 ! homoserin
 
 [Term]
 id: GO:0042971 ! lactone transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:25000 ! lactone
 
 [Term]
@@ -14351,6 +14801,21 @@ intersection_of: has_output CHEBI:16670 ! peptide
 id: GO:0043048 ! dolichyl monophosphate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16214 ! dolichyl phosphate
+
+[Term]
+id: GO:0043090 ! amino acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0043091 ! L-arginine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16467 ! L-arginine
+
+[Term]
+id: GO:0043092 ! L-amino acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15705 ! L-alpha-amino acid
 
 [Term]
 id: GO:0043129 ! surfactant homeostasis
@@ -14531,6 +14996,11 @@ intersection_of: has_input CHEBI:16567 ! anthranilate
 id: GO:0043434 ! response to peptide hormone stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25905 ! peptide hormone
+
+[Term]
+id: GO:0043435 ! response to corticotropin-releasing hormone stimulus
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:65311 ! corticotropin-releasing hormone
 
 [Term]
 id: GO:0043436 ! oxoacid metabolic process
@@ -14823,6 +15293,26 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:26835 ! sulfur molecular entity
 
 [Term]
+id: GO:0044539 ! long-chain fatty acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15904 ! long-chain fatty acid
+
+[Term]
+id: GO:0044591 ! response to amylopectin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:28057 ! amylopectin
+
+[Term]
+id: GO:0044592 ! response to pullulan
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27941 ! pullulan
+
+[Term]
+id: GO:0044690 ! methionine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16811 ! methionine
+
+[Term]
 id: GO:0045017 ! glycerolipid biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:35741 ! glycerolipid
@@ -14830,7 +15320,7 @@ intersection_of: has_output CHEBI:35741 ! glycerolipid
 [Term]
 id: GO:0045117 ! azole transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:19203 ! 1H-pyrrole
+intersection_of: transports_or_maintains_localization_of CHEBI:68452 ! azole
 
 [Term]
 id: GO:0045122 ! aflatoxin biosynthetic process
@@ -14925,7 +15415,7 @@ intersection_of: has_input CHEBI:25698 ! ether
 [Term]
 id: GO:0045487 ! gibberellin catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:59139 ! gibberellin carboxylic acid anion
+intersection_of: has_input CHEBI:24250 ! gibberellin
 
 [Term]
 id: GO:0045488 ! pectin metabolic process
@@ -16108,6 +16598,11 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:18412 ! N(omega)-phospho-L-arginine
 
 [Term]
+id: GO:0046323 ! glucose import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17234 ! glucose
+
+[Term]
 id: GO:0046327 ! glycerol biosynthetic process from pyruvate
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_input CHEBI:15361 ! pyruvate
@@ -16387,11 +16882,6 @@ intersection_of: has_participant CHEBI:17111 ! 5-O-phosphono-alpha-D-ribofuranos
 id: GO:0046392 ! galactarate catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:48871 ! galactaric acid anion
-
-[Term]
-id: GO:0046393 ! D-galactarate metabolic process
-intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:16537 ! galactarate(2-)
 
 [Term]
 id: GO:0046394 ! carboxylic acid biosynthetic process
@@ -16870,6 +17360,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:64648 ! enniatin
 
 [Term]
+id: GO:0046618 ! drug export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:23888 ! drug
+
+[Term]
 id: GO:0046624 ! sphingolipid transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:26739 ! sphingolipid
@@ -17031,7 +17526,7 @@ intersection_of: has_input CHEBI:22908 ! borate
 
 [Term]
 id: GO:0046715 ! borate transmembrane transporter activity
-intersection_of: GO:0005215 ! transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:22908 ! borate
 
 [Term]
@@ -17122,12 +17617,12 @@ intersection_of: has_input CHEBI:27641 ! cycloheximide
 [Term]
 id: GO:0046900 ! tetrahydrofolylpolyglutamate metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:28624 ! tetrahydrofolyl-(Glu)n
+intersection_of: has_participant CHEBI:28624 ! tetrahydrofolyl-poly(glutamic acid) macromolecule
 
 [Term]
 id: GO:0046901 ! tetrahydrofolylpolyglutamate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:28624 ! tetrahydrofolyl-(Glu)n
+intersection_of: has_output CHEBI:28624 ! tetrahydrofolyl-poly(glutamic acid) macromolecule
 
 [Term]
 id: GO:0046904 ! calcium oxalate binding
@@ -17283,6 +17778,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16867 ! D-methion
 id: GO:0048545 ! response to steroid hormone stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26764 ! steroid hormone
+
+[Term]
+id: GO:0048878 ! chemical homeostasis
+intersection_of: GO:0042592 ! homeostatic process
+intersection_of: regulates_level_of CHEBI:24431 ! chemical entity
 
 [Term]
 id: GO:0050427 ! 3'-phosphoadenosine 5'-phosphosulfate metabolic process
@@ -17936,6 +18436,31 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:18295 ! histamine
 
 [Term]
+id: GO:0051610 ! serotonin uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:28790 ! serotonin
+
+[Term]
+id: GO:0051615 ! histamine uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:18295 ! histamine
+
+[Term]
+id: GO:0051620 ! norepinephrine uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:33569 ! noradrenaline
+
+[Term]
+id: GO:0051625 ! epinephrine uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:33568 ! adrenaline
+
+[Term]
+id: GO:0051630 ! acetylcholine uptake
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15355 ! acetylcholine
+
+[Term]
 id: GO:0051676 ! pullulan metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:27941 ! pullulan
@@ -18049,6 +18574,16 @@ intersection_of: has_input CHEBI:16893 ! sphinganine 1-phosphate
 id: GO:0051937 ! catecholamine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33567 ! catecholamine
+
+[Term]
+id: GO:0051938 ! L-glutamate import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29985 ! L-glutamate(1-)
+
+[Term]
+id: GO:0051939 ! gamma-aminobutyric acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:30566 ! gamma-aminobutyrate
 
 [Term]
 id: GO:0051958 ! methotrexate transport
@@ -18300,7 +18835,7 @@ intersection_of: regulates_level_of CHEBI:27365 ! zinc ion
 [Term]
 id: GO:0055073 ! cadmium ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:22977 ! cadmium atom
+intersection_of: regulates_level_of CHEBI:48775 ! cadmium(2+)
 
 [Term]
 id: GO:0055074 ! calcium ion homeostasis
@@ -18321,6 +18856,11 @@ intersection_of: regulates_level_of CHEBI:36916 ! cation
 id: GO:0055081 ! anion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:22563 ! anion
+
+[Term]
+id: GO:0055082 ! cellular chemical homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:24431 ! chemical entity
 
 [Term]
 id: GO:0055088 ! lipid homeostasis
@@ -18363,6 +18903,16 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:32435 ! D-alaninate
 
 [Term]
+id: GO:0060003 ! copper ion export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:23378 ! copper cation
+
+[Term]
+id: GO:0060356 ! leucine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:25017 ! leucine
+
+[Term]
 id: GO:0060359 ! response to ammonium ion
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:35274 ! ammonium ion
@@ -18381,6 +18931,46 @@ intersection_of: has_input CHEBI:24127 ! fungicide
 id: GO:0061370 ! testosterone biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:17347 ! testosterone
+
+[Term]
+id: GO:0061431 ! cellular response to methionine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16811 ! methionine
+
+[Term]
+id: GO:0061459 ! L-arginine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16467 ! L-arginine
+
+[Term]
+id: GO:0061460 ! L-histidine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15971 ! L-histidine
+
+[Term]
+id: GO:0061461 ! L-lysine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:18019 ! L-lysine
+
+[Term]
+id: GO:0061476 ! response to anticoagulant
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:50249 ! anticoagulant
+
+[Term]
+id: GO:0061477 ! response to aromatase inhibitor
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:50790 ! aromatase inhibitor
+
+[Term]
+id: GO:0061478 ! response to platelet aggregation inhibitor
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:50427 ! platelet aggregation inhibitor
+
+[Term]
+id: GO:0061479 ! response to reverse transcriptase inhibitor
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:59897 ! reverse transcriptase inhibitor
 
 [Term]
 id: GO:0070025 ! carbon monoxide binding
@@ -18430,7 +19020,12 @@ intersection_of: has_participant CHEBI:28683 ! kynurenine
 [Term]
 id: GO:0070218 ! sulfide ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:26822 ! sulfide
+intersection_of: regulates_level_of CHEBI:15138 ! sulfide(2-)
+
+[Term]
+id: GO:0070219 ! cellular sulfide ion homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:15138 ! sulfide(2-)
 
 [Term]
 id: GO:0070273 ! phosphatidylinositol-4-phosphate binding
@@ -18476,6 +19071,11 @@ intersection_of: has_participant CHEBI:61232 ! N-acylphosphatidylethanolamine
 id: GO:0070300 ! phosphatidic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:57739 ! phosphatidate(2-)
+
+[Term]
+id: GO:0070301 ! cellular response to hydrogen peroxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16240 ! hydrogen peroxide
 
 [Term]
 id: GO:0070305 ! response to cGMP
@@ -18583,6 +19183,16 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:61444 ! gamma-poly(glutamate) polymer
 
 [Term]
+id: GO:0070508 ! cholesterol import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16113 ! cholesterol
+
+[Term]
+id: GO:0070509 ! calcium ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:39124 ! calcium ion
+
+[Term]
 id: GO:0070538 ! oleic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:30823 ! oleate
@@ -18618,6 +19228,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:61265 ! beta-D-glucopyranosyloxymethyluracil residue
 
 [Term]
+id: GO:0070588 ! calcium ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:39124 ! calcium ion
+
+[Term]
 id: GO:0070595 ! (1->3)-alpha-glucan metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28100 ! (1->3)-alpha-D-glucan
@@ -18631,6 +19246,11 @@ intersection_of: has_output CHEBI:28100 ! (1->3)-alpha-D-glucan
 id: GO:0070614 ! tungstate ion transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:46502 ! tungstate
+
+[Term]
+id: GO:0070627 ! ferrous iron import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29033 ! iron(2+)
 
 [Term]
 id: GO:0070629 ! (1->4)-alpha-glucan metabolic process
@@ -18711,6 +19331,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:29994 ! D-asparta
 id: GO:0070778 ! L-aspartate transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:29993 ! L-aspartate(2-)
+
+[Term]
+id: GO:0070779 ! D-aspartate import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29994 ! D-aspartate(2-)
 
 [Term]
 id: GO:0070781 ! response to biotin
@@ -18801,6 +19426,151 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:32650 ! L-asparaginate
 
 [Term]
+id: GO:0071106 ! adenosine 3',5'-bisphosphate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:37240 ! adenosine 3',5'-bisphosphate
+
+[Term]
+id: GO:0071213 ! cellular response to 1-aminocyclopropane-1-carboxylic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18053 ! 1-aminocyclopropanecarboxylic acid
+
+[Term]
+id: GO:0071222 ! cellular response to lipopolysaccharide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16412 ! lipopolysaccharide
+
+[Term]
+id: GO:0071223 ! cellular response to lipoteichoic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28640 ! lipoteichoic acid
+
+[Term]
+id: GO:0071224 ! cellular response to peptidoglycan
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:8005 ! peptidoglycan
+
+[Term]
+id: GO:0071225 ! cellular response to muramyl dipeptide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:59414 ! muramyl dipeptide
+
+[Term]
+id: GO:0071229 ! cellular response to acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:37527 ! acid
+
+[Term]
+id: GO:0071230 ! cellular response to amino acid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0071231 ! cellular response to folic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27470 ! folic acid
+
+[Term]
+id: GO:0071232 ! cellular response to histidine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27570 ! histidine
+
+[Term]
+id: GO:0071233 ! cellular response to leucine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25017 ! leucine
+
+[Term]
+id: GO:0071234 ! cellular response to phenylalanine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28044 ! phenylalanine
+
+[Term]
+id: GO:0071235 ! cellular response to proline
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26271 ! proline
+
+[Term]
+id: GO:0071236 ! cellular response to antibiotic
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22582 ! antibiotic
+
+[Term]
+id: GO:0071237 ! cellular response to bacteriocin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:48081 ! bacteriocin
+
+[Term]
+id: GO:0071238 ! cellular response to brefeldin A
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:48080 ! brefeldin A
+
+[Term]
+id: GO:0071239 ! cellular response to streptomycin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17076 ! streptomycin
+
+[Term]
+id: GO:0071240 ! cellular response to food
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33290 ! food
+
+[Term]
+id: GO:0071242 ! cellular response to ammonium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35274 ! ammonium ion
+
+[Term]
+id: GO:0071243 ! cellular response to arsenic-containing substance
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22632 ! arsenic molecular entity
+
+[Term]
+id: GO:0071244 ! cellular response to carbon dioxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16526 ! carbon dioxide
+
+[Term]
+id: GO:0071245 ! cellular response to carbon monoxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17245 ! carbon monoxide
+
+[Term]
+id: GO:0071246 ! cellular response to chlorate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:49709 ! chlorate
+
+[Term]
+id: GO:0071247 ! cellular response to chromate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35404 ! chromate(2-)
+
+[Term]
+id: GO:0071248 ! cellular response to metal ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25213 ! metal cation
+
+[Term]
+id: GO:0071249 ! cellular response to nitrate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17632 ! nitrate
+
+[Term]
+id: GO:0071250 ! cellular response to nitrite
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16301 ! nitrite
+
+[Term]
+id: GO:0071251 ! cellular response to silicon dioxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30563 ! silicon dioxide
+
+[Term]
+id: GO:0071252 ! cellular response to sulfur dioxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18422 ! sulfur dioxide
+
+[Term]
 id: GO:0071265 ! L-methionine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:32631 ! L-methioninate
@@ -18841,9 +19611,544 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:24921 ! isoquinoline alkaloid
 
 [Term]
+id: GO:0071275 ! cellular response to aluminum ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60272 ! aluminium ion
+
+[Term]
+id: GO:0071276 ! cellular response to cadmium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:48775 ! cadmium(2+)
+
+[Term]
+id: GO:0071277 ! cellular response to calcium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:39124 ! calcium ion
+
+[Term]
+id: GO:0071280 ! cellular response to copper ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23378 ! copper cation
+
+[Term]
+id: GO:0071281 ! cellular response to iron ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24875 ! iron cation
+
+[Term]
+id: GO:0071284 ! cellular response to lead ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60249 ! lead ion
+
+[Term]
+id: GO:0071286 ! cellular response to magnesium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:39128 ! magnesium ion
+
+[Term]
+id: GO:0071287 ! cellular response to manganese ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25155 ! manganese cation
+
+[Term]
+id: GO:0071288 ! cellular response to mercury ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25197 ! mercury cation
+
+[Term]
+id: GO:0071289 ! cellular response to nickel ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25516 ! nickel cation
+
+[Term]
+id: GO:0071290 ! cellular response to platinum ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:63526 ! platinum cation
+
+[Term]
+id: GO:0071291 ! cellular response to selenium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60250 ! selenium ion
+
+[Term]
+id: GO:0071292 ! cellular response to silver ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60247 ! silver ion
+
+[Term]
+id: GO:0071293 ! cellular response to tellurium ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60271 ! tellurium ion
+
+[Term]
+id: GO:0071294 ! cellular response to zinc ion
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27365 ! zinc ion
+
+[Term]
+id: GO:0071295 ! cellular response to vitamin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33229 ! vitamin
+
+[Term]
+id: GO:0071296 ! cellular response to biotin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:15956 ! biotin
+
+[Term]
+id: GO:0071297 ! cellular response to cobalamin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30411 ! cobalamin
+
+[Term]
+id: GO:0071298 ! cellular response to L-ascorbic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:38290 ! L-ascorbate
+
+[Term]
+id: GO:0071299 ! cellular response to vitamin A
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:12777 ! vitamin A
+
+[Term]
+id: GO:0071300 ! cellular response to retinoic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26536 ! retinoic acid
+
+[Term]
+id: GO:0071301 ! cellular response to vitamin B1
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18385 ! thiamine(1+)
+
+[Term]
+id: GO:0071302 ! cellular response to vitamin B2
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17015 ! riboflavin
+
+[Term]
+id: GO:0071304 ! cellular response to vitamin B6
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27306 ! vitamin B6
+
+[Term]
+id: GO:0071305 ! cellular response to vitamin D
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27300 ! vitamin D
+
+[Term]
+id: GO:0071306 ! cellular response to vitamin E
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33234 ! vitamin E
+
+[Term]
+id: GO:0071307 ! cellular response to vitamin K
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28384 ! vitamin K
+
+[Term]
+id: GO:0071308 ! cellular response to menaquinone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16374 ! menaquinone
+
+[Term]
+id: GO:0071309 ! cellular response to phylloquinone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18067 ! phylloquinone
+
+[Term]
+id: GO:0071311 ! cellular response to acetate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30089 ! acetate
+
+[Term]
+id: GO:0071312 ! cellular response to alkaloid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22315 ! alkaloid
+
+[Term]
+id: GO:0071313 ! cellular response to caffeine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27732 ! caffeine
+
+[Term]
+id: GO:0071314 ! cellular response to cocaine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27958 ! cocaine
+
+[Term]
+id: GO:0071315 ! cellular response to morphine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17303 ! morphine
+
+[Term]
+id: GO:0071316 ! cellular response to nicotine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18723 ! nicotine
+
+[Term]
+id: GO:0071317 ! cellular response to isoquinoline alkaloid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24921 ! isoquinoline alkaloid
+
+[Term]
+id: GO:0071318 ! cellular response to ATP
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:15422 ! ATP
+
+[Term]
+id: GO:0071319 ! cellular response to benzoic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30746 ! benzoic acid
+
+[Term]
+id: GO:0071322 ! cellular response to carbohydrate stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16646 ! carbohydrate
+
+[Term]
+id: GO:0071323 ! cellular response to chitin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17029 ! chitin
+
+[Term]
+id: GO:0071324 ! cellular response to disaccharide stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:36233 ! disaccharide
+
+[Term]
+id: GO:0071325 ! cellular response to mannitol stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:29864 ! mannitol
+
+[Term]
+id: GO:0071326 ! cellular response to monosaccharide stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35381 ! monosaccharide
+
+[Term]
+id: GO:0071327 ! cellular response to trehalose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27082 ! trehalose
+
+[Term]
+id: GO:0071328 ! cellular response to maltose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17306 ! maltose
+
+[Term]
+id: GO:0071329 ! cellular response to sucrose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17992 ! sucrose
+
+[Term]
+id: GO:0071331 ! cellular response to hexose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18133 ! hexose
+
+[Term]
+id: GO:0071332 ! cellular response to fructose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28757 ! fructose
+
+[Term]
+id: GO:0071333 ! cellular response to glucose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17234 ! glucose
+
+[Term]
+id: GO:0071334 ! cellular response to rhamnose stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26546 ! rhamnose
+
+[Term]
 id: GO:0071344 ! diphosphate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:35782 ! diphosphate ion
+
+[Term]
+id: GO:0071359 ! cellular response to dsRNA
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:67208 ! dsRNA
+
+[Term]
+id: GO:0071361 ! cellular response to ethanol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16236 ! ethanol
+
+[Term]
+id: GO:0071362 ! cellular response to ether
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25698 ! ether
+
+[Term]
+id: GO:0071365 ! cellular response to auxin stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22676 ! auxin
+
+[Term]
+id: GO:0071367 ! cellular response to brassinosteroid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22921 ! brassinosteroid
+
+[Term]
+id: GO:0071368 ! cellular response to cytokinin stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23530 ! cytokinin
+
+[Term]
+id: GO:0071369 ! cellular response to ethylene stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18153 ! ethene
+
+[Term]
+id: GO:0071370 ! cellular response to gibberellin stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24250 ! gibberellin
+
+[Term]
+id: GO:0071375 ! cellular response to peptide hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25905 ! peptide hormone
+
+[Term]
+id: GO:0071376 ! cellular response to corticotropin-releasing hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:65311 ! corticotropin-releasing hormone
+
+[Term]
+id: GO:0071377 ! cellular response to glucagon stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:5391 ! glucagon
+
+[Term]
+id: GO:0071378 ! cellular response to growth hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:37845 ! growth hormone
+
+[Term]
+id: GO:0071379 ! cellular response to prostaglandin stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26333 ! prostaglandin
+
+[Term]
+id: GO:0071383 ! cellular response to steroid hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26764 ! steroid hormone
+
+[Term]
+id: GO:0071384 ! cellular response to corticosteroid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:50858 ! corticosteroid
+
+[Term]
+id: GO:0071385 ! cellular response to glucocorticoid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24261 ! glucocorticoid
+
+[Term]
+id: GO:0071386 ! cellular response to corticosterone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16827 ! corticosterone
+
+[Term]
+id: GO:0071387 ! cellular response to cortisol stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17650 ! cortisol
+
+[Term]
+id: GO:0071388 ! cellular response to cortisone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16962 ! cortisone
+
+[Term]
+id: GO:0071389 ! cellular response to mineralocorticoid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25354 ! mineralocorticoid
+
+[Term]
+id: GO:0071390 ! cellular response to ecdysone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16688 ! ecdysone
+
+[Term]
+id: GO:0071391 ! cellular response to estrogen stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:50114 ! estrogen
+
+[Term]
+id: GO:0071392 ! cellular response to estradiol stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23965 ! estradiol
+
+[Term]
+id: GO:0071393 ! cellular response to progesterone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17026 ! progesterone
+
+[Term]
+id: GO:0071394 ! cellular response to testosterone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17347 ! testosterone
+
+[Term]
+id: GO:0071395 ! cellular response to jasmonic acid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18292 ! jasmonic acid
+
+[Term]
+id: GO:0071396 ! cellular response to lipid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18059 ! lipid
+
+[Term]
+id: GO:0071397 ! cellular response to cholesterol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16113 ! cholesterol
+
+[Term]
+id: GO:0071398 ! cellular response to fatty acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35366 ! fatty acid
+
+[Term]
+id: GO:0071399 ! cellular response to linoleic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30245 ! linoleate
+
+[Term]
+id: GO:0071400 ! cellular response to oleic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30823 ! oleate
+
+[Term]
+id: GO:0071401 ! cellular response to triglyceride
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17855 ! triglyceride
+
+[Term]
+id: GO:0071405 ! cellular response to methanol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17790 ! methanol
+
+[Term]
+id: GO:0071407 ! cellular response to organic cyclic compound
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33832 ! organic cyclic compound
+
+[Term]
+id: GO:0071408 ! cellular response to cycloalkane
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23453 ! cycloalkane
+
+[Term]
+id: GO:0071409 ! cellular response to cycloheximide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27641 ! cycloheximide
+
+[Term]
+id: GO:0071411 ! cellular response to fluoxetine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:5118 ! fluoxetine
+
+[Term]
+id: GO:0071412 ! cellular response to genistein
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28088 ! genistein
+
+[Term]
+id: GO:0071413 ! cellular response to hydroxyisoflavone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:38755 ! hydroxyisoflavone
+
+[Term]
+id: GO:0071414 ! cellular response to methotrexate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:44185 ! methotrexate
+
+[Term]
+id: GO:0071416 ! cellular response to tropane
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35615 ! tropane
+
+[Term]
+id: GO:0071417 ! cellular response to organic nitrogen
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35352 ! organonitrogen compound
+
+[Term]
+id: GO:0071418 ! cellular response to amine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:32952 ! amine
+
+[Term]
+id: GO:0071419 ! cellular response to amphetamine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:2679 ! amphetamine
+
+[Term]
+id: GO:0071420 ! cellular response to histamine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18295 ! histamine
+
+[Term]
+id: GO:0071435 ! potassium ion export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:29103 ! potassium(1+)
+
+[Term]
+id: GO:0071436 ! sodium ion export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:29101 ! sodium(1+)
+
+[Term]
+id: GO:0071444 ! cellular response to pheromone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:26013 ! pheromone
+
+[Term]
+id: GO:0071446 ! cellular response to salicylic acid stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16914 ! salicylic acid
+
+[Term]
+id: GO:0071447 ! cellular response to hydroperoxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35923 ! hydroperoxide
+
+[Term]
+id: GO:0071448 ! cellular response to alkyl hydroperoxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:61050 ! alkyl hydroperoxide
+
+[Term]
+id: GO:0071449 ! cellular response to lipid hydroperoxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:61051 ! lipid hydroperoxide
+
+[Term]
+id: GO:0071450 ! cellular response to oxygen radical
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:61073 ! oxygen radical
+
+[Term]
+id: GO:0071451 ! cellular response to superoxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18421 ! superoxide
+
+[Term]
+id: GO:0071457 ! cellular response to ozone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25812 ! ozone
+
+[Term]
+id: GO:0071462 ! cellular response to water stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:15377 ! water
+
+[Term]
+id: GO:0071466 ! cellular response to xenobiotic stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:35703 ! xenobiotic
 
 [Term]
 id: GO:0071503 ! response to heparin
@@ -18851,8 +20156,18 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:28304 ! heparin
 
 [Term]
+id: GO:0071504 ! cellular response to heparin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28304 ! heparin
+
+[Term]
 id: GO:0071505 ! response to mycophenolic acid
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:62932 ! mycophenolate
+
+[Term]
+id: GO:0071506 ! cellular response to mycophenolic acid
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:62932 ! mycophenolate
 
 [Term]
@@ -18886,9 +20201,24 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:41879 ! dexamethasone
 
 [Term]
+id: GO:0071549 ! cellular response to dexamethasone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:41879 ! dexamethasone
+
+[Term]
 id: GO:0071576 ! tetrahydrodictyopterin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:52447 ! tetrahydrodictyopterin
+
+[Term]
+id: GO:0071577 ! zinc ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:27365 ! zinc ion
+
+[Term]
+id: GO:0071578 ! zinc ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:27365 ! zinc ion
 
 [Term]
 id: GO:0071589 ! pyridine nucleoside biosynthetic process
@@ -18923,6 +20253,11 @@ intersection_of: has_output CHEBI:17984 ! acyl-CoA
 [Term]
 id: GO:0071680 ! response to indole-3-methanol
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:24814 ! indole-3-methanol
+
+[Term]
+id: GO:0071681 ! cellular response to indole-3-methanol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:24814 ! indole-3-methanol
 
 [Term]
@@ -18966,6 +20301,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:16480 ! nitric oxide
 
 [Term]
+id: GO:0071732 ! cellular response to nitric oxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16480 ! nitric oxide
+
+[Term]
 id: GO:0071767 ! mycolic acid metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:25437 ! mycolates
@@ -18991,8 +20331,18 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26337 ! prostaglandins D
 
 [Term]
+id: GO:0071806 ! protein transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
+
+[Term]
 id: GO:0071867 ! response to monoamine stimulus
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:63534 ! monoamine
+
+[Term]
+id: GO:0071868 ! cellular response to monoamine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:63534 ! monoamine
 
 [Term]
@@ -19001,13 +20351,28 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:33567 ! catecholamine
 
 [Term]
+id: GO:0071870 ! cellular response to catecholamine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33567 ! catecholamine
+
+[Term]
 id: GO:0071871 ! response to epinephrine stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:33568 ! adrenaline
 
 [Term]
+id: GO:0071872 ! cellular response to epinephrine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:33568 ! adrenaline
+
+[Term]
 id: GO:0071873 ! response to norepinephrine stimulus
 intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:33569 ! noradrenaline
+
+[Term]
+id: GO:0071874 ! cellular response to norepinephrine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:33569 ! noradrenaline
 
 [Term]
@@ -19026,9 +20391,24 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16991 ! deoxyribonucleic acid
 
 [Term]
+id: GO:0071918 ! urea transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16199 ! urea
+
+[Term]
+id: GO:0071934 ! thiamine transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:26948 ! thiamine
+
+[Term]
 id: GO:0071938 ! vitamin A transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:12777 ! vitamin A
+
+[Term]
+id: GO:0071939 ! vitamin A import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:12777 ! vitamin A
 
 [Term]
 id: GO:0071949 ! FAD binding
@@ -19043,6 +20423,11 @@ intersection_of: has_input CHEBI:17877 ! FADH2
 [Term]
 id: GO:0071993 ! phytochelatin transport
 intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:60836 ! phytochelatin
+
+[Term]
+id: GO:0071994 ! phytochelatin transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:60836 ! phytochelatin
 
 [Term]
@@ -19124,6 +20509,16 @@ intersection_of: has_output CHEBI:15882 ! phenol
 id: GO:0072392 ! phenol catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:15882 ! phenol
+
+[Term]
+id: GO:0072488 ! ammonium transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:28938 ! ammonium
+
+[Term]
+id: GO:0072489 ! methylammonium transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:59338 ! methylammonium
 
 [Term]
 id: GO:0072490 ! toluene-containing compound metabolic process
@@ -19214,6 +20609,241 @@ intersection_of: has_participant CHEBI:15379 ! dioxygen
 id: GO:0072593 ! reactive oxygen species metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:26523 ! reactive oxygen species
+
+[Term]
+id: GO:0072702 ! response to methyl methanesulfonate
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:25255 ! methyl methanesulfonate
+
+[Term]
+id: GO:0072703 ! cellular response to methyl methanesulfonate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25255 ! methyl methanesulfonate
+
+[Term]
+id: GO:0072704 ! response to mercaptoethanol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:41218 ! mercaptoethanol
+
+[Term]
+id: GO:0072705 ! cellular response to mercaptoethanol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:41218 ! mercaptoethanol
+
+[Term]
+id: GO:0072706 ! response to sodium dodecyl sulfate
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:8984 ! sodium dodecyl sulfate
+
+[Term]
+id: GO:0072707 ! cellular response to sodium dodecyl sulfate
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:8984 ! sodium dodecyl sulfate
+
+[Term]
+id: GO:0072708 ! response to sorbitol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:30911 ! glucitol
+
+[Term]
+id: GO:0072709 ! cellular response to sorbitol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30911 ! glucitol
+
+[Term]
+id: GO:0072710 ! response to hydroxyurea
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:44423 ! hydroxyurea
+
+[Term]
+id: GO:0072711 ! cellular response to hydroxyurea
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:44423 ! hydroxyurea
+
+[Term]
+id: GO:0072712 ! response to thiabendazole
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:45979 ! thiabendazole
+
+[Term]
+id: GO:0072713 ! cellular response to thiabendazole
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:45979 ! thiabendazole
+
+[Term]
+id: GO:0072716 ! response to actinomycin D
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27666 ! actinomycin D
+
+[Term]
+id: GO:0072717 ! cellular response to actinomycin D
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27666 ! actinomycin D
+
+[Term]
+id: GO:0072718 ! response to cisplatin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27899 ! cisplatin
+
+[Term]
+id: GO:0072719 ! cellular response to cisplatin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27899 ! cisplatin
+
+[Term]
+id: GO:0072720 ! response to dithiothreitol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:18320 ! 1,4-dithiothreitol
+
+[Term]
+id: GO:0072721 ! cellular response to dithiothreitol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:18320 ! 1,4-dithiothreitol
+
+[Term]
+id: GO:0072722 ! response to amitrole
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:40036 ! amitrole
+
+[Term]
+id: GO:0072723 ! cellular response to amitrole
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:40036 ! amitrole
+
+[Term]
+id: GO:0072724 ! response to 4-nitroquinoline N-oxide
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16907 ! 4-nitroquinoline N-oxide
+
+[Term]
+id: GO:0072725 ! cellular response to 4-nitroquinoline N-oxide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16907 ! 4-nitroquinoline N-oxide
+
+[Term]
+id: GO:0072726 ! response to CCCP
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:3259 ! CCCP
+
+[Term]
+id: GO:0072727 ! cellular response to CCCP
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:3259 ! CCCP
+
+[Term]
+id: GO:0072730 ! response to papulacandin B
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:569624 ! papulacandin B
+
+[Term]
+id: GO:0072731 ! cellular response to papulacandin B
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:569624 ! papulacandin B
+
+[Term]
+id: GO:0072733 ! response to staurosporine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:15738 ! staurosporine
+
+[Term]
+id: GO:0072734 ! cellular response to staurosporine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:15738 ! staurosporine
+
+[Term]
+id: GO:0072735 ! response to t-BOOH
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:64090 ! tert-butyl hydroperoxide
+
+[Term]
+id: GO:0072736 ! cellular response to t-BOOH
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:64090 ! tert-butyl hydroperoxide
+
+[Term]
+id: GO:0072737 ! response to diamide
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:48958 ! 1,1'-azobis(N,N-dimethylformamide)
+
+[Term]
+id: GO:0072738 ! cellular response to diamide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:48958 ! 1,1'-azobis(N,N-dimethylformamide)
+
+[Term]
+id: GO:0072743 ! cellular response to erythromycin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:48923 ! erythromycin
+
+[Term]
+id: GO:0072744 ! cellular response to trichodermin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:9688 ! trichodermin
+
+[Term]
+id: GO:0072745 ! cellular response to antimycin A
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:22584 ! antimycin A
+
+[Term]
+id: GO:0072746 ! cellular response to tetracycline
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27902 ! tetracycline
+
+[Term]
+id: GO:0072747 ! cellular response to chloramphenicol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17698 ! chloramphenicol
+
+[Term]
+id: GO:0072748 ! cellular response to tacrolimus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:61057 ! tacrolimus hydrate
+
+[Term]
+id: GO:0072749 ! cellular response to cytochalasin B
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:23527 ! cytochalasin B
+
+[Term]
+id: GO:0072750 ! cellular response to leptomycin B
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:52646 ! leptomycin B
+
+[Term]
+id: GO:0072751 ! cellular response to L-thialysine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:497734 ! L-thialysine
+
+[Term]
+id: GO:0072752 ! cellular response to rapamycin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:9168 ! sirolimus
+
+[Term]
+id: GO:0072753 ! cellular response to glutathione
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16856 ! glutathione
+
+[Term]
+id: GO:0072754 ! cellular response to purvalanol A
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:47600 ! purvalanol A
+
+[Term]
+id: GO:0072755 ! cellular response to benomyl
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:3015 ! benomyl
+
+[Term]
+id: GO:0072756 ! cellular response to paraquat
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:34905 ! paraquat
+
+[Term]
+id: GO:0072757 ! cellular response to camptothecin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27656 ! camptothecin
 
 [Term]
 id: GO:0080003 ! thalianol metabolic process
@@ -19316,6 +20946,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:62071 ! 2-cis-abscisate
 
 [Term]
+id: GO:0080170 ! hydrogen peroxide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16240 ! hydrogen peroxide
+
+[Term]
 id: GO:0080178 ! 5-carbamoylmethyluridine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:62005 ! 5-carbamoylmethyluridine
@@ -19334,6 +20969,11 @@ intersection_of: has_participant CHEBI:19702 ! N(2)-methylguanosine
 id: GO:0080184 ! response to phenylpropanoid
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26004 ! phenylpropanoid
+
+[Term]
+id: GO:0090156 ! cellular sphingolipid homeostasis
+intersection_of: GO:0019725 ! cellular homeostasis
+intersection_of: regulates_level_of CHEBI:26739 ! sphingolipid
 
 [Term]
 id: GO:0090304 ! nucleic acid metabolic process
@@ -19366,9 +21006,59 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:65331 ! alkyl caffeate ester
 
 [Term]
+id: GO:0090452 ! lithium ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:49713 ! lithium(1+)
+
+[Term]
+id: GO:0090466 ! histidine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:27570 ! histidine
+
+[Term]
+id: GO:0090467 ! arginine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29016 ! arginine
+
+[Term]
+id: GO:0090468 ! valine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:27266 ! valine
+
+[Term]
+id: GO:0090469 ! asparagine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:22653 ! asparagine
+
+[Term]
+id: GO:0090476 ! isoleucine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:24898 ! isoleucine
+
+[Term]
+id: GO:0090477 ! L-isoleucine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17191 ! L-isoleucine
+
+[Term]
+id: GO:0090478 ! serine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17822 ! serine
+
+[Term]
+id: GO:0090479 ! L-serine import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17115 ! L-serine
+
+[Term]
 id: GO:0097001 ! ceramide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17761 ! ceramide
+
+[Term]
+id: GO:0097037 ! heme export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:30413 ! heme
 
 [Term]
 id: GO:0097040 ! phthiocerol biosynthetic process
@@ -19406,9 +21096,19 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:60311 ! thyroid hormone
 
 [Term]
+id: GO:0097067 ! cellular response to thyroid hormone stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:60311 ! thyroid hormone
+
+[Term]
 id: GO:0097068 ! response to thyroxine stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18332 ! L-thyroxine
+
+[Term]
+id: GO:0097069 ! cellular response to thyroxine stimulus
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30660 ! thyroxine
 
 [Term]
 id: GO:0097089 ! methyl-branched fatty acid metabolic process
@@ -19481,9 +21181,24 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:40910 ! azide
 
 [Term]
+id: GO:0097185 ! cellular response to azide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:40910 ! azide
+
+[Term]
 id: GO:0097216 ! guanosine tetraphosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17633 ! guanosine 3',5'-bis(diphosphate)
+
+[Term]
+id: GO:0097237 ! cellular response to toxin
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:27026 ! toxin
+
+[Term]
+id: GO:0097238 ! cellular response to methylglyoxal
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17158 ! methylglyoxal
 
 [Term]
 id: GO:0097243 ! flavonoid binding
@@ -19549,6 +21264,116 @@ intersection_of: has_output CHEBI:15652 ! 5'-xanthylic acid
 id: GO:0097295 ! morphine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:17303 ! morphine
+
+[Term]
+id: GO:0097305 ! response to alcohol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:30879 ! alcohol
+
+[Term]
+id: GO:0097306 ! cellular response to alcohol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:30879 ! alcohol
+
+[Term]
+id: GO:0097307 ! response to farnesol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:28600 ! farnesol
+
+[Term]
+id: GO:0097308 ! cellular response to farnesol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:28600 ! farnesol
+
+[Term]
+id: GO:0097315 ! response to N-acetyl-D-glucosamine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:506227 ! N-acetyl-D-glucosamine
+
+[Term]
+id: GO:0097316 ! cellular response to N-acetyl-D-glucosamine
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:506227 ! N-acetyl-D-glucosamine
+
+[Term]
+id: GO:0097327 ! response to antineoplastic agent
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35610 ! antineoplastic agent
+
+[Term]
+id: GO:0097328 ! response to carboplatin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:31355 ! carboplatin
+
+[Term]
+id: GO:0097329 ! response to antimetabolite
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35221 ! antimetabolite
+
+[Term]
+id: GO:0097330 ! response to 5-fluoro-2'-deoxyuridine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:60761 ! 5-fluoro-2'-deoxyuridine
+
+[Term]
+id: GO:0097331 ! response to cytarabine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:28680 ! cytarabine
+
+[Term]
+id: GO:0097332 ! response to antipsychotic drug
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35476 ! antipsychotic agent
+
+[Term]
+id: GO:0097333 ! response to olanzapine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:7735 ! olanzapine
+
+[Term]
+id: GO:0097334 ! response to perphenazine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:8028 ! perphenazine
+
+[Term]
+id: GO:0097335 ! response to quetiapine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:8707 ! quetiapine
+
+[Term]
+id: GO:0097336 ! response to risperidone
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:8871 ! risperidone
+
+[Term]
+id: GO:0097337 ! response to ziprasidone
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:10119 ! ziprasidone
+
+[Term]
+id: GO:0097338 ! response to clozapine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:3766 ! clozapine
+
+[Term]
+id: GO:0097339 ! glycolate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:29805 ! glycolate
+
+[Term]
+id: GO:0097366 ! response to bronchodilator
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35523 ! bronchodilator agent
+
+[Term]
+id: GO:0097369 ! sodium ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:29101 ! sodium(1+)
+
+[Term]
+id: GO:0097403 ! cellular response to raffinose
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16634 ! raffinose
 
 [Term]
 id: GO:1900533 ! palmitic acid metabolic process
@@ -21376,6 +23201,536 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:24279 ! glucosinolate
 
 [Term]
+id: GO:1901354 ! response to L-canavanine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:609827 ! L-canavanine
+
+[Term]
+id: GO:1901355 ! response to rapamycin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:9168 ! sirolimus
+
+[Term]
+id: GO:1901356 ! beta-D-galactofuranose metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:59497 ! beta-D-galactofuranose
+
+[Term]
+id: GO:1901357 ! beta-D-galactofuranose catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:59497 ! beta-D-galactofuranose
+
+[Term]
+id: GO:1901358 ! beta-D-galactofuranose biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:59497 ! beta-D-galactofuranose
+
+[Term]
+id: GO:1901359 ! tungstate binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:46502 ! tungstate
+
+[Term]
+id: GO:1901360 ! organic cyclic compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:33832 ! organic cyclic compound
+
+[Term]
+id: GO:1901361 ! organic cyclic compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:33832 ! organic cyclic compound
+
+[Term]
+id: GO:1901362 ! organic cyclic compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:33832 ! organic cyclic compound
+
+[Term]
+id: GO:1901363 ! heterocyclic compound binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:5686 ! heterocyclic compound
+
+[Term]
+id: GO:1901364 ! funalenone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:65932 ! funalenone
+
+[Term]
+id: GO:1901365 ! funalenone catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:65932 ! funalenone
+
+[Term]
+id: GO:1901366 ! funalenone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:65932 ! funalenone
+
+[Term]
+id: GO:1901367 ! response to L-cysteine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:17561 ! L-cysteine
+
+[Term]
+id: GO:1901368 ! NAD transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
+
+[Term]
+id: GO:1901369 ! cyclic 2,3-bisphospho-D-glycerate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28699 ! cyclic 2,3-bisphospho-D-glyceric acid
+
+[Term]
+id: GO:1901370 ! response to glutathione
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16856 ! glutathione
+
+[Term]
+id: GO:1901373 ! lipid hydroperoxide transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:61051 ! lipid hydroperoxide
+
+[Term]
+id: GO:1901374 ! acetate ester transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:47622 ! acetate ester
+
+[Term]
+id: GO:1901375 ! acetate ester transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:47622 ! acetate ester
+
+[Term]
+id: GO:1901376 ! organic heteropentacyclic compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:38164 ! organic heteropentacyclic compound
+
+[Term]
+id: GO:1901377 ! organic heteropentacyclic compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:38164 ! organic heteropentacyclic compound
+
+[Term]
+id: GO:1901378 ! organic heteropentacyclic compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:38164 ! organic heteropentacyclic compound
+
+[Term]
+id: GO:1901422 ! response to butan-1-ol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:28885 ! butan-1-ol
+
+[Term]
+id: GO:1901423 ! response to benzene
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16716 ! benzene
+
+[Term]
+id: GO:1901424 ! response to toluene
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:17578 ! toluene
+
+[Term]
+id: GO:1901425 ! response to formic acid
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:30751 ! formic acid
+
+[Term]
+id: GO:1901426 ! response to furfural
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:34768 ! furfural
+
+[Term]
+id: GO:1901427 ! response to propan-1-ol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:28831 ! propan-1-ol
+
+[Term]
+id: GO:1901440 ! poly(hydroxyalkanoate) metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:53387 ! poly(hydroxyalkanoate)
+
+[Term]
+id: GO:1901441 ! poly(hydroxyalkanoate) biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:53387 ! poly(hydroxyalkanoate)
+
+[Term]
+id: GO:1901474 ! azole transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:68452 ! azole
+
+[Term]
+id: GO:1901475 ! pyruvate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15361 ! pyruvate
+
+[Term]
+id: GO:1901476 ! carbohydrate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16646 ! carbohydrate
+
+[Term]
+id: GO:1901477 ! benomyl transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:3015 ! benomyl
+
+[Term]
+id: GO:1901478 ! aminotriazole transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:40036 ! amitrole
+
+[Term]
+id: GO:1901479 ! benomyl transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:3015 ! benomyl
+
+[Term]
+id: GO:1901480 ! oleate transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30823 ! oleate
+
+[Term]
+id: GO:1901493 ! response to decalin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:38853 ! decalin
+
+[Term]
+id: GO:1901497 ! response to diphenyl ether
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:39258 ! diphenyl ether
+
+[Term]
+id: GO:1901498 ! response to tetralin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:35008 ! tetralin
+
+[Term]
+id: GO:1901499 ! response to hexane
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:29021 ! hexane
+
+[Term]
+id: GO:1901500 ! response to p-xylene
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27417 ! p-xylene
+
+[Term]
+id: GO:1901501 ! response to xylene
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27338 ! xylene
+
+[Term]
+id: GO:1901502 ! ether catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:25698 ! ether
+
+[Term]
+id: GO:1901503 ! ether biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:25698 ! ether
+
+[Term]
+id: GO:1901504 ! triazole transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:38597 ! triazole
+
+[Term]
+id: GO:1901505 ! carbohydrate derivative transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:63299 ! carbohydrate derivative
+
+[Term]
+id: GO:1901510 ! (-)-microperfuranone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64974 ! (-)-microperfuranone
+
+[Term]
+id: GO:1901511 ! (-)-microperfuranone catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64974 ! (-)-microperfuranone
+
+[Term]
+id: GO:1901512 ! (-)-microperfuranone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64974 ! (-)-microperfuranone
+
+[Term]
+id: GO:1901513 ! lipo-chitin oligosaccharide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:67062 ! lipo-chitin oligosaccharide
+
+[Term]
+id: GO:1901514 ! lipo-chitin oligosaccharide transmembrane-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:67062 ! lipo-chitin oligosaccharide
+
+[Term]
+id: GO:1901515 ! poly-beta-1,6-N-acetyl-D-glucosamine transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:67063 ! poly-beta-1,6-N-acetyl-D-glucosamine
+
+[Term]
+id: GO:1901516 ! aspyridone A metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64704 ! aspyridone A
+
+[Term]
+id: GO:1901517 ! aspyridone A catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64704 ! aspyridone A
+
+[Term]
+id: GO:1901518 ! aspyridone A biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64704 ! aspyridone A
+
+[Term]
+id: GO:1901519 ! aspyridone B metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64705 ! aspyridone B
+
+[Term]
+id: GO:1901520 ! aspyridone B catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:64705 ! aspyridone B
+
+[Term]
+id: GO:1901521 ! aspyridone B biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64705 ! aspyridone B
+
+[Term]
+id: GO:1901523 ! icosanoid catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:23899 ! icosanoid
+
+[Term]
+id: GO:1901530 ! response to hypochlorite
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:29222 ! hypochlorite
+
+[Term]
+id: GO:1901531 ! hypochlorite binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:29222 ! hypochlorite
+
+[Term]
+id: GO:1901539 ! ent-pimara-8(14),15-diene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:50063 ! ent-pimara-8(14),15-diene
+
+[Term]
+id: GO:1901540 ! ent-pimara-8(14),15-diene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:50063 ! ent-pimara-8(14),15-diene
+
+[Term]
+id: GO:1901541 ! ent-pimara-8(14),15-diene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:50063 ! ent-pimara-8(14),15-diene
+
+[Term]
+id: GO:1901545 ! response to raffinose
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16634 ! raffinose
+
+[Term]
+id: GO:1901549 ! malonic acid uptake transmembrane transporter activity
+intersection_of: GO:0015563 ! uptake transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:30794 ! malonic acid
+
+[Term]
+id: GO:1901553 ! malonic acid transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:30794 ! malonic acid
+
+[Term]
+id: GO:1901554 ! response to paracetamol
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:46195 ! paracetamol
+
+[Term]
+id: GO:1901555 ! response to paclitaxel
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:45863 ! paclitaxel
+
+[Term]
+id: GO:1901556 ! response to candesartan
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:3347 ! candesartan
+
+[Term]
+id: GO:1901557 ! response to fenofibrate
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:5001 ! fenofibrate
+
+[Term]
+id: GO:1901558 ! response to metformin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:6801 ! metformin
+
+[Term]
+id: GO:1901559 ! response to ribavirin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:63580 ! ribavirin
+
+[Term]
+id: GO:1901560 ! response to purvalanol A
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:47600 ! purvalanol A
+
+[Term]
+id: GO:1901561 ! response to benomyl
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:3015 ! benomyl
+
+[Term]
+id: GO:1901562 ! response to paraquat
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:34905 ! paraquat
+
+[Term]
+id: GO:1901563 ! response to camptothecin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:27656 ! camptothecin
+
+[Term]
+id: GO:1901564 ! organonitrogen compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:35352 ! organonitrogen compound
+
+[Term]
+id: GO:1901565 ! organonitrogen compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:35352 ! organonitrogen compound
+
+[Term]
+id: GO:1901566 ! organonitrogen compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:35352 ! organonitrogen compound
+
+[Term]
+id: GO:1901567 ! fatty acid derivative binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:61697 ! fatty acid derivative
+
+[Term]
+id: GO:1901568 ! fatty acid derivative metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:61697 ! fatty acid derivative
+
+[Term]
+id: GO:1901569 ! fatty acid derivative catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:61697 ! fatty acid derivative
+
+[Term]
+id: GO:1901570 ! fatty acid derivative biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:61697 ! fatty acid derivative
+
+[Term]
+id: GO:1901571 ! fatty acid derivative transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:61697 ! fatty acid derivative
+
+[Term]
+id: GO:1901575 ! organic substance catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:50860 ! organic molecular entity
+
+[Term]
+id: GO:1901576 ! organic substance biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:50860 ! organic molecular entity
+
+[Term]
+id: GO:1901583 ! tetrapeptide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:48030 ! tetrapeptide
+
+[Term]
+id: GO:1901584 ! tetrapeptide transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:48030 ! tetrapeptide
+
+[Term]
+id: GO:1901593 ! response to GW 7647
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:70778 ! GW 7647
+
+[Term]
+id: GO:1901594 ! response to capsazepine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:70773 ! capsazepine
+
+[Term]
+id: GO:1901595 ! response to hesperadin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:70726 ! hesperadin
+
+[Term]
+id: GO:1901596 ! response to reversine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:70723 ! reversine
+
+[Term]
+id: GO:1901597 ! response to carbendazim
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:3392 ! carbendazim
+
+[Term]
+id: GO:1901598 ! (-)-pinoresinol metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:67245 ! (-)-pinoresinol
+
+[Term]
+id: GO:1901599 ! (-)-pinoresinol biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:67245 ! (-)-pinoresinol
+
+[Term]
+id: GO:1901600 ! strigolactone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:68487 ! strigolactone
+
+[Term]
+id: GO:1901601 ! strigolactone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:68487 ! strigolactone
+
+[Term]
+id: GO:1901602 ! dethiobiotin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:16691 ! dethiobiotin
+
+[Term]
+id: GO:1901603 ! biotin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:15956 ! biotin
+
+[Term]
+id: GO:1901604 ! dethiobiotin transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:16691 ! dethiobiotin
+
+[Term]
+id: GO:1901605 ! alpha-amino acid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:33704 ! alpha-amino acid
+
+[Term]
+id: GO:1901606 ! alpha-amino acid catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:33704 ! alpha-amino acid
+
+[Term]
+id: GO:1901607 ! alpha-amino acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:33704 ! alpha-amino acid
+
+[Term]
 id: GO:2000884 ! glucomannan catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17020 ! glucomannan
@@ -21894,6 +24249,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:6499 ! lipoxin B4
 
 [Term]
+id: GO:2001305 ! xanthone-containing compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:51149 ! xanthones
+
+[Term]
 id: GO:2001306 ! lipoxin B4 biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:6499 ! lipoxin B4
@@ -21954,10 +24314,16 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:43572 ! kojic acid
 
 [Typedef]
+id: exports
+name: exports
+transitive_over: has_role ! has role
+
+[Typedef]
 id: has_input
 name: has input
 xref: RO:0002233
 is_a: has_participant ! has participant
+transitive_over: has_role ! has role
 
 [Typedef]
 id: has_intermediate
@@ -21968,18 +24334,32 @@ id: has_output
 name: has output
 xref: RO:0002234
 is_a: has_participant ! has participant
+transitive_over: has_role ! has role
 
 [Typedef]
 id: has_participant
 name: has participant
 xref: BFO:0000057
+transitive_over: has_role ! has role
+
+[Typedef]
+id: has_role
+name: has role
+xref: http://purl.obolibrary.org/obo/chebi_has_role
+
+[Typedef]
+id: imports
+name: imports
+transitive_over: has_role ! has role
+
+[Typedef]
+id: regulates_level_of
+name: regulates level of
+transitive_over: has_role ! has role
 
 [Typedef]
 id: transports_or_maintains_localization_of
 name: transports or maintains localization of
 xref: RO:0002313
-
-[Typedef]
-id: regulates_level_of
-name: regulates level of
+transitive_over: has_role ! has role
 
