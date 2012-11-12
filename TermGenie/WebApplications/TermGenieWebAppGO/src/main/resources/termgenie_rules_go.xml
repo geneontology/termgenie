@@ -339,6 +339,24 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="chemical_cellular_response_to">
+		<description>cellular response to a chemical entity</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+			</field>
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_cellular_response_to.js</ruleFile>
+		</ruleFiles>
+	</template>
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 
 		CommitModule configuration in TermGenieWebAppGOContextListener 
