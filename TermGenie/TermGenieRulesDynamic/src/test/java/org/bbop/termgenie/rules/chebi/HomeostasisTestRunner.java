@@ -114,6 +114,23 @@ public class HomeostasisTestRunner {
 		
 	}
 	
+	@Test
+	public void test_equivalent_existing2() throws Exception {
+		TermTemplate termTemplate = getTemplate();
+		List<String> prefixIds = Arrays.asList("GO:0048878");
+		String id = "CHEBI:29412"; // oxonium  H3O+
+		
+		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output1 = list.get(0);
+		assertFalse(output1.isSuccess());
+		assertEquals("Failed to create the term oxonium homeostasis with the logical definition: \"GO_0048878 and 'regulates level of' some CHEBI_29412\" " +
+				"The term GO:0030104 'water homeostasis' with the same logic definition already exists", output1.getMessage());
+		
+	}
+	
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
 		OntologyTaskManager ontologyManager = loader.getOntology(go);
 		OntologyTask task = new OntologyTask(){
