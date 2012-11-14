@@ -107,7 +107,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		specialPatterns.put("chemical_transmembrane_transport_bp", 1);
 		specialPatterns.put("chemical_transmembrane_transport_mf", 1);
 		specialPatterns.put("chemical_response_to", 1);
-		specialPatterns.put("chemical_cellular_response_to", 1);
+		specialPatterns.put("chemical_cellular_response_to", 1); // TODO remove this once all term generated with this template are committed and removed from the internal db
 		specialPatterns.put("chemical_homeostasis", 1);
 		specialPatterns.put("chemical_import", 1);
 		specialPatterns.put("chemical_export", 1);

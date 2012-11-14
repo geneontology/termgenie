@@ -129,7 +129,7 @@ public class ImportTest {
 	}
 	
 	private TermTemplate getImportTemplate() {
-		return generationEngine.getAvailableTemplates().get(9);
+		return generationEngine.getAvailableTemplates().get(8);
 	}
 
 	private List<TermGenerationInput> createResponseToTask(TermTemplate termTemplate, final String term) {

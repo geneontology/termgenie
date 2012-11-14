@@ -129,7 +129,7 @@ public class ExportTest {
 	}
 	
 	private TermTemplate getExportTemplate() {
-		return generationEngine.getAvailableTemplates().get(10);
+		return generationEngine.getAvailableTemplates().get(9);
 	}
 
 	private List<TermGenerationInput> createResponseToTask(TermTemplate termTemplate, final String term) {
