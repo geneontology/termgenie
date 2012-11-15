@@ -24317,6 +24317,7 @@ intersection_of: has_output CHEBI:43572 ! kojic acid
 id: exports
 name: exports
 transitive_over: has_role ! has role
+xref: GOREL:0000035
 
 [Typedef]
 id: has_input
@@ -24351,11 +24352,13 @@ xref: http://purl.obolibrary.org/obo/chebi_has_role
 id: imports
 name: imports
 transitive_over: has_role ! has role
+xref: GOREL:0000034
 
 [Typedef]
 id: regulates_level_of
 name: regulates level of
 transitive_over: has_role ! has role
+xref: GOREL:0000036
 
 [Typedef]
 id: transports_or_maintains_localization_of
