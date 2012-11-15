@@ -127,7 +127,11 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 			throw new RuntimeException(exception);
 		}
 		// commit history and ontology id store
-		modules.add(new AdvancedPersistenceModule("HPO-ID-Manager", "hpo-id-manager.conf", applicationProperties));
+		modules.add(new AdvancedPersistenceModule("GO-ID-Manager-Primary", 
+				"go-id-manager-primary.conf",
+				"GO-ID-Manager-Secondary", 
+				"go-id-manager-secondary.conf", 
+				applicationProperties));
 		return modules;
 	}
 }

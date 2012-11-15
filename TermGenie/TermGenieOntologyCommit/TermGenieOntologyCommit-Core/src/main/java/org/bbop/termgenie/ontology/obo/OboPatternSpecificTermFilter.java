@@ -84,6 +84,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				if (position == 0) {
 					allFiltered.add(term);
 				}
+				continue;
 			}
 
 			// split and remove

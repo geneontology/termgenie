@@ -38,7 +38,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class CellularResponseToTest {
+public class ExportTest {
 
 	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
@@ -76,8 +76,8 @@ public class CellularResponseToTest {
 	
 
 	@Test
-	public void test_cellular_response_to() throws Exception {
-		TermTemplate termTemplate = getResponseToTemplate();
+	public void test_export() throws Exception {
+		TermTemplate termTemplate = getExportTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
@@ -88,14 +88,14 @@ public class CellularResponseToTest {
 		assertTrue(output1.getMessage(), output1.isSuccess());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
-		assertEquals("cellular response to difenoxin", term1.getTagValue(OboFormatTag.TAG_NAME));
+		assertEquals("difenoxin export", term1.getTagValue(OboFormatTag.TAG_NAME));
 		
 	}
 	
 	@Test
 	public void test_equivalent_existing() throws Exception {
-		TermTemplate termTemplate = getResponseToTemplate();
-		String id = "CHEBI:49107"; // thiamine(2+)
+		TermTemplate termTemplate = getExportTemplate();
+		String id = "CHEBI:32456"; // cysteinate(1-)
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
@@ -103,8 +103,8 @@ public class CellularResponseToTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertFalse(output1.isSuccess());
-		assertEquals("Failed to create the term cellular response to thiamine(2+) with the logical definition: \"GO_0070887 and 'has input' some CHEBI_49107\" " +
-				"The term GO:0071301 'cellular response to vitamin B1' with the same logic definition already exists", output1.getMessage());
+		assertEquals("Failed to create the term cysteinate(1-) export with the logical definition: \"GO_0006810 and 'exports' some CHEBI_32456\" " +
+				"The term GO:0033228 'cysteine export' with the same logic definition already exists", output1.getMessage());
 		
 	}
 	
@@ -128,8 +128,8 @@ public class CellularResponseToTest {
 		}
 	}
 	
-	private TermTemplate getResponseToTemplate() {
-		return generationEngine.getAvailableTemplates().get(8);
+	private TermTemplate getExportTemplate() {
+		return generationEngine.getAvailableTemplates().get(9);
 	}
 
 	private List<TermGenerationInput> createResponseToTask(TermTemplate termTemplate, final String term) {

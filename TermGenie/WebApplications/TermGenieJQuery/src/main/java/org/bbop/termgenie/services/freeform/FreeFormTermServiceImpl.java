@@ -52,8 +52,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

@@ -29,8 +29,10 @@ public class EntityManagerFactoryProvider {
 	public static final String HSQLDB = "hslqdb";
 	public static final String H2 = "h2";
 	
+	// If adding new modes, do not forget to add new modes to META-INF/persistence.xml
 	public static final String MODE_DEFAULT = "default";
 	public static final String MODE_IDS = "ids";
+	public static final String MODE_SECONDARY_IDS = "ids2";
 
 	/**
 	 * Create a new factory for a given type (i.e. {@link #HSQLDB} and

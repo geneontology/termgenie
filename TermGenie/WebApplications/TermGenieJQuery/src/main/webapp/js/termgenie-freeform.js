@@ -24,7 +24,7 @@ function TermGenieFreeForm(){
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'freeform.isEnabled',
-	              'freeform.isAuthorized']
+	              'freeform.canView']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -48,7 +48,7 @@ function TermGenieFreeForm(){
 				if (result === true) {
 					checkUserPermissions(function(hasPermission){ // on success
 						if (hasPermission === true) {
-							startLoadingReviewEntries();
+							startFreeForm();
 						}
 						else {
 							setInsufficientUserRightsMessage(myLoginPanel.getCredentials());
@@ -86,7 +86,7 @@ function TermGenieFreeForm(){
 	function checkUserPermissions(onSuccess, onError) {
 		// request sessionId and then check user permissions
 		mySession.getSessionId(function(sessionId){
-			jsonService.freeform.isAuthorized({
+			jsonService.freeform.canView({
 				params: [sessionId],
 				onSuccess: onSuccess,
 				onException: onError

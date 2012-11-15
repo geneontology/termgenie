@@ -325,13 +325,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
 				Frame termFrame = parseDiff(jsonDiff);
-				CommitedOntologyTerm term;
+				CommitedOntologyTerm term = getMatchingTerm(historyItem, jsonDiff.getUuid());
 				if (jsonDiff.isModified()) {
-					term = CommitHistoryTools.create(termFrame, JsonDiff.getModification(jsonDiff), jsonDiff.getOwlAxioms(), jsonDiff.getPattern());
-					updateMatchingTerm(historyItem, jsonDiff.getUuid(), term);
-				}
-				else {
-					term = getMatchingTerm(historyItem, jsonDiff.getUuid());
+					CommitHistoryTools.update(term, termFrame, jsonDiff.getOwlAxioms(), JsonDiff.getModification(jsonDiff));
 				}
 				sb.append('\n');
 				if(OboTools.isObsolete(termFrame)) {
@@ -373,22 +369,6 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			return frame;
 		}
 
-		private void updateMatchingTerm(CommitHistoryItem historyItem,
-				int uuid,
-				CommitedOntologyTerm updatedTerm) throws CommitException
-		{
-			List<CommitedOntologyTerm> terms = historyItem.getTerms();
-			for (int i = 0; i < terms.size(); i++) {
-				CommitedOntologyTerm original = terms.get(i);
-				if (uuid == original.getUuid()) {
-					updatedTerm.setChanged(original.getChanged());
-					terms.set(i, updatedTerm);
-					return;
-				}
-			}
-			throw new CommitException("Could not find the modified term in the history", false);
-		}
-		
 		private CommitedOntologyTerm getMatchingTerm(CommitHistoryItem historyItem,
 				int uuid) throws CommitException
 		{

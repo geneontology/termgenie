@@ -53,7 +53,7 @@ public class OntologyIdStoreTest {
 
 	@SuppressWarnings("null")
 	private void testOntologyIdStore(String label) {
-		EntityManagerFactory emf = provider.createFactory(testFolder, label, EntityManagerFactoryProvider.MODE_IDS, "OntologyIdStore");
+		EntityManagerFactory emf = provider.createFactory(testFolder, label, EntityManagerFactoryProvider.MODE_SECONDARY_IDS, "OntologyIdStore");
 		assertNotNull(emf);
 
 		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + //

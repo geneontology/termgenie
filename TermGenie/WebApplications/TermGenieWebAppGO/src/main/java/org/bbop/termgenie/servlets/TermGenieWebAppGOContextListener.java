@@ -26,6 +26,7 @@ import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule;
 import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
@@ -162,7 +163,11 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 			throw new RuntimeException(exception);
 		}
 		// commit history and ontology id store
-		modules.add(new AdvancedPersistenceModule("GO-ID-Manager", "go-id-manager.conf", applicationProperties));
+		modules.add(new AdvancedPersistenceModule("GO-ID-Manager-Primary", 
+				"go-id-manager-primary.conf",
+				"GO-ID-Manager-Secondary", 
+				"go-id-manager-secondary.conf", 
+				applicationProperties));
 		return modules;
 	}
 
@@ -190,4 +195,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		};
 	}
 	
+	@Override
+	protected IOCModule getFreeFormTermModule() {
+		return new FreeFormTermServiceModule(applicationProperties, true, true, "freeform");
+	}
 }
