@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.data.JsonTermSuggestion;
 
 
 public class NoopFreeFormModule extends IOCModule {
@@ -37,6 +38,20 @@ public class NoopFreeFormModule extends IOCModule {
 				JsonFreeFormTermRequest request,
 				HttpSession session,
 				ProcessState state)
+		{
+			return null;
+		}
+
+		@Override
+		public String[] getAvailableNamespaces(String sessionId, HttpSession session) {
+			return new String[0];
+		}
+
+		@Override
+		public JsonTermSuggestion[] autocomplete(String sessionId,
+				String query,
+				String oboNamespace,
+				int max)
 		{
 			return null;
 		}

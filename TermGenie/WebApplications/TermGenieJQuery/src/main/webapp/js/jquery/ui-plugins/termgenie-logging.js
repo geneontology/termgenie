@@ -110,7 +110,12 @@
 				 * @param hidden boolean
 				 */
 				appendError: function(message, error, hidden) {
-					errorPanel.append(message +' \n '+error);
+					if (error && error !== null) {
+						errorPanel.append(message +' \n '+error);
+					}
+					else {
+						errorPanel.append(message);
+					}
 					// force popup, except if hidden is true
 					if (!(hidden === true)) {
 						// select the error tab

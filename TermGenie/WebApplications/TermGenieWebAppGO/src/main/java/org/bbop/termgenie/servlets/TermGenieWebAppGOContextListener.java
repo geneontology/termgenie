@@ -200,6 +200,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	
 	@Override
 	protected IOCModule getFreeFormTermModule() {
-		return new FreeFormTermServiceModule(applicationProperties, true, true, "freeform");
+		List<String> oboNamespaces = new ArrayList<String>();
+		oboNamespaces.add("biological_process");
+		oboNamespaces.add("molecular_function");
+		oboNamespaces.add("cellular_component");
+		return new FreeFormTermServiceModule(applicationProperties, true, true, oboNamespaces,"freeform");
 	}
 }

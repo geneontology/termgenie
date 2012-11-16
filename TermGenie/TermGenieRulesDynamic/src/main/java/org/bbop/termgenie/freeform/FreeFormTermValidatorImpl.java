@@ -64,6 +64,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	static final String REQ_LIT_REF_PARAM = "FreeFormTermValidatorRequireLiteratureReference";
 	static final String ADD_SUBSET_TAG_PARAM = "FreeFormTermValidatorAddSubsetTag";
 	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
+	static final String SUPPORTED_NAMESPACES = "FreeFormValidatorOboNamespaces";
 	
 	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
@@ -74,6 +75,8 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private final boolean useIsInferred;
 	private final boolean addSubsetTag;
 	
+	private final List<String> oboNamespaces;
+	
 	private String subset = null;
 
 	@Inject
@@ -82,6 +85,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			@Named(REQ_LIT_REF_PARAM) boolean requireLiteratureReference,
 			@Named(ADD_SUBSET_TAG_PARAM) boolean addSubsetTag,
 			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
+			@Named(SUPPORTED_NAMESPACES) List<String> supportedOboNamespaces,
 			ReasonerFactory factory)
 	{
 		super();
@@ -91,6 +95,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		this.factory = factory;
 		this.requireLiteratureReference = requireLiteratureReference;
 		this.useIsInferred = useIsInferred;
+		this.oboNamespaces = supportedOboNamespaces;
 	}
 
 	
@@ -123,6 +128,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	}
 
 	@Override
+	public List<String> getOboNamespaces() {
+		return oboNamespaces;
+	}
+
+
+	@Override
 	public FreeFormValidationResponse validate(final FreeFormTermRequest request, ProcessState state) {
 		
 		String subset = null;
@@ -145,7 +156,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 		return error(task.errors);
 	}
-
 
 	static class ValidationTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology>
 	{

@@ -6,10 +6,14 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.OntologyTermSuggestor;
+import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.data.JsonTermSuggestion;
+import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.freeform.FreeFormTermValidator;
 import org.bbop.termgenie.freeform.FreeFormValidationResponse;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
@@ -34,17 +38,20 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	private final FreeFormTermValidator validator;
 	private final Ontology ontology;
 	private final MultiOntologyTaskManager manager;
+	private final OntologyTermSuggestor suggestor;
 	
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
 			@Named("CommitTargetOntology") OntologyTaskManager ontology,
+			OntologyTermSuggestor suggestor,
 			MultiOntologyTaskManager manager,
 			FreeFormTermValidator validator)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
+		this.suggestor = suggestor;
 		this.validator = validator;
 		this.ontology = ontology.getOntology();
 		this.manager = manager;
@@ -66,6 +73,53 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String[] getAvailableNamespaces(String sessionId, HttpSession session) {
+		if (canView(sessionId, session)) {
+			List<String> namespaces = validator.getOboNamespaces();
+			if (namespaces != null && !namespaces.isEmpty()) {
+				return namespaces.toArray(new String[namespaces.size()]);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public JsonTermSuggestion[] autocomplete(String sessionId,
+			String query,
+			String oboNamespace,
+			int max)
+	{
+		// sanity checks
+		if (query == null || query.length() <= 2) {
+			return null;
+		}
+		if (max < 0 || max > 10) {
+			max = 10;
+		}
+		Ontology ontology;
+		if (oboNamespace == null || oboNamespace.isEmpty()) {
+			ontology = this.ontology;
+		}
+		else {
+			ontology = new Ontology(this.ontology.getUniqueName(), oboNamespace, this.ontology.getRoots()) {
+				// intentionally empty
+			};
+		}
+		// query for terms
+		List<TermSuggestion> autocompleteList = suggestor.suggestTerms(query, ontology, max);
+		if (autocompleteList != null && !autocompleteList.isEmpty()) {
+			JsonTermSuggestion[] result = new JsonTermSuggestion[autocompleteList.size()];
+			for (int i = 0; i < result.length; i++) {
+				TermSuggestion termSuggestion = autocompleteList.get(i);
+				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontology.getUniqueName(), termSuggestion.getIdentifier());
+				result[i] = new JsonTermSuggestion(termSuggestion.getLabel(), jsonId , termSuggestion.getDescription(), termSuggestion.getSynonyms());
+			}
+			return result;
+		}
+		return null;
 	}
 
 	@Override

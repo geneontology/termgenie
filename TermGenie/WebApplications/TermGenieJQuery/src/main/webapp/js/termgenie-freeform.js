@@ -24,7 +24,10 @@ function TermGenieFreeForm(){
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'freeform.isEnabled',
-	              'freeform.canView']
+	              'freeform.canView',
+	              'freeform.getAvailableNamespaces,'
+	              'freeform.autocomplete',
+	              'freeform.validate']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -80,7 +83,7 @@ function TermGenieFreeForm(){
 	}
 	
 	function setInsufficientUserRightsMessage(username) {
-		mainMessagePanel.append('The current user ('+username+') is not allowed to use this review feature.');
+		mainMessagePanel.append('The current user ('+username+') is not allowed to use the free form feature.');
 	}
 	
 	function checkUserPermissions(onSuccess, onError) {
@@ -99,7 +102,119 @@ function TermGenieFreeForm(){
 	 */
 	function startFreeForm() {
 		// TODO place holder, implement proper free form input elements 
-		mainConfigurationPanel.append("<div><b>TODO:</b>Started</div>");
+		mainConfigurationPanel.load('TermGenieFreeFormContent.html', function() {
+			var myAccordion = MyAccordion('#accordion');
+			
+			mySession.getSessionId(function(sessionId){
+				jsonService.freeform.canView({
+					params: [sessionId],
+					onSuccess: function(oboNamespaces) {
+						if (oboNamespaces && oboNamespaces !== null && oboNamespaces.length >= 0) {
+							populateFreeFormInput(oboNamespaces);
+						}
+						else {
+							jQuery.logSystemError('Retrieved OBO namespaces are empty.', e);
+						}
+					},
+					onException: function(e) {
+						jQuery.logSystemError('Could not retrieve OBO namespaces from server', e);
+					}
+				});	
+			});
+		});
+		
+		function populateFreeFormInput(oboNamespaces) {
+			// namespace selector
+			var namespaceCell = jQuery('#free-form-input-namespace-cell');
+			
+			// relations
+			// only available after a namespace has been selected
+			
+			// is_a with obo namespace aware auto-complete
+			
+			// part_of
+			
+			// def xrefs
+
+			// synonyms
+			
+			// validate input button
+		}
+
+		// review panel
+			// not editable!
+			// require user to tick a check-box
+			// active submit button
+		
+		// result panel
+			// new ids
+		
+		/**
+		 * Provide an 3-tab Accordion with the additional functionality to 
+		 * enable/disable individual panes for click events.
+		 * 
+		 * @param id html-id for the accordian div tag
+		 * 
+		 * @returns methods for the accordion
+		 */
+		function MyAccordion(id) {
+			// private variables;
+			var selections = {};
+			selections.Pane_0 = true;
+			selections.Pane_1 = false;
+			selections.Pane_2 = false;
+			
+			jQuery(id).accordion({ clearStyle: true, autoHeight: false, event: "" });
+			
+			// implement a custom click function
+			// allow only to open panes, which are enabled in the selections object
+			jQuery(id+' h3').click(function() {
+				var idx = jQuery(id+' h3').index(this);
+				var activate = selections["Pane_" + idx];
+				if (activate) {
+					jQuery(id).accordion("activate", idx);
+				}
+			});
+			
+			return {
+				/**
+				 * Active the specified panel.
+				 * 
+				 * @param pos position to activate (zero-based)
+				 */
+				activatePane : function(pos) {
+					jQuery(id).accordion("activate", pos);
+				},
+				
+				/**
+				 * Set the status of a pane.
+				 * 
+				 * @param pos position to activate (zero-based)
+				 * @param state boolean
+				 */
+				setPaneState : function(pos, state) {
+					selections["Pane_" + pos] = state;
+				},
+			
+				/**
+				 * Enable a pane for click events.
+				 * 
+				 * @param pos position to enable (zero-based)
+				 */
+				enablePane : function(pos) {
+					selections["Pane_" + pos] = true;
+				},
+				
+				/**
+				 * Disable a pane for click events.
+				 * 
+				 * @param pos position to disable (zero-based)
+				 */
+				disablePane : function(pos) {
+					selections["Pane_" + pos] = false;
+				}
+			};
+		};
 	}
 	
 	/**
