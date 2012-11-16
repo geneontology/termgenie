@@ -78,7 +78,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
@@ -104,7 +103,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
@@ -136,7 +134,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/regulation_by.js</ruleFile>
@@ -164,7 +161,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
@@ -187,7 +183,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/pro/protein_binding.js</ruleFile>
@@ -444,7 +439,6 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
@@ -468,7 +462,6 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_morphogenesis.js</ruleFile>
@@ -493,7 +486,6 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_development.js</ruleFile>
@@ -518,7 +510,6 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_morphogenesis.js</ruleFile>
@@ -542,7 +533,6 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/pro/structural_protein_complex.js</ruleFile>

@@ -52,7 +52,6 @@
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
@@ -78,7 +77,6 @@
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
