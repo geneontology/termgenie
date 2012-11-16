@@ -25,7 +25,7 @@ function TermGenieFreeForm(){
 	              'browserid.verifyAssertion',
 	              'freeform.isEnabled',
 	              'freeform.canView',
-	              'freeform.getAvailableNamespaces,'
+	              'freeform.getAvailableNamespaces',
 	              'freeform.autocomplete',
 	              'freeform.validate']
 	});
@@ -106,14 +106,14 @@ function TermGenieFreeForm(){
 			var myAccordion = MyAccordion('#accordion');
 			
 			mySession.getSessionId(function(sessionId){
-				jsonService.freeform.canView({
+				jsonService.freeform.getAvailableNamespaces({
 					params: [sessionId],
 					onSuccess: function(oboNamespaces) {
 						if (oboNamespaces && oboNamespaces !== null && oboNamespaces.length >= 0) {
 							populateFreeFormInput(oboNamespaces);
 						}
 						else {
-							jQuery.logSystemError('Retrieved OBO namespaces are empty.', e);
+							jQuery.logSystemError('Retrieved OBO namespaces are empty.');
 						}
 					},
 					onException: function(e) {
@@ -124,30 +124,244 @@ function TermGenieFreeForm(){
 		});
 		
 		function populateFreeFormInput(oboNamespaces) {
+			// label
+			var labelInput = createLabelInput();
+			
 			// namespace selector
-			var namespaceCell = jQuery('#free-form-input-namespace-cell');
+			var namespaceInput = createNamespaceInput();
 			
 			// relations
-			// only available after a namespace has been selected
+			var relationsInput = createRelationsInput();
+			relationsInput.disable();
 			
-			// is_a with obo namespace aware auto-complete
-			
-			// part_of
+			// def
+			var defInput = createDefInput();
+			defInput.disable();
 			
 			// def xrefs
+			var defXrefsInput = createDefXrefsInput();
+			defXrefsInput.disable();
 
 			// synonyms
+			var synonymInput = createSynonymInput();
+			synonymInput.disable();
 			
 			// validate input button
-		}
+			var validateButton = jQuery('#button-freeform-verification-start');
+			validateButton.attr("disabled", "disabled"); // disable
+			
+			function createLabelInput() {
+				var labelInputField = jQuery('free-form-input-label');
+				
+				function setError() {
+					// TODO
+				};
+				
+				function resetError() {
+					// TODO
+				};
+				
+				labelInputField.change(resetError);
+				
+				return {
+					getLabel: function() {
+						return labelInputField.val();
+					},
+					validate: function() {
+						var label = labelInputField.val();
+						if (label && label !== null && label.length > 5) {
+							return null;
+						}
+						setError();
+						return 'A valid label is required for a new term.';
+					}
+				};
+			};
+			
+			function createNamespaceInput() {
+				var namespaceCell = jQuery('#free-form-input-namespace-cell');
+				var namespaceInputSelector = jQuery('<select></select>')
+				jQuery.each(oboNamespaces, function(intIndex, objValue){
+					namespaceInputSelector.append('<option value="'+objValue+'">'+objValue+'</option>');
+				});
+				namespaceCell.append(namespaceInputSelector);
+				
+				namespaceInputSelector.change(function(){
+					resetError();
+					var currentOboNamespace = getVal();
+					
+					// enable relations with auto-complete for terms
+					relations.enable(currentOboNamespace);
+					
+					// enable def, def-xrefs, synonyms
+					defInput.enable();
+					defXrefsInput.enable();
+					synonymInput.enable();
+					
+					// active validate button
+					validateButton.removeAttr("disabled");
+				});
+				
+				function getVal() {
+					namespaceInputSelector.find(':selected').val();
+				};
+				
+				function setError() {
+					// TODO
+				};
+				
+				function resetError() {
+					// TODO
+				};
+				
+				return {
+					getNamespace: function() {
+						return getVal();
+					},
+					validate: function() {
+						var current = getVal();
+						if (current && current !== null && current.length > 0) {
+							return null;
+						}
+						setError();
+						return 'A valid obo namespace is required for a new term'
+					}
+				};
+			};
+			
+			function createDefInput() {
+				var defInputField = jQuery('#free-form-input-def');
+				
+				function getVal() {
+					defInputField.getText();
+				};
+				
+				function setError() {
+					// TODO
+				};
+				
+				function resetError() {
+					// TODO
+				};
+				
+				return {
+					enable: function() {
+						defInputField.removeAttr("disabled");
+					},
+					disable: function() {
+						defInputField.attr("disabled", "disabled"); // disable
+					},
+					getDef: function() {
+						return getVal();
+					},
+					validate: function() {
+						var current = getVal();
+						if (current && current !== null && current.length > 0) {
+							return null;
+						}
+						setError();
+						return "A valid term definition is required."
+					}
+				};
+			};
+			
+			function createDefXrefsInput() {
+				var defXrefsInputCell = jQuery('#free-form-input-dbxref-cell')
+				
+				function getVal() {
+					// TODO
+					return [];
+				};
+				
+				function setError() {
+					// TODO
+				};
+				
+				function resetError() {
+					// TODO
+				};
+				
+				return {
+					enable: function() {
+						// TODO
+					},
+					disable: function() {
+						// TODO
+					},
+					getXrefs: function() {
+						return getVal();
+					},
+					validate: function() {
+						var current = getVal();
+						if (current && current !== null && current.length > 0) {
+							return null;
+						}
+						setError();
+						return "At lease one valid xref is required."
+					}
+				};
+			};
+			
+			function createRelationsInput() {
+				// only available after a namespace has been selected
+				
+				// is_a with obo namespace aware auto-complete
+				
+				// part_of
+				
+				return {
+					enable: function(oboNamespace) {
+						// TODO
+					},
+					disable: function() {
+						// TODO
+					},
+					getIsA: function() {
+						// TODO
+					},
+					getPartOf: function() {
+						// TODO
+					},
+					validate: function() {
+						// TODO
+						return "As set of valid relations is required. There must be at least one is-a relation.";
+					}
+				};
+			};
+			
+			function createSynonymInput() {
+				
+				return {
+					enable: function() {
+						// TODO
+					},
+					disable: function() {
+						// TODO
+					},
+					getSynonyms: function() {
+						// TODO
+					},
+					validate: function() {
+						// TODO validate individual synonyms
+						return null;
+					}
+				};
+			};
+		};
 
 		// review panel
+		function createReviewPanel() {
+		
 			// not editable!
 			// require user to tick a check-box
 			// active submit button
+		};
 		
 		// result panel
+		function createResultPanel() {
+			
 			// new ids
+		};
 		
 		/**
 		 * Provide an 3-tab Accordion with the additional functionality to 
