@@ -15,6 +15,7 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
@@ -66,14 +67,29 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		try {
 			// add terms to local commit log
 			Date date = new Date();
-			CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getCommitMessage(), commitInfo.getUserData(), date);
+			final CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getCommitMessage(), commitInfo.getUserData(), date);
 			store.add(historyItem, source.getOntology().getUniqueName());
 			String diff = createDiff(historyItem, source);
-			CommitResult commitResult = new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
+			final CommitResult commitResult = new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
 			
 			// send confirmation e-mail (if requested)
 			if (commitInfo.isSendConfirmationEMail()) {
-				handler.handleSubmitMail(historyItem, commitResult);
+				try {
+					source.runManagedTask(new OntologyTask(){
+
+						@Override
+						protected void runCatching(OWLGraphWrapper managed)
+								throws TaskException, Exception
+						{
+							NameProvider nameprovider = new OwlGraphWrapperNameProvider(managed);
+							handler.handleSubmitMail(historyItem, commitResult, nameprovider);
+						}
+						
+					});
+				} catch (InvalidManagedInstanceException exception) {
+					logger.error("Could not send confirmation e-mail for a term submission", exception);
+				}
+				
 			}
 			return commitResult;
 		} catch (CommitHistoryStoreException exception) {
@@ -289,6 +305,8 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				
 				logger.info("Start - Commiting, count: "+items.size());
 				
+				final NameProvider nameprovider = new OwlGraphWrapperNameProvider(graph);
+				
 				for (CommitHistoryItem item : items) {
 					if (item.isCommitted()) {
 						results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
@@ -299,7 +317,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 						results.add(result);
 						changed = true;
 						if (result.isSuccess()) {
-							handler.handleReviewMail(item);
+							handler.handleReviewMail(item, nameprovider);
 						}
 					}
 				}

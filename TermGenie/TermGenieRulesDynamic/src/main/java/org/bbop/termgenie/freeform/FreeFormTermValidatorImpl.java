@@ -257,17 +257,18 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			// iterate over all objects
 			for(OWLObject current : graph.getAllOWLObjects()) {
 				String currentLabel = graph.getLabel(current);
+				if (currentLabel == null) {
+					continue;
+				}
 				final CharSequence currentNormalizedLabel = normalizeLabel(currentLabel);
-				if (currentLabel != null) {
-					if (similar(normalizedLabel, currentNormalizedLabel)) {
-						addError("label", "The requested label is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
-						return;
-					}
-					if (proposedSynonyms != null) {
-						for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
-							if (similar(normalizedLabel, entry.getKey())) {
-								addError("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
-							}
+				if (similar(normalizedLabel, currentNormalizedLabel)) {
+					addError("label", "The requested label is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+					return;
+				}
+				if (proposedSynonyms != null) {
+					for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
+						if (similar(normalizedLabel, entry.getKey())) {
+							addError("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 						}
 					}
 				}
@@ -315,6 +316,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			Set<OWLClass> superClasses = new HashSet<OWLClass>();
 			for (String parentId : parents) {
+				if (parentId == null) {
+					addError("is_a parent", "null parent");
+					continue;
+				}
 				OWLClass cls = graph.getOWLClassByIdentifier(parentId);
 				if (cls == null) {
 					addError("is_a parent", "parent not found in ontology: "+parentId);
@@ -344,6 +349,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				// second: validate given classes 
 				partOf = new HashSet<OWLClass>();
 				for(String id : partOfList) {
+					if (id == null) {
+						addError("part_of parent", "null parent");
+						continue;
+					}
 					OWLClass cls = graph.getOWLClassByIdentifier(id);
 					if (cls == null) {
 						addError("part_of parent", "parent not found in ontology: "+id);

@@ -52,7 +52,6 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" />
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
