@@ -8,9 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -113,36 +111,6 @@ public abstract class OboScmHelper {
 		 */
 		public File getScmFolder() {
 			return scmFolder;
-		}
-
-		
-		static class MixingNameProvider implements NameProvider {
-
-			private final NameProvider mainProvider;
-			private Map<String, String> otherNames = new HashMap<String, String>();
-
-			MixingNameProvider(NameProvider mainProvider) {
-				this.mainProvider = mainProvider;
-			}
-
-			@Override
-			public String getName(String id) {
-				String name = mainProvider.getName(id);
-				if (name != null) {
-					return name;
-				}
-				return otherNames.get(id);
-			}
-
-			@Override
-			public String getDefaultOboNamespace() {
-				return mainProvider.getDefaultOboNamespace();
-			}
-			
-			public void addName(String id, String name) {
-				otherNames.put(id, name);
-			}
-			
 		}
 	}
 

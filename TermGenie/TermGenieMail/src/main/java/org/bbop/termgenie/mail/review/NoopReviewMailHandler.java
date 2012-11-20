@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
 import com.google.inject.Singleton;
 
@@ -12,12 +13,12 @@ import com.google.inject.Singleton;
 public class NoopReviewMailHandler implements ReviewMailHandler {
 
 	@Override
-	public void handleReviewMail(CommitHistoryItem item) {
+	public void handleReviewMail(CommitHistoryItem item, NameProvider nameProvider) {
 		// do nothing
 	}
 
 	@Override
-	public void handleSubmitMail(CommitHistoryItem item, CommitResult commitResult) {
+	public void handleSubmitMail(CommitHistoryItem item, CommitResult commitResult, NameProvider nameProvider) {
 		// do nothing
 	}
 
