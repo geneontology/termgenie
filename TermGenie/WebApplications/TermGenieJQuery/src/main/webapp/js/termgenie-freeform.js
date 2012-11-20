@@ -123,6 +123,11 @@ function TermGenieFreeForm(){
 			});
 		});
 		
+		/**
+		 * Create the input fields and selectors for the free form template.
+		 * 
+		 * @param oboNamespaces
+		 */
 		function populateFreeFormInput(oboNamespaces) {
 			// label
 			var labelInput = createLabelInput();
@@ -147,22 +152,34 @@ function TermGenieFreeForm(){
 			synonymInput.disable();
 			
 			// validate input button
-			var validateButton = jQuery('#button-freeform-verification-start');
-			validateButton.attr("disabled", "disabled"); // disable
+			var validateButton = createValidateButton();
+			validateButton.disable();
 			
+			// make the first call, the pre-selected value does not fire the change event
+			namespaceInput.updateNamespace();
+			
+			/**
+			 * Create an input object for the label in the free form template.
+			 * 
+			 * @returns label input object
+			 */
 			function createLabelInput() {
-				var labelInputField = jQuery('free-form-input-label');
+				// retrieve the pre-existing DOM element
+				var labelInputField = jQuery('#free-form-input-label');
 				
 				function setError() {
-					// TODO
-				};
+					inputElement.addClass('termgenie-input-field-error');
+				}
 				
 				function resetError() {
-					// TODO
+					inputElement.removeClass('termgenie-input-field-error');
 				};
 				
 				labelInputField.change(resetError);
 				
+				/**
+				 * return the functions for this object
+				 */
 				return {
 					getLabel: function() {
 						return labelInputField.val();
@@ -178,7 +195,13 @@ function TermGenieFreeForm(){
 				};
 			};
 			
+			/**
+			 * Create an input object for the OBO namespace(s) in the free form template.
+			 * 
+			 * @returns namespace input object
+			 */
 			function createNamespaceInput() {
+				// retrieve the pre-existing DOM element
 				var namespaceCell = jQuery('#free-form-input-namespace-cell');
 				var namespaceInputSelector = jQuery('<select></select>')
 				jQuery.each(oboNamespaces, function(intIndex, objValue){
@@ -186,12 +209,14 @@ function TermGenieFreeForm(){
 				});
 				namespaceCell.append(namespaceInputSelector);
 				
-				namespaceInputSelector.change(function(){
+				namespaceInputSelector.change(updateOboNamespace);
+				
+				function updateOboNamespace(){
 					resetError();
 					var currentOboNamespace = getVal();
 					
 					// enable relations with auto-complete for terms
-					relations.enable(currentOboNamespace);
+					relationsInput.enable(currentOboNamespace);
 					
 					// enable def, def-xrefs, synonyms
 					defInput.enable();
@@ -199,21 +224,24 @@ function TermGenieFreeForm(){
 					synonymInput.enable();
 					
 					// active validate button
-					validateButton.removeAttr("disabled");
-				});
+					validateButton.enable();
+				};
 				
 				function getVal() {
 					namespaceInputSelector.find(':selected').val();
 				};
 				
 				function setError() {
-					// TODO
+					namespaceInputSelector.addClass('termgenie-input-field-error');
 				};
 				
 				function resetError() {
-					// TODO
+					namespaceInputSelector.removeClass('termgenie-input-field-error');
 				};
 				
+				/**
+				 * return the functions for this object
+				 */
 				return {
 					getNamespace: function() {
 						return getVal();
@@ -225,25 +253,37 @@ function TermGenieFreeForm(){
 						}
 						setError();
 						return 'A valid obo namespace is required for a new term'
+					},
+					updateNamespace: function() {
+						updateOboNamespace();
 					}
 				};
 			};
 			
+			/**
+			 * Create an input object for the definition in the free form template.
+			 * 
+			 * @returns definition input object.
+			 */
 			function createDefInput() {
+				// retrieve the pre-existing DOM element
 				var defInputField = jQuery('#free-form-input-def');
 				
 				function getVal() {
-					defInputField.getText();
+					defInputField.val();
 				};
 				
 				function setError() {
-					// TODO
+					inputElement.addClass('termgenie-input-field-error');
 				};
 				
 				function resetError() {
-					// TODO
+					inputElement.removeClass('termgenie-input-field-error');
 				};
 				
+				/**
+				 * return the functions for this object
+				 */
 				return {
 					enable: function() {
 						defInputField.removeAttr("disabled");
@@ -265,28 +305,76 @@ function TermGenieFreeForm(){
 				};
 			};
 			
+			/**
+			 * Create an input list object for definition xrefs in the free form template.
+			 * 
+			 * @returns xrefs input object
+			 */
 			function createDefXrefsInput() {
-				var defXrefsInputCell = jQuery('#free-form-input-dbxref-cell')
+				// retrieve the pre-existing DOM element
+				var defXrefsInputCell = jQuery('#free-form-input-dbxref-cell');
+				var listParent = createLayoutTable();
+				defXrefsInputCell.append(listParent);
+				var inputFields = [];
+				
+				var addRemove = createAddRemoveWidget(defXrefsInputCell, addField, removeField);
+				addField();
+				
+				function addField() {
+					var listElem = jQuery('<tr></tr>');
+					listElem.appendTo(listParent);
+					var tdElement = jQuery('<td></td>');
+					tdElement.appendTo(listElem);
+					var inputField = jQuery('<input type="text"/>');
+					tdElement.append(inputField);
+					inputFields.push(inputField);
+				};
+				
+				function removeField() {
+					if (inputFields.length > 1) {
+						listParent.find('tr').last().remove();
+						inputFields.pop();
+					}
+				};
 				
 				function getVal() {
-					// TODO
-					return [];
+					var results = [];
+					jQuery.each(inputFields, function(pos, inputField){
+						var val = inputField.val();
+						if (val && val !== null && val.length > 0) {
+							results.push(val);
+						}
+					});
+					return results;
 				};
 				
 				function setError() {
-					// TODO
+					jQuery.each(inputFields, function(pos, inputField){
+						inputField.addClass('termgenie-input-field-error');
+					});
 				};
 				
 				function resetError() {
-					// TODO
+					jQuery.each(inputFields, function(pos, inputField){
+						inputField.removeClass('termgenie-input-field-error');
+					});
 				};
 				
+				/**
+				 * return the functions for this object
+				 */
 				return {
 					enable: function() {
-						// TODO
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.removeAttr("disabled");
+						});
+						addRemove.enable();
 					},
 					disable: function() {
-						// TODO
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.attr("disabled", "disabled"); // disable
+						});
+						addRemove.disable();
 					},
 					getXrefs: function() {
 						return getVal();
@@ -294,6 +382,18 @@ function TermGenieFreeForm(){
 					validate: function() {
 						var current = getVal();
 						if (current && current !== null && current.length > 0) {
+							var errors = [];
+							jQuery.each(current, function(pos, text){
+								var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
+								var matching = pattern.test(text); 
+								if (matching === false) {
+									errors.push('The xref: "'+current+'" does not conform to the expected pattern. XRefs consists of a prefix and suffix with a colon (:) as separator and no whitespaces');
+								}
+							});
+							if (errors.lenght > 0) {
+								setError();
+								return errors[0];
+							}
 							return null;
 						}
 						setError();
@@ -302,63 +402,812 @@ function TermGenieFreeForm(){
 				};
 			};
 			
+			/**
+			 * Create input elements for relations in the free form template.
+			 * 
+			 * @returns relations object
+			 */
 			function createRelationsInput() {
-				// only available after a namespace has been selected
-				
-				// is_a with obo namespace aware auto-complete
-				
-				// part_of
+				var isaList = createIsAList();
+				var partOfList = createPartOfList();
 				
 				return {
 					enable: function(oboNamespace) {
-						// TODO
+						isaList.enable(oboNamespace);
+						partOfList.enable();
 					},
 					disable: function() {
-						// TODO
+						isaList.disable();
+						partOfList.disable();
 					},
 					getIsA: function() {
-						// TODO
+						return isaList.values();
 					},
 					getPartOf: function() {
-						// TODO
+						return partOfList.values();
 					},
 					validate: function() {
-						// TODO
-						return "As set of valid relations is required. There must be at least one is-a relation.";
+						var isaValidation = isaList.validate()
+						if (isaValidation && isaValidation !== null) {
+							return isaValidation;
+						}
+						return partOfList.validate();
+					}
+				};
+				
+				/**
+				 * Create an input object for a list of isa relations.
+				 * 
+				 * @returns isa list object
+				 */
+				function createIsAList() {
+					// retrieve the pre-existing DOM element
+					var globalIsAContainer = jQuery('#free-form-input-isa-cell');
+					var listParent = createLayoutTable();
+					globalIsAContainer.append(listParent);
+					var inputFields = [];
+					
+					var currentOboNamespace = null;
+					
+					var addRemove = createAddRemoveWidget(globalIsAContainer, addField, removeField);
+					addField();
+					
+					function addField() {
+						var listElem = jQuery('<tr></tr>');
+						listElem.appendTo(listParent);
+						var tdElement = jQuery('<td></td>');
+						tdElement.appendTo(listElem);
+						inputFields.push(AutoCompleteTerms(tdElement, function(){
+							return currentOboNamespace;
+						}));
+					};
+					
+					function removeField() {
+						if (inputFields.length > 1) {
+							listParent.find('tr').last().remove();
+							inputFields.pop();
+						}
+					};
+					
+					/**
+					 * return the functions for this object
+					 */
+					return {
+						values: function() {
+							var results = [];
+							jQuery.each(inputFields, function(pos, value){
+								results.push(value.value());
+							});
+							return results;
+						},
+						validate: function() {
+							var errors = [];
+							jQuery.each(inputFields, function(pos, value){
+								var error = value.validate();
+								if (error && error !== null) {
+									errors.push(error);
+								}
+							});
+							if (errors.length > 0) {
+								return errors[0];
+							}
+							return null;
+						},
+						enable: function(oboNamespace) {
+							currentOboNamespace = oboNamespace;
+							jQuery.each(inputFields, function(pos, value){
+								value.enable();
+							});
+							addRemove.enable();
+						},
+						disable: function() {
+							jQuery.each(inputFields, function(pos, value){
+								value.disable();
+							});
+							addRemove.disable();
+						}
+					};
+				}
+				
+				/**
+				 * Create an input object for a list of partOf relations.
+				 * 
+				 * @returns partOf relation list object
+				 */
+				function createPartOfList() {
+					// retrieve the pre-existing DOM element
+					var globalPartOfContainer = jQuery('#free-form-input-partof-cell');
+					var listParent = createLayoutTable();
+					globalPartOfContainer.append(listParent);
+					var inputFields = [];
+					
+					var addRemove = createAddRemoveWidget(globalPartOfContainer, addField, removeField);
+					addField();
+					
+					function addField() {
+						var listElem = jQuery('<tr></tr>');
+						listElem.appendTo(listParent);
+						var tdElement = jQuery('<td></td>');
+						tdElement.appendTo(listElem);
+						inputFields.push(AutoCompleteTerms(tdElement, null));
+					};
+					
+					function removeField() {
+						if (inputFields.length > 1) {
+							listParent.find('tr').last().remove();
+							inputFields.pop();
+						}
+					};
+					
+					function getValues() {
+						var results = [];
+						jQuery.each(inputFields, function(pos, value){
+							results.push(value.value());
+						});
+						return results;
+					};
+					
+					/**
+					 * return the functions for this object
+					 */
+					return {
+						values: getValues,
+						validate: function() {
+							var errors = [];
+							jQuery.each(inputFields, function(pos, value){
+								var error = value.validate(true);
+								if (error && error !== null) {
+									errors.push(error);
+								}
+							});
+							if (errors.length > 0) {
+								return errors[0];
+							}
+							return null;
+						},
+						enable: function() {
+							jQuery.each(inputFields, function(pos, value){
+								value.enable();
+							});
+							addRemove.enable();
+						},
+						disable: function() {
+							jQuery.each(inputFields, function(pos, value){
+								value.disable();
+							});
+							addRemove.disable();
+						}
+					};
+				}
+				
+				/**
+				 * Input field widget with auto-completion for a single ontology terms. 
+				 * 
+				 * @param elem {DOM element} element
+				 * @param oboNamespace function to retrieve the current obo namespace
+				 * 
+				 * @returns functions for the object: value(), validate()
+				 */
+				function AutoCompleteTerms(elem, getOboNamespace) {
+					
+					var inputElement = jQuery('<input></input>');
+					elem.append(inputElement);
+					
+					function clearErrorState() {
+						inputElement.removeClass('termgenie-input-field-error');	
+					}
+					
+					function setErrorState() {
+						inputElement.addClass('termgenie-input-field-error');
+					}
+					
+					// setup the autocompletion widget, includes an
+					// additional description div for terms
+					
+					// used to prevent race conditions
+					var requestIndex = 0;
+					
+					inputElement.extendedautocomplete({
+						minLength: 3,
+						// create data source
+						// use rpc to retrieve suggestions
+						source: function( request, response ) {
+							var oboNamespace = null;
+							if (getOboNamespace && getOboNamespace !== null) {
+								oboNamespace = getOboNamespace();
+								if (!oboNamespace) {
+									oboNamespace = null;
+								}
+							}
+							// prepare rpc request data
+							var term = request.term;
+							requestIndex += 1;
+							var myRequestIndex = requestIndex;
+
+							mySession.getSessionId(function(sessionId){
+								jsonService.freeform.autocomplete({
+									params:[sessionId, term, oboNamespace, 5],
+									onSuccess: function(data) {
+										if (myRequestIndex === requestIndex) {
+											if (data !== null || data.length > 0) {
+												response(data);	
+											}
+											else {
+												response([]);
+											}
+										}
+									},
+									onException: function(e) {
+										jQuery.logSystemError('Autocomplete service call failed', e, true);
+										if (myRequestIndex === requestIndex) {
+											response([]);
+										}
+									}
+								});
+							});
+						},
+						createInfoDiv: function() {
+							return '<div class="term-description-content"></div>';
+						},
+						createInfoDivContent: function(item){
+							var layout = createLayoutTableOpenTag();
+							layout += '<tr><td>Label</td><td>'+item.label+'</td></tr>';
+							layout += '<tr><td>Identifier</td><td>'+item.identifier.termId+'</td></tr>';
+							if (item.description && item.description.length > 0) {
+								layout += '<tr><td>Description</td><td>'+item.description+'</td></tr>';
+							}
+							if (item.synonyms && item.synonyms.length > 0) {
+								layout += '<tr><td>Synonyms</td><td>';
+								for ( var i = 0; i < item.synonyms.length; i++) {
+									var synonym = item.synonyms[i];
+									if (synonym && synonym.length > 0) {
+										if (i > 0) {
+											layout += '<br/>';
+										}
+										layout += synonym;
+									}
+								}
+								layout += '</td></tr>';
+							}
+							layout += '</table>';
+							return layout;
+						},
+						getLabel: function(item){
+							return item.label;
+						}, 
+						onSelect : function() {
+							clearErrorState();
+						},
+						renderItem: function( ul, item ) {
+							return jQuery( '<li class="termgenie-autocomplete-menu-item"></li>' )
+								.data( 'item.autocomplete', item )
+								.append( '<a><span class="termgenie-autocomplete-menu-item-label">' + 
+										item.label + '</span></a>' )
+								.appendTo( ul );
+						}
+					});
+					
+					function getValue() {
+						var term = inputElement.extendedautocomplete( 'getSelected' );
+						if (term && term !== null) {
+							var text = inputElement.val();
+							if (term.label == text) {
+								var identifier = term.identifier;
+								return identifier;
+							}
+						}
+						return null;
+					}
+					
+					/**
+					 * return the functions for this object
+					 */
+					return {
+						validate: function(optional) {
+							var current = getValue();
+							if (current && current !== null && current.length > 0) {
+								if (optional === true) {
+									setErrorState();
+									return "The input field does not contain a valid term.";
+								}
+							}
+							return null;
+						},
+						value: getValue,
+						enable: function() {
+							inputElement.removeAttr("disabled"); // enable
+							inputElement.extendedautocomplete( 'clear' );
+						},
+						disable: function() {
+							inputElement.attr("disabled", "disabled"); // disable
+						}
+					};
+				}
+			};
+			
+			function createSynonymInput() {
+				// retrieve the pre-existing DOM element
+				var synonymsInputCell = jQuery('#free-form-input-synonym-cell');
+				var listParent = createLayoutTable();
+				synonymsInputCell.append(listParent);
+				var inputFields = [];
+				
+				var addRemove = createAddRemoveWidget(synonymsInputCell, addField, removeField);
+				addField();
+				
+				function addField() {
+					var listElem = jQuery('<tr></tr>');
+					listElem.appendTo(listParent);
+					var tdElement = jQuery('<td></td>');
+					tdElement.appendTo(listElem);
+					inputFields.push(createSynonymRow(tdElement));
+				};
+				
+				function removeField() {
+					if (inputFields.length > 1) {
+						listParent.find('tr').last().remove();
+						inputFields.pop();
+					}
+				};
+				
+				function getVal() {
+					var results = [];
+					jQuery.each(inputFields, function(pos, inputField){
+						var val = inputField.val();
+						if (val && val !== null && val.length > 0) {
+							results.push(val);
+						}
+					});
+					return results;
+				};
+				
+				/**
+				 * Create a table row for a synonym input. Created as part of 
+				 * the given tableContainer.
+				 * 
+				 * @param tableContainer DOM-element
+				 * @returns synonym row object
+				 */
+				function createSynonymRow(tableContainer) {
+					var synonymRow = jQuery('<tr></tr>');
+					tableContainer.append(synonymRow);
+					
+					// input fields
+					// label
+					var synonymLabel = createSynonymLabel();
+					
+					// scope selector
+					var scopeSelector = createScopeSelector();
+					
+					// list of xrefs, provide sanity check
+					var xrefList = createXrefSynonymList();
+					
+					/**
+					 * Create a synonym label object.
+					 * 
+					 * @returns synonym label object
+					 */
+					function createSynonymLabel() {
+						var labelField = jQuery('<input type="text" style="width:350px"/>');
+						var labelTD = jQuery('<td></td>');
+						labelTD.append(labelField);
+						synonymRow.append(labelTD);
+						
+						function getValue() {
+							return labelField.val();
+						}
+						
+						/**
+						 * return the functions for this object
+						 */
+						return {
+							enable: function() {
+								labelField.removeAttr("disabled");
+							},
+							disable: function() {
+								labelField.attr("disabled", "disabled"); // disable
+							},
+							getLabel: getValue,
+							validate: function() {
+								return null;
+							}
+						};
+					};
+					
+					/**
+					 * Create a synonym scope selector object
+					 * 
+					 * @returns scope selector object
+					 */
+					function createScopeSelector() {
+						var selector = jQuery('<select>'+
+								'<option value="RELATED">RELATED</option>'+
+								'<option value="NARROW">NARROW</option>'+
+								'<option value="EXACT">EXACT</option>'+
+								'<option value="BROAD">BROAD</option>'+
+								'</select>');
+						var scopeTD = jQuery('<td></td>');
+						scopeTD.append(selector);
+						synonymRow.append(scopeTD);
+						
+						/**
+						 * return the functions for this object
+						 */
+						return {
+							enable: function() {
+								selector.removeAttr("disabled");
+							},
+							disable: function() {
+								selector.attr("disabled", "disabled"); // disable
+							},
+							getScope: function() {
+								return selector.val();
+							},
+							validate: function() {
+								return null;
+							}
+						};
+					};
+					
+					/**
+					 * Create a list of xrefs for a synonym.
+					 * 
+					 * @returns xref list object
+					 */
+					function createXrefSynonymList() {
+						var xrefListContainer = jQuery('<td></td>');
+						synonymRow.append(xrefListContainer);
+						var listParent = createLayoutTable();
+						xrefListContainer.append(listParent);
+						var inputFields = [];
+						
+						var addRemove = createAddRemoveWidget(xrefListContainer, addField, removeField);
+						addField();
+						
+						function addField() {
+							var listElem = jQuery('<tr></tr>');
+							listElem.appendTo(listParent);
+							var tdElement = jQuery('<td></td>');
+							tdElement.appendTo(listElem);
+							var inputField = jQuery('<input type="text"/>');
+							tdElement.append(inputField);
+							inputFields.push(inputField);
+						};
+						
+						function removeField() {
+							if (inputFields.length > 1) {
+								listParent.find('tr').last().remove();
+								inputFields.pop();
+							}
+						};
+						
+						function getValues() {
+							var results = [];
+							jQuery.each(inputFields, function(pos, inputField){
+								var val = inputField.val();
+								if (val && val !== null && val.length > 0) {
+									results.push(val);
+								}
+							});
+							return results;
+						};
+						
+						return {
+							enable: function() {
+								jQuery.each(inputFields, function(pos, inputField){
+									inputField.removeAttr("disabled");
+								});
+							},
+							disable: function() {
+								jQuery.each(inputFields, function(pos, inputField){
+									inputField.attr("disabled", "disabled"); // disable
+								});
+							},
+							getXrefs: getValues,
+							validate: function() {
+								var values = getValues();
+								if (values && values !== null && values.length > 0) {
+									jQuery.each(values, function(pos, value) {
+										// TODO check that the values is in proper xref syntax:
+										// s+:s+
+									});
+								}
+								return null;
+							}
+						};
+					}
+					
+					/**
+					 * return the functions for this object
+					 */
+					return {
+						enable: function() {
+							synonymLabel.enable();
+							scopeSelector.enable();
+							xrefList.enable();
+						},
+						disable: function() {
+							synonymLabel.disable();
+							scopeSelector.disable();
+							xrefList.disable();
+						},
+						getSynonym: function() {
+							var currentSynonymLabel = synonymLabel.getLabel();
+							if (currentSynonymLabel && currentSynonymLabel !== null && currentSynonymLabel.length > 0) {
+								return {
+									label: currentSynonymLabel,
+									scope: scopeSelector.getScope(),
+									category: null,
+									xrefs: xrefList.getXrefs()
+								};
+							}
+							return null;
+						},
+						validate: function() {
+							var error;
+							error = xrefList.validate();
+							if (error && error !== null) {
+								return error;
+							}
+							error = scopeSelector.validate();
+							if (error && error !== null) {
+								return error;
+							}
+							return synonymLabel.validate();
+						}
+					};
+				}
+				
+				/**
+				 * return the functions for this object
+				 */
+				return {
+					enable: function() {
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.enable();
+						});
+						addRemove.enable();
+					},
+					disable: function() {
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.disable();
+						});
+						addRemove.disable();
+					},
+					getSynonyms: function() {
+						var synonyms = [];
+						jQuery.each(inputFields, function(pos, inputField){
+							var currentSynonym = inputField.getSynonym();
+							if (currentSynonym && currentSynonym !== null) {
+								synonyms.push(currentSynonym);
+							}
+						});
+						return synonyms;
+					},
+					validate: function() {
+						jQuery.each(inputFields, function(pos, inputField){
+							var currentValidation = inputField.validate();
+							if (currentValidation && currentValidation !== null && currentValidation.length > 0) {
+								return currentValidation;
+							}
+						});
+						return null;
 					}
 				};
 			};
 			
-			function createSynonymInput() {
+			/**
+			 * Validate all the input fields.
+			 * 
+			 * @returns null or first error message.
+			 */
+			function validateAll() {
+				var error = labelInput.validate();
+				if (error && error !== null) {
+					return error;
+				}
+				error = namespaceInput.validate();
+				if (error && error !== null) {
+					return error;
+				}
+				error = defInput.validate();
+				if (error && error !== null) {
+					return error;
+				}
+				error = defXrefsInput.validate();
+				if (error && error !== null) {
+					return error;
+				}
+				error = relationsInput.validate();
+				if (error && error !== null) {
+					return error;
+				}
+				return synonymInput.validate();
+			};
+			
+			/**
+			 * Get the free form term request, created from the input fields.
+			 * This is only a valid request, if the validateAll() does not 
+			 * return any errors.
+			 * 
+			 * @returns free form term request.
+			 */
+			function getInputAll() {
+				return {
+					label: labelInput.getLabel(),
+					namespace: namespaceInput.getNamespace(),
+					definition: defInput.getDef(),
+					dbxrefs: defXrefsInput.getXrefs(),
+					isA: relationsInput.getIsA(),
+					partOf: relationsInput.getPartOf(),
+					synonyms: synonymInput.getSynonyms()
+				};
+			};
+		
+			function createValidateButton() {
+				// retrieve the pre-existing DOM element
+				var validateButtonElem = jQuery('#button-freeform-verification-start');
+				var busyElement= jQuery('#button-freeform-verification-start-progress');
+				
+				function validateButtonClickFunction() {
+					busyElement.empty();
+					
+					// run sanity checks
+					var error = validateAll();
+					if (error && error !== null) {
+						jQuery.logUserMessage(error);
+						return;
+					}
+					
+					// get request
+					var freeFormRequest = getInputAll();
+					
+					// busy message
+					var busyMessage = jQuery(createBusyMessage('Verifing your request on the server.'));
+					busyElement.append(busyMessage);
+					var progressInfo = ProgressInfoWidget(busyMessage, 6, false);
+					
+					// send request to server
+					mySession.getSessionId(function(sessionId){
+						jsonService.freeform.validate({
+							params:[sessionId, freeFormRequest],
+							onSuccess: function(result) {
+								// render review panel
+								createReviewPanel(result);
+								
+								// activate and switch to next panel
+								myAccordion.enablePane(1);
+								myAccordion.activatePane(1);
+							},
+							onException: function(e) {
+								jQuery.logSystemError("Validation of free form request call failed", e);
+								return true;
+							},
+							onProgress: function(uuid) {
+								jsonService.progress.getProgress({
+									params:[uuid],
+									onSuccess: function(messages) {
+										progressInfo.addMessages(messages);
+									}
+								});
+							},
+							onComplete: function() {
+								// clear busy message in all cases
+								busyElement.empty();
+							}
+						});
+					});
+				};
 				
 				return {
 					enable: function() {
-						// TODO
+						validateButtonElem.removeAttr("disabled");
+						validateButtonElem.click(validateButtonClickFunction);
 					},
 					disable: function() {
-						// TODO
-					},
-					getSynonyms: function() {
-						// TODO
-					},
-					validate: function() {
-						// TODO validate individual synonyms
-						return null;
+						validateButtonElem.attr("disabled", "disabled"); // disable
+						validateButtonElem.unbind("click");
 					}
 				};
 			};
 		};
 
+		/**
+		 * 
+		 * @param validationResponse 
+		 * Type: JsonFreeFormValidationResponse {
+		 *    generalError: String,
+		 *    errors: FreeFormHint[] {
+		 *       field: String,
+		 *       hint: String
+		 *    },
+		 *    generatedTerm: JsonOntologyTerm {
+		 *       tempId: String,
+		 *       label: String,
+		 *       definition: String,
+		 *       defXRef: String[],
+		 *       synonyms: JsonSynonym[] {
+		 *          label: String,
+		 *          scope: String,
+		 *          category: String,
+		 *          xrefs: String[]
+		 *       },
+		 *       relations: String[],
+		 *       metaData: String[],
+		 *       owlAxioms: String,
+		 *       isObsolete: boolean,
+		 *       pattern: String
+		 *    }
+		 * }
+		 */
 		// review panel
-		function createReviewPanel() {
-		
-			// not editable!
-			// require user to tick a check-box
-			// active submit button
+		function createReviewPanel(validationResponse) {
+			var reviewContainer = jQuery('#freeform-step2-div-verification-and-review');
+			
+			// clean up
+			// clear container
+			reviewContainer.clear();
+			// remove click handler
+			jQuery('#button-submit-for-review').unbind('click');
+			// hide submit button
+			jquery('#button-submit-for-review-div').hide();
+			
+			if (!validationResponse || validationResponse === null) {
+				jQuery.logSystemError('Validation response is undefined');
+				return;
+			}
+			
+			// check general error
+			if (validationResponse.generalError && validationResponse.generalError !== null) {
+				renderGeneralError(reviewContainer, validationResponse.generalError)
+				return;
+			}
+			
+			// check for free form hints
+			if (validationResponse.errors && validationResponse.errors !== null) {
+				renderErrors(reviewContainer, validationResponse.errors);
+				return;
+			}
+			
+			// render term
+			
+			// checkbox
+			
+			// activate submit button
+			
+			// --- Helper ---
+			
+			function renderGeneralError(parent, generalError) {
+				var generalErrorContainer = jQuery('<div class="term-generation-general-error"></div>');
+				generalErrorContainer.appendTo(parent);
+				generalErrorContainer.append('<div class="term-generation-general-error-heading">Error Message</div>');
+				generalErrorContainer.append('<div class="term-generation-general-error-description">Your request produced the following error:</div>');
+				generalErrorContainer.append('<div class="term-generation-general-error-details">'+generalError+'</div>');
+				generalErrorContainer.append('<div class="term-generation-general-error-description">Please check your input and retry. If the problem persits, please contact the TermGenie team.</div>');
+			};
+			
+			function renderErrors(parent, errors) {
+				var detailedErrorContainer = jQuery('<div class="term-generation-detailed-errors"></div>');
+				detailedErrorContainer.appendTo(parent);
+				detailedErrorContainer.append('<div class="term-generation-detailed-errors-heading">Error Messages</div>');
+				detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of errors.</div>');
+				var layout = jQuery('<table cellpadding="5"></table>');
+				detailedErrorContainer.append(layout);
+				detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
+				
+				layout.append('<thead><tr><td>Field</td><td>Message</td></tr></thead>');
+				
+				jQuery.each(errors, function(index, validationHint){
+					var trElement = jQuery('<tr></tr>');
+					trElement.appendTo(layout);
+					trElement.append('<td>' + validationHint.field +'</td>');
+					trElement.append('<td>' + validationHint.hint +'</td>');
+				});
+			};
 		};
 		
 		// result panel
-		function createResultPanel() {
+		function createResultPanel(submissionResponse) {
 			
 			// new ids
 		};
@@ -432,6 +1281,65 @@ function TermGenieFreeForm(){
 	}
 	
 	/**
+	 * Create a styled layout table with no borders, zero spacing and zero padding.
+	 * 
+	 * @returns DOM element
+	 */
+	function createLayoutTable() {
+		return jQuery(createLayoutTableOpenTag()+'</table>');
+	}
+	
+	/**
+	 * Create starting tag for layout table.
+	 * 
+	 * @returns String
+	 */
+	function createLayoutTableOpenTag() {
+		return '<table class="termgenie-layout-table" cellSpacing="0" cellPadding="0">';
+	}
+	
+	/** 
+	 * Create stub for adding and removing elements.
+	 * 
+	 * @param parent DOM element
+	 * @param addfunction function clickhandler for add
+	 * @param removeFunction function clickhandler for remove
+	 */
+	function createAddRemoveWidget(parent, addfunction, removeFunction) {
+		var addButton = jQuery('<a class="myClickable">More</a>'); 
+		var delButton = jQuery('<a class="myClickable">Less</a>');
+		var buttons = jQuery('<span class="more-less-buttons"></span>');
+		buttons.append(" (");
+		buttons.append(addButton);
+		buttons.append(", ");
+		buttons.append(delButton);
+		buttons.append(")");
+		buttons.appendTo(parent);
+		
+		// click listener for add button
+		addButton.click(addfunction);
+		
+		// click listener for remove button
+		delButton.click(removeFunction);
+		
+		return {
+			enable: function() {
+				// clean up before adding new handlers
+				addButton.unbind('click');
+				delButton.unbind('click');
+				
+				// add new handlers
+				addButton.click(addfunction);
+				delButton.click(removeFunction);
+			},
+			disable: function() {
+				addButton.unbind('click');
+				delButton.unbind('click');
+			}
+		};
+	}
+	
+	/**
 	 * Create a styled busy message div with and additional text for details. 
 	 * 
 	 * @param additionalText
@@ -444,6 +1352,46 @@ function TermGenieFreeForm(){
 			'<div class="termgenie-busy-additional-text">'+additionalText+'</div><div>';
 	}
 	
+	/**
+	 * Widget for rendering process status messages provided by the TermGenie server.
+	 * 
+	 * @param parentElem parent DOM element
+	 * @param limit max number of messages shown, if less or equals zero, all messages are shown
+	 * @param renderDetails boolean flag, if true render optional message details
+	 * @returns {
+	 * 	  addMessages: function(messages)
+	 *  }
+	 */
+	function ProgressInfoWidget(parentElem, limit, renderDetails) {
+		
+		var lineParent = jQuery('<div class="termgenie-progress-infos"></div>');
+		parentElem.append(lineParent);
+		
+		return {
+			addMessages: function(messages) {
+				if (messages !== null) {
+					jQuery.each(messages, function(index, progressMessage){
+						var line = '<div>'
+							+ '<span class="termgenie-progress-info-time">' + progressMessage.time + '</span>'
+							+ '<span class="termgenie-progress-info-message">' + progressMessage.message + '</span>';
+						if (renderDetails === true && progressMessage.details && progressMessage.details !== null) {
+							line += '<div class="termgenie-progress-info-details">'
+								+ '<span>Details:</span>'
+								+ '<pre>'+progressMessage.details+'</pre>'
+								+ '</div>';
+						}
+						line += '</div>'
+						lineParent.append(line);
+					});
+					if (limit && limit > 0) {
+						while (lineParent.children().length > limit) {
+							lineParent.children().first().remove();
+						}
+					}
+				}
+			}
+		};
+	}
 	
 	return {
 		// empty object to hide internal functionality

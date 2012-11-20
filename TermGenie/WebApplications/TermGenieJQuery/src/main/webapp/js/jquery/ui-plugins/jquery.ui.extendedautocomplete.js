@@ -163,6 +163,10 @@
 		},
 		getSelected : function() {
 			return this._selectedItem;
+		},
+		clear: function() {
+			this._selectedItem = undefined;
+			this.element.val('');
 		}
 	});
 })( jQuery );
