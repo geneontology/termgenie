@@ -345,6 +345,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			List<String> partOfList = request.getPartOf();			
 			if (partOfList != null && !partOfList.isEmpty()) {
 				// first: find property
+				partOfProperty = graph.getOWLObjectPropertyByIdentifier("part_of");
+				if (partOfProperty == null) {
+					setError("part_of", "Could not find the part_of property.");
+					return;
+				}
 				
 				// second: validate given classes 
 				partOf = new HashSet<OWLClass>();

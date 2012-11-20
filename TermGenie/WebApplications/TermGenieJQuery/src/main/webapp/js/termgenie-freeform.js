@@ -488,7 +488,12 @@ function TermGenieFreeForm(){
 						validate: function() {
 							var errors = [];
 							jQuery.each(inputFields, function(pos, value){
-								var error = value.validate();
+								// only require the first field to be valid
+								var optional = false;
+								if (pos > 0) {
+									optional = true;
+								}
+								var error = value.validate(optional);
 								if (error && error !== null) {
 									errors.push(error);
 								}
@@ -716,14 +721,13 @@ function TermGenieFreeForm(){
 					 */
 					return {
 						validate: function(optional) {
+							clearErrorState();
 							var current = getValue();
-							if (current && current !== null && current.length > 0) {
-								if (optional === true) {
-									setErrorState();
-									return "The input field does not contain a valid term.";
-								}
+							if ((current && current !== null && current.length > 0) || (optional === true)) {
+								return null;
 							}
-							return null;
+							setErrorState();
+							return "The input field does not contain a valid term.";
 						},
 						value: getValue,
 						enable: function() {
@@ -1182,6 +1186,13 @@ function TermGenieFreeForm(){
 			}
 			
 			// render term
+			var generatedTerm = validationResponse.generatedTerm;
+			if (!generatedTerm || generatedTerm === null) {
+				jQuery.logSystemError("Invalid response to term verification: empty generated term.");
+				return;
+			}
+			renderReviewPanel(reviewContainer, generatedTerm);
+			
 			
 			// checkbox
 			
@@ -1215,6 +1226,88 @@ function TermGenieFreeForm(){
 					trElement.append('<td>' + validationHint.field +'</td>');
 					trElement.append('<td>' + validationHint.hint +'</td>');
 				});
+			};
+			
+			/**
+			 * @param parent DOM element
+			 * @param term 
+			 * Type: JsonOntologyTerm {
+			 *     tempId: String,
+			 *     label: String,
+			 *     definition: String,
+			 *     defXRef: String[],
+			 *     synonyms: JsonSynonym[] {
+			 *        label: String,
+			 *        scope: String,
+			 *        category: String,
+			 *        xrefs: String[]
+			 *     },
+			 *     relations: String[],
+			 *     metaData: String[],
+			 *     owlAxioms: String,
+			 *     isObsolete: boolean,
+			 *     pattern: String
+			 *  }
+			 */
+			function renderReviewPanel(parent, term) {
+				var layoutTable = createLayoutTable();
+				parent.append(layoutTable);
+				
+				// label
+				var tableContent = '<tr><td>Label</td><td>'+term.label+'</td></tr>\n';
+				
+				// definition
+				tableContent += '<tr><td>Definition</td><td>'+term.definition+'</td></tr>\n';
+				
+				// xrefs
+				tableContent += '<tr><td>Xrefs</td><td>';
+				jQuery.each(term.defXRef, function(pos, xref){
+					if (pos > 0) {
+						tableContent += ', ';
+					}
+					tableContent += xref;
+				});
+				tableContent += '</td></tr>';
+				
+				// synonyms
+				if (term.synonyms && term.synonyms !== null && term.synonyms.length > 0) {
+					tableContent += '<tr><td>Synonyms</td><td></td></tr>/n';
+					jQuery.each(term.synonyms, function(pos, synonym){
+						tableContent += '<tr><td></td><td>'
+						tableContent += '"'+synonym.label+'" '+synonym.scope+' [';
+						if (synonym.xrefs && synonym.xrefs !== null) {
+							jQuery.each(synonym.xrefs, function(xrefPos, xref){
+								if (xrefPos > 0) {
+									tableContent += ', ';
+								}
+								tableContent += xref;
+							});
+						}
+						tableContent += ']</td></tr>/n';
+					});
+				}
+				
+				// relations
+				tableContent += '<tr><td>Relations</td><td></td></tr>';
+				jQuery.each(term.relations, function(pos, rel){
+					tableContent += '<tr><td></td><td>';
+					tableContent += rel;
+					tableContent += '</td></tr>/n';
+				});
+				
+				
+				// meta data
+				if (term.metaData && term.metaData !== null && term.metaData.length > 0) {
+					tableContent += '<tr><td>Meta-Data</td><td></td></tr>';
+					jQuery.each(term.metaData, function(pos, data){
+						tableContent += '<tr><td></td><td>';
+						tableContent += data;
+						tableContent += '</td></tr>/n';
+					});
+				}
+				
+				layoutTable.append(tableContent);
+				
 			};
 		};
 		
