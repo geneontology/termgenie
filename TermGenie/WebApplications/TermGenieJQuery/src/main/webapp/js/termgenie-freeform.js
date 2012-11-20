@@ -110,7 +110,7 @@ function TermGenieFreeForm(){
 					params: [sessionId],
 					onSuccess: function(oboNamespaces) {
 						if (oboNamespaces && oboNamespaces !== null && oboNamespaces.length >= 0) {
-							populateFreeFormInput(oboNamespaces);
+							populateFreeFormInput(oboNamespaces, myAccordion);
 						}
 						else {
 							jQuery.logSystemError('Retrieved OBO namespaces are empty.');
@@ -128,7 +128,7 @@ function TermGenieFreeForm(){
 		 * 
 		 * @param oboNamespaces
 		 */
-		function populateFreeFormInput(oboNamespaces) {
+		function populateFreeFormInput(oboNamespaces, myAccordion) {
 			// label
 			var labelInput = createLabelInput();
 			
@@ -168,11 +168,11 @@ function TermGenieFreeForm(){
 				var labelInputField = jQuery('#free-form-input-label');
 				
 				function setError() {
-					inputElement.addClass('termgenie-input-field-error');
+					labelInputField.addClass('termgenie-input-field-error');
 				}
 				
 				function resetError() {
-					inputElement.removeClass('termgenie-input-field-error');
+					labelInputField.removeClass('termgenie-input-field-error');
 				};
 				
 				labelInputField.change(resetError);
@@ -228,7 +228,7 @@ function TermGenieFreeForm(){
 				};
 				
 				function getVal() {
-					namespaceInputSelector.find(':selected').val();
+					return namespaceInputSelector.val();
 				};
 				
 				function setError() {
@@ -270,15 +270,15 @@ function TermGenieFreeForm(){
 				var defInputField = jQuery('#free-form-input-def');
 				
 				function getVal() {
-					defInputField.val();
+					return defInputField.val();
 				};
 				
 				function setError() {
-					inputElement.addClass('termgenie-input-field-error');
+					defInputField.addClass('termgenie-input-field-error');
 				};
 				
 				function resetError() {
-					inputElement.removeClass('termgenie-input-field-error');
+					defInputField.removeClass('termgenie-input-field-error');
 				};
 				
 				/**
@@ -390,7 +390,7 @@ function TermGenieFreeForm(){
 									errors.push('The xref: "'+current+'" does not conform to the expected pattern. XRefs consists of a prefix and suffix with a colon (:) as separator and no whitespaces');
 								}
 							});
-							if (errors.lenght > 0) {
+							if (errors.length > 0) {
 								setError();
 								return errors[0];
 							}
@@ -469,17 +469,22 @@ function TermGenieFreeForm(){
 						}
 					};
 					
+					function getValues() {
+						var results = [];
+						jQuery.each(inputFields, function(pos, value){
+							var currentValue = value.value();
+							if (currentValue && currentValue !== null) {
+								results.push(currentValue);
+							}
+						});
+						return results;
+					}
+					
 					/**
 					 * return the functions for this object
 					 */
 					return {
-						values: function() {
-							var results = [];
-							jQuery.each(inputFields, function(pos, value){
-								results.push(value.value());
-							});
-							return results;
-						},
+						values: getValues,
 						validate: function() {
 							var errors = [];
 							jQuery.each(inputFields, function(pos, value){
@@ -490,6 +495,10 @@ function TermGenieFreeForm(){
 							});
 							if (errors.length > 0) {
 								return errors[0];
+							}
+							var currentValues = getValues();
+							if (!currentValues || currentValues === null || currentValues.length === 0) {
+								return 'Missing is_a relationship. At least one is_a relation is required.';
 							}
 							return null;
 						},
@@ -542,7 +551,10 @@ function TermGenieFreeForm(){
 					function getValues() {
 						var results = [];
 						jQuery.each(inputFields, function(pos, value){
-							results.push(value.value());
+							var currentValue = value.value();
+							if (currentValue && currentValue !== null) {
+								results.push(currentValue);
+							}
 						});
 						return results;
 					};
@@ -692,7 +704,7 @@ function TermGenieFreeForm(){
 						if (term && term !== null) {
 							var text = inputElement.val();
 							if (term.label == text) {
-								var identifier = term.identifier;
+								var identifier = term.identifier.termId;
 								return identifier;
 							}
 						}
@@ -1073,7 +1085,7 @@ function TermGenieFreeForm(){
 							params:[sessionId, freeFormRequest],
 							onSuccess: function(result) {
 								// render review panel
-								createReviewPanel(result);
+								createReviewPanel(result, myAccordion);
 								
 								// activate and switch to next panel
 								myAccordion.enablePane(1);
@@ -1141,16 +1153,16 @@ function TermGenieFreeForm(){
 		 * }
 		 */
 		// review panel
-		function createReviewPanel(validationResponse) {
+		function createReviewPanel(validationResponse, myAccordion) {
 			var reviewContainer = jQuery('#freeform-step2-div-verification-and-review');
 			
 			// clean up
 			// clear container
-			reviewContainer.clear();
+			reviewContainer.empty();
 			// remove click handler
 			jQuery('#button-submit-for-review').unbind('click');
 			// hide submit button
-			jquery('#button-submit-for-review-div').hide();
+			jQuery('#button-submit-for-review-div').hide();
 			
 			if (!validationResponse || validationResponse === null) {
 				jQuery.logSystemError('Validation response is undefined');
@@ -1207,7 +1219,7 @@ function TermGenieFreeForm(){
 		};
 		
 		// result panel
-		function createResultPanel(submissionResponse) {
+		function createResultPanel(submissionResponse, myAccordion) {
 			
 			// new ids
 		};

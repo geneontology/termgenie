@@ -66,8 +66,10 @@ public class JsonFreeFormValidationResponse {
 		json.setGeneralError(response.getGeneralError());
 		json.setErrors(response.getErrors());
 		Pair<Frame,Set<OWLAxiom>> pair = response.getGeneratedTerm();
-		JsonOntologyTerm term = JsonOntologyTerm.createJson(pair.getOne(), pair.getTwo(), null, graph, "freeform");
-		json.setGeneratedTerm(term);
+		if (pair != null) {
+			JsonOntologyTerm term = JsonOntologyTerm.createJson(pair.getOne(), pair.getTwo(), null, graph, "freeform");
+			json.setGeneratedTerm(term);
+		}
 		return json;
 	}
 }
