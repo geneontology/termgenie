@@ -98,10 +98,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		return source.getOntology();
 	}
 
-	protected String getTempIdPrefix() {
-		return tempIdPrefix;
-	}
-
 	/**
 	 * Create {@link CommitInfo} instance for the given modifications. Overwrite
 	 * this method for more complex commitInfo
@@ -127,6 +123,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			JsonOntologyTerm[] terms,
 			OntologyTaskManager manager,
 			boolean sendConfirmationEMail,
+			String tempIdPrefix,
 			HttpSession session,
 			ProcessState processState)
 	{
@@ -150,7 +147,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		
 		String commitMessage = createDefaultCommitMessage(userData);
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()), sendConfirmationEMail, processState);
+				manager.getOntology()), sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			secondaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -197,7 +194,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 		String commitMessage = createDefaultCommitMessage(userData);
 		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()), sendConfirmationEMail, processState);
+				manager.getOntology()), sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			primaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -325,6 +322,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		private final String commitMessage;
 		private final ProcessState processState;
 		private final boolean sendConfirmationEMail;
+		private final String tempIdPrefix;
 
 		/**
 		 * @param manager
@@ -341,6 +339,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				UserData userData,
 				CommitUserData commitUserData,
 				boolean sendConfirmationEMail,
+				String tempIdPrefix,
 				ProcessState processState)
 		{
 			super();
@@ -350,6 +349,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			this.userData = userData;
 			this.commitUserData = commitUserData;
 			this.sendConfirmationEMail = sendConfirmationEMail;
+			this.tempIdPrefix = tempIdPrefix;
 			this.processState = processState;
 		}
 
@@ -478,7 +478,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				OntologyIdProvider idProvider) throws CommitException
 		{
 			List<CommitObject<TermCommit>> commits = new ArrayList<CommitObject<TermCommit>>();
-			IdHandler idHandler = new IdHandler(idProvider, ontology, getTempIdPrefix());
+			IdHandler idHandler = new IdHandler(idProvider, ontology, tempIdPrefix);
 			for (JsonOntologyTerm jsonTerm : terms) {
 				Frame frame = JsonOntologyTerm.createFrame(jsonTerm,
 						idHandler.create(jsonTerm.getTempId()));

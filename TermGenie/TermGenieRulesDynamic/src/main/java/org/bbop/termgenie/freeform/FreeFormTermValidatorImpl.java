@@ -31,9 +31,9 @@ import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
 import org.bbop.termgenie.owl.OWLChangeTracker;
+import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.rules.TermGenieScriptRunner;
 import org.bbop.termgenie.tools.Pair;
-import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -76,6 +76,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private final boolean addSubsetTag;
 	
 	private final List<String> oboNamespaces;
+	private final String idPrefix;
 	
 	private String subset = null;
 
@@ -96,6 +97,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		this.requireLiteratureReference = requireLiteratureReference;
 		this.useIsInferred = useIsInferred;
 		this.oboNamespaces = supportedOboNamespaces;
+		this.idPrefix = TemporaryIdentifierTools.getTempIdPrefix(ontology);
 	}
 
 	
@@ -132,6 +134,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		return oboNamespaces;
 	}
 
+	@Override
+	public String getTempIdPrefix() {
+		return idPrefix;
+	}
 
 	@Override
 	public FreeFormValidationResponse validate(final FreeFormTermRequest request, ProcessState state) {
@@ -140,7 +146,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		if (this.subset != null && addSubsetTag) {
 			subset = this.subset;
 		}
-		ValidationTask task = new ValidationTask(request, requireLiteratureReference, useIsInferred, subset, factory, state);
+		ValidationTask task = new ValidationTask(request, requireLiteratureReference, useIsInferred, subset, idPrefix, factory, state);
 		try {
 			manager.runManagedTask(task, ontology);
 		} catch (InvalidManagedInstanceException exception) {
@@ -170,13 +176,13 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		
 		List<Modified> modified = null;
 		private final String subset;
-		
-		
+		private final String idPrefix;
 	
 		ValidationTask(FreeFormTermRequest request,
 				boolean requireLiteratureReference,
 				boolean useIsInferred,
 				String subset,
+				String idPrefix,
 				ReasonerFactory factory,
 				ProcessState state)
 		{
@@ -184,6 +190,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			this.requireLiteratureReference = requireLiteratureReference;
 			this.useIsInferred = useIsInferred;
 			this.subset = subset;
+			this.idPrefix = idPrefix;
 			this.reasonerFactory = factory;
 			this.state = state;
 		}
@@ -454,7 +461,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(graph);
 				reasonerManager.setProcessState(state);
 				
-				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(graph, iri, changeTracker, getTempIdPrefix(), state, useIsInferred);
+				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(graph, iri, changeTracker, idPrefix, state, useIsInferred);
 				try {
 					reasonerManager.runManagedTask(task);
 				} catch (InvalidManagedInstanceException exception) {
@@ -560,6 +567,17 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			Matcher doiMatcher = DOI_PATTERN.matcher(s);
 			return doiMatcher.matches();
 		}
+		
+		private static int ID_Counter = 0;
+		
+		String getNewId() {
+			synchronized (ValidationTask.class) {
+				String id = idPrefix + ID_Counter;
+				ID_Counter += 1;
+				return id;
+			}
+			
+		}
 	}
 	
 	private final static ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>(){
@@ -576,15 +594,4 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		return df.get().format(new Date());
 	}
 	
-	private static int ID_Counter = 0;
-	
-	static String getTempIdPrefix() {
-		return Obo2OWLConstants.DEFAULT_IRI_PREFIX + "/FreeForm/FreeForm_";
-	}
-	
-	static synchronized String getNewId() {
-		String id = getTempIdPrefix() + ID_Counter;
-		ID_Counter += 1;
-		return id;
-	}
 }

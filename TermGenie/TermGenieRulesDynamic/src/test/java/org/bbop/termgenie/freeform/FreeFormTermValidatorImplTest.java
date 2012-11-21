@@ -12,6 +12,7 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerFactoryImpl;
 import org.bbop.termgenie.freeform.FreeFormTermValidatorImpl.ValidationTask;
+import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -98,7 +99,8 @@ public class FreeFormTermValidatorImplTest {
 	}
 
 	protected ValidationTask createTask(FreeFormTermRequest request) {
-		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, "freeform", factory, ProcessState.NO);
+		String idprefix = TemporaryIdentifierTools.getTempIdPrefix(graph);
+		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, "freeform", idprefix, factory, ProcessState.NO);
 		return task;
 	}
 	

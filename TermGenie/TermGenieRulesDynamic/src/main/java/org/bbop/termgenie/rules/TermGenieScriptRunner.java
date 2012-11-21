@@ -34,7 +34,6 @@ import org.bbop.termgenie.rules.api.ChangeTracker;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctions;
 import org.bbop.termgenie.rules.impl.TermGenieScriptFunctionsMDefImpl;
 import org.bbop.termgenie.tools.ResourceLoader;
-import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
@@ -441,6 +440,6 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 
 	@Override
 	public String getTempIdPrefix(OWLGraphWrapper ontology) {
-		return Obo2OWLConstants.DEFAULT_IRI_PREFIX + ontology.getOntologyId().toUpperCase()+"_"+"TEMP-";
+		return TemporaryIdentifierTools.getTempIdPrefix(ontology);
 	}
 }

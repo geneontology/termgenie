@@ -170,6 +170,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 					terms,
 					targetOntology,
 					sendConfirmationEMail,
+					validator.getTempIdPrefix(),
 					session,
 					processState);
 			return result;

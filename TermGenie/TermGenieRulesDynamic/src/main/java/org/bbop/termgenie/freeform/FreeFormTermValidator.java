@@ -25,5 +25,13 @@ public interface FreeFormTermValidator {
 	 * @return response
 	 */
 	public FreeFormValidationResponse validate(FreeFormTermRequest request, ProcessState state);
+	
+	
+	/**
+	 * Get the temporary identifier prefix for the validator.
+	 * 
+	 * @return prefix string
+	 */
+	public String getTempIdPrefix();
 
 }

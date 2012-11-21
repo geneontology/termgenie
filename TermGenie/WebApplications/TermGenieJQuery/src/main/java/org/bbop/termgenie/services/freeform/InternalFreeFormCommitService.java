@@ -18,6 +18,7 @@ public interface InternalFreeFormCommitService {
 	 * @param terms
 	 * @param manager
 	 * @param sendConfirmationEMail
+	 * @param tempIdPrefix
 	 * @param session 
 	 * @param processState
 	 * @return {@link JsonCommitResult}
@@ -26,6 +27,7 @@ public interface InternalFreeFormCommitService {
 			JsonOntologyTerm[] terms,
 			OntologyTaskManager manager,
 			boolean sendConfirmationEMail,
+			String tempIdPrefix,
 			HttpSession session,
 			ProcessState processState);
 }
