@@ -33,6 +33,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.services.freeform.InternalFreeFormCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.OntologyTools;
@@ -55,7 +56,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl {
+public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl implements InternalFreeFormCommitService {
 
 	private final Committer committer;
 	private final OntologyIdManager primaryIdProvider;
@@ -124,20 +125,11 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	@Override
 	public JsonCommitResult commitFreeFormTerms(String sessionId,
 			JsonOntologyTerm[] terms,
-			String ontologyName,
+			OntologyTaskManager manager,
 			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState)
 	{
-		// check if its the correct ontology
-		OntologyTaskManager manager = getOntologyManager(ontologyName);
-		if (manager == null) {
-			return error("Unknown ontology: " + ontologyName);
-		}
-		if (!getTargetOntology().getUniqueName().equals(manager.getOntology().getUniqueName())) {
-			return error("Can only commit to " + getTargetOntology().getUniqueName() + ", but requested ontology was: " + ontologyName);
-		}
-
 		// check if session is valid, get user name
 		boolean validSession = sessionHandler.isValidSession(sessionId, session);
 		if (!validSession) {

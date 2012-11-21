@@ -3,6 +3,8 @@ package org.bbop.termgenie.services.freeform;
 import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.data.JsonCommitResult;
+import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.json.rpc.server.ProcessStateAware;
 import org.json.rpc.server.SessionAware;
@@ -68,4 +70,25 @@ public interface FreeFormTermService {
 			JsonFreeFormTermRequest request,
 			HttpSession session,
 			ProcessState state);
+	
+	/**
+	 * Submit a free form term for review. Retrieve the username and
+	 * password from the session
+	 * 
+	 * @param sessionId an id which can be used to retrieve the session object.
+	 * @param term
+	 * @param sendConfirmationEMail
+	 * @param session introduced via {@link SessionAware}, do not send in rpc
+	 *            call.
+	 * @param processState introduced via {@link ProcessStateAware}, do not send
+	 *            in rpc call.
+	 * @return {@link JsonCommitResult}
+	 */
+	@SessionAware
+	@ProcessStateAware
+	public JsonCommitResult submit(String sessionId,
+			JsonOntologyTerm term,
+			boolean sendConfirmationEMail,
+			HttpSession session,
+			ProcessState processState);
 }

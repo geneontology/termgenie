@@ -50,26 +50,4 @@ public interface TermCommitService {
 			HttpSession session,
 			ProcessState processState);
 	
-	/**
-	 * Commit free form terms to the ontology. Retrieve the username and
-	 * password from the session
-	 * 
-	 * @param sessionId an id which can be used to retrieve the session object.
-	 * @param terms
-	 * @param ontology
-	 * @param sendConfirmationEMail
-	 * @param session introduced via {@link SessionAware}, do not send in rpc
-	 *            call.
-	 * @param processState introduced via {@link ProcessStateAware}, do not send
-	 *            in rpc call.
-	 * @return {@link JsonCommitResult}
-	 */
-	@SessionAware
-	@ProcessStateAware
-	public JsonCommitResult commitFreeFormTerms(String sessionId,
-			JsonOntologyTerm[] terms,
-			String ontology,
-			boolean sendConfirmationEMail,
-			HttpSession session,
-			ProcessState processState);
 }

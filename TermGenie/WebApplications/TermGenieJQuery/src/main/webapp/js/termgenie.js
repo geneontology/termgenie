@@ -2266,7 +2266,6 @@ function termgenie(){
 			jQuery.each(lines, function(pos, line){
 				message += line + '</br>\n';
 			});
-			message += '</div>';
 			return message; 
 		}
 	}

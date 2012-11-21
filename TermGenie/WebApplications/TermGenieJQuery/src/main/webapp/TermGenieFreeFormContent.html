@@ -65,7 +65,14 @@
 		<div id="termgenie-freeform-step2-content-container">
 			<div id="freeform-step2-div-verification-and-review"></div>
 			<div style="margin-top: 10px; display: none;" id="button-submit-for-review-div">
-				<button type="button" id="button-submit-for-review">Submit for Review</button>
+				<table class="termgenie-layout-table" cellSpacing="0" cellPadding="0">
+					<tr>
+						<td><input type="checkbox" id="checkbox-submit-for-review"/> 
+							<span>Submit Term for Review</span></td>
+						<td><button type="button" id="button-submit-for-review">Submit</button></td>
+					</tr>
+					<tr><td colspan="2">Hint: 'The Submit for Review' needs to be checked to able to submit terms.</td></tr>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -74,6 +81,7 @@
 		<a class="myClickable"><b>Step 3:</b> Final matters</a>
 	</h3>
 	<div>
+		<div id="button-submit-for-review-progress"></div>
 		<div id="termgenie-freeform-step3-content-container"></div>
 	</div>
 </div>

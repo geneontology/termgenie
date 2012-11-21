@@ -23,11 +23,13 @@ function TermGenieFreeForm(){
 	              'user.setValues',
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
+	              'progress.getProgress',
 	              'freeform.isEnabled',
 	              'freeform.canView',
 	              'freeform.getAvailableNamespaces',
 	              'freeform.autocomplete',
-	              'freeform.validate']
+	              'freeform.validate',
+	              'freeform.submit']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -1163,10 +1165,19 @@ function TermGenieFreeForm(){
 			// clean up
 			// clear container
 			reviewContainer.empty();
+			
 			// remove click handler
-			jQuery('#button-submit-for-review').unbind('click');
+			var submitButton = jQuery('#button-submit-for-review');
+			submitButton.unbind('click');
+			
+			// clear checkbox
+			var submitCheckbox = jQuery('#checkbox-submit-for-review');
+			submitCheckbox.unbind('change');
+			submitCheckbox.removeAttr('checked');
+			
 			// hide submit button
-			jQuery('#button-submit-for-review-div').hide();
+			var buttonCheckBoxDiv = jQuery('#button-submit-for-review-div');
+			buttonCheckBoxDiv.hide();
 			
 			if (!validationResponse || validationResponse === null) {
 				jQuery.logSystemError('Validation response is undefined');
@@ -1193,10 +1204,20 @@ function TermGenieFreeForm(){
 			}
 			renderReviewPanel(reviewContainer, generatedTerm);
 			
+			// hide submit button
+			buttonCheckBoxDiv.show();
 			
 			// checkbox
+			submitCheckbox.change(function(){
+				if (submitCheckbox.is(':checked')) {
+					// activate submit button
+					submitButton.click(submitClickHandler);
+				}
+				else {
+					submitButton.unbind('click');
+				}
+			});
 			
-			// activate submit button
 			
 			// --- Helper ---
 			
@@ -1309,16 +1330,92 @@ function TermGenieFreeForm(){
 				layoutTable.append(tableContent);
 				
 			};
+			
+			function submitClickHandler() {
+				// TODO make this configurable via a check box in the GUI
+				var sendConfirmationEmail = false; 
+				
+				// get and clear busyElement from step 3
+				var busyElement = jQuery('#button-submit-for-review-progress');
+				busyElement.empty();
+				
+				// busy message
+				var busyMessage = jQuery(createBusyMessage('Submitting your request to the server.'));
+				busyElement.append(busyMessage);
+				var progressInfo = ProgressInfoWidget(busyMessage, 6, false);
+				
+				// clear old content from next panel
+				var step3container = jQuery('#termgenie-freeform-step3-content-container');
+				step3container.empty();
+				
+				// activate and switch to next panel
+				myAccordion.enablePane(2);
+				myAccordion.activatePane(2);
+				
+				// send request to server
+				mySession.getSessionId(function(sessionId){
+					jsonService.freeform.submit({
+						params:[sessionId, generatedTerm, sendConfirmationEmail],
+						onSuccess: function(result) {
+							// render result panel
+							createResultPanel(result, step3container);
+						},
+						onException: function(e) {
+							jQuery.logSystemError("Service call for submission of free form term failed", e);
+							return true;
+						},
+						onProgress: function(uuid) {
+							jsonService.progress.getProgress({
+								params:[uuid],
+								onSuccess: function(messages) {
+									progressInfo.addMessages(messages);
+								}
+							});
+						},
+						onComplete: function() {
+							// clear busy message in all cases
+							busyElement.empty();
+						}
+					});
+				});
+			};
 		};
 		
 		// result panel
-		function createResultPanel(submissionResponse, myAccordion) {
+		function createResultPanel(results, container) {
 			
-			// new ids
+			container.append('<div class="term-generation-commit-heading">Submitted for Review<div>');
+			if (results.success === true) {
+				if(results.message && results.message.length > 0) {
+					container.append('<div>' + markupNewLines(results.message) + '</div>');
+				}
+				if (results.terms && results.terms.length > 0) {
+					container.append('<div>The following terms have been created:</div>');
+					var termList = jQuery('<ul></ul>');
+					jQuery.each(results.terms, function(index, term){
+						termList.append('<li style="font-family:monospace;">ID: '+term.tempId+' Label: '+term.label+'</li>');
+					});
+					container.append(termList);
+				}
+			}
+			else {
+				container.append('<div>The commit of the generated terms did not complete normally with the following reason:</div>');
+				container.append('<div class="term-generation-commit-error-details">'+markupNewLines(results.message)+'</div>');
+			}
+			
+			
+			function markupNewLines(text) {
+				var message = '';
+				var lines = text.split('\n');
+				jQuery.each(lines, function(pos, line){
+					message += line + '</br>\n';
+				});
+				return message; 
+			}
 		};
 		
 		/**
-		 * Provide an 3-tab Accordion with the additional functionality to 
+		 * Provide a three-tab Accordion with the additional functionality to 
 		 * enable/disable individual panes for click events.
 		 * 
 		 * @param id html-id for the accordian div tag

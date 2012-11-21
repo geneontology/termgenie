@@ -12,13 +12,16 @@ import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInsta
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.data.JsonTermSuggestion;
+import org.bbop.termgenie.data.JsonCommitResult;
+import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
+import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.freeform.FreeFormTermValidator;
 import org.bbop.termgenie.freeform.FreeFormValidationResponse;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.services.InternalSessionHandler;
+import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.user.UserData;
 
@@ -37,8 +40,10 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	private final UserPermissions permissions;
 	private final FreeFormTermValidator validator;
 	private final Ontology ontology;
+	private final OntologyTaskManager targetOntology;
 	private final MultiOntologyTaskManager manager;
 	private final OntologyTermSuggestor suggestor;
+	private final InternalFreeFormCommitService commitService;
 	
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
@@ -46,6 +51,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			OntologyTermSuggestor suggestor,
 			MultiOntologyTaskManager manager,
+			TermCommitService commitService,
 			FreeFormTermValidator validator)
 	{
 		super();
@@ -53,8 +59,15 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		this.permissions = permissions;
 		this.suggestor = suggestor;
 		this.validator = validator;
+		this.targetOntology = ontology;
 		this.ontology = ontology.getOntology();
 		this.manager = manager;
+		if (commitService instanceof InternalFreeFormCommitService) {
+			this.commitService = (InternalFreeFormCommitService) commitService;
+		}
+		else {
+			this.commitService = null;
+		}
 	}
 
 	@Override
@@ -144,6 +157,29 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	}
 	
 	
+	@Override
+	public JsonCommitResult submit(String sessionId,
+			JsonOntologyTerm term,
+			boolean sendConfirmationEMail,
+			HttpSession session,
+			ProcessState processState)
+	{
+		if (commitService != null) {
+			JsonOntologyTerm[] terms = new JsonOntologyTerm[] { term };
+			JsonCommitResult result = commitService.commitFreeFormTerms(sessionId,
+					terms,
+					targetOntology,
+					sendConfirmationEMail,
+					session,
+					processState);
+			return result;
+		}
+		JsonCommitResult result = new JsonCommitResult();
+		result.setSuccess(false);
+		result.setMessage("Internal error: No commit possible, as no apropriate service is available.");
+		return result;
+	}
+
 	private JsonFreeFormValidationResponse error(String message) {
 		JsonFreeFormValidationResponse response = new JsonFreeFormValidationResponse();
 		response.setGeneralError(message);

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.data.JsonCommitResult;
+import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 
 
@@ -52,6 +54,16 @@ public class NoopFreeFormModule extends IOCModule {
 				String query,
 				String oboNamespace,
 				int max)
+		{
+			return null;
+		}
+
+		@Override
+		public JsonCommitResult submit(String sessionId,
+				JsonOntologyTerm term,
+				boolean sendConfirmationEMail,
+				HttpSession session,
+				ProcessState processState)
 		{
 			return null;
 		}
