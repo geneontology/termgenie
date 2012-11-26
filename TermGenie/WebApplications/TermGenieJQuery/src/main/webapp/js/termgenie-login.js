@@ -241,10 +241,10 @@
 					var inputElemDiv = jQuery('<div></div>');
 					elem.append(inputElemDiv);
 					inputElemDiv.append(inputElem);
-					inputElemDiv.append(jQuery('<label>BrowserID</label>'));
+					inputElemDiv.append(jQuery('<label>BrowserID (mozilla Persona)</label>'));
 					
 					var detailsDiv = jQuery('<div style="padding-left: 20px;padding-top: 5px;"></div>');
-					detailsDiv.append("Clicking on the 'Log In' button will open a new window for the login process using BrowserID.");
+					detailsDiv.append("Clicking on the 'Log In' button will open a new window for the login process using BrowserID  (mozilla Persona).");
 					elem.append(detailsDiv);
 					
 					return {
@@ -284,7 +284,7 @@
 					 */
 					function callBrowserID(successCallback) {
 						reporter.empty();
-						reporter.append(createBusyMessage('Calling for BrowserID in new Window.'));
+						reporter.append(createBusyMessage('Calling BrowserID (mozilla Persona) in new Window.'));
 						// This function comes from https://browserid.org/include.js.
 					    // If the user successfully supplies an email address (and thus)
 					    // an assertion, we'll send it to our server so we can check it
@@ -292,7 +292,7 @@
 					    navigator.id.getVerifiedEmail(function(assertion) {
 					    	reporter.empty();
 					    	if(assertion){
-					    		reporter.append(createBusyMessage('Verifying BrowserID on Server.'));
+					    		reporter.append(createBusyMessage('Verifying BrowserID (mozilla Persona) on Server.'));
 					    		authenticateBrowserId(assertion, function(userdata){ // on success
 					    			reporter.empty();
 									if (userdata && userdata !== null) {
@@ -306,16 +306,16 @@
 										successCallback();
 									}
 									else {
-										jQuery.logSystemError('BrowserID verification failed.');
+										jQuery.logSystemError('BrowserID (mozilla Persona) verification failed.');
 									}
 					    		},
 					    		function(e){ // on error
 					    			reporter.empty();
-									jQuery.logSystemError('BrowserID login service call failed',e);
+									jQuery.logSystemError('BrowserID (mozilla Persona) login service call failed',e);
 					    		});
 					    	}else{
 					    		// set error message
-					    		reporter.append('<div>Login via BrowserID not successful.</div>');
+					    		reporter.append('<div>Login via BrowserID (mozilla Persona) not successful.</div>');
 					    	}
 					    });
 					}
