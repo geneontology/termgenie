@@ -24,6 +24,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
 	private static final String FLAG_ALLOW_MANAGEMENT = "allowManagement";
 	private static final String FLAG_ALLOW_FREE_FORM = "allowFreeForm";
+	private static final String FLAG_ALLOW_FREE_FORM_WRITE = "allowFreeFormWrite";
 
 	private final String applicationName;
 	private final File jsonPermissionsFile;
@@ -83,7 +84,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public boolean allowFreeFormCommit(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM, FLAG_ALLOW_WRITE);
+		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM_WRITE);
 	}
 
 	private boolean checkPermissions(UserData userData, String group, String...flags) {
