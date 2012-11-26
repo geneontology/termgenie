@@ -320,6 +320,8 @@ function TermGenieFreeForm(){
 				var inputFields = [];
 				
 				var addRemove = createAddRemoveWidget(defXrefsInputCell, addField, removeField);
+				// create two input fields, one for the editor xref and one for the literature xref
+				addField();
 				addField();
 				
 				function addField() {
