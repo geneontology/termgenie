@@ -14,6 +14,7 @@ public class FreeFormValidationResponse {
 
 	private String generalError;
 	private List<FreeFormHint> errors;
+	private List<FreeFormHint> warnings;
 	private Pair<Frame, Set<OWLAxiom>> generatedTerm;
 	
 	/**
@@ -44,6 +45,20 @@ public class FreeFormValidationResponse {
 		this.errors = errors;
 	}
 	
+	/**
+	 * @return the warnings
+	 */
+	public List<FreeFormHint> getWarnings() {
+		return warnings;
+	}
+
+	/**
+	 * @param warnings the warnings to set
+	 */
+	public void setWarnings(List<FreeFormHint> warnings) {
+		this.warnings = warnings;
+	}
+
 	/**
 	 * @return the generatedTerms
 	 */

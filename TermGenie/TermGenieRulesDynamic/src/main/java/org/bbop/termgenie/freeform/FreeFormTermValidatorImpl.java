@@ -123,9 +123,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		return response;
 	}
 	
-	private FreeFormValidationResponse success(Pair<Frame, Set<OWLAxiom>> term) {
+	private FreeFormValidationResponse success(Pair<Frame, Set<OWLAxiom>> term, List<FreeFormHint> warnings) {
 		FreeFormValidationResponse response = new FreeFormValidationResponse();
 		response.setGeneratedTerm(term);
+		if (warnings != null && !warnings.isEmpty()) {
+			response.setWarnings(warnings);
+		}
 		return response;
 	}
 
@@ -158,7 +161,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			if (task.term == null) {
 				return error("No term was generated from your request");
 			}
-			return success(task.term);
+			return success(task.term, task.warnings);
 		}
 		return error(task.errors);
 	}
@@ -172,6 +175,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		private final ProcessState state;
 		
 		List<FreeFormHint> errors = null;
+		List<FreeFormHint> warnings = null;
 		Pair<Frame, Set<OWLAxiom>> term;
 		
 		List<Modified> modified = null;
@@ -413,12 +417,16 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				}
 				xrefs.add(dbxref);
 			}
-			if (requireLiteratureReference && !hasLiteratureReference) {
-				addError("definition db xref", "The db xref must contain at least on PMID or doi as literatre reference.");
+			if (!hasLiteratureReference) {
+				addHint(requireLiteratureReference, "definition db xref", "The db xref must contain at least one PMID, ISBN, or DOI as literature reference.");
 			}
 			
 			if (xrefs.isEmpty()) {
 				setError("definition db xref", "Please enter at least one valid definition db xref");
+				return;
+			}
+			
+			if (errors != null) {
 				return;
 			}
 			
@@ -509,6 +517,15 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			return;
 		}
+
+		void addHint(boolean error, String field, String message) {
+			if (error) {
+				addError(field, message);
+			}
+			else {
+				addWarning(field, message);
+			}
+		}
 		
 		void setError(String field, String messge) {
 			errors = Collections.singletonList(new FreeFormHint(field, messge));
@@ -519,6 +536,13 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				errors = new ArrayList<FreeFormHint>();
 			}
 			errors.add(new FreeFormHint(field, message));
+		}
+		
+		void addWarning(String field, String message) {
+			if (warnings == null) {
+				warnings = new ArrayList<FreeFormHint>();
+			}
+			warnings.add(new FreeFormHint(field, message));
 		}
 		
 		void setReset() {

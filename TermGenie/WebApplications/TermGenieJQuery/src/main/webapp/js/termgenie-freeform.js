@@ -1198,6 +1198,11 @@ function TermGenieFreeForm(){
 				return;
 			}
 			
+			// render warnings
+			if (validationResponse.warnings && validationResponse.warnings !== null) {
+				renderWarnings(reviewContainer, validationResponse.warnings);
+			}
+			
 			// render term
 			var generatedTerm = validationResponse.generatedTerm;
 			if (!generatedTerm || generatedTerm === null) {
@@ -1244,6 +1249,25 @@ function TermGenieFreeForm(){
 				layout.append('<thead><tr><td>Field</td><td>Message</td></tr></thead>');
 				
 				jQuery.each(errors, function(index, validationHint){
+					var trElement = jQuery('<tr></tr>');
+					trElement.appendTo(layout);
+					trElement.append('<td>' + validationHint.field +'</td>');
+					trElement.append('<td>' + validationHint.hint +'</td>');
+				});
+			};
+			
+			function renderWarnings(parent, warnings) {
+				var detailedWarningContainer = jQuery('<div class="term-generation-detailed-errors"></div>');
+				detailedWarningContainer.appendTo(parent);
+				detailedWarningContainer.append('<div class="term-generation-detailed-errors-heading">Warning Messages</div>');
+				detailedWarningContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of warnings.</div>');
+				var layout = jQuery('<table cellpadding="5"></table>');
+				detailedWarningContainer.append(layout);
+				detailedWarningContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
+				
+				layout.append('<thead><tr><td>Field</td><td>Message</td></tr></thead>');
+				
+				jQuery.each(warnings, function(index, validationHint){
 					var trElement = jQuery('<tr></tr>');
 					trElement.appendTo(layout);
 					trElement.append('<td>' + validationHint.field +'</td>');
