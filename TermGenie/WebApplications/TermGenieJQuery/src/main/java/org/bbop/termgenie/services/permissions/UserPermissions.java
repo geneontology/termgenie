@@ -31,23 +31,30 @@ public interface UserPermissions {
 	 * 
 	 * @param userData
 	 * @param ontology
-	 * @return true, if if the user has the sufficient rights to commit.
+	 * @return true, if and only if the user has the sufficient rights to commit.
 	 */
 	public boolean allowCommit(UserData userData, Ontology ontology);
 
 	/**
 	 * @param userData
 	 * @param ontology
-	 * @return true, if if the user has the sufficient rights to use the free form template.
+	 * @return true, if and only if the user has the sufficient rights to use the free form template.
 	 */
 	public boolean allowFreeForm(UserData userData, Ontology ontology);
 	
 	/**
 	 * @param userData
 	 * @param ontology
-	 * @return true, if if the user has the sufficient rights to commit from the free form template.
+	 * @return true, if and only if the user has the sufficient rights to commit from the free form template.
 	 */
 	public boolean allowFreeFormCommit(UserData userData, Ontology ontology);
+	
+	/**
+	 * @param userData
+	 * @param ontology
+	 * @return false, if and only if the user has the permission to skip a literature reference in the free form template, otherwise true.
+	 */
+	public boolean allowFreeFormLiteratureXrefOptional(UserData userData, Ontology ontology);
 	
 	/**
 	 * Retrieve the commit user information for a user and ontology.

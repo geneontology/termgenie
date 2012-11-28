@@ -8,12 +8,11 @@ import org.bbop.termgenie.freeform.FreeFormTermValidatorModule;
 public class FreeFormTermServiceModule extends FreeFormTermValidatorModule {
 
 	public FreeFormTermServiceModule(Properties applicationProperties,
-			boolean requireLiteratureReference,
 			boolean addSubsetTag,
 			List<String> oboNamespaces,
 			String subset)
 	{
-		super(applicationProperties, requireLiteratureReference, addSubsetTag, oboNamespaces, subset);
+		super(applicationProperties, addSubsetTag, oboNamespaces, subset);
 	}
 
 	@Override

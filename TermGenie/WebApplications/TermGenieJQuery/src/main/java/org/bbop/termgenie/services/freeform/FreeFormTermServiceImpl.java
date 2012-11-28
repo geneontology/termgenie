@@ -142,7 +142,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			ProcessState state)
 	{
 		if (canView(sessionId, session)) {
-			final FreeFormValidationResponse response = validator.validate(request, state);
+			boolean requireLiteratureReference = requireLiteratureReference(sessionId, session);
+			final FreeFormValidationResponse response = validator.validate(request, requireLiteratureReference, state);
 			ConvertToJson task = new ConvertToJson(response);
 			try {
 				manager.runManagedTask(task, ontology);
@@ -156,6 +157,17 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		return error("The user is not authorized, to use the free from termplate.");
 	}
 	
+	private boolean requireLiteratureReference(String sessionId, HttpSession session) {
+		String screenname = sessionHandler.isAuthenticated(sessionId, session);
+		if (screenname != null) {
+			UserData userData = sessionHandler.getUserData(session);
+			if (userData != null) {
+				boolean allowFreeFormLiteratureXrefOptional = permissions.allowFreeFormLiteratureXrefOptional(userData, ontology);
+				return allowFreeFormLiteratureXrefOptional == false;
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public JsonCommitResult submit(String sessionId,

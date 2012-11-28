@@ -61,7 +61,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	
 	private static final Logger logger = Logger.getLogger(FreeFormTermValidatorImpl.class);
 	
-	static final String REQ_LIT_REF_PARAM = "FreeFormTermValidatorRequireLiteratureReference";
 	static final String ADD_SUBSET_TAG_PARAM = "FreeFormTermValidatorAddSubsetTag";
 	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
 	static final String SUPPORTED_NAMESPACES = "FreeFormValidatorOboNamespaces";
@@ -71,7 +70,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private final Ontology ontology;
 	private final MultiOntologyTaskManager manager;
 	private final ReasonerFactory factory;
-	private final boolean requireLiteratureReference;
 	private final boolean useIsInferred;
 	private final boolean addSubsetTag;
 	
@@ -83,7 +81,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	@Inject
 	public FreeFormTermValidatorImpl(@Named("CommitTargetOntology") OntologyTaskManager ontology,
 			MultiOntologyTaskManager manager,
-			@Named(REQ_LIT_REF_PARAM) boolean requireLiteratureReference,
 			@Named(ADD_SUBSET_TAG_PARAM) boolean addSubsetTag,
 			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
 			@Named(SUPPORTED_NAMESPACES) List<String> supportedOboNamespaces,
@@ -94,7 +91,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		this.ontology = ontology.getOntology();
 		this.manager = manager;
 		this.factory = factory;
-		this.requireLiteratureReference = requireLiteratureReference;
 		this.useIsInferred = useIsInferred;
 		this.oboNamespaces = supportedOboNamespaces;
 		this.idPrefix = TemporaryIdentifierTools.getTempIdPrefix(ontology);
@@ -143,7 +139,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	}
 
 	@Override
-	public FreeFormValidationResponse validate(final FreeFormTermRequest request, ProcessState state) {
+	public FreeFormValidationResponse validate(final FreeFormTermRequest request,
+			boolean requireLiteratureReference, 
+			ProcessState state)
+	{
 		
 		String subset = null;
 		if (this.subset != null && addSubsetTag) {

@@ -21,10 +21,13 @@ public interface FreeFormTermValidator {
 	 * Validate the given request.
 	 * 
 	 * @param request
+	 * @param requireLiteratureReference
 	 * @param state
 	 * @return response
 	 */
-	public FreeFormValidationResponse validate(FreeFormTermRequest request, ProcessState state);
+	public FreeFormValidationResponse validate(FreeFormTermRequest request,
+			boolean requireLiteratureReference,
+			ProcessState state);
 	
 	
 	/**
