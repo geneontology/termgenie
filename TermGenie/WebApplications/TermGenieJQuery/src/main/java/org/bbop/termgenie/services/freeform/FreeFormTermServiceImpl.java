@@ -44,6 +44,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	private final MultiOntologyTaskManager manager;
 	private final OntologyTermSuggestor suggestor;
 	private final InternalFreeFormCommitService commitService;
+	private List<String> xrefResources = null;
 	
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
@@ -68,6 +69,15 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		else {
 			this.commitService = null;
 		}
+	}
+	
+	
+	/**
+	 * @param xrefResources the xrefResources to set
+	 */
+	@Inject(optional=true)
+	public void setXrefResources(@Named("FreeFormXrefResources") List<String> xrefResources) {
+		this.xrefResources = xrefResources;
 	}
 
 	@Override
@@ -94,6 +104,17 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			List<String> namespaces = validator.getOboNamespaces();
 			if (namespaces != null && !namespaces.isEmpty()) {
 				return namespaces.toArray(new String[namespaces.size()]);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String[] getXrefResources(String sessionId, HttpSession session) {
+		if (canView(sessionId, session)) {
+			if (xrefResources != null && !xrefResources.isEmpty()) {
+			String[] array = xrefResources.toArray(new String[xrefResources.size()]);
+			return array;
 			}
 		}
 		return null;

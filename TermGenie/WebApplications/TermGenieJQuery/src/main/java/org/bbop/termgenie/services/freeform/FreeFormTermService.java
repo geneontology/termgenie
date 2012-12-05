@@ -41,6 +41,16 @@ public interface FreeFormTermService {
 	public String[] getAvailableNamespaces(String sessionId, HttpSession session);
 	
 	/**
+	 * Get the list of resources to retrieve valid xrefs, i.e. used for auto-completion
+	 * 
+	 * @param sessionId
+	 * @param session
+	 * @return list of resources
+	 */
+	@SessionAware
+	public String[] getXrefResources(String sessionId, HttpSession session);
+	
+	/**
 	 * Auto complete the query with terms. If available search only in the given
 	 * OBO namespace. Return only max number of results.
 	 * 

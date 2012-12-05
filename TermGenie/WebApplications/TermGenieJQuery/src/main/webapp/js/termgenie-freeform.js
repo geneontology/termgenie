@@ -24,12 +24,14 @@ function TermGenieFreeForm(){
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'progress.getProgress',
+	              'resource.getLinesFromResource',
 	              'freeform.isEnabled',
 	              'freeform.canView',
 	              'freeform.getAvailableNamespaces',
 	              'freeform.autocomplete',
 	              'freeform.validate',
-	              'freeform.submit']
+	              'freeform.submit',
+	              'freeform.getXrefResources']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -112,7 +114,7 @@ function TermGenieFreeForm(){
 					params: [sessionId],
 					onSuccess: function(oboNamespaces) {
 						if (oboNamespaces && oboNamespaces !== null && oboNamespaces.length >= 0) {
-							populateFreeFormInput(oboNamespaces, myAccordion);
+							getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion);
 						}
 						else {
 							jQuery.logSystemError('Retrieved OBO namespaces are empty.');
@@ -125,12 +127,60 @@ function TermGenieFreeForm(){
 			});
 		});
 		
+		function getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion) {
+			jsonService.freeform.getXrefResources({
+				params: [sessionId],
+				onSuccess: function(xrefResources){
+					if (xrefResources && xrefResources !== null) {
+						fetchLinesFromRemoteResource(xrefResources, function(lines) {
+							// process lines into choices
+							var xrefChoices = [];
+							jQuery.each(lines, function(index, line){
+								if (index === 0) {
+									// skip the first line
+									return;
+								}
+								// get the first substring until a tab
+								var charPos = line.indexOf('\t');
+								if(charPos > 0) {
+									xrefChoices.push(line.substring(0,charPos));
+								}
+								else {
+									// or take the whole string if no tab is available
+									xrefChoices.push(line);
+								}
+							});
+							populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices);
+						});
+					}
+				},
+				onException: function(e) {
+					jQuery.logSystemError('Could not xref resources from server', e);
+				}
+			});
+		};
+		
+		function fetchLinesFromRemoteResource(name, onSuccessCallback) {
+			// request sessionId and then start a request for the resource.
+			mySession.getSessionId(function(sessionId){
+				// use json-rpc to retrieve available ontologies
+				jsonService.resource.getLinesFromResource({
+					params: [sessionId, name],
+					onSuccess: onSuccessCallback,
+					onException: function(e) {
+						// hidden error message
+						jQuery.logSystemError('RemoteResource service call failed',e, true);
+					}
+				});	
+			});
+		};
+		
 		/**
 		 * Create the input fields and selectors for the free form template.
 		 * 
 		 * @param oboNamespaces
 		 */
-		function populateFreeFormInput(oboNamespaces, myAccordion) {
+		function populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices) {
 			// label
 			var labelInput = createLabelInput();
 			
@@ -146,7 +196,7 @@ function TermGenieFreeForm(){
 			defInput.disable();
 			
 			// def xrefs
-			var defXrefsInput = createDefXrefsInput();
+			var defXrefsInput = createDefXrefsInput(xrefChoices);
 			defXrefsInput.disable();
 
 			// synonyms
@@ -311,9 +361,10 @@ function TermGenieFreeForm(){
 			/**
 			 * Create an input list object for definition xrefs in the free form template.
 			 * 
+			 * @param xrefChoices
 			 * @returns xrefs input object
 			 */
-			function createDefXrefsInput() {
+			function createDefXrefsInput(xrefChoices) {
 				// retrieve the pre-existing DOM element
 				var defXrefsInputCell = jQuery('#free-form-input-dbxref-cell');
 				var listParent = createLayoutTable();
@@ -331,6 +382,11 @@ function TermGenieFreeForm(){
 					var tdElement = jQuery('<td></td>');
 					tdElement.appendTo(listElem);
 					var inputField = jQuery('<input type="text"/>');
+					if (xrefChoices && xrefChoices !== null) {
+						inputField.autocomplete({
+							source: xrefChoices
+						});
+					}
 					tdElement.append(inputField);
 					inputFields.push(inputField);
 				};

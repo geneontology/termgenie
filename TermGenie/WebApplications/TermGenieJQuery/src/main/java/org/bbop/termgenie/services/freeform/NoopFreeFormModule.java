@@ -67,6 +67,11 @@ public class NoopFreeFormModule extends IOCModule {
 		{
 			return null;
 		}
+
+		@Override
+		public String[] getXrefResources(String sessionId, HttpSession session) {
+			return null;
+		}
 		
 	}
 }
