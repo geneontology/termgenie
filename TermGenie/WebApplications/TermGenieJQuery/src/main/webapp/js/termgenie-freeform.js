@@ -297,6 +297,7 @@ function TermGenieFreeForm(){
 						return getVal();
 					},
 					validate: function() {
+						resetError();
 						var current = getVal();
 						if (current && current !== null && current.length > 0) {
 							return null;
@@ -384,6 +385,7 @@ function TermGenieFreeForm(){
 						return getVal();
 					},
 					validate: function() {
+						resetError();
 						var current = getVal();
 						if (current && current !== null && current.length > 0) {
 							var errors = [];
@@ -391,7 +393,7 @@ function TermGenieFreeForm(){
 								var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
 								var matching = pattern.test(text); 
 								if (matching === false) {
-									errors.push('The xref: "'+current+'" does not conform to the expected pattern. XRefs consists of a prefix and suffix with a colon (:) as separator and no whitespaces');
+									errors.push('The xref: "'+text+'" does not conform to the expected pattern. XRefs consists of a prefix and suffix with a colon (:) as separator and no whitespaces');
 								}
 							});
 							if (errors.length > 0) {
