@@ -411,12 +411,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					addError("definition db xref", "The db xref " + xref + " does not conform to the expected pattern. A db xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.");
 					continue;
 				}
-				if (requireLiteratureReference && !hasLiteratureReference) {
+				if (hasLiteratureReference == false) {
 					hasLiteratureReference = isLiteratureReference(xref);
 				}
 				xrefs.add(dbxref);
 			}
-			if (!hasLiteratureReference) {
+			if (hasLiteratureReference == false) {
 				addHint(requireLiteratureReference, "definition db xref", "The db xref must contain at least one PMID, ISBN, or DOI as literature reference.");
 			}
 			
