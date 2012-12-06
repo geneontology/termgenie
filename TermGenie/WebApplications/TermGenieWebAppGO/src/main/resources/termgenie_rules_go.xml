@@ -83,6 +83,32 @@
 			<ruleFile>rules/go/involved_in.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="involved_in_mf_bp">
+		<description>molecular function involved in other biological processes</description>
+		<hint>[molecular function] involved in [biological process]</hint>
+		<ontology name="GeneOntology" />
+		<obonamespace>molecular_function</obonamespace>
+		<fields>
+			<field name="part" required="true" label="molecular function">
+				<ontology name="GeneOntology">
+					<branch>molecular_function</branch>
+				</ontology>
+			</field>
+			<field name="whole" required="true" label="biological process">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
+		</ruleFiles>
+	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
 		<ontology name="GeneOntology" />
