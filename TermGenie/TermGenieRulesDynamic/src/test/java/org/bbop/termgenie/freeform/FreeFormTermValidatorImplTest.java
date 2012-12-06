@@ -54,7 +54,7 @@ public class FreeFormTermValidatorImplTest {
 		errors(request, "label");
 		
 		// biosynthesis is a synonym for GO:0009058 biosynthetic process
-		request.setLabel("biosynthesys");
+		request.setLabel("biosynthesis");
 		errors(request, "label");
 		
 		request.setLabel("not too short fake label");

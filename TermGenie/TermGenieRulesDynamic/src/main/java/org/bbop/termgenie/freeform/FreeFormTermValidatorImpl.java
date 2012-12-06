@@ -191,6 +191,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		{
 			this.request = request;
 			this.requireLiteratureReference = requireLiteratureReference;
+			
 			this.useIsInferred = useIsInferred;
 			this.subset = subset;
 			this.idPrefix = idPrefix;
@@ -271,14 +272,20 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					continue;
 				}
 				final CharSequence currentNormalizedLabel = normalizeLabel(currentLabel);
-				if (similar(normalizedLabel, currentNormalizedLabel)) {
-					addError("label", "The requested label is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+				if (equals(normalizedLabel, currentNormalizedLabel)) {
+					addError("label", "The requested label is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 					return;
+				}
+				else if (similar(normalizedLabel, currentNormalizedLabel)) {
+					addWarning("label", "The requested label is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 				}
 				if (proposedSynonyms != null) {
 					for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
-						if (similar(normalizedLabel, entry.getKey())) {
-							addError("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+						if (equals(normalizedLabel, entry.getKey())) {
+							addError("synonym", "The requested synonym '"+entry.getValue()+"' is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+						}
+						else if (similar(normalizedLabel, entry.getKey())) {
+							addWarning("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 						}
 					}
 				}
@@ -287,15 +294,23 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					for (ISynonym synonym : oboSynonyms) {
 						String synLabel = synonym.getLabel();
 						CharSequence normalizedSynLabel = normalizeLabel(synLabel);
-						if (similar(normalizedLabel, normalizedSynLabel)) {
+						if (equals(normalizedLabel, normalizedSynLabel)) {
 							addError("label",
+									"The requested label is equal to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+							return;
+						}
+						else if (similar(normalizedLabel, normalizedSynLabel)) {
+							addWarning("label",
 									"The requested label is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
 							return;
 						}
 						if (proposedSynonyms != null) {
 							for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
+								if (equals(normalizedSynLabel, entry.getKey())) {
+									addError("synonym", "The requested synonym '"+entry.getValue()+"' is equal to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+								}
 								if (similar(normalizedSynLabel, entry.getKey())) {
-									addError("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+									addWarning("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
 								}
 							}
 						}
@@ -559,6 +574,34 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				sb.append(c);
 			}
 			return sb;
+		}
+		
+		static boolean equals(CharSequence cs1, CharSequence cs2) {
+			/*
+			 * Warning: StringBuilder do not overwrite hashcode and equals. 
+			 * Do *not* use cs1.equals(c2).
+			 * 
+			 * Example:
+			 * 
+			 * CharSequence cs1 = new StringBuilder("test");
+			 * CharSequence cs2 = new StringBuilder("test");
+			 * 
+			 * cs1.equals(cs2) ==> false 
+			 * 
+			 */
+			int l1 = cs1.length();
+			int l2 = cs2.length();
+			if (l1 == l2) {
+				for (int i = 0; i < l1; i++) {
+					char c1 = cs1.charAt(i);
+					char c2 = cs2.charAt(i);
+					if (c1 != c2) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 		
 		static boolean similar(CharSequence cs1, CharSequence cs2) {
