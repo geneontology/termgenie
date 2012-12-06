@@ -236,6 +236,7 @@ public class TermGenieScriptTest {
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
+		assertTrue(output.getMessage(), output.isSuccess());
 		Frame term = output.getTerm();
 
 		List<Clause> clauses = OboTools.getRelations(term);
@@ -260,9 +261,81 @@ public class TermGenieScriptTest {
 	}
 	
 	@Test
-	public void test_occurs_in_relations() throws Exception {
+	public void test_involved_in_mf_bp() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(2);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		
+		String field0 = termTemplate.getFields().get(0).getName();
+		String field1 = termTemplate.getFields().get(1).getName();
+
+		parameters.setTermValues(field0,
+				Arrays.asList("GO:0017089")); // glycolipid transporter activity
+		parameters.setTermValues(field1, 
+				Arrays.asList("GO:0006915")); // apoptosis
+		
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertTrue(output.getMessage(), output.isSuccess());
+		Frame term = output.getTerm();
+		
+		assertEquals("molecular_function", term.getTagValue(OboFormatTag.TAG_NAMESPACE));
+		
+		List<Clause> clauses = OboTools.getRelations(term);
+		assertEquals(4, clauses.size());
+		Clause clause0 = clauses.get(0);
+		assertEquals(OboFormatTag.TAG_IS_A.getTag(), clause0.getTag());
+		assertEquals("GO:0017089", clause0.getValue());
+
+		Clause clause1 = clauses.get(1);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause1.getTag());
+		assertEquals("GO:0017089", clause1.getValue());
+
+		Clause clause2 = clauses.get(2);
+		assertEquals(OboFormatTag.TAG_INTERSECTION_OF.getTag(), clause2.getTag());
+		assertEquals("part_of", clause2.getValue());
+		assertEquals("GO:0006915", clause2.getValue2());
+
+		Clause clause3 = clauses.get(3);
+		assertEquals(OboFormatTag.TAG_RELATIONSHIP.getTag(), clause3.getTag());
+		assertEquals("part_of", clause3.getValue());
+		assertEquals("GO:0006915", clause3.getValue2());
+	}
+	
+	@Test
+	public void test_involved_in_mf_bp_existing() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(2);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		
+		String field0 = termTemplate.getFields().get(0).getName();
+		String field1 = termTemplate.getFields().get(1).getName();
+
+		parameters.setTermValues(field0,
+				Arrays.asList("GO:0005249")); // voltage-gated potassium channel activity
+		parameters.setTermValues(field1, 
+				Arrays.asList("GO:0086017")); // regulation of Purkinje myocyte action potential
+		
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertFalse(output.isSuccess());
+		assertTrue(output.getMessage().contains("GO:0086088")); // voltage-gated potassium channel activity involved in Purkinje myocyte action potential repolarization
+	}
+	
+	@Test
+	public void test_occurs_in_relations() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(3);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
 		String field0 = termTemplate.getFields().get(0).getName();
