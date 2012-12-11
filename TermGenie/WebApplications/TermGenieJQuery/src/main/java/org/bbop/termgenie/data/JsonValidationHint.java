@@ -2,13 +2,8 @@ package org.bbop.termgenie.data;
 
 public class JsonValidationHint {
 
-	public static final int FATAL = 15;
-	public static final int ERROR = 10;
-	public static final int WARN = 5;
-
 	private JsonTermTemplate template;
 	private int field;
-	private int level;
 	private String hint;
 
 	/**
@@ -21,25 +16,15 @@ public class JsonValidationHint {
 	/**
 	 * @param template
 	 * @param field
-	 * @param level
-	 * @param hint
-	 */
-	public JsonValidationHint(JsonTermTemplate template, int field, int level, String hint) {
-		this();
-		this.template = template;
-		this.field = field;
-		this.level = level;
-		this.hint = hint;
-	}
-
-	/**
-	 * @param template
-	 * @param field
 	 * @param hint
 	 */
 	public JsonValidationHint(JsonTermTemplate template, int field, String hint) {
-		this(template, field, ERROR, hint);
+		this();
+		this.template = template;
+		this.field = field;
+		this.hint = hint;
 	}
+
 
 	/**
 	 * @return the template
@@ -67,20 +52,6 @@ public class JsonValidationHint {
 	 */
 	public void setField(int field) {
 		this.field = field;
-	}
-
-	/**
-	 * @return the level
-	 */
-	public int getLevel() {
-		return level;
-	}
-
-	/**
-	 * @param level the level to set
-	 */
-	public void setLevel(int level) {
-		this.level = level;
 	}
 
 	/**

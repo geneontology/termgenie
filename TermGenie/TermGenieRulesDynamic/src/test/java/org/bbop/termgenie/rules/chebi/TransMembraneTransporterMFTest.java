@@ -98,30 +98,30 @@ public class TransMembraneTransporterMFTest {
 		List<String> prefixIds = Arrays.asList("GO:0022857","GO:0015291","GO:0015563","GO:0042626");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(4, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("difenoxin transmembrane transporter activity", term1.getTagValue(OboFormatTag.TAG_NAME));
 		
 		TermGenerationOutput output2 = list.get(1);
-		assertTrue(output2.getMessage(), output2.isSuccess());
+		assertNull(output2.getError());
 		Frame term2 = output2.getTerm();
 		renderFrame(term2);
 		assertEquals("difenoxin secondary active transmembrane transporter activity", term2.getTagValue(OboFormatTag.TAG_NAME));
 		
 		TermGenerationOutput output3 = list.get(2);
-		assertTrue(output3.getMessage(), output3.isSuccess());
+		assertNull(output3.getError());
 		Frame term3 = output3.getTerm();
 		renderFrame(term3);
 		assertEquals("difenoxin uptake transmembrane transporter activity", term3.getTagValue(OboFormatTag.TAG_NAME));
 		
 		TermGenerationOutput output4 = list.get(3);
-		assertTrue(output4.getMessage(), output4.isSuccess());
+		assertNull(output4.getError());
 		Frame term4 = output4.getTerm();
 		renderFrame(term4);
 		assertEquals("difenoxin transmembrane-transporting ATPase activity", term4.getTagValue(OboFormatTag.TAG_NAME));
@@ -134,13 +134,12 @@ public class TransMembraneTransporterMFTest {
 		String id = "CHEBI:29988"; // L-glutamate(2−)
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term L-glutamate(2-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29988\" " +
-				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getError());
 		
 	}
 	
@@ -151,13 +150,12 @@ public class TransMembraneTransporterMFTest {
 		String id = "CHEBI:29985"; // L-glutamate(1−)
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term L-glutamate(1-) transmembrane transporter activity with the logical definition: \"GO_0022857 and 'transports or maintains localization of' some CHEBI_29985\" " +
-				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0005313 'L-glutamate transmembrane transporter activity' with the same logic definition already exists", output1.getError());
 		
 	}
 	

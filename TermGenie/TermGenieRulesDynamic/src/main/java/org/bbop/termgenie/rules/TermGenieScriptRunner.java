@@ -155,6 +155,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	@Override
 	public List<TermGenerationOutput> generateTerms(Ontology ontology,
 			List<TermGenerationInput> generationTasks,
+			boolean requireLiteratureReference,
 			ProcessState processState)
 	{
 		if (ontology == null || generationTasks == null || generationTasks.isEmpty()) {
@@ -216,7 +217,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				if (methodName == null) {
 					methodName = termTemplate.getName();
 				}
-				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState, useIsInferred);
+				GenerationTask task = new GenerationTask(ontologies, targetOntology, input, script, methodName, templateId, factory, processState, requireLiteratureReference, useIsInferred);
 				try {
 					multiOntologyTaskManager.runManagedTask(task, ontologies);
 				} catch (InvalidManagedInstanceException exception) {
@@ -282,6 +283,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		private final String templateId;
 		private final ReasonerFactory factory;
 		private final ProcessState state;
+		private final boolean requireLiteratureReference;
 		private final boolean useIsInferred;
 		
 		List<TermGenerationOutput> result = null;
@@ -294,6 +296,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				String templateId,
 				ReasonerFactory factory,
 				ProcessState state,
+				boolean requireLiteratureReference,
 				boolean useIsInferred)
 		{
 			this.ontologies = ontologies;
@@ -304,6 +307,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			this.templateId = templateId;
 			this.factory = factory;
 			this.state = state;
+			this.requireLiteratureReference = requireLiteratureReference;
 			this.useIsInferred = useIsInferred;
 		}
 
@@ -344,7 +348,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 					return modified;
 				}
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory, state, useIsInferred);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, targetOntology, auxiliaryOntologies, getTempIdPrefix(targetOntology), templateId, factory, state, requireLiteratureReference, useIsInferred);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

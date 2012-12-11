@@ -80,18 +80,18 @@ public class HomeostasisTest {
 		List<String> prefixIds = Arrays.asList("GO:0048878","GO:0055082");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(2, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("difenoxin homeostasis", term1.getTagValue(OboFormatTag.TAG_NAME));
 		
 		TermGenerationOutput output2 = list.get(1);
-		assertTrue(output2.getMessage(), output2.isSuccess());
+		assertNull(output2.getError());
 		Frame term2 = output2.getTerm();
 		renderFrame(term2);
 		assertEquals("cellular difenoxin homeostasis", term2.getTagValue(OboFormatTag.TAG_NAME));
@@ -105,12 +105,11 @@ public class HomeostasisTest {
 		String id = "CHEBI:15377"; // water
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
-		assertEquals("The term GO:0030104 with the same label 'water homeostasis' already exists", output1.getMessage());
+		assertEquals("The term GO:0030104 with the same label 'water homeostasis' already exists", output1.getError());
 		
 	}
 	
@@ -121,13 +120,12 @@ public class HomeostasisTest {
 		String id = "CHEBI:29412"; // oxonium  H3O+
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term oxonium homeostasis with the logical definition: \"GO_0048878 and 'regulates level of' some CHEBI_29412\" " +
-				"The term GO:0030104 'water homeostasis' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0030104 'water homeostasis' with the same logic definition already exists", output1.getError());
 		
 	}
 	

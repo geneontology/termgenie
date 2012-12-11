@@ -85,12 +85,12 @@ public class ChemicalTransportActivityTest {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		

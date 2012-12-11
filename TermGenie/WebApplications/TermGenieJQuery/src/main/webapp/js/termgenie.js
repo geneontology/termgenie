@@ -1369,7 +1369,11 @@ function termgenie(){
 	 *     errors: JsonValidationHint{
 	 *         template: JsonTermTemplate,
 	 *         field: int,
-	 *         level: int,
+	 *         hint: String;
+	 *     }[],
+	 *     warnings: JsonValidationHint{
+	 *         template: JsonTermTemplate,
+	 *         field: int,
 	 *         hint: String;
 	 *     }[],
 	 *     generatedTerms: JsonOntologyTerm {
@@ -1410,6 +1414,10 @@ function termgenie(){
 		if(isValid(generationResponse.errors)) {
 			renderErrors(container, generationResponse.errors);
 			return;
+		}
+		
+		if(isValid(generationResponse.warnings)) {
+			renderWarnings(container, generationResponse.warnings);
 		}
 
 		var reviewTerms = null;
@@ -1461,19 +1469,37 @@ function termgenie(){
 				else {
 					trElement.append('<td></td>');
 				}
-				trElement.append('<td>' + renderWarningLevel(validationHint.level) + '</td>');
+				trElement.append('<td><span class="warn-level-error">Error</span></td>');
 				trElement.append('<td>' + validationHint.hint +'</td>');
 			});
+		}
+		
+		function renderWarnings(parent, errors) {
+			var detailedErrorContainer = jQuery('<div class="term-generation-detailed-errors"></div>');
+			detailedErrorContainer.appendTo(parent);
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-heading">Warning Messages</div>');
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of warnings.</div>');
+			var layout = jQuery('<table cellpadding="5"></table>');
+			detailedErrorContainer.append(layout);
+			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
 			
-			function renderWarningLevel(level) {
-				if (level < 10) {
-					return '<span class="warn-level-warn">Warning</span>';
+			layout.append('<thead><tr><td>Template</td><td>Field</td><td>Level</td><td>Message</td></tr></thead>');
+			
+			jQuery.each(errors, function(index, validationHint){
+				var trElement = jQuery('<tr></tr>');
+				trElement.appendTo(layout);
+				trElement.append('<td>' + validationHint.template.name + '</td>');
+				if(validationHint.field >= 0 && validationHint.field < validationHint.template.fields.length) {
+					trElement.append('<td>' + 
+						validationHint.template.fields[validationHint.field].name +
+						'</td>');
 				}
-				if (level > 10) {
-					return '<span class="warn-level-fatal">Fatal</span>';
+				else {
+					trElement.append('<td></td>');
 				}
-				return '<span class="warn-level-error">Error</span>';
-			}
+				trElement.append('<td><span class="warn-level-warn">Warning</span></td>');
+				trElement.append('<td>' + validationHint.hint +'</td>');
+			});
 		}
 		
 		/**

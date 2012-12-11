@@ -79,12 +79,12 @@ public class TransMembraneTransportBPTest {
 		TermTemplate termTemplate = getTransmembraneTransportBPTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("difenoxin transmembrane transport", term1.getTagValue(OboFormatTag.TAG_NAME));

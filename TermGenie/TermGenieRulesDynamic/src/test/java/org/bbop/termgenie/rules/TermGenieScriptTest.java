@@ -54,6 +54,57 @@ public class TermGenieScriptTest {
 	}
 
 	@Test
+	public void test_lit_xref_warning() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0043473"));
+		parameters.setStringValues(field.getName(),
+				Arrays.asList("regulation"));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		
+		TermGenerationOutput output = list.get(0);
+		assertNull(output.getError());
+		List<String> warnings = output.getWarnings();
+		assertNotNull(warnings);
+		assertEquals(1, warnings.size());
+		assertTrue(warnings.get(0).contains("literature reference"));
+	}
+	
+	@Test
+	public void test_lit_xref_error() {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+
+		TemplateField field = termTemplate.getFields().get(0);
+
+		parameters.setTermValues(field.getName(), Arrays.asList("GO:0043473"));
+		parameters.setStringValues(field.getName(),
+				Arrays.asList("regulation"));
+
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, true, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		
+		TermGenerationOutput output = list.get(0);
+		assertNotNull(output.getError());
+		assertTrue(output.getError().contains("literature reference"));
+	}
+	
+	@Test
 	public void test_regulation_of() {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
@@ -67,7 +118,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(3, list.size());
@@ -94,13 +145,13 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 
 		final TermGenerationOutput output = list.get(0);
-		assertTrue(output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 		
 		Set<String> validSynonyms = new HashSet<String>(Arrays.asList("down regulation of flavone biosynthetic process",
@@ -151,7 +202,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(3, list.size());
@@ -182,14 +233,14 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		
 		TermGenerationOutput output = list.get(0);
-		assertFalse(output.isSuccess());
-		assertTrue(output.getMessage().contains("biological regulation"));
+		assertNotNull(output.getError());
+		assertTrue(output.getError().contains("biological regulation"));
 	}
 	
 	@Test
@@ -205,7 +256,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -231,12 +282,12 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 
 		List<Clause> clauses = OboTools.getRelations(term);
@@ -276,12 +327,12 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 		
 		assertEquals("molecular_function", term.getTagValue(OboFormatTag.TAG_NAMESPACE));
@@ -323,13 +374,13 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertFalse(output.isSuccess());
-		assertTrue(output.getMessage().contains("GO:0086088")); // voltage-gated potassium channel activity involved in Purkinje myocyte action potential repolarization
+		assertNotNull(output.getError());
+		assertTrue(output.getError().contains("GO:0086088")); // voltage-gated potassium channel activity involved in Purkinje myocyte action potential repolarization
 	}
 	
 	@Test
@@ -346,12 +397,12 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 
 		List<Clause> clauses = OboTools.getRelations(term);

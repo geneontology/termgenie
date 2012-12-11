@@ -6,6 +6,7 @@ public class JsonGenerationResponse {
 
 	private String generalError;
 	private List<JsonValidationHint> errors;
+	private List<JsonValidationHint> warnings;
 	private List<JsonOntologyTerm> generatedTerms;
 	private List<JsonTermTemplate> termTemplates;
 
@@ -18,15 +19,13 @@ public class JsonGenerationResponse {
 
 	public JsonGenerationResponse(String generalError,
 			List<JsonValidationHint> errors,
+			List<JsonValidationHint> warnings,
 			List<JsonOntologyTerm> terms,
 			List<JsonTermTemplate> termTemplates)
 	{
-		if (errors != null) {
-			this.errors = errors;
-		}
-		if (terms != null) {
-			this.generatedTerms = terms;
-		}
+		this.errors = errors;
+		this.warnings = warnings;
+		this.generatedTerms = terms;
 		this.generalError = generalError;
 		this.termTemplates = termTemplates;
 	}
@@ -50,6 +49,20 @@ public class JsonGenerationResponse {
 	 */
 	public List<JsonOntologyTerm> getGeneratedTerms() {
 		return generatedTerms;
+	}
+	
+	/**
+	 * @return the warnings
+	 */
+	public List<JsonValidationHint> getWarnings() {
+		return warnings;
+	}
+	
+	/**
+	 * @param warnings the warnings to set
+	 */
+	public void setWarnings(List<JsonValidationHint> warnings) {
+		this.warnings = warnings;
 	}
 
 	/**
@@ -103,6 +116,11 @@ public class JsonGenerationResponse {
 		if (errors != null) {
 			builder.append("errors:");
 			builder.append(errors);
+			builder.append(", ");
+		}
+		if (warnings != null) {
+			builder.append("warnings:");
+			builder.append(warnings);
 			builder.append(", ");
 		}
 		if (generatedTerms != null) {

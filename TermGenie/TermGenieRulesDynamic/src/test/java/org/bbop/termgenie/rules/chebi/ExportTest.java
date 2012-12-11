@@ -80,12 +80,12 @@ public class ExportTest {
 		TermTemplate termTemplate = getExportTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("difenoxin export", term1.getTagValue(OboFormatTag.TAG_NAME));
@@ -98,13 +98,12 @@ public class ExportTest {
 		String id = "CHEBI:32456"; // cysteinate(1-)
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term cysteinate(1-) export with the logical definition: \"GO_0006810 and 'exports' some CHEBI_32456\" " +
-				"The term GO:0033228 'cysteine export' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0033228 'cysteine export' with the same logic definition already exists", output1.getError());
 		
 	}
 	

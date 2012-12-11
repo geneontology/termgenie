@@ -88,7 +88,7 @@ public class AnatomyTermGenieScriptTestRunner {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);

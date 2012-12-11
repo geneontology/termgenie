@@ -82,18 +82,18 @@ public class ResponseToTest {
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id, prefixes);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(2, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("response to difenoxin", term1.getTagValue(OboFormatTag.TAG_NAME));
 		
 		TermGenerationOutput output2 = list.get(1);
-		assertTrue(output2.getMessage(), output2.isSuccess());
+		assertNull(output2.getError());
 		Frame term2 = output2.getTerm();
 		renderFrame(term2);
 		assertEquals("cellular response to difenoxin", term2.getTagValue(OboFormatTag.TAG_NAME));
@@ -107,13 +107,12 @@ public class ResponseToTest {
 		String id = "CHEBI:22152"; // 2-cis-abscisic acid
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id, prefixes);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term response to 2-cis-abscisic acid with the logical definition: \"GO_0050896 and 'has input' some CHEBI_22152\" " +
-				"The term GO:0009737 'response to abscisic acid stimulus' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0009737 'response to abscisic acid stimulus' with the same logic definition already exists", output1.getError());
 		
 	}
 	
@@ -124,13 +123,12 @@ public class ResponseToTest {
 		String id = "CHEBI:49107"; // thiamine(2+)
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id, prefixes);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term cellular response to thiamine(2+) with the logical definition: \"GO_0070887 and 'has input' some CHEBI_49107\" " +
-				"The term GO:0071301 'cellular response to vitamin B1' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0071301 'cellular response to vitamin B1' with the same logic definition already exists", output1.getError());
 		
 	}
 	

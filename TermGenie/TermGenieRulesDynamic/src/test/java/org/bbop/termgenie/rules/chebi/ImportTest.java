@@ -80,12 +80,12 @@ public class ImportTest {
 		TermTemplate termTemplate = getImportTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		
 		TermGenerationOutput output1 = list.get(0);
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		renderFrame(term1);
 		assertEquals("difenoxin import", term1.getTagValue(OboFormatTag.TAG_NAME));
@@ -98,13 +98,12 @@ public class ImportTest {
 		String id = "CHEBI:32644"; // methioninate
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
-		assertFalse(output1.isSuccess());
 		assertEquals("Failed to create the term methioninate import with the logical definition: \"GO_0006810 and 'imports' some CHEBI_32644\" " +
-				"The term GO:0044690 'methionine import' with the same logic definition already exists", output1.getMessage());
+				"The term GO:0044690 'methionine import' with the same logic definition already exists", output1.getError());
 		
 	}
 	

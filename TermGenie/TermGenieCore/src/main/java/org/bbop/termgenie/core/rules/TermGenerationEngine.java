@@ -22,11 +22,13 @@ public interface TermGenerationEngine {
 	 * 
 	 * @param ontology
 	 * @param generationTasks
+	 * @param requireLiteratureReference
 	 * @param processState
 	 * @return candidates
 	 */
 	public List<TermGenerationOutput> generateTerms(Ontology ontology,
 			List<TermGenerationInput> generationTasks,
+			boolean requireLiteratureReference,
 			ProcessState processState);
 
 	/**
@@ -99,11 +101,12 @@ public interface TermGenerationEngine {
 		private final Set<OWLAxiom> owlAxioms;
 		private final List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations;
 		private final TermGenerationInput input;
-		private final boolean success;
-		private final String message;
+		
+		private final List<String> warnings;
+		private final String error;
 
 		public static TermGenerationOutput error(TermGenerationInput input, String message) {
-			return new TermGenerationOutput(null, null, null, input, false, message);
+			return new TermGenerationOutput(null, null, null, input, message, null);
 		}
 		
 		/**
@@ -111,23 +114,23 @@ public interface TermGenerationEngine {
 		 * @param owlAxioms
 		 * @param changedTermRelations 
 		 * @param input
-		 * @param success
-		 * @param message
+		 * @param error
+		 * @param warnings 
 		 */
 		public TermGenerationOutput(Frame term,
 				Set<OWLAxiom> owlAxioms,
 				List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations,
 				TermGenerationInput input,
-				boolean success,
-				String message)
+				String error,
+				List<String> warnings)
 		{
 			super();
 			this.term = term;
 			this.owlAxioms = owlAxioms;
 			this.changedTermRelations = changedTermRelations;
 			this.input = input;
-			this.success = success;
-			this.message = message;
+			this.error = error;
+			this.warnings = warnings;
 		}
 
 		/**
@@ -137,6 +140,20 @@ public interface TermGenerationEngine {
 			return term;
 		}
 		
+		/**
+		 * @return the warnings
+		 */
+		public List<String> getWarnings() {
+			return warnings;
+		}
+		
+		/**
+		 * @return the error
+		 */
+		public String getError() {
+			return error;
+		}
+
 		/**
 		 * @return the owlAxioms
 		 */
@@ -152,20 +169,6 @@ public interface TermGenerationEngine {
 		}
 
 		/**
-		 * @return the success
-		 */
-		public boolean isSuccess() {
-			return success;
-		}
-
-		/**
-		 * @return the message
-		 */
-		public String getMessage() {
-			return message;
-		}
-		
-		/**
 		 * @return the changedTermRelations
 		 */
 		public final List<Pair<Frame, Set<OWLAxiom>>> getChangedTermRelations() {
@@ -177,7 +180,7 @@ public interface TermGenerationEngine {
 			StringBuilder builder = new StringBuilder();
 			builder.append("TermGenerationOutput [");
 			builder.append("success=");
-			builder.append(success);
+			builder.append(error != null);
 			if (term != null) {
 				builder.append(", ");
 				builder.append("term=");
@@ -188,10 +191,15 @@ public interface TermGenerationEngine {
 				builder.append("changedTermRelations=");
 				builder.append(changedTermRelations);
 			}
-			if (message != null) {
+			if (error != null) {
 				builder.append(", ");
-				builder.append("message=");
-				builder.append(message);
+				builder.append("error=");
+				builder.append(error);
+			}
+			if (warnings != null) {
+				builder.append(", ");
+				builder.append("warnings=");
+				builder.append(warnings);
 			}
 			if (input != null) {
 				builder.append(", ");

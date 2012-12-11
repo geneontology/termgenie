@@ -62,12 +62,12 @@ public class RegulationByTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 
 		assertEquals("negative regulation of secretion by asymmetric Golgi ribbon formation", term.getTagValue(OboFormatTag.TAG_NAME, String.class));
@@ -112,12 +112,12 @@ public class RegulationByTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 
 		assertEquals("regulation of thiamine biosynthetic process by regulation of transcription from RNA polymerase II promoter", 
@@ -145,12 +145,12 @@ public class RegulationByTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame term = output.getTerm();
 
 		assertEquals("positive regulation of response to salt stress by negative regulation of transcription from RNA polymerase II promoter", 

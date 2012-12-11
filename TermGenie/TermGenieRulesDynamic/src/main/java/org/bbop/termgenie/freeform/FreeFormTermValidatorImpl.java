@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,6 +32,7 @@ import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.rules.TermGenieScriptRunner;
 import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.xrefs.XrefTools;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -64,8 +63,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	static final String ADD_SUBSET_TAG_PARAM = "FreeFormTermValidatorAddSubsetTag";
 	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
 	static final String SUPPORTED_NAMESPACES = "FreeFormValidatorOboNamespaces";
-	
-	private static final Pattern def_xref_Pattern = Pattern.compile("\\S+:\\S+");
 	
 	private final Ontology ontology;
 	private final MultiOntologyTaskManager manager;
@@ -417,17 +414,13 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				if (dbxref == null) {
 					continue;
 				}
-				// simple db xref check, TODO use a centralized qc check.
-				if (xref.length() < 3) {
-					addError("definition db xref", "The db xref " + xref + " is too short. A Definition db xref consists of a prefix and suffix with a colon (:) as separator");
-					continue;
-				}
-				if (!def_xref_Pattern.matcher(xref).matches()) {
-					addError("definition db xref", "The db xref " + xref + " does not conform to the expected pattern. A db xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.");
+				String xrefError = XrefTools.checkXref(xref);
+				if (xrefError != null) {
+					addError("definition db xref", xrefError);
 					continue;
 				}
 				if (hasLiteratureReference == false) {
-					hasLiteratureReference = isLiteratureReference(xref);
+					hasLiteratureReference = XrefTools.isLiteratureReference(xref);
 				}
 				xrefs.add(dbxref);
 			}
@@ -615,23 +608,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					(OboFormatTag.TAG_NARROW.getTag().equals(s)) ||
 					(OboFormatTag.TAG_EXACT.getTag().equals(s)) ||
 					(OboFormatTag.TAG_BROAD.getTag().equals(s));
-		}
-		
-		final static Pattern PMID_PATTERN = Pattern.compile("PMID:\\d+", Pattern.CASE_INSENSITIVE);
-		final static Pattern ISBN_PATTERN = Pattern.compile("ISBN:\\d+", Pattern.CASE_INSENSITIVE);
-		final static Pattern DOI_PATTERN = Pattern.compile("DOI:\\S+", Pattern.CASE_INSENSITIVE);
-		
-		static boolean isLiteratureReference(String s) {
-			Matcher pmidMatcher = PMID_PATTERN.matcher(s);
-			if (pmidMatcher.matches()) {
-				return true;
-			}
-			Matcher isbnMatcher = ISBN_PATTERN.matcher(s);
-			if (isbnMatcher.matches()) {
-				return true;
-			}
-			Matcher doiMatcher = DOI_PATTERN.matcher(s);
-			return doiMatcher.matches();
 		}
 		
 		private static int ID_Counter = 0;

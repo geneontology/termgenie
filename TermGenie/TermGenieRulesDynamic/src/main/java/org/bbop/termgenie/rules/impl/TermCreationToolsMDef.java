@@ -27,6 +27,7 @@ import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.api.ChangeTracker;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsMDef.MDef;
 import org.bbop.termgenie.tools.Pair;
+import org.bbop.termgenie.xrefs.XrefTools;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
@@ -56,6 +57,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	private final String targetOntologyId;
 	private final String tempIdPrefix;
 	private final boolean useIsInferred;
+	private final boolean requireLiteratureReference;
 	final ReasonerFactory factory;
 	final TermGenerationInput input;
 	final OWLGraphWrapper targetOntology;
@@ -63,7 +65,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	private final String patternID;
 	private final OWLChangeTracker changeTracker;
 	private int count = 0;
-
+	
 	/**
 	 * @param input
 	 * @param targetOntology
@@ -72,6 +74,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	 * @param factory
 	 * @param syntaxTool
 	 * @param state
+	 * @param requireLiteratureReference
 	 * @param useIsInferred
 	 */
 	TermCreationToolsMDef(TermGenerationInput input,
@@ -81,12 +84,14 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			ReasonerFactory factory,
 			ManchesterSyntaxTool syntaxTool,
 			ProcessState state,
+			boolean requireLiteratureReference,
 			boolean useIsInferred)
 	{
 		super();
 		this.input = input;
 		this.targetOntology = targetOntology;
 		this.state = state;
+		this.requireLiteratureReference = requireLiteratureReference;
 		this.patternID = tempIdPrefix + patternID;
 		this.factory = factory;
 		changeTracker = new OWLChangeTracker(targetOntology.getSourceOntology());
@@ -237,6 +242,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 
 	protected boolean addTerm(String label, String definition, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<TermGenerationOutput> output) {
 		ProcessState.addMessage(state, "Start creating term.");
+		final List<String> warnings = new ArrayList<String>(1);
 		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
 		Frame term = new Frame(FrameType.TERM);
 	
@@ -268,23 +274,24 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 	
 		// def xref
+		boolean hasLiteratureReference = false;
 		List<String> defxrefs = getDefXref();
 		if (defxrefs != null) {
 			// check xref conformity
 			boolean hasXRef = false;
+			
 			for (String defxref : defxrefs) {
 				// check if the termgenie def_xref is already in the list
 				hasXRef = hasXRef || defxref.equals("GOC:TermGenie");
 	
-				// simple defxref check, TODO use a centralized qc check.
-				if (defxref.length() < 3) {
-					output.add(singleError("The Def_Xref " + defxref + " is too short. A Def_Xref consists of a prefix and suffix with a colon (:) as separator",
-							input));
+				// simple defxref check
+				String xrefError = XrefTools.checkXref(defxref);
+				if (xrefError != null) {
+					output.add(singleError(xrefError, input));
 					continue;
 				}
-				if (!def_xref_Pattern.matcher(defxref).matches()) {
-					output.add(singleError("The Def_Xref " + defxref + " does not conform to the expected pattern. A Def_Xref consists of a prefix and suffix with a colon (:) as separator and contains no whitespaces.",
-							input));
+				if (hasLiteratureReference == false) {
+					hasLiteratureReference = XrefTools.isLiteratureReference(defxref);
 				}
 			}
 			if (!hasXRef) {
@@ -297,6 +304,14 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 		else {
 			defxrefs = Collections.singletonList("GOC:TermGenie");
+		}
+		if (!hasLiteratureReference) {
+			if (requireLiteratureReference) {
+				output.add(singleError("The db xref must contain at least one PMID, ISBN, or DOI as literature reference.",
+						input));
+				return false;
+			}
+			warnings.add("The db xref should contain at least one PMID, ISBN, or DOI as literature reference.");
 		}
 		OboTools.addDefinition(term, definition, defxrefs);
 	
@@ -342,7 +357,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			}
 			axioms.add(OwlTranslatorTools.createLabelAxiom(owlNewId, label, targetOntology));
 			// TODO add all other term details to the axioms?
-			output.add(success(term, axioms , inferredRelations.getChanged(), input));
+			output.add(success(term, axioms , inferredRelations.getChanged(), warnings, input));
 			
 			ProcessState.addMessage(state, "Finished creating term.");
 			return true;
@@ -364,8 +379,8 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		return TermGenerationOutput.error(input, message);
 	}
 
-	protected TermGenerationOutput success(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations, TermGenerationInput input) {
-		return new TermGenerationOutput(term, owlAxioms, changedTermRelations, input, true, null);
+	protected TermGenerationOutput success(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations, List<String> warnings, TermGenerationInput input) {
+		return new TermGenerationOutput(term, owlAxioms, changedTermRelations, input, null, warnings);
 	}
 
 	@Override

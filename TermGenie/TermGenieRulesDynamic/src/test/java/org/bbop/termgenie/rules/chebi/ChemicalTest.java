@@ -149,14 +149,13 @@ public class ChemicalTest {
 	public void test_metabolism_citrate3() {
 		TermTemplate termTemplate = getMetabolismTemplate();
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:16947"); // citrate(3-)
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertFalse(output.isSuccess());
 		assertEquals("Failed to create the term citrate(3-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_16947\" " +
-				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getError());
 		
 		
 	}
@@ -165,14 +164,13 @@ public class ChemicalTest {
 	public void test_metabolism_citrate2() {
 		TermTemplate termTemplate = getMetabolismTemplate();
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:35808"); // citrate(2-)
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertFalse(output.isSuccess());
 		assertEquals("Failed to create the term citrate(2-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35808\" " +
-				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getError());
 		
 		
 	}
@@ -181,14 +179,13 @@ public class ChemicalTest {
 	public void test_metabolism_citrate1() {
 		TermTemplate termTemplate = getMetabolismTemplate();
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:35804"); // citrate(1-)
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertFalse(output.isSuccess());
 		assertEquals("Failed to create the term citrate(1-) metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_35804\" " +
-				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getError());
 		
 		
 	}
@@ -197,14 +194,13 @@ public class ChemicalTest {
 	public void test_metabolism_citric_acid() {
 		TermTemplate termTemplate = getMetabolismTemplate();
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, "CHEBI:30769"); // citric acid
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertFalse(output.isSuccess());
 		assertEquals("Failed to create the term citric acid metabolic process with the logical definition: \"GO_0008152 and 'has participant' some CHEBI_30769\" " +
-				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getMessage());
+				"The term GO:0006101 'citrate metabolic process' with the same logic definition already exists", output.getError());
 		
 		
 	}
@@ -216,26 +212,26 @@ public class ChemicalTest {
 		List<String> prefixes = Arrays.asList("metabolism", "catabolism", "biosynthesis");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createMetabolismTask(termTemplate, id, prefixes); 
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(3, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		TermGenerationOutput output2 = list.get(1);
 		TermGenerationOutput output3 = list.get(2);
 		
-		assertTrue(output1.getMessage(), output1.isSuccess());
+		assertNull(output1.getError());
 		Frame term1 = output1.getTerm();
 		assertEquals("difenoxin metabolic process", term1.getTagValue(OboFormatTag.TAG_NAME));
 		containsSynonym(term1, "difenoxin metabolism");
 
-		assertTrue(output2.getMessage(), output2.isSuccess());
+		assertNull(output2.getError());
 		Frame term2 = output2.getTerm();
 		assertEquals("difenoxin catabolic process", term2.getTagValue(OboFormatTag.TAG_NAME));
 		containsSynonym(term2, "difenoxin catabolism", 
 				"difenoxin breakdown", 
 				"difenoxin degradation");
 		
-		assertTrue(output3.getMessage(), output3.isSuccess());
+		assertNull(output3.getError());
 		Frame term3 = output3.getTerm();
 		assertEquals("difenoxin biosynthetic process", term3.getTagValue(OboFormatTag.TAG_NAME));
 		containsSynonym(term3, "difenoxin biosynthesis", 
@@ -269,12 +265,12 @@ public class ChemicalTest {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		
@@ -319,12 +315,12 @@ public class ChemicalTest {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		
-		assertTrue(output.getMessage(), output.isSuccess());
+		assertNull(output.getError());
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		

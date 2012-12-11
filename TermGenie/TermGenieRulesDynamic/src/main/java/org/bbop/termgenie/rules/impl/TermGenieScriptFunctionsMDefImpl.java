@@ -49,6 +49,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	 * @param factory
 	 * @param auxiliaryOntologies 
 	 * @param state 
+	 * @param requireLiteratureReference
 	 * @param useIsInferred
 	 */
 	public TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
@@ -58,6 +59,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			String patternID,
 			ReasonerFactory factory,
 			ProcessState state,
+			boolean requireLiteratureReference,
 			boolean useIsInferred)
 	{
 		super();
@@ -67,7 +69,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			ontologies.addAll(wrapper.getAllOntologies());
 		}
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
-		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, useIsInferred);
+		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred);
 	}
 	
 	protected synchronized List<TermGenerationOutput> getResultList() {
