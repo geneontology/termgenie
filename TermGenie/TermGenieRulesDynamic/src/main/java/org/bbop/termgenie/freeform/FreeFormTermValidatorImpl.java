@@ -206,6 +206,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 		
 		void runInternal(final OWLGraphWrapper graph) {
+			ProcessState.addMessage(state, "Prepare label.");
 			// check label
 			String requestedLabel = StringUtils.trimToNull(request.getLabel());
 			if (requestedLabel == null) {
@@ -233,6 +234,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			// optional: xref
 			List<? extends ISynonym> iSynonyms = request.getISynonyms();
 			if (iSynonyms != null && !iSynonyms.isEmpty()) {
+				ProcessState.addMessage(state, "Prepare synonyms.");
 				checkedSynonyms = new ArrayList<ISynonym>();
 				proposedSynonyms = new HashMap<CharSequence, String>();
 				Set<String> done = new HashSet<String>();
@@ -262,6 +264,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				}
 			}
 			
+			ProcessState.addMessage(state, "Start - Search for existing terms with similar labels.");
 			// iterate over all objects
 			for(OWLObject current : graph.getAllOWLObjects()) {
 				String currentLabel = graph.getLabel(current);
@@ -314,6 +317,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					}
 				}
 			}
+			ProcessState.addMessage(state, "Finished - Search for existing terms with similar labels.");
 			if (errors != null) {
 				return;
 			}
@@ -407,6 +411,8 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				setError("definition db xref", "Please enter at least one valid definition db xref");
 				return;
 			}
+			
+			ProcessState.addMessage(state, "Check Xrefs.");
 			Set<String> xrefs = new HashSet<String>();
 			boolean hasLiteratureReference = false;
 			for(String  xref : xrefsList) {
@@ -438,6 +444,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			
 			// all checks passed, create term
+			ProcessState.addMessage(state, "Start - Use reasoner to check constraints and relations.");
 			
 			String owlNewId = getNewId();
 			String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
@@ -516,6 +523,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				term = new Pair<Frame, Set<OWLAxiom>>(frame, axioms);
 			}
 			finally {
+				ProcessState.addMessage(state, "Finished - Use reasoner to check constraints and relations.");
 				boolean success = changeTracker.undoChanges();
 				if (!success) {
 					// only reset the ontology, if the 
