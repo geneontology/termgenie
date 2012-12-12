@@ -221,7 +221,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 
 			// search for similar labels and synonyms in the ontology 
-			CharSequence normalizedLabel = normalizeLabel(requestedLabel);
+			final CharSequence normalizedLabel = normalizeLabel(requestedLabel);
 			
 			// check proposed synonyms at the same time 
 			List<ISynonym> checkedSynonyms = null;
@@ -278,10 +278,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				}
 				if (proposedSynonyms != null) {
 					for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
-						if (equals(normalizedLabel, entry.getKey())) {
+						if (equals(currentNormalizedLabel, entry.getKey())) {
 							addError("synonym", "The requested synonym '"+entry.getValue()+"' is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 						}
-						else if (similar(normalizedLabel, entry.getKey())) {
+						else if (similar(currentNormalizedLabel, entry.getKey())) {
 							addWarning("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 						}
 					}
