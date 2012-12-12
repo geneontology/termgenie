@@ -49,7 +49,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("CommitTargetOntology") OntologyTaskManager ontology,
+			@Named("CommitTargetOntology") OntologyTaskManager targetOntology,
+			@Named("FreeFormDefaultOntology") Ontology ontology,
 			OntologyTermSuggestor suggestor,
 			MultiOntologyTaskManager manager,
 			TermCommitService commitService,
@@ -60,8 +61,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		this.permissions = permissions;
 		this.suggestor = suggestor;
 		this.validator = validator;
-		this.targetOntology = ontology;
-		this.ontology = ontology.getOntology();
+		this.targetOntology = targetOntology;
+		this.ontology = ontology;
 		this.manager = manager;
 		if (commitService instanceof InternalFreeFormCommitService) {
 			this.commitService = (InternalFreeFormCommitService) commitService;

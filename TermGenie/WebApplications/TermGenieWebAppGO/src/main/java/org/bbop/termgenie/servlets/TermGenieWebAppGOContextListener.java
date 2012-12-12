@@ -205,6 +205,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		oboNamespaces.add("molecular_function");
 		oboNamespaces.add("cellular_component");
 		List<String> defaultFreeformXrefResources = Arrays.asList("GO.curators_dbxrefs");
-		return new FreeFormTermServiceModule(applicationProperties, true, oboNamespaces, defaultFreeformXrefResources, "termgenie_unvetted");
+		String defaultOntology = "default_go";
+		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, defaultFreeformXrefResources, "termgenie_unvetted");
 	}
 }

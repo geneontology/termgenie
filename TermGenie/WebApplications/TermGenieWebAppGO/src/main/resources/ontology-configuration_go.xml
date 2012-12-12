@@ -40,5 +40,12 @@
 				<root>CHEBI:50906</root> <!-- chemical roles -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="default_go">
+			<roots>
+				<root>GO:0008150</root>
+				<root>GO:0003674</root>
+				<root>GO:0005575</root>
+			</roots>
+		</ontologybranch>
 	</ontology>
 </ontologyconfiguration>
