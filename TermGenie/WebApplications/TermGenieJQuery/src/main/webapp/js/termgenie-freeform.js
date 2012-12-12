@@ -1319,6 +1319,10 @@ function TermGenieFreeForm(){
 				detailedWarningContainer.appendTo(parent);
 				detailedWarningContainer.append('<div class="term-generation-detailed-errors-heading">Warning Messages</div>');
 				detailedWarningContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of warnings.</div>');
+				if (warnings.length > 11) {
+					detailedWarningContainer.append('<div class="term-generation-detailed-errors-description">There are '+warnings.length+' warnings. Only the first 10 are shown.</div>');
+					warnings = warnings.slice(0,10);
+				}
 				var layout = jQuery('<table cellpadding="5"></table>');
 				detailedWarningContainer.append(layout);
 				detailedWarningContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');

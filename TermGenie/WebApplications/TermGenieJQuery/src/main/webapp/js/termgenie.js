@@ -1474,18 +1474,22 @@ function termgenie(){
 			});
 		}
 		
-		function renderWarnings(parent, errors) {
+		function renderWarnings(parent, warnings) {
 			var detailedErrorContainer = jQuery('<div class="term-generation-detailed-errors"></div>');
 			detailedErrorContainer.appendTo(parent);
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-heading">Warning Messages</div>');
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Your request produced the following list of warnings.</div>');
+			if (warnings.length > 11) {
+				detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">There are '+warnings.length+' warnings. Only the first 10 are shown.</div>');
+				warnings = warnings.slice(0,10);
+			}
 			var layout = jQuery('<table cellpadding="5"></table>');
 			detailedErrorContainer.append(layout);
 			detailedErrorContainer.append('<div class="term-generation-detailed-errors-description">Please consider the messages and try to fix them, by changing the input from the previous step.</div>');
 			
 			layout.append('<thead><tr><td>Template</td><td>Field</td><td>Level</td><td>Message</td></tr></thead>');
 			
-			jQuery.each(errors, function(index, validationHint){
+			jQuery.each(warnings, function(index, validationHint){
 				var trElement = jQuery('<tr></tr>');
 				trElement.appendTo(layout);
 				trElement.append('<td>' + validationHint.template.name + '</td>');
