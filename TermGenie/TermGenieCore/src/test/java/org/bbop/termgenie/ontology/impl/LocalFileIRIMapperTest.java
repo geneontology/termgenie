@@ -15,6 +15,7 @@ import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 
 public class LocalFileIRIMapperTest {
 
@@ -37,7 +38,7 @@ public class LocalFileIRIMapperTest {
 
 		@Override
 		protected void convertFromObo2Owl(File tempFile, InputStream inputStream)
-				throws IOException
+				throws IOException, OBOFormatParserException
 		{
 			super.convertFromObo2Owl(tempFile, inputStream);
 			converted.add(tempFile.getName());

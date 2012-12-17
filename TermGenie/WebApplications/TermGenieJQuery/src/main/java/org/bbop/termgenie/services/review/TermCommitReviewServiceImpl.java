@@ -46,6 +46,7 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -133,12 +134,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				logger.error("Could not create entries for items", exception);
 			} catch (InvalidManagedInstanceException exception) {
 				logger.error("Could not create entries for items due to invalid ontology", exception);
+			} catch (OBOFormatParserException exception) {
+				logger.error("Could not create entries for items due to an obo format exception.", exception);
 			}
 		}
 		return null;
 	}
 
-	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException, InvalidManagedInstanceException {
+	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException, InvalidManagedInstanceException, OBOFormatParserException {
 		CreateOboDocTask task = new CreateOboDocTask();
 		manager.runManagedTask(task, ontology);
 		List<JsonCommitReviewEntry> result = new ArrayList<JsonCommitReviewEntry>(items.size());
@@ -176,7 +179,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 	}
 	
-	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) {
+	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) throws OBOFormatParserException {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {

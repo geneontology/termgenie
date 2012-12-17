@@ -12,6 +12,7 @@ import org.bbop.termgenie.ontology.IRIMapper;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -82,6 +83,8 @@ public class Obo2OwlFileCachingIRIMapper extends FileCachingIRIMapper {
 		} catch (OWLOntologyCreationException exception) {
 			throw new RuntimeException(exception);
 		} catch (OWLOntologyStorageException exception) {
+			throw new RuntimeException(exception);
+		} catch (OBOFormatParserException exception) {
 			throw new RuntimeException(exception);
 		}
 	}

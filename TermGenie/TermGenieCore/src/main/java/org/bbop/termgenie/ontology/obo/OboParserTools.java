@@ -5,14 +5,18 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 
 
 public class OboParserTools {
+	
+	private static final Logger logger = Logger.getLogger(OboParserTools.class);
 	
 	/**
 	 * Parse a single line as term clause. Ignores id clause lines
@@ -27,14 +31,21 @@ public class OboParserTools {
 		Clause result = new Clause();
 		OBOFormatParser p = new OBOFormatParser();
 		BufferedReader reader = new BufferedReader(new StringReader(clause));
-		p.setReader(reader);
-		p.parseTermFrameClause(result);
-		p.parseEOL(result);
-		IOUtils.closeQuietly(reader);
-		if (result.getValue() == null) {
+		try {
+			p.setReader(reader);
+			p.parseTermFrameClause(result);
+			p.parseEOL(result);
+			if (result.getValue() == null) {
+				return result;
+			}
 			return result;
+		} catch (OBOFormatParserException exception) {
+			logger.warn("Could not parse clause: "+clause, exception);
+			return null;
 		}
-		return result;
+		finally {
+			IOUtils.closeQuietly(reader);
+		}
 	}
 	
 	/**
@@ -60,9 +71,15 @@ public class OboParserTools {
 		BufferedReader reader = new BufferedReader(new StringReader(obo));
 		p.setReader(reader);
 		OBODoc obodoc = new OBODoc();
-		p.parseTermFrame(obodoc);
+		try {
+			p.parseTermFrame(obodoc);
+		} catch (OBOFormatParserException exception) {
+			logger.warn("Could not parse OBO: "+obo, exception);
+		}
+		finally {
+			IOUtils.closeQuietly(reader);
+		}
 		Frame termFrame = obodoc.getTermFrame(id);
-		IOUtils.closeQuietly(reader);
 		return termFrame;
 	}
 }

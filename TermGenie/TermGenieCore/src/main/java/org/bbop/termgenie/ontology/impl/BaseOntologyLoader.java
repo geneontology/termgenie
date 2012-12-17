@@ -12,6 +12,7 @@ import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -71,7 +72,7 @@ public class BaseOntologyLoader {
 	}
 
 	protected OWLGraphWrapper getResource(ConfiguredOntology ontology, OWLGraphWrapper update)
-			throws OWLOntologyCreationException, IOException, UnknownOWLOntologyException
+			throws OWLOntologyCreationException, IOException, UnknownOWLOntologyException, OBOFormatParserException
 	{
 		if (update != null) {
 			disposeResource(update);
@@ -112,7 +113,7 @@ public class BaseOntologyLoader {
 	}
 
 	protected OWLGraphWrapper load(Ontology ontology, String url)
-			throws OWLOntologyCreationException, IOException
+			throws OWLOntologyCreationException, IOException, OBOFormatParserException
 	{
 		OWLOntology owlOntology = loadOntology(ontology.getUniqueName(), url);
 		if (owlOntology == null) {
@@ -122,7 +123,7 @@ public class BaseOntologyLoader {
 	}
 
 	protected OWLOntology loadOntology(String ontology, String url)
-			throws OWLOntologyCreationException, IOException
+			throws OWLOntologyCreationException, IOException, OBOFormatParserException
 	{
 		LOGGER.info("Loading ontology: " + ontology + "  baseURL: " + url);
 		URL realUrl;
@@ -190,9 +191,10 @@ public class BaseOntologyLoader {
 	 * @return OWLOntology
 	 * @throws IOException
 	 * @throws OWLOntologyCreationException
+	 * @throws OBOFormatParserException 
 	 */
 	protected OWLOntology loadOBO2OWL(String ontology, URL realUrl)
-			throws IOException, OWLOntologyCreationException
+			throws IOException, OWLOntologyCreationException, OBOFormatParserException
 	{
 		OBODoc obodoc = loadOBO(ontology, realUrl);
 		
@@ -213,7 +215,7 @@ public class BaseOntologyLoader {
 		return ont;
 	}
 
-	protected OBODoc loadOBO(String ontology, URL realUrl) throws IOException {
+	protected OBODoc loadOBO(String ontology, URL realUrl) throws IOException, OBOFormatParserException {
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc;
 		try {

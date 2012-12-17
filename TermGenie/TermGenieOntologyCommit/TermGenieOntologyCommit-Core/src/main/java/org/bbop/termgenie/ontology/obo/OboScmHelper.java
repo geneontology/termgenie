@@ -31,6 +31,7 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -194,22 +195,26 @@ public abstract class OboScmHelper {
 	public boolean applyHistoryChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc oboDoc)
 			throws CommitException
 	{
-		boolean success = true;
-		if (terms != null && !terms.isEmpty()) {
-			for (CommitedOntologyTerm term : terms) {
-				Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
-				List<Pair<Frame, Set<OWLAxiom>>> changes = CommitHistoryTools.translateSimple(term.getChanged());
-				boolean csuccess = handleTerm(frame,
-						changes,
-						term.getOperation(),
-						oboDoc);
-				if (data != null && data.nameProvider != null) {
-					data.nameProvider.addName(frame.getId(), term.getLabel());
+		try {
+			boolean success = true;
+			if (terms != null && !terms.isEmpty()) {
+				for (CommitedOntologyTerm term : terms) {
+					Frame frame = CommitHistoryTools.translate(term.getId(), term.getObo());
+					List<Pair<Frame, Set<OWLAxiom>>> changes = CommitHistoryTools.translateSimple(term.getChanged());
+					boolean csuccess = handleTerm(frame,
+							changes,
+							term.getOperation(),
+							oboDoc);
+					if (data != null && data.nameProvider != null) {
+						data.nameProvider.addName(frame.getId(), term.getLabel());
+					}
+					success = success && csuccess;
 				}
-				success = success && csuccess;
 			}
+			return success;
+		} catch (OBOFormatParserException exception) {
+			throw new CommitException("Could not apply change to history, due to an internal error.", exception, false);
 		}
-		return success;
 	}
 
 	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, String savedBy)
@@ -362,6 +367,9 @@ public abstract class OboScmHelper {
 		} catch (IOException exception) {
 			String message = "Could not load recent copy of the ontology";
 			throw error(message, exception, true);
+		} catch (OBOFormatParserException exception) {
+			String message = "Could not load recent copy of the ontology, due to an OBO format parse exception.";
+			throw error(message, exception, true);
 		}
 		return ontologies;
 	}
@@ -372,7 +380,7 @@ public abstract class OboScmHelper {
 			super(iriMapper, cleaner);
 		}
 
-		OBODoc loadOBO(File file, String ontology) throws IOException {
+		OBODoc loadOBO(File file, String ontology) throws IOException, OBOFormatParserException {
 			return loadOBO(ontology, file.toURI().toURL());
 		}
 	}

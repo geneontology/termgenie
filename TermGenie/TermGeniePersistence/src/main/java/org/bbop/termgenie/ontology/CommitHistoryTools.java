@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
@@ -22,6 +23,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class CommitHistoryTools {
@@ -153,7 +155,9 @@ public class CommitHistoryTools {
 		return OwlStringTools.translateAxiomsToString(owlAxioms);
 	}
 
-	public static List<CommitObject<TermCommit>> translate(CommitHistoryItem item) {
+	public static List<CommitObject<TermCommit>> translate(CommitHistoryItem item) 
+			throws OBOFormatParserException
+	{
 		List<CommitObject<TermCommit>> result = new ArrayList<CommitObject<TermCommit>>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm commitedOntologyTerm : terms) {
@@ -169,7 +173,9 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	public static List<Pair<Frame, Set<OWLAxiom>>> translate(List<CommitedOntologyTerm> changed) {
+	public static List<Pair<Frame, Set<OWLAxiom>>> translate(List<CommitedOntologyTerm> changed) 
+			throws OBOFormatParserException
+	{
 		List<Pair<Frame, Set<OWLAxiom>>> result = null;
 		if (changed != null && !changed.isEmpty()) {
 			result = new ArrayList<Pair<Frame, Set<OWLAxiom>>>(changed.size());
@@ -184,7 +190,8 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	public static List<Pair<Frame, Set<OWLAxiom>>> translateSimple(List<SimpleCommitedOntologyTerm> changed)
+	public static List<Pair<Frame, Set<OWLAxiom>>> translateSimple(List<SimpleCommitedOntologyTerm> changed) 
+			throws OBOFormatParserException
 	{
 		List<Pair<Frame, Set<OWLAxiom>>> result = null;
 		if (changed != null && !changed.isEmpty()) {
@@ -200,16 +207,16 @@ public class CommitHistoryTools {
 		return result;
 	}
 
-	public static Frame translate(String id, String obo) {
+	public static Frame translate(String id, String obo) throws OBOFormatParserException {
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc = new OBODoc();
 		BufferedReader r = new BufferedReader(new StringReader(obo));
-		p.setReader(r);
-		p.parseTermFrame(obodoc);
 		try {
-			r.close();
-		} catch (IOException exception) {
-			logger.error("Could not close stream.", exception);
+			p.setReader(r);
+			p.parseTermFrame(obodoc);
+		}
+		finally {
+			IOUtils.closeQuietly(r);
 		}
 		return obodoc.getTermFrame(id);
 	}

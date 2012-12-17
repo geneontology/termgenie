@@ -15,12 +15,14 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
 import owltools.graph.OWLGraphWrapper;
@@ -451,7 +453,13 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		ProcessState.addMessage(state, "Updating internal database.");
 		finalizeCommitHistory(item);
 
-		return new CommitResult(true, null, CommitHistoryTools.translate(item), diff);
+		try {
+			List<CommitObject<TermCommit>> committed;
+			committed = CommitHistoryTools.translate(item);
+			return new CommitResult(true, null, committed, diff);
+		} catch (OBOFormatParserException exception) {
+			throw new CommitException("Commit to repository successful, but the generation of the result generated an error.", exception, false);
+		}
 	}
 	
 	private void assertFiles(List<File> files, int length, String name) throws CommitException {

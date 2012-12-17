@@ -19,6 +19,7 @@ import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
@@ -168,6 +169,8 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 			throw new RuntimeException(exception);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
+		} catch (OBOFormatParserException exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -180,6 +183,8 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		} catch (OWLOntologyCreationException exception) {
 			throw new RuntimeException(exception);
 		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		} catch (OBOFormatParserException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
