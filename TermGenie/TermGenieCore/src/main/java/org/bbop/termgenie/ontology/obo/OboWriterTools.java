@@ -20,9 +20,13 @@ public class OboWriterTools {
 	private static final OBOFormatWriter oboWriter = new OBOFormatWriter();
 	
 	public static String writeTerms(Collection<String> ids, OBODoc oboDoc) throws IOException {
+		NameProvider nameProvider = new OBODocNameProvider(oboDoc);
+		return writeTerms(ids, oboDoc, nameProvider);
+	}
+	
+	public static String writeTerms(Collection<String> ids, OBODoc oboDoc, NameProvider nameProvider) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter writer = new BufferedWriter(stringWriter);
-		NameProvider nameProvider = new OBODocNameProvider(oboDoc);
 		for (String id : ids) {
 			Frame termFrame = oboDoc.getTermFrame(id);
 			oboWriter.write(termFrame, writer, nameProvider);
@@ -33,6 +37,10 @@ public class OboWriterTools {
 	
 	public static String writeTerm(String id, OBODoc oboDoc) throws IOException {
 		return writeTerms(Collections.singleton(id), oboDoc);
+	}
+	
+	public static String writeTerm(String id, OBODoc oboDoc, NameProvider nameProvider) throws IOException {
+		return writeTerms(Collections.singleton(id), oboDoc, nameProvider);
 	}
 	
 	public static String writeFrame(Frame frame, NameProvider nameProvider) throws IOException {
