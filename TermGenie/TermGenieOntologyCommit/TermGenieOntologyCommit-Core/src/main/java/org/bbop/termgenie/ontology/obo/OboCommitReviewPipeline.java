@@ -122,13 +122,6 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected void checkTargetOntology(OboCommitData data, List<OBODoc> targetOntologies)
-			throws CommitException
-	{
-		helper.checkTargetOntologies(data, targetOntologies);
-	}
-
-	@Override
 	protected boolean applyChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc ontology)
 			throws CommitException
 	{
@@ -146,7 +139,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	protected void commitToRepository(String commitMessage, VersionControlAdapter scm, OboCommitData data, String diff, ProcessState state)
 			throws CommitException
 	{
-		helper.commitToRepository(commitMessage, scm, data, diff, state);
+		helper.commitToRepository(commitMessage, scm, diff, state);
 	}
 
 	@Override

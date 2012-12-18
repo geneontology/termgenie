@@ -44,7 +44,7 @@ public class FileOnlyOboCommitReviewPipeline extends OboCommitReviewPipeline {
 			ProcessState state) throws CommitException
 	{
 		Logger.getLogger(getClass()).info("Commit to file. Message:\n" + commitMessage);
-		for(File modifiedSCMTargetFile : data.getModifiedSCMTargetFiles()) {
+		for(File modifiedSCMTargetFile : data.getModifiedTargetFiles()) {
 			File localFile = new File(localFolder, modifiedSCMTargetFile.getName());
 			helper.copyFileForCommit(modifiedSCMTargetFile, localFile );
 		}

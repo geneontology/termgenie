@@ -5,11 +5,8 @@ import java.util.List;
 
 public interface OntologyCommitPipelineData {
 
-	public List<File> getSCMTargetFiles();
-
 	public List<File> getTargetFiles();
 
 	public List<File> getModifiedTargetFiles();
 
-	public List<File> getModifiedSCMTargetFiles();
 }

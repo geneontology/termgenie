@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.CommitException;
@@ -71,13 +70,8 @@ public abstract class OboScmHelper {
 		final MixingNameProvider nameProvider;
 		
 		File scmFolder = null;
-		File oboFolder = null;
-		File oboRoundTripFolder = null;
-
-		List<File> scmTargetOntologies = null;
-		List<File> targetOntologies = null;
-		List<File> modifiedTargetOntologies = null;
-		List<File> modifiedSCMTargetOntologies = null;
+		List<File> scmFileList = null;
+		List<File> patchFileList = null;
 
 		/**
 		 * @param nameProvider
@@ -88,23 +82,13 @@ public abstract class OboScmHelper {
 		}
 
 		@Override
-		public List<File> getSCMTargetFiles() {
-			return scmTargetOntologies;
-		}
-
-		@Override
 		public List<File> getTargetFiles() {
-			return targetOntologies;
+			return scmFileList;
 		}
 
 		@Override
 		public List<File> getModifiedTargetFiles() {
-			return modifiedTargetOntologies;
-		}
-
-		@Override
-		public List<File> getModifiedSCMTargetFiles() {
-			return modifiedSCMTargetOntologies;
+			return patchFileList;
 		}
 
 		/**
@@ -119,12 +103,15 @@ public abstract class OboScmHelper {
 		OboCommitData data = new OboCommitData(nameProvider);
 
 		data.scmFolder = createFolder(workFolder, "scm");
-		data.oboFolder = createFolder(workFolder, "obo");
-		data.oboRoundTripFolder = createFolder(workFolder, "obo-roundtrip");
-		final File patchedFolder = createFolder(workFolder, "obo-patched");
-		data.modifiedSCMTargetOntologies =  new ArrayList<File>(targetOntologyFileNames.size());
+		final File patchedFolder = createFolder(workFolder, "patched");
+		int count = targetOntologyFileNames.size();
+		data.scmFileList = new ArrayList<File>(count);
+		data.patchFileList = new ArrayList<File>(count);
 		for(String name : targetOntologyFileNames) {
-			data.modifiedSCMTargetOntologies.add(new File(patchedFolder, name));
+			File scmFile = new File(data.scmFolder, name);
+			File patchFile = new File(patchedFolder, name);
+			data.scmFileList.add(scmFile);
+			data.patchFileList.add(patchFile);
 		}
 		return data;
 	}
@@ -139,13 +126,9 @@ public abstract class OboScmHelper {
 	{
 		// check-out ontology from SCM repository
 		scmCheckout(scm, state);
-		data.scmTargetOntologies = new ArrayList<File>(targetOntologyFileNames.size());
-		for(String name : targetOntologyFileNames) {
-			data.scmTargetOntologies.add(new File(data.scmFolder, name));
-		}
-
+		
 		// load ontology
-		return loadOntologies(data.scmTargetOntologies);
+		return loadOntologies(data.scmFileList);
 	}
 	
 	public void updateSCM(VersionControlAdapter scm, ProcessState state)
@@ -161,26 +144,6 @@ public abstract class OboScmHelper {
 				scm.close();
 			} catch (IOException exception) {
 				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
-			}
-		}
-	}
-
-	public void checkTargetOntologies(OboCommitData data, List<OBODoc> targetOntologies)
-			throws CommitException
-	{
-		data.targetOntologies = new ArrayList<File>();
-		for (int i = 0; i < targetOntologies.size(); i++) {
-			// round trip ontology
-			// This step is required to create a minimal patch.
-			final String fileName = targetOntologyFileNames.get(i);
-			File oboFile = createOBOFile(data.oboRoundTripFolder, fileName, targetOntologies.get(i), data.nameProvider);
-			data.targetOntologies.add(oboFile);
-			// check that the round trip leads to major changes
-			// This is a requirement for applying the diff to the original scm file
-			boolean noMajorChanges = compareRoundTripFile(data.scmTargetOntologies.get(i), oboFile);
-			if (noMajorChanges == false) {
-				String message = "Can write ontology for commit. Too many format changes cannot create diff: "+fileName;
-				throw error(message, true);
 			}
 		}
 	}
@@ -221,7 +184,6 @@ public abstract class OboScmHelper {
 			throws CommitException
 	{
 		int ontologyCount = ontologies.size();
-		data.modifiedTargetOntologies = new ArrayList<File>(ontologyCount);
 		for (int i = 0; i < ontologyCount; i++) {
 			// write changed ontology to a file
 			final OBODoc ontology = ontologies.get(i);
@@ -236,8 +198,7 @@ public abstract class OboScmHelper {
 				// set auto-generated-by
 				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 			}
-			File oboFile = createOBOFile(data.oboFolder, targetOntologyFileNames.get(i), ontology, data.nameProvider);
-			data.modifiedTargetOntologies.add(oboFile);
+			createOBOFile(data.patchFileList.get(i), ontology, data.nameProvider);
 		}
 	}
 	
@@ -253,23 +214,15 @@ public abstract class OboScmHelper {
 	/**
 	 * @param commitMessage
 	 * @param scm
-	 * @param data
 	 * @param diff
 	 * @param state
 	 * @throws CommitException
 	 */
 	public void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
-			OboCommitData data,
 			String diff,
 			ProcessState state) throws CommitException
 	{
-		final List<File> modifiedSCMTargetFiles = data.getModifiedSCMTargetFiles();
-		final List<File> scmTargetFiles = data.getSCMTargetFiles();
-		for (int i = 0; i < modifiedSCMTargetFiles.size(); i++) {
-			copyFileForCommit(modifiedSCMTargetFiles.get(i), scmTargetFiles.get(i));
-		}
-
 		try {
 			scm.connect();
 			scm.commit(commitMessage, targetOntologyFileNames, state);
@@ -282,34 +235,6 @@ public abstract class OboScmHelper {
 			} catch (IOException exception) {
 				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
 			}
-		}
-	}
-
-	private boolean compareRoundTripFile(File scmFile, File roundtripOboFile)
-			throws CommitException
-	{
-		int sourceCount = countLines(scmFile);
-		int roundTripCount = countLines(roundtripOboFile);
-
-		// check that the round trip does not modify
-		// the overall structure of the document
-		int lineDiffCount = Math.abs(sourceCount - roundTripCount);
-		Logger.getLogger(getClass()).info("Line diffs: "+lineDiffCount+ " Original: "+sourceCount+" RoundTrip: "+roundTripCount);
-		return lineDiffCount == 0;
-	}
-
-	private int countLines(File file) throws CommitException {
-		try {
-			LineIterator iterator = FileUtils.lineIterator(file);
-			int count = 0;
-			while (iterator.hasNext()) {
-				iterator.next();
-				count += 1;
-			}
-			return count;
-		} catch (IOException exception) {
-			String message = "Could not create read file during commit: " + file.getAbsolutePath();
-			throw error(message, exception, true);
 		}
 	}
 
@@ -336,17 +261,14 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private File createOBOFile(File oboFolder, String name, OBODoc oboDoc, NameProvider nameProvider) throws CommitException {
+	private void createOBOFile(File oboFile, OBODoc oboDoc, NameProvider nameProvider) throws CommitException {
 		BufferedWriter bufferedWriter = null;
 		try {
 			// write OBO file to temp
 			OBOFormatWriter writer = new OBOFormatWriter();
-
-			File oboFile = new File(oboFolder, name);
 			oboFile.getParentFile().mkdirs();
 			bufferedWriter = new BufferedWriter(new FileWriter(oboFile));
 			writer.write(oboDoc, bufferedWriter, nameProvider);
-			return oboFile;
 		} catch (IOException exception) {
 			String message = "Could not write ontology changes to file";
 			throw error(message, exception, true);
