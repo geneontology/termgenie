@@ -36,6 +36,7 @@ import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
+import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -47,7 +48,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
-import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
@@ -142,44 +143,61 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	}
 
 	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException, InvalidManagedInstanceException, OBOFormatParserException {
-		CreateOboDocTask task = new CreateOboDocTask();
+		CreateReviewEntriesTask task = new CreateReviewEntriesTask(items);
 		manager.runManagedTask(task, ontology);
-		List<JsonCommitReviewEntry> result = new ArrayList<JsonCommitReviewEntry>(items.size());
-		for (CommitHistoryItem item : items) {
-			JsonCommitReviewEntry entry = new JsonCommitReviewEntry();
-			entry.setHistoryId(item.getId());
-			entry.setVersion(item.getVersion());
-			entry.setDate(formatDate(item.getDate()));
-			entry.setCommitMessage(item.getCommitMessage());
-			entry.setEmail(item.getEmail());
-			if (task.exception != null) {
-				throw task.exception;
-			}
-			entry.setDiffs(createJsonDiffs(item, task.result));
-			result.add(entry);
+		if (task.owlException != null) {
+			throw task.owlException;
 		}
-		return result;
+		if (task.oboException != null) {
+			throw task.oboException;
+		}
+		return task.result;
 	}
 	
-	private static class CreateOboDocTask extends MultiOntologyTask {
+	private class CreateReviewEntriesTask extends MultiOntologyTask {
 
-		OBODoc result = null;
-		OWLOntologyCreationException exception;
+		private final List<CommitHistoryItem> items;
+		
+		List<JsonCommitReviewEntry> result = null;
+		OWLOntologyCreationException owlException = null;
+		OBOFormatParserException oboException = null;
+
+		/**
+		 * @param items
+		 */
+		CreateReviewEntriesTask(List<CommitHistoryItem> items) {
+			super();
+			this.items = items;
+		}
 
 		@Override
 		public List<Modified> run(List<OWLGraphWrapper> requested) {
 			Owl2Obo owl2Obo = new Owl2Obo();
 			OWLGraphWrapper graph = requested.get(0);
+			NameProvider provider = new OwlGraphWrapperNameProvider(graph);
 			try {
-				result = owl2Obo.convert(graph.getSourceOntology());
+				OBODoc oboDoc = owl2Obo.convert(graph.getSourceOntology());
+				result = new ArrayList<JsonCommitReviewEntry>(items.size());
+				for (CommitHistoryItem item : items) {
+					JsonCommitReviewEntry entry = new JsonCommitReviewEntry();
+					entry.setHistoryId(item.getId());
+					entry.setVersion(item.getVersion());
+					entry.setDate(formatDate(item.getDate()));
+					entry.setCommitMessage(item.getCommitMessage());
+					entry.setEmail(item.getEmail());
+					entry.setDiffs(createJsonDiffs(item, oboDoc, provider));
+					result.add(entry);
+				}
 			} catch (OWLOntologyCreationException exception) {
-				this.exception = exception;
+				this.owlException = exception;
+			} catch (OBOFormatParserException exception) {
+				this.oboException = exception;
 			}
 			return null;
 		}
 	}
 	
-	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc) throws OBOFormatParserException {
+	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc, NameProvider nameProvider) throws OBOFormatParserException {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {
@@ -195,7 +213,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			boolean success = ComitAwareOboTools.handleTerm(frame, changed, term.getOperation(), oboDoc);
 			if (success) {
 				try {
-					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc));
+					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc, nameProvider));
 					jsonDiff.setOwlAxioms(term.getAxioms());
 					result.add(jsonDiff);
 				} catch (IOException exception) {
@@ -203,7 +221,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				}
 			}
 			if (changed != null && !changed.isEmpty()) {
-				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed, new OBODocNameProvider(oboDoc)));
+				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed, nameProvider));
 			}
 		}
 		if (!result.isEmpty()) {
