@@ -178,6 +178,7 @@ public class FreeFormTermValidatorImplTest {
 			return partOf;
 		}
 
+		@SuppressWarnings("unused")
 		public void setPartOf(List<String> partOf) {
 			this.partOf = partOf;
 		}

@@ -431,7 +431,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				xrefs.add(dbxref);
 			}
 			if (hasLiteratureReference == false) {
-				addHint(requireLiteratureReference, "definition db xref", "The db xref must contain at least one PMID, ISBN, or DOI as literature reference.");
+				addHint(requireLiteratureReference, "definition db xref", XrefTools.getLiteratureReferenceErrorString(false));
 			}
 			
 			if (xrefs.isEmpty()) {

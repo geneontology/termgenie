@@ -307,11 +307,10 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 		if (!hasLiteratureReference) {
 			if (requireLiteratureReference) {
-				output.add(singleError("The db xref must contain at least one PMID, ISBN, or DOI as literature reference.",
-						input));
+				output.add(singleError(XrefTools.getLiteratureReferenceErrorString(false), input));
 				return false;
 			}
-			warnings.add("The db xref should contain at least one PMID, ISBN, or DOI as literature reference.");
+			warnings.add(XrefTools.getLiteratureReferenceErrorString(true));
 		}
 		OboTools.addDefinition(term, definition, defxrefs);
 	
