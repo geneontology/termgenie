@@ -437,7 +437,6 @@ generated automatically</description>
 			<ontology name="CHEBI"></ontology>
 		</external>
 		<obonamespace>biological_process</obonamespace>
-		<requires>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</requires>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="CHEBI"></ontology>

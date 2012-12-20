@@ -80,9 +80,9 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		// editors/gene_ontology_write.obo
 		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "editors/gene_ontology_write.obo");
 			
-		// http://www.geneontology.org/ontology/editors/go_xp_chebi.obo
-		// editors/go_xp_chebi.obo
-		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/go_xp_chebi.obo"), "editors/go_xp_chebi.obo");
+		// http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo
+		// editors/gene_ontology_xp_write.obo
+		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo"), "editors/gene_ontology_xp_write.obo");
 					
 		String catalogXML = "extensions/catalog-v001.xml";
 		
@@ -115,7 +115,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value
-		List<String> additional = Collections.singletonList("editors/go_xp_chebi.obo");
+		List<String> additional = Collections.singletonList("editors/gene_ontology_xp_write.obo");
 		boolean loadExternal = false;
 		
 		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", additional, loadExternal){
