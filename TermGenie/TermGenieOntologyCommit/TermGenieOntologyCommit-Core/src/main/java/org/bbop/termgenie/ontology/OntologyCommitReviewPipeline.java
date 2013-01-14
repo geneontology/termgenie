@@ -288,7 +288,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		public Modified run(OWLGraphWrapper graph) {
 			try {
 				ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
-				WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder, new OwlGraphWrapperNameProvider(graph));
+				WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
 
 				VersionControlAdapter scm = prepareSCM(mode, username, password, data);
 
@@ -314,7 +314,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 						results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
 						continue;
 					}
-					CommitResult result = handleItem(item, state, targetOntologies, scm, data);
+					CommitResult result = handleItem(item, state, targetOntologies, graph, scm, data);
 					if (result != null) {
 						results.add(result);
 						changed = true;
@@ -340,6 +340,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	protected CommitResult handleItem(CommitHistoryItem item,
 			ProcessState state,
 			List<ONTOLOGY> targetOntologies,
+			OWLGraphWrapper graph,
 			VersionControlAdapter scm,
 			WORKFLOWDATA data) throws CommitException
 	{
@@ -382,7 +383,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		
 		// write changed ontology to a file
 		ProcessState.addMessage(state, "Writing ontology to temporary file.");
-		createModifiedTargetFiles(data, targetOntologies, item.getSavedBy());
+		createModifiedTargetFiles(data, targetOntologies, graph, item.getSavedBy());
 		
 		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
 		assertFiles(modifiedTargetFiles, ontologyCount, "modifiedTargetFiles");
@@ -473,7 +474,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @return WORKFLOWDATA
 	 * @throws CommitException
 	 */
-	protected abstract WORKFLOWDATA prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException;
+	protected abstract WORKFLOWDATA prepareWorkflow(File workFolder) throws CommitException;
 
 	/**
 	 * Prepare the SCM module for retrieving the target ontology.
@@ -532,7 +533,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	 * @param savedBy
 	 * @throws CommitException
 	 */
-	protected abstract void createModifiedTargetFiles(WORKFLOWDATA data, List<ONTOLOGY> ontologies, String savedBy)
+	protected abstract void createModifiedTargetFiles(WORKFLOWDATA data, List<ONTOLOGY> ontologies, OWLGraphWrapper graph, String savedBy)
 			throws CommitException;
 
 	/**

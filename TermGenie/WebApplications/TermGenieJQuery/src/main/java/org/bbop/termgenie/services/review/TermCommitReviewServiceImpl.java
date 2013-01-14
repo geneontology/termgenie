@@ -36,7 +36,6 @@ import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
-import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -53,6 +52,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.io.ParserWrapper.OboAndOwlNameProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -174,9 +174,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		public List<Modified> run(List<OWLGraphWrapper> requested) {
 			Owl2Obo owl2Obo = new Owl2Obo();
 			OWLGraphWrapper graph = requested.get(0);
-			NameProvider provider = new OwlGraphWrapperNameProvider(graph);
 			try {
 				OBODoc oboDoc = owl2Obo.convert(graph.getSourceOntology());
+				NameProvider provider = new OboAndOwlNameProvider(oboDoc, graph);
 				result = new ArrayList<JsonCommitReviewEntry>(items.size());
 				for (CommitHistoryItem item : items) {
 					JsonCommitReviewEntry entry = new JsonCommitReviewEntry();

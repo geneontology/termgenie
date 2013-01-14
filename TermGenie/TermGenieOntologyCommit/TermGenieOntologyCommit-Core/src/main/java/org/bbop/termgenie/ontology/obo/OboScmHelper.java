@@ -35,6 +35,9 @@ import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
+import owltools.graph.OWLGraphWrapper;
+import owltools.io.ParserWrapper.OboAndOwlNameProvider;
+
 /**
  * Main steps for committing ontology changes to an OBO file in an SCM
  * repository.
@@ -67,19 +70,9 @@ public abstract class OboScmHelper {
 
 	public static class OboCommitData implements OntologyCommitPipelineData {
 
-		final MixingNameProvider nameProvider;
-		
 		File scmFolder = null;
 		List<File> scmFileList = null;
 		List<File> patchFileList = null;
-
-		/**
-		 * @param nameProvider
-		 */
-		public OboCommitData(NameProvider nameProvider) {
-			super();
-			this.nameProvider = new MixingNameProvider(nameProvider);
-		}
 
 		@Override
 		public List<File> getTargetFiles() {
@@ -99,8 +92,8 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public OboCommitData prepareWorkflow(File workFolder, NameProvider nameProvider) throws CommitException {
-		OboCommitData data = new OboCommitData(nameProvider);
+	public OboCommitData prepareWorkflow(File workFolder) throws CommitException {
+		final OboCommitData data = new OboCommitData();
 
 		data.scmFolder = createFolder(workFolder, "scm");
 		final File patchedFolder = createFolder(workFolder, "patched");
@@ -168,9 +161,6 @@ public abstract class OboScmHelper {
 							changes,
 							term.getOperation(),
 							oboDoc);
-					if (data != null && data.nameProvider != null) {
-						data.nameProvider.addName(frame.getId(), term.getLabel());
-					}
 					success = success && csuccess;
 				}
 			}
@@ -180,7 +170,7 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, String savedBy)
+	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, OWLGraphWrapper graph, String savedBy)
 			throws CommitException
 	{
 		int ontologyCount = ontologies.size();
@@ -198,7 +188,7 @@ public abstract class OboScmHelper {
 				// set auto-generated-by
 				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 			}
-			createOBOFile(data.patchFileList.get(i), ontology, data.nameProvider);
+			createOBOFile(data.patchFileList.get(i), ontology, new OboAndOwlNameProvider(ontology, graph));
 		}
 	}
 	
