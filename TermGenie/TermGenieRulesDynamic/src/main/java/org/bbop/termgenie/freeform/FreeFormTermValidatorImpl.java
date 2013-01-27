@@ -137,7 +137,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 
 	@Override
 	public FreeFormValidationResponse validate(final FreeFormTermRequest request,
-			boolean requireLiteratureReference, 
+			boolean isEditor, 
 			ProcessState state)
 	{
 		
@@ -145,7 +145,13 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		if (this.subset != null && addSubsetTag) {
 			subset = this.subset;
 		}
-		ValidationTask task = new ValidationTask(request, requireLiteratureReference, useIsInferred, subset, idPrefix, factory, state);
+		boolean requireLiteratureReference = true;
+		boolean checkLabelLength = true;
+		if (isEditor) {
+			requireLiteratureReference = false;
+			checkLabelLength = false;
+		}
+		ValidationTask task = new ValidationTask(request, checkLabelLength, requireLiteratureReference, useIsInferred, subset, idPrefix, factory, state);
 		try {
 			manager.runManagedTask(task, ontology);
 		} catch (InvalidManagedInstanceException exception) {
@@ -166,6 +172,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	{
 		private final ReasonerFactory reasonerFactory;
 		private final FreeFormTermRequest request;
+		private final boolean checkLabelLength;
 		private final boolean requireLiteratureReference;
 		private final boolean useIsInferred;
 		private final ProcessState state;
@@ -179,6 +186,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		private final String idPrefix;
 	
 		ValidationTask(FreeFormTermRequest request,
+				boolean checkLabelLength,
 				boolean requireLiteratureReference,
 				boolean useIsInferred,
 				String subset,
@@ -187,6 +195,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				ProcessState state)
 		{
 			this.request = request;
+			this.checkLabelLength = checkLabelLength;
 			this.requireLiteratureReference = requireLiteratureReference;
 			
 			this.useIsInferred = useIsInferred;
@@ -215,8 +224,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			requestedLabel = StringUtils.normalizeSpace(requestedLabel);
 			
-			// TODO discuss/implement a more clever check
-			if (requestedLabel.length() < 10) {
+			if (checkLabelLength && requestedLabel.length() < 10) {
 				setError("label", "The provided label is too short.");
 				return;
 			}
