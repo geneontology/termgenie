@@ -184,8 +184,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		if (screenname != null) {
 			UserData userData = sessionHandler.getUserData(session);
 			if (userData != null) {
-				boolean allowFreeFormLiteratureXrefOptional = permissions.allowFreeFormLiteratureXrefOptional(userData, ontology);
-				return allowFreeFormLiteratureXrefOptional == false;
+				boolean isEditor = permissions.allowFreeFormLiteratureXrefOptional(userData, ontology);
+				return isEditor;
 			}
 		}
 		return false;
