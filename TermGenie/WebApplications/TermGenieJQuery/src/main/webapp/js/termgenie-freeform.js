@@ -521,7 +521,7 @@ function TermGenieFreeForm(){
 						tdElement.appendTo(listElem);
 						inputFields.push(AutoCompleteTerms(tdElement, function(){
 							return currentOboNamespace;
-						}));
+						}, true));
 					};
 					
 					function removeField() {
@@ -667,7 +667,7 @@ function TermGenieFreeForm(){
 				 * 
 				 * @returns functions for the object: value(), validate()
 				 */
-				function AutoCompleteTerms(elem, getOboNamespace) {
+				function AutoCompleteTerms(elem, getOboNamespace, clearOnEnable) {
 					
 					var inputElement = jQuery('<input></input>');
 					elem.append(inputElement);
@@ -794,7 +794,9 @@ function TermGenieFreeForm(){
 						value: getValue,
 						enable: function() {
 							inputElement.removeAttr("disabled"); // enable
-							inputElement.extendedautocomplete( 'clear' );
+							if (clearOnEnable === true) {
+								inputElement.extendedautocomplete( 'clear' );
+							}
 						},
 						disable: function() {
 							inputElement.attr("disabled", "disabled"); // disable
