@@ -1241,6 +1241,10 @@ function TermGenieFreeForm(){
 			var buttonCheckBoxDiv = jQuery('#button-submit-for-review-div');
 			buttonCheckBoxDiv.hide();
 			
+			// hide send e-mail button
+			var sendEmailCheckBox = jQuery('#div-checkbox-send-submit-email');
+			sendEmailCheckBox.hide();
+			
 			if (!validationResponse || validationResponse === null) {
 				jQuery.logSystemError('Validation response is undefined');
 				return;
@@ -1271,7 +1275,10 @@ function TermGenieFreeForm(){
 			}
 			renderReviewPanel(reviewContainer, generatedTerm);
 			
-			// hide submit button
+			// show e-mail select
+			sendEmailCheckBox.show();
+			
+			// show submit button
 			buttonCheckBoxDiv.show();
 			
 			// checkbox
@@ -1422,8 +1429,8 @@ function TermGenieFreeForm(){
 			};
 			
 			function submitClickHandler() {
-				// TODO make this configurable via a check box in the GUI
-				var sendConfirmationEmail = false; 
+				// get check box status for e-mail send
+				var sendConfirmationEmail = sendEmailCheckBox.is(':checked');
 				
 				// get and clear busyElement from step 3
 				var busyElement = jQuery('#button-submit-for-review-progress');
