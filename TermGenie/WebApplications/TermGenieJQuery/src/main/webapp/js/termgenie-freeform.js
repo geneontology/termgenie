@@ -555,7 +555,7 @@ function TermGenieFreeForm(){
 								if (pos > 0) {
 									optional = true;
 								}
-								var error = value.validate(optional);
+								var error = value.validate(optional, 'Missing is_a relationship. At least one is_a relation is required.');
 								if (error && error !== null) {
 									errors.push(error);
 								}
@@ -782,13 +782,16 @@ function TermGenieFreeForm(){
 					 * return the functions for this object
 					 */
 					return {
-						validate: function(optional) {
+						validate: function(optional, msg) {
 							clearErrorState();
 							var current = getValue();
 							if ((current && current !== null && current.length > 0) || (optional === true)) {
 								return null;
 							}
 							setErrorState();
+							if (msg && msg !== null) {
+								return msg;
+							}
 							return "The input field does not contain a valid term.";
 						},
 						value: getValue,
