@@ -4,11 +4,9 @@ ontology: foo
 [Term]
 id: FOO:2000
 intersection_of: FOO:0003 
-intersection_of: part_of FOO:1001 
+intersection_of: part_of GOO:0001 
 
 [Typedef]
-id: part_of
-name: part_of
-xref: BFO:0000050
-is_transitive: true
-
+id: has_participant
+name: has participant
+xref: BFO:0000057

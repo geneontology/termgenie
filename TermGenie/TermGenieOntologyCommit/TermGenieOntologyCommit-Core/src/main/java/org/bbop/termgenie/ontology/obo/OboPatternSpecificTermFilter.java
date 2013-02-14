@@ -41,10 +41,10 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			}
 			return null;
 		}
-		return filter(item, position);
+		return filter(item, position, allOntologies.get(0));
 	}
 
-	private List<CommitedOntologyTerm> filter(CommitHistoryItem item, int position) {
+	private List<CommitedOntologyTerm> filter(CommitHistoryItem item, int position, OBODoc targetOntology) {
 		List<CommitedOntologyTerm> allFiltered = new ArrayList<CommitedOntologyTerm>();
 		for (CommitedOntologyTerm term : item.getTerms()) {
 			String pattern = term.getPattern();
@@ -63,7 +63,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			// check that term contains references to external ontologies
 			// use id prefix of OBO identifier for that
 			Frame frame = OboParserTools.parseFrame(term.getId(), term.getObo());
-			boolean doSplitAndRemoveMain = hasExternalIntersection(frame);
+			boolean doSplitAndRemoveMain = requiresSplit(frame, targetOntology);
 			
 			// also check in the changed terms for that, add or preserve existing split
 			Map<SimpleCommitedOntologyTerm, Frame> filteringChanges = null;
@@ -72,8 +72,8 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				filteringChanges = new HashMap<SimpleCommitedOntologyTerm, Frame>();
 				for (SimpleCommitedOntologyTerm changedTerm : changedTerms) {
 					Frame changedFrame = OboParserTools.parseFrame(changedTerm.getId(), changedTerm.getObo());
-					boolean hasExtenalXP = hasExternalIntersection(changedFrame);
-					if (hasExtenalXP) {
+					boolean doSplitAndRemoveChanged = requiresSplit(changedFrame, targetOntology);
+					if (doSplitAndRemoveChanged) {
 						filteringChanges.put(changedTerm, changedFrame);
 					}
 				}
@@ -174,21 +174,40 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		return newFrame;
 	}
 	
-	private boolean hasExternalIntersection(Frame frame) {
+	protected boolean requiresSplit(Frame frame, OBODoc targetOntology) {
+		// hook to overwrite the split criteria
+		return hasExternalIntersectionOrUnknowRelation(frame, targetOntology);
+	}
+	
+	private boolean hasExternalIntersectionOrUnknowRelation(Frame frame, OBODoc targetOntology) {
 		boolean hasExternal = false;
 		for (Clause clause : frame.getClauses(OboFormatTag.TAG_INTERSECTION_OF)) {
 			String targetId = clause.getValue2(String.class);
 			if (targetId == null) {
 				targetId = clause.getValue(String.class);
 			}
+			else {
+				String rel = clause.getValue(String.class);
+				if (rel != null && isUnkownRelation(rel, targetOntology)) {
+					return true;
+				}
+			}
 			if (targetId != null) {
 				if(isExternalIdentifier(targetId, frame)) {
-					hasExternal = true;
-					break;
+					return true;
 				}
 			}
 		}
 		return hasExternal;
+	}
+	
+	protected boolean isUnkownRelation(String id, OBODoc targetOntology) {
+		boolean found = true;
+		Frame typedefFrame = targetOntology.getTypedefFrame(id);
+		if (typedefFrame != null) {
+			found = false;
+		}
+		return found;
 	}
 
 	protected boolean isExternalIdentifier(String id, Frame frame) {

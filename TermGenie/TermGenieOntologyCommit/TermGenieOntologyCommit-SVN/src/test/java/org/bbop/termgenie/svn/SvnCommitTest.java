@@ -111,7 +111,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 	
 	@Test
 	public void simpleCommit() throws Exception {
-		Ontology ontology = new Ontology("foo", null, Arrays.asList("FOO:0001", "FOO:1000")) {
+		Ontology ontology = new Ontology("foo", null, Arrays.asList("FOO:0001")) {
 			// intentionally empty
 		};
 		OntologyTaskManager source = loadOntology(ontology);
@@ -130,7 +130,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 
 			@Override
 			protected boolean isExternalIdentifier(String id, Frame frame) {
-				return id.startsWith("FOO:1");
+				return id.startsWith("GOO:");
 			}
 		};
 		OboCommitReviewPipeline p = new OboCommitReviewPipeline(source, store, filter, new NoopReviewMailHandler(), helper) {
@@ -186,6 +186,8 @@ public class SvnCommitTest extends TempTestFolderTools {
 		OBOFormatParser parser = new OBOFormatParser();
 		File local = svnTool.getTargetFolder();
 		OBODoc mainObo = parser.parse(new File(local, "trunk/ontology/svn-test-main.obo"));
+		
+		//---- check main file ----
 		Frame termFrame = mainObo.getTermFrame("FOO:2001");
 		assertNotNull(termFrame);
 		assertTrue(termFrame.getClauses(OboFormatTag.TAG_INTERSECTION_OF).isEmpty());
@@ -193,14 +195,27 @@ public class SvnCommitTest extends TempTestFolderTools {
 		
 		Frame termFrame2 = mainObo.getTermFrame("FOO:0005");
 		assertNotNull(termFrame2);
+		assertEquals(1, termFrame2.getClauses(OboFormatTag.TAG_IS_A).size());
 		
+		Frame termFrame3 = mainObo.getTermFrame("FOO:3001");
+		assertNotNull(termFrame3);
+		assertTrue(termFrame3.getClauses(OboFormatTag.TAG_INTERSECTION_OF).isEmpty());
+		assertTrue(termFrame3.getClauses(OboFormatTag.TAG_RELATIONSHIP).isEmpty());
+		
+		// check xp file
 		OBODoc extensionObo = parser.parse(new File(local, "trunk/extensions/svn-test-extension.obo"));
 		Frame extensionTermFrame = extensionObo.getTermFrame("FOO:2001");
 		assertNotNull(extensionTermFrame);
 		assertEquals(2, extensionTermFrame.getClauses(OboFormatTag.TAG_INTERSECTION_OF).size());
 		assertEquals(0, extensionTermFrame.getClauses(OboFormatTag.TAG_RELATIONSHIP).size());
 		
+		// nothing for FOO:0005
 		assertNull(extensionObo.getTermFrame("FOO:0005"));
+		
+		Frame extensionTermFrame3 = extensionObo.getTermFrame("FOO:3001");
+		assertNotNull(extensionTermFrame3);
+		assertEquals(2, extensionTermFrame3.getClauses(OboFormatTag.TAG_INTERSECTION_OF).size());
+		assertEquals(0, extensionTermFrame3.getClauses(OboFormatTag.TAG_RELATIONSHIP).size());
 	}
 
 	private OntologyTaskManager loadOntology(Ontology ontology) throws Exception {
@@ -278,12 +293,12 @@ public class SvnCommitTest extends TempTestFolderTools {
 		
 		Clause cl_i = new Clause(OboFormatTag.TAG_INTERSECTION_OF);
 		cl_i.addValue("part_of");
-		cl_i.addValue("FOO:1002");
+		cl_i.addValue("GOO:1002");
 		frame.addClause(cl_i);
 		
 		Clause cl_r = new Clause(OboFormatTag.TAG_RELATIONSHIP);
 		cl_r.addValue("part_of");
-		cl_r.addValue("FOO:1002");
+		cl_r.addValue("GOO:1002");
 		frame.addClause(cl_r);
 		
 		CommitedOntologyTerm term = CommitHistoryTools.create(frame, Modification.add, OwlStringTools.translateAxiomsToString(Collections.<OWLAxiom>emptySet()), "test-pattern");
@@ -302,7 +317,35 @@ public class SvnCommitTest extends TempTestFolderTools {
 		CommitedOntologyTerm term2 = CommitHistoryTools.create(frame2, Modification.add, OwlStringTools.translateAxiomsToString(Collections.<OWLAxiom>emptySet()), "other-pattern");
 		
 		
-		List<CommitedOntologyTerm> terms = Arrays.asList(term, term2);
+		/*
+		 [Term]
+		 id: FOO:3001
+		 name: foo-3001
+		 is_a: FOO:0001
+		 intersection_of: FOO:0001 
+		 intersection_of: has_participant FOO:0002 
+		 relationship: has_participant FOO:0002 
+		*/
+		Frame frame3 = new Frame(FrameType.TERM);
+		frame3.setId("FOO:3001");
+		frame3.addClause(new Clause(OboFormatTag.TAG_ID, "FOO:3001"));
+		frame3.addClause(new Clause(OboFormatTag.TAG_NAME, "foo-3001"));
+		frame3.addClause(new Clause(OboFormatTag.TAG_IS_A, "FOO:0001"));
+		frame3.addClause(new Clause(OboFormatTag.TAG_INTERSECTION_OF, "FOO:0001"));
+		
+		Clause cl_i3 = new Clause(OboFormatTag.TAG_INTERSECTION_OF);
+		cl_i3.addValue("has_participant");
+		cl_i3.addValue("FOO:0002");
+		frame3.addClause(cl_i3);
+		
+		Clause cl_r3 = new Clause(OboFormatTag.TAG_RELATIONSHIP);
+		cl_r3.addValue("has_participant");
+		cl_r3.addValue("FOO:0002");
+		frame3.addClause(cl_r3);
+		
+		CommitedOntologyTerm term3 = CommitHistoryTools.create(frame3, Modification.add, OwlStringTools.translateAxiomsToString(Collections.<OWLAxiom>emptySet()), "test-pattern");
+		
+		List<CommitedOntologyTerm> terms = Arrays.asList(term, term2, term3);
 		CommitHistoryItem item = new CommitHistoryItem();
 		item.setCommitMessage("Test commit #1");
 		item.setCommitted(false);
