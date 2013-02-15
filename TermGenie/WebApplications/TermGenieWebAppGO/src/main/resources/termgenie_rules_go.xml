@@ -19,6 +19,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -45,6 +46,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -73,8 +75,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -99,8 +100,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -124,8 +124,7 @@
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -155,8 +154,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -182,8 +180,7 @@
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -204,8 +201,7 @@
 			<field name="target" required="true">
 				<ontology name="ProteinOntology" />
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -229,6 +225,7 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -247,6 +244,7 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -265,6 +263,7 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -290,6 +289,7 @@ generated automatically</description>
 					<prefix>biosynthesis</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -308,6 +308,7 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -334,6 +335,7 @@ generated automatically</description>
 					<prefix id="GO:0042626">&lt;b&gt;ATPase activity&lt;/b&gt;, coupled to transmembrane movement of substances</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -356,6 +358,7 @@ generated automatically</description>
 					<prefix id="GO:0070887">cellular response to</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -379,6 +382,7 @@ generated automatically</description>
 					<prefix id="GO:0055082">cellular chemical homeostasis</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -398,6 +402,7 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -416,12 +421,41 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_export.js</ruleFile>
+		</ruleFiles>
+	</template>
+	<template name="cc_transport">
+		<description>transport or vesicle-medidated transport from cellular component to cellular component</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="from" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+				<prefixes>
+					<prefix>transport</prefix>
+					<prefix>vesicle-mediated transport</prefix>
+				</prefixes>
+			</field>
+			<field name="to" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cc_transport.js</ruleFile>
 		</ruleFiles>
 	</template>
 	<!-- 
@@ -459,6 +493,7 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="Uberon" />
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
@@ -482,6 +517,7 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="Uberon"/>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
@@ -506,6 +542,7 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="PO"/>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
@@ -530,6 +567,7 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="PO"/>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
@@ -553,6 +591,7 @@ generated automatically</description>
 				<ontology name="ProteinOntology" />
 				<cardinality>2..N</cardinality>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">

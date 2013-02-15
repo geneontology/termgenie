@@ -526,6 +526,11 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		}
 	}
 	
+	@Override
+	public ExistingClasses checkExisting(MDef logicalDefinition) {
+		return tools.checkExisting(logicalDefinition);
+	}
+
 	public void dispose() {
 		syntaxTool.dispose();
 	}

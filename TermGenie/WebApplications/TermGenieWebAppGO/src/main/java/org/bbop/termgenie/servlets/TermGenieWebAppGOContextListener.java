@@ -101,16 +101,17 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getCommitModule() {
 		final Map<String, Integer> specialPatterns = new HashMap<String, Integer>();
-		specialPatterns.put("chemical_transport", 1);
-		specialPatterns.put("chemical_transporter_activity", 1);
-		specialPatterns.put("chemical_binding", 1);
-		specialPatterns.put("metabolism_catabolism_biosynthesis", 1);
-		specialPatterns.put("chemical_transmembrane_transport_bp", 1);
-		specialPatterns.put("chemical_transmembrane_transport_mf", 1);
-		specialPatterns.put("chemical_response_to", 1);
-		specialPatterns.put("chemical_homeostasis", 1);
-        specialPatterns.put("chemical_import", 1);
-        specialPatterns.put("chemical_export", 1);
+		specialPatterns.put("chemical_transport", 1); // chebi
+		specialPatterns.put("chemical_transporter_activity", 1); // chebi
+		specialPatterns.put("chemical_binding", 1); // chebi
+		specialPatterns.put("metabolism_catabolism_biosynthesis", 1); // chebi
+		specialPatterns.put("chemical_transmembrane_transport_bp", 1); // chebi
+		specialPatterns.put("chemical_transmembrane_transport_mf", 1); // chebi
+		specialPatterns.put("chemical_response_to", 1); // chebi
+		specialPatterns.put("chemical_homeostasis", 1); // chebi
+        specialPatterns.put("chemical_import", 1); // chebi
+        specialPatterns.put("chemical_export", 1); // chebi
+        specialPatterns.put("cc_transport", 1); // relations are only defined in xp file
 		
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";

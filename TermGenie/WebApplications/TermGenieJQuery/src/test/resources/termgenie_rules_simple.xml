@@ -19,6 +19,7 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -47,8 +48,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>

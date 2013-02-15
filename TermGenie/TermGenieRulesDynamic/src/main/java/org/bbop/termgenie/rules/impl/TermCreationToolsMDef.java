@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -21,10 +22,12 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
+import org.bbop.termgenie.owl.CheckExistingTermsTask;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
 import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.api.ChangeTracker;
+import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsMDef.ExistingClasses;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsMDef.MDef;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.xrefs.XrefTools;
@@ -45,6 +48,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
@@ -275,7 +279,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	
 		// def xref
 		boolean hasLiteratureReference = false;
-		List<String> defxrefs = getDefXref();
+		List<String> defxrefs = getDefXrefs();
 		if (defxrefs != null) {
 			// check xref conformity
 			boolean hasXRef = false;
@@ -366,10 +370,23 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 	}
 
-	private List<String> getDefXref() {
-		return getInputs("DefX_Ref");
+	private List<String> getDefXrefs() {
+		return merge(getInputs("DefX_Ref"), getInputs("Literature_Ref"));
 	}
-
+	
+	private List<String> merge(List<String> l1, List<String> l2) {
+		if (l1 == null || l1.isEmpty()) {
+			return l2;
+		}
+		if (l2 == null || l2.isEmpty()) {
+			return l2;
+		}
+		List<String> r = new ArrayList<String>(l1.size() + l2.size());
+		r.addAll(l1);
+		r.addAll(l2);
+		return r;
+	}
+	
 	private String getDate() {
 		return df.get().format(new Date());
 	}
@@ -381,18 +398,71 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	protected TermGenerationOutput success(Frame term, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changedTermRelations, List<String> warnings, TermGenerationInput input) {
 		return new TermGenerationOutput(term, owlAxioms, changedTermRelations, input, null, warnings);
 	}
+	
+	protected ExistingClasses checkExisting(MDef def) {
+		String expression = getFullExpression(def);
+		OWLOntologyManager owlManager = targetOntology.getManager();
+		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
+		String tempId = getNewId();
+		OWLClassExpression owlClassExpression;
+		try {
+			owlClassExpression = syntaxTool.parseManchesterExpression(expression);
+		} catch (ParserException exception) {
+			Logger.getLogger(TermCreationToolsMDef.class).warn("Could not create OWL class expressions from expression: " + expression, exception);
+			return null;
+		}
+		try {
+			final IRI iri = IRI.create(tempId);
+			Pair<OWLClass,OWLAxiom> pair = addClass(iri, changeTracker);
+			OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(pair.getOne(), owlClassExpression);
+			changeTracker.apply(new AddAxiom(targetOntology.getSourceOntology(), axiom));
+			CheckExistingTermsTask task = new CheckExistingTermsTask(targetOntology, iri, state);
+			
+			factory.updateBuffered(targetOntologyId);
+			ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
+			reasonerManager.setProcessState(state);
+			try {
+				reasonerManager.runManagedTask(task);
+			} catch (InvalidManagedInstanceException exception) {
+				Logger.getLogger(TermCreationToolsMDef.class).warn("Could not check existing due to an invalid reasoner.", exception);
+				return null;
+			} finally {
+				reasonerManager.dispose();
+				reasonerManager.removeProcessState();
+			}
+			
+			Set<OWLClass> existing = task.getExisting();
+			if (existing != null && !existing.isEmpty()) {
+				ExistingClasses result = new ExistingClasses(expression);
+				for (OWLClass owlClass : existing) {
+					result.add(targetOntology.getIdentifier(owlClass), targetOntology.getLabel(owlClass));
+				}
+				return result;
+			}
+			return null;
+		}
+		finally {
+			changeTracker.undoChanges();
+		}
+	}
 
 	@Override
 	public boolean hasChanges() {
 		return changeTracker.undoChanges() == false;
 	}
 
-	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLChangeTracker changeTracker) {
-		OWLDataFactory factory = changeTracker.getTarget().getOWLOntologyManager().getOWLDataFactory();
+	static Pair<OWLClass, OWLAxiom> createClass(IRI iri, OWLOntologyManager manager) {
+		OWLDataFactory factory = manager.getOWLDataFactory();
 		OWLClass owlClass = factory.getOWLClass(iri);
 		OWLDeclarationAxiom owlDeclarationAxiom = factory.getOWLDeclarationAxiom(owlClass);
-		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), owlDeclarationAxiom));
 		return new Pair<OWLClass, OWLAxiom>(owlClass, owlDeclarationAxiom);
+	}
+	
+	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLChangeTracker changeTracker) {
+		OWLOntology target = changeTracker.getTarget();
+		Pair<OWLClass,OWLAxiom> pair = createClass(iri, target.getOWLOntologyManager());
+		changeTracker.apply(new AddAxiom(target, pair.getTwo()));
+		return pair;
 	}
 	
 	static void addLabel(IRI iri,

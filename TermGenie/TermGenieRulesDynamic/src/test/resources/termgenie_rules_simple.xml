@@ -19,6 +19,7 @@
 					<prefix id="positive_regulation">positive_regulation</prefix>
 				</prefixes>
 			</field>
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref" remoteResource="test_remote">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -47,8 +48,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -73,8 +73,7 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -98,8 +97,7 @@
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref">
 				<cardinality>1..N</cardinality>
 			</field>

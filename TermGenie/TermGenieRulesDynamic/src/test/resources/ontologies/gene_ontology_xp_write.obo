@@ -1,8 +1,18 @@
 format-version: 1.2
-date: 08:11:2012 09:50
-saved-by: tb
+date: 06:02:2013 09:33
+saved-by: michel.schneider
 auto-generated-by: TermGenie 1.0
 ontology: go/extensions/x-chemical
+
+[Term]
+id: GO:0000001 ! mitochondrion inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0000011 ! vacuole inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005773 ! vacuole
 
 [Term]
 id: GO:0000017 ! alpha-glucoside transport
@@ -25,6 +35,16 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17306 ! maltose
 
 [Term]
+id: GO:0000027 ! ribosomal large subunit assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0015934 ! large ribosomal subunit
+
+[Term]
+id: GO:0000028 ! ribosomal small subunit assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0015935 ! small ribosomal subunit
+
+[Term]
 id: GO:0000035 ! acyl binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:22221 ! acyl group
@@ -38,6 +58,16 @@ intersection_of: has_participant CHEBI:58950 ! very long-chain fatty acid anion
 id: GO:0000041 ! transition metal ion transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33515 ! transition element cation
+
+[Term]
+id: GO:0000042 ! protein targeting to Golgi
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0000045 ! autophagic vacuole assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005776 ! autophagic vacuole
 
 [Term]
 id: GO:0000049 ! tRNA binding
@@ -60,6 +90,21 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15682 ! (N(omega)-L-arginino)succinic acid
 
 [Term]
+id: GO:0000054 ! ribosomal subunit export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: transports_or_maintains_localization_of GO:0044391 ! ribosomal subunit
+
+[Term]
+id: GO:0000055 ! ribosomal large subunit export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: transports_or_maintains_localization_of GO:0015934 ! large ribosomal subunit
+
+[Term]
+id: GO:0000056 ! ribosomal small subunit export from nucleus
+intersection_of: GO:0051168 ! nuclear export
+intersection_of: transports_or_maintains_localization_of GO:0015935 ! small ribosomal subunit
+
+[Term]
 id: GO:0000062 ! fatty-acyl-CoA binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:37554 ! fatty acyl-CoA
@@ -68,6 +113,11 @@ intersection_of: has_input CHEBI:37554 ! fatty acyl-CoA
 id: GO:0000064 ! L-ornithine transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15729 ! L-ornithine
+
+[Term]
+id: GO:0000066 ! mitochondrial ornithine transport
+intersection_of: GO:0015822 ! ornithine transport
+intersection_of: results_in_transport_to_from_or_in GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0000095 ! S-adenosylmethionine transmembrane transporter activity
@@ -110,6 +160,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:32529 ! histidinate(1-)
 
 [Term]
+id: GO:0000147 ! actin cortical patch assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030479 ! actin cortical patch
+
+[Term]
 id: GO:0000162 ! tryptophan biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:27897 ! tryptophan
@@ -120,9 +175,19 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:36976 ! nucleotide
 
 [Term]
+id: GO:0000226 ! microtubule cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0015630 ! microtubule cytoskeleton
+
+[Term]
 id: GO:0000227 ! oxaloacetate secondary active transmembrane transporter activity
 intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16452 ! oxaloacetate(2-)
+
+[Term]
+id: GO:0000245 ! spliceosomal complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005681 ! spliceosomal complex
 
 [Term]
 id: GO:0000255 ! allantoin metabolic process
@@ -133,6 +198,11 @@ intersection_of: has_participant CHEBI:15676 ! allantoin
 id: GO:0000256 ! allantoin catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:15676 ! allantoin
+
+[Term]
+id: GO:0000266 ! mitochondrial fission
+intersection_of: GO:0048285 ! organelle fission
+intersection_of: results_in_fission_of GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0000270 ! peptidoglycan metabolic process
@@ -150,9 +220,14 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:18154 ! polysaccharide
 
 [Term]
+id: GO:0000280 ! nuclear division
+intersection_of: GO:0048285 ! organelle fission
+intersection_of: results_in_fission_of GO:0005634 ! nucleus
+
+[Term]
 id: GO:0000287 ! magnesium ion binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:18420 ! magnesium(2+)
+intersection_of: has_input CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0000295 ! adenine nucleotide transmembrane transporter activity
@@ -200,6 +275,26 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17359 ! sulfite
 
 [Term]
+id: GO:0000390 ! spliceosomal complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005681 ! spliceosomal complex
+
+[Term]
+id: GO:0000491 ! small nucleolar ribonucleoprotein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005732 ! small nucleolar ribonucleoprotein complex
+
+[Term]
+id: GO:0000740 ! nuclear membrane fusion
+intersection_of: GO:0061025 ! membrane fusion
+intersection_of: results_in_fusion_of GO:0031965 ! nuclear membrane
+
+[Term]
+id: GO:0000741 ! karyogamy
+intersection_of: GO:0048284 ! organelle fusion
+intersection_of: results_in_fusion_of GO:0005634 ! nucleus
+
+[Term]
 id: GO:0000770 ! peptide pheromone export
 intersection_of: GO:0006810 ! transport
 intersection_of: exports CHEBI:38579 ! peptide pheromone
@@ -208,6 +303,36 @@ intersection_of: exports CHEBI:38579 ! peptide pheromone
 id: GO:0000822 ! inositol hexakisphosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17401 ! myo-inositol hexakisphosphate
+
+[Term]
+id: GO:0000902 ! cell morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0005623 ! cell
+
+[Term]
+id: GO:0000913 ! preprophase band assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009574 ! preprophase band
+
+[Term]
+id: GO:0000914 ! phragmoplast assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009524 ! phragmoplast
+
+[Term]
+id: GO:0000917 ! barrier septum assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000935 ! barrier septum
+
+[Term]
+id: GO:0000919 ! cell plate assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009504 ! cell plate
+
+[Term]
+id: GO:0000921 ! septin ring assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005940 ! septin ring
 
 [Term]
 id: GO:0000951 ! methionine catabolic process to 3-methylthiopropanol
@@ -225,6 +350,11 @@ intersection_of: has_output CHEBI:49016 ! 3-(methylthio)propionate
 id: GO:0001101 ! response to acid
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:37527 ! acid
+
+[Term]
+id: GO:0001325 ! formation of extrachromosomal circular DNA
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005727 ! extrachromosomal circular DNA
 
 [Term]
 id: GO:0001407 ! glycerophosphodiester transport
@@ -292,6 +422,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:59558 ! medium-chain fatty acid anion
 
 [Term]
+id: GO:0001675 ! acrosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0001669 ! acrosomal vesicle
+
+[Term]
 id: GO:0001676 ! long-chain fatty acid metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:57560 ! long-chain fatty acid anion
@@ -327,6 +462,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16958 ! beta-alanine
 
 [Term]
+id: GO:0001765 ! membrane raft assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045121 ! membrane raft
+
+[Term]
 id: GO:0001786 ! phosphatidylserine binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:18303 ! phosphatidyl-L-serine
@@ -340,6 +480,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:28790 ! serotonin
 id: GO:0001821 ! histamine secretion
 intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:18295 ! histamine
+
+[Term]
+id: GO:0001845 ! phagolysosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032010 ! phagolysosome
 
 [Term]
 id: GO:0001872 ! (1->3)-beta-D-glucan binding
@@ -370,6 +515,16 @@ intersection_of: has_input CHEBI:26440 ! pyrimidine nucleoside
 id: GO:0001887 ! selenium compound metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:26628 ! selenium molecular entity
+
+[Term]
+id: GO:0001927 ! exocyst assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000145 ! exocyst
+
+[Term]
+id: GO:0001941 ! postsynaptic membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045211 ! postsynaptic membrane
 
 [Term]
 id: GO:0001948 ! glycoprotein binding
@@ -462,9 +617,34 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:29222 ! hypochlorite
 
 [Term]
+id: GO:0002175 ! protein localization to paranode region of axon
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0033270 ! paranode region of axon
+
+[Term]
 id: GO:0002392 ! platelet activating factor secretion
 intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:52450 ! 2-O-acetyl-1-O-hexadecyl-sn-glycero-3-phosphocholine
+
+[Term]
+id: GO:0002396 ! MHC protein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042611 ! MHC protein complex
+
+[Term]
+id: GO:0002397 ! MHC class I protein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042612 ! MHC class I protein complex
+
+[Term]
+id: GO:0002398 ! MHC class Ib protein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032398 ! MHC class Ib protein complex
+
+[Term]
+id: GO:0002399 ! MHC class II protein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042613 ! MHC class II protein complex
 
 [Term]
 id: GO:0002790 ! peptide secretion
@@ -475,6 +655,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:16670 ! peptide
 id: GO:0003333 ! amino acid transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0003399 ! cytoneme morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0035230 ! cytoneme
 
 [Term]
 id: GO:0003676 ! nucleic acid binding
@@ -674,7 +859,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:25155 ! manganese
 [Term]
 id: GO:0005385 ! zinc ion transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:27365 ! zinc ion
+intersection_of: transports_or_maintains_localization_of CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0005458 ! GDP-mannose transmembrane transporter activity
@@ -754,7 +939,7 @@ intersection_of: has_input CHEBI:23378 ! copper cation
 [Term]
 id: GO:0005509 ! calcium ion binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:29108 ! calcium(2+)
+intersection_of: has_input CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0005515 ! protein binding
@@ -1772,9 +1957,24 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:16991 ! deoxyribonucleic acid
 
 [Term]
+id: GO:0006267 ! pre-replicative complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005656 ! pre-replicative complex
+
+[Term]
 id: GO:0006308 ! DNA catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:16991 ! deoxyribonucleic acid
+
+[Term]
+id: GO:0006334 ! nucleosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000786 ! nucleosome
+
+[Term]
+id: GO:0006337 ! nucleosome disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0000786 ! nucleosome
 
 [Term]
 id: GO:0006399 ! tRNA metabolic process
@@ -1792,9 +1992,9 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:33699 ! messenger RNA
 
 [Term]
-id: GO:0006412 ! translation
-intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:36080 ! protein
+id: GO:0006461 ! protein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0043234 ! protein complex
 
 [Term]
 id: GO:0006488 ! dolichol-linked oligosaccharide biosynthetic process
@@ -2226,6 +2426,42 @@ intersection_of: has_input CHEBI:16737 ! creatinine
 id: GO:0006604 ! phosphoarginine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:18412 ! N(omega)-phospho-L-arginine
+
+[Term]
+id: GO:0006606 ! protein import into nucleus
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005634 ! nucleus
+
+[Term]
+id: GO:0006608 ! snRNP protein import into nucleus
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005634 ! nucleus
+intersection_of: transports_or_maintains_localization_of GO:0030532 ! small nuclear ribonucleoprotein complex
+
+[Term]
+id: GO:0006612 ! protein targeting to membrane
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0016020 ! membrane
+
+[Term]
+id: GO:0006622 ! protein targeting to lysosome
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005764 ! lysosome
+
+[Term]
+id: GO:0006623 ! protein targeting to vacuole
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005773 ! vacuole
+
+[Term]
+id: GO:0006625 ! protein targeting to peroxisome
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0006626 ! protein targeting to mitochondrion
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0006629 ! lipid metabolic process
@@ -2875,7 +3111,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:29101 ! sodium(1+
 [Term]
 id: GO:0006816 ! calcium ion transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:29108 ! calcium(2+)
+intersection_of: transports_or_maintains_localization_of CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0006817 ! phosphate ion transport
@@ -2920,7 +3156,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:25155 ! manganese
 [Term]
 id: GO:0006829 ! zinc ion transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:27365 ! zinc ion
+intersection_of: transports_or_maintains_localization_of CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0006833 ! water transport
@@ -2936,6 +3172,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:35693 ! dicarboxy
 id: GO:0006837 ! serotonin transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:28790 ! serotonin
+
+[Term]
+id: GO:0006839 ! mitochondrial transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0006842 ! tricarboxylic acid transport
@@ -3005,17 +3246,223 @@ intersection_of: regulates_level_of CHEBI:24870 ! ion
 [Term]
 id: GO:0006874 ! cellular calcium ion homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
-intersection_of: regulates_level_of CHEBI:39124 ! calcium ion
+intersection_of: regulates_level_of CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0006882 ! cellular zinc ion homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
-intersection_of: regulates_level_of CHEBI:27365 ! zinc ion
+intersection_of: regulates_level_of CHEBI:63056 ! zinc cation
+
+[Term]
+id: GO:0006886 ! intracellular protein transport
+intersection_of: GO:0015031 ! protein transport
+intersection_of: GO:0046907 ! intracellular transport
+
+[Term]
+id: GO:0006888 ! ER to Golgi vesicle-mediated transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
+intersection_of: has_target_start_location GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0006893 ! Golgi to plasma membrane transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005886 ! plasma membrane
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0006895 ! Golgi to endosome transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005768 ! endosome
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0006896 ! Golgi to vacuole transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005773 ! vacuole
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0006906 ! vesicle fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0012506 ! vesicle membrane
 
 [Term]
 id: GO:0006982 ! response to lipid hydroperoxide
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:61051 ! lipid hydroperoxide
+
+[Term]
+id: GO:0006996 ! organelle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0006997 ! nucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0006998 ! nuclear envelope organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005635 ! nuclear envelope
+
+[Term]
+id: GO:0006999 ! nuclear pore organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0007000 ! nucleolus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005730 ! nucleolus
+
+[Term]
+id: GO:0007005 ! mitochondrion organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0007007 ! inner mitochondrial membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005743 ! mitochondrial inner membrane
+
+[Term]
+id: GO:0007008 ! outer mitochondrial membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005741 ! mitochondrial outer membrane
+
+[Term]
+id: GO:0007009 ! plasma membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0007010 ! cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005856 ! cytoskeleton
+
+[Term]
+id: GO:0007015 ! actin filament organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005884 ! actin filament
+
+[Term]
+id: GO:0007019 ! microtubule depolymerization
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005874 ! microtubule
+
+[Term]
+id: GO:0007021 ! tubulin complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045298 ! tubulin complex
+
+[Term]
+id: GO:0007028 ! cytoplasm organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005737 ! cytoplasm
+
+[Term]
+id: GO:0007029 ! endoplasmic reticulum organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0007030 ! Golgi organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0007031 ! peroxisome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0007032 ! endosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005768 ! endosome
+
+[Term]
+id: GO:0007033 ! vacuole organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005773 ! vacuole
+
+[Term]
+id: GO:0007040 ! lysosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005764 ! lysosome
+
+[Term]
+id: GO:0007041 ! lysosomal transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005764 ! lysosome
+
+[Term]
+id: GO:0007043 ! cell-cell junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005911 ! cell-cell junction
+
+[Term]
+id: GO:0007044 ! cell-substrate junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030055 ! cell-substrate junction
+
+[Term]
+id: GO:0007051 ! spindle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0007086 ! vesicle fusion with nuclear membrane involved in mitotic nuclear envelope reassembly
+intersection_of: GO:0009987 ! cellular process
+intersection_of: part_of GO:0007084 ! mitotic nuclear envelope reassembly
+intersection_of: results_in_fusion_of GO:0031965 ! nuclear membrane
+intersection_of: results_in_fusion_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0007130 ! synaptonemal complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0007181 ! transforming growth factor beta receptor complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0070022 ! transforming growth factor beta receptor homodimeric complex
+
+[Term]
+id: GO:0007287 ! Nebenkern assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0016006 ! Nebenkern
+
+[Term]
+id: GO:0007315 ! pole plasm assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0007316 ! pole plasm RNA localization
+intersection_of: GO:0006403 ! RNA localization
+intersection_of: results_in_transport_to_from_or_in GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0007318 ! pole plasm protein localization
+intersection_of: GO:0008104 ! protein localization
+intersection_of: results_in_transport_to_from_or_in GO:0045495 ! pole plasm
+
+[Term]
+id: GO:0007411 ! axon guidance
+intersection_of: GO:0006935 ! chemotaxis
+intersection_of: transports_or_maintains_localization_of GO:0030426 ! growth cone
+
+[Term]
+id: GO:0007416 ! synapse assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045202 ! synapse
+
+[Term]
+id: GO:0007528 ! neuromuscular junction development
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031594 ! neuromuscular junction
 
 [Term]
 id: GO:0007584 ! response to nutrient
@@ -3026,6 +3473,11 @@ intersection_of: has_input CHEBI:33284 ! nutrient
 id: GO:0008028 ! monocarboxylic acid transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:25384 ! monocarboxylic acid
+
+[Term]
+id: GO:0008053 ! mitochondrial fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0008061 ! chitin binding
@@ -3130,7 +3582,7 @@ intersection_of: has_participant CHEBI:16610 ! spermidine
 [Term]
 id: GO:0008270 ! zinc ion binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:27365 ! zinc ion
+intersection_of: has_input CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0008271 ! secondary active sulfate transmembrane transporter activity
@@ -3181,6 +3633,12 @@ intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
 id: GO:0008324 ! cation transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:36916 ! cation
+
+[Term]
+id: GO:0008333 ! endosome to lysosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005764 ! lysosome
+intersection_of: has_target_start_location GO:0005768 ! endosome
 
 [Term]
 id: GO:0008429 ! phosphatidylethanolamine binding
@@ -3251,6 +3709,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:49183 ! phosphati
 id: GO:0008526 ! phosphatidylinositol transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:28874 ! phosphatidylinositol
+
+[Term]
+id: GO:0008535 ! respiratory chain complex IV assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045277 ! respiratory chain complex IV
 
 [Term]
 id: GO:0008565 ! protein transporter activity
@@ -3341,7 +3804,7 @@ intersection_of: has_input CHEBI:33694 ! biomacromolecule
 [Term]
 id: GO:0009059 ! macromolecule biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:33694 ! biomacromolecule
+intersection_of: has_output CHEBI:33839 ! macromolecule
 
 [Term]
 id: GO:0009062 ! fatty acid catabolic process
@@ -4190,6 +4653,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:19260 ! 2'-deoxyribonucleotide
 
 [Term]
+id: GO:0009297 ! pilus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009289 ! pilus
+
+[Term]
 id: GO:0009298 ! GDP-mannose biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:21168 ! GDP-mannose
@@ -4353,6 +4821,66 @@ intersection_of: has_input CHEBI:24527 ! herbicide
 id: GO:0009636 ! response to toxin
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:27026 ! toxin
+
+[Term]
+id: GO:0009657 ! plastid organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0009658 ! chloroplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009507 ! chloroplast
+
+[Term]
+id: GO:0009659 ! leucoplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009516 ! leucoplast
+
+[Term]
+id: GO:0009660 ! amyloplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009501 ! amyloplast
+
+[Term]
+id: GO:0009661 ! chromoplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009509 ! chromoplast
+
+[Term]
+id: GO:0009662 ! etioplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009513 ! etioplast
+
+[Term]
+id: GO:0009663 ! plasmodesma organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009506 ! plasmodesma
+
+[Term]
+id: GO:0009664 ! plant-type cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009505 ! plant-type cell wall
+
+[Term]
+id: GO:0009665 ! plastid inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0009666 ! plastid outer membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009527 ! plastid outer membrane
+
+[Term]
+id: GO:0009667 ! plastid inner membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009528 ! plastid inner membrane
+
+[Term]
+id: GO:0009668 ! plastid membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042170 ! plastid membrane
 
 [Term]
 id: GO:0009683 ! indoleacetic acid metabolic process
@@ -4650,6 +5178,16 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:22315 ! alkaloid
 
 [Term]
+id: GO:0009827 ! plant-type cell wall modification
+intersection_of: GO:0042545 ! cell wall modification
+intersection_of: has_participant GO:0009505 ! plant-type cell wall
+
+[Term]
+id: GO:0009932 ! cell tip growth
+intersection_of: GO:0040007 ! growth
+intersection_of: results_in_growth_of GO:0051286 ! cell tip
+
+[Term]
 id: GO:0009961 ! response to 1-aminocyclopropane-1-carboxylic acid
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18053 ! 1-aminocyclopropanecarboxylic acid
@@ -4683,6 +5221,11 @@ intersection_of: has_output CHEBI:26267 ! proanthocyanidin
 id: GO:0010024 ! phytochromobilin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:26116 ! phytochromobilin
+
+[Term]
+id: GO:0010027 ! thylakoid membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042651 ! thylakoid membrane
 
 [Term]
 id: GO:0010033 ! response to organic substance
@@ -4737,12 +5280,12 @@ intersection_of: has_input CHEBI:25155 ! manganese cation
 [Term]
 id: GO:0010043 ! response to zinc ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:27365 ! zinc ion
+intersection_of: has_input CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0010044 ! response to aluminum ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:60272 ! aluminium ion
+intersection_of: has_input CHEBI:63062 ! aluminium cation
 
 [Term]
 id: GO:0010045 ! response to nickel cation
@@ -4758,6 +5301,11 @@ intersection_of: has_input CHEBI:25442 ! mycotoxin
 id: GO:0010107 ! potassium ion import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:29103 ! potassium(1+)
+
+[Term]
+id: GO:0010111 ! glyoxysome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009514 ! glyoxysome
 
 [Term]
 id: GO:0010120 ! camalexin biosynthetic process
@@ -4875,9 +5423,19 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:33234 ! vitamin E
 
 [Term]
+id: GO:0010190 ! cytochrome b6f complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009512 ! cytochrome b6f complex
+
+[Term]
 id: GO:0010193 ! response to ozone
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25812 ! ozone
+
+[Term]
+id: GO:0010197 ! polar nucleus fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0043078 ! polar nucleus
 
 [Term]
 id: GO:0010200 ! response to chitin
@@ -4885,9 +5443,19 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:17029 ! chitin
 
 [Term]
+id: GO:0010207 ! photosystem II assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009523 ! photosystem II
+
+[Term]
+id: GO:0010208 ! pollen wall assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0043667 ! pollen wall
+
+[Term]
 id: GO:0010217 ! cellular aluminum ion homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
-intersection_of: regulates_level_of CHEBI:60272 ! aluminium ion
+intersection_of: regulates_level_of CHEBI:63062 ! aluminium cation
 
 [Term]
 id: GO:0010226 ! response to lithium ion
@@ -4930,6 +5498,16 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:60981 ! UDP-rhamnose(2-)
 
 [Term]
+id: GO:0010256 ! endomembrane system organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0012505 ! endomembrane system
+
+[Term]
+id: GO:0010257 ! NADH dehydrogenase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030964 ! NADH dehydrogenase complex
+
+[Term]
 id: GO:0010263 ! tricyclic triterpenoid biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:52340 ! tricyclic triterpenoid
@@ -4938,6 +5516,11 @@ intersection_of: has_output CHEBI:52340 ! tricyclic triterpenoid
 id: GO:0010264 ! myo-inositol hexakisphosphate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:17401 ! myo-inositol hexakisphosphate
+
+[Term]
+id: GO:0010265 ! SCF complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0019005 ! SCF ubiquitin ligase complex
 
 [Term]
 id: GO:0010266 ! response to vitamin B1
@@ -4957,12 +5540,12 @@ intersection_of: has_input CHEBI:60250 ! selenium ion
 [Term]
 id: GO:0010272 ! response to silver ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:60247 ! silver ion
+intersection_of: has_input CHEBI:60253 ! silver cation
 
 [Term]
 id: GO:0010288 ! response to lead ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:60249 ! lead ion
+intersection_of: has_input CHEBI:60252 ! lead cation
 
 [Term]
 id: GO:0010289 ! homogalacturonan biosynthetic process
@@ -5028,6 +5611,11 @@ intersection_of: has_input CHEBI:27082 ! trehalose
 id: GO:0010379 ! phaseic acid biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:62069 ! phaseic acid anion
+
+[Term]
+id: GO:0010387 ! signalosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0008180 ! signalosome
 
 [Term]
 id: GO:0010391 ! glucomannan metabolic process
@@ -5135,6 +5723,11 @@ intersection_of: GO:0015562 ! efflux transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17632 ! nitrate
 
 [Term]
+id: GO:0010547 ! thylakoid membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0042651 ! thylakoid membrane
+
+[Term]
 id: GO:0010555 ! response to mannitol stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:29864 ! mannitol
@@ -5189,12 +5782,12 @@ intersection_of: has_input CHEBI:3306 ! calcitonin
 [Term]
 id: GO:0010960 ! magnesium ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:39128 ! magnesium ion
+intersection_of: regulates_level_of CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0010961 ! cellular magnesium ion homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
-intersection_of: regulates_level_of CHEBI:39128 ! magnesium ion
+intersection_of: regulates_level_of CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0014046 ! dopamine secretion
@@ -5284,7 +5877,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:24870 ! ion
 [Term]
 id: GO:0015095 ! magnesium ion transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
-intersection_of: transports_or_maintains_localization_of CHEBI:39128 ! magnesium ion
+intersection_of: transports_or_maintains_localization_of CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0015104 ! antimonite transmembrane transporter activity
@@ -5607,7 +6200,7 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16283 ! L-cystine
 
 [Term]
-id: GO:0015185 ! L-gamma-aminobutyric acid transmembrane transporter activity
+id: GO:0015185 ! gamma-aminobutyric acid transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16865 ! gamma-aminobutyric acid
 
@@ -6167,6 +6760,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:35172 ! vanadium cation
 
 [Term]
+id: GO:0015677 ! copper ion import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:23378 ! copper cation
+
+[Term]
 id: GO:0015682 ! ferric iron transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:29034 ! iron(3+)
@@ -6204,12 +6802,12 @@ intersection_of: transports_or_maintains_localization_of CHEBI:36264 ! molybdate
 [Term]
 id: GO:0015690 ! aluminum cation transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:49470 ! aluminium(3+)
+intersection_of: transports_or_maintains_localization_of CHEBI:63062 ! aluminium cation
 
 [Term]
 id: GO:0015691 ! cadmium ion transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:48775 ! cadmium(2+)
+intersection_of: transports_or_maintains_localization_of CHEBI:63063 ! cadmium cation
 
 [Term]
 id: GO:0015692 ! lead ion transport
@@ -6219,7 +6817,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:60252 ! lead cati
 [Term]
 id: GO:0015693 ! magnesium ion transport
 intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:18420 ! magnesium(2+)
+intersection_of: transports_or_maintains_localization_of CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0015694 ! mercury ion transport
@@ -7017,6 +7615,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:26400 ! purine ribonucleotide
 
 [Term]
+id: GO:0015869 ! protein-DNA complex transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0032993 ! protein-DNA complex
+
+[Term]
 id: GO:0015870 ! acetylcholine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:15355 ! acetylcholine
@@ -7227,6 +7830,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:15889 ! sterol
 
 [Term]
+id: GO:0015919 ! peroxisomal membrane transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005778 ! peroxisomal membrane
+
+[Term]
 id: GO:0015920 ! lipopolysaccharide transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16412 ! lipopolysaccharide
@@ -7427,6 +8035,11 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:18059 ! lipid
 
 [Term]
+id: GO:0016050 ! vesicle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031982 ! vesicle
+
+[Term]
 id: GO:0016051 ! carbohydrate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16646 ! carbohydrate
@@ -7460,6 +8073,11 @@ intersection_of: has_input CHEBI:18111 ! ribosomal RNA
 id: GO:0016078 ! tRNA catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17843 ! transfer RNA
+
+[Term]
+id: GO:0016080 ! synaptic vesicle targeting
+intersection_of: GO:0006903 ! vesicle targeting
+intersection_of: transports_or_maintains_localization_of GO:0008021 ! synaptic vesicle
 
 [Term]
 id: GO:0016090 ! prenol metabolic process
@@ -7732,6 +8350,22 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:60197 ! bacteriochlorophyll c
 
 [Term]
+id: GO:0016188 ! synaptic vesicle maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: results_in_organization_of GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0016189 ! synaptic vesicle to endosome fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005768 ! endosome
+intersection_of: results_in_fusion_of GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0016197 ! endosomal transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_mediated_by GO:0005768 ! endosome
+
+[Term]
 id: GO:0016208 ! AMP binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16027 ! AMP
@@ -7757,6 +8391,21 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:9093 ! selenocysteine
 
 [Term]
+id: GO:0016264 ! gap junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005921 ! gap junction
+
+[Term]
+id: GO:0016320 ! endoplasmic reticulum membrane fusion
+intersection_of: GO:0061025 ! membrane fusion
+intersection_of: results_in_fusion_of GO:0005789 ! endoplasmic reticulum membrane
+
+[Term]
+id: GO:0016482 ! cytoplasmic transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005737 ! cytoplasm
+
+[Term]
 id: GO:0016487 ! farnesol metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28600 ! farnesol
@@ -7765,6 +8414,11 @@ intersection_of: has_participant CHEBI:28600 ! farnesol
 id: GO:0016488 ! farnesol catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:28600 ! farnesol
+
+[Term]
+id: GO:0016557 ! peroxisome membrane biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0005778 ! peroxisomal membrane
 
 [Term]
 id: GO:0016594 ! glycine binding
@@ -7797,9 +8451,19 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24163 ! galactoside
 
 [Term]
+id: GO:0017004 ! cytochrome complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0070069 ! cytochrome complex
+
+[Term]
 id: GO:0017038 ! protein import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:36080 ! protein
+
+[Term]
+id: GO:0017062 ! respiratory chain complex III assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045275 ! respiratory chain complex III
 
 [Term]
 id: GO:0017076 ! purine nucleotide binding
@@ -7815,6 +8479,11 @@ intersection_of: has_input CHEBI:24852 ! insecticide
 id: GO:0017089 ! glycolipid transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:33563 ! glycolipid
+
+[Term]
+id: GO:0017126 ! nucleologenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0005730 ! nucleolus
 
 [Term]
 id: GO:0017127 ! cholesterol transporter activity
@@ -8392,6 +9061,17 @@ intersection_of: has_input CHEBI:17345 ! GMP
 id: GO:0019003 ! GDP binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17552 ! GDP
+
+[Term]
+id: GO:0019064 ! viral entry into host cell via membrane fusion with the plasma membrane
+intersection_of: GO:0061025 ! membrane fusion
+intersection_of: results_in_fusion_of GO:0019031 ! viral envelope
+intersection_of: results_in_fusion_of GO:0033644 ! host cell membrane
+
+[Term]
+id: GO:0019069 ! viral capsid assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0019028 ! viral capsid
 
 [Term]
 id: GO:0019103 ! pyrimidine nucleotide binding
@@ -9427,12 +10107,12 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:17796 ! L-idonate
 
 [Term]
-id: GO:0019524 ! D-dehydro-D-gluconate catabolic process
+id: GO:0019524 ! keto-D-gluconate catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:24966 ! keto-D-gluconate
 
 [Term]
-id: GO:0019525 ! D-dehydro-D-gluconate metabolic process
+id: GO:0019525 ! keto-D-gluconate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:24966 ! keto-D-gluconate
 
@@ -10056,6 +10736,11 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:51963 ! hopanoid
 
 [Term]
+id: GO:0019749 ! cytoskeleton-dependent cytoplasmic transport, nurse cell to oocyte
+intersection_of: GO:0007303 ! cytoplasmic transport, nurse cell to oocyte
+intersection_of: GO:0030705 ! cytoskeleton-dependent intracellular transport
+
+[Term]
 id: GO:0019751 ! polyol metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:26191 ! polyol
@@ -10131,9 +10816,20 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:27958 ! cocaine
 
 [Term]
+id: GO:0019817 ! vesicle fusion with peroxisome
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005777 ! peroxisome
+intersection_of: results_in_fusion_of GO:0031982 ! vesicle
+
+[Term]
 id: GO:0019825 ! oxygen binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:15379 ! dioxygen
+
+[Term]
+id: GO:0019829 ! cation-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:36916 ! cation
 
 [Term]
 id: GO:0019840 ! isoprenoid binding
@@ -10216,6 +10912,11 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:27601 ! pteridine
 
 [Term]
+id: GO:0019991 ! septate junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005918 ! septate junction
+
+[Term]
 id: GO:0019992 ! diacylglycerol binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:18035 ! diglyceride
@@ -10234,6 +10935,16 @@ intersection_of: imports CHEBI:35143 ! hemoglobin
 id: GO:0020037 ! heme binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:30413 ! heme
+
+[Term]
+id: GO:0022617 ! extracellular matrix disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0031012 ! extracellular matrix
+
+[Term]
+id: GO:0022618 ! ribonucleoprotein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030529 ! ribonucleoprotein complex
 
 [Term]
 id: GO:0022839 ! ion gated channel activity
@@ -10286,6 +10997,42 @@ intersection_of: GO:0019725 ! cellular homeostasis
 intersection_of: regulates_level_of CHEBI:60242 ! monovalent inorganic cation
 
 [Term]
+id: GO:0030030 ! cell projection organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042995 ! cell projection
+
+[Term]
+id: GO:0030031 ! cell projection assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042995 ! cell projection
+
+[Term]
+id: GO:0030032 ! lamellipodium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030027 ! lamellipodium
+
+[Term]
+id: GO:0030033 ! microvillus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005902 ! microvillus
+
+[Term]
+id: GO:0030035 ! microspike assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0044393 ! microspike
+
+[Term]
+id: GO:0030036 ! actin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0015629 ! actin cytoskeleton
+
+[Term]
+id: GO:0030050 ! vesicle transport along actin filament
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_along GO:0005884 ! actin filament
+intersection_of: transports_or_maintains_localization_of GO:0031982 ! vesicle
+
+[Term]
 id: GO:0030104 ! water homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:15377 ! water
@@ -10304,6 +11051,11 @@ intersection_of: has_output CHEBI:26739 ! sphingolipid
 id: GO:0030149 ! sphingolipid catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:26739 ! sphingolipid
+
+[Term]
+id: GO:0030150 ! protein import into mitochondrial matrix
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005759 ! mitochondrial matrix
 
 [Term]
 id: GO:0030151 ! molybdenum ion binding
@@ -10354,6 +11106,16 @@ intersection_of: has_participant CHEBI:16796 ! melatonin
 id: GO:0030187 ! melatonin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16796 ! melatonin
+
+[Term]
+id: GO:0030198 ! extracellular matrix organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031012 ! extracellular matrix
+
+[Term]
+id: GO:0030199 ! collagen fibril organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005583 ! fibrillar collagen
 
 [Term]
 id: GO:0030200 ! heparan sulfate proteoglycan catabolic process
@@ -10429,6 +11191,11 @@ intersection_of: has_output CHEBI:16336 ! hyaluronic acid
 id: GO:0030214 ! hyaluronan catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:16336 ! hyaluronic acid
+
+[Term]
+id: GO:0030239 ! myofibril assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030016 ! myofibril
 
 [Term]
 id: GO:0030243 ! cellulose metabolic process
@@ -10531,6 +11298,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17716 ! lactose
 
 [Term]
+id: GO:0030397 ! membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0016020 ! membrane
+
+[Term]
 id: GO:0030416 ! methylamine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:59338 ! methylammonium
@@ -10549,6 +11321,21 @@ intersection_of: has_output CHEBI:62921 ! (S,S,S)-nicotianamine monoanion
 id: GO:0030419 ! nicotianamine catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:62921 ! (S,S,S)-nicotianamine monoanion
+
+[Term]
+id: GO:0030473 ! nuclear migration along microtubule
+intersection_of: GO:0007097 ! nuclear migration
+intersection_of: results_in_transport_along GO:0015630 ! microtubule cytoskeleton
+
+[Term]
+id: GO:0030474 ! spindle pole body duplication
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005816 ! spindle pole body
+
+[Term]
+id: GO:0030476 ! ascospore wall assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005619 ! ascospore wall
 
 [Term]
 id: GO:0030492 ! hemoglobin binding
@@ -10599,6 +11386,26 @@ intersection_of: has_input CHEBI:61293 ! adenyl nucleotide
 id: GO:0030573 ! bile acid catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:36235 ! bile acid anion
+
+[Term]
+id: GO:0030575 ! nuclear body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016604 ! nuclear body
+
+[Term]
+id: GO:0030576 ! Cajal body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0015030 ! Cajal body
+
+[Term]
+id: GO:0030577 ! Lands organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016606 ! LYSP100-associated nuclear domain
+
+[Term]
+id: GO:0030578 ! PML body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016605 ! PML body
 
 [Term]
 id: GO:0030632 ! D-alanine biosynthetic process
@@ -10667,6 +11474,41 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:27933 ! beta-lactam antibiotic
 
 [Term]
+id: GO:0030705 ! cytoskeleton-dependent intracellular transport
+intersection_of: GO:0046907 ! intracellular transport
+intersection_of: results_in_transport_along GO:0005856 ! cytoskeleton
+
+[Term]
+id: GO:0030719 ! P granule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0043186 ! P granule
+
+[Term]
+id: GO:0030721 ! spectrosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045170 ! spectrosome
+
+[Term]
+id: GO:0030865 ! cortical cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030863 ! cortical cytoskeleton
+
+[Term]
+id: GO:0030866 ! cortical actin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030864 ! cortical actin cytoskeleton
+
+[Term]
+id: GO:0030913 ! paranodal junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0033010 ! paranodal junction
+
+[Term]
+id: GO:0030953 ! astral microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000235 ! astral microtubule
+
+[Term]
 id: GO:0030955 ! potassium ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:29103 ! potassium(1+)
@@ -10712,6 +11554,11 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:22385 ! alpha-D-glucan
 
 [Term]
+id: GO:0030994 ! primary cell septum disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0000936 ! primary cell septum
+
+[Term]
 id: GO:0031000 ! response to caffeine
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:27732 ! caffeine
@@ -10722,9 +11569,54 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:48080 ! brefeldin A
 
 [Term]
+id: GO:0031023 ! microtubule organizing center organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005815 ! microtubule organizing center
+
+[Term]
+id: GO:0031024 ! interphase microtubule organizing center assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0031021 ! interphase microtubule organizing center
+
+[Term]
+id: GO:0031025 ! equatorial microtubule organizing center disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0000923 ! equatorial microtubule organizing center
+
+[Term]
+id: GO:0031032 ! actomyosin structure organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042641 ! actomyosin
+
+[Term]
+id: GO:0031034 ! myosin filament assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032982 ! myosin filament
+
+[Term]
+id: GO:0031035 ! myosin filament disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032982 ! myosin filament
+
+[Term]
+id: GO:0031106 ! septin ring organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005940 ! septin ring
+
+[Term]
+id: GO:0031107 ! septin ring disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005940 ! septin ring
+
+[Term]
 id: GO:0031108 ! holo-[acyl-carrier-protein] biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:18359 ! holo-[acyl-carrier protein]
+
+[Term]
+id: GO:0031122 ! cytoplasmic microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005881 ! cytoplasmic microtubule
 
 [Term]
 id: GO:0031147 ! 1-(3,5-dichloro-2,6-dihydroxy-4-methoxyphenyl)hexan-1-one metabolic process
@@ -10782,6 +11674,31 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:22590 ! arabinan
 
 [Term]
+id: GO:0031247 ! actin rod assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0031002 ! actin rod
+
+[Term]
+id: GO:0031268 ! pseudopodium organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031143 ! pseudopodium
+
+[Term]
+id: GO:0031269 ! pseudopodium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0031143 ! pseudopodium
+
+[Term]
+id: GO:0031321 ! ascospore-type prospore assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042764 ! ascospore-type prospore
+
+[Term]
+id: GO:0031382 ! mating projection assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005937 ! mating projection
+
+[Term]
 id: GO:0031402 ! sodium ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:29101 ! sodium(1+)
@@ -10815,6 +11732,11 @@ intersection_of: has_participant CHEBI:62933 ! oxylipin anion
 id: GO:0031408 ! oxylipin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:62933 ! oxylipin anion
+
+[Term]
+id: GO:0031412 ! gas vesicle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: has_output GO:0031411 ! gas vesicle
 
 [Term]
 id: GO:0031418 ! L-ascorbic acid binding
@@ -10857,6 +11779,46 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:17750 ! glycine betaine
 
 [Term]
+id: GO:0031497 ! chromatin assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000785 ! chromatin
+
+[Term]
+id: GO:0031498 ! chromatin disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0000785 ! chromatin
+
+[Term]
+id: GO:0031503 ! protein complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0043234 ! protein complex
+
+[Term]
+id: GO:0031504 ! peptidoglycan-based cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009274 ! peptidoglycan-based cell wall
+
+[Term]
+id: GO:0031505 ! fungal-type cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009277 ! fungal-type cell wall
+
+[Term]
+id: GO:0031507 ! heterochromatin assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000792 ! heterochromatin
+
+[Term]
+id: GO:0031508 ! centromeric heterochromatin assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005721 ! centromeric heterochromatin
+
+[Term]
+id: GO:0031509 ! telomeric heterochromatin assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0031933 ! telomeric heterochromatin
+
+[Term]
 id: GO:0031524 ! menthol metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15409 ! (-)-menthol
@@ -10865,6 +11827,21 @@ intersection_of: has_participant CHEBI:15409 ! (-)-menthol
 id: GO:0031525 ! menthol biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:15409 ! (-)-menthol
+
+[Term]
+id: GO:0031529 ! ruffle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0001726 ! ruffle
+
+[Term]
+id: GO:0031579 ! membrane raft organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0031581 ! hemidesmosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030056 ! hemidesmosome
 
 [Term]
 id: GO:0031590 ! wybutosine metabolic process
@@ -10885,6 +11862,17 @@ intersection_of: has_input CHEBI:10415 ! beta-endorphin
 id: GO:0031670 ! cellular response to nutrient
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:33284 ! nutrient
+
+[Term]
+id: GO:0031671 ! primary cell septum biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0000936 ! primary cell septum
+
+[Term]
+id: GO:0031887 ! lipid particle transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_along GO:0005874 ! microtubule
+intersection_of: transports_or_maintains_localization_of GO:0005811 ! lipid particle
 
 [Term]
 id: GO:0031919 ! vitamin B6 transport
@@ -10949,7 +11937,7 @@ intersection_of: has_input CHEBI:23336 ! cobalt cation
 [Term]
 id: GO:0032026 ! response to magnesium ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:39128 ! magnesium ion
+intersection_of: has_input CHEBI:39127 ! magnesium cation
 
 [Term]
 id: GO:0032048 ! cardiolipin metabolic process
@@ -10967,9 +11955,50 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:36235 ! bile acid anion
 
 [Term]
+id: GO:0032053 ! microtubule basal body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005932 ! microtubule basal body
+
+[Term]
+id: GO:0032060 ! bleb assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032059 ! bleb
+
+[Term]
+id: GO:0032066 ! nucleolus to nucleoplasm transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005654 ! nucleoplasm
+intersection_of: has_target_start_location GO:0005730 ! nucleolus
+
+[Term]
 id: GO:0032094 ! response to food
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:33290 ! food
+
+[Term]
+id: GO:0032120 ! ascospore-type prospore membrane assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005628 ! prospore membrane
+
+[Term]
+id: GO:0032122 ! oral apparatus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031912 ! oral apparatus
+
+[Term]
+id: GO:0032124 ! macronucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031039 ! macronucleus
+
+[Term]
+id: GO:0032125 ! micronucleus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0031040 ! micronucleus
+
+[Term]
+id: GO:0032130 ! medial membrane band assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032178 ! medial membrane band
 
 [Term]
 id: GO:0032149 ! response to rhamnose stimulus
@@ -10987,6 +12016,21 @@ id: GO:0032180 ! ubiquinone biosynthetic process from tyrosine
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_input CHEBI:18186 ! tyrosine
 intersection_of: has_output CHEBI:16389 ! ubiquinones
+
+[Term]
+id: GO:0032185 ! septin cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0032156 ! septin cytoskeleton
+
+[Term]
+id: GO:0032186 ! cellular bud neck septin ring organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000144 ! cellular bud neck septin ring
+
+[Term]
+id: GO:0032187 ! actomyosin contractile ring localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005826 ! actomyosin contractile ring
 
 [Term]
 id: GO:0032193 ! ubiquinone biosynthetic process via 2-polyprenylphenol
@@ -11014,6 +12058,16 @@ intersection_of: transports_or_maintains_localization_of CHEBI:17015 ! riboflavi
 id: GO:0032238 ! adenosine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16335 ! adenosine
+
+[Term]
+id: GO:0032252 ! secretory granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0030141 ! secretory granule
+
+[Term]
+id: GO:0032253 ! dense core granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0031045 ! dense core granule
 
 [Term]
 id: GO:0032266 ! phosphatidylinositol-3-phosphate binding
@@ -11111,6 +12165,31 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:15379 ! dioxygen
 
 [Term]
+id: GO:0032400 ! melanosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032402 ! melanosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032418 ! lysosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005764 ! lysosome
+
+[Term]
+id: GO:0032438 ! melanosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042470 ! melanosome
+
+[Term]
+id: GO:0032439 ! endosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005768 ! endosome
+
+[Term]
 id: GO:0032445 ! fructose import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:28757 ! fructose
@@ -11144,6 +12223,16 @@ intersection_of: transports_or_maintains_localization_of CHEBI:30584 ! silicon(4
 id: GO:0032526 ! response to retinoic acid
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26536 ! retinoic acid
+
+[Term]
+id: GO:0032527 ! protein exit from endoplasmic reticulum
+intersection_of: GO:0015031 ! protein transport
+intersection_of: has_target_start_location GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0032528 ! microvillus organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005902 ! microvillus
 
 [Term]
 id: GO:0032546 ! deoxyribonucleoside binding
@@ -11276,6 +12365,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18067 ! phylloquinone
 
 [Term]
+id: GO:0032596 ! protein transport into membrane raft
+intersection_of: GO:0015031 ! protein transport
+intersection_of: has_target_end_location GO:0045121 ! membrane raft
+
+[Term]
 id: GO:0032774 ! RNA biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:33697 ! ribonucleic acid
@@ -11296,9 +12390,19 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:64623 ! saturated monocarboxylic acid
 
 [Term]
+id: GO:0032790 ! ribosome disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005840 ! ribosome
+
+[Term]
 id: GO:0032791 ! lead ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:60252 ! lead cation
+
+[Term]
+id: GO:0032796 ! uropod organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0001931 ! uropod
 
 [Term]
 id: GO:0032841 ! calcitonin binding
@@ -11336,9 +12440,64 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:25450 ! myo-inositol trisphosphate
 
 [Term]
+id: GO:0032964 ! collagen biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output GO:0005581 ! collagen
+
+[Term]
 id: GO:0032973 ! amino acid export
 intersection_of: GO:0006810 ! transport
 intersection_of: exports CHEBI:33709 ! amino acid
+
+[Term]
+id: GO:0032974 ! amino acid transmembrane export from vacuole
+intersection_of: GO:0044746 ! amino acid transmembrane export
+intersection_of: has_target_start_location GO:0005773 ! vacuole
+
+[Term]
+id: GO:0032975 ! amino acid transmembrane import into vacuole
+intersection_of: GO:0043090 ! amino acid import
+intersection_of: has_target_end_location GO:0005773 ! vacuole
+
+[Term]
+id: GO:0032981 ! mitochondrial respiratory chain complex I assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005747 ! mitochondrial respiratory chain complex I
+
+[Term]
+id: GO:0032984 ! macromolecular complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032991 ! macromolecular complex
+
+[Term]
+id: GO:0032985 ! protein-carbohydrate complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032992 ! protein-carbohydrate complex
+
+[Term]
+id: GO:0032986 ! protein-DNA complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032993 ! protein-DNA complex
+
+[Term]
+id: GO:0032987 ! protein-lipid complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0032988 ! ribonucleoprotein complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0030529 ! ribonucleoprotein complex
+
+[Term]
+id: GO:0032989 ! cellular component morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0005575 ! cellular_component
+
+[Term]
+id: GO:0032990 ! cell part morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0044464 ! cell part
 
 [Term]
 id: GO:0033013 ! tetrapyrrole metabolic process
@@ -11461,6 +12620,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:24921 ! isoquinoline alkaloid
 
 [Term]
+id: GO:0033108 ! mitochondrial respiratory chain complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005746 ! mitochondrial respiratory chain
+
+[Term]
 id: GO:0033156 ! oligogalacturonide transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:62533 ! oligogalacturonide
@@ -11571,6 +12735,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:27300 ! vitamin D
 
 [Term]
+id: GO:0033292 ! T-tubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030315 ! T-tubule
+
+[Term]
 id: GO:0033293 ! monocarboxylic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:35757 ! monocarboxylic acid anion
@@ -11589,6 +12758,11 @@ intersection_of: has_input CHEBI:49432 ! 5-hydroxyectoine
 id: GO:0033296 ! rhamnose binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26546 ! rhamnose
+
+[Term]
+id: GO:0033298 ! contractile vacuole organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000331 ! contractile vacuole
 
 [Term]
 id: GO:0033300 ! dehydroascorbic acid transporter activity
@@ -11777,6 +12951,21 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_intermediate CHEBI:17355 ! (S)-2-acetamido-6-oxopimelic acid
 intersection_of: has_intermediate CHEBI:23671 ! 2,6-diaminopimelate(2-)
 intersection_of: has_output CHEBI:32563 ! lysinate
+
+[Term]
+id: GO:0033363 ! secretory granule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030141 ! secretory granule
+
+[Term]
+id: GO:0033365 ! protein localization to organelle
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0043226 ! organelle
+
+[Term]
+id: GO:0033366 ! protein localization to secretory granule
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0030141 ! secretory granule
 
 [Term]
 id: GO:0033383 ! geranyl diphosphate metabolic process
@@ -12171,6 +13360,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:2580 ! unsaturated fatty acid anion
 
 [Term]
+id: GO:0033566 ! gamma-tubulin complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0000930 ! gamma-tubulin complex
+
+[Term]
 id: GO:0033574 ! response to testosterone stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:17347 ! testosterone
@@ -12237,6 +13431,31 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:30623 ! oxalate(2-)
 
 [Term]
+id: GO:0033614 ! chloroplast proton-transporting ATP synthase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045320 ! chloroplast proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0033616 ! plasma membrane proton-transporting ATP synthase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045260 ! plasma membrane proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0033618 ! plasma membrane respiratory chain complex IV assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045278 ! plasma membrane respiratory chain complex IV
+
+[Term]
+id: GO:0033627 ! cell adhesion mediated by integrin
+intersection_of: GO:0007155 ! cell adhesion
+intersection_of: has_participant GO:0008305 ! integrin complex
+
+[Term]
+id: GO:0033631 ! cell-cell adhesion mediated by integrin
+intersection_of: GO:0016337 ! cell-cell adhesion
+intersection_of: has_participant GO:0008305 ! integrin complex
+
+[Term]
 id: GO:0033691 ! sialic acid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:62944 ! sialic acid anion
@@ -12245,6 +13464,11 @@ intersection_of: has_input CHEBI:62944 ! sialic acid anion
 id: GO:0033700 ! phospholipid efflux
 intersection_of: GO:0006810 ! transport
 intersection_of: exports CHEBI:16247 ! phospholipid
+
+[Term]
+id: GO:0033750 ! ribosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005840 ! ribosome
 
 [Term]
 id: GO:0033762 ! response to glucagon stimulus
@@ -12275,6 +13499,11 @@ intersection_of: has_input CHEBI:37123 ! nucleoside bisphosphate
 id: GO:0033875 ! ribonucleoside bisphosphate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:61079 ! ribonucleoside bisphosphate
+
+[Term]
+id: GO:0033962 ! cytoplasmic mRNA processing body assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000932 ! cytoplasmic mRNA processing body
 
 [Term]
 id: GO:0033986 ! response to methanol
@@ -12335,6 +13564,16 @@ intersection_of: has_output CHEBI:64620 ! purine ribonucleoside bisphosphate
 id: GO:0034037 ! purine ribonucleoside bisphosphate catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:64620 ! purine ribonucleoside bisphosphate
+
+[Term]
+id: GO:0034063 ! stress granule assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0010494 ! cytoplasmic stress granule
+
+[Term]
+id: GO:0034067 ! protein localization to Golgi apparatus
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
 
 [Term]
 id: GO:0034077 ! butanediol metabolic process
@@ -12517,6 +13756,96 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:23824 ! diol
 
 [Term]
+id: GO:0034329 ! cell junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030054 ! cell junction
+
+[Term]
+id: GO:0034330 ! cell junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030054 ! cell junction
+
+[Term]
+id: GO:0034332 ! adherens junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005912 ! adherens junction
+
+[Term]
+id: GO:0034333 ! adherens junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005912 ! adherens junction
+
+[Term]
+id: GO:0034368 ! protein-lipid complex remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0034369 ! plasma lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034358 ! plasma lipoprotein particle
+
+[Term]
+id: GO:0034370 ! triglyceride-rich lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034385 ! triglyceride-rich lipoprotein particle
+
+[Term]
+id: GO:0034371 ! chylomicron remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0042627 ! chylomicron
+
+[Term]
+id: GO:0034372 ! very-low-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034361 ! very-low-density lipoprotein particle
+
+[Term]
+id: GO:0034373 ! intermediate-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034363 ! intermediate-density lipoprotein particle
+
+[Term]
+id: GO:0034374 ! low-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034362 ! low-density lipoprotein particle
+
+[Term]
+id: GO:0034375 ! high-density lipoprotein particle remodeling
+intersection_of: GO:0034367 ! macromolecular complex remodeling
+intersection_of: results_in_remodeling_of GO:0034364 ! high-density lipoprotein particle
+
+[Term]
+id: GO:0034377 ! plasma lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0034358 ! plasma lipoprotein particle
+
+[Term]
+id: GO:0034378 ! chylomicron assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0042627 ! chylomicron
+
+[Term]
+id: GO:0034379 ! very-low-density lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0034361 ! very-low-density lipoprotein particle
+
+[Term]
+id: GO:0034380 ! high-density lipoprotein particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0034364 ! high-density lipoprotein particle
+
+[Term]
+id: GO:0034389 ! lipid particle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005811 ! lipid particle
+
+[Term]
+id: GO:0034394 ! protein localization to cell surface
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0009986 ! cell surface
+
+[Term]
 id: GO:0034418 ! urate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:30848 ! urate(1-)
@@ -12530,6 +13859,16 @@ intersection_of: transports_or_maintains_localization_of CHEBI:17089 ! glycoprot
 id: GO:0034437 ! glycoprotein transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17089 ! glycoprotein
+
+[Term]
+id: GO:0034462 ! small-subunit processome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032040 ! small-subunit processome
+
+[Term]
+id: GO:0034463 ! 90S preribosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030686 ! 90S preribosome
 
 [Term]
 id: GO:0034465 ! response to carbon monoxide
@@ -12547,9 +13886,61 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:16634 ! raffinose
 
 [Term]
+id: GO:0034486 ! vacuolar transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: has_target_start_location GO:0005773 ! vacuole
+
+[Term]
+id: GO:0034487 ! vacuolar amino acid transmembrane transport
+intersection_of: GO:0003333 ! amino acid transmembrane transport
+intersection_of: results_in_transport_across GO:0005774 ! vacuolar membrane
+
+[Term]
+id: GO:0034496 ! multivesicular body membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0032585 ! multivesicular body membrane
+
+[Term]
+id: GO:0034497 ! protein localization to pre-autophagosomal structure
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000407 ! pre-autophagosomal structure
+
+[Term]
+id: GO:0034498 ! early endosome to Golgi transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
+intersection_of: has_target_start_location GO:0005769 ! early endosome
+
+[Term]
+id: GO:0034499 ! late endosome to Golgi transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
+intersection_of: has_target_start_location GO:0005770 ! late endosome
+
+[Term]
+id: GO:0034501 ! protein localization to kinetochore
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000776 ! kinetochore
+
+[Term]
+id: GO:0034502 ! protein localization to chromosome
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005694 ! chromosome
+
+[Term]
+id: GO:0034504 ! protein localization to nucleus
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005634 ! nucleus
+
+[Term]
 id: GO:0034516 ! response to vitamin B6
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:27306 ! vitamin B6
+
+[Term]
+id: GO:0034552 ! respiratory chain complex II assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045273 ! respiratory chain complex II
 
 [Term]
 id: GO:0034589 ! hydroxyproline transport
@@ -12570,6 +13961,11 @@ intersection_of: has_input CHEBI:15372 ! 5,6,7,8-tetrahydrobiopterin
 id: GO:0034618 ! arginine binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:32695 ! argininate
+
+[Term]
+id: GO:0034630 ! RITS complex localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0030958 ! RITS complex
 
 [Term]
 id: GO:0034632 ! retinol transporter activity
@@ -12600,6 +13996,12 @@ intersection_of: has_input CHEBI:49183 ! phosphatidylcholine
 id: GO:0034639 ! L-amino acid efflux transmembrane transporter activity
 intersection_of: GO:0015562 ! efflux transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15705 ! L-alpha-amino acid
+
+[Term]
+id: GO:0034642 ! mitochondrion migration along actin filament
+intersection_of: GO:0006928 ! cellular component movement
+intersection_of: results_in_transport_along GO:0005884 ! actin filament
+intersection_of: transports_or_maintains_localization_of GO:0005739 ! mitochondrion
 
 [Term]
 id: GO:0034650 ! cortisol metabolic process
@@ -12652,6 +14054,21 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26345 ! prostaglandins I
 
 [Term]
+id: GO:0034728 ! nucleosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000786 ! nucleosome
+
+[Term]
+id: GO:0034755 ! iron ion transmembrane transport
+intersection_of: GO:0006826 ! iron ion transport
+intersection_of: results_in_transport_across GO:0016020 ! membrane
+
+[Term]
+id: GO:0034769 ! basement membrane disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005604 ! basement membrane
+
+[Term]
 id: GO:0034775 ! glutathione transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16856 ! glutathione
@@ -12662,9 +14079,44 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:18295 ! histamine
 
 [Term]
+id: GO:0034982 ! mitochondrial protein processing
+intersection_of: GO:0016485 ! protein processing
+intersection_of: occurs_in GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0034994 ! microtubule organizing center attachment site organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0034992 ! microtubule organizing center attachment site
+
+[Term]
+id: GO:0035038 ! female pronucleus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0001939 ! female pronucleus
+
+[Term]
+id: GO:0035039 ! male pronucleus assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0001940 ! male pronucleus
+
+[Term]
+id: GO:0035063 ! nuclear speck organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016607 ! nuclear speck
+
+[Term]
 id: GO:0035075 ! response to ecdysone
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:16688 ! ecdysone
+
+[Term]
+id: GO:0035082 ! axoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005930 ! axoneme
+
+[Term]
+id: GO:0035083 ! cilium axoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0035085 ! cilium axoneme
 
 [Term]
 id: GO:0035091 ! phosphatidylinositol binding
@@ -12680,6 +14132,11 @@ intersection_of: has_input CHEBI:18723 ! nicotine
 id: GO:0035100 ! ecdysone binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16688 ! ecdysone
+
+[Term]
+id: GO:0035231 ! cytoneme assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0035230 ! cytoneme
 
 [Term]
 id: GO:0035238 ! vitamin A biosynthetic process
@@ -12777,6 +14234,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:17821 ! thymine
 
 [Term]
+id: GO:0035372 ! protein localization to microtubule
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005874 ! microtubule
+
+[Term]
 id: GO:0035373 ! chondroitin sulfate proteoglycan binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26349 ! proteochondroitin sulfate
@@ -12810,6 +14272,11 @@ intersection_of: has_participant CHEBI:51277 ! thioester
 id: GO:0035384 ! thioester biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:51277 ! thioester
+
+[Term]
+id: GO:0035418 ! protein localization to synapse
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0045202 ! synapse
 
 [Term]
 id: GO:0035428 ! hexose transmembrane transport
@@ -12907,6 +14374,12 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26398 ! purine ribonucleoside triphosphate
 
 [Term]
+id: GO:0035646 ! endosome to melanosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0042470 ! melanosome
+intersection_of: has_target_start_location GO:0005768 ! endosome
+
+[Term]
 id: GO:0035672 ! oligopeptide transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:25676 ! oligopeptide
@@ -12945,6 +14418,11 @@ intersection_of: has_input CHEBI:50091 ! S-nitrosoglutathione
 id: GO:0035731 ! dinitrosyl-iron complex binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:64609 ! dinitrosyl-iron complex
+
+[Term]
+id: GO:0035750 ! protein localization to myelin sheath abaxonal region
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0035748 ! myelin sheath abaxonal region
 
 [Term]
 id: GO:0035784 ! nickel cation homeostasis
@@ -13092,6 +14570,12 @@ intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:17263 ! estrone
 
 [Term]
+id: GO:0035964 ! COPI-coated vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: has_output GO:0030137 ! COPI-coated vesicle
+intersection_of: occurs_in GO:0000139 ! Golgi membrane
+
+[Term]
 id: GO:0035975 ! carbamoyl phosphate catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17672 ! carbamoyl  phosphate
@@ -13119,6 +14603,11 @@ intersection_of: has_output CHEBI:14314 ! D-glucose 6-phosphate
 intersection_of: has_output CHEBI:15946 ! D-fructose 6-phosphate
 
 [Term]
+id: GO:0036010 ! protein localization to endosome
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005768 ! endosome
+
+[Term]
 id: GO:0036039 ! curcumin metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:3962 ! curcumin
@@ -13137,6 +14626,31 @@ intersection_of: has_input CHEBI:57560 ! long-chain fatty acid anion
 id: GO:0036042 ! long-chain fatty acyl-CoA binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:33184 ! long-chain fatty acyl-CoA
+
+[Term]
+id: GO:0036051 ! protein localization to trailing edge
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0031254 ! trailing edge
+
+[Term]
+id: GO:0036052 ! protein localization to uropod
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0001931 ! uropod
+
+[Term]
+id: GO:0036058 ! filtration diaphragm assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0036056 ! filtration diaphragm
+
+[Term]
+id: GO:0036059 ! nephrocyte diaphragm assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005917 ! nephrocyte diaphragm
+
+[Term]
+id: GO:0036060 ! slit diaphragm assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0036057 ! slit diaphragm
 
 [Term]
 id: GO:0036079 ! purine nucleotide-sugar transport
@@ -13232,6 +14746,11 @@ intersection_of: has_input CHEBI:16345 ! 3-sulfino-L-alanine
 id: GO:0036146 ! cellular response to mycotoxin
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:25442 ! mycotoxin
+
+[Term]
+id: GO:0036181 ! protein localization to linear element
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0030998 ! linear element
 
 [Term]
 id: GO:0036182 ! asperthecin metabolic process
@@ -13359,6 +14878,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:65172 ! ximelagatran
 
 [Term]
+id: GO:0036309 ! protein localization to M-band
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0031430 ! M band
+
+[Term]
 id: GO:0036314 ! response to sterol
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:15889 ! sterol
@@ -13372,6 +14896,16 @@ intersection_of: has_input CHEBI:15889 ! sterol
 id: GO:0036346 ! cellular response to L-cysteine
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:17561 ! L-cysteine
+
+[Term]
+id: GO:0036371 ! protein localization to T-tubule
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0030315 ! T-tubule
+
+[Term]
+id: GO:0040023 ! establishment of nucleus localization
+intersection_of: GO:0051234 ! establishment of localization
+intersection_of: transports_or_maintains_localization_of GO:0005634 ! nucleus
 
 [Term]
 id: GO:0042046 ! W-molybdopterin cofactor metabolic process
@@ -13645,6 +15179,16 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:24431 ! chemical entity
 
 [Term]
+id: GO:0042244 ! spore wall assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0031160 ! spore wall
+
+[Term]
+id: GO:0042255 ! ribosome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005840 ! ribosome
+
+[Term]
 id: GO:0042277 ! peptide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16670 ! peptide
@@ -13710,6 +15254,11 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:29028 ! glucobrassicin
 
 [Term]
+id: GO:0042348 ! NF-kappaB import into nucleus
+intersection_of: GO:0006606 ! protein import into nucleus
+intersection_of: transports_or_maintains_localization_of GO:0071159 ! NF-kappaB complex
+
+[Term]
 id: GO:0042350 ! GDP-L-fucose biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:17009 ! GDP-L-fucose
@@ -13735,7 +15284,7 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:45931 ! thiamine(1+) diphosphate(1-)
 
 [Term]
-id: GO:0042358 ! thiamin diphosphate catabolic process
+id: GO:0042358 ! thiamine diphosphate catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:45931 ! thiamine(1+) diphosphate(1-)
 
@@ -13803,6 +15352,11 @@ intersection_of: has_input CHEBI:18067 ! phylloquinone
 id: GO:0042377 ! vitamin K catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:28384 ! vitamin K
+
+[Term]
+id: GO:0042384 ! cilium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005929 ! cilium
 
 [Term]
 id: GO:0042396 ! phosphagen biosynthetic process
@@ -14071,6 +15625,11 @@ intersection_of: has_input CHEBI:16240 ! hydrogen peroxide
 id: GO:0042544 ! melibiose biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:28053 ! melibiose
+
+[Term]
+id: GO:0042546 ! cell wall biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0005618 ! cell wall
 
 [Term]
 id: GO:0042558 ! pteridine-containing compound metabolic process
@@ -14793,6 +16352,13 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:25000 ! lactone
 
 [Term]
+id: GO:0043001 ! Golgi to plasma membrane protein transport
+intersection_of: GO:0015031 ! protein transport
+intersection_of: GO:0016192 ! vesicle-mediated transport
+intersection_of: has_target_end_location GO:0005886 ! plasma membrane
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
 id: GO:0043043 ! peptide biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16670 ! peptide
@@ -14801,6 +16367,16 @@ intersection_of: has_output CHEBI:16670 ! peptide
 id: GO:0043048 ! dolichyl monophosphate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16214 ! dolichyl phosphate
+
+[Term]
+id: GO:0043063 ! intercellular bridge organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045171 ! intercellular bridge
+
+[Term]
+id: GO:0043064 ! flagellum organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0019861 ! flagellum
 
 [Term]
 id: GO:0043090 ! amino acid import
@@ -14828,6 +16404,21 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
 
 [Term]
+id: GO:0043149 ! stress fiber assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0001725 ! stress fiber
+
+[Term]
+id: GO:0043163 ! cell envelope organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030313 ! cell envelope
+
+[Term]
+id: GO:0043164 ! Gram-negative-bacterium-type cell wall biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0009276 ! Gram-negative-bacterium-type cell wall
+
+[Term]
 id: GO:0043167 ! ion binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24870 ! ion
@@ -14845,7 +16436,7 @@ intersection_of: has_input CHEBI:36916 ! cation
 [Term]
 id: GO:0043170 ! macromolecule metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:33694 ! biomacromolecule
+intersection_of: has_participant CHEBI:33839 ! macromolecule
 
 [Term]
 id: GO:0043171 ! peptide catabolic process
@@ -14883,6 +16474,12 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25017 ! leucine
 
 [Term]
+id: GO:0043206 ! extracellular fibril organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: occurs_in GO:0031012 ! extracellular matrix
+intersection_of: results_in_organization_of GO:0043205 ! fibril
+
+[Term]
 id: GO:0043208 ! glycosphingolipid binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24402 ! glycosphingolipid
@@ -14901,6 +16498,16 @@ intersection_of: transports_or_maintains_localization_of CHEBI:48081 ! bacterioc
 id: GO:0043215 ! daunorubicin transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:41977 ! daunorubicin
+
+[Term]
+id: GO:0043241 ! protein complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0043234 ! protein complex
+
+[Term]
+id: GO:0043248 ! proteasome assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000502 ! proteasome complex
 
 [Term]
 id: GO:0043278 ! response to morphine
@@ -14936,6 +16543,11 @@ intersection_of: has_input CHEBI:53183 ! apo carotenoid
 id: GO:0043295 ! glutathione binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16856 ! glutathione
+
+[Term]
+id: GO:0043297 ! apical junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0043296 ! apical junction complex
 
 [Term]
 id: GO:0043325 ! phosphatidylinositol-3,4-bisphosphate binding
@@ -15083,6 +16695,17 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:22339 ! alkyne
 
 [Term]
+id: GO:0043461 ! proton-transporting ATP synthase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0045259 ! proton-transporting ATP synthase complex
+
+[Term]
+id: GO:0043485 ! endosome to pigment granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0048770 ! pigment granule
+intersection_of: has_target_start_location GO:0005768 ! endosome
+
+[Term]
 id: GO:0043531 ! ADP binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16761 ! ADP
@@ -15106,6 +16729,26 @@ intersection_of: has_participant CHEBI:25372 ! molybdopterin cofactor
 id: GO:0043546 ! molybdopterin cofactor binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:25372 ! molybdopterin cofactor
+
+[Term]
+id: GO:0043574 ! peroxisomal transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0043578 ! nuclear matrix organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016363 ! nuclear matrix
+
+[Term]
+id: GO:0043579 ! elaioplast organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0009545 ! elaioplast
+
+[Term]
+id: GO:0043580 ! periplasmic space organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042597 ! periplasmic space
 
 [Term]
 id: GO:0043602 ! nitrate catabolic process
@@ -15151,6 +16794,11 @@ intersection_of: has_output CHEBI:35194 ! isoprene
 id: GO:0043613 ! isoprene catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:35194 ! isoprene
+
+[Term]
+id: GO:0043622 ! cortical microtubule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0055028 ! cortical microtubule
 
 [Term]
 id: GO:0043627 ! response to estrogen stimulus
@@ -15238,6 +16886,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:30245 ! linoleate
 
 [Term]
+id: GO:0043682 ! copper-transporting ATPase activity
+intersection_of: GO:0042626 ! ATPase activity, coupled to transmembrane movement of substances
+intersection_of: transports_or_maintains_localization_of CHEBI:23378 ! copper cation
+
+[Term]
 id: GO:0043692 ! monoterpene metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:35187 ! monoterpene
@@ -15273,6 +16926,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:45906 ! suramin
 
 [Term]
+id: GO:0043933 ! macromolecular complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0032991 ! macromolecular complex
+
+[Term]
 id: GO:0044042 ! glucan metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:37163 ! glucan
@@ -15291,6 +16949,21 @@ intersection_of: has_output CHEBI:26835 ! sulfur molecular entity
 id: GO:0044273 ! sulfur compound catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:26835 ! sulfur molecular entity
+
+[Term]
+id: GO:0044376 ! RNA polymerase II complex localization to nucleus
+intersection_of: GO:0051170 ! nuclear import
+intersection_of: imports GO:0005665 ! DNA-directed RNA polymerase II, core complex
+
+[Term]
+id: GO:0044379 ! protein localization to actin cortical patch
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0030479 ! actin cortical patch
+
+[Term]
+id: GO:0044380 ! protein localization to cytoskeleton
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005856 ! cytoskeleton
 
 [Term]
 id: GO:0044539 ! long-chain fatty acid import
@@ -15318,6 +16991,72 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:35741 ! glycerolipid
 
 [Term]
+id: GO:0045022 ! early endosome to late endosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005770 ! late endosome
+intersection_of: has_target_start_location GO:0005769 ! early endosome
+
+[Term]
+id: GO:0045026 ! plasma membrane fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0045033 ! peroxisome inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0045036 ! protein targeting to chloroplast
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0009507 ! chloroplast
+
+[Term]
+id: GO:0045037 ! protein import into chloroplast stroma
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0009570 ! chloroplast stroma
+
+[Term]
+id: GO:0045038 ! protein import into chloroplast thylakoid membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0009535 ! chloroplast thylakoid membrane
+
+[Term]
+id: GO:0045039 ! protein import into mitochondrial inner membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005743 ! mitochondrial inner membrane
+
+[Term]
+id: GO:0045040 ! protein import into mitochondrial outer membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005741 ! mitochondrial outer membrane
+
+[Term]
+id: GO:0045041 ! protein import into mitochondrial intermembrane space
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005758 ! mitochondrial intermembrane space
+
+[Term]
+id: GO:0045046 ! protein import into peroxisome membrane
+intersection_of: GO:0017038 ! protein import
+intersection_of: has_target_end_location GO:0005778 ! peroxisomal membrane
+
+[Term]
+id: GO:0045047 ! protein targeting to ER
+intersection_of: GO:0006605 ! protein targeting
+intersection_of: has_target_end_location GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0045104 ! intermediate filament cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045111 ! intermediate filament cytoskeleton
+
+[Term]
+id: GO:0045109 ! intermediate filament organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005882 ! intermediate filament
+
+[Term]
 id: GO:0045117 ! azole transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:68452 ! azole
@@ -15343,9 +17082,55 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:15688 ! acetoin
 
 [Term]
+id: GO:0045186 ! zonula adherens assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005915 ! zonula adherens
+
+[Term]
+id: GO:0045214 ! sarcomere organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030017 ! sarcomere
+
+[Term]
+id: GO:0045216 ! cell-cell junction organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005911 ! cell-cell junction
+
+[Term]
+id: GO:0045229 ! external encapsulating structure organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030312 ! external encapsulating structure
+
+[Term]
+id: GO:0045230 ! capsule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0042603 ! capsule
+
+[Term]
+id: GO:0045231 ! slime layer organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030114 ! slime layer
+
+[Term]
+id: GO:0045232 ! S-layer organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030115 ! S-layer
+
+[Term]
 id: GO:0045312 ! nor-spermidine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16841 ! bis(3-aminopropyl)amine
+
+[Term]
+id: GO:0045313 ! rhabdomere membrane biogenesis
+intersection_of: GO:0044085 ! cellular component biogenesis
+intersection_of: has_output GO:0033583 ! rhabdomere membrane
+
+[Term]
+id: GO:0045324 ! late endosome to vacuole transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005773 ! vacuole
+intersection_of: has_target_start_location GO:0005770 ! late endosome
 
 [Term]
 id: GO:0045329 ! carnitine biosynthetic process
@@ -15411,6 +17196,17 @@ intersection_of: has_input CHEBI:16236 ! ethanol
 id: GO:0045472 ! response to ether
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25698 ! ether
+
+[Term]
+id: GO:0045478 ! fusome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045169 ! fusome
+
+[Term]
+id: GO:0045479 ! vesicle targeting to fusome
+intersection_of: GO:0006903 ! vesicle targeting
+intersection_of: has_target_end_location GO:0045169 ! fusome
+intersection_of: transports_or_maintains_localization_of GO:0031982 ! vesicle
 
 [Term]
 id: GO:0045487 ! gibberellin catabolic process
@@ -16123,7 +17919,7 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:18391 ! D-gluconate
 
 [Term]
-id: GO:0046179 ! D-dehydro-D-gluconate biosynthetic process
+id: GO:0046179 ! keto-D-gluconate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:24966 ! keto-D-gluconate
 
@@ -17442,7 +19238,7 @@ intersection_of: has_input CHEBI:22632 ! arsenic molecular entity
 [Term]
 id: GO:0046686 ! response to cadmium ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:48775 ! cadmium(2+)
+intersection_of: has_input CHEBI:63063 ! cadmium cation
 
 [Term]
 id: GO:0046687 ! response to chromate
@@ -17457,7 +19253,7 @@ intersection_of: has_input CHEBI:23378 ! copper cation
 [Term]
 id: GO:0046689 ! response to mercury ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:16793 ! mercury(2+)
+intersection_of: has_input CHEBI:25197 ! mercury cation
 
 [Term]
 id: GO:0046690 ! response to tellurium ion
@@ -17555,9 +19351,19 @@ intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:30623 ! oxalate(2-)
 
 [Term]
+id: GO:0046794 ! virion transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0019012 ! virion
+
+[Term]
 id: GO:0046836 ! glycolipid transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33563 ! glycolipid
+
+[Term]
+id: GO:0046847 ! filopodium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030175 ! filopodium
 
 [Term]
 id: GO:0046848 ! hydroxyapatite binding
@@ -17587,7 +19393,7 @@ intersection_of: transports_or_maintains_localization_of CHEBI:23044 ! carotenoi
 [Term]
 id: GO:0046870 ! cadmium ion binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:48775 ! cadmium(2+)
+intersection_of: has_input CHEBI:63063 ! cadmium cation
 
 [Term]
 id: GO:0046871 ! N-acetylgalactosamine binding
@@ -17633,6 +19439,13 @@ intersection_of: has_input CHEBI:60579 ! calcium oxalate
 id: GO:0046906 ! tetrapyrrole binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26932 ! tetrapyrrole
+
+[Term]
+id: GO:0046907 ! intracellular transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0044464 ! cell part
+intersection_of: has_target_start_location GO:0044464 ! cell part
+intersection_of: results_in_transport_across GO:0044464 ! cell part
 
 [Term]
 id: GO:0046914 ! transition metal ion binding
@@ -17690,6 +19503,24 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:17980 ! 3'-phospho-5'-adenylyl sulfate
 
 [Term]
+id: GO:0046967 ! cytosol to ER transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005783 ! endoplasmic reticulum
+intersection_of: has_target_start_location GO:0005829 ! cytosol
+
+[Term]
+id: GO:0047496 ! vesicle transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_along GO:0005874 ! microtubule
+intersection_of: transports_or_maintains_localization_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0047497 ! mitochondrion transport along microtubule
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_along GO:0005874 ! microtubule
+intersection_of: transports_or_maintains_localization_of GO:0005739 ! mitochondrion
+
+[Term]
 id: GO:0048028 ! galacturonan binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:24174 ! galacturonan
@@ -17740,9 +19571,44 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16389 ! ubiquinones
 
 [Term]
+id: GO:0048041 ! focal adhesion assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005925 ! focal adhesion
+
+[Term]
 id: GO:0048107 ! 4-amino-3-isothiazolidinone biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:64599 ! 4-amino-3-isothiazolidinone
+
+[Term]
+id: GO:0048193 ! Golgi vesicle transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005798 ! Golgi-associated vesicle
+
+[Term]
+id: GO:0048194 ! Golgi vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: has_output GO:0005798 ! Golgi-associated vesicle
+intersection_of: occurs_in GO:0000139 ! Golgi membrane
+
+[Term]
+id: GO:0048199 ! vesicle targeting, to, from or within Golgi
+intersection_of: GO:0006903 ! vesicle targeting
+intersection_of: results_in_transport_to_from_or_in GO:0005794 ! Golgi apparatus
+intersection_of: transports_or_maintains_localization_of GO:0005798 ! Golgi-associated vesicle
+
+[Term]
+id: GO:0048201 ! vesicle targeting, plasma membrane to endosome
+intersection_of: GO:0006903 ! vesicle targeting
+intersection_of: has_target_end_location GO:0010008 ! endosome membrane
+intersection_of: has_target_start_location GO:0005886 ! plasma membrane
+intersection_of: transports_or_maintains_localization_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0048227 ! plasma membrane to endosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005768 ! endosome
+intersection_of: has_target_start_location GO:0005886 ! plasma membrane
 
 [Term]
 id: GO:0048241 ! epinephrine transport
@@ -17765,6 +19631,53 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:18262 ! laurate
 
 [Term]
+id: GO:0048268 ! clathrin coat assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030118 ! clathrin coat
+
+[Term]
+id: GO:0048279 ! vesicle fusion with endoplasmic reticulum
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005783 ! endoplasmic reticulum
+intersection_of: results_in_fusion_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0048280 ! vesicle fusion with Golgi apparatus
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005794 ! Golgi apparatus
+intersection_of: results_in_fusion_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0048284 ! organelle fusion
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0048285 ! organelle fission
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fission_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0048309 ! endoplasmic reticulum inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0048310 ! nucleus inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0048313 ! Golgi inheritance
+intersection_of: GO:0048308 ! organelle inheritance
+intersection_of: results_in_distribution_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0048469 ! cell maturation
+intersection_of: GO:0021700 ! developmental maturation
+intersection_of: results_in_maturation_of GO:0005623 ! cell
+
+[Term]
 id: GO:0048473 ! D-methionine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:32637 ! D-methioninate
@@ -17775,14 +19688,54 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16867 ! D-methionine
 
 [Term]
+id: GO:0048489 ! synaptic vesicle transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0008021 ! synaptic vesicle
+
+[Term]
+id: GO:0048499 ! synaptic vesicle membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030672 ! synaptic vesicle membrane
+
+[Term]
 id: GO:0048545 ! response to steroid hormone stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26764 ! steroid hormone
 
 [Term]
+id: GO:0048564 ! photosystem I assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0009522 ! photosystem I
+
+[Term]
+id: GO:0048753 ! pigment granule organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0048812 ! neuron projection morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0043005 ! neuron projection
+
+[Term]
+id: GO:0048813 ! dendrite morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0030425 ! dendrite
+
+[Term]
+id: GO:0048858 ! cell projection morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0042995 ! cell projection
+
+[Term]
 id: GO:0048878 ! chemical homeostasis
 intersection_of: GO:0042592 ! homeostatic process
 intersection_of: regulates_level_of CHEBI:24431 ! chemical entity
+
+[Term]
+id: GO:0050000 ! chromosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005694 ! chromosome
 
 [Term]
 id: GO:0050427 ! 3'-phosphoadenosine 5'-phosphosulfate metabolic process
@@ -17935,6 +19888,11 @@ intersection_of: GO:0048878 ! chemical homeostasis
 intersection_of: regulates_level_of CHEBI:24870 ! ion
 
 [Term]
+id: GO:0050808 ! synapse organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0045202 ! synapse
+
+[Term]
 id: GO:0050809 ! diazepam binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:49575 ! diazepam
@@ -18011,6 +19969,16 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:26469 ! quaternary nitrogen compound
 
 [Term]
+id: GO:0051017 ! actin filament bundle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032432 ! actin filament bundle
+
+[Term]
+id: GO:0051026 ! chiasma assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005712 ! chiasma
+
+[Term]
 id: GO:0051027 ! DNA transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:16991 ! deoxyribonucleic acid
@@ -18084,6 +20052,11 @@ intersection_of: has_participant CHEBI:61747 ! 4,6-O-[(1R)-1-carboxyethylidene]-
 id: GO:0051072 ! 4,6-pyruvylated galactose residue biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:61747 ! 4,6-O-[(1R)-1-carboxyethylidene]-D-galactose
+
+[Term]
+id: GO:0051081 ! nuclear envelope disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005635 ! nuclear envelope
 
 [Term]
 id: GO:0051121 ! hepoxilin metabolic process
@@ -18166,6 +20139,23 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:27354 ! xylulose 5-phosphate
 
 [Term]
+id: GO:0051168 ! nuclear export
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005737 ! cytoplasm
+intersection_of: has_target_start_location GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051169 ! nuclear transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_to_from_or_in GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051170 ! nuclear import
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005634 ! nucleus
+intersection_of: has_target_start_location GO:0005737 ! cytoplasm
+
+[Term]
 id: GO:0051183 ! vitamin transporter activity
 intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:33229 ! vitamin
@@ -18196,6 +20186,21 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:35172 ! vanadium cation
 
 [Term]
+id: GO:0051225 ! spindle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0051230 ! spindle disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0051255 ! spindle midzone assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0051233 ! spindle midzone
+
+[Term]
 id: GO:0051273 ! beta-glucan metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28793 ! beta-D-glucan
@@ -18211,9 +20216,29 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:28793 ! beta-D-glucan
 
 [Term]
+id: GO:0051276 ! chromosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005694 ! chromosome
+
+[Term]
 id: GO:0051287 ! NAD binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:13389 ! NAD
+
+[Term]
+id: GO:0051292 ! nuclear pore complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0051297 ! centrosome organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005813 ! centrosome
+
+[Term]
+id: GO:0051300 ! spindle pole body organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005816 ! spindle pole body
 
 [Term]
 id: GO:0051378 ! serotonin binding
@@ -18234,6 +20259,16 @@ intersection_of: has_input CHEBI:33569 ! noradrenaline
 id: GO:0051381 ! histamine binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:18295 ! histamine
+
+[Term]
+id: GO:0051382 ! kinetochore assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000776 ! kinetochore
+
+[Term]
+id: GO:0051383 ! kinetochore organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000776 ! kinetochore
 
 [Term]
 id: GO:0051384 ! response to glucocorticoid stimulus
@@ -18264,6 +20299,12 @@ intersection_of: has_input CHEBI:17650 ! cortisol
 id: GO:0051458 ! corticotropin secretion
 intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:3892 ! corticotropin
+
+[Term]
+id: GO:0051469 ! vesicle fusion with vacuole
+intersection_of: GO:0009987 ! cellular process
+intersection_of: results_in_fusion_of GO:0005773 ! vacuole
+intersection_of: results_in_fusion_of GO:0031982 ! vesicle
 
 [Term]
 id: GO:0051470 ! ectoine transport
@@ -18408,7 +20449,7 @@ intersection_of: has_input CHEBI:17489 ! 3',5'-cyclic AMP
 [Term]
 id: GO:0051592 ! response to calcium ion
 intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:39124 ! calcium ion
+intersection_of: has_input CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0051593 ! response to folic acid
@@ -18429,6 +20470,11 @@ intersection_of: has_input CHEBI:17158 ! methylglyoxal
 id: GO:0051597 ! response to methylmercury
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:49747 ! methylmercury(1+)
+
+[Term]
+id: GO:0051601 ! exocyst localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0000145 ! exocyst
 
 [Term]
 id: GO:0051608 ! histamine transport
@@ -18459,6 +20505,66 @@ intersection_of: imports CHEBI:33568 ! adrenaline
 id: GO:0051630 ! acetylcholine uptake
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:15355 ! acetylcholine
+
+[Term]
+id: GO:0051640 ! organelle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0043226 ! organelle
+
+[Term]
+id: GO:0051642 ! centrosome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005813 ! centrosome
+
+[Term]
+id: GO:0051644 ! plastid localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0009536 ! plastid
+
+[Term]
+id: GO:0051645 ! Golgi localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0051646 ! mitochondrion localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005739 ! mitochondrion
+
+[Term]
+id: GO:0051647 ! nucleus localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005634 ! nucleus
+
+[Term]
+id: GO:0051648 ! vesicle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0031982 ! vesicle
+
+[Term]
+id: GO:0051653 ! spindle localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005819 ! spindle
+
+[Term]
+id: GO:0051664 ! nuclear pore localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005643 ! nuclear pore
+
+[Term]
+id: GO:0051665 ! membrane raft localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0045121 ! membrane raft
+
+[Term]
+id: GO:0051666 ! actin cortical patch localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0030479 ! actin cortical patch
+
+[Term]
+id: GO:0051674 ! localization of cell
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005623 ! cell
 
 [Term]
 id: GO:0051676 ! pullulan metabolic process
@@ -18571,6 +20677,21 @@ intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:16893 ! sphinganine 1-phosphate
 
 [Term]
+id: GO:0051875 ! pigment granule localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0048770 ! pigment granule
+
+[Term]
+id: GO:0051878 ! lateral element assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000800 ! lateral element
+
+[Term]
+id: GO:0051904 ! pigment granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0048770 ! pigment granule
+
+[Term]
 id: GO:0051937 ! catecholamine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:33567 ! catecholamine
@@ -18633,6 +20754,11 @@ intersection_of: has_input CHEBI:26115 ! phytoalexin
 id: GO:0052317 ! camalexin metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:22990 ! camalexin
+
+[Term]
+id: GO:0052543 ! callose deposition in cell wall
+intersection_of: GO:0052545 ! callose localization
+intersection_of: has_target_end_location GO:0005618 ! cell wall
 
 [Term]
 id: GO:0052573 ! UDP-D-galactose metabolic process
@@ -18830,22 +20956,22 @@ intersection_of: regulates_level_of CHEBI:60242 ! monovalent inorganic cation
 [Term]
 id: GO:0055069 ! zinc ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:27365 ! zinc ion
+intersection_of: regulates_level_of CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0055073 ! cadmium ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:48775 ! cadmium(2+)
+intersection_of: regulates_level_of CHEBI:63063 ! cadmium cation
 
 [Term]
 id: GO:0055074 ! calcium ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:39124 ! calcium ion
+intersection_of: regulates_level_of CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0055079 ! aluminum ion homeostasis
 intersection_of: GO:0048878 ! chemical homeostasis
-intersection_of: regulates_level_of CHEBI:60272 ! aluminium ion
+intersection_of: regulates_level_of CHEBI:63062 ! aluminium cation
 
 [Term]
 id: GO:0055080 ! cation homeostasis
@@ -18861,6 +20987,11 @@ intersection_of: regulates_level_of CHEBI:22563 ! anion
 id: GO:0055082 ! cellular chemical homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
 intersection_of: regulates_level_of CHEBI:24431 ! chemical entity
+
+[Term]
+id: GO:0055085 ! transmembrane transport
+intersection_of: GO:0006810 ! transport
+intersection_of: results_in_transport_across GO:0016020 ! membrane
 
 [Term]
 id: GO:0055088 ! lipid homeostasis
@@ -18893,6 +21024,18 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:6495 ! lipoprotein
 
 [Term]
+id: GO:0055107 ! Golgi to secretory granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0030141 ! secretory granule
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0055108 ! Golgi to transport vesicle transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0030133 ! transport vesicle
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
 id: GO:0055129 ! L-proline biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:32862 ! L-prolinate
@@ -18908,6 +21051,31 @@ intersection_of: GO:0006810 ! transport
 intersection_of: exports CHEBI:23378 ! copper cation
 
 [Term]
+id: GO:0060052 ! neurofilament cytoskeleton organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0060053 ! neurofilament cytoskeleton
+
+[Term]
+id: GO:0060151 ! peroxisome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0060152 ! microtubule-based peroxisome localization
+intersection_of: GO:0007017 ! microtubule-based process
+intersection_of: transports_or_maintains_localization_of GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0060271 ! cilium morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0005929 ! cilium
+
+[Term]
+id: GO:0060286 ! flagellar cell motility
+intersection_of: GO:0048870 ! cell motility
+intersection_of: has_participant GO:0019861 ! flagellum
+
+[Term]
 id: GO:0060356 ! leucine import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:25017 ! leucine
@@ -18918,6 +21086,11 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:35274 ! ammonium ion
 
 [Term]
+id: GO:0060402 ! calcium ion transport into cytosol
+intersection_of: GO:0006816 ! calcium ion transport
+intersection_of: has_target_end_location GO:0005829 ! cytosol
+
+[Term]
 id: GO:0060416 ! response to growth hormone stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:37845 ! growth hormone
@@ -18926,6 +21099,16 @@ intersection_of: has_input CHEBI:37845 ! growth hormone
 id: GO:0060992 ! response to fungicide
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:24127 ! fungicide
+
+[Term]
+id: GO:0060997 ! dendritic spine morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0043197 ! dendritic spine
+
+[Term]
+id: GO:0061024 ! membrane organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0016020 ! membrane
 
 [Term]
 id: GO:0061370 ! testosterone biosynthetic process
@@ -18953,6 +21136,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:18019 ! L-lysine
 
 [Term]
+id: GO:0061462 ! protein localization to lysosome
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005764 ! lysosome
+
+[Term]
 id: GO:0061476 ! response to anticoagulant
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:50249 ! anticoagulant
@@ -18973,6 +21161,32 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:59897 ! reverse transcriptase inhibitor
 
 [Term]
+id: GO:0061502 ! early endosome to recycling endosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0055037 ! recycling endosome
+intersection_of: has_target_start_location GO:0005769 ! early endosome
+
+[Term]
+id: GO:0065003 ! macromolecular complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032991 ! macromolecular complex
+
+[Term]
+id: GO:0065004 ! protein-DNA complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032993 ! protein-DNA complex
+
+[Term]
+id: GO:0065005 ! protein-lipid complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0065006 ! protein-carbohydrate complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0032992 ! protein-carbohydrate complex
+
+[Term]
 id: GO:0070025 ! carbon monoxide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17245 ! carbon monoxide
@@ -18988,9 +21202,29 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:28757 ! fructose
 
 [Term]
+id: GO:0070070 ! proton-transporting V-type ATPase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0033176 ! proton-transporting V-type ATPase complex
+
+[Term]
+id: GO:0070071 ! proton-transporting two-sector ATPase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0016469 ! proton-transporting two-sector ATPase complex
+
+[Term]
+id: GO:0070072 ! vacuolar proton-transporting V-type ATPase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0016471 ! vacuolar proton-transporting V-type ATPase complex
+
+[Term]
 id: GO:0070095 ! fructose-6-phosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:15946 ! D-fructose 6-phosphate
+
+[Term]
+id: GO:0070096 ! mitochondrial outer membrane translocase complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005742 ! mitochondrial outer membrane translocase complex
 
 [Term]
 id: GO:0070135 ! beta-1,2-oligomannoside metabolic process
@@ -19001,6 +21235,11 @@ intersection_of: has_participant CHEBI:59573 ! (1->2)-beta-D-mannan
 id: GO:0070136 ! beta-1,2-oligomannoside biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:59573 ! (1->2)-beta-D-mannan
+
+[Term]
+id: GO:0070142 ! synaptic vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: has_output GO:0008021 ! synaptic vesicle
 
 [Term]
 id: GO:0070178 ! D-serine metabolic process
@@ -19016,6 +21255,31 @@ intersection_of: has_output CHEBI:16523 ! D-serine
 id: GO:0070189 ! kynurenine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:28683 ! kynurenine
+
+[Term]
+id: GO:0070193 ! synaptonemal complex organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0070194 ! synaptonemal complex disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0000795 ! synaptonemal complex
+
+[Term]
+id: GO:0070196 ! eukaryotic translation initiation factor 3 complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005852 ! eukaryotic translation initiation factor 3 complex
+
+[Term]
+id: GO:0070198 ! protein localization to chromosome, telomeric region
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000781 ! chromosome, telomeric region
+
+[Term]
+id: GO:0070217 ! transcription factor TFIIIB complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0000126 ! transcription factor TFIIIB complex
 
 [Term]
 id: GO:0070218 ! sulfide ion homeostasis
@@ -19058,6 +21322,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16709 ! pyridoxine
 
 [Term]
+id: GO:0070286 ! axonemal dynein complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005858 ! axonemal dynein complex
+
+[Term]
 id: GO:0070291 ! N-acylethanolamine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:52640 ! N-acylethanolamine
@@ -19066,6 +21335,11 @@ intersection_of: has_participant CHEBI:52640 ! N-acylethanolamine
 id: GO:0070292 ! N-acylphosphatidylethanolamine metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:61232 ! N-acylphosphatidylethanolamine
+
+[Term]
+id: GO:0070296 ! sarcoplasmic reticulum calcium ion transport
+intersection_of: GO:0006816 ! calcium ion transport
+intersection_of: results_in_transport_to_from_or_in GO:0016529 ! sarcoplasmic reticulum
 
 [Term]
 id: GO:0070300 ! phosphatidic acid binding
@@ -19173,6 +21447,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:50699 ! oligosaccharide
 
 [Term]
+id: GO:0070499 ! exosporium assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0043592 ! exosporium
+
+[Term]
 id: GO:0070500 ! poly-gamma-glutamate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:61444 ! gamma-poly(glutamate) polymer
@@ -19190,7 +21469,7 @@ intersection_of: imports CHEBI:16113 ! cholesterol
 [Term]
 id: GO:0070509 ! calcium ion import
 intersection_of: GO:0006810 ! transport
-intersection_of: imports CHEBI:39124 ! calcium ion
+intersection_of: imports CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0070538 ! oleic acid binding
@@ -19228,9 +21507,14 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:61265 ! beta-D-glucopyranosyloxymethyluracil residue
 
 [Term]
+id: GO:0070585 ! protein localization to mitochondrion
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005739 ! mitochondrion
+
+[Term]
 id: GO:0070588 ! calcium ion transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
-intersection_of: transports_or_maintains_localization_of CHEBI:39124 ! calcium ion
+intersection_of: transports_or_maintains_localization_of CHEBI:39123 ! calcium cation
 
 [Term]
 id: GO:0070595 ! (1->3)-alpha-glucan metabolic process
@@ -19291,6 +21575,16 @@ intersection_of: has_participant CHEBI:33237 ! vitamin D4
 id: GO:0070642 ! vitamin D5 metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:33279 ! vitamin D5
+
+[Term]
+id: GO:0070649 ! formin-nucleated actin cable assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0070648 ! formin-nucleated actin cable
+
+[Term]
+id: GO:0070676 ! intralumenal vesicle formation
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: occurs_in GO:0010008 ! endosome membrane
 
 [Term]
 id: GO:0070679 ! inositol 1,4,5 trisphosphate binding
@@ -19411,6 +21705,16 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:58442 ! pyrroloquinoline quinone(3-)
 
 [Term]
+id: GO:0070972 ! protein localization to endoplasmic reticulum
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:0070973 ! protein localization to endoplasmic reticulum exit site
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0070971 ! endoplasmic reticulum exit site
+
+[Term]
 id: GO:0070980 ! biphenyl catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17097 ! biphenyl
@@ -19429,6 +21733,21 @@ intersection_of: has_participant CHEBI:32650 ! L-asparaginate
 id: GO:0071106 ! adenosine 3',5'-bisphosphate transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:37240 ! adenosine 3',5'-bisphosphate
+
+[Term]
+id: GO:0071167 ! ribonucleoprotein complex import into nucleus
+intersection_of: GO:0051170 ! nuclear import
+intersection_of: transports_or_maintains_localization_of GO:0030529 ! ribonucleoprotein complex
+
+[Term]
+id: GO:0071168 ! protein localization to chromatin
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000785 ! chromatin
+
+[Term]
+id: GO:0071205 ! protein localization to juxtaparanode region of axon
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0044224 ! juxtaparanode region of axon
 
 [Term]
 id: GO:0071213 ! cellular response to 1-aminocyclopropane-1-carboxylic acid
@@ -19938,7 +22257,7 @@ intersection_of: has_input CHEBI:26764 ! steroid hormone
 [Term]
 id: GO:0071384 ! cellular response to corticosteroid stimulus
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
-intersection_of: has_input CHEBI:50858 ! corticosteroid
+intersection_of: has_input CHEBI:36699 ! corticosteroid hormone
 
 [Term]
 id: GO:0071385 ! cellular response to glucocorticoid stimulus
@@ -20091,6 +22410,12 @@ intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:18295 ! histamine
 
 [Term]
+id: GO:0071426 ! ribonucleoprotein complex export from nucleus
+intersection_of: GO:0006810 ! transport
+intersection_of: exports GO:0030529 ! ribonucleoprotein complex
+intersection_of: has_target_start_location GO:0005634 ! nucleus
+
+[Term]
 id: GO:0071435 ! potassium ion export
 intersection_of: GO:0006810 ! transport
 intersection_of: exports CHEBI:29103 ! potassium(1+)
@@ -20141,6 +22466,11 @@ intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:25812 ! ozone
 
 [Term]
+id: GO:0071459 ! protein localization to chromosome, centromeric region
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000775 ! chromosome, centromeric region
+
+[Term]
 id: GO:0071462 ! cellular response to water stimulus
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:15377 ! water
@@ -20181,6 +22511,11 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:21860 ! L-pyrrolysine
 
 [Term]
+id: GO:0071539 ! protein localization to centrosome
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005813 ! centrosome
+
+[Term]
 id: GO:0071543 ! diphosphoinositol polyphosphate metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:64604 ! diphosphoinositol polyphosphate
@@ -20206,6 +22541,16 @@ intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:41879 ! dexamethasone
 
 [Term]
+id: GO:0071555 ! cell wall organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0005618 ! cell wall
+
+[Term]
+id: GO:0071574 ! protein localization to medial cortex
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0031097 ! medial cortex
+
+[Term]
 id: GO:0071576 ! tetrahydrodictyopterin binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:52447 ! tetrahydrodictyopterin
@@ -20213,12 +22558,12 @@ intersection_of: has_input CHEBI:52447 ! tetrahydrodictyopterin
 [Term]
 id: GO:0071577 ! zinc ion transmembrane transport
 intersection_of: GO:0055085 ! transmembrane transport
-intersection_of: transports_or_maintains_localization_of CHEBI:27365 ! zinc ion
+intersection_of: transports_or_maintains_localization_of CHEBI:63056 ! zinc cation
 
 [Term]
-id: GO:0071578 ! zinc ion import
+id: GO:0071578 ! zinc ion transmembrane import
 intersection_of: GO:0006810 ! transport
-intersection_of: imports CHEBI:27365 ! zinc ion
+intersection_of: imports CHEBI:63056 ! zinc cation
 
 [Term]
 id: GO:0071589 ! pyridine nucleoside biosynthetic process
@@ -20259,6 +22604,11 @@ intersection_of: has_input CHEBI:24814 ! indole-3-methanol
 id: GO:0071681 ! cellular response to indole-3-methanol
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:24814 ! indole-3-methanol
+
+[Term]
+id: GO:0071692 ! protein localization to extracellular region
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005576 ! extracellular region
 
 [Term]
 id: GO:0071702 ! organic substance transport
@@ -20336,6 +22686,41 @@ intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:36080 ! protein
 
 [Term]
+id: GO:0071822 ! protein complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0043234 ! protein complex
+
+[Term]
+id: GO:0071823 ! protein-carbohydrate complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0032992 ! protein-carbohydrate complex
+
+[Term]
+id: GO:0071824 ! protein-DNA complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0032993 ! protein-DNA complex
+
+[Term]
+id: GO:0071825 ! protein-lipid complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0032994 ! protein-lipid complex
+
+[Term]
+id: GO:0071826 ! ribonucleoprotein complex subunit organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0030529 ! ribonucleoprotein complex
+
+[Term]
+id: GO:0071827 ! plasma lipoprotein particle organization
+intersection_of: GO:0016043 ! cellular component organization
+intersection_of: results_in_organization_of GO:0034358 ! plasma lipoprotein particle
+
+[Term]
+id: GO:0071829 ! plasma lipoprotein particle disassembly
+intersection_of: GO:0022411 ! cellular component disassembly
+intersection_of: results_in_disassembly_of GO:0034358 ! plasma lipoprotein particle
+
+[Term]
 id: GO:0071867 ! response to monoamine stimulus
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:63534 ! monoamine
@@ -20386,6 +22771,11 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17544 ! hydrogencarbonate
 
 [Term]
+id: GO:0071896 ! protein localization to adherens junction
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005912 ! adherens junction
+
+[Term]
 id: GO:0071897 ! DNA biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:16991 ! deoxyribonucleic acid
@@ -20419,6 +22809,17 @@ intersection_of: has_input CHEBI:16238 ! FAD
 id: GO:0071950 ! FADH2 binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17877 ! FADH2
+
+[Term]
+id: GO:0071955 ! recycling endosome to Golgi transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005794 ! Golgi apparatus
+intersection_of: has_target_start_location GO:0055037 ! recycling endosome
+
+[Term]
+id: GO:0071988 ! protein localization to spindle pole body
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005816 ! spindle pole body
 
 [Term]
 id: GO:0071993 ! phytochelatin transport
@@ -20611,6 +23012,51 @@ intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:26523 ! reactive oxygen species
 
 [Term]
+id: GO:0072598 ! protein localization to chloroplast
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0009507 ! chloroplast
+
+[Term]
+id: GO:0072657 ! protein localization to membrane
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0016020 ! membrane
+
+[Term]
+id: GO:0072659 ! protein localization to plasma membrane
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005886 ! plasma membrane
+
+[Term]
+id: GO:0072662 ! protein localization to peroxisome
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005777 ! peroxisome
+
+[Term]
+id: GO:0072665 ! protein localization to vacuole
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005773 ! vacuole
+
+[Term]
+id: GO:0072673 ! lamellipodium morphogenesis
+intersection_of: GO:0009653 ! anatomical structure morphogenesis
+intersection_of: results_in_morphogenesis_of GO:0030027 ! lamellipodium
+
+[Term]
+id: GO:0072697 ! protein localization to cell cortex
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005938 ! cell cortex
+
+[Term]
+id: GO:0072698 ! protein localization to microtubule cytoskeleton
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0015630 ! microtubule cytoskeleton
+
+[Term]
+id: GO:0072699 ! protein localization to cortical microtubule cytoskeleton
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0030981 ! cortical microtubule cytoskeleton
+
+[Term]
 id: GO:0072702 ! response to methyl methanesulfonate
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:25255 ! methyl methanesulfonate
@@ -20769,6 +23215,11 @@ intersection_of: has_input CHEBI:48958 ! 1,1'-azobis(N,N-dimethylformamide)
 id: GO:0072738 ! cellular response to diamide
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:48958 ! 1,1'-azobis(N,N-dimethylformamide)
+
+[Term]
+id: GO:0072741 ! protein localization to cell division site
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0032153 ! cell division site
 
 [Term]
 id: GO:0072743 ! cellular response to erythromycin
@@ -20971,9 +23422,26 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:26004 ! phenylpropanoid
 
 [Term]
+id: GO:0090114 ! COPII-coated vesicle budding
+intersection_of: GO:0006900 ! membrane budding
+intersection_of: has_output GO:0030134 ! ER to Golgi transport vesicle
+intersection_of: occurs_in GO:0000139 ! Golgi membrane
+
+[Term]
 id: GO:0090156 ! cellular sphingolipid homeostasis
 intersection_of: GO:0019725 ! cellular homeostasis
 intersection_of: regulates_level_of CHEBI:26739 ! sphingolipid
+
+[Term]
+id: GO:0090160 ! Golgi to lysosome transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005764 ! lysosome
+intersection_of: has_target_start_location GO:0005794 ! Golgi apparatus
+
+[Term]
+id: GO:0090204 ! protein localization to nuclear pore
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005643 ! nuclear pore
 
 [Term]
 id: GO:0090304 ! nucleic acid metabolic process
@@ -21004,6 +23472,11 @@ intersection_of: has_participant CHEBI:25477 ! naphthalenes
 id: GO:0090431 ! alkyl caffeate ester biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:65331 ! alkyl caffeate ester
+
+[Term]
+id: GO:0090435 ! protein localization to nuclear envelope
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005635 ! nuclear envelope
 
 [Term]
 id: GO:0090452 ! lithium ion import
@@ -21051,6 +23524,16 @@ intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:17115 ! L-serine
 
 [Term]
+id: GO:0090528 ! smooth septate junction assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005920 ! smooth septate junction
+
+[Term]
+id: GO:0090529 ! cell septum assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0030428 ! cell septum
+
+[Term]
 id: GO:0097001 ! ceramide binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17761 ! ceramide
@@ -21069,6 +23552,11 @@ intersection_of: has_output CHEBI:59240 ! phthiocerol
 id: GO:0097041 ! phenolic phthiocerol biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:59237 ! phenolic phthiocerol
+
+[Term]
+id: GO:0097051 ! establishment of protein localization to endoplasmic reticulum membrane
+intersection_of: GO:0045184 ! establishment of protein localization
+intersection_of: has_target_end_location GO:0005789 ! endoplasmic reticulum membrane
 
 [Term]
 id: GO:0097052 ! L-kynurenine metabolic process
@@ -21173,7 +23661,7 @@ intersection_of: has_input CHEBI:58690 ! 1,6-anhydro-N-acetyl-beta-muramate
 [Term]
 id: GO:0097176 ! epoxide metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:37407 ! epoxy compound
+intersection_of: has_participant CHEBI:37407 ! cyclic ether
 
 [Term]
 id: GO:0097184 ! response to azide
@@ -21229,6 +23717,11 @@ intersection_of: has_input CHEBI:4806 ! (-)-epigallocatechin 3-gallate
 id: GO:0097251 ! leukotriene B4 biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:15647 ! leukotriene B4
+
+[Term]
+id: GO:0097271 ! protein localization to bud neck
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005935 ! cellular bud neck
 
 [Term]
 id: GO:0097287 ! 7-cyano-7-deazaguanine metabolic process
@@ -21361,6 +23854,11 @@ intersection_of: GO:0055085 ! transmembrane transport
 intersection_of: transports_or_maintains_localization_of CHEBI:29805 ! glycolate
 
 [Term]
+id: GO:0097355 ! protein localization to heterochromatin
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0000792 ! heterochromatin
+
+[Term]
 id: GO:0097366 ! response to bronchodilator
 intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:35523 ! bronchodilator agent
@@ -21374,6 +23872,11 @@ intersection_of: imports CHEBI:29101 ! sodium(1+)
 id: GO:0097403 ! cellular response to raffinose
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:16634 ! raffinose
+
+[Term]
+id: GO:0097430 ! copper ion import into ascospore-type prospore
+intersection_of: GO:0015677 ! copper ion import
+intersection_of: has_target_end_location GO:0042764 ! ascospore-type prospore
 
 [Term]
 id: GO:1900533 ! palmitic acid metabolic process
@@ -23731,6 +26234,867 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:33704 ! alpha-amino acid
 
 [Term]
+id: GO:1901611 ! phosphatidylglycerol binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:17517 ! phosphatidylglycerol
+
+[Term]
+id: GO:1901612 ! cardiolipin binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:28494 ! cardiolipin
+
+[Term]
+id: GO:1901615 ! organic hydroxy compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:33822 ! organic hydroxy compound
+
+[Term]
+id: GO:1901616 ! organic hydroxy compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:33822 ! organic hydroxy compound
+
+[Term]
+id: GO:1901617 ! organic hydroxy compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:33822 ! organic hydroxy compound
+
+[Term]
+id: GO:1901618 ! organic hydroxy compound transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33822 ! organic hydroxy compound
+
+[Term]
+id: GO:1901625 ! cellular response to ergosterol
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16933 ! ergosterol
+
+[Term]
+id: GO:1901639 ! XDP catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:10048 ! XDP
+
+[Term]
+id: GO:1901640 ! XTP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:10049 ! XTP
+
+[Term]
+id: GO:1901641 ! ITP binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:16039 ! ITP
+
+[Term]
+id: GO:1901642 ! nucleoside transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:33838 ! nucleoside
+
+[Term]
+id: GO:1901652 ! response to peptide
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:16670 ! peptide
+
+[Term]
+id: GO:1901653 ! cellular response to peptide
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:16670 ! peptide
+
+[Term]
+id: GO:1901654 ! response to ketone
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:17087 ! ketone
+
+[Term]
+id: GO:1901655 ! cellular response to ketone
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:17087 ! ketone
+
+[Term]
+id: GO:1901656 ! glycoside transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:24400 ! glycoside
+
+[Term]
+id: GO:1901657 ! glycosyl compound metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63161 ! glycosyl compound
+
+[Term]
+id: GO:1901658 ! glycosyl compound catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63161 ! glycosyl compound
+
+[Term]
+id: GO:1901659 ! glycosyl compound biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:63161 ! glycosyl compound
+
+[Term]
+id: GO:1901660 ! calcium ion export
+intersection_of: GO:0006810 ! transport
+intersection_of: exports CHEBI:39124 ! calcium ion
+
+[Term]
+id: GO:1901661 ! quinone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:36141 ! quinone
+
+[Term]
+id: GO:1901662 ! quinone catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:36141 ! quinone
+
+[Term]
+id: GO:1901663 ! quinone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:36141 ! quinone
+
+[Term]
+id: GO:1901677 ! phosphate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26020 ! phosphate
+
+[Term]
+id: GO:1901678 ! iron coordination entity transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:33892 ! iron coordination entity
+
+[Term]
+id: GO:1901679 ! nucleotide transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:36976 ! nucleotide
+
+[Term]
+id: GO:1901680 ! sulfur-containing amino acid secondary active transmembrane transporter activity
+intersection_of: GO:0015291 ! secondary active transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26834 ! sulfur-containing amino acid
+
+[Term]
+id: GO:1901681 ! sulfur compound binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:26835 ! sulfur molecular entity
+
+[Term]
+id: GO:1901682 ! sulfur compound transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:26835 ! sulfur molecular entity
+
+[Term]
+id: GO:1901683 ! arsenate ion transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:22629 ! arsenate ion
+
+[Term]
+id: GO:1901684 ! arsenate ion transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:22629 ! arsenate ion
+
+[Term]
+id: GO:1901685 ! glutathione derivative metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:24337 ! glutathione derivative
+
+[Term]
+id: GO:1901686 ! glutathione derivative catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:24337 ! glutathione derivative
+
+[Term]
+id: GO:1901687 ! glutathione derivative biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:24337 ! glutathione derivative
+
+[Term]
+id: GO:1901688 ! pantothenate import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16454 ! pantothenate
+
+[Term]
+id: GO:1901689 ! biotin import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:15956 ! biotin
+
+[Term]
+id: GO:1901690 ! dethiobiotin import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:16691 ! dethiobiotin
+
+[Term]
+id: GO:1901691 ! proton binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:24636 ! proton
+
+[Term]
+id: GO:1901695 ! tyramine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15760 ! tyramine
+
+[Term]
+id: GO:1901696 ! cannabinoid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:67194 ! cannabinoid
+
+[Term]
+id: GO:1901697 ! olivetolic acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:66955 ! olivetolic acid
+
+[Term]
+id: GO:1901698 ! response to nitrogen compound
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:51143 ! nitrogen molecular entity
+
+[Term]
+id: GO:1901699 ! cellular response to nitrogen compound
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:51143 ! nitrogen molecular entity
+
+[Term]
+id: GO:1901700 ! response to oxygen-containing compound
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:25806 ! oxygen molecular entity
+
+[Term]
+id: GO:1901701 ! cellular response to oxygen-containing compound
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:25806 ! oxygen molecular entity
+
+[Term]
+id: GO:1901702 ! salt transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:24866 ! salt
+
+[Term]
+id: GO:1901704 ! L-glutamine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:18050 ! L-glutamine
+
+[Term]
+id: GO:1901705 ! L-isoleucine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:17191 ! L-isoleucine
+
+[Term]
+id: GO:1901707 ! leptomycin B binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:52646 ! leptomycin B
+
+[Term]
+id: GO:1901708 ! (+)-3'-hydroxylarreatricin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:67154 ! (+)-3'-hydroxylarreatricin
+
+[Term]
+id: GO:1901709 ! (+)-larreatricin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:67153 ! (+)-larreatricin
+
+[Term]
+id: GO:1901728 ! monensin A metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27617 ! monensin A
+
+[Term]
+id: GO:1901729 ! monensin A catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27617 ! monensin A
+
+[Term]
+id: GO:1901730 ! monensin A biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27617 ! monensin A
+
+[Term]
+id: GO:1901732 ! quercetin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:16243 ! quercetin
+
+[Term]
+id: GO:1901733 ! quercetin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:16243 ! quercetin
+
+[Term]
+id: GO:1901734 ! quercetin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:16243 ! quercetin
+
+[Term]
+id: GO:1901735 ! (R)-mevalonic acid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:17710 ! (R)-mevalonic acid
+
+[Term]
+id: GO:1901736 ! (R)-mevalonic acid catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:17710 ! (R)-mevalonic acid
+
+[Term]
+id: GO:1901737 ! (R)-mevalonic acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:17710 ! (R)-mevalonic acid
+
+[Term]
+id: GO:1901742 ! 2-deoxystreptamine metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:28295 ! 2-deoxystreptamine
+
+[Term]
+id: GO:1901743 ! 2-deoxystreptamine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:28295 ! 2-deoxystreptamine
+
+[Term]
+id: GO:1901744 ! 2-deoxystreptamine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28295 ! 2-deoxystreptamine
+
+[Term]
+id: GO:1901745 ! prephenate(2-) metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:57852 ! prephenate(2-)
+
+[Term]
+id: GO:1901746 ! prephenate(2-) catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:57852 ! prephenate(2-)
+
+[Term]
+id: GO:1901747 ! prephenate(2-) biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:57852 ! prephenate(2-)
+
+[Term]
+id: GO:1901748 ! leukotriene D4 metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:28666 ! leukotriene D4
+
+[Term]
+id: GO:1901749 ! leukotriene D4 catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:28666 ! leukotriene D4
+
+[Term]
+id: GO:1901750 ! leukotriene D4 biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28666 ! leukotriene D4
+
+[Term]
+id: GO:1901751 ! leukotriene A4 metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:15651 ! leukotriene A4
+
+[Term]
+id: GO:1901752 ! leukotriene A4 catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:15651 ! leukotriene A4
+
+[Term]
+id: GO:1901753 ! leukotriene A4 biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15651 ! leukotriene A4
+
+[Term]
+id: GO:1901754 ! vitamin D3 catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:28940 ! calciol
+
+[Term]
+id: GO:1901755 ! vitamin D3 biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:28940 ! calciol
+
+[Term]
+id: GO:1901756 ! butirosin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:65109 ! butirosin
+
+[Term]
+id: GO:1901757 ! butirosin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:65109 ! butirosin
+
+[Term]
+id: GO:1901758 ! butirosin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:65109 ! butirosin
+
+[Term]
+id: GO:1901759 ! beta-L-Ara4N-lipid A metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:47763 ! beta-L-Ara4N-lipid A
+
+[Term]
+id: GO:1901760 ! beta-L-Ara4N-lipid A biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:47763 ! beta-L-Ara4N-lipid A
+
+[Term]
+id: GO:1901761 ! oxytetracycline metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27701 ! oxytetracycline
+
+[Term]
+id: GO:1901762 ! oxytetracycline catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27701 ! oxytetracycline
+
+[Term]
+id: GO:1901763 ! oxytetracycline biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27701 ! oxytetracycline
+
+[Term]
+id: GO:1901764 ! phosphinothricin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:52136 ! phosphinothricin
+
+[Term]
+id: GO:1901765 ! phosphinothricin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:52136 ! phosphinothricin
+
+[Term]
+id: GO:1901766 ! phosphinothricin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:52136 ! phosphinothricin
+
+[Term]
+id: GO:1901767 ! carbapenem metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:46765 ! carbapenem
+
+[Term]
+id: GO:1901768 ! carbapenem catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:46765 ! carbapenem
+
+[Term]
+id: GO:1901769 ! carbapenem biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:46765 ! carbapenem
+
+[Term]
+id: GO:1901770 ! daunorubicin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:41977 ! daunorubicin
+
+[Term]
+id: GO:1901771 ! daunorubicin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:41977 ! daunorubicin
+
+[Term]
+id: GO:1901772 ! lincomycin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:6472 ! lincomycin
+
+[Term]
+id: GO:1901773 ! lincomycin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:6472 ! lincomycin
+
+[Term]
+id: GO:1901774 ! lincomycin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:6472 ! lincomycin
+
+[Term]
+id: GO:1901775 ! mitomycin C metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27504 ! mitomycin C
+
+[Term]
+id: GO:1901776 ! mitomycin C catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27504 ! mitomycin C
+
+[Term]
+id: GO:1901777 ! mitomycin C biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27504 ! mitomycin C
+
+[Term]
+id: GO:1901778 ! pentalenolactone metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:70816 ! pentalenolactone
+
+[Term]
+id: GO:1901779 ! pentalenolactone catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:70816 ! pentalenolactone
+
+[Term]
+id: GO:1901780 ! pentalenolactone biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:70816 ! pentalenolactone
+
+[Term]
+id: GO:1901781 ! p-cumate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:25822 ! p-cumate
+
+[Term]
+id: GO:1901782 ! p-cumate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:25822 ! p-cumate
+
+[Term]
+id: GO:1901783 ! p-cumate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:25822 ! p-cumate
+
+[Term]
+id: GO:1901784 ! p-cresol metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:17847 ! p-cresol
+
+[Term]
+id: GO:1901785 ! p-cresol catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:17847 ! p-cresol
+
+[Term]
+id: GO:1901786 ! p-cresol biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:17847 ! p-cresol
+
+[Term]
+id: GO:1901787 ! benzoyl-CoA metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:15515 ! benzoyl-CoA
+
+[Term]
+id: GO:1901788 ! benzoyl-CoA catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:15515 ! benzoyl-CoA
+
+[Term]
+id: GO:1901789 ! benzoyl-CoA biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15515 ! benzoyl-CoA
+
+[Term]
+id: GO:1901790 ! 3-(2,3-dihydroxyphenyl)propanoate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:46951 ! 3-(2,3-dihydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901791 ! 3-(2,3-dihydroxyphenyl)propanoate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:46951 ! 3-(2,3-dihydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901792 ! 3-(2,3-dihydroxyphenyl)propanoate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:46951 ! 3-(2,3-dihydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901793 ! 3-(3-hydroxyphenyl)propanoate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:57277 ! 3-(3-hydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901794 ! 3-(3-hydroxyphenyl)propanoate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:57277 ! 3-(3-hydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901795 ! 3-(3-hydroxyphenyl)propanoate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:57277 ! 3-(3-hydroxyphenyl)propanoate
+
+[Term]
+id: GO:1901801 ! 1,5-anhydro-D-fructose metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:16715 ! 1,5-anhydro-D-fructose
+
+[Term]
+id: GO:1901802 ! 1,5-anhydro-D-fructose catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:16715 ! 1,5-anhydro-D-fructose
+
+[Term]
+id: GO:1901803 ! 1,5-anhydro-D-fructose biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:16715 ! 1,5-anhydro-D-fructose
+
+[Term]
+id: GO:1901804 ! beta-glucoside metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:60980 ! beta-glucoside
+
+[Term]
+id: GO:1901805 ! beta-glucoside catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:60980 ! beta-glucoside
+
+[Term]
+id: GO:1901806 ! beta-glucoside biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:60980 ! beta-glucoside
+
+[Term]
+id: GO:1901807 ! capsanthin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:3375 ! capsanthin
+
+[Term]
+id: GO:1901808 ! capsanthin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:3375 ! capsanthin
+
+[Term]
+id: GO:1901809 ! capsanthin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:3375 ! capsanthin
+
+[Term]
+id: GO:1901810 ! beta-carotene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:17579 ! beta-carotene
+
+[Term]
+id: GO:1901811 ! beta-carotene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:17579 ! beta-carotene
+
+[Term]
+id: GO:1901812 ! beta-carotene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:17579 ! beta-carotene
+
+[Term]
+id: GO:1901813 ! astaxanthin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:40968 ! astaxanthin
+
+[Term]
+id: GO:1901814 ! astaxanthin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:40968 ! astaxanthin
+
+[Term]
+id: GO:1901815 ! astaxanthin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:40968 ! astaxanthin
+
+[Term]
+id: GO:1901816 ! beta-zeacarotene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27533 ! beta-zeacarotene
+
+[Term]
+id: GO:1901817 ! beta-zeacarotene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27533 ! beta-zeacarotene
+
+[Term]
+id: GO:1901818 ! beta-zeacarotene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27533 ! beta-zeacarotene
+
+[Term]
+id: GO:1901819 ! alpha-zeacarotene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:35063 ! alpha-zeacarotene
+
+[Term]
+id: GO:1901820 ! alpha-zeacarotene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:35063 ! alpha-zeacarotene
+
+[Term]
+id: GO:1901821 ! alpha-zeacarotene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:35063 ! alpha-zeacarotene
+
+[Term]
+id: GO:1901822 ! delta-carotene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27705 ! delta-carotene
+
+[Term]
+id: GO:1901823 ! delta-carotene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27705 ! delta-carotene
+
+[Term]
+id: GO:1901824 ! delta-carotene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27705 ! delta-carotene
+
+[Term]
+id: GO:1901825 ! zeaxanthin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:27547 ! zeaxanthin
+
+[Term]
+id: GO:1901826 ! zeaxanthin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27547 ! zeaxanthin
+
+[Term]
+id: GO:1901827 ! zeaxanthin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:27547 ! zeaxanthin
+
+[Term]
+id: GO:1901828 ! zeaxanthin bis(beta-D-glucoside) metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63067 ! zeaxanthin bis(beta-D-glucoside)
+
+[Term]
+id: GO:1901829 ! zeaxanthin bis(beta-D-glucoside) catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63067 ! zeaxanthin bis(beta-D-glucoside)
+
+[Term]
+id: GO:1901830 ! zeaxanthin bis(beta-D-glucoside) biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:63067 ! zeaxanthin bis(beta-D-glucoside)
+
+[Term]
+id: GO:1901831 ! all-trans-neoxanthin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:32446 ! all-trans-neoxanthin
+
+[Term]
+id: GO:1901832 ! all-trans-neoxanthin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:32446 ! all-trans-neoxanthin
+
+[Term]
+id: GO:1901833 ! all-trans-neoxanthin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:32446 ! all-trans-neoxanthin
+
+[Term]
+id: GO:1901847 ! nicotinate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:32544 ! nicotinate
+
+[Term]
+id: GO:1901848 ! nicotinate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:32544 ! nicotinate
+
+[Term]
+id: GO:1901849 ! nicotinate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:32544 ! nicotinate
+
+[Term]
+id: GO:1901850 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:43034 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin
+
+[Term]
+id: GO:1901851 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:43034 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin
+
+[Term]
+id: GO:1901852 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:43034 ! 7,8-didemethyl-8-hydroxy-5-deazariboflavin
+
+[Term]
+id: GO:1901853 ! 5,6,7,8-tetrahydrosarcinapterin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:59345 ! 5,6,7,8-tetrahydrosarcinapterin
+
+[Term]
+id: GO:1901854 ! 5,6,7,8-tetrahydrosarcinapterin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:59345 ! 5,6,7,8-tetrahydrosarcinapterin
+
+[Term]
+id: GO:1901855 ! 5,6,7,8-tetrahydrosarcinapterin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:59345 ! 5,6,7,8-tetrahydrosarcinapterin
+
+[Term]
+id: GO:1901864 ! capsorubin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:3378 ! capsorubin
+
+[Term]
+id: GO:1901865 ! capsorubin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:3378 ! capsorubin
+
+[Term]
+id: GO:1901866 ! capsorubin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:3378 ! capsorubin
+
+[Term]
+id: GO:1901867 ! ecgonine methyl ester metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:31529 ! ecgonine methyl ester
+
+[Term]
+id: GO:1901868 ! ecgonine methyl ester catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:31529 ! ecgonine methyl ester
+
+[Term]
+id: GO:1901869 ! ecgonine methyl ester biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:31529 ! ecgonine methyl ester
+
+[Term]
+id: GO:1901870 ! ecgonone methyl ester metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:67115 ! ecgonone methyl ester
+
+[Term]
+id: GO:1901871 ! ecgonone methyl ester catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:67115 ! ecgonone methyl ester
+
+[Term]
+id: GO:1901872 ! ecgonone methyl ester biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:67115 ! ecgonone methyl ester
+
+[Term]
+id: GO:1901882
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:40070 ! 4-hydroxycoumarin
+
+[Term]
+id: GO:1901883
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:40070 ! 4-hydroxycoumarin
+
+[Term]
+id: GO:1901884
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:40070 ! 4-hydroxycoumarin
+
+[Term]
+id: GO:1901885
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:32587 ! 2-hydroxybenzoyl-CoA
+
+[Term]
+id: GO:1901886
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:32587 ! 2-hydroxybenzoyl-CoA
+
+[Term]
+id: GO:1901887
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:32587 ! 2-hydroxybenzoyl-CoA
+
+[Term]
+id: GO:1990022 ! RNA polymerase III complex localization to nucleus
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0005634 ! nucleus
+intersection_of: imports GO:0005666 ! DNA-directed RNA polymerase III complex
+
+[Term]
 id: GO:2000884 ! glucomannan catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:17020 ! glucomannan
@@ -24313,11 +27677,54 @@ id: GO:2001317 ! kojic acid biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:43572 ! kojic acid
 
+[Term]
+id: results_in_assembly_of
+name: results_in_assembly_of
+
+[Term]
+id: results_in_disassembly_of
+name: results_in_disassembly_of
+
+[Term]
+id: results_in_distribution_of
+name: results_in_distribution_of
+
+[Term]
+id: results_in_fission_of
+name: results_in_fission_of
+
+[Term]
+id: results_in_fusion_of
+name: results_in_fusion_of
+
+[Term]
+id: results_in_growth_of
+name: results_in_growth_of
+
+[Term]
+id: results_in_maturation_of
+name: results_in_maturation_of
+xref: RO:0002299
+
+[Term]
+id: results_in_morphogenesis_of
+name: results_in_morphogenesis_of
+xref: RO:0002298
+
+[Term]
+id: results_in_organization_of
+name: results_in_organization_of
+
+[Term]
+id: results_in_remodeling_of
+name: results_in_remodeling_of
+
 [Typedef]
 id: exports
 name: exports
-transitive_over: has_role ! has role
 xref: GOREL:0000035
+is_a: transports_or_maintains_localization_of ! transports or maintains localization of
+transitive_over: has_role ! has role
 
 [Typedef]
 id: has_input
@@ -24349,16 +27756,67 @@ name: has role
 xref: http://purl.obolibrary.org/obo/chebi_has_role
 
 [Typedef]
+id: has_target_end_location
+name: has_target_end_location
+alt_id: results_in_transport_or_localization_to
+is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
+
+[Typedef]
+id: has_target_start_location
+name: has_target_start_location
+alt_id: results_in_transport_from
+is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
+
+[Typedef]
 id: imports
 name: imports
-transitive_over: has_role ! has role
 xref: GOREL:0000034
+is_a: transports_or_maintains_localization_of ! transports or maintains localization of
+transitive_over: has_role ! has role
+
+[Typedef]
+id: occurs_in
+name: occurs in
+xref: BFO:0000066
+transitive_over: part_of ! part_of
+
+[Typedef]
+id: part_of
+name: part_of
+xref: BFO:0000050
+is_transitive: true
 
 [Typedef]
 id: regulates_level_of
 name: regulates level of
-transitive_over: has_role ! has role
 xref: GOREL:0000036
+transitive_over: has_role ! has role
+
+[Typedef]
+id: results_in_transport_across
+name: results_in_transport_across
+comment: Example: transmembrane transport
+is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
+
+[Typedef]
+id: results_in_transport_along
+name: results_in_transport_along
+is_a: has_participant ! has participant
+
+[Typedef]
+id: results_in_transport_to_from_or_in
+name: results_in_transport_to_from_or_in
+holds_over_chain: has_target_end_location part_of
+holds_over_chain: has_target_start_location part_of
+holds_over_chain: results_in_transport_across part_of
+is_a: has_participant ! has participant
+is_a: results_in_transport_to_from_or_mediated_by ! results_in_transport_to_from_or_mediated_by
+
+[Typedef]
+id: results_in_transport_to_from_or_mediated_by
+name: results_in_transport_to_from_or_mediated_by
+comment: This relation is so far only used for one class, 'endosomal transport' (GO:0016197), which groups together disparate roles the participants can play - it is defined as 'The directed movement of substances into, out of *or mediated by* an endosome...'
+is_a: has_participant ! has participant
 
 [Typedef]
 id: transports_or_maintains_localization_of

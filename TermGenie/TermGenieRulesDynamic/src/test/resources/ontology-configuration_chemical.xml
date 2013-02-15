@@ -4,8 +4,8 @@
 	<ontology name="GeneOntology">
 		<source>http://www.geneontology.org/ontology/editors/gene_ontology_write.obo</source>
 		<supports>
+			<support>http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo</support>
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
-			<support>http://www.geneontology.org/ontology/editors/go_xp_chebi.obo</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
