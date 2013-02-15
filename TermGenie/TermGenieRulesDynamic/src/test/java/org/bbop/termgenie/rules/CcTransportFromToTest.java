@@ -117,18 +117,32 @@ public class CcTransportFromToTest {
 
 		// this is a non-sense example
 		parameters.setTermValues(fieldName0, Arrays.asList("GO:0005791")); // rough endoplasmic reticulum
+		parameters.setStringValues(fieldName0, Arrays.asList("transport", "vesicle-mediated transport"));
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
 
 		assertNotNull(list);
-		assertEquals(1, list.size());
+		assertEquals(2, list.size());
 		TermGenerationOutput output1 = list.get(0);
 		assertNull(output1.getError(), output1.getError());
 		
+		TermGenerationOutput output2 = list.get(1);
+		assertNull(output2.getError(), output2.getError());
+		
 		Frame term1 = output1.getTerm();
-		System.out.println(term1);
+		
+		Frame term2 = output2.getTerm();
+		Collection<Clause> isaClauses = term2.getClauses(OboFormatTag.TAG_IS_A);
+		boolean found = false;
+		for (Clause clause : isaClauses) {
+			if (term1.getId().equals(clause.getValue())) {
+				found = true;
+			}
+		}
+		assertTrue("The second term should be a direct subclass of the first one.", found);
+		System.out.println(term2);
 	}
 
 }
