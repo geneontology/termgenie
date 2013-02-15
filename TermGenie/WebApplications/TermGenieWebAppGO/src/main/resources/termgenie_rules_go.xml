@@ -439,7 +439,7 @@ generated automatically</description>
 				<ontology name="GeneOntology">
 					<branch>cellular_component</branch>
 				</ontology>
-				<prefixes>
+				<prefixes preselected="false">
 					<prefix>transport</prefix>
 					<prefix>vesicle-mediated transport</prefix>
 				</prefixes>
@@ -456,6 +456,29 @@ generated automatically</description>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport_from_to.js</ruleFile>
+		</ruleFiles>
+	</template>
+	<template name="cc_transport">
+		<description>transport of a cellular component</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="component" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix>transport</prefix>
+					<prefix>vesicle-mediated transport</prefix>
+				</prefixes>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cc_transport.js</ruleFile>
 		</ruleFiles>
 	</template>
 	<!-- 
