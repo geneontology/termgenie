@@ -105,5 +105,30 @@ public class CcTransportFromToTest {
 		}
 		assertTrue("The second term should be a direct subclass of the first one.", found);
 	}
+	
+	@Test
+	public void test_cc_transport() throws Exception {
+		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
+		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		
+		TemplateField field0 = termTemplate.getFields().get(0);
+		String fieldName0 = field0.getName();
+
+		// this is a non-sense example
+		parameters.setTermValues(fieldName0, Arrays.asList("GO:0005791")); // rough endoplasmic reticulum
+		
+		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output1 = list.get(0);
+		assertNull(output1.getError(), output1.getError());
+		
+		Frame term1 = output1.getTerm();
+		System.out.println(term1);
+	}
 
 }
