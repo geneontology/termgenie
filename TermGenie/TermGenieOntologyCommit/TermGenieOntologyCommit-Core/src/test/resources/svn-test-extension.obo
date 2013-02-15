@@ -1,0 +1,12 @@
+format-version: 1.2
+ontology: foo
+
+[Term]
+id: FOO:2000
+intersection_of: FOO:0003 
+intersection_of: part_of GOO:0001 
+
+[Typedef]
+id: has_participant
+name: has participant
+xref: BFO:0000057

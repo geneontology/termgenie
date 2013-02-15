@@ -1,0 +1,32 @@
+format-version: 1.2
+ontology: foo
+
+[Term]
+id: FOO:0001
+name: foo-0001
+
+[Term]
+id: FOO:0002
+name: foo-0002
+is_a: FOO:0001
+
+[Term]
+id: FOO:0003
+name: foo-0003
+is_a: FOO:0001
+
+[Term]
+id: FOO:0004
+name: foo-0004
+is_a: FOO:0003
+
+[Term]
+id: FOO:2000
+name: foo-2000
+is_a: FOO:0003
+
+[Typedef]
+id: part_of
+name: part_of
+xref: BFO:0000050
+is_transitive: true
