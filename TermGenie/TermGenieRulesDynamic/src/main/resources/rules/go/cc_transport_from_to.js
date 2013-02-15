@@ -1,6 +1,6 @@
 // @requires rules/common.js
 
-function cc_transport() {
+function cc_transport_from_to() {
 	var go = GeneOntology;
 	var from = getSingleTerm("from", go);
 	var prefixes = getInputs("from");

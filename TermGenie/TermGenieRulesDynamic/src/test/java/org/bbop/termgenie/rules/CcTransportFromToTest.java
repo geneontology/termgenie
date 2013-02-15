@@ -30,7 +30,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class CcTransportTest {
+public class CcTransportFromToTest {
 
 	public static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
 
@@ -65,7 +65,7 @@ public class CcTransportTest {
 	}
 
 	@Test
-	public void test_cc_transport() throws Exception {
+	public void test_cc_transport_from_to() throws Exception {
 		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
