@@ -3,8 +3,10 @@ package org.bbop.termgenie.ontology.obo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -227,13 +229,19 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 
 	private boolean requiresSpecialHandling(CommitHistoryItem item) {
 		List<CommitedOntologyTerm> terms = item.getTerms();
+		Set<Integer> specials = new HashSet<Integer>();
 		for (CommitedOntologyTerm term : terms) {
 			String pattern = term.getPattern();
 			if (pattern != null) {
 				Integer pos = specialPatterns.get(pattern);
-				return pos != null;
+				if (pos != null) {
+					specials.add(pos);
+				}
 			}
 		}
-		return false;
+		if (specials.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 }
