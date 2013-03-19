@@ -57,6 +57,7 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 				writeRequires(termTemplate.getRequires(), writer);
 				writeFields(termTemplate.getFields(), writer);
 				writeRules(termTemplate.getRuleFiles(), termTemplate.getMethodName(), writer);
+				writeCategories(termTemplate.getCategories(), writer);
 				writer.writeEndElement();
 			}
 			writer.writeEndElement();
@@ -68,6 +69,14 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		}
 	}
 
+	private void writeCategories(List<String> ruleFiles, XMLStreamWriter writer) throws XMLStreamException {
+		writer.writeStartElement(TAG_categories);
+		for (String ruleFile : ruleFiles) {
+			writeTag(TAG_category, ruleFile, writer);
+		}
+		writer.writeEndElement();	
+	}
+	
 	private void writeRules(List<String> ruleFiles, String methodName, XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement(TAG_ruleFiles);
 		if (methodName != null) {

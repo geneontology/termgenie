@@ -27,6 +27,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="all_regulation_mf" displayname="regulation: molecular_function">
 		<description>Select all three subtemplates to generate terms for
@@ -54,6 +57,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation_mf.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
@@ -83,6 +89,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>processes</category>
+		</categories>
 	</template>
 	<template name="involved_in_mf_bp">
 		<description>molecular function involved in other biological processes</description>
@@ -108,6 +117,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>processes</category>
+		</categories>
 	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
@@ -132,6 +144,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>processes</category>
+		</categories>
 	</template>
 	<template name="regulation_by">
 		<description>processes regulated by other regulating processes
@@ -162,6 +177,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/regulation_by.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>regulation</category>
+		</categories>
 	</template>
 
 	<template name="part_of_cell_component">
@@ -188,6 +206,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>cellular_component</category>
+		</categories>
 	</template>
 	<!-- 
 	<template name="protein_binding">
@@ -233,6 +254,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_transporter_activity">
 		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
@@ -252,6 +277,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
@@ -271,6 +300,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>interaction</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="metabolism_catabolism_biosynthesis">
 		<description>Select all three subtemplates to generate
@@ -297,6 +330,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>other</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
 		<description>Create transmembrane transport terms (biological process) with chemical entities.</description>
@@ -316,6 +353,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_bp.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_mf" displayname="chemical_transmembrane_transporter_activity">
 		<description>Create transmembrane transporter activity terms (molecular function) with chemical entities.&lt;br/&gt;
@@ -343,6 +384,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_response_to">
 		<description>Create response to and cellular response to a chemical entity</description>
@@ -366,6 +411,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>signaling</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<!--
 	<template name="chemical_homeostasis">
@@ -390,6 +439,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>other</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	 -->
 	<template name="chemical_import">
@@ -410,6 +463,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_import.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="chemical_export">
 		<description>export of a chemical entity</description>
@@ -429,6 +486,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_export.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="cc_transport_from_to">
 		<description>transport or vesicle-medidated transport from cellular component to cellular component</description>
@@ -457,6 +518,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport_from_to.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>cellular_component</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<template name="cc_transport">
 		<description>transport of a cellular component</description>
@@ -480,6 +546,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>transport</category>
+			<category>cellular_component</category>
+			<category>ChEBI</category>
+		</categories>
 	</template>
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 

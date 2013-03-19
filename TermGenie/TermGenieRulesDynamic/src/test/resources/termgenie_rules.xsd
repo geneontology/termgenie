@@ -29,9 +29,16 @@
 				minOccurs="1" />
 			<xsd:element name="ruleFiles" type="ruleFilesType" maxOccurs="1"
 				minOccurs="1" />
+			<xsd:element name="categories" type="categoriesType" maxOccurs="1"
+				minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="displayname" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="categoriesType">
+		<xsd:sequence>
+			<xsd:element name="category" type="xsd:string" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="ruleFilesType">
 		<xsd:sequence>

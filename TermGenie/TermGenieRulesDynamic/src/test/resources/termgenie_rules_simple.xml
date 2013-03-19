@@ -27,6 +27,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
@@ -56,6 +60,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>other</category>
+		</categories>
 	</template>
 	<template name="involved_in_mf_bp">
 		<description>molecular function involved in other biological processes</description>
@@ -81,6 +89,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>molecular_function</category>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
@@ -105,5 +117,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>other</category>
+		</categories>
 	</template>
 </termgenietemplates>

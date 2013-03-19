@@ -28,6 +28,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport_from_to.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="cc_transport">
 		<description>transport of a cellular component</description>
@@ -51,5 +55,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>transport</category>
+		</categories>
 	</template>
 </termgenietemplates>

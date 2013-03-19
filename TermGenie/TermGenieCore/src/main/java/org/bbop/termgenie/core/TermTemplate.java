@@ -12,6 +12,7 @@ public class TermTemplate {
 	private final String name;
 	private final String displayName;
 	private final String description;
+	private final List<String> categories;
 	private final List<TemplateField> fields;
 	private final List<Ontology> external;
 	private final List<String> requires;
@@ -32,6 +33,7 @@ public class TermTemplate {
 	 * @param ruleFiles
 	 * @param methodName 
 	 * @param hint
+	 * @param categories
 	 */
 	public TermTemplate(Ontology correspondingOntology,
 			String name,
@@ -43,7 +45,8 @@ public class TermTemplate {
 			String obo_namespace,
 			List<String> ruleFiles,
 			String methodName,
-			String hint)
+			String hint,
+			List<String> categories)
 	{
 		super();
 		this.correspondingOntology = correspondingOntology;
@@ -63,6 +66,7 @@ public class TermTemplate {
 		this.methodName = methodName;
 		this.description = description;
 		this.hint = hint;
+		this.categories = categories;
 	}
 
 	public Ontology getCorrespondingOntology() {
@@ -155,6 +159,13 @@ public class TermTemplate {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @return the categories
+	 */
+	public List<String> getCategories() {
+		return categories;
 	}
 
 	/*

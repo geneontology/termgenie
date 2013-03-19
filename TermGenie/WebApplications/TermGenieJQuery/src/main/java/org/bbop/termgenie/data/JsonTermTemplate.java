@@ -13,6 +13,7 @@ public class JsonTermTemplate {
 	private String display;
 	private String description;
 	private String hint;
+	private List<String> categories;
 	private List<JsonTemplateField> fields;
 
 	public JsonTermTemplate() {
@@ -89,6 +90,20 @@ public class JsonTermTemplate {
 		this.description = description;
 	}
 
+	/**
+	 * @return the categories
+	 */
+	public List<String> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param categories the categories to set
+	 */
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -120,6 +135,9 @@ public class JsonTermTemplate {
 		if (hint != null) {
 			builder.append("hint:");
 			builder.append(hint);
+		}
+		if (categories != null) {
+			builder.append("categories: ").append(categories);
 		}
 		builder.append("}");
 		return builder.toString();

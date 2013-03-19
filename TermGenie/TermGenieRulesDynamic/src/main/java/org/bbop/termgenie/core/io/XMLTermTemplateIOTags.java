@@ -22,6 +22,8 @@ interface XMLTermTemplateIOTags {
 	static final String TAG_prefixes = "prefixes";
 	static final String TAG_prefix = "prefix";
 	static final String TAG_branch = "branch";
+	static final String TAG_categories = "categories";
+	static final String TAG_category = "category";
 
 	static final String ATTR_name = "name";
 	static final String ATTR_label = "label";

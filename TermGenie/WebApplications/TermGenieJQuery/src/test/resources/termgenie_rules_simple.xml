@@ -27,6 +27,10 @@
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="involved_in">
 		<description>processes involved in other processes</description>
@@ -56,5 +60,9 @@
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>root</category>
+		</categories>
 	</template>
 </termgenietemplates>

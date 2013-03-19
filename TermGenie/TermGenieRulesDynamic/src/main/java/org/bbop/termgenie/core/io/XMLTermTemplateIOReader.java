@@ -90,6 +90,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		List<String> ruleFiles = null;
 		String methodName = null;
 		String hint = null;
+		List<String> categories = null;
 	}
 
 	private void parseTemplate(XMLStreamReader parser, List<TermTemplate> result)
@@ -140,6 +141,9 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					}
 					else if (TAG_external.equals(element)) {
 						current.external = parseExternal(parser, current);
+					}
+					else if (TAG_categories.equals(element)) {
+						current.categories = parseCategories(parser, current);
 					}
 					else {
 						error("Unexpected tag: " + element, parser);
@@ -258,6 +262,41 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					String element = parser.getLocalName();
 					if (TAG_field.equals(element)) {
 						current.fields.add(parseField(parser));
+					}
+					else {
+						error("Unexpected tag: " + element, parser);
+					}
+					break;
+			}
+		}
+	}
+	
+	private List<String> parseCategories(XMLStreamReader parser, TemplateParseData current)
+			throws XMLStreamException
+	{
+		if (current.categories != null) {
+			error("Multiple " + TAG_categories + " tags found", parser);
+		}
+		current.categories = new ArrayList<String>();
+		while (true) {
+			switch (parser.next()) {
+
+				case XMLStreamConstants.END_ELEMENT:
+					if (TAG_categories.equals(parser.getLocalName())) {
+						if (current.fields.isEmpty()) {
+							error("Missing " + TAG_category + " tag", parser);
+						}
+						return current.categories;
+					}
+					break;
+				case XMLStreamConstants.START_ELEMENT:
+					String element = parser.getLocalName();
+					if (TAG_category.equals(element)) {
+						String text = getTextTag(parser, TAG_category, null);
+						if (text == null || text.isEmpty()) {
+							error("Found unexpected empty tag: "+TAG_category, parser);
+						}
+						current.categories.add(text);
 					}
 					else {
 						error("Unexpected tag: " + element, parser);
@@ -398,7 +437,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		if (current.ruleFiles == null || current.ruleFiles.isEmpty()) {
 			error("Missing " + TAG_ruleFiles + " tag", parser);
 		}
-		TermTemplate template = new TermTemplate(current.correspondingOntology, current.name, current.displayName, current.description, current.fields, current.external, current.requires, current.obo_namespace, current.ruleFiles, current.methodName, current.hint);
+		TermTemplate template = new TermTemplate(current.correspondingOntology, current.name, current.displayName, current.description, current.fields, current.external, current.requires, current.obo_namespace, current.ruleFiles, current.methodName, current.hint, current.categories);
 		result.add(template);
 	}
 

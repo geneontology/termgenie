@@ -26,6 +26,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>other</category>
+		</categories>
 	</template>
 	<template name="chemical_transport">
 		<description>transport of a chemical entity (biological process)</description>
@@ -45,6 +50,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
@@ -64,6 +74,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>binding</category>
+		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_mf" displayname="chemical_transmembrane_transporter_activity">
 		<description>Create transmembrane transporter activity terms (molecular function) with chemical entities.&lt;br/&gt;
@@ -91,6 +106,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>molecular_function</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="chemical_response_to">
 		<description>Create response to and cellular response to a chemical entity</description>
@@ -114,6 +134,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>signaling</category>
+		</categories>
 	</template>
 	<template name="chemical_homeostasis">
 		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
@@ -137,6 +162,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>regulation</category>
+		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transporter">
 		<description>Create transmembrane transporter terms (biological process) with chemical entities.</description>
@@ -156,6 +186,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_bp.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="chemical_transporter_activity">
 		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
@@ -175,6 +210,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>molecular_function</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="chemical_import">
 		<description>import of a chemical entity</description>
@@ -194,6 +234,11 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_import.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 	<template name="chemical_export">
 		<description>export of a chemical entity</description>
@@ -213,5 +258,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_export.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
 	</template>
 </termgenietemplates>
