@@ -296,7 +296,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 						Pair<String, String> pair = matchingCommits.get(i);
 						String id = pair.getOne();
 						String label = pair.getTwo();
-						sb.append(id).append(" with Label: '").append(label);
+						sb.append(id).append(" with Label: '").append(label).append('\'');
 					}
 				}
 				setMessage(sb.toString());
