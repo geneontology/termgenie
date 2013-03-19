@@ -339,3 +339,15 @@ h1 {
 .prefixInputFieldCell {
 	width: 200px;
 }
+
+.termgenie-select-template-tree {
+	padding-top: 10px;
+}
+
+.termgenie-select-template-tree-tooltip td {
+	padding: 5px 10px;
+}
+
+div.ui-tooltip {
+    max-width: 500px;
+}

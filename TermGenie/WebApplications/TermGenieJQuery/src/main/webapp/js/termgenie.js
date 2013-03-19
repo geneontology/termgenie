@@ -16,7 +16,7 @@ function termgenie(){
 		selections.Pane_2 = false;
 		selections.Pane_3 = false;
 		
-		jQuery(id).accordion({ clearStyle: true, autoHeight: false, event: "" });
+		jQuery(id).accordion({ heightStyle: 'content', event: "" });
 		
 		// implement a custom click function
 		// allow only to open panes, which are enabled in the selections object
@@ -24,7 +24,7 @@ function termgenie(){
 			var idx = jQuery(id+' h3').index(this);
 			var activate = selections["Pane_" + idx];
 			if (activate) {
-				jQuery(id).accordion("activate", idx);
+				jQuery(id).accordion("option", "active", idx);
 			}
 		});
 		
@@ -35,7 +35,7 @@ function termgenie(){
 			 * @param pos position to activate (zero-based)
 			 */
 			activatePane : function(pos) {
-				jQuery(id).accordion("activate", pos);
+				jQuery(id).accordion("option", "active", pos);
 			},
 			
 			/**
@@ -396,7 +396,8 @@ function termgenie(){
 		
 		// create layout
 		parent.append('<select id="select-add-template-select"></select>'+
-				c_button('button-add-template-select', 'Add template'));
+				c_button('button-add-template-select', 'Add template')+
+				c_button('button-view-templates-in-tree', 'View in Tree'));
 		
 		// select dom element
 		var domElement = jQuery('#select-add-template-select');
@@ -419,34 +420,231 @@ function termgenie(){
 			},
 			createInfoDivContent: function(item) {
 				var template = templates[item.value];
-				
-				var layout = createLayoutTableOpenTag();
-				layout += '<tr><td>Name</td><td>'+getTemplateName(template)+'</td></tr>';
-				if (template.description && template.description.length > 0) {
-					layout += '<tr><td>Description</td><td>'+template.description+'</td></tr>';
-				}
-				layout += '<tr><td>Ontology Fields:</td></tr>';
-				jQuery.each(template.fields, function(index, field){
-					if(field.ontologies && field.ontologies.length > 0) {
-						var names = '';
-						jQuery.each(field.ontologies, function(index, ontology){
-							if (index > 0) {
-								names += ', ';
-							}
-							names += getOntologyName(ontology);
-						})
-						layout += '<tr><td>'+field.name+'</td><td>'+names+'</td></tr>';
-					}
-				});
-				layout += '</table>';
-				return layout;
+				return renderTemplateDesc(template);
 			}
 		});
+		
+		function renderTemplateDesc(template, styleClass) {
+			var layout;
+			if (!styleClass) {
+				layout = createLayoutTableOpenTag();
+			}else {
+				layout = '<table class="termgenie-layout-table '+styleClass+'" cellSpacing="0" cellPadding="0">'
+			}
+			layout += '<tr><td>Name</td><td>'+getTemplateName(template)+'</td></tr>';
+			if (template.description && template.description.length > 0) {
+				layout += '<tr><td>Description</td><td>'+template.description+'</td></tr>';
+			}
+			layout += '<tr><td>Ontology Fields:</td></tr>';
+			jQuery.each(template.fields, function(index, field){
+				if(field.ontologies && field.ontologies.length > 0) {
+					var names = '';
+					jQuery.each(field.ontologies, function(index, ontology){
+						if (index > 0) {
+							names += ', ';
+						}
+						names += getOntologyName(ontology);
+					})
+					layout += '<tr><td>'+field.name+'</td><td>'+names+'</td></tr>';
+				}
+			});
+			layout += '</table>';
+			return layout;
+		}
 		
 		// click handler for adding a selected template
 		jQuery('#button-add-template-select').click(function (){
 			var intIndex = jQuery('#select-add-template-select').val();
 			termTemplateWidgetList.addTemplate(templates[intIndex]);
+		});
+		
+		function TemplateTreeWidget(templates) {
+			// create template tree from the categories in the templates
+			// create a tree in memory
+			var templateTreeDataStructure = {};
+			jQuery.each(templates, function(intIndex, objValue) {
+				var templateName = getTemplateName(objValue);
+				if (objValue.categories && objValue.categories !== null) {
+					jQuery.each(objValue.categories, function(catIndex, category) {
+						if (category === 'root') {
+							templateTreeDataStructure[category] = {
+								type: 'template',
+								label: templateName,
+								template: objValue 
+							}
+						}
+						else {
+							var node = templateTreeDataStructure[category];
+							if (node === undefined) {
+								node = {
+									type: 'meta',
+									label : category,
+									children: []
+								};
+								templateTreeDataStructure[category] = node;
+							}
+							node.children.push({
+								type: 'template',
+								label: templateName,
+								template: objValue 
+							});
+						}
+					});
+				}
+			});
+			
+			// render nodes of the tree as un-ordered list
+			// this list, will be later converted into a tree
+			function renderNode(node, elemParent) {
+				var currentElem = jQuery('<li></li>');
+				currentElem.append('<a href="#">'+node.label+'</a>')
+				if (node.type === 'meta') {
+					currentElem.attr('rel', 'meta');
+					currentElem.attr('class', 'termgenie-select-template-tree-node');
+					if (node.children && node.children.length !== 0) {
+						var childrenParent = jQuery('<ul></ul>');
+						jQuery.each(node.children, function(intIndex, childNode) {
+							renderNode(childNode, childrenParent);
+						});
+						currentElem.append(childrenParent);
+					}
+				}
+				else if (node.type === 'template'){
+					currentElem.data('termTemplate', node.template);
+					
+					// add tooltip to rendered node
+					// add an empty title tag, otherwise the widget 
+					// does not render the tooltip!
+					currentElem.attr('title', '');
+					// add class to hide icons on leaf nodes
+					currentElem.attr('class', 'jstree-no-icons termgenie-select-template-tree-node');
+					var tooltipContent = renderTemplateDesc(node.template, 'termgenie-select-template-tree-tooltip');
+					currentElem.tooltip( {
+						content: tooltipContent
+					});
+				}
+				elemParent.append(currentElem);
+			}
+			
+			var templateTreeContent = jQuery('<ul></ul>');
+			jQuery.each(templateTreeDataStructure, function(intIndex, node) {
+				renderNode(node, templateTreeContent);
+			});
+			var templateTreeDiv = jQuery('<div class="termgenie-select-template-tree"></div>');
+			templateTreeDiv.append(templateTreeContent);
+			
+			
+			// create a jstree with: 
+			// * classic theme,
+			// * two node types: default and meta
+			// * search: hide non-matching nodes
+			// * use 'ui' to handle selection, allow only one selection
+			// * render the exisiting list from html as tree
+			templateTreeDiv.jstree({
+				'themes' : {
+					'theme' : "classic",
+					'dots' : true,
+					'icons' : true
+				},
+				'types' : {
+					// the default type
+					'default' : {
+						'max_children'  : -1,
+						'max_depth'     : -1,
+						'valid_children': 'all',
+						'select_node' : true,
+						'hover_node' : true,
+					},
+					'meta' : {
+						'max_children'  : -1,
+						'max_depth'     : -1,
+						'valid_children': 'all',
+						'select_node' : false,
+						'hover_node' : false
+					}
+				},
+				'search': {
+					'show_only_matches': true
+				},
+				'ui': {
+					'select_limit': 1
+				},
+				'plugins' : [ 'themes', 'types', 'ui', 'html_data', 'search' ]
+			});
+			
+			return {
+				getSelected: function() {
+					var result = null;
+					var currentSelection = templateTreeDiv.jstree('get_selected');
+					if (currentSelection && currentSelection !== null && currentSelection.length > 0) {
+						// retrieve the stored template
+						var template = jQuery.data(currentSelection[0], 'termTemplate');
+						if (template && template !== null) {
+							result = template;
+						}
+					}
+					return result;
+				},
+				appendTo: function(parentElem) {
+					// add search box with two buttons: 'search' and 'clear'
+					var treeSearchInputField = jQuery('<input type="text"></input>');
+					var treeSearchButton = jQuery('<button type="button" >Search</button>');
+					treeSearchButton.click(function(){
+						var query = treeSearchInputField.val();
+						if (query && query !== null && query.length > 2) {
+							templateTreeDiv.jstree('search', query);
+						}
+					});
+					
+					var treeClearSearchButton = jQuery('<button type="button" >Clear</button>');
+					treeClearSearchButton.click(function(){
+						templateTreeDiv.jstree('clear_search');
+					});
+					
+					var treeSearchDiv = jQuery('<div></div>');
+					treeSearchDiv.append(treeSearchInputField);
+					treeSearchDiv.append(treeSearchButton);
+					treeSearchDiv.append(treeClearSearchButton);
+					
+					parentElem.append(treeSearchDiv);
+					
+					// add tree
+					parentElem.append(templateTreeDiv);
+				}
+			}
+		}
+		
+		var templateTreeWidgetInstance = new TemplateTreeWidget(templates);
+		
+		// create dialog
+		var templateTreeDialog = jQuery('<div title="Available TermGenieTemplates"></div>');
+		templateTreeWidgetInstance.appendTo(templateTreeDialog);
+		templateTreeDialog.dialog({
+			autoOpen: false,
+			minWidth: 500,
+			minHeight: 450,
+			modal: true,
+			buttons: {
+				"Add template": function() {
+					var currentSelection = templateTreeWidgetInstance.getSelected();
+					if (currentSelection !== null) {
+						
+						// add the current selection from the tree
+						termTemplateWidgetList.addTemplate(currentSelection);
+						
+						// only exit dialog, if the there was a selection
+						$(this).dialog( "close" );
+					}
+				},
+				Cancel: function() {
+					$(this).dialog( "close" );
+				}
+			}
+		});
+		
+		// click handler for 'view in tree' button
+		jQuery('#button-view-templates-in-tree').click(function (){
+			templateTreeDialog.dialog( "open" );
 		});
 	}
 	

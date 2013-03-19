@@ -124,7 +124,11 @@
 				delay: self.options.delay,
 				minLength: self.options.minLength,
 				position: self.options.position,
-				source: self.options.source,
+				source: function( request, response ) {
+					// clean up: remove old description div
+					self._removeDescriptionDiv();
+					self.options.source(request, response);
+				},
 				// overwrite method to remove the additional description div
 				select : function(event, ui) {
 					if (self.options.onSelect && self.options.onSelect !== null) {
@@ -145,17 +149,22 @@
 				// overwrite method to remove the additional description div
 				close : function(event, ui) {
 					self._removeDescriptionDiv();
-				} 
+				},
+				// this is a modification of the standard jQuery UI code
+				// it has no option to modifiy or customize the item rendering
+				// very annoying
+				renderItem: self.options.renderItem
 			});
-			// overwrite rendering method for data items
-			autocompleteElem.data( 'autocomplete' )._renderItem = self.options.renderItem;
-			
-			var origSource = autocompleteElem.data( 'autocomplete' ).source;
-			autocompleteElem.data( 'autocomplete' ).source = function( request, response ) {
-				// clean up: remove old description div
-				self._removeDescriptionDiv();
-				origSource(request, response);
-			};
+//			// overwrite rendering method for data items
+//			var origRenderItem = autocompleteElem.renderItem;
+//			autocompleteElem.renderItem = self.options.renderItem;
+//			
+//			var origSource = autocompleteElem.data( 'autocomplete' ).source;
+//			autocompleteElem.data( 'autocomplete' ).source = function( request, response ) {
+//				// clean up: remove old description div
+//				self._removeDescriptionDiv();
+//				origSource(request, response);
+//			};
 		},
 		destroy: function() {
 			this._removeDescriptionDiv();

@@ -1529,7 +1529,7 @@ function TermGenieFreeForm(){
 			selections.Pane_1 = false;
 			selections.Pane_2 = false;
 			
-			jQuery(id).accordion({ clearStyle: true, autoHeight: false, event: "" });
+			jQuery(id).accordion({ heightStyle: 'content', event: "" });
 			
 			// implement a custom click function
 			// allow only to open panes, which are enabled in the selections object
@@ -1537,7 +1537,7 @@ function TermGenieFreeForm(){
 				var idx = jQuery(id+' h3').index(this);
 				var activate = selections["Pane_" + idx];
 				if (activate) {
-					jQuery(id).accordion("activate", idx);
+					jQuery(id).accordion("option", "active", idx);
 				}
 			});
 			
@@ -1548,7 +1548,7 @@ function TermGenieFreeForm(){
 				 * @param pos position to activate (zero-based)
 				 */
 				activatePane : function(pos) {
-					jQuery(id).accordion("activate", pos);
+					jQuery(id).accordion("option", "active", pos);
 				},
 				
 				/**
