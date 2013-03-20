@@ -310,7 +310,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						else if (similar(normalizedLabel, normalizedSynLabel)) {
 							addWarning("label",
 									"The requested label is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
-							return;
 						}
 						if (proposedSynonyms != null) {
 							for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
