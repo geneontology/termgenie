@@ -300,6 +300,10 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				List<ISynonym> oboSynonyms = graph.getOBOSynonyms(current);
 				if (oboSynonyms != null) {
 					for (ISynonym synonym : oboSynonyms) {
+						if (OboFormatTag.TAG_EXACT.equals(synonym.getScope()) == false) {
+							// skip any non EXACT synonyms
+							continue;
+						}
 						String synLabel = synonym.getLabel();
 						CharSequence normalizedSynLabel = normalizeLabel(synLabel);
 						if (equals(normalizedLabel, normalizedSynLabel)) {
