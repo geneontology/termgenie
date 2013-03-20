@@ -569,7 +569,7 @@ function termgenie(){
 				'ui': {
 					'select_limit': 1
 				},
-				'plugins' : [ 'themes', 'types', 'ui', 'html_data', 'search' ]
+				'plugins' : [ 'themes', 'types', 'ui', 'html_data', 'search', 'sort' ]
 			});
 			
 			return {
