@@ -69,6 +69,9 @@ public class FreeFormTermValidatorImplTest {
 		request.setIsA(Collections.singletonList("GO:0009058"));
 		errors(request, "definition");
 		
+		request.setDefinition("Term definition for fake term with non ASCII char: 3′-5′");
+		errors(request, "definition");
+		
 		request.setDefinition("Term definition for fake term.");
 		errors(request, "definition db xref");
 		
@@ -81,6 +84,12 @@ public class FreeFormTermValidatorImplTest {
 		
 		assertNotNull(pair.getOne());
 		assertNotNull(pair.getTwo());
+	}
+	
+	@Test
+	public void testNonAscii() throws Exception {
+		assertEquals(0, ValidationTask.hasNonAscii("Bla bla bla.").size());
+		assertEquals(1, ValidationTask.hasNonAscii("3′-5′").size());
 	}
 	
 	private void errors(FreeFormTermRequest request, String field) {

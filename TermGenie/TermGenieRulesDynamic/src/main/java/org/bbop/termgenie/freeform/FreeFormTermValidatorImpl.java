@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
@@ -228,6 +229,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				setError("label", "The provided label is too short.");
 				return;
 			}
+			
+			Set<Character> nonAscii = hasNonAscii(requestedLabel);
+			if (!nonAscii.isEmpty()) {
+				setCharacterError("label", "The label '"+requestedLabel+"'", nonAscii);
+				return;
+			}
 
 			// search for similar labels and synonyms in the ontology 
 			final CharSequence normalizedLabel = normalizeLabel(requestedLabel);
@@ -252,6 +259,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						addError("synonyms", "No empty labels as synonym allowed.");
 						continue;
 					}
+					nonAscii = hasNonAscii(requestedLabel);
+					if (!nonAscii.isEmpty()) {
+						setCharacterError("synonyms", "The synonym '"+synLabel+"'", nonAscii);
+						return;
+					}
+					
 					String lowerCase = synLabel.toLowerCase();
 					if (done.contains(lowerCase)) {
 						addError("synonyms", "Duplicate synonym: "+synLabel);
@@ -414,6 +427,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				setError("definition", "Please enter a valid definition");
 				return;
 			}
+			nonAscii = hasNonAscii(def);
+			if (!nonAscii.isEmpty()) {
+				setCharacterError("definition", "The definition", nonAscii);
+				return;
+			}
 			// search for similar definitions?
 			
 			// require at least on def db xref, ideally includes PMID
@@ -553,6 +571,24 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 		}
 		
+		void setCharacterError(String field, String msgPrefix, Set<Character> chars) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(msgPrefix);
+			if (chars.size() == 1) {
+				sb.append(" contains a non-ASCII character:");
+			}
+			else {
+				sb.append(" contains non-ASCII characters:");
+			}
+			for (Character character : chars) {
+				sb.append(' ');
+				sb.append('\'');
+				sb.append(character);
+				sb.append('\'');
+			}
+			setError(field, sb.toString());
+		}
+		
 		void setError(String field, String messge) {
 			errors = Collections.singletonList(new FreeFormHint(field, messge));
 		}
@@ -627,6 +663,18 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					(OboFormatTag.TAG_NARROW.getTag().equals(s)) ||
 					(OboFormatTag.TAG_EXACT.getTag().equals(s)) ||
 					(OboFormatTag.TAG_BROAD.getTag().equals(s));
+		}
+		
+		static Set<Character> hasNonAscii(String cs) {
+			
+			Set<Character> set = new HashSet<Character>();
+			for (int i = 0; i < cs.length(); i++) {
+				char c = cs.charAt(i);
+				if (CharUtils.isAsciiPrintable(c) == false) {
+					set.add(Character.valueOf(c));
+				}
+			}
+			return set;
 		}
 		
 		private static int ID_Counter = 0;
