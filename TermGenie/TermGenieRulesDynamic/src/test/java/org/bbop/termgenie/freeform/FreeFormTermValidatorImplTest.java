@@ -53,8 +53,8 @@ public class FreeFormTermValidatorImplTest {
 		request.setLabel("too short");
 		errors(request, "label");
 		
-		// biosynthesis is a synonym for GO:0009058 biosynthetic process
-		request.setLabel("biosynthesis");
+		// exact synonym for GO:0060444 ! branching involved in mammary gland duct morphogenesis
+		request.setLabel("mammary gland branching morphogenesis");
 		errors(request, "label");
 		
 		request.setLabel("not too short fake label");
