@@ -264,4 +264,43 @@ generated automatically</description>
 			<category>transport</category>
 		</categories>
 	</template>
+	<template name="chemical_transport_from_to">
+		<description>transport of a chemical entity from and/or to a cellular component</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="chemical" required="true">
+				<ontology name="GeneOntology">
+					<branch>chebi</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix>transport</prefix>
+					<prefix>vesicle-mediated transport</prefix>
+				</prefixes>
+			</field>
+			<field name="from">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="to">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_transport_from_to.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>cellular_component</category>
+			<category>ChEBI</category>
+			<category>transport</category>
+		</categories>
+	</template>
 </termgenietemplates>
