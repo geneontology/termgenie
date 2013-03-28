@@ -151,20 +151,10 @@
 					self._removeDescriptionDiv();
 				},
 				// this is a modification of the standard jQuery UI code
-				// it has no option to modifiy or customize the item rendering
+				// it has no option to modify or customize the item rendering
 				// very annoying
 				renderItem: self.options.renderItem
 			});
-//			// overwrite rendering method for data items
-//			var origRenderItem = autocompleteElem.renderItem;
-//			autocompleteElem.renderItem = self.options.renderItem;
-//			
-//			var origSource = autocompleteElem.data( 'autocomplete' ).source;
-//			autocompleteElem.data( 'autocomplete' ).source = function( request, response ) {
-//				// clean up: remove old description div
-//				self._removeDescriptionDiv();
-//				origSource(request, response);
-//			};
 		},
 		destroy: function() {
 			this._removeDescriptionDiv();

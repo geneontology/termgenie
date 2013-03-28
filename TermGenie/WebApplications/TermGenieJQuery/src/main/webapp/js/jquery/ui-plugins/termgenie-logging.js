@@ -63,7 +63,7 @@
 				buttons: [{
 					text: "Clear",
 					click: function() {
-						var selected = popupDiv.tabs('option', 'selected');
+						var selected = popupDiv.tabs("option", "active");
 						if (selected === 0) {
 							errorPanel.clear();
 						}
@@ -81,7 +81,7 @@
 			
 			// create tabs in popup, using a custom prefix for tabId
 			popupDiv.tabs({
-				idPrefix: 'termgenie-logging-tabId-'
+				heightStyle: 'fill'
 			});
 			
 			function createPanel(name, maxCount, tabId) {
@@ -119,7 +119,7 @@
 					// force popup, except if hidden is true
 					if (!(hidden === true)) {
 						// select the error tab
-						popupDiv.tabs('select', 0);
+						popupDiv.tabs("option", "active", 0);
 						// show error popup
 						popupDiv.dialog('open');
 					}
