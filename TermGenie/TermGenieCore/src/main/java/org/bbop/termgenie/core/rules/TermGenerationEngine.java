@@ -180,7 +180,7 @@ public interface TermGenerationEngine {
 			StringBuilder builder = new StringBuilder();
 			builder.append("TermGenerationOutput [");
 			builder.append("success=");
-			builder.append(error != null);
+			builder.append(error == null);
 			if (term != null) {
 				builder.append(", ");
 				builder.append("term=");
