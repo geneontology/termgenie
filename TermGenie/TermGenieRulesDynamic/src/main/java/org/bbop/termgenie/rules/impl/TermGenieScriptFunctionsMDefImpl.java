@@ -87,11 +87,13 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	@Override
 	public OWLObject getSingleTerm(String name, OWLGraphWrapper[] ontologies) {
 		String id = getFieldSingleTerm(name);
-		for (OWLGraphWrapper ontology : ontologies) {
-			if (ontology != null) {
-				OWLObject x = getTermSimple(id, ontology);
-				if (x != null) {
-					return x;
+		if (id != null) {
+			for (OWLGraphWrapper ontology : ontologies) {
+				if (ontology != null) {
+					OWLObject x = getTermSimple(id, ontology);
+					if (x != null) {
+						return x;
+					}
 				}
 			}
 		}

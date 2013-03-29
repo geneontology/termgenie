@@ -908,7 +908,8 @@ function termgenie(){
 								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontologies, prefixes, field.functionalPrefixesIds, field.preSelected);
 							}
 							else {
-								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontologies);	
+								var optionalTerm = field.required === false;
+								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontologies, optionalTerm);	
 							}
 						}
 						else {
@@ -1124,10 +1125,11 @@ function termgenie(){
 		 * @param elem {DOM element} parent element
 		 * @param templatePos {int} position in the term template
 		 * @param ontologies {String[]} ontologies to be searched
+		 * @param optionalTerm boolean if true, allow null entries
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function AutoCompleteOntologyInput(elem, templatePos, ontologies) {
+		function AutoCompleteOntologyInput(elem, templatePos, ontologies, optionalTerm) {
 			
 			var inputElement = jQuery('<input/>');
 			elem.append(inputElement);
@@ -1251,10 +1253,15 @@ function termgenie(){
 							return true;
 						}
 					}
-					extractionResult.addError('No valid term. Please specify a term from '+
+					if (optionalTerm === true) {
+						return true;
+					}
+					else {
+						extractionResult.addError('No valid term. Please specify a term from '+
 							getShortOntologyNameList(field.ontologies), template, field);
-					setErrorState();
-					return false;
+						setErrorState();
+						return false;
+					}
 				}
 			};
 		}

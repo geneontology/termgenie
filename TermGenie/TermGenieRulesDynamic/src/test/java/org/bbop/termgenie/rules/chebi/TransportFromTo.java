@@ -141,6 +141,28 @@ public class TransportFromTo {
 		assertEquals("vesicle-mediated difenoxin transport from rough endoplasmic reticulum to lysosome", frame2.getTagValue(OboFormatTag.TAG_NAME));
 	}
 	
+	@Test
+	public void test_transport_from_to_fail() throws Exception {
+		TermTemplate template = getTransporterFromToTemplate();
+		TermGenerationParameters parameters = new TermGenerationParameters();
+		TemplateField fieldChemical = template.getFields().get(0);
+		String term = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
+		parameters.setTermValues(fieldChemical.getName(), Arrays.asList(term));
+		parameters.setStringValues(fieldChemical.getName(), Arrays.asList("transport", "vesicle-mediated transport"));
+	
+		
+		TermGenerationInput input = new TermGenerationInput(template, parameters);
+		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
+		
+		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output1 = list.get(0);
+		
+		assertNotNull(output1.getError());
+		
+	}
+	
 	private TermTemplate getTransporterFromToTemplate() {
 		return generationEngine.getAvailableTemplates().get(10);
 	}

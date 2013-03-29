@@ -12,7 +12,7 @@ function chemical_transport_from_to() {
 		return;
 	}
 	
-	
+	var ccCount = 0;
 	var from = getSingleTerm("from", go);
 	var hasFrom = from && from !== null;
 	
@@ -22,6 +22,7 @@ function chemical_transport_from_to() {
 			error(check.error());
 			return;
 		}
+		ccCount += 1;
 	}
 	
 	var to = getSingleTerm("to", go);
@@ -33,11 +34,13 @@ function chemical_transport_from_to() {
 			error(check.error());
 			return;
 		}
+		ccCount += 1;
 	}
 	
 	// okay, we require at least one cellular component
-	if (hasFrom === false && hasTo === false) {
+	if (ccCount === 0) {
 		error("Could not create a term, at least one cellular location ('from' or 'to') is required.");
+		return;
 	}
   
 	var termCount = 0;
