@@ -553,7 +553,7 @@ function termgenie(){
 						'max_depth'     : -1,
 						'valid_children': 'all',
 						'select_node' : true,
-						'hover_node' : true,
+						'hover_node' : true
 					},
 					'meta' : {
 						'max_children'  : -1,
