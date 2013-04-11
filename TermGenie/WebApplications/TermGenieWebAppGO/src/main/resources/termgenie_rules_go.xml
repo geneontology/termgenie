@@ -118,6 +118,7 @@
 			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
 		</ruleFiles>
 		<categories>
+			<category>molecular_function</category>
 			<category>processes</category>
 		</categories>
 	</template>
@@ -256,7 +257,7 @@
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_transporter_activity">
@@ -279,7 +280,7 @@
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_binding">
@@ -301,8 +302,8 @@
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>interaction</category>
-			<category>ChEBI</category>
+			<category>molecular_function</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="metabolism_catabolism_biosynthesis">
@@ -331,8 +332,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>other</category>
-			<category>ChEBI</category>
+			<category>metabolic</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
@@ -355,7 +356,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_mf" displayname="chemical_transmembrane_transporter_activity">
@@ -386,7 +387,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_response_to">
@@ -413,7 +414,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>signaling</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<!--
@@ -440,8 +441,7 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>other</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	 -->
@@ -465,7 +465,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_export">
@@ -488,7 +488,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>transport</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="cc_transport_from_to">
@@ -521,7 +521,7 @@ generated automatically</description>
 		<categories>
 			<category>transport</category>
 			<category>cellular_component</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="cc_transport">
@@ -549,7 +549,7 @@ generated automatically</description>
 		<categories>
 			<category>transport</category>
 			<category>cellular_component</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_transport_from_to">
@@ -587,7 +587,7 @@ generated automatically</description>
 		<categories>
 			<category>transport</category>
 			<category>cellular_component</category>
-			<category>ChEBI</category>
+			<category>chemicals</category>
 		</categories>
 	</template>
 	<!-- 
