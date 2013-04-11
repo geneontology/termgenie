@@ -413,7 +413,6 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>signaling</category>
 			<category>chemicals</category>
 		</categories>
 	</template>
@@ -521,7 +520,6 @@ generated automatically</description>
 		<categories>
 			<category>transport</category>
 			<category>cellular_component</category>
-			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="cc_transport">
@@ -549,7 +547,6 @@ generated automatically</description>
 		<categories>
 			<category>transport</category>
 			<category>cellular_component</category>
-			<category>chemicals</category>
 		</categories>
 	</template>
 	<template name="chemical_transport_from_to">
