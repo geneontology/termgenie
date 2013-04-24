@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.user.UserDataProvider;
 
-
+@Deprecated
 public class GeneOntologyUserDataModule extends IOCModule {
 
 	private final String gocConfigResource;

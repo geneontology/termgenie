@@ -1,0 +1,12 @@
+[
+	{
+		email: "testemail@test.com",
+		xref: "GOC:test",
+		screenname: "Test Name 1"
+	},
+	{
+		email: "testemail2@test.com",
+		screenname: "Test Name 2",
+		orcid: "http://orcid.org/0000-0000-0000-0001"
+	}	
+]

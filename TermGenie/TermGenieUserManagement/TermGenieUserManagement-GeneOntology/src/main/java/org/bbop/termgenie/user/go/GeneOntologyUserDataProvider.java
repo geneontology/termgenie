@@ -10,7 +10,6 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.bbop.termgenie.user.UserData;
-import org.bbop.termgenie.user.UserDataImpl;
 import org.bbop.termgenie.user.simple.SimpleUserDataProvider;
 
 import com.google.inject.Inject;
@@ -18,6 +17,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
+@Deprecated
 public class GeneOntologyUserDataProvider extends SimpleUserDataProvider {
 
 	private static final Logger logger = Logger.getLogger(GeneOntologyUserDataProvider.class);
@@ -57,7 +57,7 @@ public class GeneOntologyUserDataProvider extends SimpleUserDataProvider {
 			}
 			logger.warn("Could not retrieve user data for xref: "+xref);
 			String screenname = getNameFromEMail(email);
-			return new UserDataImpl(screenname, email, email, xref, screenname);
+			return new UserData(screenname, email, email, xref, screenname, null);
 		}
 		logger.warn("Could not retrieve an xref for email: "+email);
 		return super.getUserDataPerEMail(email);
@@ -116,7 +116,7 @@ public class GeneOntologyUserDataProvider extends SimpleUserDataProvider {
 				}
 				logger.warn("Could not retrieve user data for xref: "+xref);
 				String screenname = getNameFromEMail(email);
-				return new UserDataImpl(screenname, email, email, xref, screenname);
+				return new UserData(screenname, email, email, xref, screenname, null);
 			}
 		}
 		logger.warn("Could not retrieve an xref for emails: "+emails);
@@ -137,7 +137,7 @@ public class GeneOntologyUserDataProvider extends SimpleUserDataProvider {
 							screenname = getNameFromEMail(email);
 						}
 						String scmAlias = extractSCMAlias(xref, email);
-						return new UserDataImpl(screenname, guid, email, xref, scmAlias);
+						return new UserData(screenname, guid, email, xref, scmAlias, null);
 					}
 				}
 			}
