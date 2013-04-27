@@ -1,6 +1,6 @@
 format-version: 1.2
-date: 06:02:2013 09:33
-saved-by: michel.schneider
+date: 26:04:2013 11:32
+saved-by: di
 auto-generated-by: TermGenie 1.0
 ontology: go/extensions/x-chemical
 
@@ -120,7 +120,7 @@ intersection_of: GO:0015822 ! ornithine transport
 intersection_of: results_in_transport_to_from_or_in GO:0005739 ! mitochondrion
 
 [Term]
-id: GO:0000095 ! S-adenosylmethionine transmembrane transporter activity
+id: GO:0000095 ! S-adenosyl-L-methionine transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:15414 ! S-adenosyl-L-methionine
 
@@ -650,6 +650,11 @@ intersection_of: results_in_assembly_of GO:0042613 ! MHC class II protein comple
 id: GO:0002790 ! peptide secretion
 intersection_of: GO:0046903 ! secretion
 intersection_of: transports_or_maintains_localization_of CHEBI:16670 ! peptide
+
+[Term]
+id: GO:0002927 ! archaeosine-tRNA biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:73265
 
 [Term]
 id: GO:0003333 ! amino acid transmembrane transport
@@ -2536,7 +2541,7 @@ intersection_of: has_output CHEBI:18035 ! diglyceride
 [Term]
 id: GO:0006653 ! 1,2-diacyl-sn-glycero-3-phosphocholine metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:16110 ! 1,2-diacyl-sn-glycero-3-phosphocholine
+intersection_of: has_participant CHEBI:16110 ! 1,2-diacyl-sn-glycero-3-phosphocholine(1+)
 
 [Term]
 id: GO:0006654 ! phosphatidic acid biosynthetic process
@@ -3898,6 +3903,12 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:32486 ! L-phenylalaninate
 
 [Term]
+id: GO:0009095 ! aromatic amino acid family biosynthetic process, prephenate pathway
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_intermediate CHEBI:57852 ! prephenate(2-)
+intersection_of: has_output CHEBI:33856 ! aromatic amino acid
+
+[Term]
 id: GO:0009097 ! isoleucine biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:24898 ! isoleucine
@@ -4818,11 +4829,6 @@ intersection_of: GO:0050896 ! response to stimulus
 intersection_of: has_input CHEBI:24527 ! herbicide
 
 [Term]
-id: GO:0009636 ! response to toxin
-intersection_of: GO:0050896 ! response to stimulus
-intersection_of: has_input CHEBI:27026 ! toxin
-
-[Term]
 id: GO:0009657 ! plastid organization
 intersection_of: GO:0016043 ! cellular component organization
 intersection_of: results_in_organization_of GO:0009536 ! plastid
@@ -4960,7 +4966,7 @@ intersection_of: has_output CHEBI:24797 ! indole phytoalexin
 [Term]
 id: GO:0009701 ! isoflavonoid phytoalexin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
-intersection_of: has_output CHEBI:60953 ! isoflavonoid phytoalexin
+intersection_of: has_output CHEBI:26377 ! pterocarpan
 
 [Term]
 id: GO:0009708 ! benzyl isoquinoline alkaloid biosynthetic process
@@ -5183,6 +5189,12 @@ intersection_of: GO:0042545 ! cell wall modification
 intersection_of: has_participant GO:0009505 ! plant-type cell wall
 
 [Term]
+id: GO:0009848 ! indoleacetic acid biosynthetic process via tryptophan
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_intermediate CHEBI:16828 ! L-tryptophan
+intersection_of: has_output CHEBI:30854 ! indole-3-acetate
+
+[Term]
 id: GO:0009932 ! cell tip growth
 intersection_of: GO:0040007 ! growth
 intersection_of: results_in_growth_of GO:0051286 ! cell tip
@@ -5360,6 +5372,12 @@ id: GO:0010133 ! proline catabolic process to glutamate
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:32871 ! prolinate
 intersection_of: has_output CHEBI:29987 ! glutamate(2-)
+
+[Term]
+id: GO:0010142 ! farnesyl diphosphate biosynthetic process, mevalonate pathway
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_intermediate CHEBI:36464 ! (R)-mevalonate
+intersection_of: has_output CHEBI:50277 ! farnesyl diphosphate
 
 [Term]
 id: GO:0010143 ! cutin biosynthetic process
@@ -5711,6 +5729,11 @@ intersection_of: has_input CHEBI:18422 ! sulfur dioxide
 id: GO:0010493 ! Lewis a epitope biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:59295 ! beta-D-Galp-(1->3)-[alpha-L-Fucp-(1->4)]-beta-D-GlcpNAc
+
+[Term]
+id: GO:0010498 ! proteasomal protein catabolic process
+intersection_of: GO:0030163 ! protein catabolic process
+intersection_of: has_participant GO:0000502 ! proteasome complex
 
 [Term]
 id: GO:0010509 ! polyamine homeostasis
@@ -7340,7 +7363,7 @@ intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:22918 ! branched-chain amino acid
 
 [Term]
-id: GO:0015805 ! S-adenosylmethionine transport
+id: GO:0015805 ! S-adenosyl-L-methionine transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:15414 ! S-adenosyl-L-methionine
 
@@ -9269,6 +9292,18 @@ intersection_of: has_input CHEBI:32508 ! glycinate
 intersection_of: has_output CHEBI:17750 ! glycine betaine
 
 [Term]
+id: GO:0019287 ! isopentenyl diphosphate biosynthetic process, mevalonate pathway
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_intermediate CHEBI:36464 ! (R)-mevalonate
+intersection_of: has_output CHEBI:16584 ! isopentenyl diphosphate
+
+[Term]
+id: GO:0019288 ! isopentenyl diphosphate biosynthetic process, mevalonate-independent pathway
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_intermediate CHEBI:16493 ! 1-deoxy-D-xylulose 5-phosphate
+intersection_of: has_output CHEBI:16584 ! isopentenyl diphosphate
+
+[Term]
 id: GO:0019292 ! tyrosine biosynthetic process from chorismate via 4-hydroxyphenylpyruvate
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_input CHEBI:29748 ! chorismate(2-)
@@ -10952,6 +10987,11 @@ intersection_of: GO:0022836 ! gated channel activity
 intersection_of: transports_or_maintains_localization_of CHEBI:24870 ! ion
 
 [Term]
+id: GO:0022857 ! transmembrane transporter activity
+intersection_of: GO:0005215 ! transporter activity
+intersection_of: results_in_transport_across GO:0016020 ! membrane
+
+[Term]
 id: GO:0022858 ! alanine transmembrane transporter activity
 intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16449 ! alanine
@@ -11617,6 +11657,11 @@ intersection_of: has_output CHEBI:18359 ! holo-[acyl-carrier protein]
 id: GO:0031122 ! cytoplasmic microtubule organization
 intersection_of: GO:0016043 ! cellular component organization
 intersection_of: results_in_organization_of GO:0005881 ! cytoplasmic microtubule
+
+[Term]
+id: GO:0031144 ! proteasome localization
+intersection_of: GO:0051179 ! localization
+intersection_of: transports_or_maintains_localization_of GO:0000502 ! proteasome complex
 
 [Term]
 id: GO:0031147 ! 1-(3,5-dichloro-2,6-dihydroxy-4-methoxyphenyl)hexan-1-one metabolic process
@@ -12867,6 +12912,16 @@ intersection_of: has_intermediate CHEBI:58190 ! O-phosphonatoethanaminium(1-)
 intersection_of: has_output CHEBI:15354 ! choline
 
 [Term]
+id: GO:0033329 ! kaempferol O-glucoside metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:30200 ! kaempferol 3-O-glucoside
+
+[Term]
+id: GO:0033330 ! kaempferol O-glucoside biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:30200 ! kaempferol 3-O-glucoside
+
+[Term]
 id: GO:0033331 ! ent-kaurene metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15415 ! ent-kaurene
@@ -13097,9 +13152,24 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:18038 ! GDP-L-galactose
 
 [Term]
+id: GO:0033473 ! indoleacetic acid conjugate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:64631 ! indoleacetic acid conjugate
+
+[Term]
+id: GO:0033474 ! indoleacetic acid conjugate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64631 ! indoleacetic acid conjugate
+
+[Term]
 id: GO:0033475 ! indoleacetic acid amide conjugate biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:64632 ! indoleacetic acid amide conjugate
+
+[Term]
+id: GO:0033476 ! indoleacetic acid ester conjugate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:64633 ! indoleacetic acid ester conjugate
 
 [Term]
 id: GO:0033477 ! S-methylmethionine metabolic process
@@ -16137,16 +16207,6 @@ intersection_of: GO:0005215 ! transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:36420 ! acridine
 
 [Term]
-id: GO:0042914 ! colicin transport
-intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:64713 ! colicin
-
-[Term]
-id: GO:0042915 ! group A colicin transport
-intersection_of: GO:0006810 ! transport
-intersection_of: transports_or_maintains_localization_of CHEBI:64714 ! group A colicin
-
-[Term]
 id: GO:0042916 ! alkylphosphonate transport
 intersection_of: GO:0006810 ! transport
 intersection_of: transports_or_maintains_localization_of CHEBI:60983 ! alkylphosphonate
@@ -16374,11 +16434,6 @@ intersection_of: GO:0016043 ! cellular component organization
 intersection_of: results_in_organization_of GO:0045171 ! intercellular bridge
 
 [Term]
-id: GO:0043064 ! flagellum organization
-intersection_of: GO:0016043 ! cellular component organization
-intersection_of: results_in_organization_of GO:0019861 ! flagellum
-
-[Term]
 id: GO:0043090 ! amino acid import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:33709 ! amino acid
@@ -16407,6 +16462,11 @@ intersection_of: transports_or_maintains_localization_of CHEBI:13389 ! NAD
 id: GO:0043149 ! stress fiber assembly
 intersection_of: GO:0022607 ! cellular component assembly
 intersection_of: results_in_assembly_of GO:0001725 ! stress fiber
+
+[Term]
+id: GO:0043161 ! proteasomal ubiquitin-dependent protein catabolic process
+intersection_of: GO:0006511 ! ubiquitin-dependent protein catabolic process
+intersection_of: has_participant GO:0000502 ! proteasome complex
 
 [Term]
 id: GO:0043163 ! cell envelope organization
@@ -16908,7 +16968,7 @@ intersection_of: has_input CHEBI:35187 ! monoterpene
 [Term]
 id: GO:0043705 ! cyanophycin metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant GOCHE:0000268
+intersection_of: has_participant CHEBI:65318 ! cyanophycin macromolecule
 
 [Term]
 id: GO:0043865 ! methionine transmembrane transporter activity
@@ -16969,6 +17029,17 @@ intersection_of: has_target_end_location GO:0005856 ! cytoskeleton
 id: GO:0044539 ! long-chain fatty acid import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:15904 ! long-chain fatty acid
+
+[Term]
+id: GO:0044578 ! butyryl-CoA biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15517 ! butyryl-CoA
+
+[Term]
+id: GO:0044579 ! butyryl-CoA biosynthetic process from acetyl-CoA
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_input CHEBI:15351 ! acetyl-CoA
+intersection_of: has_output CHEBI:15517 ! butyryl-CoA
 
 [Term]
 id: GO:0044591 ! response to amylopectin
@@ -18296,12 +18367,12 @@ intersection_of: has_input CHEBI:50753 ! isoflavonoid
 [Term]
 id: GO:0046289 ! isoflavonoid phytoalexin metabolic process
 intersection_of: GO:0008152 ! metabolic process
-intersection_of: has_participant CHEBI:60953 ! isoflavonoid phytoalexin
+intersection_of: has_participant CHEBI:26377 ! pterocarpan
 
 [Term]
 id: GO:0046290 ! isoflavonoid phytoalexin catabolic process
 intersection_of: GO:0009056 ! catabolic process
-intersection_of: has_input CHEBI:60953 ! isoflavonoid phytoalexin
+intersection_of: has_input CHEBI:26377 ! pterocarpan
 
 [Term]
 id: GO:0046292 ! formaldehyde metabolic process
@@ -19785,7 +19856,7 @@ intersection_of: has_input CHEBI:52449 ! 5-oxo-ETE
 [Term]
 id: GO:0050647 ! 5-hydroxy-6E,8Z,11Z,14Z-icosatetraenoic acid binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:60943 ! 5-hydroxy-6E,8Z,11Z,14Z-icosatetraenoic acid
+intersection_of: has_input CHEBI:60943 ! 5-HETE
 
 [Term]
 id: GO:0050648 ! 5(S)-hydroxyperoxy-6E,8Z,11Z,14Z-icosatetraenoic acid binding
@@ -21071,11 +21142,6 @@ intersection_of: GO:0009653 ! anatomical structure morphogenesis
 intersection_of: results_in_morphogenesis_of GO:0005929 ! cilium
 
 [Term]
-id: GO:0060286 ! flagellar cell motility
-intersection_of: GO:0048870 ! cell motility
-intersection_of: has_participant GO:0019861 ! flagellum
-
-[Term]
 id: GO:0060356 ! leucine import
 intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:25017 ! leucine
@@ -21165,6 +21231,11 @@ id: GO:0061502 ! early endosome to recycling endosome transport
 intersection_of: GO:0006810 ! transport
 intersection_of: has_target_end_location GO:0055037 ! recycling endosome
 intersection_of: has_target_start_location GO:0005769 ! early endosome
+
+[Term]
+id: GO:0061512 ! protein localization to cilium
+intersection_of: GO:0008104 ! protein localization
+intersection_of: has_target_end_location GO:0005929 ! cilium
 
 [Term]
 id: GO:0065003 ! macromolecular complex assembly
@@ -21537,6 +21608,11 @@ intersection_of: GO:0006810 ! transport
 intersection_of: imports CHEBI:29033 ! iron(2+)
 
 [Term]
+id: GO:0070628 ! proteasome binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input GO:0000502 ! proteasome complex
+
+[Term]
 id: GO:0070629 ! (1->4)-alpha-glucan metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:15444 ! (1->4)-alpha-D-glucan
@@ -21590,6 +21666,11 @@ intersection_of: occurs_in GO:0010008 ! endosome membrane
 id: GO:0070679 ! inositol 1,4,5 trisphosphate binding
 intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:16595 ! 1D-myo-inositol 1,4,5-trisphosphate
+
+[Term]
+id: GO:0070682 ! proteasome regulatory particle assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005838 ! proteasome regulatory particle
 
 [Term]
 id: GO:0070723 ! response to cholesterol
@@ -23367,6 +23448,11 @@ intersection_of: GO:0022857 ! transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:16027 ! AMP
 
 [Term]
+id: GO:0080129 ! proteasome core complex assembly
+intersection_of: GO:0022607 ! cellular component assembly
+intersection_of: results_in_assembly_of GO:0005839 ! proteasome core complex
+
+[Term]
 id: GO:0080138 ! borate uptake transmembrane transporter activity
 intersection_of: GO:0015563 ! uptake transmembrane transporter activity
 intersection_of: transports_or_maintains_localization_of CHEBI:22908 ! borate
@@ -23679,11 +23765,6 @@ intersection_of: GO:0005488 ! binding
 intersection_of: has_input CHEBI:17633 ! guanosine 3',5'-bis(diphosphate)
 
 [Term]
-id: GO:0097237 ! cellular response to toxin
-intersection_of: GO:0070887 ! cellular response to chemical stimulus
-intersection_of: has_input CHEBI:27026 ! toxin
-
-[Term]
 id: GO:0097238 ! cellular response to methylglyoxal
 intersection_of: GO:0070887 ! cellular response to chemical stimulus
 intersection_of: has_input CHEBI:17158 ! methylglyoxal
@@ -23701,7 +23782,7 @@ intersection_of: has_input CHEBI:5078 ! flavonol
 [Term]
 id: GO:0097245 ! flavanol binding
 intersection_of: GO:0005488 ! binding
-intersection_of: has_input CHEBI:24036 ! flavanol
+intersection_of: has_input CHEBI:24036
 
 [Term]
 id: GO:0097246 ! catechin binding
@@ -27059,40 +27140,441 @@ intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:67115 ! ecgonone methyl ester
 
 [Term]
-id: GO:1901882
+id: GO:1901882 ! 4-hydroxycoumarin metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:40070 ! 4-hydroxycoumarin
 
 [Term]
-id: GO:1901883
+id: GO:1901883 ! 4-hydroxycoumarin catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:40070 ! 4-hydroxycoumarin
 
 [Term]
-id: GO:1901884
+id: GO:1901884 ! 4-hydroxycoumarin biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:40070 ! 4-hydroxycoumarin
 
 [Term]
-id: GO:1901885
+id: GO:1901885 ! 2-hydroxybenzoyl-CoA metabolic process
 intersection_of: GO:0008152 ! metabolic process
 intersection_of: has_participant CHEBI:32587 ! 2-hydroxybenzoyl-CoA
 
 [Term]
-id: GO:1901886
+id: GO:1901886 ! 2-hydroxybenzoyl-CoA catabolic process
 intersection_of: GO:0009056 ! catabolic process
 intersection_of: has_input CHEBI:32587 ! 2-hydroxybenzoyl-CoA
 
 [Term]
-id: GO:1901887
+id: GO:1901887 ! 2-hydroxybenzoyl-CoA biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:32587 ! 2-hydroxybenzoyl-CoA
+
+[Term]
+id: GO:1901902 ! tyrocidine metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:71947 ! tyrocidine
+
+[Term]
+id: GO:1901903 ! tyrocidine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:71947 ! tyrocidine
+
+[Term]
+id: GO:1901904 ! tyrocidine biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:71947 ! tyrocidine
+
+[Term]
+id: GO:1901905 ! response to tamsulosin
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:9398 ! tamsulosin
+
+[Term]
+id: GO:1901906 ! diadenosine pentaphosphate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63737 ! diadenosyl pentaphosphate
+
+[Term]
+id: GO:1901907 ! diadenosine pentaphosphate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63737 ! diadenosyl pentaphosphate
+
+[Term]
+id: GO:1901908 ! diadenosine hexaphosphate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63736 ! diadenosyl hexaphosphate
+
+[Term]
+id: GO:1901909 ! diadenosine hexaphosphate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63736 ! diadenosyl hexaphosphate
+
+[Term]
+id: GO:1901910 ! adenosine 5'-(hexahydrogen pentaphosphate) metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:40096 ! adenosine 5'-(hexahydrogen pentaphosphate)
+
+[Term]
+id: GO:1901911 ! adenosine 5'-(hexahydrogen pentaphosphate) catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:40096 ! adenosine 5'-(hexahydrogen pentaphosphate)
+
+[Term]
+id: GO:1901926 ! cadinene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:22976 ! cadinene
+
+[Term]
+id: GO:1901927 ! cadinene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:22976 ! cadinene
+
+[Term]
+id: GO:1901928 ! cadinene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:22976 ! cadinene
+
+[Term]
+id: GO:1901929 ! alpha-copaene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:10221 ! alpha-copaene
+
+[Term]
+id: GO:1901930 ! alpha-copaene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:10221 ! alpha-copaene
+
+[Term]
+id: GO:1901931 ! alpha-copaene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:10221 ! alpha-copaene
+
+[Term]
+id: GO:1901932 ! bicyclogermacrene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63709 ! bicyclogermacrene
+
+[Term]
+id: GO:1901933 ! bicyclogermacrene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63709 ! bicyclogermacrene
+
+[Term]
+id: GO:1901934 ! bicyclogermacrene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:63709 ! bicyclogermacrene
+
+[Term]
+id: GO:1901935 ! beta-caryophyllene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:63191 ! beta-caryophyllene
+
+[Term]
+id: GO:1901936 ! beta-caryophyllene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:63191 ! beta-caryophyllene
+
+[Term]
+id: GO:1901937 ! beta-caryophyllene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:63191 ! beta-caryophyllene
+
+[Term]
+id: GO:1901938 ! (-)-exo-alpha-bergamotene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:62756 ! (-)-exo-alpha-bergamotene
+
+[Term]
+id: GO:1901939 ! (-)-exo-alpha-bergamotene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:62756 ! (-)-exo-alpha-bergamotene
+
+[Term]
+id: GO:1901940 ! (-)-exo-alpha-bergamotene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:62756 ! (-)-exo-alpha-bergamotene
+
+[Term]
+id: GO:1901941 ! (+)-epi-alpha-bisabolol metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:68658 ! (+)-epi-alpha-bisabolol
+
+[Term]
+id: GO:1901942 ! (+)-epi-alpha-bisabolol catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:68658 ! (+)-epi-alpha-bisabolol
+
+[Term]
+id: GO:1901943 ! (+)-epi-alpha-bisabolol biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:68658 ! (+)-epi-alpha-bisabolol
+
+[Term]
+id: GO:1901944 ! miltiradiene metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:65037 ! miltiradiene
+
+[Term]
+id: GO:1901945 ! miltiradiene catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:65037 ! miltiradiene
+
+[Term]
+id: GO:1901946 ! miltiradiene biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:65037 ! miltiradiene
+
+[Term]
+id: GO:1901947 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:30939 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate
+
+[Term]
+id: GO:1901948 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:30939 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate
+
+[Term]
+id: GO:1901949 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:30939 ! 5alpha,9alpha,10beta-labda-8(20),13-dien-15-yl diphosphate
+
+[Term]
+id: GO:1901950 ! dense core granule transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of GO:0031045 ! dense core granule
+
+[Term]
+id: GO:1901960 ! isobutanol metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:46645 ! isobutanol
+
+[Term]
+id: GO:1901961 ! isobutanol biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:46645 ! isobutanol
+
+[Term]
+id: GO:1901962 ! S-adenosyl-L-methionine transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15414 ! S-adenosyl-L-methionine
+
+[Term]
+id: GO:1901965 ! endoplasmic reticulum to chloroplast transport
+intersection_of: GO:0006810 ! transport
+intersection_of: has_target_end_location GO:0009507 ! chloroplast
+intersection_of: has_target_start_location GO:0005783 ! endoplasmic reticulum
+
+[Term]
+id: GO:1901973 ! proline binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:26271 ! proline
+
+[Term]
+id: GO:1901974 ! glycerate transmembrane transporter activity
+intersection_of: GO:0022857 ! transmembrane transporter activity
+intersection_of: transports_or_maintains_localization_of CHEBI:33871 ! glycerate
+
+[Term]
+id: GO:1901975 ! glycerate transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:33871 ! glycerate
+
+[Term]
+id: GO:1901981 ! phosphatidylinositol phosphate binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:28765 ! phosphatidylinositol phosphate
+
+[Term]
+id: GO:1901982 ! maltose binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:17306 ! maltose
+
+[Term]
+id: GO:1901986 ! response to ketamine
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:6121 ! ketamine
+
+[Term]
+id: GO:1901998 ! toxin transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:27026 ! toxin
+
+[Term]
+id: GO:1901999 ! homogentisate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:16169 ! homogentisate
+
+[Term]
+id: GO:1902000 ! homogentisate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:16169 ! homogentisate
+
+[Term]
+id: GO:1902001 ! fatty acid transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:35366 ! fatty acid
+
+[Term]
+id: GO:1902011 ! poly(ribitol phosphate) teichoic acid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:72454 ! poly(ribitol phosphate) teichoic acid
+
+[Term]
+id: GO:1902012 ! poly(ribitol phosphate) teichoic acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:72454 ! poly(ribitol phosphate) teichoic acid
+
+[Term]
+id: GO:1902013 ! poly(glycerol phosphate) teichoic acid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:72453 ! poly(glycerol phosphate) teichoic acid
+
+[Term]
+id: GO:1902014 ! poly(glycerol phosphate) teichoic acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:72453 ! poly(glycerol phosphate) teichoic acid
+
+[Term]
+id: GO:1902015 ! poly(glucopyranosyl N-acetylgalactosamine 1-phosphate) teichoic acid metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:72455 ! poly(glucopyranosyl N-acetylgalactosamine 1-phosphate) teichoic acid
+
+[Term]
+id: GO:1902016 ! poly(glucopyranosyl N-acetylgalactosamine 1-phosphate) teichoic acid biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:72455 ! poly(glucopyranosyl N-acetylgalactosamine 1-phosphate) teichoic acid
+
+[Term]
+id: GO:1902022 ! L-lysine transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:18019 ! L-lysine
+
+[Term]
+id: GO:1902023 ! L-arginine transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:16467 ! L-arginine
+
+[Term]
+id: GO:1902024 ! L-histidine transport
+intersection_of: GO:0006810 ! transport
+intersection_of: transports_or_maintains_localization_of CHEBI:15971 ! L-histidine
+
+[Term]
+id: GO:1902025 ! nitrate import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:17632 ! nitrate
+
+[Term]
+id: GO:1902047 ! polyamine transmembrane transport
+intersection_of: GO:0055085 ! transmembrane transport
+intersection_of: transports_or_maintains_localization_of CHEBI:51349 ! polyamine macromolecule
+
+[Term]
+id: GO:1902048 ! neosartoricin metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:72750 ! neosartoricin
+
+[Term]
+id: GO:1902049 ! neosartoricin catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:72750 ! neosartoricin
+
+[Term]
+id: GO:1902050 ! neosartoricin biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:72750 ! neosartoricin
+
+[Term]
+id: GO:1902051 ! (25S)-Delta(4)-dafachronate binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:71541 ! (25S)-Delta(4)-dafachronate
+
+[Term]
+id: GO:1902052 ! (25S)-Delta(7)-dafachronate binding
+intersection_of: GO:0005488 ! binding
+intersection_of: has_input CHEBI:71542 ! (25S)-Delta(7)-dafachronate
+
+[Term]
+id: GO:1902056 ! (25S)-Delta(7)-dafachronate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:71542 ! (25S)-Delta(7)-dafachronate
+
+[Term]
+id: GO:1902057 ! (25S)-Delta(4)-dafachronate metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:71541 ! (25S)-Delta(4)-dafachronate
+
+[Term]
+id: GO:1902061 ! betaine aldehyde metabolic process
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:15710 ! betaine aldehyde
+
+[Term]
+id: GO:1902062 ! betaine aldehyde catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:15710 ! betaine aldehyde
+
+[Term]
+id: GO:1902063 ! betaine aldehyde biosynthetic process
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:15710 ! betaine aldehyde
+
+[Term]
+id: GO:1902065 ! response to L-glutamate
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:29988 ! L-glutamate(2-)
+
+[Term]
+id: GO:1902067 ! silicic acid import
+intersection_of: GO:0006810 ! transport
+intersection_of: imports CHEBI:26675 ! silicic acid
+
+[Term]
+id: GO:1902074 ! response to salt
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:24866 ! salt
+
+[Term]
+id: GO:1902075 ! cellular response to salt
+intersection_of: GO:0070887 ! cellular response to chemical stimulus
+intersection_of: has_input CHEBI:24866 ! salt
+
+[Term]
+id: GO:1902079 ! D-valine catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:27477 ! D-valine
+
+[Term]
+id: GO:1902084
+intersection_of: GO:0008152 ! metabolic process
+intersection_of: has_participant CHEBI:48635 ! fumagillin
+
+[Term]
+id: GO:1902085
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:48635 ! fumagillin
+
+[Term]
+id: GO:1902086
+intersection_of: GO:0009058 ! biosynthetic process
+intersection_of: has_output CHEBI:48635 ! fumagillin
+
+[Term]
+id: GO:1902087 ! dimethylsulfoniopropionate catabolic process
+intersection_of: GO:0009056 ! catabolic process
+intersection_of: has_input CHEBI:16457 ! S,S-dimethyl-beta-propiothetin
 
 [Term]
 id: GO:1990022 ! RNA polymerase III complex localization to nucleus
 intersection_of: GO:0006810 ! transport
 intersection_of: has_target_end_location GO:0005634 ! nucleus
 intersection_of: imports GO:0005666 ! DNA-directed RNA polymerase III complex
+
+[Term]
+id: GO:1990054 ! response to temozolomide
+intersection_of: GO:0050896 ! response to stimulus
+intersection_of: has_input CHEBI:72564 ! temozolomide
 
 [Term]
 id: GO:2000884 ! glucomannan catabolic process
@@ -27677,52 +28159,11 @@ id: GO:2001317 ! kojic acid biosynthetic process
 intersection_of: GO:0009058 ! biosynthetic process
 intersection_of: has_output CHEBI:43572 ! kojic acid
 
-[Term]
-id: results_in_assembly_of
-name: results_in_assembly_of
-
-[Term]
-id: results_in_disassembly_of
-name: results_in_disassembly_of
-
-[Term]
-id: results_in_distribution_of
-name: results_in_distribution_of
-
-[Term]
-id: results_in_fission_of
-name: results_in_fission_of
-
-[Term]
-id: results_in_fusion_of
-name: results_in_fusion_of
-
-[Term]
-id: results_in_growth_of
-name: results_in_growth_of
-
-[Term]
-id: results_in_maturation_of
-name: results_in_maturation_of
-xref: RO:0002299
-
-[Term]
-id: results_in_morphogenesis_of
-name: results_in_morphogenesis_of
-xref: RO:0002298
-
-[Term]
-id: results_in_organization_of
-name: results_in_organization_of
-
-[Term]
-id: results_in_remodeling_of
-name: results_in_remodeling_of
-
 [Typedef]
 id: exports
 name: exports
-xref: GOREL:0000035
+alt_id: GOREL:0000035
+xref: RO:0002345
 is_a: transports_or_maintains_localization_of ! transports or maintains localization of
 transitive_over: has_role ! has role
 
@@ -27736,6 +28177,7 @@ transitive_over: has_role ! has role
 [Typedef]
 id: has_intermediate
 name: has intermediate
+xref: GOREL:0002008
 
 [Typedef]
 id: has_output
@@ -27747,7 +28189,7 @@ transitive_over: has_role ! has role
 [Typedef]
 id: has_participant
 name: has participant
-xref: BFO:0000057
+xref: RO:0000057
 transitive_over: has_role ! has role
 
 [Typedef]
@@ -27759,18 +28201,21 @@ xref: http://purl.obolibrary.org/obo/chebi_has_role
 id: has_target_end_location
 name: has_target_end_location
 alt_id: results_in_transport_or_localization_to
+xref: RO:0002339
 is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
 
 [Typedef]
 id: has_target_start_location
 name: has_target_start_location
 alt_id: results_in_transport_from
+xref: RO:0002338
 is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
 
 [Typedef]
 id: imports
 name: imports
-xref: GOREL:0000034
+alt_id: GOREL:0000034
+xref: RO:0002340
 is_a: transports_or_maintains_localization_of ! transports or maintains localization of
 transitive_over: has_role ! has role
 
@@ -27789,23 +28234,77 @@ is_transitive: true
 [Typedef]
 id: regulates_level_of
 name: regulates level of
-xref: GOREL:0000036
+alt_id: GOREL:0000036
+xref: RO:0002332
 transitive_over: has_role ! has role
+
+[Typedef]
+id: results_in_assembly_of
+name: results_in_assembly_of
+xref: GOREL:0002001
+
+[Typedef]
+id: results_in_disassembly_of
+name: results_in_disassembly_of
+xref: GOREL:0002002
+
+[Typedef]
+id: results_in_distribution_of
+name: results_in_distribution_of
+xref: GOREL:0002003
+
+[Typedef]
+id: results_in_fission_of
+name: results_in_fission_of
+xref: GOREL:0002004
+
+[Typedef]
+id: results_in_fusion_of
+name: results_in_fusion_of
+xref: GOREL:0002005
+
+[Typedef]
+id: results_in_growth_of
+name: results_in_growth_of
+xref: RO:0002343
+
+[Typedef]
+id: results_in_maturation_of
+name: results_in_maturation_of
+xref: RO:0002299
+
+[Typedef]
+id: results_in_morphogenesis_of
+name: results_in_morphogenesis_of
+xref: RO:0002298
+
+[Typedef]
+id: results_in_organization_of
+name: results_in_organization_of
+xref: GOREL:0002006
+
+[Typedef]
+id: results_in_remodeling_of
+name: results_in_remodeling_of
+xref: GOREL:0002007
 
 [Typedef]
 id: results_in_transport_across
 name: results_in_transport_across
 comment: Example: transmembrane transport
+xref: RO:0002342
 is_a: results_in_transport_to_from_or_in ! results_in_transport_to_from_or_in
 
 [Typedef]
 id: results_in_transport_along
 name: results_in_transport_along
+xref: RO:0002341
 is_a: has_participant ! has participant
 
 [Typedef]
 id: results_in_transport_to_from_or_in
 name: results_in_transport_to_from_or_in
+xref: RO:0002344
 holds_over_chain: has_target_end_location part_of
 holds_over_chain: has_target_start_location part_of
 holds_over_chain: results_in_transport_across part_of
@@ -27816,11 +28315,13 @@ is_a: results_in_transport_to_from_or_mediated_by ! results_in_transport_to_from
 id: results_in_transport_to_from_or_mediated_by
 name: results_in_transport_to_from_or_mediated_by
 comment: This relation is so far only used for one class, 'endosomal transport' (GO:0016197), which groups together disparate roles the participants can play - it is defined as 'The directed movement of substances into, out of *or mediated by* an endosome...'
+xref: GOREL:0002010
 is_a: has_participant ! has participant
 
 [Typedef]
 id: transports_or_maintains_localization_of
 name: transports or maintains localization of
+synonym: "regulates location of" RELATED []
 xref: RO:0002313
 transitive_over: has_role ! has role
 
