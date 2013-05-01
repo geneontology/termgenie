@@ -19,6 +19,16 @@ function regulation_triad(x, parent) {
 		error("Could not create a term for X, as no prefix was selected");
 		return;
 	}
+	var count = regulation_triad_internal(x, prefixes, go);
+	if (count < 0) {
+		return;
+	}
+	if (count === 0) {
+		error("Could not create a term for X, as no known prefix was selected");
+	}
+}
+
+function regulation_triad_internal(x, prefixes, go) {
 	var count = 0;
 	if (termgenie.contains(prefixes, "regulation")) {
 		var label = "regulation of " + termname(x, go);
@@ -32,7 +42,7 @@ function regulation_triad(x, parent) {
 			count += 1;
 		}
 		else {
-			return;
+			return -1;
 		}
 	}
 	if (termgenie.contains(prefixes, "negative_regulation")) {
@@ -50,7 +60,7 @@ function regulation_triad(x, parent) {
 			count += 1;
 		}
 		else {
-			return;
+			return -1;
 		}
 	}
 	if (termgenie.contains(prefixes, "positive_regulation")) {
@@ -68,10 +78,8 @@ function regulation_triad(x, parent) {
 			count += 1;
 		}
 		else {
-			return;
+			return -1;
 		}
 	}
-	if (count === 0) {
-		error("Could not create a term for X, as no known prefix was selected");
-	}
+	return count;
 }
