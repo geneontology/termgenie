@@ -6,6 +6,7 @@
 		<supports>
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
 			<support>http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo</support>
+			<support>http://purl.obolibrary.org/obo/cl.owl</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
@@ -45,6 +46,11 @@
 				<root>GO:0008150</root>
 				<root>GO:0003674</root>
 				<root>GO:0005575</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="cell">
+			<roots>
+				<root>CL:0000003</root> <!-- native cell -->
 			</roots>
 		</ontologybranch>
 	</ontology>
