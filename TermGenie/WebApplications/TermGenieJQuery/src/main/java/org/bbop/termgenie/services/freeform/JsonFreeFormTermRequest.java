@@ -19,6 +19,8 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	private List<String> partOf;
 
 	private List<JsonSynonym> synonyms;
+	
+	private List<Xref> xrefs;
 
 	@Override
 	public String getLabel() {
@@ -109,6 +111,21 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	 */
 	public void setSynonyms(List<JsonSynonym> synonyms) {
 		this.synonyms = synonyms;
+	}
+	
+	/**
+	 * @return the xrefs
+	 */
+	@Override
+	public List<Xref> getXrefs() {
+		return xrefs;
+	}
+	
+	/**
+	 * @param xrefs the xrefs to set
+	 */
+	public void setXrefs(List<Xref> xrefs) {
+		this.xrefs = xrefs;
 	}
 
 }

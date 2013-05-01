@@ -12,6 +12,7 @@ import org.bbop.termgenie.services.SessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
+import org.bbop.termgenie.services.freeform.FreeFormTermService;
 import org.bbop.termgenie.services.management.ManagementServices;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.json.rpc.commons.TypeChecker;
@@ -39,6 +40,8 @@ public class JsonRpcConformityTest {
 		assertTrue(checker.isValidInterface(BrowserIdHandler.class, true));
 		
 		assertTrue(checker.isValidInterface(TermCommitReviewService.class, true));
+		
+		assertTrue(checker.isValidInterface(FreeFormTermService.class, true));
 		
 	}
 	

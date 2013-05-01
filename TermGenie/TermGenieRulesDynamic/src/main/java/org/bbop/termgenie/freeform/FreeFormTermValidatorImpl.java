@@ -23,6 +23,7 @@ import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResource
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
 import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.obo.OboTools;
@@ -435,16 +436,16 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			// search for similar definitions?
 			
 			// require at least on def db xref, ideally includes PMID
-			List<String> xrefsList = request.getDbxrefs();
-			if (xrefsList == null || xrefsList.isEmpty()) {
+			List<String> defXRefsList = request.getDbxrefs();
+			if (defXRefsList == null || defXRefsList.isEmpty()) {
 				setError("definition db xref", "Please enter at least one valid definition db xref");
 				return;
 			}
 			
-			ProcessState.addMessage(state, "Check Xrefs.");
-			Set<String> xrefs = new HashSet<String>();
+			ProcessState.addMessage(state, "Check Def Xrefs.");
+			Set<String> defXrefs = new HashSet<String>();
 			boolean hasLiteratureReference = false;
-			for(String  xref : xrefsList) {
+			for(String  xref : defXRefsList) {
 				String dbxref = StringUtils.trimToNull(xref);
 				if (dbxref == null) {
 					continue;
@@ -457,15 +458,31 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				if (hasLiteratureReference == false) {
 					hasLiteratureReference = XrefTools.isLiteratureReference(xref);
 				}
-				xrefs.add(dbxref);
+				defXrefs.add(dbxref);
 			}
 			if (hasLiteratureReference == false) {
 				addHint(requireLiteratureReference, "definition db xref", XrefTools.getLiteratureReferenceErrorString(false));
 			}
 			
-			if (xrefs.isEmpty()) {
+			if (defXrefs.isEmpty()) {
 				setError("definition db xref", "Please enter at least one valid definition db xref");
 				return;
+			}
+			
+			if (errors != null) {
+				return;
+			}
+			
+			// add general xrefs
+			List<Xref> xrefs = request.getXrefs();
+			if (xrefs != null && !xrefs.isEmpty()) {
+				for (Xref xref : xrefs) {
+					String idref = xref.getIdRef();
+					String error = XrefTools.checkXref(idref);
+					if (error != null) {
+						addError("xref", error);
+					}
+				}
 			}
 			
 			if (errors != null) {
@@ -530,10 +547,22 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				Frame frame = new Frame(FrameType.TERM);
 	
 				OboTools.addTermLabel(frame, requestedLabel);
-				OboTools.addDefinition(frame, def, xrefs);
+				OboTools.addDefinition(frame, def, defXrefs);
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATED_BY, "TermGenie"));
 				frame.addClause(new Clause(OboFormatTag.TAG_NAMESPACE, namespace));
+				if (xrefs != null) {
+					for (Xref xref : xrefs) {
+						Clause cl = new Clause(OboFormatTag.TAG_XREF);
+						String idref = xref.getIdRef();
+						cl.addValue(idref);
+						String annotation = xref.getAnnotation();
+						if (annotation != null) {
+							cl.addValue(annotation);
+						}
+						frame.addClause(cl);
+					}
+				}
 				if (checkedSynonyms != null) {
 					for(ISynonym synonym : checkedSynonyms) {
 						OboTools.addSynonym(frame, synonym.getLabel(), synonym.getScope(), synonym.getXrefs());

@@ -203,6 +203,10 @@ function TermGenieFreeForm(){
 			var synonymInput = createSynonymInput();
 			synonymInput.disable();
 			
+			// xrefs
+			var xrefInputs = createXrefInputs();
+			xrefInputs.disable();
+			
 			// validate input button
 			var validateButton = createValidateButton();
 			validateButton.disable();
@@ -274,6 +278,7 @@ function TermGenieFreeForm(){
 					defInput.enable();
 					defXrefsInput.enable();
 					synonymInput.enable();
+					xrefInputs.enable();
 					
 					// active validate button
 					validateButton.enable();
@@ -1079,6 +1084,89 @@ function TermGenieFreeForm(){
 				};
 			};
 			
+			function createXrefInputs() {
+				
+				// retrieve the pre-existing DOM element
+				var xrefsInputCell = jQuery('#free-form-input-xrefs-cell');
+				
+				var listParent = createLayoutTable();
+				listParent.append('<tr><td>Xref</td><td>Comment</td></tr>');
+				xrefsInputCell.append(listParent);
+				var inputFields = [];
+				
+				var addRemove = createAddRemoveWidget(xrefsInputCell, addField, removeField);
+				addField();
+				
+				function addField() {
+					var listElem = jQuery('<tr></tr>');
+					listElem.appendTo(listParent);
+					
+					// id
+					var idTdElement = jQuery('<td></td>');
+					idTdElement.appendTo(listElem);
+					var idInputField = jQuery('<input type="text"/>');
+					idTdElement.append(idInputField);
+					
+					// annotation
+					var annotationTdElement = jQuery('<td></td>');
+					annotationTdElement.appendTo(listElem);
+					var annotationInputField = jQuery('<input type="text"/>');
+					annotationTdElement.append(annotationInputField);
+					
+					inputFields.push({
+						'idref': idInputField,
+						'annotation': annotationInputField
+					});
+				};
+				
+				function removeField() {
+					if (inputFields.length > 1) {
+						listParent.find('tr').last().remove();
+						inputFields.pop();
+					}
+				};
+				
+				
+				return {
+					enable: function() {
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.idref.removeAttr("disabled");
+							inputField.annotation.removeAttr("disabled");
+						});
+						addRemove.enable();
+					},
+					disable: function() {
+						jQuery.each(inputFields, function(pos, inputField){
+							inputField.idref.attr("disabled", "disabled");
+							inputField.annotation.attr("disabled", "disabled");
+						});
+						addRemove.disable();
+					},
+					getXrefs: function() {
+						var xrefs = [];
+						jQuery.each(inputFields, function(pos, inputField){
+							var ref = inputField.idref.val();
+							if(ref !== undefined && ref !== null && ref.length > 0) {
+								var xref = {
+										'idRef' : ref
+								}
+								xrefs.push(xref);
+								var ann = inputField.annotation.val();
+								if (ann !== undefined && ann !== null && ann.length > 0) {
+									xref['annotation'] = ann;
+								}
+							}
+						});
+						return xrefs;
+					},
+					validate: function() {
+						// TODO check for comments without an xref
+						// TODO check for xref format
+						return null;
+					}
+				};
+			}
+			
 			/**
 			 * Validate all the input fields.
 			 * 
@@ -1105,6 +1193,10 @@ function TermGenieFreeForm(){
 				if (error && error !== null) {
 					return error;
 				}
+				error = xrefInputs.validate();
+				if (error && error !== null) {
+					return error;
+				}
 				return synonymInput.validate();
 			};
 			
@@ -1123,7 +1215,8 @@ function TermGenieFreeForm(){
 					dbxrefs: defXrefsInput.getXrefs(),
 					isA: relationsInput.getIsA(),
 					partOf: relationsInput.getPartOf(),
-					synonyms: synonymInput.getSynonyms()
+					synonyms: synonymInput.getSynonyms(),
+					xrefs: xrefInputs.getXrefs()
 				};
 			};
 		

@@ -11,6 +11,7 @@ import java.util.Set;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerFactoryImpl;
+import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
 import org.bbop.termgenie.freeform.FreeFormTermValidatorImpl.ValidationTask;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.tools.Pair;
@@ -80,6 +81,11 @@ public class FreeFormTermValidatorImplTest {
 		
 		request.setDbxrefs(Arrays.asList("GOC:fake", "PMID:0000001"));
 		
+		Xref xref = new Xref();
+		xref.setIdRef("FAKE:fake");
+		xref.setAnnotation("Fake comment");
+		request.setXrefs(Collections.<Xref>singletonList(xref));
+		
 		Pair<Frame,Set<OWLAxiom>> pair = noErrors(request);
 		
 		assertNotNull(pair.getOne());
@@ -136,6 +142,8 @@ public class FreeFormTermValidatorImplTest {
 
 		private List<String> isA;
 		private List<String> partOf;
+		
+		private List<Xref> xrefs;
 		
 		@Override
 		public String getLabel() {
@@ -196,6 +204,18 @@ public class FreeFormTermValidatorImplTest {
 		public List<? extends ISynonym> getISynonyms() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		
+		/**
+		 * @param xrefs the xrefs to set
+		 */
+		public void setXrefs(List<Xref> xrefs) {
+			this.xrefs = xrefs;
+		}
+
+		@Override
+		public List<Xref> getXrefs() {
+			return xrefs;
 		}
 		
 	}

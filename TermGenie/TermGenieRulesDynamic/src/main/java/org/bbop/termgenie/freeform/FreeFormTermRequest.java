@@ -43,5 +43,32 @@ public interface FreeFormTermRequest {
 	 * @return the synonyms
 	 */
 	public List<? extends ISynonym> getISynonyms();
+	
+	/**
+	 * @return the xrefs
+	 */
+	public List<Xref> getXrefs();
 
+	
+	public static class Xref {
+		
+		private String idRef;
+		private String annotation;
+		
+		public String getIdRef() {
+			return idRef;
+		}
+		
+		public void setIdRef(String idRef) {
+			this.idRef = idRef;
+		}
+		
+		public String getAnnotation() {
+			return annotation;
+		}
+		
+		public void setAnnotation(String annotation) {
+			this.annotation = annotation;
+		}
+	}
 }
