@@ -72,7 +72,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
-		boolean loadExternal = false;
+		boolean loadExternal = true;
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
