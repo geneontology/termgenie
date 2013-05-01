@@ -43,9 +43,15 @@ public class SimpleUserDataProvider implements UserDataProvider {
 	}
 
 	public static void normalize(UserData userData) {
+		// normalize e-mail to lower case and trim white spaces
+		if (userData.getEmail() != null) {
+			userData.setEmail(userData.getEmail().toLowerCase().trim());
+		}
+		// set guid to e-mail as default
 		if (userData.getGuid() == null) {
 			userData.setGuid(userData.getEmail());
 		}
+		// create an default scm name, use either the xref or extract from e-mail
 		if (userData.getScmAlias() == null) {
 			userData.setScmAlias(extractSCMAlias(userData.getXref(), userData.getEmail()));
 		}
