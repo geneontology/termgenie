@@ -1997,7 +1997,7 @@ function termgenie(){
 				// get remote resources for xref auto-complete
 				var xrefChoices = null;
 				
-				fetchRemoteResource('xref', function(lines) {
+				fetchRemoteResource('xref', function(xrefs) {
 					jQuery.each(xrefs, function(index, pair){
 						if(pair.value !== undefined && pair.value !== null) {
 							if (xrefChoices === null) {
