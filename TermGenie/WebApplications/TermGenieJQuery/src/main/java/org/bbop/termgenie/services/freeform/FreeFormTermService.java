@@ -6,10 +6,11 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonTermSuggestion;
+import org.bbop.termgenie.services.AutoCompleteResources;
 import org.json.rpc.server.ProcessStateAware;
 import org.json.rpc.server.SessionAware;
 
-public interface FreeFormTermService {
+public interface FreeFormTermService extends AutoCompleteResources {
 
 	/**
 	 * Check if this service is enabled.
@@ -39,16 +40,6 @@ public interface FreeFormTermService {
 	 */
 	@SessionAware
 	public String[] getAvailableNamespaces(String sessionId, HttpSession session);
-	
-	/**
-	 * Get the list of resources to retrieve valid xrefs, i.e. used for auto-completion
-	 * 
-	 * @param sessionId
-	 * @param session
-	 * @return list of resources
-	 */
-	@SessionAware
-	public String[] getXrefResources(String sessionId, HttpSession session);
 	
 	/**
 	 * Auto complete the query with terms. If available search only in the given

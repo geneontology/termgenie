@@ -20,7 +20,7 @@
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -50,7 +50,7 @@
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -82,7 +82,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -138,7 +138,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -171,7 +171,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -200,7 +200,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -224,7 +224,7 @@
 				<ontology name="ProteinOntology" />
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -248,7 +248,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -271,7 +271,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -294,7 +294,7 @@
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -324,7 +324,7 @@ generated automatically</description>
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -347,7 +347,7 @@ generated automatically</description>
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -378,7 +378,7 @@ generated automatically</description>
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -405,7 +405,7 @@ generated automatically</description>
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -432,7 +432,7 @@ generated automatically</description>
 				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -455,7 +455,7 @@ generated automatically</description>
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -478,7 +478,7 @@ generated automatically</description>
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -574,7 +574,7 @@ generated automatically</description>
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -625,7 +625,7 @@ generated automatically</description>
 			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -649,7 +649,7 @@ generated automatically</description>
 			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -674,7 +674,7 @@ generated automatically</description>
 			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -699,7 +699,7 @@ generated automatically</description>
 			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>
@@ -723,7 +723,7 @@ generated automatically</description>
 			<field name="Literature_Ref" required="true" />
 			<field name="Name" />
 			<field name="Definition" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 		</fields>

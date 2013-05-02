@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
@@ -33,6 +35,9 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
 import org.bbop.termgenie.tools.OntologyTools;
+import org.bbop.termgenie.user.OrcidUserData;
+import org.bbop.termgenie.user.UserDataProvider;
+import org.bbop.termgenie.user.XrefUserData;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -48,21 +53,74 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	private final OntologyTools ontologyTools;
 	private final TermGenerationEngine termGeneration;
 	private final JsonTemplateTools jsonTools;
+	private final UserDataProvider userDataProvider;
 
 	/**
 	 * @param ontologyTools
 	 * @param termGeneration
+	 * @param userDataProvider
 	 */
 	@Inject
 	GenerateTermsServiceImpl(OntologyTools ontologyTools,
-			TermGenerationEngine termGeneration)
+			TermGenerationEngine termGeneration,
+			UserDataProvider userDataProvider)
 	{
 		super();
 		this.ontologyTools = ontologyTools;
 		this.termGeneration = termGeneration;
+		this.userDataProvider = userDataProvider;
 		this.jsonTools = new JsonTemplateTools();
 	}
 
+	
+	@Override
+	public AutoCompleteEntry[] getAutoCompleteResource(String sessionId,
+			String resource,
+			HttpSession session)
+	{
+		if ("xref".equals(resource)) {
+			List<XrefUserData> userData = userDataProvider.getXrefUserData();
+			if (userData != null && !userData.isEmpty()) {
+				List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
+				for (XrefUserData xrefUserData : userData) {
+					String name = xrefUserData.getScreenname();
+					String value = xrefUserData.getXref();
+					if (value != null) {
+						AutoCompleteEntry entry = new AutoCompleteEntry();
+						entry.setName(name);
+						entry.setValue(value);
+						xrefStrings.add(entry);
+					}
+				}
+				if (!xrefStrings.isEmpty()) {
+					AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
+					return array;
+				}
+			}
+		}
+		else if ("orcid".equals(resource)) {
+			List<OrcidUserData> userData = userDataProvider.getOrcIdUserData();
+			if (userData != null && !userData.isEmpty()) {
+				List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
+				for (OrcidUserData orcid : userData) {
+					String name = orcid.getScreenname();
+					String value = orcid.getOrcid();
+					if (value != null) {
+						AutoCompleteEntry entry = new AutoCompleteEntry();
+						entry.setName(name);
+						entry.setValue(value);
+						xrefStrings.add(entry);
+					}
+				}
+				if (!xrefStrings.isEmpty()) {
+					AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
+					return array;
+				}
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public List<JsonTermTemplate> availableTermTemplates(String sessionId, String ontologyName) {
 		// sanity check

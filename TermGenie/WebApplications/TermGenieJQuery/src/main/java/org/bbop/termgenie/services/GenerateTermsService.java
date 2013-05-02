@@ -8,7 +8,7 @@ import org.bbop.termgenie.data.JsonTermGenerationInput;
 import org.bbop.termgenie.data.JsonTermTemplate;
 import org.json.rpc.server.ProcessStateAware;
 
-public interface GenerateTermsService {
+public interface GenerateTermsService extends AutoCompleteResources{
 
 	/**
 	 * Retrieve the available term templates parameters for the given ontology;

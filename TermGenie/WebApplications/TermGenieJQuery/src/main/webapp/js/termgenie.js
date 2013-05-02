@@ -72,7 +72,8 @@ function termgenie(){
 	var jsonService = new JsonRpc.ServiceProxy("jsonrpc", {
 	    asynchronous: true,
 	    methods: ['generate.availableTermTemplates', 
-	              'generate.generateTerms', 
+	              'generate.generateTerms',
+	              'generate.getAutoCompleteResource',
 	              'ontology.availableOntologies',
 	              'ontology.autocomplete',
 	              'commit.isValidUser',
@@ -88,7 +89,6 @@ function termgenie(){
 	              'user.setValues',
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
-	              'resource.getLinesFromResource',
 	              'renderer.renderHierarchy',
 	              'renderer.visualizeGeneratedTerms',
 	              'progress.getProgress']
@@ -154,7 +154,7 @@ function termgenie(){
 		// request sessionId and then start a request for the resource.
 		mySession.getSessionId(function(sessionId){
 			// use json-rpc to retrieve available ontologies
-			jsonService.resource.getLinesFromResource({
+			jsonService.generate.getAutoCompleteResource({
 				params: [sessionId, name],
 				onSuccess: function(result) {
 					// put in cache
@@ -871,31 +871,39 @@ function termgenie(){
 					var tdElement = trElement.children().last();
 					
 					if (field.remoteResource && field.remoteResource !== null) {
-						fetchLinesFromRemoteResource(field.remoteResource, function(lines) {
-							// process lines into choices
-							var choices = [];
-							jQuery.each(lines, function(index, line){
-								if (index === 0) {
-									// skip the first line
-									return;
-								}
-								// get the first substring until a tab
-								var charPos = line.indexOf('\t');
-								if(charPos > 0) {
-									choices.push(line.substring(0,charPos));
-								}
-								else {
-									// or take the whole string if no tab is available
-									choices.push(line);
-								}
+						if (field.remoteResource === 'xref') {
+							// xrefs
+							fetchLinesFromRemoteResource('xref', function(xrefs){
+								var choices = [];
+								jQuery.each(xrefs, function(index, pair){
+									if(pair.value !== undefined && pair.value !== null) {
+										choices.push(pair.value);
+									}
+								});
+								// create field with choices
+								createField(field, i, tdElement, choices);
 							});
-							// create field with choices
-							createField(field, i, tdElement, choices);
-						});
+							
+						}
+						else if (field.remoteResource === 'orchid') {
+							// orchid
+							fetchLinesFromRemoteResource('orchid', function(orchids){
+								var choices = [];
+								jQuery.each(orchids, function(index, pair){
+									if(pair.value !== undefined && pair.value !== null) {
+										choices.push(pair.value);
+									}
+								});
+								// create field with choices
+								createField(field, i, tdElement, choices);
+							});
+						}
+						else {
+							createField(field, i, tdElement);
+						}
 					}
 					else {
-						// default no choices
-						createField(field, i, tdElement);	
+						createField(field, i, tdElement);
 					}
 				});
 				

@@ -24,14 +24,13 @@ function TermGenieFreeForm(){
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'progress.getProgress',
-	              'resource.getLinesFromResource',
 	              'freeform.isEnabled',
 	              'freeform.canView',
 	              'freeform.getAvailableNamespaces',
 	              'freeform.autocomplete',
 	              'freeform.validate',
 	              'freeform.submit',
-	              'freeform.getXrefResources']
+	              'freeform.getAutoCompleteResource']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -128,49 +127,32 @@ function TermGenieFreeForm(){
 		});
 		
 		function getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion) {
-			jsonService.freeform.getXrefResources({
-				params: [sessionId],
-				onSuccess: function(xrefResources){
-					if (xrefResources && xrefResources !== null) {
-						fetchLinesFromRemoteResource(xrefResources, function(lines) {
-							// process lines into choices
-							var xrefChoices = [];
-							jQuery.each(lines, function(index, line){
-								if (index === 0) {
-									// skip the first line
-									return;
-								}
-								// get the first substring until a tab
-								var charPos = line.indexOf('\t');
-								if(charPos > 0) {
-									xrefChoices.push(line.substring(0,charPos));
-								}
-								else {
-									// or take the whole string if no tab is available
-									xrefChoices.push(line);
-								}
-							});
-							populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices);
-						});
+			fetchLinesFromRemoteResource('xref', function(xrefs) {
+				// process lines into choices
+				var choices = [];
+				jQuery.each(xrefs, function(index, pair){
+					if(pair.value !== undefined && pair.value !== null) {
+						choices.push(pair.value);
 					}
-				},
-				onException: function(e) {
-					jQuery.logSystemError('Could not xref resources from server', e);
-				}
+				});
+				populateFreeFormInput(oboNamespaces, myAccordion, choices, []);
+			}, function(e){
+				// hidden error message
+				jQuery.logSystemError('RemoteResource service call failed',e, true);
+				
+				// render form without auto-complete for xrefs
+				populateFreeFormInput(oboNamespaces, myAccordion, [], []);
 			});
 		};
 		
-		function fetchLinesFromRemoteResource(name, onSuccessCallback) {
+		function fetchLinesFromRemoteResource(name, onSuccessCallback, onExceptionCallback) {
 			// request sessionId and then start a request for the resource.
 			mySession.getSessionId(function(sessionId){
 				// use json-rpc to retrieve available ontologies
-				jsonService.resource.getLinesFromResource({
+				jsonService.freeform.getAutoCompleteResource({
 					params: [sessionId, name],
 					onSuccess: onSuccessCallback,
-					onException: function(e) {
-						// hidden error message
-						jQuery.logSystemError('RemoteResource service call failed',e, true);
-					}
+					onException: onExceptionCallback
 				});	
 			});
 		};
@@ -179,8 +161,11 @@ function TermGenieFreeForm(){
 		 * Create the input fields and selectors for the free form template.
 		 * 
 		 * @param oboNamespaces
+		 * @param myAccordion
+		 * @param xrefChoices
+		 * @param orcids
 		 */
-		function populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices) {
+		function populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices, orcids) {
 			// label
 			var labelInput = createLabelInput();
 			

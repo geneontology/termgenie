@@ -1,5 +1,6 @@
 package org.bbop.termgenie.services.freeform;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -23,7 +24,10 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
+import org.bbop.termgenie.user.OrcidUserData;
 import org.bbop.termgenie.user.UserData;
+import org.bbop.termgenie.user.UserDataProvider;
+import org.bbop.termgenie.user.XrefUserData;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -38,17 +42,18 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
+	private final UserDataProvider userDataProvider;
 	private final FreeFormTermValidator validator;
 	private final Ontology ontology;
 	private final OntologyTaskManager targetOntology;
 	private final MultiOntologyTaskManager manager;
 	private final OntologyTermSuggestor suggestor;
 	private final InternalFreeFormCommitService commitService;
-	private List<String> xrefResources = null;
 	
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
+			UserDataProvider userDataProvider,
 			@Named("CommitTargetOntology") OntologyTaskManager targetOntology,
 			@Named("FreeFormDefaultOntology") Ontology ontology,
 			OntologyTermSuggestor suggestor,
@@ -59,6 +64,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
+		this.userDataProvider = userDataProvider;
 		this.suggestor = suggestor;
 		this.validator = validator;
 		this.targetOntology = targetOntology;
@@ -72,15 +78,6 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		}
 	}
 	
-	
-	/**
-	 * @param xrefResources the xrefResources to set
-	 */
-	@Inject(optional=true)
-	public void setXrefResources(@Named("FreeFormXrefResources") List<String> xrefResources) {
-		this.xrefResources = xrefResources;
-	}
-
 	@Override
 	public boolean isEnabled() {
 		return true;
@@ -111,11 +108,50 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	}
 
 	@Override
-	public String[] getXrefResources(String sessionId, HttpSession session) {
+	public AutoCompleteEntry[] getAutoCompleteResource(String sessionId,
+			String resource,
+			HttpSession session)
+	{
 		if (canView(sessionId, session)) {
-			if (xrefResources != null && !xrefResources.isEmpty()) {
-			String[] array = xrefResources.toArray(new String[xrefResources.size()]);
-			return array;
+			if ("xref".equals(resource)) {
+				List<XrefUserData> userData = userDataProvider.getXrefUserData();
+				if (userData != null && !userData.isEmpty()) {
+					List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
+					for (XrefUserData xrefUserData : userData) {
+						String name = xrefUserData.getScreenname();
+						String value = xrefUserData.getXref();
+						if (value != null) {
+							AutoCompleteEntry entry = new AutoCompleteEntry();
+							entry.setName(name);
+							entry.setValue(value);
+							xrefStrings.add(entry);
+						}
+					}
+					if (!xrefStrings.isEmpty()) {
+						AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
+						return array;
+					}
+				}
+			}
+			else if ("orcid".equals(resource)) {
+				List<OrcidUserData> userData = userDataProvider.getOrcIdUserData();
+				if (userData != null && !userData.isEmpty()) {
+					List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
+					for (OrcidUserData orcid : userData) {
+						String name = orcid.getScreenname();
+						String value = orcid.getOrcid();
+						if (value != null) {
+							AutoCompleteEntry entry = new AutoCompleteEntry();
+							entry.setName(name);
+							entry.setValue(value);
+							xrefStrings.add(entry);
+						}
+					}
+					if (!xrefStrings.isEmpty()) {
+						AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
+						return array;
+					}
+				}
 			}
 		}
 		return null;

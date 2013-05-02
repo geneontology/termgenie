@@ -69,9 +69,13 @@ public class NoopFreeFormModule extends IOCModule {
 		}
 
 		@Override
-		public String[] getXrefResources(String sessionId, HttpSession session) {
+		public AutoCompleteEntry[] getAutoCompleteResource(String sessionId,
+				String resource,
+				HttpSession session)
+		{
 			return null;
 		}
+
 		
 	}
 }

@@ -28,12 +28,10 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
-import org.bbop.termgenie.services.resources.ResourceProviderModule;
-import org.bbop.termgenie.services.resources.ResourceProviderModule.ConfiguredResourceProviderModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
-import org.bbop.termgenie.user.go.GeneOntologyUserDataModule;
+import org.bbop.termgenie.user.go.GeneOntologyJsonUserDataModule;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -179,16 +177,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getUserDataModule() {
-		String gocConfigResource = "GO.curators_dbxrefs";
-		String gocMappingResource = "GO.curators_email_dbxrefs";
-		return new GeneOntologyUserDataModule(applicationProperties, gocConfigResource, '\t', gocMappingResource, '\t');
+		String gocjson = "GO.user_data.json";
+		return new GeneOntologyJsonUserDataModule(applicationProperties, gocjson);
 	}
 	
-	@Override
-	protected ResourceProviderModule getResourceProviderModule() {
-		return new ConfiguredResourceProviderModule(applicationProperties);
-	}
-
 	@Override
 	protected IOCModule getReviewMailHandlerModule() {
 		
@@ -207,8 +199,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		oboNamespaces.add("biological_process");
 		oboNamespaces.add("molecular_function");
 		oboNamespaces.add("cellular_component");
-		List<String> defaultFreeformXrefResources = Arrays.asList("GO.curators_dbxrefs");
 		String defaultOntology = "default_go";
-		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, defaultFreeformXrefResources, "termgenie_unvetted");
+		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted");
 	}
 }

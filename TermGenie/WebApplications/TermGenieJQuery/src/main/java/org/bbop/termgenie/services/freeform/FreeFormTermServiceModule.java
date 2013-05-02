@@ -14,25 +14,21 @@ import com.google.inject.name.Named;
 
 public class FreeFormTermServiceModule extends FreeFormTermValidatorModule {
 	
-	private final List<String> xrefResources;
 	private final String defaultOntology;
 
 	public FreeFormTermServiceModule(Properties applicationProperties,
 			boolean addSubsetTag,
 			String defaultOntology,
 			List<String> oboNamespaces,
-			List<String> xrefResources,
 			String subset)
 	{
 		super(applicationProperties, addSubsetTag, oboNamespaces, subset);
 		this.defaultOntology = defaultOntology;
-		this.xrefResources = xrefResources;
 	}
 
 	@Override
 	protected void configure() {
 		super.configure();
-		bindList("FreeFormXrefResources", xrefResources, true);
 		bind(FreeFormTermService.class, FreeFormTermServiceImpl.class);
 	}
 	
