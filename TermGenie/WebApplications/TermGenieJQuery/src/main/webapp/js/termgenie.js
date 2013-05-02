@@ -135,7 +135,7 @@ function termgenie(){
 	
 	var remoteResourceCache = {};
 	
-	function fetchLinesFromRemoteResource(name, onSuccessCallback, onErrorCallback) {
+	function fetchRemoteResource(name, onSuccessCallback, onErrorCallback) {
 		// first check cache
 		if (remoteResourceCache[name]) {
 			// found in cache
@@ -873,7 +873,7 @@ function termgenie(){
 					if (field.remoteResource && field.remoteResource !== null) {
 						if (field.remoteResource === 'xref') {
 							// xrefs
-							fetchLinesFromRemoteResource('xref', function(xrefs){
+							fetchRemoteResource('xref', function(xrefs){
 								var choices = [];
 								jQuery.each(xrefs, function(index, pair){
 									if(pair.value !== undefined && pair.value !== null) {
@@ -887,7 +887,7 @@ function termgenie(){
 						}
 						else if (field.remoteResource === 'orchid') {
 							// orchid
-							fetchLinesFromRemoteResource('orchid', function(orchids){
+							fetchRemoteResource('orchid', function(orchids){
 								var choices = [];
 								jQuery.each(orchids, function(index, pair){
 									if(pair.value !== undefined && pair.value !== null) {
@@ -1995,36 +1995,18 @@ function termgenie(){
 				addSynonymButton.appendTo(divElem);
 				
 				// get remote resources for xref auto-complete
-				var choices = null;
-				var xrefRemoteResource;
+				var xrefChoices = null;
 				
-				jQuery.each(template.fields, function(index, field){
-					if('DefX_Ref' === field.name) {
-						xrefRemoteResource = field.remoteResource;
-					}
-				});
-				
-				if(xrefRemoteResource && xrefRemoteResource !== null) {
-					fetchLinesFromRemoteResource(xrefRemoteResource, function(lines) {
-						// process lines into choices
-						choices = [];
-						jQuery.each(lines, function(index, line){
-							if (index === 0) {
-								// skip the first line
-								return;
+				fetchRemoteResource('xref', function(lines) {
+					jQuery.each(xrefs, function(index, pair){
+						if(pair.value !== undefined && pair.value !== null) {
+							if (xrefChoices === null) {
+								xrefChoices = [];
 							}
-							// get the first substring until a tab
-							var charPos = line.indexOf('\t');
-							if(charPos > 0) {
-								choices.push(line.substring(0,charPos));
-							}
-							else {
-								// or take the whole string if no tab is available
-								choices.push(line);
-							}
-						});
+							xrefChoices.push(pair.value);
+						}
 					});
-				}
+				});
 				
 				// implement add synonym dialog
 				addSynonymButton.click(function(){
@@ -2106,9 +2088,9 @@ function termgenie(){
 						
 						
 						var xrefInputElement = jQuery('<input type="text"/>');
-						if (choices && choices !== null) {
+						if (xrefChoices && xrefChoices !== null) {
 							xrefInputElement.autocomplete({
-								source: choices
+								source: xrefChoices
 							});
 						}
 						var xrefTD = jQuery('<td></td>');
