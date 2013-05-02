@@ -127,7 +127,7 @@ function TermGenieFreeForm(){
 		});
 		
 		function getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion) {
-			fetchLinesFromRemoteResource('xref', function(xrefs) {
+			fetchRemoteResource('xref', function(xrefs) {
 				// process lines into choices
 				var choices = [];
 				jQuery.each(xrefs, function(index, pair){
@@ -145,7 +145,7 @@ function TermGenieFreeForm(){
 			});
 		};
 		
-		function fetchLinesFromRemoteResource(name, onSuccessCallback, onExceptionCallback) {
+		function fetchRemoteResource(name, onSuccessCallback, onExceptionCallback) {
 			// request sessionId and then start a request for the resource.
 			mySession.getSessionId(function(sessionId){
 				// use json-rpc to retrieve available ontologies
