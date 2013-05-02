@@ -1,6 +1,6 @@
 /*
  * Login panel which is added to the top right corner of the TermGenie 
- * web-site. Uses BrowserID or OpenID for authentication (Both authentication 
+ * web-site. Uses Persona (BrowserID) or OpenID for authentication (Both authentication 
  * methods require at least one counterpart rpc method on the server).
  * 
  * The loginPanel requires two parameters: jsonService and mySession.
@@ -241,10 +241,10 @@
 					var inputElemDiv = jQuery('<div></div>');
 					elem.append(inputElemDiv);
 					inputElemDiv.append(inputElem);
-					inputElemDiv.append(jQuery('<label>BrowserID (mozilla Persona)</label>'));
+					inputElemDiv.append(jQuery('<label>Persona (BrowserID)</label>'));
 					
 					var detailsDiv = jQuery('<div style="padding-left: 20px;padding-top: 5px;"></div>');
-					detailsDiv.append("Clicking on the 'Log In' button will open a new window for the login process using BrowserID  (mozilla Persona).");
+					detailsDiv.append("Clicking on the 'Log In' button will open a new window for the login process using Persona (BrowserID).");
 					elem.append(detailsDiv);
 					
 					return {
@@ -278,21 +278,21 @@
 					}
 					
 					/**
-					 * Request the BrowserID via JavaScript method call.
+					 * Request the Persona (formerly known as BrowserID) via JavaScript method call.
 					 * 
 					 * @param successCallback function called after successful authentication
 					 */
 					function callBrowserID(successCallback) {
 						reporter.empty();
-						reporter.append(createBusyMessage('Calling BrowserID (mozilla Persona) in new Window.'));
+						reporter.append(createBusyMessage('Calling Persona (BrowserID) in new Window.'));
 						// This function comes from https://browserid.org/include.js.
 					    // If the user successfully supplies an email address (and thus)
 					    // an assertion, we'll send it to our server so we can check it
 					    // out and get user data out of it if it's okay.
-					    navigator.id.getVerifiedEmail(function(assertion) {
+						navigator.id.get(function(assertion) {
 					    	reporter.empty();
 					    	if(assertion){
-					    		reporter.append(createBusyMessage('Verifying BrowserID (mozilla Persona) on Server.'));
+					    		reporter.append(createBusyMessage('Verifying Persona (BrowserID) on Server.'));
 					    		authenticateBrowserId(assertion, function(userdata){ // on success
 					    			reporter.empty();
 									if (userdata && userdata !== null) {
@@ -306,16 +306,16 @@
 										successCallback();
 									}
 									else {
-										jQuery.logSystemError('BrowserID (mozilla Persona) verification failed.');
+										jQuery.logSystemError('Persona (BrowserID) verification failed.');
 									}
 					    		},
 					    		function(e){ // on error
 					    			reporter.empty();
-									jQuery.logSystemError('BrowserID (mozilla Persona) login service call failed',e);
+									jQuery.logSystemError('Persona (BrowserID) login service call failed',e);
 					    		});
 					    	}else{
 					    		// set error message
-					    		reporter.append('<div>Login via BrowserID (mozilla Persona) not successful.</div>');
+					    		reporter.append('<div>Login via Persona (BrowserID) not successful.</div>');
 					    	}
 					    });
 					}
