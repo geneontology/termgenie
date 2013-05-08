@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="Batto">
+		<source>http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo</support>
+		</supports>
+		<roots>
+			<root>BATTO:0000001</root>
+		</roots>
+		<ontologybranch name="entity">
+			<!-- Entity: any term from uberon, CL or GO-CC -->
+			<roots>
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
+				<root>CL:0000003</root> <!-- native cell -->
+				<root>GO:0005575</root> <!-- cellular component -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="quality">
+			<roots>
+				<root>PATO:0000001</root> <!-- quality -->
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>

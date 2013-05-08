@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+	<template name="eq_simple" displayname="Entity Quality attribute">
+		<description>A biological attribute for the affect of a quality of some entity.</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="Batto">
+					<branch>entity</branch>
+				</ontology>
+			</field>
+			<field name="quality" required="true">
+				<ontology name="Batto">
+					<branch>quality</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Ref" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/batto/eq_simple.js</ruleFile>
+		</ruleFiles>
+	</template>
+</termgenietemplates>
