@@ -431,9 +431,9 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		if (current.fields == null) {
 			error("Missing " + TAG_fields + " tag", parser);
 		}
-		if (current.obo_namespace == null) {
-			error("Missing " + TAG_obonamespace + " tag", parser);
-		}
+//		if (current.obo_namespace == null) {
+//			error("Missing " + TAG_obonamespace + " tag", parser);
+//		}
 		if (current.ruleFiles == null || current.ruleFiles.isEmpty()) {
 			error("Missing " + TAG_ruleFiles + " tag", parser);
 		}
