@@ -203,6 +203,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 		try {
+			logger.info("Downloading: "+originalURL+" to file: "+localFile.getAbsolutePath());
 			inputStream = getInputStream(originalURL);
 			outputStream = new FileOutputStream(localFile);
 			IOUtils.copy(inputStream, outputStream);
