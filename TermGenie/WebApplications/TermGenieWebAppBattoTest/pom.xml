@@ -10,7 +10,7 @@
 	<artifactId>TermGenieWebAppBattoTest</artifactId>
 	<packaging>war</packaging>
 
-	<name>TermGenieWebAppBatto</name>
+	<name>TermGenieWebAppBattoTest</name>
 
 	<build>
 		<plugins>
