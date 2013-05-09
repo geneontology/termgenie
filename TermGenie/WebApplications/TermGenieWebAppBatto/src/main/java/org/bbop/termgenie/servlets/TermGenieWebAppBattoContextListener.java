@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -65,26 +67,35 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
-		// http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
-		// editors/gene_ontology_write.obo
-		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "editors/gene_ontology_write.obo");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo"), "extensions/bio-attributes.obo");
+		
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo"), "extensions/x-attribute.obo");
 			
-		// http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo
-		// editors/gene_ontology_xp_write.obo
-		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo"), "editors/gene_ontology_xp_write.obo");
-					
 		String catalogXML = "extensions/catalog-v001.xml";
 		
-		List<String> ignoreIRIs = Arrays.asList("http://purl.obolibrary.org/obo/go.owl",
-				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
+		List<String> ignoreIRIs = Arrays.asList(
+				"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo.owl", 
+				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 				"http://purl.obolibrary.org/obo/TEMP");
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
 	}
 
 	@Override
+	protected IOCModule getCommitModule() {
+		
+		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
+		String remoteTargetFile = "extensions/bio-attributes.obo";
+		String svnUserName = null; // no default value
+		List<String> additional = Collections.emptyList();
+		boolean loadExternal = true;
+		
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "Batto", additional, loadExternal);
+	}
+	
+	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_battoo.xml", false, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_batto.xml", false, applicationProperties);
 	}
 	
 	@Override
@@ -107,6 +118,27 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	@Override
 	protected Collection<IOCModule> getAdditionalModules() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
+		PersistenceBasicModule basicPersistenceModule = getBasicPersistenceModule();
+		if (basicPersistenceModule != null) {
+			modules.add(basicPersistenceModule);
+		}
+		// commit history and ontology id store
+		AdvancedPersistenceModule advancedPersistenceModule = getAdvancedPersistenceModule();
+		if (advancedPersistenceModule != null) {
+			modules.add(advancedPersistenceModule);
+		}
+		return modules;
+	}
+
+	protected AdvancedPersistenceModule getAdvancedPersistenceModule() {
+		return new AdvancedPersistenceModule("BATTO-ID-Manager-Primary", 
+				"ids/batto-id-manager-primary.conf",
+				"BATTO-ID-Manager-Secondary", 
+				"ids/batto-id-manager-secondary.conf", 
+				applicationProperties);
+	}
+
+	protected PersistenceBasicModule getBasicPersistenceModule() {
 		try {
 			// basic persistence
 			String dbFolderString = IOCModule.getSystemProperty("TermGenieWebappBattoDatabaseFolder", applicationProperties);
@@ -119,16 +151,9 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 			}
 			logger.info("Using db folder: "+dbFolder);
 			FileUtils.forceMkdir(dbFolder);
-			modules.add(new PersistenceBasicModule(dbFolder, applicationProperties));
+			return new PersistenceBasicModule(dbFolder, applicationProperties);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		// commit history and ontology id store
-		modules.add(new AdvancedPersistenceModule("BATTO-ID-Manager-Primary", 
-				"ids/batto-id-manager-primary.conf",
-				"BATTO-ID-Manager-Secondary", 
-				"ids/batto-id-manager-secondary.conf", 
-				applicationProperties));
-		return modules;
 	}
 }

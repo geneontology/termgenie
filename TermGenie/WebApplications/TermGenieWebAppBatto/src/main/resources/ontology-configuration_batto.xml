@@ -8,6 +8,10 @@
 		</supports>
 		<roots>
 			<root>BATTO:0000001</root>
+			<root>UBERON:0001062</root> <!-- anatomical entity -->
+			<root>CL:0000003</root> <!-- native cell -->
+			<root>GO:0005575</root> <!-- cellular component -->
+			<root>PATO:0000001</root> <!-- quality -->
 		</roots>
 		<ontologybranch name="entity">
 			<!-- Entity: any term from uberon, CL or GO-CC -->
