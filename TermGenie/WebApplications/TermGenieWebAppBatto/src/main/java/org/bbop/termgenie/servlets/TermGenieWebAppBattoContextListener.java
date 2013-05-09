@@ -149,6 +149,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 			else {
 				dbFolder = new File(FileUtils.getUserDirectory(), "termgenie-batto-db");
 			}
+			dbFolder = dbFolder.getCanonicalFile();
 			logger.info("Using db folder: "+dbFolder);
 			FileUtils.forceMkdir(dbFolder);
 			return new PersistenceBasicModule(dbFolder, applicationProperties);
