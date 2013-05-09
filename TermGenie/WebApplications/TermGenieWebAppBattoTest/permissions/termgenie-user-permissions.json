@@ -1,0 +1,8 @@
+{
+	guid: {
+		"termgenie-batto": "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
+	},
+	"hdietze@lbl.gov": {
+		"termgenie-batto": "(Batto, allowWrite, true), (Batto, allowCommitReview, true), (termgenie-batto, allowManagement, true)"
+	}
+}
