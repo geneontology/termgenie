@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieWebAppBatto<</artifactId>
+			<artifactId>TermGenieWebAppBatto</artifactId>
 			<version>${project.parent.version}</version>
 			<classifier>classes</classifier>
 			<scope>provided</scope>
