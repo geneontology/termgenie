@@ -8,8 +8,9 @@ function eq_simple() {
 	var definition = "Any measurable or observable characteristic related to the "
 			+ termname(q, Batto) + " of " + refname(e, Batto) + ".";
 
-	// TODO synonyms: E Q 'trait'
 	var synonyms = null;
+	// String label, List<ISynonym> results, String prefix, String infix, String suffix, String scope
+	synonyms = termgenie.addSynonym(label, synonyms, null, label, ' trait', 'EXACT');
 	
 	var mdef = createMDef("'biological attribute' and affects_quality some ?Q and attribute_of some ?E");
 	mdef.addParameter('E', e, Batto);
