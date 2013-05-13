@@ -41,7 +41,7 @@ public class SimpleEntityQualityPatternTest {
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_batto.xml", false, null),
 				new XMLReloadingOntologyModule("ontology-configuration_batto.xml", 
-						Arrays.asList("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo.owl", "http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"), null),
+						Arrays.asList("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", "http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"), null),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
