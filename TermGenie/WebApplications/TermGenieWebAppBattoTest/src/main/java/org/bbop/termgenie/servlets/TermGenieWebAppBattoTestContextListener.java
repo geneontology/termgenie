@@ -55,7 +55,8 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 			String fileCache = new File("./work/termgenie-download-cache").getAbsolutePath();
 			
 			List<String> ignoreIRIs = Arrays.asList(
-					"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo.owl", 
+					"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
+					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl",
 					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 					"http://purl.obolibrary.org/obo/TEMP");
 			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs);

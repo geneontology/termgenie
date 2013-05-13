@@ -74,7 +74,8 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 		String catalogXML = "extensions/catalog-v001.xml";
 		
 		List<String> ignoreIRIs = Arrays.asList(
-				"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo.owl", 
+				"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
+				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl",
 				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 				"http://purl.obolibrary.org/obo/TEMP");
 		
