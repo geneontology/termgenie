@@ -3,6 +3,7 @@
 	<property name="webapp.prepare" location="prepare"/>
 	<property name="webapp.target" location="${workdir}/ant-webapp"/>
 	<property name="webapp.svn" location="${workdir}/svn"/>
+	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
 	<property name="webapp.db" location="${workdir}/termgenie-batto-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
 	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
@@ -30,7 +31,10 @@
 		<delete dir="${webapp.target}"/>
 		<delete dir="${webapp.svn}"/>
 		<delete dir="${webapp.db}"/>
+		<!--
 		<delete dir="${webapp.cache}"/>
+		-->
+		<delete dir="${webapp.checkout}"/>
 	</target>
 	
 	<target name="createsvn">
