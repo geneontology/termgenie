@@ -21,11 +21,11 @@ import com.google.inject.name.Named;
  */
 public class AdvancedPersistenceModule extends IOCModule {
 
-	private final String primaryOntologyIdManagerName;
-	private final String primaryOntologyIdStoreConfigurationFile;
+	private final String defaultPrimaryOntologyIdManagerName;
+	private final String defaultPrimaryOntologyIdStoreConfigurationFile;
 	
-	private final String secondaryOntologyIdManagerName;
-	private final String secondaryOntologyIdStoreConfigurationFile;
+	private final String defaultSecondaryOntologyIdManagerName;
+	private final String defaultSecondaryOntologyIdStoreConfigurationFile;
 	
 	public AdvancedPersistenceModule(String primaryOntologyIdManagerName,
 			String primaryOntologyIdStoreConfigurationFile,
@@ -34,21 +34,27 @@ public class AdvancedPersistenceModule extends IOCModule {
 			Properties applicationProperties)
 	{
 		super(applicationProperties);
-		this.primaryOntologyIdManagerName = primaryOntologyIdManagerName;
-		this.primaryOntologyIdStoreConfigurationFile = primaryOntologyIdStoreConfigurationFile;
-		this.secondaryOntologyIdManagerName = secondaryOntologyIdManagerName;
-		this.secondaryOntologyIdStoreConfigurationFile = secondaryOntologyIdStoreConfigurationFile;
+		this.defaultPrimaryOntologyIdManagerName = primaryOntologyIdManagerName;
+		this.defaultPrimaryOntologyIdStoreConfigurationFile = primaryOntologyIdStoreConfigurationFile;
+		this.defaultSecondaryOntologyIdManagerName = secondaryOntologyIdManagerName;
+		this.defaultSecondaryOntologyIdStoreConfigurationFile = secondaryOntologyIdStoreConfigurationFile;
 	}
 
 	@Override
 	protected void configure() {
 		bindCommitHistoryStore();
+		bind("PrimaryOntologyIdManagerName", defaultPrimaryOntologyIdManagerName);
+		bind("PrimaryOntologyIdStoreConfigurationFile", defaultPrimaryOntologyIdStoreConfigurationFile);
+		bind("secondaryOntologyIdManagerName", defaultSecondaryOntologyIdManagerName);
+		bind("SecondaryOntologyIdStoreConfigurationFile", defaultSecondaryOntologyIdStoreConfigurationFile);
 	}
 
 	@Provides
 	@Singleton
 	@Named("PrimaryOntologyIdManager")
 	protected OntologyIdManager providePrimaryOntologyIdManager(@Named("IdEntityManagerFactory") EntityManagerFactory entityManagerFactory,
+			String primaryOntologyIdManagerName,
+			@Named("PrimaryOntologyIdStoreConfigurationFile") String primaryOntologyIdStoreConfigurationFile,
 			@Named("TryResourceLoadAsFiles") boolean tryLoadAsFiles)
 	{
 		OntologyIdStoreConfiguration configuration = new PlainOntologyIdStoreConfiguration(primaryOntologyIdStoreConfigurationFile, tryLoadAsFiles);
@@ -60,6 +66,8 @@ public class AdvancedPersistenceModule extends IOCModule {
 	@Singleton
 	@Named("SecondaryOntologyIdManager")
 	protected OntologyIdManager provideSecondaryOntologyIdManager(@Named("SecondaryIdEntityManagerFactory") EntityManagerFactory entityManagerFactory,
+			String secondaryOntologyIdManagerName,
+			@Named("SecondaryOntologyIdStoreConfigurationFile") String secondaryOntologyIdStoreConfigurationFile,
 			@Named("TryResourceLoadAsFiles") boolean tryLoadAsFiles)
 	{
 		OntologyIdStoreConfiguration configuration = new PlainOntologyIdStoreConfiguration(secondaryOntologyIdStoreConfigurationFile, tryLoadAsFiles);
