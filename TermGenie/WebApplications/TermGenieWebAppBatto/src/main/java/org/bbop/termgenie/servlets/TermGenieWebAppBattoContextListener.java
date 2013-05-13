@@ -141,7 +141,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	protected PersistenceBasicModule getBasicPersistenceModule() {
 		try {
 			// basic persistence
-			String dbFolderString = IOCModule.getSystemProperty("TermGenieWebappBattoDatabaseFolder", applicationProperties);
+			String dbFolderString = IOCModule.getProperty("TermGenieWebappBattoDatabaseFolder", applicationProperties);
 			File dbFolder;
 			if (dbFolderString != null && !dbFolderString.isEmpty()) {
 				dbFolder = new File(dbFolderString);

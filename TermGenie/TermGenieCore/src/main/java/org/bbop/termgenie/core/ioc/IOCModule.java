@@ -1,6 +1,8 @@
 package org.bbop.termgenie.core.ioc;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,28 +64,55 @@ public abstract class IOCModule extends AbstractModule {
 		}
 	}
 
-	public static String getSystemProperty(String name) {
+	/**
+	 * Load the global system properties configuration for the given application
+	 * name.<br>
+	 * Expect a system property called 'termgenie.'+name with the path to the
+	 * configuration file. If this is not set an empty properties object will be
+	 * returned. If the file exists, but cannot be fully read an
+	 * {@link RuntimeException} is thrown.
+	 * 
+	 * @param name application name
+	 * @return {@link Properties}, never null
+	 */
+	public static Properties getGlobalSystemProperties(String name) {
+		final Logger logger = Logger.getLogger(IOCModule.class);
+		logger.info("Checking for global application configuration properties file: "+name);
 		String property = System.getProperty("termgenie." + name, null);
-		if (property == null) {
-			property = System.getProperty("overwrite." + name, null);
+		Properties applicationProperties = new Properties();
+		if (property != null) {
+			File propertyFile = new File(property);
+			if (propertyFile.isFile() && propertyFile.canRead()) {
+				logger.info("Start loading global propertyFile: "+propertyFile.getAbsolutePath());
+				try {
+					applicationProperties.load(new FileInputStream(propertyFile));
+				} catch (IOException exception) {
+					logger.error("Could not load global propertyFile: "+propertyFile.getAbsolutePath()+" Exception: "+exception.getMessage());
+					throw new RuntimeException(exception);
+				}
+			}
+			else {
+				String message = "Could not load global propertyFile: "+propertyFile.getAbsolutePath();
+				logger.error(message);
+				throw new RuntimeException(message);
+			}
 		}
-		return property;
+		else {
+			logger.warn("No system property found for key: "+name);
+		}
+		return applicationProperties;
 	}
 
-	public static String getSystemProperty(String name, Properties applicationProperties) {
-		String property = getSystemProperty(name);
-		if (property == null && applicationProperties != null && !applicationProperties.isEmpty()) {
+	public static String getProperty(String name, Properties applicationProperties) {
+		String property = null;
+		if (applicationProperties != null && !applicationProperties.isEmpty()) {
 			property = applicationProperties.getProperty(name, null);
 		}
 		return property;
 	}
 
 	public String getProperty(String name) {
-		String property = getSystemProperty(name);
-		if (property == null && applicationProperties != null && !applicationProperties.isEmpty()) {
-			property = applicationProperties.getProperty(name, null);
-		}
-		return property;
+		return getProperty(name, applicationProperties);
 	}
 
 	/**

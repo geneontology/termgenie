@@ -1,8 +1,5 @@
 package org.bbop.termgenie.servlets;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +8,6 @@ import java.util.Properties;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
@@ -97,28 +93,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	
 	
 	protected AbstractTermGenieContextListener(String applicationPropertyConfigName) {
-		final Logger logger = Logger.getLogger(getClass());
-		logger.info("Checking for global application configuration property: "+applicationPropertyConfigName);
-		applicationProperties = new Properties();
-		String property = IOCModule.getSystemProperty(applicationPropertyConfigName);
-		if (property != null) {
-			File propertyFile = new File(property);
-			if (propertyFile.isFile() && propertyFile.canRead()) {
-				logger.info("Start loading global propertyFile: "+propertyFile.getAbsolutePath());
-				try {
-					applicationProperties.load(new FileInputStream(propertyFile));
-				} catch (IOException exception) {
-					logger.warn("Could not load global propertyFile: "+propertyFile.getAbsolutePath()+" Exception: "+exception.getMessage());
-					throw new RuntimeException(exception);
-				}
-			}
-			else {
-				logger.warn("Could not load global propertyFile: "+propertyFile.getAbsolutePath());
-			}
-		}
-		else {
-			logger.warn("No system property found for key: "+applicationPropertyConfigName);
-		}
+		applicationProperties = IOCModule.getGlobalSystemProperties(applicationPropertyConfigName);
 	}
 	
 	protected AbstractTermGenieContextListener(Properties applicationProperties) {
