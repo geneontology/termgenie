@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,30 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		return new AnonymousSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder, loadExternal, ignoreMappings);
 	}
 	
+	public static SvnAwareXMLReloadingOntologyModule createAnonymousSvnModule(String configFile,
+			Properties applicationProperties,
+			String repositoryURL,
+			Map<IRI, String> mappedIRIs,
+			String catalogXML,
+			String workFolder,
+			String fileCachingFolder,
+			boolean loadExternal,
+			List<String> ignoreMappings,
+			final Map<IRI, File> localMappings)
+	{
+		if (localMappings == null || localMappings.isEmpty()) {
+			return createAnonymousSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder, loadExternal, ignoreMappings);
+		}
+		return new AnonymousSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, fileCachingFolder, loadExternal, ignoreMappings) {
+
+			@Override
+			protected IRIMapper getLocalIRIMapper() {
+				return new LocalIRIMapper(localMappings);
+			}
+			
+		};
+	}
+	
 	public static SvnAwareXMLReloadingOntologyModule createUsernamePasswordSvnModule(String configFile,
 			Properties applicationProperties,
 			String repositoryURL,
@@ -45,6 +70,30 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			List<String> ignoreMappings)
 	{
 		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, loadExternal, ignoreMappings);
+	}
+	
+	public static SvnAwareXMLReloadingOntologyModule createUsernamePasswordSvnModule(String configFile,
+			Properties applicationProperties,
+			String repositoryURL,
+			Map<IRI, String> mappedIRIs,
+			String catalogXML,
+			String workFolder,
+			String svnUsername,
+			boolean loadExternal,
+			List<String> ignoreMappings,
+			final Map<IRI, File> localMappings)
+	{
+		if (localMappings == null || localMappings.isEmpty()) {
+			return createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, loadExternal, ignoreMappings);
+		}
+		return new PasswordSvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, loadExternal, ignoreMappings) {
+
+			@Override
+			protected IRIMapper getLocalIRIMapper() {
+				return new LocalIRIMapper(localMappings);
+			}
+			
+		};
 	}
 	
 
@@ -101,6 +150,13 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		// default empty;
 	}
 
+	@Provides
+	@Singleton
+	@Named("LocalIRIMapper")
+	@Nullable
+	protected IRIMapper getLocalIRIMapper() {
+		return null;
+	}
 	
 	static class AnonymousSvnAwareXMLReloadingOntologyModule extends SvnAwareXMLReloadingOntologyModule {
 
@@ -122,6 +178,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		@Provides
 		@Singleton
 		protected IRIMapper getIRIMapper(@Named("FallbackIRIMapper") IRIMapper fallbackIRIMapper,
+				@Named("LocalIRIMapper") @Nullable IRIMapper localIRIMapper,
 				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
 				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
 				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
@@ -132,7 +189,11 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			final File workFolderFile = new File(workFolder);
 			final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			return new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
+			SvnIRIMapper svnMapper = new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
+			if (localIRIMapper == null) {
+				return svnMapper;
+			}
+			return new IRIMapperSwitch(localIRIMapper, svnMapper);
 		}
 	}
 	
@@ -165,6 +226,7 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		@Provides
 		@Singleton
 		protected IRIMapper getIRIMapper(@Named("FallbackIRIMapper") IRIMapper fallbackIRIMapper,
+				@Named("LocalIRIMapper") @Nullable IRIMapper localIRIMapper,
 				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
 				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
 				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
@@ -177,7 +239,70 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 			final File workFolderFile = new File(workFolder);
 			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			return new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
+			SvnIRIMapper svnMapper = new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
+			if (localIRIMapper == null) {
+				return svnMapper;
+			}
+			return new IRIMapperSwitch(localIRIMapper, svnMapper);
 		}
+	}
+	
+	private static class IRIMapperSwitch implements IRIMapper {
+		
+		private final IRIMapper first;
+		private final IRIMapper second;
+
+		/**
+		 * @param first
+		 * @param second
+		 */
+		IRIMapperSwitch(IRIMapper first, IRIMapper second) {
+			super();
+			this.first = first;
+			this.second = second;
+		}
+
+		@Override
+		public IRI getDocumentIRI(IRI ontologyIRI) {
+			IRI iri = first.getDocumentIRI(ontologyIRI);
+			if (iri != null) {
+				return iri;
+			}
+			return second.getDocumentIRI(ontologyIRI);
+		}
+
+		@Override
+		public URL mapUrl(String url) {
+			URL realUrl = first.mapUrl(url);
+			if (realUrl != null) {
+				return realUrl;
+			}
+			return second.mapUrl(url);
+		}
+		
+	}
+	
+	private static class LocalIRIMapper implements IRIMapper {
+		
+		private final Map<IRI, File> localMappings;
+
+		LocalIRIMapper(Map<IRI, File> localMappings) {
+			this.localMappings = localMappings;
+		}
+
+		@Override
+		public IRI getDocumentIRI(IRI ontologyIRI) {
+			File file = localMappings.get(ontologyIRI);
+			if (file != null) {
+				return IRI.create(file);
+			}
+			return null;
+		}
+
+		@Override
+		public URL mapUrl(String url) {
+			return null;
+		}
+		
 	}
 }

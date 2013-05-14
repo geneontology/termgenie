@@ -59,7 +59,9 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl",
 					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 					"http://purl.obolibrary.org/obo/TEMP");
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs);
+			
+			Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappBattoLocalIRIMappings");
+			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs, localMappings);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}

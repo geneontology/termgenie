@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
@@ -79,7 +80,25 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 				"http://purl.obolibrary.org/obo/TEMP");
 		
-		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
+		Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappBattoLocalIRIMappings");
+		
+		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs, localMappings);
+	}
+	
+	protected Map<IRI, File> getLocalMappings(String prefix) {
+		Map<IRI, File> localMappings = new HashMap<IRI, File>();
+		String localIRIMappings = IOCModule.getProperty(prefix, applicationProperties);
+		if (localIRIMappings != null) {
+			String[] localIRIMappingComponents = StringUtils.split(localIRIMappings, ','); // treat as comma separated list
+			for (String component : localIRIMappingComponents) {
+				String iri = IOCModule.getProperty(prefix+"."+component+".IRI", applicationProperties);
+				String file = IOCModule.getProperty(prefix+"."+component+".File", applicationProperties);
+				if (iri != null && file != null) {
+					localMappings.put(IRI.create(iri), new File(file).getAbsoluteFile());
+				}
+			}
+		}
+		return localMappings;
 	}
 
 	@Override
