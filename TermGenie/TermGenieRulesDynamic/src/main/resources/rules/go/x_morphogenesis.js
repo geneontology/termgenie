@@ -1,7 +1,6 @@
 // @requires rules/common.js
 
 function x_morphogenesis(ontology, parent) {
-	var go = GeneOntology;
 	var x = getSingleTerm("target", ontology);
 	var check = checkGenus(x, parent, ontology);
 	if (check.isGenus() !== true) {
@@ -12,7 +11,7 @@ function x_morphogenesis(ontology, parent) {
 	var definition = "The developmental process by which " + refname(x, ontology)
 			+ " is generated and organized.";
 	var synonyms = termgenie.synonyms(null, x, ontology, " morphogenesis", null, label);
-	var mdef = createMDef("GO_0009653 and 'results_in_morphogenesis_of' some ?X");
+	var mdef = createMDef("'anatomical structure morphogenesis' and 'results in morphogenesis of' some ?X");
 	mdef.addParameter('X', x, ontology);
 	createTerm(label, definition, synonyms, mdef);
 }
