@@ -16,7 +16,7 @@ function x_structural_organization(ontology, parent, createSynoyms) {
 		synonyms = null;
 	}
 	else {
-		synonyms = termgenie.synonyms(null, x, ontology, "  structural organization", null, label);
+		synonyms = termgenie.synonyms(null, x, ontology, " structural organization", null, label);
 	}
 	var mdef = createMDef("'anatomical structure arrangement' and 'results in structural organization of' some ?X");
 	mdef.addParameter('X', x, ontology);
