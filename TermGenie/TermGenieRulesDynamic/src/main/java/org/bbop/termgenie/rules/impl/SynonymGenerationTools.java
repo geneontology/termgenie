@@ -3,8 +3,10 @@ package org.bbop.termgenie.rules.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsSynonyms;
 import org.bbop.termgenie.tools.Pair;
@@ -363,9 +365,58 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 						}
 					}
 				}
+				if (removeCategories) {
+					// remove synonyms which have a synonym category or the wrong one
+					Iterator<ISynonym> iterator = oboSynonyms.iterator();
+					while (iterator.hasNext()) {
+						ISynonym synonym = iterator.next();
+						String category = synonym.getCategory();
+						if (category != null) {
+							if (categories == null || categories.contains(category)) {
+								iterator.remove();	
+							}
+						}
+					}
+				}
+				else if (requireCategories && categories != null) {
+					// remove synonyms which do not have a synonym category or the wrong one
+					Iterator<ISynonym> iterator = oboSynonyms.iterator();
+					while (iterator.hasNext()) {
+						ISynonym synonym = iterator.next();
+						String category = synonym.getCategory();
+						if (category == null || !categories.contains(category)) {
+							iterator.remove();
+						}
+					}
+				}
 			}
 			return oboSynonyms;
 		}
 		return null;
+	}
+	
+	private boolean requireCategories = false;
+	private boolean removeCategories = false;
+	private Set<String> categories = null;
+
+	@Override
+	public void setSynonymFilters(boolean requireCategories,
+			boolean removeCategories,
+			String[] categories)
+	{
+		this.requireCategories = requireCategories;
+		this.removeCategories = removeCategories;
+		this.categories = null;
+		if (categories != null && categories.length > 0) {
+			this.categories = new HashSet<String>(Arrays.asList(categories));
+		}
+		
+	}
+
+	@Override
+	public void resetSynonymFilters() {
+		requireCategories = false;
+		removeCategories = false;
+		categories = null;
 	}
 }

@@ -60,10 +60,25 @@ public class PlantOntologyTest {
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		
-//		assertEquals("citrate(2-) binding", frame.getTagValue(OboFormatTag.TAG_NAME));
-//		assertEquals("molecular_function", frame.getTagValue(OboFormatTag.TAG_NAMESPACE));
-//		assertEquals("GO:0031406", frame.getTagValue(OboFormatTag.TAG_IS_A)); // carboxylic acid binding
 	}
+	
+//	@Test
+//	public void testPlantDevelopment2() throws Exception {
+//		String term = "PO:0009001"; // fruit
+//		TermGenerationOutput output = generateSingle(term , getPlantDevelopmentTemplate());
+//		Frame frame = output.getTerm();
+//		renderFrame(frame);
+//		
+//	}
+//	
+//	@Test
+//	public void testPlantDevelopment3() throws Exception {
+//		String term = "PO:0025281"; // pollen
+//		TermGenerationOutput output = generateSingle(term , getPlantDevelopmentTemplate());
+//		Frame frame = output.getTerm();
+//		renderFrame(frame);
+//		
+//	}
 	
 	@Test
 	public void testPlantFormation() throws Exception {
@@ -92,6 +107,22 @@ public class PlantOntologyTest {
 	@Test
 	public void testPlantStructuralOrganization() throws Exception {
 		String term = "PO:0025130"; // cigar leaf
+		TermGenerationOutput output = generateSingle(term , getPlantStructuralOrganizationTemplate());
+		Frame frame = output.getTerm();
+		renderFrame(frame);
+	}
+	
+	@Test
+	public void testPlantStructuralOrganization2() throws Exception {
+		String term = "PO:0009001"; // fruit
+		TermGenerationOutput output = generateSingle(term , getPlantStructuralOrganizationTemplate());
+		Frame frame = output.getTerm();
+		renderFrame(frame);
+	}
+	
+	@Test
+	public void testPlantStructuralOrganization3() throws Exception {
+		String term = "PO:0025281"; // pollen
 		TermGenerationOutput output = generateSingle(term , getPlantStructuralOrganizationTemplate());
 		Frame frame = output.getTerm();
 		renderFrame(frame);

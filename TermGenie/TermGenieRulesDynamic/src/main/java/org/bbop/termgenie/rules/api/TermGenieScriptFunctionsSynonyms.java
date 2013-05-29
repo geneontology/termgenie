@@ -149,4 +149,32 @@ public interface TermGenieScriptFunctionsSynonyms {
 			String suffix,
 			String scope);
 
+	
+	/**
+	 * Set the optional filter for synonyms. 
+	 * By default, no external synonym is excluded.
+	 * <p>
+	 * Typical usage options:
+	 * <ul>
+	 * 	<li>Require synonym categories, assumes that the categories is not null or empty, otherwise it does not take any effect</li>
+	 *  <li>Remove synonym categories
+	 *  	<ul>
+	 *  		<li>If categories is empty, only synonyms without a category are used</li>
+	 *  		<li>Otherwise, synonyms with the given categories are removed</li>
+	 *  	</ul>
+	 *  </li> 
+	 * </ul>
+	 * 
+	 * @param requireCategories
+	 * @param removeCategories
+	 * @param categories
+	 * 
+	 * @see #resetSynonymFilters()
+	 */
+	public void setSynonymFilters(boolean requireCategories, boolean removeCategories, String[] categories);
+	
+	/**
+	 * @see #setSynonymFilters(boolean, boolean, String[])
+	 */
+	public void resetSynonymFilters();
 }
