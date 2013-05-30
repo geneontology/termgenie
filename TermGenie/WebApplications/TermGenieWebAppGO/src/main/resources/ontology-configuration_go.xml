@@ -7,6 +7,7 @@
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
 			<support>http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo</support>
 			<support>http://purl.obolibrary.org/obo/cl.owl</support>
+			<support>http://purl.obolibrary.org/obo/go/extensions/po-no-obs.owl</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
@@ -14,7 +15,8 @@
 			<root>GO:0005575</root>
 			<root>CHEBI:24431</root>
 			<root>CHEBI:50906</root>
-			<root>CL:0000003</root>
+			<root>CL:0000003</root> <!-- native cell -->
+			<root>PO:0025131</root> <!-- plant anatomical entity -->
 		</roots>
 		<ontologybranch name="biological_process">
 			<roots>
@@ -52,6 +54,11 @@
 		<ontologybranch name="cell">
 			<roots>
 				<root>CL:0000003</root> <!-- native cell -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="Plant">
+			<roots>
+				<root>PO:0025131</root> <!-- plant anatomical entity -->
 			</roots>
 		</ontologybranch>
 	</ontology>
