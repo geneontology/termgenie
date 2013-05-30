@@ -702,6 +702,29 @@ generated automatically</description>
 			<category>structural organization</category>
 		</categories>
 	</template>
+	<template name="cell_apoptosis">
+		<description>Apoptotic process for a cell type</description>
+		<ontology name="GeneOntology"></ontology>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="celltype" required="true">
+				<ontology name="GeneOntology">
+					<branch>cell</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cl/cell_apoptosis.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>Cell Type Ontology (CL)</category>
+			<category>apoptosis</category>
+		</categories>
+	</template>
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 
 		CommitModule configuration in TermGenieWebAppGOContextListener 
