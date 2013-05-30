@@ -587,7 +587,6 @@ generated automatically</description>
 			<category>chemicals</category>
 		</categories>
 	</template>
-	<!-- 
 	<template name="plant_development">
 		<description>Development of a plant structure.</description>
 		<ontology name="GeneOntology"></ontology>
@@ -703,7 +702,6 @@ generated automatically</description>
 			<category>structural organization</category>
 		</categories>
 	</template>
-	 -->
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 
 		CommitModule configuration in TermGenieWebAppGOContextListener 
