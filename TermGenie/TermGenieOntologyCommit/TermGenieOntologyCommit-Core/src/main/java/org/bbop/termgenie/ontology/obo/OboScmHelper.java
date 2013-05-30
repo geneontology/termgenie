@@ -174,6 +174,7 @@ public abstract class OboScmHelper {
 			throws CommitException
 	{
 		int ontologyCount = ontologies.size();
+		final OboAndOwlNameProvider nameProvider = new OboAndOwlNameProvider(ontologies.get(0), graph);
 		for (int i = 0; i < ontologyCount; i++) {
 			// write changed ontology to a file
 			final OBODoc ontology = ontologies.get(i);
@@ -188,7 +189,7 @@ public abstract class OboScmHelper {
 				// set auto-generated-by
 				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 			}
-			createOBOFile(data.patchFileList.get(i), ontology, new OboAndOwlNameProvider(ontology, graph));
+			createOBOFile(data.patchFileList.get(i), ontology, nameProvider);
 		}
 	}
 	
