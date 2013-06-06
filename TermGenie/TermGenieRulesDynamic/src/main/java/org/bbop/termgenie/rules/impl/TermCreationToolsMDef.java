@@ -316,6 +316,12 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			}
 			warnings.add(XrefTools.getLiteratureReferenceErrorString(true));
 		}
+		// Check definition
+		String definitionErrors = TextualDefinitionTool.validateDefinition(definition);
+		if (definitionErrors != null) {
+			output.add(singleError(definitionErrors, input));
+			return false;
+		}
 		OboTools.addDefinition(term, definition, defxrefs);
 	
 		term.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));

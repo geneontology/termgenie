@@ -33,6 +33,7 @@ import org.bbop.termgenie.owl.InferredRelations;
 import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.rules.TermGenieScriptRunner;
+import org.bbop.termgenie.rules.impl.TextualDefinitionTool;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.xrefs.XrefTools;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -433,6 +434,14 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				setCharacterError("definition", "The definition", nonAscii);
 				return;
 			}
+			
+			// Check definition
+			String definitionErrors = TextualDefinitionTool.validateDefinition(def);
+			if (definitionErrors != null) {
+				setError("definition", definitionErrors);
+				return;
+			}
+			
 			// search for similar definitions?
 			
 			// require at least on def db xref, ideally includes PMID
