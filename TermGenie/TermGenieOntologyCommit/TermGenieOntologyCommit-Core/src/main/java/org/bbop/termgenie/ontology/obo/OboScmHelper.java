@@ -33,10 +33,11 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLObject;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.io.ParserWrapper.OboAndOwlNameProvider;
 
 /**
  * Main steps for committing ontology changes to an OBO file in an SCM
@@ -174,7 +175,7 @@ public abstract class OboScmHelper {
 			throws CommitException
 	{
 		int ontologyCount = ontologies.size();
-		final OboAndOwlNameProvider nameProvider = new OboAndOwlNameProvider(ontologies.get(0), graph);
+		final NameProvider nameProvider = new MultipleOboAndOwlNameProvider(ontologies, graph);
 		for (int i = 0; i < ontologyCount; i++) {
 			// write changed ontology to a file
 			final OBODoc ontology = ontologies.get(i);
@@ -191,6 +192,46 @@ public abstract class OboScmHelper {
 			}
 			createOBOFile(data.patchFileList.get(i), ontology, nameProvider);
 		}
+	}
+	
+	/**
+	 * Provide names for the {@link OBOFormatWriter} using an List of {@link OBODoc}
+	 * first and an {@link OWLGraphWrapper} as secondary.
+	 */
+	public static class MultipleOboAndOwlNameProvider implements NameProvider {
+
+		private final List<NameProvider> providers;
+		private final OWLGraphWrapper graph;
+		
+		public MultipleOboAndOwlNameProvider(List<OBODoc> oboDocs, OWLGraphWrapper wrapper) {
+			providers = new ArrayList<NameProvider>();
+			for(OBODoc oboDoc : oboDocs) {
+				providers.add(new OBODocNameProvider(oboDoc));
+			}
+			this.graph = wrapper;
+		}
+
+		@Override
+		public String getName(String id) {
+			String name = null;
+			for(NameProvider nameProvider : providers) {
+				name = nameProvider.getName(id);
+				if (name != null) {
+					return name;
+				}
+			}
+			OWLObject owlObject = graph.getOWLObjectByIdentifier(id);
+			if (owlObject != null) {
+				name = graph.getLabel(owlObject);
+			}
+			return name;
+		}
+
+		@Override
+		public String getDefaultOboNamespace() {
+			return providers.get(0).getDefaultOboNamespace();
+		}
+
 	}
 	
 	private void updateClause(Frame frame, OboFormatTag tag, Object value) {
