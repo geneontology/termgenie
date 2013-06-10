@@ -3,6 +3,7 @@ package org.bbop.termgenie.rules.cl;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,9 @@ import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 
 import owltools.graph.OWLGraphWrapper;
@@ -36,6 +39,8 @@ import com.google.inject.Injector;
 
 public class CellTypeOntologyTest {
 
+	private static boolean RENDER_TERMS = true;
+	
 	private static TermGenerationEngine generationEngine;
 	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
@@ -61,6 +66,27 @@ public class CellTypeOntologyTest {
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		
+		// check inferred specific parent
+		Collection<Clause> is_aClauses = frame.getClauses(OboFormatTag.TAG_IS_A);
+		assertEquals(1, is_aClauses.size());
+		assertEquals("GO:0051402", is_aClauses.iterator().next().getValue()); // neuron apoptotic process
+		
+		// check synonym count
+		Collection<Clause> synoyms = frame.getClauses(OboFormatTag.TAG_SYNONYM);
+		assertEquals(3, synoyms.size());
+		// check synonym scopes
+		int narrowCount = 0;
+		for (Clause clause : synoyms) {
+			Object syn = clause.getValue();
+			if (syn.toString().endsWith("apoptosis")) {
+				assertEquals("NARROW", clause.getValue2());
+				narrowCount += 1;
+			}
+			else {
+				assertEquals("EXACT", clause.getValue2());
+			}
+		}
+		assertEquals(2, narrowCount);
 	}
 	
 	private TermGenerationOutput generateSingle(String term, TermTemplate template) {
@@ -91,6 +117,9 @@ public class CellTypeOntologyTest {
 	}
 	
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
+		if (RENDER_TERMS == false) {
+			return;
+		}
 		OntologyTaskManager ontologyManager = loader.getOntology(go);
 		OntologyTask task = new OntologyTask(){
 

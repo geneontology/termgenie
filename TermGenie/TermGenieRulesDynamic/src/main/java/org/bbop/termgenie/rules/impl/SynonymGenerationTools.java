@@ -65,37 +65,76 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 	{
 		List<ISynonym> results = new ArrayList<ISynonym>();
 		String termLabel = getLabel(x, ontology);
-		for (int i = 0; i < prefixes.length; i++) {
-			String prefix = prefixes[i];
-			String scope = null;
-			if (scopes != null && scopes.length > i) {
-				scope = scopes[i];
-			}
-			if(scope == null) {
-				scope = OboFormatTag.TAG_RELATED.getTag();
-			}
-			if (suffixes != null && suffixes.length > 0) {
-				for(String suffix : suffixes) {
-					results = addSynonym(label, results, prefix, termLabel, suffix, scope);
+		if (prefixes != null && prefixes.length > 0) {
+			for (int i = 0; i < prefixes.length; i++) {
+				String prefix = prefixes[i];
+				String scope = null;
+				if (scopes != null && scopes.length > i) {
+					scope = scopes[i];
+				}
+				if(scope == null) {
+					scope = OboFormatTag.TAG_RELATED.getTag();
+				}
+				if (suffixes != null && suffixes.length > 0) {
+					for(String suffix : suffixes) {
+						results = addSynonym(label, results, prefix, termLabel, suffix, scope);
+					}
+				}
+				else {
+					results = addSynonym(label, results, prefix, termLabel, null, scope);
 				}
 			}
-			else {
-				results = addSynonym(label, results, prefix, termLabel, null, scope);
+		}
+		else if (suffixes != null) {
+			for (int i = 0; i < suffixes.length; i++) {
+				String suffix = suffixes[i];
+				String scope = null;
+				if (scopes != null && scopes.length > i) {
+					scope = scopes[i];
+				}
+				if(scope == null) {
+					scope = OboFormatTag.TAG_RELATED.getTag();
+				}
+				results = addSynonym(label, results, null, termLabel, suffix, scope);
 			}
 		}
 		
 		List<ISynonym> synonyms = getSynonyms(x, ontology, null, false);
 		if (synonyms != null && !synonyms.isEmpty()) {
 			for (ISynonym synonym : synonyms) {
-				for(String prefix : prefixes) {
-					String scope = synonym.getScope();
-					if (suffixes != null && suffixes.length > 0) {
-						for(String suffix : suffixes) {
-							addSynonym(label, results, prefix, synonym.getLabel(), suffix, scope);
+				if (prefixes != null && prefixes.length > 0) {
+					for (int i = 0; i < prefixes.length; i++) {
+						String prefix = prefixes[i];
+						String scope = null;
+						if (scopes != null && scopes.length > i) {
+							scope = scopes[i];
+						}
+						Pair<Boolean, String> match = matchScopes(scope, synonym.getScope());
+						if (match.getOne()) {
+							scope = match.getTwo();
+							if (suffixes != null && suffixes.length > 0) {
+								for(String suffix : suffixes) {
+									addSynonym(label, results, prefix, synonym.getLabel(), suffix, scope);
+								}
+							}
+							else {
+								addSynonym(label, results, prefix, synonym.getLabel(), null, scope);
+							}
 						}
 					}
-					else {
-						addSynonym(label, results, prefix, synonym.getLabel(), null, scope);
+				}
+				else if (suffixes != null) {
+					for (int i = 0; i < suffixes.length; i++) {
+						String suffix = suffixes[i];
+						String scope = null;
+						if (scopes != null && scopes.length > i) {
+							scope = scopes[i];
+						}
+						Pair<Boolean, String> match = matchScopes(scope, synonym.getScope());
+						if (match.getOne()) {
+							scope = match.getTwo();
+							addSynonym(label, results, null, synonym.getLabel(), suffix, scope);
+						}
 					}
 				}
 				

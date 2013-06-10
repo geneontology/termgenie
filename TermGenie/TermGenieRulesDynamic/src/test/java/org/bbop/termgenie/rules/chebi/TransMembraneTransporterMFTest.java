@@ -78,7 +78,7 @@ public class TransMembraneTransporterMFTest {
 	public void test_loaded_pattern() {
 		TermTemplate template = getTransmembraneTransporterMFTemplate();
 		List<TemplateField> fields = template.getFields();
-		assertEquals(2, fields.size());
+		assertEquals(3, fields.size());
 		TemplateField field = fields.get(0);
 		assertEquals(4, field.getFunctionalPrefixes().size());
 		assertArrayEquals(new String[]{"transmembrane transporter activity",
