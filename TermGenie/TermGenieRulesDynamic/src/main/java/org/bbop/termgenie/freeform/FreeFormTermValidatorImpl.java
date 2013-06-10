@@ -261,7 +261,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						addError("synonyms", "No empty labels as synonym allowed.");
 						continue;
 					}
-					nonAscii = hasNonAscii(requestedLabel);
+					nonAscii = hasNonAscii(synLabel);
 					if (!nonAscii.isEmpty()) {
 						setCharacterError("synonyms", "The synonym '"+synLabel+"'", nonAscii);
 						return;
