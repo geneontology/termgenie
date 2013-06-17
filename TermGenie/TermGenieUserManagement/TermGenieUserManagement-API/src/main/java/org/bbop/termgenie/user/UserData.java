@@ -40,6 +40,7 @@ public class UserData implements XrefUserData, OrcidUserData {
 	/**
 	 * @return the screenname
 	 */
+	@Override
 	public String getScreenname() {
 		return screenname;
 	}
@@ -82,6 +83,7 @@ public class UserData implements XrefUserData, OrcidUserData {
 	/**
 	 * @return the xref
 	 */
+	@Override
 	public String getXref() {
 		return xref;
 	}
@@ -110,6 +112,7 @@ public class UserData implements XrefUserData, OrcidUserData {
 	/**
 	 * @return the orcid
 	 */
+	@Override
 	public String getOrcid() {
 		return orcid;
 	}

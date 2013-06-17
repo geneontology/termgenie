@@ -1,7 +1,9 @@
 package org.bbop.termgenie.services.freeform;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -115,22 +117,35 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		if (canView(sessionId, session)) {
 			if ("xref".equals(resource)) {
 				List<XrefUserData> userData = userDataProvider.getXrefUserData();
+				List<AutoCompleteEntry> xrefValues = new ArrayList<AutoCompleteEntry>();
+				Set<String> xrefs = new HashSet<String>();
 				if (userData != null && !userData.isEmpty()) {
-					List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
 					for (XrefUserData xrefUserData : userData) {
 						String name = xrefUserData.getScreenname();
 						String value = xrefUserData.getXref();
 						if (value != null) {
+							xrefs.add(value);
 							AutoCompleteEntry entry = new AutoCompleteEntry();
 							entry.setName(name);
 							entry.setValue(value);
-							xrefStrings.add(entry);
+							xrefValues.add(entry);
 						}
 					}
-					if (!xrefStrings.isEmpty()) {
-						AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
-						return array;
+				}
+				Set<String> additionalXrefs = userDataProvider.getAdditionalXrefs();
+				if (additionalXrefs != null && !additionalXrefs.isEmpty()) {
+					for (String xref : additionalXrefs) {
+						if (!xrefs.contains(xref)) {
+							// skip existing
+							AutoCompleteEntry entry = new AutoCompleteEntry();
+							entry.setValue(xref);
+							xrefValues.add(entry);
+						}
 					}
+				}
+				if (!xrefValues.isEmpty()) {
+					AutoCompleteEntry[] array = xrefValues.toArray(new AutoCompleteEntry[xrefValues.size()]);
+					return array;
 				}
 			}
 			else if ("orcid".equals(resource)) {

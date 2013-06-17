@@ -184,7 +184,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getUserDataModule() {
 		String gocjson = "GO.user_data.json";
-		return new GeneOntologyJsonUserDataModule(applicationProperties, gocjson);
+		List<String> additionalXrefResources = Collections.emptyList();
+		return new GeneOntologyJsonUserDataModule(applicationProperties, gocjson, additionalXrefResources);
 	}
 	
 	@Override

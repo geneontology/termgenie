@@ -2,6 +2,7 @@ package org.bbop.termgenie.user.simple;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.user.OrcidUserData;
 import org.bbop.termgenie.user.UserData;
@@ -70,6 +71,11 @@ public class SimpleUserDataProvider implements UserDataProvider {
 	@Override
 	public List<XrefUserData> getXrefUserData() {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public Set<String> getAdditionalXrefs() {
+		return null;
 	}
 
 	@Override

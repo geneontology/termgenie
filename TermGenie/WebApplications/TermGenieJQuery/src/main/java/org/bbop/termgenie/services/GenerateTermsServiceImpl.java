@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -80,22 +82,35 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	{
 		if ("xref".equals(resource)) {
 			List<XrefUserData> userData = userDataProvider.getXrefUserData();
+			List<AutoCompleteEntry> xrefValues = new ArrayList<AutoCompleteEntry>();
+			Set<String> xrefs = new HashSet<String>();
 			if (userData != null && !userData.isEmpty()) {
-				List<AutoCompleteEntry> xrefStrings = new ArrayList<AutoCompleteEntry>(userData.size());
 				for (XrefUserData xrefUserData : userData) {
 					String name = xrefUserData.getScreenname();
 					String value = xrefUserData.getXref();
 					if (value != null) {
+						xrefs.add(value);
 						AutoCompleteEntry entry = new AutoCompleteEntry();
 						entry.setName(name);
 						entry.setValue(value);
-						xrefStrings.add(entry);
+						xrefValues.add(entry);
 					}
 				}
-				if (!xrefStrings.isEmpty()) {
-					AutoCompleteEntry[] array = xrefStrings.toArray(new AutoCompleteEntry[xrefStrings.size()]);
-					return array;
+			}
+			Set<String> additionalXrefs = userDataProvider.getAdditionalXrefs();
+			if (additionalXrefs != null && !additionalXrefs.isEmpty()) {
+				for (String xref : additionalXrefs) {
+					if (!xrefs.contains(xref)) {
+						// skip existing
+						AutoCompleteEntry entry = new AutoCompleteEntry();
+						entry.setValue(xref);
+						xrefValues.add(entry);
+					}
 				}
+			}
+			if (!xrefValues.isEmpty()) {
+				AutoCompleteEntry[] array = xrefValues.toArray(new AutoCompleteEntry[xrefValues.size()]);
+				return array;
 			}
 		}
 		else if ("orcid".equals(resource)) {

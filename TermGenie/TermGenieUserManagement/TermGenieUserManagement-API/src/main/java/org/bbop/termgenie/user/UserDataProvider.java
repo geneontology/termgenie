@@ -1,6 +1,7 @@
 package org.bbop.termgenie.user;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface UserDataProvider {
@@ -28,6 +29,13 @@ public interface UserDataProvider {
 	 * @return list of xref information
 	 */
 	public List<XrefUserData> getXrefUserData();
+	
+	/**
+	 * Get the set of additional available xrefs.
+	 * 
+	 * @return set of additional xref strings, may be null.
+	 */
+	public Set<String> getAdditionalXrefs();
 	
 	/**
 	 * Retrieve the list of available orcids.

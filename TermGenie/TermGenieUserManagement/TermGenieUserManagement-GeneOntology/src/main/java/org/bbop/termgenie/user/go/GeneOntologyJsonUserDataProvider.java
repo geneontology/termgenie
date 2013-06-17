@@ -1,14 +1,21 @@
 package org.bbop.termgenie.user.go;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.bbop.termgenie.user.OrcidUserData;
@@ -28,16 +35,26 @@ public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 	private static final Logger logger = Logger.getLogger(GeneOntologyJsonUserDataProvider.class);
 	
 	static final String ConfigResourceName = "GeneOntologyJsonUserDataProviderConfigResource";
+	static final String AdditionalXrefResourcesName = "GeneOntologyAdditionalXrefResources";
 	
 	private static final ResourceProvider resourceProvider = new ResourceProvider();
 
 	private final String gocConfigResource;
+	private List<String> additionalXrefResources = null;
 
 	@Inject
 	GeneOntologyJsonUserDataProvider(@Named(ConfigResourceName) String gocConfigResource)
 	{
 		super();
 		this.gocConfigResource = gocConfigResource;
+	}
+	
+	/**
+	 * @param additionalXrefResources the additionalXrefResources to set
+	 */
+	@Inject(optional=true)
+	public void setAdditionalXrefResources(@Nullable @Named(AdditionalXrefResourcesName) List<String> additionalXrefResources) {
+		this.additionalXrefResources = additionalXrefResources;
 	}
 
 	static List<UserData> loadUserData(String resource) {
@@ -86,7 +103,6 @@ public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 	}
 
 	
-	
 	@Override
 	public List<XrefUserData> getXrefUserData() {
 		List<UserData> data = loadUserData(gocConfigResource);
@@ -97,6 +113,36 @@ public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 			}
 		}
 		return filtered;
+	}
+
+	@Override
+	public Set<String> getAdditionalXrefs() {
+		Set<String> xrefs = null;
+		for(String resource : additionalXrefResources) {
+			BufferedReader bufferedReader = null;
+			try {
+				bufferedReader = new BufferedReader(resourceProvider.getResourceReader(resource));
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					line = StringUtils.trimToNull(line);
+					if (line != null && line.charAt(0) != '#') {
+						String[] split = StringUtils.split(line, '\t');
+						if (split.length > 0) {
+							if (xrefs == null) {
+								xrefs = new HashSet<String>();
+							}
+							xrefs.add(split[0]);
+						}
+					}
+				}
+			} catch (IOException exception) {
+				logger.warn("Could not retrieve an xref for additional resource: "+resource, exception);
+			}
+			finally {
+				IOUtils.closeQuietly(bufferedReader);
+			}
+		}
+		return xrefs;
 	}
 
 	@Override
