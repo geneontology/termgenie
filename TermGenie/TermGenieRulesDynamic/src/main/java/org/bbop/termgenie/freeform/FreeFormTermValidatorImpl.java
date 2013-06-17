@@ -542,7 +542,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				try {
 					reasonerManager.runManagedTask(task);
 				} catch (InvalidManagedInstanceException exception) {
-					setError("Relations", "Could not create releations due to an invalid reasoner: "+exception.getMessage());
+					setError("relations", "Could not create releations due to an invalid reasoner: "+exception.getMessage());
 					return;
 				}
 				finally {
@@ -550,7 +550,31 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					reasonerManager.removeProcessState();
 				}
 				InferredRelations inferredRelations = task.getInferredRelations();
-				axioms.addAll(inferredRelations.getClassRelationAxioms());
+				Set<OWLClass> equivalentClasses = inferredRelations.getEquivalentClasses();
+				if (equivalentClasses != null && !equivalentClasses.isEmpty()) {
+					boolean hasOwlNothing = false;
+					StringBuilder sb = new StringBuilder();
+					for (OWLClass equivalentClass : equivalentClasses) {
+						if (equivalentClass.isBottomEntity()) {
+							hasOwlNothing = true;
+							break;
+						}
+						sb.append(' ').append(equivalentClass.getIRI());
+					}
+					if (hasOwlNothing) {
+						setError("relations", "Cannot create class, the requested class is not satisfiable.");
+					}
+					else {
+						setError("relations", "Cannot create class, there are equivalent named classes:"+sb);
+					}
+					return;
+				}
+				Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();
+				if (classRelationAxioms == null || classRelationAxioms.isEmpty()) {
+					setError("relations", "Could not create relations. The resoner returned no relation axioms.");
+					return;
+				}
+				axioms.addAll(classRelationAxioms);
 				
 				// OBO
 				Frame frame = new Frame(FrameType.TERM);

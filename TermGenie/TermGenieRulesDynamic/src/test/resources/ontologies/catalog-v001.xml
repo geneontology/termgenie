@@ -4,4 +4,5 @@
     <uri id="User Entered Import Resolution" name="http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo" uri="gene_ontology_xp_write.obo"/>
     <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl" uri="bio-chebi.owl"/>
     <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/chebi.owl" uri="chebi.owl"/>
+    <uri id="User Entered Import Resolution" name="http://purl.obolibrary.org/obo/go/extensions/x-disjoint.owl" uri="x-disjoint.owl"/>
 </catalog>
