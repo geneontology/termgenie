@@ -491,7 +491,7 @@ generated automatically</description>
 		</categories>
 	</template>
 	<template name="cc_transport_from_to">
-		<description>transport or vesicle-medidated transport from cellular component to cellular component</description>
+		<description>transport or vesicle-mediated transport from cellular component to cellular component</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
