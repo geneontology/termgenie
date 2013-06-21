@@ -96,6 +96,7 @@ public class DefaultReviewMailHandler implements ReviewMailHandler {
 
 		try {
 			mailHandler.sendEmail(subject, body.toString(), fromAddress, fromName, email);
+			logger.info("Sent e-mail to user: "+email);
 		} catch (EmailException exception) {
 			logger.warn("Could not send e-mail to user: " + email, exception);
 		}
