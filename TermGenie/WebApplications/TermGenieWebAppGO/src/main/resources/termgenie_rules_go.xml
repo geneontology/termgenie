@@ -416,7 +416,6 @@ generated automatically</description>
 			<category>chemicals</category>
 		</categories>
 	</template>
-	<!--
 	<template name="chemical_homeostasis">
 		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
 		<ontology name="GeneOntology"></ontology>
@@ -443,7 +442,6 @@ generated automatically</description>
 			<category>chemicals</category>
 		</categories>
 	</template>
-	 -->
 	<template name="chemical_import">
 		<description>import of a chemical entity</description>
 		<ontology name="GeneOntology"></ontology>
