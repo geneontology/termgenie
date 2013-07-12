@@ -6,6 +6,11 @@ id: FOO:2000
 intersection_of: FOO:0003 
 intersection_of: part_of GOO:0001 
 
+[Term]
+id: FOO:2001
+intersection_of: FOO:0003 
+intersection_of: has_participant GOO:0002 
+
 [Typedef]
 id: has_participant
 name: has participant

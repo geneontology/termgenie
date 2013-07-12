@@ -25,6 +25,12 @@ id: FOO:2000
 name: foo-2000
 is_a: FOO:0003
 
+[Term]
+id: FOO:2001
+name: foo-2001
+is_a: FOO:0003
+relationship: part_of FOO:2000
+
 [Typedef]
 id: part_of
 name: part_of

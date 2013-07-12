@@ -2,20 +2,18 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OboParserTools;
-import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
@@ -37,7 +35,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			List<OBODoc> allOntologies,
 			int position)
 	{
-		if (requiresSpecialHandling(item) == false) {
+		if (requiresSpecialHandling(item, targetOntology) == false) {
 			if (position == 0) {
 				return item.getTerms();
 			}
@@ -52,7 +50,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			String pattern = term.getPattern();
 			if (pattern == null || specialPatterns.get(pattern) == null) {
 				if (position == 0) {
-					allFiltered.add(term);
+					handleDefaultPatterns(targetOntology, allFiltered, term);
 				}
 				continue;
 			}
@@ -60,7 +58,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			if (position != 0 && position != requiredPosition) {
 				// not the main ontology and not the required sub ontology:
 				// return nothing
-				return null;
+				continue;
 			}
 			// check that term contains references to external ontologies
 			// use id prefix of OBO identifier for that
@@ -96,6 +94,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				filtered.setId(term.getId());
 				filtered.setLabel(term.getLabel());
 				filtered.setOperation(term.getOperation());
+				filtered.setPattern(term.getPattern());
 
 				// process main term
 				if (doSplitAndRemoveMain) {
@@ -145,9 +144,101 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				throw new RuntimeException(exception);
 			}
 		}
+		if (allFiltered.isEmpty()) {
+			return null;
+		}
 		return allFiltered;
 	}
 
+	protected void handleDefaultPatterns(OBODoc targetOntology, List<CommitedOntologyTerm> allFiltered,
+			CommitedOntologyTerm term) throws RuntimeException
+	{
+		List<SimpleCommitedOntologyTerm> changed = term.getChanged();
+		if (changed == null || changed.isEmpty()) {
+			allFiltered.add(term);
+		}
+		else {
+			// need check changed relations also, even if the submitted pattern does not require and update.
+			boolean requiresReplace = false;
+			List<SimpleCommitedOntologyTerm> newChangedTerms = new ArrayList<SimpleCommitedOntologyTerm>(changed.size());
+			for (SimpleCommitedOntologyTerm changedTerm : changed) {
+				Frame changedFrame = OboParserTools.parseFrame(changedTerm.getId(), changedTerm.getObo());
+				Frame newFrame = filterChangedTerm(changedFrame, targetOntology);
+				if (newFrame != null) {
+					requiresReplace = true;
+					SimpleCommitedOntologyTerm newChangedTerm = new SimpleCommitedOntologyTerm();
+					newChangedTerm.setId(changedTerm.getId());
+					newChangedTerm.setOperation(changedTerm.getOperation());
+					newChangedTerm.setAxioms(changedTerm.getAxioms());
+					newChangedTerm.setUuid(changedTerm.getUuid());
+					try {
+						newChangedTerm.setObo(OboWriterTools.writeFrame(newFrame, null));
+					} catch (IOException exception) {
+						throw new RuntimeException(exception);
+					}
+					newChangedTerms.add(newChangedTerm);
+				}
+				else {
+					newChangedTerms.add(changedTerm);
+				}
+			}
+			if (requiresReplace) {
+				CommitedOntologyTerm filtered = new CommitedOntologyTerm();
+				filtered.setAxioms(term.getAxioms());
+				filtered.setId(term.getId());
+				filtered.setLabel(term.getLabel());
+				filtered.setOperation(term.getOperation());
+				filtered.setObo(term.getObo());
+				filtered.setPattern(term.getPattern());
+				filtered.setChanged(newChangedTerms);
+				allFiltered.add(filtered);
+			}
+			else {
+				allFiltered.add(term);
+			}
+		}
+	}
+
+	protected Frame filterChangedTerm(Frame changed, OBODoc target) {
+		Frame original = target.getTermFrame(changed.getId());
+		if (original == null) {
+			return null;
+		}
+		Collection<Clause> originalInterSections = original.getClauses(OboFormatTag.TAG_INTERSECTION_OF);
+		boolean removeIntersectionOf = originalInterSections.isEmpty();
+		Frame newFrame = new Frame(FrameType.TERM);
+		newFrame.setId(original.getId());
+		boolean returnNewFrame = false;
+		for(Clause cl : changed.getClauses()) {
+			String tag = cl.getTag();
+			if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
+				if (removeIntersectionOf) {
+					returnNewFrame = true;
+				}
+				else {
+					newFrame.addClause(cl);
+				}
+			}
+			else if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
+				String rel = cl.getValue(String.class);
+				if (isUnkownRelation(rel, target)) {
+					returnNewFrame = true;
+				}
+				else {
+					newFrame.addClause(cl);
+				}
+			}
+			else {
+				newFrame.addClause(cl);
+			}
+		}
+		if (returnNewFrame) {
+			return newFrame;
+		}
+		return null;
+		
+	}
+	
 	private Frame filterFrame(int position, int requiredPosition, Frame frame) {
 		Frame newFrame = new Frame(frame.getType());
 		newFrame.setId(frame.getId());
@@ -227,21 +318,26 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		return prefix;
 	}
 
-	private boolean requiresSpecialHandling(CommitHistoryItem item) {
+	private boolean requiresSpecialHandling(CommitHistoryItem item, OBODoc targetOntology) {
 		List<CommitedOntologyTerm> terms = item.getTerms();
-		Set<Integer> specials = new HashSet<Integer>();
 		for (CommitedOntologyTerm term : terms) {
 			String pattern = term.getPattern();
 			if (pattern != null) {
 				Integer pos = specialPatterns.get(pattern);
 				if (pos != null) {
-					specials.add(pos);
+					return true;
+				}
+			}
+			List<SimpleCommitedOntologyTerm> changed = term.getChanged();
+			if (changed != null && !changed.isEmpty()) {
+				for (SimpleCommitedOntologyTerm changedTerm : changed) {
+					Frame changedFrame = OboParserTools.parseFrame(changedTerm.getId(), changedTerm.getObo());
+					if(requiresSplit(changedFrame, targetOntology)){
+						return true;
+					}
 				}
 			}
 		}
-		if (specials.isEmpty()) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 }
