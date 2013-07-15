@@ -51,6 +51,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import owltools.InferenceBuilder.ConsistencyReport;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -143,7 +144,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			boolean isEditor, 
 			ProcessState state)
 	{
-		
 		String subset = null;
 		if (this.subset != null && addSubsetTag) {
 			subset = this.subset;
@@ -213,7 +213,19 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				throws InvalidManagedInstanceException
 		{
 			OWLGraphWrapper graph = requested.get(0);
-			runInternal(graph);
+			ProcessState.addMessage(state, "Checking state of current ontology.");
+			ReasonerTaskManager manager = reasonerFactory.getDefaultTaskManager(graph);
+			ConsistencyReport report = manager.checkConsistency(graph);
+			if (report != null && report.errors != null && !report.errors.isEmpty()) {
+				errors = new ArrayList<FreeFormHint>(report.errors.size());
+				for(String error : report.errors) {
+					errors.add(new FreeFormHint("ontology", 
+							"Cannot safely create term, due to the following ontology error: "+error));
+				}
+			}
+			else {
+				runInternal(graph);
+			}
 			return modified; // no modifications
 		}
 		

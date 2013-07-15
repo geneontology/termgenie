@@ -13,7 +13,11 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
+import owltools.InferenceBuilder;
+import owltools.InferenceBuilder.ConsistencyReport;
+import owltools.graph.OWLGraphWrapper;
 import de.derivo.sparqldlapi.Query;
 import de.derivo.sparqldlapi.QueryArgument;
 import de.derivo.sparqldlapi.QueryBinding;
@@ -21,8 +25,6 @@ import de.derivo.sparqldlapi.QueryEngine;
 import de.derivo.sparqldlapi.QueryResult;
 import de.derivo.sparqldlapi.exceptions.QueryEngineException;
 import de.derivo.sparqldlapi.exceptions.QueryParserException;
-
-import owltools.graph.OWLGraphWrapper;
 
 public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner> {
 
@@ -103,6 +105,35 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		return result;
 	}
 	
+	public ConsistencyReport checkConsistency(OWLGraphWrapper wrapper){
+		try {
+			ConsistencyCheckTask task = new ConsistencyCheckTask(wrapper);
+			runManagedTask(task);
+			return task.report;
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
+	private final class ConsistencyCheckTask implements ReasonerTask {
+	
+		private final OWLGraphWrapper wrapper;
+		private ConsistencyReport report = null;
+	
+		private ConsistencyCheckTask(OWLGraphWrapper wrapper) {
+			this.wrapper = wrapper;
+		}
+	
+		@Override
+		public Modified run(OWLReasoner managed) {
+			InferenceBuilder builder = new InferenceBuilder(wrapper, (OWLReasonerFactory)null, false);
+			builder.setReasoner(managed);
+			report = builder.performConsistencyChecks();
+			builder.setOWLGraphWrapper(null);
+			return Modified.no;
+		}
+	}
+
 	private final class DLQueryExecutor implements ReasonerTask {
 	
 		private final String queryString;
