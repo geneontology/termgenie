@@ -7,7 +7,7 @@
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
 			<support>http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo</support>
 			<support>http://purl.obolibrary.org/obo/go/extensions/x-disjoint.owl</support>
-			<support>http://purl.obolibrary.org/obo/cl.owl</support>
+			<support>http://purl.obolibrary.org/obo/cl-basic.owl</support>
 			<support>http://purl.obolibrary.org/obo/go/extensions/po-no-obs.owl</support>
 		</supports>
 		<roots>
