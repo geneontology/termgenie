@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +31,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -102,26 +104,59 @@ public class FileCachingIRIMapper implements IRIMapper {
 		try {
 			final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 			client.setRedirectStrategy(redirectStrategy);
+			final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
+			client.setHttpRequestRetryHandler(retryHandler);
 			final HttpGet request = new HttpGet(url.toURI());
-			final HttpResponse response = client.execute(request);
-			final HttpEntity entity = response.getEntity();
-			final StatusLine statusLine = response.getStatusLine();
-			if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-				StringBuilder message = new StringBuilder();
-				message.append("Web request failed with status code: ");
-				message.append(statusLine.getStatusCode());
-				String reasonPhrase = statusLine.getReasonPhrase();
-				if (reasonPhrase != null) {
-					message.append(" reason: ");
-					message.append(reasonPhrase);
-				}
-				EntityUtils.consume(entity);
-				return handleError(url, new IOException(message.toString()));
-			}
-			return entity.getContent();
+			return tryHttpRequest(client, request, url, 3);
 		} catch (URISyntaxException exception) {
 			// non-recoverable error
 			throw new IOException(exception);
+		}
+	}
+	
+	private InputStream tryHttpRequest(DefaultHttpClient client, HttpGet request, URL url, int count) throws IOException {
+		// try the load
+		final HttpResponse response = client.execute(request);
+		final HttpEntity entity = response.getEntity();
+		final StatusLine statusLine = response.getStatusLine();
+		if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+			StringBuilder message = new StringBuilder();
+			message.append("Web request for URL '");
+			message.append(url);
+			message.append("' failed with status code: ");
+			message.append(statusLine.getStatusCode());
+			String reasonPhrase = statusLine.getReasonPhrase();
+			if (reasonPhrase != null) {
+				message.append(" reason: ");
+				message.append(reasonPhrase);
+			}
+			EntityUtils.consume(entity);
+			if (count <= 0) {
+				// no more retry, handle the final error.
+				return handleError(url, new IOException(message.toString()));
+			}
+			message.append("\n Retry request.");
+			logger.warn(message);
+			
+			// wait a random interval between 400 and 1500 ms
+			randomWait(400, 1500);
+			
+			// try again
+			return tryHttpRequest(client, request, url, count - 1);
+		}
+		return entity.getContent();
+	}
+	
+	private void randomWait(int min, int max) {
+		Random random = new Random(System.currentTimeMillis());
+		long wait = min + random.nextInt((max - min));
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Waiting "+wait+" ms for retry.");
+			}
+			Thread.sleep(wait);
+		} catch (InterruptedException exception) {
+			logger.warn("Interrupted sleep: Incomplete wait for retry.", exception);
 		}
 	}
 
