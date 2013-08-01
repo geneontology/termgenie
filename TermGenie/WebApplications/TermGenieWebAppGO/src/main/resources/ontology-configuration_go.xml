@@ -15,7 +15,6 @@
 			<root>GO:0003674</root>
 			<root>GO:0005575</root>
 			<root>CHEBI:24431</root>
-			<root>CHEBI:50906</root>
 			<root>CL:0000003</root> <!-- native cell -->
 			<root>PO:0025131</root> <!-- plant anatomical entity -->
 		</roots>
@@ -42,7 +41,6 @@
 		<ontologybranch name="chebi">
 			<roots>
 				<root>CHEBI:24431</root> <!-- chemical entity -->
-				<root>CHEBI:50906</root> <!-- chemical roles -->
 			</roots>
 		</ontologybranch>
 		<ontologybranch name="default_go">
