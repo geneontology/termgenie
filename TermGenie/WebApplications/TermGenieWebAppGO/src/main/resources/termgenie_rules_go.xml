@@ -700,7 +700,7 @@ generated automatically</description>
 			<category>structural organization</category>
 		</categories>
 	</template>
-	<template name="cell_apoptosis">
+	<template name="cell_apoptosis" displayname="cell_apoptotic_process">
 		<description>Apoptotic process for a cell type</description>
 		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
