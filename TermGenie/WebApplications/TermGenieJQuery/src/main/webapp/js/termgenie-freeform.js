@@ -591,70 +591,7 @@ function TermGenieFreeForm(){
 				function createPartOfList() {
 					// retrieve the pre-existing DOM element
 					var globalPartOfContainer = jQuery('#free-form-input-partof-cell');
-					var listParent = createLayoutTable();
-					globalPartOfContainer.append(listParent);
-					var inputFields = [];
-					
-					var addRemove = createAddRemoveWidget(globalPartOfContainer, addField, removeField);
-					addField();
-					
-					function addField() {
-						var listElem = jQuery('<tr></tr>');
-						listElem.appendTo(listParent);
-						var tdElement = jQuery('<td></td>');
-						tdElement.appendTo(listElem);
-						inputFields.push(AutoCompleteTerms(tdElement, null));
-					};
-					
-					function removeField() {
-						if (inputFields.length > 1) {
-							listParent.find('tr').last().remove();
-							inputFields.pop();
-						}
-					};
-					
-					function getValues() {
-						var results = [];
-						jQuery.each(inputFields, function(pos, value){
-							var currentValue = value.value();
-							if (currentValue && currentValue !== null) {
-								results.push(currentValue);
-							}
-						});
-						return results;
-					};
-					
-					/**
-					 * return the functions for this object
-					 */
-					return {
-						values: getValues,
-						validate: function() {
-							var errors = [];
-							jQuery.each(inputFields, function(pos, value){
-								var error = value.validate(true);
-								if (error && error !== null) {
-									errors.push(error);
-								}
-							});
-							if (errors.length > 0) {
-								return errors[0];
-							}
-							return null;
-						},
-						enable: function() {
-							jQuery.each(inputFields, function(pos, value){
-								value.enable();
-							});
-							addRemove.enable();
-						},
-						disable: function() {
-							jQuery.each(inputFields, function(pos, value){
-								value.disable();
-							});
-							addRemove.disable();
-						}
-					};
+					return createAutoCompleteRelationList(globalPartOfContainer);
 				}
 				
 				/**
@@ -665,11 +602,20 @@ function TermGenieFreeForm(){
 				function createHasPartList() {
 					// retrieve the pre-existing DOM element
 					var globalHasPartContainer = jQuery('#free-form-input-haspart-cell');
+					return createAutoCompleteRelationList(globalHasPartContainer);
+				}
+				
+				/**
+				 * Create an input object for a list of relations.
+				 * 
+				 * @returns relation list object
+				 */
+				function createAutoCompleteRelationList(inputContainer) {
 					var listParent = createLayoutTable();
-					globalHasPartContainer.append(listParent);
+					inputContainer.append(listParent);
 					var inputFields = [];
 					
-					var addRemove = createAddRemoveWidget(globalHasPartContainer, addField, removeField);
+					var addRemove = createAddRemoveWidget(inputContainer, addField, removeField);
 					addField();
 					
 					function addField() {
