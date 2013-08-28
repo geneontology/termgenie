@@ -150,6 +150,25 @@ public class FreeFormTermValidatorImplTest {
 	}
 	
 	@Test
+	public void testHasPart() throws Exception {
+		final TestFreeFormTermRequest request = new TestFreeFormTermRequest();
+		request.setLabel("bla bla bla bla bla bla test");
+		
+		request.setNamespace("biological_process");
+		request.setIsA(Arrays.asList("GO:0043473"));
+		request.setHasPart(Arrays.asList("GO:0048069", "GO:0048592"));
+		request.setDefinition("Foo bar bla bla bla bla bla bla bla bla bla bla.");
+		request.setDbxrefs(Arrays.asList("GOC:fake", "PMID:000000"));
+		
+		Pair<Frame,Set<OWLAxiom>> pair = noErrors(request, graph);
+
+		Frame frame = pair.getOne();
+		
+		assertNotNull(frame);
+		assertNotNull(pair.getTwo());
+	}
+	
+	@Test
 	public void testNonAscii() throws Exception {
 		assertEquals(0, ValidationTask.hasNonAscii("Bla bla bla.").size());
 		assertEquals(1, ValidationTask.hasNonAscii("3′-5′").size());
@@ -263,7 +282,6 @@ public class FreeFormTermValidatorImplTest {
 			return hasPart;
 		}
 		
-		@SuppressWarnings("unused")
 		public void setHasPart(List<String> hasPart) {
 			this.hasPart = hasPart;
 		}
