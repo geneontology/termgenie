@@ -433,6 +433,36 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			if (errors != null) {
 				return;
 			}
+			
+			// optional has_part relations
+			Set<OWLClass> hasPart = null;
+			OWLObjectProperty hasPartProperty = null;
+			List<String> hasPartList = request.getHasPart();
+			if (hasPartList != null && !hasPartList.isEmpty()) {
+				// first find property
+				hasPartProperty = graph.getOWLObjectPropertyByIdentifier("has_part");
+				if (hasPartProperty == null) {
+					setError("has_part", "Could not find the has_part property.");
+					return;
+				}
+				
+				hasPart = new HashSet<OWLClass>();
+				for(String id : hasPartList) {
+					if (id == null) {
+						addError("has_part parent", "null parent");
+						continue;
+					}
+					OWLClass cls = graph.getOWLClassByIdentifier(id);
+					if (cls == null) {
+						addError("has_part parent", "parent not found in ontology: "+id);
+						continue;
+					}
+					hasPart.add(cls);
+				}
+			}
+			if (errors != null) {
+				return;
+			}
 
 			// check definition
 			String def = StringUtils.trimToNull(request.getDefinition());
@@ -535,6 +565,13 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(partOfProperty, superClass)));
 				}
 			}
+			
+			if (hasPart != null && !hasPart.isEmpty()) {
+				for(OWLClass superClass : hasPart) {
+					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(hasPartProperty, superClass)));
+				}
+			}
+			
 			preliminaryAxioms.addAll(axioms);
 			
 			// add relationships to graph and use reasoner to infer relationships (remove redundant ones)

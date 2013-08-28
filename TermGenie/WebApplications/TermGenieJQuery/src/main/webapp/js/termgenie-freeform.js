@@ -462,6 +462,7 @@ function TermGenieFreeForm(){
 			function createRelationsInput() {
 				var isaList = createIsAList();
 				var partOfList = createPartOfList();
+				var hasPartList = createHasPartList();
 				
 				return {
 					enable: function(oboNamespace) {
@@ -478,12 +479,19 @@ function TermGenieFreeForm(){
 					getPartOf: function() {
 						return partOfList.values();
 					},
+					getHasPart: function() {
+						return hasPartList.values();
+					},
 					validate: function() {
 						var isaValidation = isaList.validate()
-						if (isaValidation && isaValidation !== null) {
+						if (isaValidation !== undefined && isaValidation !== null) {
 							return isaValidation;
 						}
-						return partOfList.validate();
+						var partOfValidation = partOfList.validate();
+						if (partOfValidation !== undefined && partOfValidation !== null) {
+							return partOfValidation;
+						}
+						return hasPartList.validate();
 					}
 				};
 				
@@ -588,6 +596,80 @@ function TermGenieFreeForm(){
 					var inputFields = [];
 					
 					var addRemove = createAddRemoveWidget(globalPartOfContainer, addField, removeField);
+					addField();
+					
+					function addField() {
+						var listElem = jQuery('<tr></tr>');
+						listElem.appendTo(listParent);
+						var tdElement = jQuery('<td></td>');
+						tdElement.appendTo(listElem);
+						inputFields.push(AutoCompleteTerms(tdElement, null));
+					};
+					
+					function removeField() {
+						if (inputFields.length > 1) {
+							listParent.find('tr').last().remove();
+							inputFields.pop();
+						}
+					};
+					
+					function getValues() {
+						var results = [];
+						jQuery.each(inputFields, function(pos, value){
+							var currentValue = value.value();
+							if (currentValue && currentValue !== null) {
+								results.push(currentValue);
+							}
+						});
+						return results;
+					};
+					
+					/**
+					 * return the functions for this object
+					 */
+					return {
+						values: getValues,
+						validate: function() {
+							var errors = [];
+							jQuery.each(inputFields, function(pos, value){
+								var error = value.validate(true);
+								if (error && error !== null) {
+									errors.push(error);
+								}
+							});
+							if (errors.length > 0) {
+								return errors[0];
+							}
+							return null;
+						},
+						enable: function() {
+							jQuery.each(inputFields, function(pos, value){
+								value.enable();
+							});
+							addRemove.enable();
+						},
+						disable: function() {
+							jQuery.each(inputFields, function(pos, value){
+								value.disable();
+							});
+							addRemove.disable();
+						}
+					};
+				}
+				
+				/**
+				 * Create an input object for a list of hasPart relations.
+				 * 
+				 * @returns hasPart relation list object
+				 */
+				function createHasPartList() {
+					// retrieve the pre-existing DOM element
+					var globalHasPartContainer = jQuery('#free-form-input-haspart-cell');
+					var listParent = createLayoutTable();
+					globalHasPartContainer.append(listParent);
+					var inputFields = [];
+					
+					var addRemove = createAddRemoveWidget(globalHasPartContainer, addField, removeField);
 					addField();
 					
 					function addField() {
@@ -1200,6 +1282,7 @@ function TermGenieFreeForm(){
 					dbxrefs: defXrefsInput.getXrefs(),
 					isA: relationsInput.getIsA(),
 					partOf: relationsInput.getPartOf(),
+					hasPart: relationsInput.getHasPart(),
 					synonyms: synonymInput.getSynonyms(),
 					xrefs: xrefInputs.getXrefs()
 				};

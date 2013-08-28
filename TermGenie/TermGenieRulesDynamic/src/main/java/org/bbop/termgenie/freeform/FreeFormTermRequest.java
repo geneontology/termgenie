@@ -38,6 +38,11 @@ public interface FreeFormTermRequest {
 	 * @return the partOf
 	 */
 	public List<String> getPartOf();
+	
+	/**
+	 * @return the hasPart
+	 */
+	public List<String> getHasPart();
 
 	/**
 	 * @return the synonyms

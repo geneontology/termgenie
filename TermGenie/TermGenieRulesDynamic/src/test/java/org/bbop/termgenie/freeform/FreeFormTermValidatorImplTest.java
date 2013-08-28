@@ -199,6 +199,7 @@ public class FreeFormTermValidatorImplTest {
 
 		private List<String> isA;
 		private List<String> partOf;
+		private List<String> hasPart;
 		
 		private List<Xref> xrefs;
 		
@@ -255,6 +256,16 @@ public class FreeFormTermValidatorImplTest {
 		@SuppressWarnings("unused")
 		public void setPartOf(List<String> partOf) {
 			this.partOf = partOf;
+		}
+
+		@Override
+		public List<String> getHasPart() {
+			return hasPart;
+		}
+		
+		@SuppressWarnings("unused")
+		public void setHasPart(List<String> hasPart) {
+			this.hasPart = hasPart;
 		}
 
 		@Override

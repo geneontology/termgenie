@@ -17,6 +17,7 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 
 	private List<String> isA;
 	private List<String> partOf;
+	private List<String> hasPart;
 
 	private List<JsonSynonym> synonyms;
 	
@@ -92,6 +93,19 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	 */
 	public void setPartOf(List<String> partOf) {
 		this.partOf = partOf;
+	}
+	
+	@Override
+	public List<String> getHasPart() {
+		return hasPart;
+	}
+
+	
+	/**
+	 * @param hasPart the hasPart to set
+	 */
+	public void setHasPart(List<String> hasPart) {
+		this.hasPart = hasPart;
 	}
 
 	/**
