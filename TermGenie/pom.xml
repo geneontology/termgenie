@@ -87,8 +87,8 @@
 						<artifactId>gson</artifactId>
 					</exclusion>
 					<exclusion>
-						<groupId>org.semanticweb</groupId>
-						<artifactId>HermiT</artifactId>
+						<groupId>com.hermit-reasoner</groupId>
+						<artifactId>org.semanticweb.hermit</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>uk.ac.manchester.cs</groupId>
@@ -101,6 +101,14 @@
 					<exclusion>
 						<groupId>org.coode</groupId>
 						<artifactId>oppl2</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.semanticweb.more</groupId>
+						<artifactId>more-reasoner</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.sourceforge.owlapi</groupId>
+						<artifactId>jfact</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
