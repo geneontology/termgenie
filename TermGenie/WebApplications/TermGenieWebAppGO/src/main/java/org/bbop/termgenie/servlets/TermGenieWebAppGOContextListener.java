@@ -85,8 +85,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String catalogXML = "extensions/catalog-v001.xml";
 		
 		List<String> ignoreIRIs = Arrays.asList("http://purl.obolibrary.org/obo/go.owl",
-				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
-				"http://purl.obolibrary.org/obo/TEMP");
+                "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
+                "http://purl.obolibrary.org/obo/go/editors/gene_ontology_xp_write.owl",
+                "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl",
+                "http://purl.obolibrary.org/obo/TEMP");
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
 	}
@@ -118,7 +120,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
         specialPatterns.put("plant_morphogenesis", 1); // PO + relations
         specialPatterns.put("plant_structural_organization", 1); // PO + relations
         specialPatterns.put("cell_apoptosis", 1); // CL
-		
+        specialPatterns.put("protein_localization_to", 1); // relations are only defined in xp file
+        
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value

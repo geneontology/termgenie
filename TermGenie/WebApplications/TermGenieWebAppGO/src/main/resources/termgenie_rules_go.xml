@@ -723,6 +723,33 @@ generated automatically</description>
 			<category>apoptosis</category>
 		</categories>
 	</template>
+	<template name="protein_localization_to">
+		<description>protein localization and establishment of protein localization to a cellular component</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="component" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix>protein localization</prefix>
+					<prefix>establishment of protein localization</prefix>
+				</prefixes>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/protein_localization_to.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>biological_process</category>
+			<category>localization</category>
+		</categories>
+	</template>
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 
 		CommitModule configuration in TermGenieWebAppGOContextListener 
