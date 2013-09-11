@@ -13,7 +13,6 @@ import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 
@@ -49,9 +48,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		for (CommitedOntologyTerm term : item.getTerms()) {
 			String pattern = term.getPattern();
 			if (pattern == null || specialPatterns.get(pattern) == null) {
-				if (position == 0) {
-					handleDefaultPatterns(targetOntology, allFiltered, term);
-				}
+				handleDefaultPatterns(position == 0, targetOntology, allFiltered, term);
 				continue;
 			}
 			int requiredPosition = specialPatterns.get(pattern);
@@ -60,6 +57,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				// return nothing
 				continue;
 			}
+			boolean isMain = position == 0;
 			// check that term contains references to external ontologies
 			// use id prefix of OBO identifier for that
 			Frame frame = OboParserTools.parseFrame(term.getId(), term.getObo());
@@ -98,7 +96,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 
 				// process main term
 				if (doSplitAndRemoveMain) {
-					Frame newFrame = filterFrame(position, requiredPosition, frame);
+					Frame newFrame = filterFrame(isMain, frame, targetOntology);
 					filtered.setObo(OboWriterTools.writeFrame(newFrame, null));
 				}
 				else {
@@ -112,7 +110,7 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 					for (SimpleCommitedOntologyTerm changedTerm : changedTerms) {
 						Frame changedFrame = filteringChanges.get(changedTerm);
 						if (changedFrame != null) {
-							Frame newFrame = filterFrame(position, requiredPosition, changedFrame);
+							Frame newFrame = filterFrame(isMain, changedFrame, targetOntology);
 							SimpleCommitedOntologyTerm newChangedTerm = new SimpleCommitedOntologyTerm();
 							newChangedTerm.setId(changedTerm.getId());
 							newChangedTerm.setOperation(changedTerm.getOperation());
@@ -150,12 +148,14 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		return allFiltered;
 	}
 
-	protected void handleDefaultPatterns(OBODoc targetOntology, List<CommitedOntologyTerm> allFiltered,
+	protected void handleDefaultPatterns(boolean isMain, OBODoc targetOntology, List<CommitedOntologyTerm> allFiltered,
 			CommitedOntologyTerm term) throws RuntimeException
 	{
 		List<SimpleCommitedOntologyTerm> changed = term.getChanged();
 		if (changed == null || changed.isEmpty()) {
-			allFiltered.add(term);
+			if (isMain) {
+				allFiltered.add(term);
+			}
 		}
 		else {
 			// need check changed relations also, even if the submitted pattern does not require and update.
@@ -163,8 +163,11 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 			List<SimpleCommitedOntologyTerm> newChangedTerms = new ArrayList<SimpleCommitedOntologyTerm>(changed.size());
 			for (SimpleCommitedOntologyTerm changedTerm : changed) {
 				Frame changedFrame = OboParserTools.parseFrame(changedTerm.getId(), changedTerm.getObo());
-				Frame newFrame = filterChangedTerm(changedFrame, targetOntology);
-				if (newFrame != null) {
+				if (changedFrame == null) {
+					continue;
+				}
+				Frame newFrame = filterFrame(isMain, changedFrame, targetOntology);
+				if (changedFrame != newFrame) {
 					requiresReplace = true;
 					SimpleCommitedOntologyTerm newChangedTerm = new SimpleCommitedOntologyTerm();
 					newChangedTerm.setId(changedTerm.getId());
@@ -188,7 +191,12 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				filtered.setId(term.getId());
 				filtered.setLabel(term.getLabel());
 				filtered.setOperation(term.getOperation());
-				filtered.setObo(term.getObo());
+				if (isMain) {
+					filtered.setObo(term.getObo());
+				}
+				else {
+					filtered.setObo("");
+				}
 				filtered.setPattern(term.getPattern());
 				filtered.setChanged(newChangedTerms);
 				allFiltered.add(filtered);
@@ -199,82 +207,115 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		}
 	}
 
-	protected Frame filterChangedTerm(Frame changed, OBODoc target) {
-		Frame original = target.getTermFrame(changed.getId());
-		if (original == null) {
-			return null;
-		}
-		Collection<Clause> originalInterSections = original.getClauses(OboFormatTag.TAG_INTERSECTION_OF);
-		boolean removeIntersectionOf = originalInterSections.isEmpty();
-		Frame newFrame = new Frame(FrameType.TERM);
+	private Frame filterFrame(boolean isMain, final Frame original, OBODoc targetOntology) {
+		
+		final boolean hasExternalIntersection = hasIntersectionOfWithExternalIdOrUnknowRelation(original, targetOntology);
+		final boolean hasExternalRelations = hasRelationshipWithExternalIdOrUnknowRelation(original, targetOntology);
+		final Collection<Clause> originalIntersections = original.getClauses(OboFormatTag.TAG_INTERSECTION_OF);
+		
+		Frame newFrame = new Frame(original.getType());
 		newFrame.setId(original.getId());
-		boolean returnNewFrame = false;
-		for(Clause cl : changed.getClauses()) {
-			String tag = cl.getTag();
-			if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
-				if (removeIntersectionOf) {
-					returnNewFrame = true;
+		
+		for (Clause clause : original.getClauses()) {
+			String tag = clause.getTag();
+			boolean add = false;
+			if (OboFormatTag.TAG_ID.getTag().equals(tag)) {
+				// always add the id to the newFrame
+				add = true;
+			}
+			else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
+				if (isMain) {
+					add = !hasExternalIntersection;
 				}
 				else {
-					newFrame.addClause(cl);
+					add = hasExternalIntersection;
 				}
 			}
 			else if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
-				String rel = cl.getValue(String.class);
-				if (isUnkownRelation(rel, target)) {
-					returnNewFrame = true;
+				if (isMain) {
+					if (hasExternalRelations == false) {
+						add = true;
+					}
+					else {
+						add = !hasExternalIdOrUnknowRelation(clause, original, targetOntology);
+					}
 				}
 				else {
-					newFrame.addClause(cl);
+					if (hasExternalRelations) {
+						// only add if they are not redundant with an intersectionOf clause
+						if (isRedundantRelationShipClause(clause, originalIntersections) == false) {
+							if (hasExternalIdOrUnknowRelation(clause, original, targetOntology)) {
+								add = true;
+							}
+						}
+					}
 				}
 			}
 			else {
-				newFrame.addClause(cl);
+				add = isMain;
 			}
-		}
-		if (returnNewFrame) {
-			return newFrame;
-		}
-		return null;
-		
-	}
-	
-	private Frame filterFrame(int position, int requiredPosition, Frame frame) {
-		Frame newFrame = new Frame(frame.getType());
-		newFrame.setId(frame.getId());
-		for (Clause clause : frame.getClauses()) {
-			String tag = clause.getTag();
-			if (OboFormatTag.TAG_ID.getTag().equals(tag)) {
-				// always add the id to the newFrame
+			
+			if (add) {
 				newFrame.addClause(clause);
 			}
-			else if (OboFormatTag.TAG_INTERSECTION_OF.getTag().equals(tag)) {
-				// only add intersection of clauses if position match
-				// (xp file),
-				// otherwise do nothing
-				if (position == requiredPosition) {
-					newFrame.addClause(clause);
-				}
-			}
-			else if (OboFormatTag.TAG_RELATIONSHIP.getTag().equals(tag)) {
-				// remove relationship tags, when writing to xp file
-			}
-			else if (position == 0) {
-				// add the rest of the clause only to the main file
-				newFrame.addClause(clause);
-			}
+		}
+		if (original.getClauses().size() == newFrame.getClauses().size()) {
+			return original;
 		}
 		return newFrame;
 	}
 	
-	protected boolean requiresSplit(Frame frame, OBODoc targetOntology) {
-		// hook to overwrite the split criteria
-		return hasExternalIntersectionOrUnknowRelation(frame, targetOntology);
+	private boolean isRedundantRelationShipClause(Clause clause, Collection<Clause> intersectionClauses) {
+		Object rel = clause.getValue();
+		Object id = clause.getValue2();
+		for (Clause intersection : intersectionClauses) {
+			Collection<Object> values = intersection.getValues();
+			if (values.size() == 2) {
+				if (rel.equals(intersection.getValue()) && id.equals(intersection.getValue2())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
-	private boolean hasExternalIntersectionOrUnknowRelation(Frame frame, OBODoc targetOntology) {
-		boolean hasExternal = false;
-		for (Clause clause : frame.getClauses(OboFormatTag.TAG_INTERSECTION_OF)) {
+	/**
+	 * Return true, if the given frame needs to be split.
+	 * 
+	 * @param frame
+	 * @param targetOntology
+	 * @return boolean
+	 */
+	protected boolean requiresSplit(Frame frame, OBODoc targetOntology) {
+		if (frame == null) {
+			return false;
+		}
+		// hook to overwrite the split criteria
+		boolean requiresSplit = hasIntersectionOfWithExternalIdOrUnknowRelation(frame, targetOntology)
+				|| hasRelationshipWithExternalIdOrUnknowRelation(frame, targetOntology);
+		return requiresSplit;
+	}
+	
+	private boolean hasIntersectionOfWithExternalIdOrUnknowRelation(Frame frame, OBODoc targetOntology) {
+		return hasExternalIdOrUnknowRelation(frame, targetOntology, OboFormatTag.TAG_INTERSECTION_OF);
+	}
+	
+	private boolean hasRelationshipWithExternalIdOrUnknowRelation(Frame frame, OBODoc targetOntology) {
+		return hasExternalIdOrUnknowRelation(frame, targetOntology, OboFormatTag.TAG_RELATIONSHIP);
+	}
+
+	/**
+	 * Return true, if the frame contains a clause of type tag, which uses an
+	 * external Id or unknown relationship.
+	 * 
+	 * @param frame
+	 * @param targetOntology
+	 * @param tag
+	 * @return boolean
+	 */
+	private boolean hasExternalIdOrUnknowRelation(Frame frame, OBODoc targetOntology, OboFormatTag tag) {
+		boolean matches = false;
+		for (Clause clause : frame.getClauses(tag)) {
 			String targetId = clause.getValue2(String.class);
 			if (targetId == null) {
 				targetId = clause.getValue(String.class);
@@ -286,14 +327,48 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 				}
 			}
 			if (targetId != null) {
-				if(isExternalIdentifier(targetId, frame)) {
+				if(isExternalIdentifier(targetId, frame, targetOntology)) {
 					return true;
 				}
 			}
 		}
-		return hasExternal;
+		return matches;
 	}
 	
+	/**
+	 * Return true, if the clause uses an external Id or unknown relationship.
+	 * 
+	 * @param clause
+	 * @param frame
+	 * @param targetOntology
+	 * @return boolean
+	 */
+	private boolean hasExternalIdOrUnknowRelation(Clause clause, Frame frame, OBODoc targetOntology) {
+		String targetId = clause.getValue2(String.class);
+		if (targetId == null) {
+			targetId = clause.getValue(String.class);
+		}
+		else {
+			String rel = clause.getValue(String.class);
+			if (rel != null && isUnkownRelation(rel, targetOntology)) {
+				return true;
+			}
+		}
+		if (targetId != null) {
+			if(isExternalIdentifier(targetId, frame, targetOntology)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Return true, if the relation is not defined in the main ontology.
+	 * 
+	 * @param id
+	 * @param targetOntology
+	 * @return boolean
+	 */
 	protected boolean isUnkownRelation(String id, OBODoc targetOntology) {
 		boolean found = true;
 		Frame typedefFrame = targetOntology.getTypedefFrame(id);
@@ -303,7 +378,15 @@ public class OboPatternSpecificTermFilter implements TermFilter<OBODoc> {
 		return found;
 	}
 
-	protected boolean isExternalIdentifier(String id, Frame frame) {
+	/**
+	 * Return true, if the id is not defined (external) to the main ontology.
+	 * 
+	 * @param id
+	 * @param frame the frame, where the id is used in
+	 * @param targetOntology main ontology
+	 * @return boolean
+	 */
+	protected boolean isExternalIdentifier(String id, Frame frame, OBODoc targetOntology) {
 		final String prefix = getIdPrefix(frame);
 		return id.startsWith(prefix) == false;
 	}

@@ -84,7 +84,23 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 			String definition,
 			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions);
+
 	
+	/**
+	 * Create a new term and provide output which can directly be returned.
+	 * 
+	 * @param label
+	 * @param definition
+	 * @param synonyms
+	 * @param logicalDefinitions
+	 * @param partOf 
+	 * @return true, if successful
+	 */
+	public boolean createTerm(String label,
+			String definition,
+			List<ISynonym> synonyms,
+			MDef[] logicalDefinitions,
+			MDef[] partOf);
 	
 	public static class ExistingClasses {
 		

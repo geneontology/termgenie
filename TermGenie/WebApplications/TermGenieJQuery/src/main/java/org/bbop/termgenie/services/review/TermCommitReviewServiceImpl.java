@@ -371,6 +371,9 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 		private Frame parseDiff(JsonDiff jsonDiff) {
 			Frame frame = OboParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
+			if (frame == null) {
+				return null;
+			}
 			Collection<Clause> clauses = frame.getClauses();
 			Iterator<Clause> iterator = clauses.iterator();
 			String tagName = OboFormatTag.TAG_IS_OBSELETE.getTag();

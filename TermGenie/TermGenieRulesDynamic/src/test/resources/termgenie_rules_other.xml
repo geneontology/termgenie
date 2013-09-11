@@ -61,7 +61,7 @@
 		</categories>
 	</template>
 	<template name="protein_localization_to">
-		<description>protein localization to a cellular component</description>
+		<description>protein localization and establishment of protein localization to a cellular component</description>
 		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
@@ -69,6 +69,10 @@
 				<ontology name="GeneOntology">
 					<branch>cellular_component</branch>
 				</ontology>
+				<prefixes preselected="false">
+					<prefix>protein localization</prefix>
+					<prefix>establishment of protein localization</prefix>
+				</prefixes>
 			</field>
 			<field name="Literature_Ref" required="true" />
 			<field name="DefX_Ref">

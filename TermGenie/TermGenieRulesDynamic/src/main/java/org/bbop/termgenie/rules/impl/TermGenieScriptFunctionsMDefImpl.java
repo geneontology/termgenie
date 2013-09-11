@@ -500,7 +500,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			else {
 				defs = Collections.emptyList();
 			}
-			return tools.addTerm(label, definition, synonyms, defs, getResultList());
+			return tools.addTerm(label, definition, synonyms, defs, null, getResultList());
 		} catch (NullPointerException exception) {
 			Logger.getLogger(getClass()).error("NPE", exception);
 			throw exception;
@@ -513,6 +513,16 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			List<ISynonym> synonyms,
 			MDef[] logicalDefinitions)
 	{
+		return createTerm(label, definition, synonyms, logicalDefinitions, null);
+	}
+	
+	@Override
+	public boolean createTerm(String label,
+			String definition,
+			List<ISynonym> synonyms,
+			MDef[] logicalDefinitions,
+			MDef[] partOf)
+	{
 		try {
 			List<MDef> logicalDefinitionList;
 			if (logicalDefinitions != null && logicalDefinitions.length > 0) {
@@ -521,7 +531,12 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			else {
 				logicalDefinitionList = Collections.emptyList();
 			}
-			return tools.addTerm(label, definition, synonyms, logicalDefinitionList, getResultList());
+			List<MDef> partOfList = null;
+			if (partOf != null && partOf.length > 0) {
+				partOfList = Arrays.asList(partOf);
+			}
+			
+			return tools.addTerm(label, definition, synonyms, logicalDefinitionList, partOfList, getResultList());
 		} catch (NullPointerException exception) {
 			Logger.getLogger(getClass()).error("NPE", exception);
 			throw exception;

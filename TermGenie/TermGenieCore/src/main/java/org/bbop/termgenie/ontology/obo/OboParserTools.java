@@ -67,6 +67,9 @@ public class OboParserTools {
 	}
 	
 	public static Frame parseFrame(String id, String obo) {
+		if (id == null || obo == null || obo.isEmpty()) {
+			return null;
+		}
 		OBOFormatParser p = new OBOFormatParser();
 		BufferedReader reader = new BufferedReader(new StringReader(obo));
 		p.setReader(reader);

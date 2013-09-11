@@ -31,6 +31,10 @@ public class ComitAwareOboTools extends OboTools {
 			OBODoc obodoc)
 	{
 		fillChangedRelations(obodoc, changed, null);
+		if (term == null) {
+			// silently ignore empty frames
+			return true;
+		}
 		String id = term.getId();
 		Frame frame = obodoc.getTermFrame(id);
 		switch (mode) {

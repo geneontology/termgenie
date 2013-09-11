@@ -44,6 +44,9 @@ public class OboWriterTools {
 	}
 	
 	public static String writeFrame(Frame frame, NameProvider nameProvider) throws IOException {
+		if (frame == null) {
+			return "";
+		}
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter writer = new BufferedWriter(stringWriter);
 		oboWriter.write(frame, writer, nameProvider);

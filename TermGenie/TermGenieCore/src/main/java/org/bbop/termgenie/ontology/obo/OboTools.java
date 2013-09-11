@@ -13,6 +13,7 @@ import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
+import org.obolibrary.oboformat.model.FrameMergeException;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -154,17 +155,30 @@ public class OboTools {
 					modIds.add(modId);
 				}
 				Frame frame = oboDoc.getTermFrame(modId);
-				if (frame != null) {
+				if (frame == null) {
+					// this can happen for terms, which are only in the main file,
+					// but now have a cross-product in the xp file.
+					frame = new Frame(FrameType.TERM);
+					frame.setId(modId);
+					frame.addClause(new Clause(OboFormatTag.TAG_ID, modId));
+					try {
+						oboDoc.addTermFrame(frame);
+					} catch (FrameMergeException exception) {
+						// This should not be possible.
+						// We only create a term, if there is no previous one.
+					}
+				}
+				else {
 					// remove old relations, except disjoint_from
 					removeRelations(frame, updateRelations);
-					
-					// add updated relations
-					List<Clause> relations = getRelations(changedFrame);
-					for (Clause newRelation : relations) {
-						String tag = newRelation.getTag();
-						if (updateRelations.contains(tag)) {
-							frame.addClause(newRelation);
-						}
+				}
+				
+				// add updated relations
+				List<Clause> relations = getRelations(changedFrame);
+				for (Clause newRelation : relations) {
+					String tag = newRelation.getTag();
+					if (updateRelations.contains(tag)) {
+						frame.addClause(newRelation);
 					}
 				}
 			}

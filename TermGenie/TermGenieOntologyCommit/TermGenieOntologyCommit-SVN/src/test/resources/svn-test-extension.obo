@@ -4,7 +4,22 @@ ontology: foo
 [Term]
 id: FOO:2000
 intersection_of: FOO:0003 
-intersection_of: part_of GOO:0001 
+intersection_of: part_of GOO:0001
+
+[Term]
+id: FOO:8000
+intersection_of: FOO:0003 
+intersection_of: part_of GOO:8000
+
+[Term]
+id: FOO:8001
+intersection_of: FOO:8000
+intersection_of: part_of GOO:8001
+
+[Term]
+id: FOO:8002
+intersection_of: FOO:8001
+intersection_of: part_of GOO:8002
 
 [Typedef]
 id: has_participant

@@ -22,6 +22,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
+import org.bbop.termgenie.owl.AddPartOfRelationshipsTask;
 import org.bbop.termgenie.owl.CheckExistingTermsTask;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
@@ -165,6 +166,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	}
 
 	protected InferredRelations createRelations(List<MDef> logicalDefinitions,
+			List<MDef> partOf,
 			String newId,
 			String label,
 			OWLChangeTracker changeTracker) throws RelationCreationException
@@ -190,33 +192,55 @@ public class TermCreationToolsMDef implements ChangeTracker {
 				throw new RelationCreationException("Could not create OWL class expressions from expression: " + expression, exception);
 			}
 		}
-
-		InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
-
+		Set<OWLClassExpression> partOfExpressions = new HashSet<OWLClassExpression>();
+		if (partOf != null && !partOf.isEmpty()) {
+			for(MDef mdef : partOf) {
+				String expression = getFullExpression(mdef);
+				try {
+					partOfExpressions.add(syntaxTool.parseManchesterExpression(expression));
+				} catch (ParserException exception) {
+					throw new RelationCreationException("Could not create OWL class expressions from expression: " + expression, exception);
+				}
+			}
+		}
 		factory.updateBuffered(targetOntologyId);
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
 		reasonerManager.setProcessState(state);
 		try {
+			InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
 			reasonerManager.runManagedTask(task);
+			InferredRelations inferredRelations = task.getInferredRelations();
+			Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();
+			if (classRelationAxioms != null) {
+				// defensive copy
+				classRelationAxioms = new HashSet<OWLAxiom>(classRelationAxioms);
+			}
+			else {
+				classRelationAxioms = new HashSet<OWLAxiom>();
+			}
+			classRelationAxioms.add(pair.getTwo());
+			inferredRelations.setClassRelationAxioms(classRelationAxioms);
+			final Set<OWLClass> equivalentClasses = inferredRelations.getEquivalentClasses();
+			ProcessState.addMessage(state, "Finished inferring relationships from logical definition.");
+			
+			if (equivalentClasses != null && !equivalentClasses.isEmpty()) {
+				// quick exit, if there are existing classes
+				return inferredRelations;
+			}
+			
+			ProcessState.addMessage(state, "Start checking for part_of relationships.");
+			if (!partOfExpressions.isEmpty()) {
+				AddPartOfRelationshipsTask partOfTask = new AddPartOfRelationshipsTask(targetOntology, pair.getOne(), partOfExpressions , inferredRelations, state);
+				reasonerManager.runManagedTask(partOfTask);
+			}
+			ProcessState.addMessage(state, "Finished checking for part_of relationships.");
+			return inferredRelations;
 		} catch (InvalidManagedInstanceException exception) {
 			throw new RelationCreationException("Could not create releations due to an invalid reasoner.", exception);
 		} finally {
 			reasonerManager.dispose();
 			reasonerManager.removeProcessState();
 		}
-		InferredRelations inferredRelations = task.getInferredRelations();
-		Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();
-		if (classRelationAxioms != null) {
-			// defensive copy
-			classRelationAxioms = new HashSet<OWLAxiom>(classRelationAxioms);
-		}
-		else {
-			classRelationAxioms = new HashSet<OWLAxiom>();
-		}
-		classRelationAxioms.add(pair.getTwo());
-		inferredRelations.setClassRelationAxioms(classRelationAxioms);
-		ProcessState.addMessage(state, "Finished inferring relationships from logical definition.");
-		return inferredRelations;
 	}
 
 	private String getNewId() {
@@ -245,7 +269,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		return null;
 	}
 
-	protected boolean addTerm(String label, String definition, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<TermGenerationOutput> output) {
+	protected boolean addTerm(String label, String definition, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<MDef> partOf, List<TermGenerationOutput> output) {
 		ProcessState.addMessage(state, "Checking state of current ontology.");
 		ReasonerTaskManager manager = factory.getDefaultTaskManager(targetOntology);
 		ConsistencyReport report = manager.checkConsistency(targetOntology);
@@ -357,7 +381,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		OboTools.addTermId(term, oboNewId);
 	
 		try {
-			InferredRelations inferredRelations = createRelations(logicalDefinition, owlNewId, label, changeTracker);
+			InferredRelations inferredRelations = createRelations(logicalDefinition, partOf, owlNewId, label, changeTracker);
 			if (inferredRelations.getEquivalentClasses() != null) {
 				for (OWLClass owlClass : inferredRelations.getEquivalentClasses()) {
 					if (owlClass.isBottomEntity()) {

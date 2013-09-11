@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +78,12 @@ public class CommitHistoryTools {
 			String obo = OboWriterTools.writeFrame(frame, null);
 			term.setObo(obo);
 		} catch (IOException exception) {
-			logger.error("Could not translate term: " + frame.getId(), exception);
+			if (frame != null) {
+				logger.error("Could not translate term: " + frame.getId(), exception);
+			}
+			else {
+				logger.error("Could not translate emty term.", exception);
+			}
 			return false;
 		}
 		term.setOperation(operation);
@@ -149,8 +155,8 @@ public class CommitHistoryTools {
 	}
 
 	private static String create(Set<OWLAxiom> owlAxioms) {
-		if (owlAxioms == null || owlAxioms.isEmpty()) {
-			return null;
+		if (owlAxioms == null) {
+			owlAxioms = Collections.emptySet();
 		}
 		return OwlStringTools.translateAxiomsToString(owlAxioms);
 	}
@@ -208,12 +214,18 @@ public class CommitHistoryTools {
 	}
 
 	public static Frame translate(String id, String obo) throws OBOFormatParserException {
+		if (obo == null || obo.isEmpty()) {
+			return null;
+		}
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc = new OBODoc();
 		BufferedReader r = new BufferedReader(new StringReader(obo));
 		try {
 			p.setReader(r);
 			p.parseTermFrame(obodoc);
+		}
+		catch (OBOFormatParserException e) {
+			throw e;
 		}
 		finally {
 			IOUtils.closeQuietly(r);
