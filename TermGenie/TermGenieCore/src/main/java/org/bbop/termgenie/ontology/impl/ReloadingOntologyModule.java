@@ -11,6 +11,10 @@ import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyLoader;
 
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
 /**
  * Ontology Module, which periodically reloads ontologies from the source.
  */
@@ -28,6 +32,16 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 		bind(OntologyLoader.class, ReloadingOntologyLoader.class);
 		bind("ReloadingOntologyLoaderPeriod", new Long(6L));
 		bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
+	}
+	
+	@Singleton
+	@Provides
+	@Named("ReloadingOntologyLoader")
+	public ReloadingOntologyLoader provideReloader(OntologyLoader loader) {
+		if (loader instanceof ReloadingOntologyLoader) {
+			return (ReloadingOntologyLoader) loader;
+		}
+		return null;
 	}
 
 	@Override

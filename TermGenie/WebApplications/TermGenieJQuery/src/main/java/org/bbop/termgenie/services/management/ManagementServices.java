@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.bbop.termgenie.data.JsonResult;
 import org.json.rpc.server.IOCInjectorAware;
 import org.json.rpc.server.SessionAware;
 
@@ -29,7 +30,7 @@ public interface ManagementServices {
 	 * 
 	 * @param sessionId
 	 * @param session automatically injected by framework
-	 * @param injector 
+	 * @param injector automatically injected by framework
 	 * @return list of module details
 	 */
 	@IOCInjectorAware
@@ -66,4 +67,17 @@ public interface ManagementServices {
 	 */
 	@SessionAware
 	public JsonSessionDetails getSessionDetails(String sessionId, HttpSession session);
+	
+	
+	/**
+	 * Try to schedule a reload event for the ontology manager. Returned result
+	 * objects sets the success status to true, reload has been started. For
+	 * errors an error message should be provided
+	 * 
+	 * @param sessionId
+	 * @param session automatically injected by framework
+	 * @return result
+	 */
+	@SessionAware
+	public JsonResult scheduleOntologyReload(String sessionId, HttpSession session);
 }

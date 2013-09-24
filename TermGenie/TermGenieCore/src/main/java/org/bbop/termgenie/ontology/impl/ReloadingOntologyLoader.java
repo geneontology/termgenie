@@ -80,7 +80,7 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		}
 	}
 
-	private synchronized void reloadOntologies() {
+	public synchronized void reloadOntologies() {
 		for (OntologyTaskManager manager : managers.values()) {
 			try {
 				manager.updateManaged();

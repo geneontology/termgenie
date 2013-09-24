@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.data.JsonResult;
+import org.bbop.termgenie.ontology.impl.ReloadingOntologyLoader;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.management.JsonModuleConfigDetails.JsonPair;
 import org.bbop.termgenie.services.permissions.UserPermissions;
@@ -27,12 +30,16 @@ import org.bbop.termgenie.user.UserData;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 @Singleton
 public class ManagementServicesImpl implements ManagementServices {
+	
+	private static final Logger LOGGER = Logger.getLogger(ManagementServicesImpl.class);
 
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
+	private ReloadingOntologyLoader ontologyLoader = null;
 
 	/**
 	 * @param sessionHandler
@@ -44,6 +51,17 @@ public class ManagementServicesImpl implements ManagementServices {
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
 	}
+
+	/**
+	 * @param ontologyLoader the ontologyLoader to set
+	 */
+	@Nullable
+	@Inject(optional=true)
+	public void setOntologyLoader(@Named("ReloadingOntologyLoader") ReloadingOntologyLoader ontologyLoader) {
+		this.ontologyLoader = ontologyLoader;
+	}
+
+
 
 	@Override
 	public List<JsonModuleConfigDetails> getModuleDetails(String sessionId,
@@ -117,8 +135,8 @@ public class ManagementServicesImpl implements ManagementServices {
 		if (screenname != null) {
 			UserData userData = sessionHandler.getUserData(session);
 			if (userData != null) {
-				boolean allowCommitReview = permissions.allowManagementAccess(userData);
-				return allowCommitReview;
+				boolean allow = permissions.allowManagementAccess(userData);
+				return allow;
 			}
 		}
 		return false;
@@ -230,5 +248,36 @@ public class ManagementServicesImpl implements ManagementServices {
 		details.setSessionsCreated(AbstractTermGenieContextListener.getSessionsCreated());
 		details.setSessionsDestroyed(AbstractTermGenieContextListener.getSessionsDestroyed());
 		return details;
+	}
+
+	@Override
+	public JsonResult scheduleOntologyReload(String sessionId, HttpSession session)
+	{
+		if (!isAuthorized(sessionId, session)) {
+			LOGGER.warn("Rejecting reload request for unauthorized session.");
+			return new JsonResult(false, "Not authorized.");
+		}
+		if (ontologyLoader != null) {
+			return reload();
+		}
+		return new JsonResult(false, "The reloading feature is not available for this TG instance.");
+	}
+	
+	private long lastManualReload = System.currentTimeMillis();
+	
+	private synchronized JsonResult reload() {
+		long current = System.currentTimeMillis();
+		// check that at least 5 minutes have been passed since the last reload.
+		long minWait = lastManualReload + (5* 60 *1000);
+		if (current < minWait) {
+			long toGo = minWait - current;
+			long toGoSeconds = toGo / 1000;
+			LOGGER.info("Rejecting reload request, minimum wait not reached, remaining: "+toGoSeconds+" seconds");
+			return new JsonResult(false, "Did not start reload. Minimum wait of five minutes between reloads has not yet elapsed, remaining: "+toGoSeconds+" seconds");
+		}
+		LOGGER.info("Start reloading the ontology after a manual request");
+		ontologyLoader.reloadOntologies();
+		lastManualReload = System.currentTimeMillis();
+		return new JsonResult(true);
 	}
 }

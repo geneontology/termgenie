@@ -27,7 +27,8 @@ function TermGenieManagement(){
 	              'management.getModuleDetails',
 	              'management.getSystemDetails',
 	              'management.getThreadDump',
-	              'management.getSessionDetails']
+	              'management.getSessionDetails',
+	              'management.scheduleOntologyReload']
 	});
 	// asynchronous
 	JsonRpc.setAsynchronous(jsonService, true);
@@ -90,11 +91,13 @@ function TermGenieManagement(){
 				'<li><a href="#tabs-2">Module Configuration</a></li>'+
 				'<li><a href="#tabs-3">Threads</a></li>'+
 				'<li><a href="#tabs-4">Sessions</a></li>'+
+				'<li><a href="#tabs-5">Ontology</a></li>'+
 				'</ul>'+
 				'<div id="tabs-1"></div>'+
 				'<div id="tabs-2"></div>'+
 				'<div id="tabs-3"></div>'+
 				'<div id="tabs-4"></div>'+
+				'<div id="tabs-5"></div>'+
 				'</div>');
 		
 		// load content
@@ -104,8 +107,61 @@ function TermGenieManagement(){
 		createThreadTabContent(jQuery("#tabs-3"));
 		loadSessionDetails(jQuery("#tabs-4"));
 		
+		createOntologyTabContent(jQuery("#tabs-5"));
+		
 		// create tabs
 		jQuery("#tabs").tabs();
+	}
+
+	/**
+	 * Create 
+	 */
+	function createOntologyTabContent(panel) {
+		panel.append('<h2>Ontology</h2>');
+		panel.append('<div><b>WARNING</b> An ontology reload blocks the whole TermGenie server. During a reload no other user can create, submit, review terms via TermGenie. <i>Please, use the reload sparingly.</i></div>')
+		var button = jQuery('<button>Ontology Reload</button>');
+		panel.append(button);
+		var contentDiv = jQuery('<div></div>');
+		panel.append(contentDiv);
+		
+		button.click(function(){
+			contentDiv.empty();
+			button.attr("disabled", "disabled");
+			contentDiv.append(createBusyMessage('Trying to reload the ontologies.'));
+			// request sessionId and then try to load commits for review
+			mySession.getSessionId(function(sessionId){
+				jsonService.management.scheduleOntologyReload({
+					params: [sessionId],
+					onSuccess: function(details){
+						// empty the current content
+						button.removeAttr("disabled");
+						contentDiv.empty();
+						if (details !== undefined) {
+							if (details.success === true) {
+								contentDiv.append("The ontology reload has been successfully completed.");
+							}
+							else {
+								contentDiv.append("Server returned with a negative response. The reload has <b>not</b> been executed.");
+								if (details.message !== undefined) {
+									contentDiv.append('<div><b>Error message:</b><br/>'+details.message+'</div>');
+								}
+							}
+						}
+						else {
+							contentDiv.append("Server returned with a negative response. The reload has <b>not<b> been executed.");
+						}
+					},
+					onException: function(e) {
+						// empty the current content
+						contentDiv.empty();
+						button.removeAttr("disabled");
+						jQuery.logSystemError('Could not start an ontology reload at the server',e);
+						return true;
+					}
+				});	
+			});
+		});
+		
 	}
 	
 	/**
