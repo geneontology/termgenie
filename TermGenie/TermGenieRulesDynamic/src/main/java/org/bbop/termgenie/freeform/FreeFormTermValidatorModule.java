@@ -26,7 +26,7 @@ public class FreeFormTermValidatorModule extends IOCModule {
 	protected void configure() {
 		bind(FreeFormTermValidator.class, FreeFormTermValidatorImpl.class);
 		bind(FreeFormTermValidatorImpl.ADD_SUBSET_TAG_PARAM, defaultAddSubsetTag);
-		bindList(FreeFormTermValidatorImpl.SUPPORTED_NAMESPACES, defaultOboNamespaces);
+		bindList(FreeFormTermValidatorImpl.SUPPORTED_NAMESPACES, defaultOboNamespaces, true);
 		bind(FreeFormTermValidatorImpl.SUBSET_PARAM, defaultSubset, true);
 	}
 

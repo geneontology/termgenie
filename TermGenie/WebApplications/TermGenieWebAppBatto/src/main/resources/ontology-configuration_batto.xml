@@ -28,5 +28,10 @@
 				<root>PATO:0000001</root> <!-- quality -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="default_batto">
+			<roots>
+				<root>BATTO:0000001</root>
+			</roots>
+		</ontologybranch>
 	</ontology>
 </ontologyconfiguration>

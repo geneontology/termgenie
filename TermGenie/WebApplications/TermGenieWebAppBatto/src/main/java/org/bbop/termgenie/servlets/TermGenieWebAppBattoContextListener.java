@@ -25,6 +25,7 @@ import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
@@ -191,5 +192,14 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 				return new SimpleMailHandler("smtp.lbl.gov");
 			}
 		};
+	}
+	
+	@Override
+	protected IOCModule getFreeFormTermModule() {
+		List<String> oboNamespaces = null;
+		String defaultOntology = "default_batto";
+		boolean addSubsetTag = false;
+		String subset = null;
+		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset);
 	}
 }

@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -74,9 +76,9 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private final boolean useIsInferred;
 	private final boolean addSubsetTag;
 	
-	private final List<String> oboNamespaces;
 	private final String idPrefix;
-	
+
+	private List<String> oboNamespaces;
 	private String subset = null;
 
 	@Inject
@@ -84,7 +86,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			MultiOntologyTaskManager manager,
 			@Named(ADD_SUBSET_TAG_PARAM) boolean addSubsetTag,
 			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
-			@Named(SUPPORTED_NAMESPACES) List<String> supportedOboNamespaces,
 			ReasonerFactory factory)
 	{
 		super();
@@ -93,7 +94,6 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		this.manager = manager;
 		this.factory = factory;
 		this.useIsInferred = useIsInferred;
-		this.oboNamespaces = supportedOboNamespaces;
 		this.idPrefix = TemporaryIdentifierTools.getTempIdPrefix(ontology);
 	}
 
@@ -104,8 +104,15 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	 * only effective if addSubsetTag is also set to true, see constructor.
 	 */
 	@Inject(optional=true)
+	@Nullable
 	public void setSubset(@Named(SUBSET_PARAM) String subset) {
 		this.subset = subset;
+	}
+	
+	@Inject(optional=true)
+	@Nullable
+	public void setOboNamespaces(@Named(SUPPORTED_NAMESPACES) List<String> oboNamespaces) {
+		this.oboNamespaces = oboNamespaces;
 	}
 
 	private FreeFormValidationResponse error(String message) {
@@ -154,7 +161,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			requireLiteratureReference = false;
 			checkLabelLength = false;
 		}
-		ValidationTask task = new ValidationTask(request, checkLabelLength, requireLiteratureReference, useIsInferred, subset, idPrefix, factory, state);
+		ValidationTask task = new ValidationTask(request, checkLabelLength, requireLiteratureReference, useIsInferred, subset, idPrefix, oboNamespaces, factory, state);
 		try {
 			manager.runManagedTask(task, ontology);
 		} catch (InvalidManagedInstanceException exception) {
@@ -178,6 +185,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		private final boolean checkLabelLength;
 		private final boolean requireLiteratureReference;
 		private final boolean useIsInferred;
+		private final List<String> namespaces;
 		private final ProcessState state;
 		
 		List<FreeFormHint> errors = null;
@@ -194,6 +202,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				boolean useIsInferred,
 				String subset,
 				String idPrefix,
+				List<String> namespaces,
 				ReasonerFactory factory,
 				ProcessState state)
 		{
@@ -204,6 +213,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			this.useIsInferred = useIsInferred;
 			this.subset = subset;
 			this.idPrefix = idPrefix;
+			this.namespaces = namespaces;
 			this.reasonerFactory = factory;
 			this.state = state;
 		}
@@ -365,9 +375,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 
 			// check namespace
 			String namespace = StringUtils.trimToNull(request.getNamespace());
-			if (namespace == null || namespace.isEmpty()) {
-				setError("namespace", "A namespace is required for request: "+requestedLabel);
-				return;
+			if (namespaces != null) {
+				if (namespace == null || namespace.isEmpty()) {
+					setError("namespace", "A namespace is required for request: "+requestedLabel);
+					return;
+				}
 			}
 
 			// check relations
@@ -390,7 +402,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					continue;
 				}
 				String parentNamespace = graph.getNamespace(cls);
-				if (namespace.equals(parentNamespace)) {
+				if (namespace == null || namespace.equals(parentNamespace)) {
 					superClasses.add(cls);
 				}
 				else {
@@ -632,7 +644,9 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				OboTools.addDefinition(frame, def, defXrefs);
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATED_BY, "TermGenie"));
-				frame.addClause(new Clause(OboFormatTag.TAG_NAMESPACE, namespace));
+				if (namespace != null) {
+					frame.addClause(new Clause(OboFormatTag.TAG_NAMESPACE, namespace));
+				}
 				if (xrefs != null) {
 					for (Xref xref : xrefs) {
 						Clause cl = new Clause(OboFormatTag.TAG_XREF);

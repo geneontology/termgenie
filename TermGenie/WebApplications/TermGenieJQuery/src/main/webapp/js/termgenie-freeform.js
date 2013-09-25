@@ -112,12 +112,7 @@ function TermGenieFreeForm(){
 				jsonService.freeform.getAvailableNamespaces({
 					params: [sessionId],
 					onSuccess: function(oboNamespaces) {
-						if (oboNamespaces && oboNamespaces !== null && oboNamespaces.length >= 0) {
-							getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion);
-						}
-						else {
-							jQuery.logSystemError('Retrieved OBO namespaces are empty.');
-						}
+						getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion);
 					},
 					onException: function(e) {
 						jQuery.logSystemError('Could not retrieve OBO namespaces from server', e);
@@ -170,7 +165,16 @@ function TermGenieFreeForm(){
 			var labelInput = createLabelInput();
 			
 			// namespace selector
-			var namespaceInput = createNamespaceInput();
+			var namespaceInput = null;
+			if (oboNamespaces !== undefined && oboNamespaces !== null && oboNamespaces.length > 0) {
+				namespaceInput = createNamespaceInput();
+			}
+			else {
+				var oboNamespaceRow = jQuery('#termgenie-freeform-obo-namespace-row');
+				if (oboNamespaceRow !== undefined && oboNamespaceRow !== null) {
+					oboNamespaceRow.empty();
+				}
+			}
 			
 			// relations
 			var relationsInput = createRelationsInput();
@@ -197,7 +201,22 @@ function TermGenieFreeForm(){
 			validateButton.disable();
 			
 			// make the first call, the pre-selected value does not fire the change event
-			namespaceInput.updateNamespace();
+			if (namespaceInput !== null) {
+				namespaceInput.updateNamespace();
+			}
+			else {
+				// enable relations with auto-complete for terms
+				relationsInput.enable(null);
+				
+				// enable def, def-xrefs, synonyms
+				defInput.enable();
+				defXrefsInput.enable();
+				synonymInput.enable();
+				xrefInputs.enable();
+				
+				// active validate button
+				validateButton.enable();
+			}
 			
 			/**
 			 * Create an input object for the label in the free form template.
@@ -467,19 +486,35 @@ function TermGenieFreeForm(){
 				return {
 					enable: function(oboNamespace) {
 						isaList.enable(oboNamespace);
-						partOfList.enable();
+						if (partOfList !== null) {
+							partOfList.enable();
+						}
+						if (hasPartList != null) {
+							hasPartList.enable();
+						}
 					},
 					disable: function() {
 						isaList.disable();
-						partOfList.disable();
+						if (partOfList !== null) {
+							partOfList.disable();
+						}
+						if (hasPartList != null) {
+							hasPartList.disable();
+						}
 					},
 					getIsA: function() {
 						return isaList.values();
 					},
 					getPartOf: function() {
+						if (partOfList === null) {
+							return null;
+						}
 						return partOfList.values();
 					},
 					getHasPart: function() {
+						if (hasPartList === null) {
+							return null;
+						}
 						return hasPartList.values();
 					},
 					validate: function() {
@@ -487,11 +522,16 @@ function TermGenieFreeForm(){
 						if (isaValidation !== undefined && isaValidation !== null) {
 							return isaValidation;
 						}
-						var partOfValidation = partOfList.validate();
-						if (partOfValidation !== undefined && partOfValidation !== null) {
-							return partOfValidation;
+						if (partOfList != null) {
+							var partOfValidation = partOfList.validate();
+							if (partOfValidation !== undefined && partOfValidation !== null) {
+								return partOfValidation;
+							}
 						}
-						return hasPartList.validate();
+						if (hasPartList != null) {
+							return hasPartList.validate();
+						}
+						return null;
 					}
 				};
 				
@@ -568,7 +608,12 @@ function TermGenieFreeForm(){
 							return null;
 						},
 						enable: function(oboNamespace) {
-							currentOboNamespace = oboNamespace;
+							if (oboNamespace === undefined) {
+								currentOboNamespace = null;
+							}
+							else {
+								currentOboNamespace = oboNamespace;
+							}
 							jQuery.each(inputFields, function(pos, value){
 								value.enable();
 							});
@@ -591,6 +636,9 @@ function TermGenieFreeForm(){
 				function createPartOfList() {
 					// retrieve the pre-existing DOM element
 					var globalPartOfContainer = jQuery('#free-form-input-partof-cell');
+					if (globalPartOfContainer === undefined || globalPartOfContainer !== null) {
+						return null;
+					}
 					return createAutoCompleteRelationList(globalPartOfContainer);
 				}
 				
@@ -602,6 +650,9 @@ function TermGenieFreeForm(){
 				function createHasPartList() {
 					// retrieve the pre-existing DOM element
 					var globalHasPartContainer = jQuery('#free-form-input-haspart-cell');
+					if (globalHasPartContainer === undefined || globalHasPartContainer !== null) {
+						return null;
+					}
 					return createAutoCompleteRelationList(globalHasPartContainer);
 				}
 				
@@ -712,7 +763,7 @@ function TermGenieFreeForm(){
 							var oboNamespace = null;
 							if (getOboNamespace && getOboNamespace !== null) {
 								oboNamespace = getOboNamespace();
-								if (!oboNamespace) {
+								if (oboNamespace === undefined) {
 									oboNamespace = null;
 								}
 							}
@@ -1190,9 +1241,11 @@ function TermGenieFreeForm(){
 				if (error && error !== null) {
 					return error;
 				}
-				error = namespaceInput.validate();
-				if (error && error !== null) {
-					return error;
+				if (namespaceInput !== null) {
+					error = namespaceInput.validate();
+					if (error && error !== null) {
+						return error;
+					}
 				}
 				error = defInput.validate();
 				if (error && error !== null) {
@@ -1221,9 +1274,13 @@ function TermGenieFreeForm(){
 			 * @returns free form term request.
 			 */
 			function getInputAll() {
+				var resultNamespace = null;
+				if (namespaceInput !== null) {
+					resultNamespace = namespaceInput.getNamespace();
+				}
 				return {
 					label: labelInput.getLabel(),
-					namespace: namespaceInput.getNamespace(),
+					namespace: resultNamespace,
 					definition: defInput.getDef(),
 					dbxrefs: defXrefsInput.getXrefs(),
 					isA: relationsInput.getIsA(),
