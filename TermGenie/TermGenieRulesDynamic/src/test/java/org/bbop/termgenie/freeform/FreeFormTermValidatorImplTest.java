@@ -191,7 +191,8 @@ public class FreeFormTermValidatorImplTest {
 
 	protected ValidationTask createTask(FreeFormTermRequest request, OWLGraphWrapper graph) {
 		String idprefix = TemporaryIdentifierTools.getTempIdPrefix(graph);
-		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, true, "freeform", idprefix, factory, ProcessState.NO);
+		List<String> namespaces = Arrays.asList("biological_process");
+		ValidationTask task = new FreeFormTermValidatorImpl.ValidationTask(request, true, true, true, "freeform", idprefix, namespaces , factory, ProcessState.NO);
 		return task;
 	}
 	
