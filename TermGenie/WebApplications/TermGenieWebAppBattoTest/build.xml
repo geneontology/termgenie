@@ -1,4 +1,4 @@
-<project name="TermGenieWebAppGO" basedir="." default="copywebapp">
+<project name="TermGenieWebAppBattoTest" basedir="." default="copywebapp">
 	<property name="workdir" location="work"/>
 	<property name="webapp.prepare" location="prepare"/>
 	<property name="webapp.target" location="${workdir}/ant-webapp"/>
