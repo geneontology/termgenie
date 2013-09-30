@@ -489,7 +489,7 @@ function TermGenieFreeForm(){
 						if (partOfList !== null) {
 							partOfList.enable();
 						}
-						if (hasPartList != null) {
+						if (hasPartList !== null) {
 							hasPartList.enable();
 						}
 					},
@@ -498,7 +498,7 @@ function TermGenieFreeForm(){
 						if (partOfList !== null) {
 							partOfList.disable();
 						}
-						if (hasPartList != null) {
+						if (hasPartList !== null) {
 							hasPartList.disable();
 						}
 					},
@@ -522,13 +522,13 @@ function TermGenieFreeForm(){
 						if (isaValidation !== undefined && isaValidation !== null) {
 							return isaValidation;
 						}
-						if (partOfList != null) {
+						if (partOfList !== null) {
 							var partOfValidation = partOfList.validate();
 							if (partOfValidation !== undefined && partOfValidation !== null) {
 								return partOfValidation;
 							}
 						}
-						if (hasPartList != null) {
+						if (hasPartList !== null) {
 							return hasPartList.validate();
 						}
 						return null;
@@ -636,7 +636,7 @@ function TermGenieFreeForm(){
 				function createPartOfList() {
 					// retrieve the pre-existing DOM element
 					var globalPartOfContainer = jQuery('#free-form-input-partof-cell');
-					if (globalPartOfContainer === undefined || globalPartOfContainer !== null) {
+					if (globalPartOfContainer === undefined || globalPartOfContainer === null) {
 						return null;
 					}
 					return createAutoCompleteRelationList(globalPartOfContainer);
@@ -650,7 +650,7 @@ function TermGenieFreeForm(){
 				function createHasPartList() {
 					// retrieve the pre-existing DOM element
 					var globalHasPartContainer = jQuery('#free-form-input-haspart-cell');
-					if (globalHasPartContainer === undefined || globalHasPartContainer !== null) {
+					if (globalHasPartContainer === undefined || globalHasPartContainer === null) {
 						return null;
 					}
 					return createAutoCompleteRelationList(globalHasPartContainer);
