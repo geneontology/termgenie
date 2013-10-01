@@ -211,7 +211,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	}
 	
 	protected RecentSubmissionsServiceModule getRecentSubmissionsWebModule() {
-		return new RecentSubmissionsServiceModule(false, applicationProperties);
+		return new RecentSubmissionsServiceModule(true, applicationProperties);
 	}
 	
 	protected IOCModule getTermHierarchyModule() {

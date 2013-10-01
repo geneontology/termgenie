@@ -58,12 +58,12 @@ function TermGenieSubmissions(){
 				jQuery.logSystemError('Could not check recent submissions feature on server',e);
 				return true;
 			}
-		});	
+		});
 	}
 	
 	function onLogout() {
 		mainMessagePanel.empty();
-		mainReviewPanel.empty();
+		mainContentPanel.empty();
 		mainControlPanel.empty();
 		mainMessagePanel.append(defaultErrorMessage);
 	}
@@ -73,9 +73,55 @@ function TermGenieSubmissions(){
 	}
 	
 	function startLoadingReviewEntries() {
-		mainMessagePanel.append('TODO');
+		mainMessagePanel.append('Start loading recent terms.');
+		mySession.getSessionId(function(sessionId){
+			jsonService.recent.getRecentTerms({
+				params: [sessionId],
+				onSuccess: function(result) {
+					mainMessagePanel.empty();
+					if (result !== null) {
+						renderRecentItems(result);
+					}
+					else {
+						renderNoRecentItems();
+					}
+				},
+				onException: function(e) {
+					mainMessagePanel.empty();
+					jQuery.logSystemError('Could not retrieve recent submissions from server',e);
+					return true;
+				}
+			});
+		});
 	}
 	
+	function renderNoRecentItems() {
+		mainMessagePanel.append('There are no recent submissions.');
+	}
+	
+	function renderRecentItems(items) {
+		mainContentPanel.empty();
+		mainContentPanel.append('<div>There are '+items.length+' recent submissions:</div>')
+		var mytable = jQuery('<table cellpadding="0" cellspacing="0" border="0" class="display"></table>');
+		mainContentPanel.append(mytable);
+		mytable.dataTable({
+			"aaData":items,
+			"aoColumns": [
+			    {"sTitle": "Date", "mData":"date","bSearchable": false},
+			    {"sTitle": "Committed", "mData":"committed", "sWidth": "20px","bSearchable": false},
+			    {"sTitle": "Name", "mData":"lbl"},
+			    {"sTitle": "Who", "mData":"user"},
+			    {"sTitle": "Pattern", "mData":"pattern"}
+//			    {"sTitle": "OBO", "mData":"content", "mRender": function ( data, type, row ) {
+//                    return '<pre>'+data +'</pre>';
+//                }}
+			 ],
+			 aaSorting: [[0,'desc']],
+			 "oLanguage": {
+		        "sSearch": "Search all columns:"
+		      }
+		});
+	}
 }
 //actual call in jQuery to execute the activate the recent submissions display
 //after the document is ready
