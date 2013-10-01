@@ -23,6 +23,8 @@ import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
 import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.freeform.FreeFormTermService;
 import org.bbop.termgenie.services.freeform.NoopFreeFormModule;
+import org.bbop.termgenie.services.history.RecentSubmissionsService;
+import org.bbop.termgenie.services.history.RecentSubmissionsServiceModule;
 import org.bbop.termgenie.services.lookup.TermLookupServiceDefaultModule;
 import org.bbop.termgenie.services.management.ManagementServiceModule;
 import org.bbop.termgenie.services.management.ManagementServices;
@@ -67,6 +69,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				OpenIdRequestHandler openId,
 				BrowserIdHandler browserId,
 				TermCommitReviewService review,
+				RecentSubmissionsService history,
 				ManagementServices management,
 				TermHierarchyRenderer renderer,
 				FreeFormTermService freeform,
@@ -81,6 +84,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
 			executor.addHandler("browserid", browserId, BrowserIdHandler.class);
 			executor.addHandler("review", review, TermCommitReviewService.class);
+			executor.addHandler("recent", history, RecentSubmissionsService.class);
 			executor.addHandler("management", management, ManagementServices.class);
 			executor.addHandler("renderer", renderer, TermHierarchyRenderer.class);
 			executor.addHandler("freeform", freeform, FreeFormTermService.class);
@@ -124,6 +128,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getUserDataModule(), true, "UserDataModule");
 		add(modules, getCommitModule(), false, "CommitModule");
 		add(modules, getCommitReviewWebModule(), true, "CommitReviewModule");
+		add(modules, getRecentSubmissionsWebModule(), true, "RecentSubmissionsModule");
 		add(modules, getTermHierarchyModule(), true, "TermHierarchyModule");
 		add(modules, getReviewMailHandlerModule(), true, "ReviewMailHandlerModule");
 		add(modules, getTermLookupModule(), true, "TermLookupModule");
@@ -203,6 +208,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
 		return new TermCommitReviewServiceModule(false, applicationProperties);
+	}
+	
+	protected RecentSubmissionsServiceModule getRecentSubmissionsWebModule() {
+		return new RecentSubmissionsServiceModule(false, applicationProperties);
 	}
 	
 	protected IOCModule getTermHierarchyModule() {
