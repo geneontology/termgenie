@@ -3,7 +3,9 @@ package org.bbop.termgenie.services.history;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -13,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.services.InternalSessionHandler;
@@ -90,39 +91,39 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 	private JsonRecentSubmission[] getRecentTermsInternal(JsonRecentSubmission[] recent) {
 		String ontologyName = source.getOntology().getUniqueName();
 		try {
-			CommitHistory history = historyStore.loadHistory(ontologyName);
-			if (history != null) {
-				List<CommitHistoryItem> items = history.getItems();
-				if (items != null) {
-					List<JsonRecentSubmission> recentSubmissions = new ArrayList<JsonRecentSubmission>(items.size());
-					for (CommitHistoryItem item : items) {
-						boolean committed = item.isCommitted();
-						String savedBy = item.getSavedBy();
-						Date dateObj = item.getDate();
-						String dateString = null;
-						if (dateObj != null) {
-							dateString = formatDate(dateObj);
-						}
-						
-						List<CommitedOntologyTerm> terms = item.getTerms();
-						for (CommitedOntologyTerm term : terms) {
-							JsonRecentSubmission json = new JsonRecentSubmission();
-							json.content = term.getObo();
-							json.lbl = term.getLabel();
-							json.pattern = term.getPattern();
-							json.committed = committed;
-							json.user = savedBy;
-							json.date = dateString;
-							if (committed) {
-								json.msg = item.getCommitMessage();
-							}
-							recentSubmissions.add(json);
-						}
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(new Date());
+			cal.roll(Calendar.YEAR, false);
+			Date oneYearBefore = cal.getTime();
+			List<CommitHistoryItem> items = historyStore.load(ontologyName, oneYearBefore, null);
+			if (items != null) {
+				List<JsonRecentSubmission> recentSubmissions = new ArrayList<JsonRecentSubmission>(items.size());
+				for (CommitHistoryItem item : items) {
+					boolean committed = item.isCommitted();
+					String savedBy = item.getSavedBy();
+					Date dateObj = item.getDate();
+					String dateString = null;
+					if (dateObj != null) {
+						dateString = formatDate(dateObj);
 					}
-					recent = recentSubmissions.toArray(new JsonRecentSubmission[recentSubmissions.size()]);
+
+					List<CommitedOntologyTerm> terms = item.getTerms();
+					for (CommitedOntologyTerm term : terms) {
+						JsonRecentSubmission json = new JsonRecentSubmission();
+						json.content = term.getObo();
+						json.lbl = term.getLabel();
+						json.pattern = term.getPattern();
+						json.committed = committed;
+						json.user = savedBy;
+						json.date = dateString;
+						if (committed) {
+							json.msg = item.getCommitMessage();
+						}
+						recentSubmissions.add(json);
+					}
 				}
+				recent = recentSubmissions.toArray(new JsonRecentSubmission[recentSubmissions.size()]);
 			}
-			
 		} catch (CommitHistoryStoreException exception) {
 			logger.error("Could not load histoy for ontology: "+ontologyName, exception);
 		}
