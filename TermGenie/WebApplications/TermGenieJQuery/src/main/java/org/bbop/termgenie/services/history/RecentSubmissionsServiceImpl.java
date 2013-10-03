@@ -16,6 +16,9 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitHistory;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.services.InternalSessionHandler;
+import org.bbop.termgenie.services.permissions.UserPermissions;
+import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -24,6 +27,17 @@ import com.google.inject.name.Named;
 public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 	
 	private static final Logger logger = Logger.getLogger(RecentSubmissionsServiceImpl.class);
+
+	private final InternalSessionHandler sessionHandler;
+	private final UserPermissions permissions;
+	
+	@Inject
+	public RecentSubmissionsServiceImpl(InternalSessionHandler sessionHandler,
+			UserPermissions permissions)
+	{
+		this.sessionHandler = sessionHandler;
+		this.permissions = permissions;
+	}
 
 	private CommitHistoryStore historyStore = null;
 	private OntologyTaskManager source = null;
@@ -43,53 +57,74 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 		this.source = source;
 	}
 
+	
 	@Override
 	public boolean isEnabled() {
 		return historyStore != null && source != null;
+	}
+	
+	@Override
+	public boolean canView(String sessionId, HttpSession session) {
+		String screenname = sessionHandler.isAuthenticated(sessionId, session);
+		if (screenname != null) {
+			UserData userData = sessionHandler.getUserData(session);
+			if (userData != null) {
+				boolean allowCommitReview = permissions.allowCommit(userData, source.getOntology());
+				return allowCommitReview;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public JsonRecentSubmission[] getRecentTerms(String sessionId, HttpSession session) {
 		JsonRecentSubmission[] recent = null;
 		if (historyStore != null && source != null) {
-			String ontologyName = source.getOntology().getUniqueName();
-			try {
-				CommitHistory history = historyStore.loadHistory(ontologyName);
-				if (history != null) {
-					List<CommitHistoryItem> items = history.getItems();
-					if (items != null) {
-						List<JsonRecentSubmission> recentSubmissions = new ArrayList<JsonRecentSubmission>(items.size());
-						for (CommitHistoryItem item : items) {
-							boolean committed = item.isCommitted();
-							String savedBy = item.getSavedBy();
-							Date dateObj = item.getDate();
-							String dateString = null;
-							if (dateObj != null) {
-								dateString = formatDate(dateObj);
-							}
-							
-							List<CommitedOntologyTerm> terms = item.getTerms();
-							for (CommitedOntologyTerm term : terms) {
-								JsonRecentSubmission json = new JsonRecentSubmission();
-								json.content = term.getObo();
-								json.lbl = term.getLabel();
-								json.pattern = term.getPattern();
-								json.committed = committed;
-								json.user = savedBy;
-								json.date = dateString;
-								if (committed) {
-									json.msg = item.getCommitMessage();
-								}
-								recentSubmissions.add(json);
-							}
-						}
-						recent = recentSubmissions.toArray(new JsonRecentSubmission[recentSubmissions.size()]);
-					}
-				}
-				
-			} catch (CommitHistoryStoreException exception) {
-				logger.error("Could not load histoy for ontology: "+ontologyName, exception);
+			if (canView(sessionId, session)) {
+				recent = getRecentTermsInternal(recent);
 			}
+		}
+		return recent;
+	}
+
+	private JsonRecentSubmission[] getRecentTermsInternal(JsonRecentSubmission[] recent) {
+		String ontologyName = source.getOntology().getUniqueName();
+		try {
+			CommitHistory history = historyStore.loadHistory(ontologyName);
+			if (history != null) {
+				List<CommitHistoryItem> items = history.getItems();
+				if (items != null) {
+					List<JsonRecentSubmission> recentSubmissions = new ArrayList<JsonRecentSubmission>(items.size());
+					for (CommitHistoryItem item : items) {
+						boolean committed = item.isCommitted();
+						String savedBy = item.getSavedBy();
+						Date dateObj = item.getDate();
+						String dateString = null;
+						if (dateObj != null) {
+							dateString = formatDate(dateObj);
+						}
+						
+						List<CommitedOntologyTerm> terms = item.getTerms();
+						for (CommitedOntologyTerm term : terms) {
+							JsonRecentSubmission json = new JsonRecentSubmission();
+							json.content = term.getObo();
+							json.lbl = term.getLabel();
+							json.pattern = term.getPattern();
+							json.committed = committed;
+							json.user = savedBy;
+							json.date = dateString;
+							if (committed) {
+								json.msg = item.getCommitMessage();
+							}
+							recentSubmissions.add(json);
+						}
+					}
+					recent = recentSubmissions.toArray(new JsonRecentSubmission[recentSubmissions.size()]);
+				}
+			}
+			
+		} catch (CommitHistoryStoreException exception) {
+			logger.error("Could not load histoy for ontology: "+ontologyName, exception);
 		}
 		return recent;
 	}

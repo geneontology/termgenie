@@ -15,6 +15,19 @@ public interface RecentSubmissionsService {
 	public boolean isEnabled();
 
 	/**
+	 * Check the current session, for an authenticated user and check its
+	 * permissions to view the recent commits
+	 * 
+	 * @param sessionId
+	 * @param session
+	 * @return true, if there is an authenticated user with the correct
+	 *         permissions.
+	 */
+	@SessionAware
+	public boolean canView(String sessionId, HttpSession session);
+	
+	
+	/**
 	 * Retrieve the recently submitted terms.
 	 * 
 	 * @param sessionId

@@ -45,6 +45,11 @@ public class RecentSubmissionsServiceModule extends IOCModule {
 		public JsonRecentSubmission[] getRecentTerms(String sessionId, HttpSession session) {
 			return null;
 		}
+
+		@Override
+		public boolean canView(String sessionId, HttpSession session) {
+			return false;
+		}
 		
 	}
 }

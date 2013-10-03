@@ -23,6 +23,7 @@ function TermGenieSubmissions(){
 	              'user.getValues',
 	              'user.setValues',
 	              'recent.isEnabled',
+	              'recent.canView',
 	              'recent.getRecentTerms',
 	              'openid.authRequest',
 	              'browserid.verifyAssertion',
@@ -44,13 +45,34 @@ function TermGenieSubmissions(){
 	
 	function onLogin() {
 		mainMessagePanel.empty();
+		mainMessagePanel.append('Start checking permissions.');
 		// request check if the recent feature is enabled
 		jsonService.recent.isEnabled({
 			onSuccess: function(result) {
 				if (result === true) {
-					startLoadingReviewEntries();
+					mySession.getSessionId(function(sessionId){
+						jsonService.recent.canView({
+							params: [sessionId],
+							onSuccess: function(canViewResult) {
+								mainMessagePanel.empty();
+								if (canViewResult === true) {
+									startLoadingReviewEntries();
+								}
+								else {
+									mainMessagePanel.append('The current user is not authorized to use the recent submissions panel.');
+								}
+							},
+							onException: function(e) {
+								mainMessagePanel.empty();
+								jQuery.logSystemError('Could not check permissions',e);
+								return true;
+							}
+						});
+					});
+					
 				}
 				else {
+					mainMessagePanel.empty();
 					setRecentSubmissionsDisabledMessage();
 				}
 			},
