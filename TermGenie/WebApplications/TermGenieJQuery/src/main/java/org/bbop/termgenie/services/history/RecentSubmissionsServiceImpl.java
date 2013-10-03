@@ -62,7 +62,11 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 						for (CommitHistoryItem item : items) {
 							boolean committed = item.isCommitted();
 							String savedBy = item.getSavedBy();
-							String date = item.getDate() != null ? formatDate(item.getDate()) : null;
+							Date dateObj = item.getDate();
+							String dateString = null;
+							if (dateObj != null) {
+								dateString = formatDate(dateObj);
+							}
 							
 							List<CommitedOntologyTerm> terms = item.getTerms();
 							for (CommitedOntologyTerm term : terms) {
@@ -72,7 +76,7 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 								json.pattern = term.getPattern();
 								json.committed = committed;
 								json.user = savedBy;
-								json.date = date;
+								json.date = dateString;
 								if (committed) {
 									json.msg = item.getCommitMessage();
 								}

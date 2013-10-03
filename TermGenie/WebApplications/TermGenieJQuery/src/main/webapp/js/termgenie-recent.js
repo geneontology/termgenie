@@ -101,13 +101,19 @@ function TermGenieSubmissions(){
 	
 	function renderRecentItems(items) {
 		mainContentPanel.empty();
-		mainContentPanel.append('<div>There are '+items.length+' recent submissions:</div>')
+		mainContentPanel.append('<div>There are '+items.length+' recent submissions:</div>');
 		var mytable = jQuery('<table cellpadding="0" cellspacing="0" border="0" class="display"></table>');
 		mainContentPanel.append(mytable);
 		mytable.dataTable({
 			"aaData":items,
 			"aoColumns": [
-			    {"sTitle": "Date", "mData":"date","bSearchable": false},
+			    {"sTitle": "Date", "mData":"date","bSearchable": false, "mRender": function(data, type, row) {
+			    	// format the js date obj with the jQuery-UI datepicker plugin
+			    	if (data instanceof Date) {
+			    		return $.datepicker.formatDate('yy-mm-dd', data);
+			    	}
+			    	return data;
+			    }},
 			    {"sTitle": "Committed", "mData":"committed", "sWidth": "20px","bSearchable": false},
 			    {"sTitle": "Name", "mData":"lbl"},
 			    {"sTitle": "Who", "mData":"user"},
@@ -121,6 +127,7 @@ function TermGenieSubmissions(){
 		        "sSearch": "Search all columns:"
 		      }
 		});
+		mainContentPanel.append('<div></div>');
 	}
 }
 //actual call in jQuery to execute the activate the recent submissions display
