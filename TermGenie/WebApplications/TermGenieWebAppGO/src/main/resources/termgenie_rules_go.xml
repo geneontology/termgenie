@@ -614,6 +614,34 @@ generated automatically</description>
 			<category>chemicals</category>
 		</categories>
 	</template>
+	<template name="cc_assembly_disassembly">
+		<description>assembly or disassembly of a cellular component</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="component" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix>assembly</prefix>
+					<prefix>disassembly</prefix>
+				</prefixes>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cc_assembly_disassembly.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>cellular_component</category>
+			<category>assembly</category>
+			<category>disassembly</category>
+		</categories>
+	</template>
 	<template name="plant_development">
 		<description>Development of a plant structure.</description>
 		<ontology name="GeneOntology"></ontology>
