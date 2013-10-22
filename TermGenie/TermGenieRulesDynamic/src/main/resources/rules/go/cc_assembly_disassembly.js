@@ -23,7 +23,7 @@ function cc_assembly_disassembly() {
 		var definition = "The aggregation, arrangement and bonding together of a set of components to form the "
 			+ name + "."; 
 	
-		var synonyms = termgenie.addSynonym(label, null, '', name, ' formation', 'EXACT');
+		var synonyms = termgenie.synonyms(null, ['EXACT','EXACT'], c, go, [' assembly',' formation'], label);
 		var mdef = createMDef("GO_0022607 and 'results_in_assembly_of' some ?C");
 		mdef.addParameter('C', c, go);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -40,7 +40,7 @@ function cc_assembly_disassembly() {
 		var definition = "The disaggregation of "+ refname(c, go) + 
 			" into its constituent components."; 
 	
-		var synonyms = null;
+		var synonyms = termgenie.synonyms(null, ['EXACT'], c, go, [' disassembly'], label);
 		var mdef = createMDef("GO_0022411 and 'results_in_disassembly_of' some ?C");
 		mdef.addParameter('C', c, go);
 		var success = createTerm(label, definition, synonyms, mdef);
