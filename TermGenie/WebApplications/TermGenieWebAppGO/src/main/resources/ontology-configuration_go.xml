@@ -9,6 +9,7 @@
 			<support>http://purl.obolibrary.org/obo/go/extensions/x-disjoint.owl</support>
 			<support>http://purl.obolibrary.org/obo/cl-basic.owl</support>
 			<support>http://purl.obolibrary.org/obo/go/extensions/po-no-obs.owl</support>
+			<support>http://purl.obolibrary.org/obo/pato.owl</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
