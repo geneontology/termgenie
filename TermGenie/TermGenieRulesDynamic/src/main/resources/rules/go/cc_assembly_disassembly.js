@@ -23,7 +23,7 @@ function cc_assembly_disassembly() {
 		var definition = "The aggregation, arrangement and bonding together of a set of components to form the "
 			+ name + "."; 
 	
-		var synonyms = null;
+		var synonyms = termgenie.addSynonym(label, null, '', name, ' formation', 'EXACT');
 		var mdef = createMDef("GO_0022607 and 'results_in_assembly_of' some ?C");
 		mdef.addParameter('C', c, go);
 		var success = createTerm(label, definition, synonyms, mdef);
