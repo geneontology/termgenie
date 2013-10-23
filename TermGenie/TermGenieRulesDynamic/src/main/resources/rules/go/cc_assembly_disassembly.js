@@ -17,11 +17,12 @@ function cc_assembly_disassembly() {
 	}
   
 	var name = termname(c, go);
+	var cRefName = refname(c, go);
 	var count = 0;
 	if (termgenie.contains(prefixes, "assembly")) {
 		var label = name + " assembly";
-		var definition = "The aggregation, arrangement and bonding together of a set of components to form the "
-			+ name + "."; 
+		var definition = "The aggregation, arrangement and bonding together of a set of components to form "
+			+ cRefName + "."; 
 	
 		var synonyms = termgenie.synonyms(null, ['EXACT','EXACT'], c, go, [' assembly',' formation'], label);
 		var mdef = createMDef("GO_0022607 and 'results_in_assembly_of' some ?C");
@@ -37,7 +38,7 @@ function cc_assembly_disassembly() {
 	
 	if (termgenie.contains(prefixes, "disassembly")) {
 		var label = name + " disassembly";
-		var definition = "The disaggregation of "+ refname(c, go) + 
+		var definition = "The disaggregation of "+ cRefName + 
 			" into its constituent components."; 
 	
 		var synonyms = termgenie.synonyms(null, ['EXACT'], c, go, [' disassembly'], label);
