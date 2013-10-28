@@ -123,6 +123,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
         specialPatterns.put("protein_localization_to", 1); // relations are only defined in xp file
         specialPatterns.put("chemical_import_into", 1); // relations and chebi
         specialPatterns.put("cc_assembly_disassembly", 1); // relations
+        specialPatterns.put("protein_complex_by_activity", 1); // relations
         
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";

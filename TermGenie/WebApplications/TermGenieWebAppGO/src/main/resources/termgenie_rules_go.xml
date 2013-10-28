@@ -807,6 +807,29 @@ generated automatically</description>
 			<category>localization</category>
 		</categories>
 	</template>
+	<template name="protein_complex_by_activity">
+		<description>Define a protein complex by molecular function</description>
+		<ontology name="GeneOntology" />
+		<obonamespace>cellular_component</obonamespace>
+		<fields>
+			<field name="activity" required="true">
+				<ontology name="GeneOntology">
+					<branch>molecular_function</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/protein_complex_by_activity.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>cellular_component</category>
+			<category>protein complex</category>
+		</categories>
+	</template>
 	<!-- 
 		If adding new templates using an xp file, do not forget to update the 
 		CommitModule configuration in TermGenieWebAppGOContextListener 
