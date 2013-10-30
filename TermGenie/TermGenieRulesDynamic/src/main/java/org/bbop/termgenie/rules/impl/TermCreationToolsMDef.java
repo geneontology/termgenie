@@ -377,7 +377,8 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 		
 		String owlNewId = getNewId();
-		String oboNewId = Owl2Obo.getIdentifier(IRI.create(owlNewId));
+		IRI iri = IRI.create(owlNewId);
+		String oboNewId = Owl2Obo.getIdentifier(iri);
 		OboTools.addTermId(term, oboNewId);
 	
 		try {
@@ -398,23 +399,29 @@ public class TermCreationToolsMDef implements ChangeTracker {
 				}
 				return false;
 			}
+			if (inferredRelations.getClassRelationAxioms() != null) {
+				axioms.addAll(inferredRelations.getClassRelationAxioms());
+			}
+			OWLClass cls = targetOntology.getManager().getOWLDataFactory().getOWLClass(iri);
+			axioms.addAll(OwlTranslatorTools.translate(term.getClauses(), cls , targetOntology.getSourceOntology()));
+			
 			List<Clause> relations = inferredRelations.getClassRelations();
 			if (relations != null) {
 				term.getClauses().addAll(relations);
 			}
-			if (inferredRelations.getClassRelationAxioms() != null) {
-				axioms.addAll(inferredRelations.getClassRelationAxioms());
-			}
-			axioms.add(OwlTranslatorTools.createLabelAxiom(owlNewId, label, targetOntology));
-			// TODO add all other term details to the axioms?
-			output.add(success(term, axioms , inferredRelations.getChanged(), warnings, input));
+			output.add(success(term, axioms, inferredRelations.getChanged(), warnings, input));
 			
 			ProcessState.addMessage(state, "Finished creating term.");
 			return true;
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
 			return false;
-		}
+		} 
+//		catch (Throwable t) {
+//			Logger.getLogger(TermCreationToolsMDef.class).error(t.getMessage(), t);
+//			output.add(singleError(t.getMessage(), input));
+//			return false;
+//		}
 	}
 
 	private List<String> getDefXrefs() {

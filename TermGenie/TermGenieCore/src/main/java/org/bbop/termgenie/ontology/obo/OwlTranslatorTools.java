@@ -2,12 +2,16 @@ package org.bbop.termgenie.ontology.obo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bbop.termgenie.tools.Pair;
+import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.QualifierValue;
@@ -325,4 +329,40 @@ public class OwlTranslatorTools {
 				factory.getOWLLiteral(label));
 	}
 	
+	
+	public static Set<OWLAxiom> translate(Collection<Clause> clauses, OWLClass cls, OWLOntology target) {
+		final Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		Obo2Owl tr = new Obo2OwlExtension(axioms, target);
+		Map<String, List<Clause>> groupedClauses = new HashMap<String, List<Clause>>();
+		for (Clause cl : clauses) {
+			String t = cl.getTag();
+			List<Clause> group = groupedClauses.get(t);
+			if (group == null) {
+				group = new ArrayList<Clause>();
+				groupedClauses.put(t, group);
+			}
+			group.add(cl);
+		}
+		for(Entry<String, List<Clause>> entry : groupedClauses.entrySet()) {
+			axioms.addAll(tr.trTermFrameClauses(cls, entry.getValue(), entry.getKey()));	
+		}
+		return axioms;
+	}
+
+
+	private static final class Obo2OwlExtension extends Obo2Owl {
+	
+		private final Set<OWLAxiom> axioms;
+	
+		private Obo2OwlExtension(Set<OWLAxiom> axioms, OWLOntology target) {
+			super(target.getOWLOntologyManager());
+			addDeclaredAnnotationProperties(target.getAnnotationPropertiesInSignature());
+			this.axioms = axioms;
+		}
+	
+		@Override
+		protected void add(Set<OWLAxiom> toAdd) {
+			axioms.addAll(toAdd);
+		}
+	}
 }
