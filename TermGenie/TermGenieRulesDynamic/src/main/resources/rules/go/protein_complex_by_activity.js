@@ -19,7 +19,7 @@ function protein_complex_by_activity() {
 	var termnameTrimmed = termnameMf.substring(0, index); 
 
 	var label = termnameTrimmed + ' complex';
-	var definition = "A protein complex which is capable of executing the molecular function "+termnameMf+".";
+	var definition = "A protein complex which is capable of "+termnameMf+".";
 
 	synonyms = null;
 	// 'protein complex' and 'capable_of' some 'molecular function'
