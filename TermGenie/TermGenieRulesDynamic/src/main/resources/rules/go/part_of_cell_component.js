@@ -14,7 +14,7 @@ function part_of_cell_component() {
 		error(check.error());
 		return;
 	}
-	var label = termname(p, go) + " " + termname(w, go);
+	var label = termname(w, go) + " " + termname(p, go);
 	var definition = "Any " + termname(p, go) + " that is part of a "
 			+ termname(w, go) + ".";
 	var synonyms = termgenie.synonyms(null, p, go, " of ", w, go, null, null, label);
