@@ -113,7 +113,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 	
 	@Test
 	public void simpleCommit() throws Exception {
-		Ontology ontology = new Ontology("foo", null, Arrays.asList("FOO:0001")) {
+		Ontology ontology = new Ontology("foo", null, Arrays.asList("FOO:0001"), null) {
 			// intentionally empty
 		};
 		OntologyTaskManager source = loadOntology(ontology);

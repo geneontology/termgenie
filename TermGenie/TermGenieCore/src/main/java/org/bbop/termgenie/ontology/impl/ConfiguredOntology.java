@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
 
@@ -13,7 +14,7 @@ public class ConfiguredOntology extends Ontology {
 	List<String> requires = null;
 
 	ConfiguredOntology(String name) {
-		super(name, null, null);
+		super(name, null, null, null);
 	}
 
 	void setRoots(List<String> roots) {
@@ -52,6 +53,10 @@ public class ConfiguredOntology extends Ontology {
 		this.requires = requires;
 	}
 
+	protected void setImportRewrites(Map<String, String> importRewrites) {
+		this.importRewrites = importRewrites;
+	}
+	
 	/**
 	 * @return the supports
 	 */

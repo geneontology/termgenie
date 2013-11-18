@@ -2,7 +2,10 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -10,16 +13,21 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.obolibrary.obo2owl.Obo2Owl;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.IRIDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyDocumentAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyLoaderListener;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
@@ -77,14 +85,14 @@ public class BaseOntologyLoader {
 		if (update != null) {
 			disposeResource(update);
 		}
-		OWLGraphWrapper w = load(ontology, ontology.source);
+		OWLGraphWrapper w = load(ontology, ontology.source, ontology.getImportRewrites());
 		if (w == null) {
 			return null;
 		}
 		final List<String> supports = ontology.getSupports();
 		if (supports != null) {
 			for (String support : supports) {
-				OWLOntology owl = loadOntology("support", support);
+				OWLOntology owl = loadOntology("support", support, ontology.getImportRewrites());
 				if (owl != null) {
 					w.addSupportOntology(owl);
 					w.mergeOntology(owl);
@@ -112,17 +120,17 @@ public class BaseOntologyLoader {
 		}
 	}
 
-	protected OWLGraphWrapper load(Ontology ontology, String url)
+	protected OWLGraphWrapper load(Ontology ontology, String url, Map<String, String> importRewrites)
 			throws OWLOntologyCreationException, IOException, OBOFormatParserException
 	{
-		OWLOntology owlOntology = loadOntology(ontology.getUniqueName(), url);
+		OWLOntology owlOntology = loadOntology(ontology.getUniqueName(), url, importRewrites);
 		if (owlOntology == null) {
 			return null;
 		}
 		return new OWLGraphWrapper(owlOntology);
 	}
 
-	protected OWLOntology loadOntology(String ontology, String url)
+	protected OWLOntology loadOntology(String ontology, String url, Map<String, String> importRewrites)
 			throws OWLOntologyCreationException, IOException, OBOFormatParserException
 	{
 		LOGGER.info("Loading ontology: " + ontology + "  baseURL: " + url);
@@ -136,10 +144,10 @@ public class BaseOntologyLoader {
 		String path = realUrl.getPath();
 		String query = realUrl.getQuery();
 		if ((path != null && path.endsWith(".obo")) || (query != null &&  query.endsWith(".obo"))) {
-			return loadOBO2OWL(ontology, realUrl);
+			return loadOBO2OWL(ontology, realUrl, importRewrites);
 		}
 		else if ((path != null && path.endsWith(".owl")) || (query != null && query.endsWith(".owl"))) {
-			return loadOWLPure(ontology, url, realUrl);
+			return loadOWLPure(ontology, url, realUrl, importRewrites);
 		}
 		else {
 			throw new RuntimeException("Unable to load ontology from url, as no known suffix ('.obo' or '.owl') was detected: " + url);
@@ -152,16 +160,23 @@ public class BaseOntologyLoader {
 	 * @param ontology
 	 * @param original
 	 * @param realUrl
+	 * @param importRewrites 
 	 * @return OWLOntology
 	 * @throws OWLOntologyCreationException
 	 */
-	protected OWLOntology loadOWLPure(String ontology, String original, URL realUrl) throws OWLOntologyCreationException {
+	protected OWLOntology loadOWLPure(String ontology, String original, URL realUrl, Map<String, String> importRewrites) throws OWLOntologyCreationException {
 		OWLOntology ont;
 		try {
 			// Use the original as IRI,
 			// the OWL-API use the IRIMapper to resolve it
-			IRI iri = IRI.create(original); 
-			ont = manager.loadOntology(iri);
+			IRI iri = IRI.create(original);
+			OWLOntologyLoaderConfiguration config = new OWLOntologyLoaderConfiguration();
+			if (importRewrites != null && !importRewrites.isEmpty()) {
+				for(String key : importRewrites.keySet()) {
+					config.addIgnoredImport(IRI.create(key));
+				}
+			}
+			ont = manager.loadOntologyFromOntologyDocument(new IRIDocumentSource(iri), config);
 		} catch (OWLOntologyAlreadyExistsException exception) {
 			// Trying to recover from exception
 			ont = handleException(exception);
@@ -193,10 +208,10 @@ public class BaseOntologyLoader {
 	 * @throws OWLOntologyCreationException
 	 * @throws OBOFormatParserException 
 	 */
-	protected OWLOntology loadOBO2OWL(String ontology, URL realUrl)
+	protected OWLOntology loadOBO2OWL(String ontology, URL realUrl, Map<String, String> importRewrites)
 			throws IOException, OWLOntologyCreationException, OBOFormatParserException
 	{
-		OBODoc obodoc = loadOBO(ontology, realUrl);
+		OBODoc obodoc = loadOBO(ontology, realUrl, importRewrites);
 		
 		Obo2Owl obo2Owl = new Obo2Owl(manager);
 		
@@ -215,7 +230,7 @@ public class BaseOntologyLoader {
 		return ont;
 	}
 
-	protected OBODoc loadOBO(String ontology, URL realUrl) throws IOException, OBOFormatParserException {
+	protected OBODoc loadOBO(String ontology, URL realUrl, Map<String, String> importRewrites) throws IOException, OBOFormatParserException {
 		OBOFormatParser p = new OBOFormatParser();
 		OBODoc obodoc;
 		try {
@@ -224,12 +239,42 @@ public class BaseOntologyLoader {
 			if (obodoc == null) {
 				throw new RuntimeException("Could not load '"+ontology+"': " + realUrl);
 			}
+			if (importRewrites != null && !importRewrites.isEmpty()) {
+				Frame headerFrame = obodoc.getHeaderFrame();
+				if (headerFrame != null) {
+					Collection<Clause> clauses = headerFrame.getClauses(OboFormatTag.TAG_IMPORT);
+					if (clauses != null && !clauses.isEmpty()) {
+						checkImportRewrites(headerFrame, clauses, importRewrites);
+					}
+				}
+			}
 			postProcessOBOOntology(ontology, obodoc);
 		} catch (StringIndexOutOfBoundsException exception) {
 			LOGGER.warn("Error parsing input: " + realUrl);
 			throw exception;
 		}
 		return obodoc;
+	}
+	
+	private void checkImportRewrites(Frame frame, Collection<Clause> importClauses, Map<String, String> importRewrites) {
+		boolean replace = false;
+		List<Clause> changed = new ArrayList<Clause>();
+		for (Clause importClause : importClauses) {
+			String importDecl = importClause.getValue(String.class);
+			String replacement = importRewrites.get(importDecl);
+			if (replacement != null) {
+				replace = true;
+				changed.add(new Clause(OboFormatTag.TAG_IMPORT, replacement));
+			}
+			else {
+				changed.add(importClause);
+			}
+		}
+		
+		if (replace) {
+			frame.getClauses().removeAll(importClauses);
+			frame.getClauses().addAll(changed);
+		}
 	}
 	
 	/**

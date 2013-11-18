@@ -190,7 +190,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			ontology = this.ontology;
 		}
 		else {
-			ontology = new Ontology(this.ontology.getUniqueName(), oboNamespace, this.ontology.getRoots()) {
+			ontology = new Ontology(this.ontology.getUniqueName(), oboNamespace, this.ontology.getRoots(), this.ontology.getImportRewrites()) {
 				// intentionally empty
 			};
 		}

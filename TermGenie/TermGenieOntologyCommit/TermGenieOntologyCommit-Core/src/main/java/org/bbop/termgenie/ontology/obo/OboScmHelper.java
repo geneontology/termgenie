@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -315,7 +316,7 @@ public abstract class OboScmHelper {
 		try {
 			// load OBO
 			for(File scmFile : scmFiles) {
-				OBODoc ontology = loader.loadOBO(scmFile, null);
+				OBODoc ontology = loader.loadOBO(scmFile, null, null);
 				ontologies.add(ontology);
 			}
 		} catch (IOException exception) {
@@ -334,8 +335,8 @@ public abstract class OboScmHelper {
 			super(iriMapper, cleaner);
 		}
 
-		OBODoc loadOBO(File file, String ontology) throws IOException, OBOFormatParserException {
-			return loadOBO(ontology, file.toURI().toURL());
+		OBODoc loadOBO(File file, String ontology, Map<String, String> importRewrites) throws IOException, OBOFormatParserException {
+			return loadOBO(ontology, file.toURI().toURL(), importRewrites);
 		}
 	}
 

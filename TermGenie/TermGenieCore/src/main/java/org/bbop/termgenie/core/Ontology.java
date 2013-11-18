@@ -1,6 +1,7 @@
 package org.bbop.termgenie.core;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Wrapper of an ontology, provides additional methods for identifying the
@@ -12,17 +13,19 @@ public class Ontology {
 	protected String subOntologyName;
 	protected List<String> roots;
 	protected String dlQuery;
+	protected Map<String, String> importRewrites;
 
 	/**
 	 * @param name
 	 * @param subOntologyName
 	 * @param roots
 	 */
-	protected Ontology(String name, String subOntologyName, List<String> roots) {
+	protected Ontology(String name, String subOntologyName, List<String> roots, Map<String, String> importRewrites) {
 		super();
 		this.name = name;
 		this.subOntologyName = subOntologyName;
 		this.roots = roots;
+		this.importRewrites = importRewrites;
 	}
 
 	public String getUniqueName() {
@@ -50,4 +53,9 @@ public class Ontology {
 		this.subOntologyName = subOntologyName;
 		this.dlQuery = dlQuery;
 	}
+
+	public Map<String, String> getImportRewrites() {
+		return importRewrites;
+	}
+
 }
