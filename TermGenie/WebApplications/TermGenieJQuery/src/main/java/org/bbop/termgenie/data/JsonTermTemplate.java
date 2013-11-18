@@ -147,6 +147,7 @@ public class JsonTermTemplate {
 
 		private String name;
 		private String label;
+		private String hint;
 		private boolean required;
 		private JsonCardinality cardinality;
 		
@@ -186,6 +187,20 @@ public class JsonTermTemplate {
 		 */
 		public void setLabel(String label) {
 			this.label = label;
+		}
+		
+		/**
+		 * @return the hint
+		 */
+		public String getHint() {
+			return hint;
+		}
+
+		/**
+		 * @param hint the hint to set
+		 */
+		public void setHint(String hint) {
+			this.hint = hint;
 		}
 
 		/**
