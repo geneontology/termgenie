@@ -475,6 +475,35 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			if (errors != null) {
 				return;
 			}
+			
+			// optional capable_of relations
+			Set<OWLClass> capableOf = null;
+			OWLObjectProperty capableOfProperty = null;
+			List<String> capableOfList = request.getCapableOf();
+			if (capableOfList != null && !capableOfList.isEmpty()) {
+				// first find property
+				capableOfProperty = graph.getOWLObjectPropertyByIdentifier("capable_of");
+				if (capableOfProperty == null) {
+					setError("capable_of", "Could not find the capable_of property.");
+					return;
+				}
+				capableOf = new HashSet<OWLClass>();
+				for(String id : capableOfList) {
+					if (id == null) {
+						addError("capable_of parent", "null parent");
+						continue;
+					}
+					OWLClass cls = graph.getOWLClassByIdentifier(id);
+					if (cls == null) {
+						addError("capable_of parent", "parent not found in ontology: "+id);
+						continue;
+					}
+					capableOf.add(cls);
+				}
+			}
+			if (errors != null) {
+				return;
+			}
 
 			// check definition
 			String def = StringUtils.trimToNull(request.getDefinition());
@@ -581,6 +610,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			if (hasPart != null && !hasPart.isEmpty()) {
 				for(OWLClass superClass : hasPart) {
 					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(hasPartProperty, superClass)));
+				}
+			}
+			
+			if (capableOf != null && !capableOf.isEmpty()) {
+				for(OWLClass superClass : capableOf) {
+					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(capableOfProperty, superClass)));
 				}
 			}
 			

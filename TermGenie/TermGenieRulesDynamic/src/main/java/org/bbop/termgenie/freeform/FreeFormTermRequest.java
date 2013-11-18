@@ -43,6 +43,11 @@ public interface FreeFormTermRequest {
 	 * @return the hasPart
 	 */
 	public List<String> getHasPart();
+	
+	/**
+	 * @return the capableOf
+	 */
+	public List<String> getCapableOf();
 
 	/**
 	 * @return the synonyms

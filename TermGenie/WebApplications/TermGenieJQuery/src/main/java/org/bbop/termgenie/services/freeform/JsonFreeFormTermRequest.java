@@ -18,6 +18,7 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	private List<String> isA;
 	private List<String> partOf;
 	private List<String> hasPart;
+	private List<String> capableOf;
 
 	private List<JsonSynonym> synonyms;
 	
@@ -106,6 +107,21 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	 */
 	public void setHasPart(List<String> hasPart) {
 		this.hasPart = hasPart;
+	}
+	
+	/**
+	 * @return the capableOf
+	 */
+	@Override
+	public List<String> getCapableOf() {
+		return capableOf;
+	}
+
+	/**
+	 * @param capableOf the capableOf to set
+	 */
+	public void setCapableOf(List<String> capableOf) {
+		this.capableOf = capableOf;
 	}
 
 	/**

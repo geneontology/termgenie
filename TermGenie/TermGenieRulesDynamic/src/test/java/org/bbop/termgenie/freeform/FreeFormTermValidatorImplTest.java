@@ -304,6 +304,11 @@ public class FreeFormTermValidatorImplTest {
 		public List<Xref> getXrefs() {
 			return xrefs;
 		}
+
+		@Override
+		public List<String> getCapableOf() {
+			return null;
+		}
 		
 	}
 
