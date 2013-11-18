@@ -842,6 +842,9 @@ function termgenie(){
 							thirdRow += getShortOntologyName(ontology);
 						});
 					}
+					if (field.hint !== undefined && field.hint.length > 0) {
+						thirdRow += field.hint;
+					}
 					thirdRow += '</span></td>';
 				}
 				firstRow += '</tr>';
@@ -927,7 +930,11 @@ function termgenie(){
 					else {
 						var cardinality = field.cardinality;
 						if (cardinality.min === 1 && cardinality.max === 1) {
-							inputFields[i] = TextFieldInput(tdElement, i);
+							var size = undefined;
+							if (field.name === 'Comment') {
+								size = 50;
+							}
+							inputFields[i] = TextFieldInput(tdElement, i, undefined, undefined, size);
 						}
 						else {
 							var validator = undefined;
@@ -997,8 +1004,14 @@ function termgenie(){
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function TextFieldInput(elem, templatePos, validator, choices) {
-			var inputElement = jQuery('<input type="text"/>');
+		function TextFieldInput(elem, templatePos, validator, choices, size) {
+			var inputElement;
+			if (size !== undefined && size > 0) {
+				inputElement = jQuery('<input type="text" size="'+size+'"/>');
+			}
+			else {
+				inputElement = jQuery('<input type="text"/>');
+			}
 			if (choices && choices !== null) {
 				inputElement.autocomplete({
 					source: choices
