@@ -27,6 +27,7 @@ interface XMLTermTemplateIOTags {
 
 	static final String ATTR_name = "name";
 	static final String ATTR_label = "label";
+	static final String ATTR_hint = "hint";
 	static final String ATTR_id = "id";
 	static final String ATTR_preselected ="preselected";
 	static final String ATTR_remoteResource = "remoteResource";

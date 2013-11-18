@@ -10,6 +10,7 @@ public class TemplateField {
 
 	private final String name;
 	private final String label;
+	private final String hint;
 	private final boolean required;
 	private final Cardinality cardinality;
 	
@@ -91,6 +92,7 @@ public class TemplateField {
 	 * 
 	 * @param name
 	 * @param label
+	 * @param hint
 	 * @param required
 	 * @param cardinality
 	 * @param functionalPrefixes
@@ -101,6 +103,7 @@ public class TemplateField {
 	 */
 	public TemplateField(String name,
 			String label,
+			String hint,
 			boolean required,
 			Cardinality cardinality,
 			List<String> functionalPrefixes,
@@ -112,6 +115,7 @@ public class TemplateField {
 		super();
 		this.name = name;
 		this.label = label;
+		this.hint = hint;
 		this.required = required;
 		this.cardinality = cardinality;
 		if (functionalPrefixes == null || functionalPrefixes.isEmpty()) {
@@ -143,6 +147,13 @@ public class TemplateField {
 	 */
 	public String getLabel() {
 		return label;
+	}
+	
+	/**
+	 * @return the hint
+	 */
+	public String getHint() {
+		return hint;
 	}
 
 	/**

@@ -98,6 +98,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			if (templateField.getLabel() != null) {
 				writer.writeAttribute(ATTR_label, templateField.getLabel());
 			}
+			if (templateField.getHint() != null) {
+				writer.writeAttribute(ATTR_hint, templateField.getHint());
+			}
 			if (templateField.isRequired()) {
 				writer.writeAttribute(ATTR_required, Boolean.toString(true));
 			}
