@@ -23,6 +23,7 @@
 			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
 				<cardinality>1..N</cardinality>
 			</field>
+			<field name="Comment" hint="This comment will be added to the ontology."/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
