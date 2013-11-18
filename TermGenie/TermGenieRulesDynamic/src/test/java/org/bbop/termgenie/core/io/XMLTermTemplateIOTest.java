@@ -92,6 +92,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 	private void assertField(TemplateField field1, TemplateField field2) {
 		assertEquals(field1.getName(), field2.getName());
 		assertEquals(field1.getLabel(), field2.getLabel());
+		assertEquals(field1.getHint(), field2.getHint());
 		assertEquals(field1.getRemoteResource(), field2.getRemoteResource());
 		assertEquals(field1.isRequired(), field2.isRequired());
 		assertEquals(field1.getCardinality(), field2.getCardinality());
