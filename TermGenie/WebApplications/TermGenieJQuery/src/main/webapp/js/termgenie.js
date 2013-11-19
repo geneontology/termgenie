@@ -932,7 +932,7 @@ function termgenie(){
 						if (cardinality.min === 1 && cardinality.max === 1) {
 							var size = undefined;
 							if (field.name === 'Comment') {
-								size = 50;
+								size = 75;
 							}
 							inputFields[i] = TextFieldInput(tdElement, i, undefined, undefined, size);
 						}
