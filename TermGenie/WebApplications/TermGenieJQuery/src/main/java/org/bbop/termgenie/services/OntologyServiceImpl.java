@@ -3,12 +3,11 @@ package org.bbop.termgenie.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
-import org.bbop.termgenie.tools.OntologyTools;
+import org.bbop.termgenie.ontology.OntologyLoader;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -16,24 +15,19 @@ import com.google.inject.Singleton;
 @Singleton
 public class OntologyServiceImpl implements OntologyService {
 
-	private final OntologyTools ontologyTools;
 	private final OntologyTermSuggestor suggestor;
+	private final String[] availableOntologies;
 
-	/**
-	 * @param ontologyTools
-	 * @param suggestor
-	 * @param multiOntologyTaskManager
-	 */
 	@Inject
-	OntologyServiceImpl(OntologyTools ontologyTools, OntologyTermSuggestor suggestor) {
+	OntologyServiceImpl(OntologyTermSuggestor suggestor, OntologyLoader loader) {
 		super();
-		this.ontologyTools = ontologyTools;
 		this.suggestor = suggestor;
+		this.availableOntologies = new String[]{loader.getOntologyManager().getOntology().getName()};
 	}
 
 	@Override
 	public String[] availableOntologies(String sessionId) {
-		return ontologyTools.getAvailableOntologyNames();
+		return availableOntologies;
 	}
 
 	@Override
@@ -53,14 +47,8 @@ public class OntologyServiceImpl implements OntologyService {
 		List<JsonTermSuggestion> suggestions = new ArrayList<JsonTermSuggestion>();
 
 		for (String ontologyName : ontologyNames) {
-			// get ontology
-			Ontology ontology = ontologyTools.getOntology(ontologyName);
-			if (ontology == null) {
-				// unknown ontology, do nothing
-				continue;
-			}
 			// query for terms
-			List<TermSuggestion> autocompleteList = suggestor.suggestTerms(query, ontology, max);
+			List<TermSuggestion> autocompleteList = suggestor.suggestTerms(query, ontologyName, max);
 			if (autocompleteList == null || autocompleteList.isEmpty()) {
 				// no terms found, do nothing
 				continue;
@@ -69,7 +57,7 @@ public class OntologyServiceImpl implements OntologyService {
 			List<JsonTermSuggestion> current = new ArrayList<JsonTermSuggestion>(autocompleteList.size());
 			//String ontologyName = ontologyTools.getOntologyName(ontology);
 			for (TermSuggestion termSuggestion : autocompleteList) {
-				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontologyTools.getOntologyName(ontology), termSuggestion.getIdentifier());
+				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontologyName, termSuggestion.getIdentifier());
 				current.add(new JsonTermSuggestion(termSuggestion.getLabel(), jsonId , termSuggestion.getDescription(), termSuggestion.getSynonyms()));
 			}
 			mergeLists(suggestions, current);

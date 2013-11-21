@@ -18,16 +18,14 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
-import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
@@ -70,8 +68,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
 	static final String SUPPORTED_NAMESPACES = "FreeFormValidatorOboNamespaces";
 	
-	private final Ontology ontology;
-	private final MultiOntologyTaskManager manager;
+	private final OntologyTaskManager ontology;
 	private final ReasonerFactory factory;
 	private final boolean useIsInferred;
 	private final boolean addSubsetTag;
@@ -82,16 +79,14 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	private String subset = null;
 
 	@Inject
-	public FreeFormTermValidatorImpl(@Named("CommitTargetOntology") OntologyTaskManager ontology,
-			MultiOntologyTaskManager manager,
+	public FreeFormTermValidatorImpl(OntologyLoader loader,
 			@Named(ADD_SUBSET_TAG_PARAM) boolean addSubsetTag,
 			@Named(TermGenieScriptRunner.USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
 			ReasonerFactory factory)
 	{
 		super();
 		this.addSubsetTag = addSubsetTag;
-		this.ontology = ontology.getOntology();
-		this.manager = manager;
+		this.ontology = loader.getOntologyManager();
 		this.factory = factory;
 		this.useIsInferred = useIsInferred;
 		this.idPrefix = TemporaryIdentifierTools.getTempIdPrefix(ontology);
@@ -163,7 +158,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 		ValidationTask task = new ValidationTask(request, checkLabelLength, requireLiteratureReference, useIsInferred, subset, idPrefix, oboNamespaces, factory, state);
 		try {
-			manager.runManagedTask(task, ontology);
+			ontology.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
 			String message = "Error during term validation, due to an inconsistent ontology";
 			logger.error(message, exception);
@@ -178,7 +173,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		return error(task.errors);
 	}
 
-	static class ValidationTask implements MultiResourceManagedTask<OWLGraphWrapper, Ontology>
+	static class ValidationTask extends OntologyTask
 	{
 		private final ReasonerFactory reasonerFactory;
 		private final FreeFormTermRequest request;
@@ -192,9 +187,9 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		List<FreeFormHint> warnings = null;
 		Pair<Frame, Set<OWLAxiom>> term;
 		
-		List<Modified> modified = null;
 		private final String subset;
 		private final String idPrefix;
+		private Modified modified = Modified.no;
 	
 		ValidationTask(FreeFormTermRequest request,
 				boolean checkLabelLength,
@@ -219,10 +214,8 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 	
 		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested)
-				throws InvalidManagedInstanceException
+		public Modified runCatchingMod(OWLGraphWrapper graph)
 		{
-			OWLGraphWrapper graph = requested.get(0);
 			ProcessState.addMessage(state, "Checking state of current ontology.");
 			ReasonerTaskManager manager = reasonerFactory.getDefaultTaskManager(graph);
 			ConsistencyReport report = manager.checkConsistency(graph);
@@ -236,7 +229,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			else {
 				runInternal(graph);
 			}
-			return modified; // no modifications
+			return modified;
 		}
 		
 		void runInternal(final OWLGraphWrapper graph) {
@@ -768,7 +761,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		}
 		
 		void setReset() {
-			modified = Collections.singletonList(Modified.reset);
+			modified = Modified.reset;
 		}
 		
 		static CharSequence normalizeLabel(CharSequence cs) {

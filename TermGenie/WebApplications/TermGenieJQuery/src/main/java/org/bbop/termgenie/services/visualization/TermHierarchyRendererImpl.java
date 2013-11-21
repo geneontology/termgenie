@@ -5,10 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -22,11 +20,9 @@ import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonChange;
 import org.bbop.termgenie.data.JsonResult;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -42,7 +38,6 @@ import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 /**
  * Implementation for rendering term hierarchies using QuickGO.
@@ -52,55 +47,34 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 
 	private static final Logger logger = Logger.getLogger(TermHierarchyRendererImpl.class);
 	
-	private final Map<String, ConfiguredOntology> configurations;
-	private final OntologyLoader loader;
-	private OntologyTaskManager commitTargetOntology = null;
+	private OntologyTaskManager manager = null;
 
 	/**
 	 * Constructor for test purposes only.
 	 */
 	TermHierarchyRendererImpl() {
 		super();
-		configurations = Collections.emptyMap();
-		this.commitTargetOntology = null;
-		loader = null;
+		this.manager = null;
 	}
 
 	/**
-	 * @param ontologyConfiguration
 	 * @param loader
 	 */
 	@Inject
-	public TermHierarchyRendererImpl(OntologyConfiguration ontologyConfiguration,
-			OntologyLoader loader)
+	public TermHierarchyRendererImpl(OntologyLoader loader)
 	{
 		super();
-		this.loader = loader;
-		this.configurations = ontologyConfiguration.getOntologyConfigurations();
+		this.manager = loader.getOntologyManager();
 	}
 
 	
-	/**
-	 * @param commitTargetOntology the commitTargetOntology to set
-	 */
-	@Inject(optional=true)
-	public void setCommitTargetOntology(@Named("CommitTargetOntology") OntologyTaskManager commitTargetOntology) {
-		this.commitTargetOntology = commitTargetOntology;
-	}
-
 	@Override
 	public JsonResult renderHierarchy(final List<String> ids,
-			final String ontology,
 			final ServletContext servletContext)
 	{
-		ConfiguredOntology configuredOntology = configurations.get(ontology);
-		if (configuredOntology == null) {
-			return new JsonResult(false, "Unkown ontology: "+ontology);
-		}
 		final String realPath = servletContext.getRealPath("generated/index.html");
 		final JsonResult jsonResult = new JsonResult();
 
-		OntologyTaskManager taskManager = loader.getOntology(configuredOntology);
 		OntologyTask task = new OntologyTask() {
 
 			@Override
@@ -118,7 +92,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 
 		};
 		try {
-			taskManager.runManagedTask(task);
+			manager.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
 			return error("Could not create hierarchy to due an invalid ontology", exception);
 		}
@@ -134,10 +108,6 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 	@Override
 	public JsonResult visualizeDiffTerms(JsonDiff[] jsonDiffs, ServletContext servletContext)
 	{
-		if (commitTargetOntology == null) {
-			return new JsonResult(false, "Feature not enabled.");
-		}
-		
 		final List<String> ids = new ArrayList<String>();
 		final Set<OWLAxiom> allAxioms = new HashSet<OWLAxiom>(); 
 		for(JsonDiff jsonTerm : jsonDiffs) {
@@ -152,7 +122,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 			}
 		}
 		try {
-			return renderImage(commitTargetOntology, servletContext, ids, allAxioms);
+			return renderImage(manager, servletContext, ids, allAxioms);
 		} catch (InvalidManagedInstanceException exception) {
 			return error("Could not create hierarchy to due an invalid ontology", exception);
 		}
@@ -160,15 +130,8 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 
 	@Override
 	public JsonResult visualizeGeneratedTerms(final List<JsonOntologyTerm> generatedTerms,
-			String ontology,
 			ServletContext servletContext)
 	{
-		ConfiguredOntology configuredOntology = configurations.get(ontology);
-		if (configuredOntology == null) {
-			return new JsonResult(false, "Unkown ontology: "+ontology);
-		}
-		OntologyTaskManager taskManager = loader.getOntology(configuredOntology);
-		
 		List<String> ids = new ArrayList<String>();
 		Set<OWLAxiom> allAxioms = new HashSet<OWLAxiom>(); 
 		for(JsonOntologyTerm jsonTerm : generatedTerms) {
@@ -183,7 +146,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 			}
 		}
 		try {
-			return renderImage(taskManager, servletContext, ids, allAxioms);
+			return renderImage(manager, servletContext, ids, allAxioms);
 		} catch (InvalidManagedInstanceException exception) {
 			return error("Could not create hierarchy to due an invalid ontology", exception);
 		}

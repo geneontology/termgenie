@@ -11,7 +11,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -20,14 +19,13 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.IRIDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyDocumentAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyLoaderListener;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
@@ -38,14 +36,19 @@ public class BaseOntologyLoader {
 
 	private static final Logger LOGGER = Logger.getLogger(BaseOntologyLoader.class);
 	private final IRIMapper iriMapper;
-	private final OntologyCleaner cleaner;
-	private final OWLOntologyManager manager;
+	private final OWLDataFactory factory;
+	
+	private OWLOntologyManager manager;
 
-	protected BaseOntologyLoader(IRIMapper iriMapper, OntologyCleaner cleaner) {
+	protected BaseOntologyLoader(IRIMapper iriMapper) {
 		super();
 		this.iriMapper = iriMapper;
-		this.cleaner = cleaner;
-		manager = OWLManager.createOWLOntologyManager();
+		factory = OWLManager.getOWLDataFactory();
+		manager = createNewManager(iriMapper, factory);
+	}
+
+	private static OWLOntologyManager createNewManager(IRIMapper iriMapper, OWLDataFactory factory) {
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager(factory);
 		if (iriMapper != null) {
 			manager.addIRIMapper(iriMapper);
 		}
@@ -53,43 +56,39 @@ public class BaseOntologyLoader {
 			
 			@Override
 			public void startedLoadingOntology(LoadingStartedEvent event) {
-				StringBuilder sb = new StringBuilder("Start loading ontology");
-				final IRI ontologyIRI = event.getOntologyID().getOntologyIRI();
-				if (ontologyIRI != null) {
-					sb.append(": ");
-					sb.append(ontologyIRI);
-				}
-				sb.append(" from IRI: ");
-				sb.append(event.getDocumentIRI());
+				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI source = event.getDocumentIRI();
+				
+				StringBuilder sb = new StringBuilder("Start loading ontology: ");
+				sb.append(id).append(" from ").append(source);
 				LOGGER.info(sb.toString());
 			}
 			
 			@Override
 			public void finishedLoadingOntology(LoadingFinishedEvent event) {
+				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI source = event.getDocumentIRI();
+				
 				StringBuilder sb = new StringBuilder("Finished loading ontology");
-				final IRI ontologyIRI = event.getOntologyID().getOntologyIRI();
-				if (ontologyIRI != null) {
-					sb.append(": ");
-					sb.append(ontologyIRI);
-				}
-				sb.append(" from IRI: ");
-				sb.append(event.getDocumentIRI());
+				sb.append(id).append(" from ").append(source);
 				LOGGER.info(sb.toString());
 			}
+			
 		});
+		return manager;
 	}
 
-	protected OWLGraphWrapper getResource(ConfiguredOntology ontology, OWLGraphWrapper update)
+	protected synchronized OWLGraphWrapper getResource(Ontology ontology, OWLGraphWrapper update)
 			throws OWLOntologyCreationException, IOException, UnknownOWLOntologyException, OBOFormatParserException
 	{
 		if (update != null) {
 			disposeResource(update);
 		}
-		OWLGraphWrapper w = load(ontology, ontology.source, ontology.getImportRewrites());
+		OWLGraphWrapper w = load(ontology, ontology.getSource(), ontology.getImportRewrites());
 		if (w == null) {
 			return null;
 		}
-		final List<String> supports = ontology.getSupports();
+		final List<String> supports = ontology.getAdditionals();
 		if (supports != null) {
 			for (String support : supports) {
 				OWLOntology owl = loadOntology("support", support, ontology.getImportRewrites());
@@ -118,12 +117,13 @@ public class BaseOntologyLoader {
 				manager.removeOntology(support);
 			}
 		}
+		manager = createNewManager(iriMapper, factory);
 	}
 
 	protected OWLGraphWrapper load(Ontology ontology, String url, Map<String, String> importRewrites)
 			throws OWLOntologyCreationException, IOException, OBOFormatParserException
 	{
-		OWLOntology owlOntology = loadOntology(ontology.getUniqueName(), url, importRewrites);
+		OWLOntology owlOntology = loadOntology(ontology.getName(), url, importRewrites);
 		if (owlOntology == null) {
 			return null;
 		}
@@ -170,13 +170,7 @@ public class BaseOntologyLoader {
 			// Use the original as IRI,
 			// the OWL-API use the IRIMapper to resolve it
 			IRI iri = IRI.create(original);
-			OWLOntologyLoaderConfiguration config = new OWLOntologyLoaderConfiguration();
-			if (importRewrites != null && !importRewrites.isEmpty()) {
-				for(String key : importRewrites.keySet()) {
-					config.addIgnoredImport(IRI.create(key));
-				}
-			}
-			ont = manager.loadOntologyFromOntologyDocument(new IRIDocumentSource(iri), config);
+			ont = manager.loadOntology(iri);
 		} catch (OWLOntologyAlreadyExistsException exception) {
 			// Trying to recover from exception
 			ont = handleException(exception);
@@ -284,9 +278,7 @@ public class BaseOntologyLoader {
 	 * @param obodoc
 	 */
 	protected void postProcessOBOOntology(String ontology, OBODoc obodoc) {
-		if (cleaner != null) {
-			cleaner.cleanOBOOntology(ontology, obodoc);
-		}
+		// intentionally empty
 	}
 
 	private OWLOntology handleException(String ontology,

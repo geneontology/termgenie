@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -22,7 +23,6 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 
 public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
@@ -31,17 +31,20 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
+	private final OntologyTaskManager source;
 	
 	@Inject
 	public RecentSubmissionsServiceImpl(InternalSessionHandler sessionHandler,
+			OntologyLoader loader,
 			UserPermissions permissions)
 	{
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
+		this.source = loader.getOntologyManager();
 	}
 
 	private CommitHistoryStore historyStore = null;
-	private OntologyTaskManager source = null;
+	
 	
 	/**
 	 * @param historyStore the historyStore to set
@@ -51,13 +54,6 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 	public void setHistoryStore(CommitHistoryStore historyStore) {
 		this.historyStore = historyStore;
 	}
-	
-	@Inject(optional=true)
-	@Nullable
-	public void setSource(@Named("CommitTargetOntology") OntologyTaskManager source) {
-		this.source = source;
-	}
-
 	
 	@Override
 	public boolean isEnabled() {
@@ -89,7 +85,7 @@ public class RecentSubmissionsServiceImpl implements RecentSubmissionsService {
 	}
 
 	private JsonRecentSubmission[] getRecentTermsInternal(JsonRecentSubmission[] recent) {
-		String ontologyName = source.getOntology().getUniqueName();
+		String ontologyName = source.getOntology().getName();
 		try {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(new Date());

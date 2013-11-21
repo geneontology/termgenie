@@ -15,12 +15,10 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
@@ -59,7 +57,6 @@ public class TransportFromTo {
 	}
 
 	private static TermGenerationEngine generationEngine;
-	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
 
 	@BeforeClass
@@ -70,12 +67,11 @@ public class TransportFromTo {
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
-		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
 	@Test
 	public void testManchesterSyntaxTool() throws Exception {
-		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
@@ -124,7 +120,7 @@ public class TransportFromTo {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(2, list.size());
 		TermGenerationOutput output1 = list.get(0);
@@ -154,7 +150,7 @@ public class TransportFromTo {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);

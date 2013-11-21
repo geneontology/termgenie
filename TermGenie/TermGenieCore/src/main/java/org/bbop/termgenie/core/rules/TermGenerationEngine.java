@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.tools.Pair;
@@ -20,14 +19,12 @@ public interface TermGenerationEngine {
 	 * Generate term candidates for the given ontology, the corresponding
 	 * templates and the parameters.
 	 * 
-	 * @param ontology
 	 * @param generationTasks
 	 * @param requireLiteratureReference
 	 * @param processState
 	 * @return candidates
 	 */
-	public List<TermGenerationOutput> generateTerms(Ontology ontology,
-			List<TermGenerationInput> generationTasks,
+	public List<TermGenerationOutput> generateTerms(List<TermGenerationInput> generationTasks,
 			boolean requireLiteratureReference,
 			ProcessState processState);
 

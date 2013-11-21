@@ -111,7 +111,7 @@ public class CommitHistoryStoreImplTest {
 	private CommitedOntologyTerm createTestTerm(int i) {
 		Frame frame = OboTools.createTermFrame("t:0" + i, "Term label " + i);
 		OboTools.addDefinition(frame, "Term Def " + i, Arrays.asList("DefXref " + i + "_1", "DefXref " + i + "_2"));
-		frame.addClause(new Clause("Committer", "TestCommitter " + i));
+		frame.addClause(new Clause("comment", "TestCommitter " + i));
 		if (i > 0) {
 			frame.addClause(new Clause(OboFormatTag.TAG_IS_A, "t:0" + (i - 1)));
 		}

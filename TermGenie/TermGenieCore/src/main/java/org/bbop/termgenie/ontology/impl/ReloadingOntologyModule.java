@@ -1,10 +1,8 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -22,8 +20,8 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 
 	protected final List<String> ignoreMappings;
 
-	public ReloadingOntologyModule(List<String> ignoreMappings, Properties applicationProperties) {
-		super(applicationProperties);
+	public ReloadingOntologyModule(String configFile, List<String> ignoreMappings, Properties applicationProperties) {
+		super(applicationProperties, configFile);
 		this.ignoreMappings = ignoreMappings;
 	}
 
@@ -51,11 +49,6 @@ public class ReloadingOntologyModule extends DefaultOntologyModule {
 		bind("FileCachingIRIMapperPeriod", new Long(6L));
 		bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);
 		bindList("FileCachingIRIMapperIgnoreMappings", ignoreMappings, true);
-	}
-
-	@Override
-	protected Set<String> getDefaultOntologyLoaderSkipOntologies() {
-		return Collections.emptySet();
 	}
 
 }

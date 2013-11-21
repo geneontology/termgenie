@@ -31,8 +31,6 @@ import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
-import org.bbop.termgenie.ontology.OntologyCleaner.NoopOntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -113,17 +111,16 @@ public class SvnCommitTest extends TempTestFolderTools {
 	
 	@Test
 	public void simpleCommit() throws Exception {
-		Ontology ontology = new Ontology("foo", null, Arrays.asList("FOO:0001"), null) {
-			// intentionally empty
-		};
+		Ontology ontology = new Ontology();
+		ontology.setName("foo");
+		ontology.setRoots(Arrays.asList("FOO:0001"));
 		OntologyTaskManager source = loadOntology(ontology);
 		
 		CommitHistoryStore store = createTestStore(ontology);
 		
 		IRIMapper iriMapper = new NoopIRIMapper();
-		OntologyCleaner cleaner = new NoopOntologyCleaner();
 		
-		OboScmHelper helper = new TestSvnHelper(iriMapper, cleaner, "trunk/ontology/svn-test-main.obo", Collections.singletonList("trunk/extensions/svn-test-extension.obo"), svnTools.getTwo(), svnTools.getThree());
+		OboScmHelper helper = new TestSvnHelper(iriMapper, "trunk/ontology/svn-test-main.obo", Collections.singletonList("trunk/extensions/svn-test-extension.obo"), svnTools.getTwo(), svnTools.getThree());
 
 		// create commit pipeline with custom temp folder
 		final File checkoutDirectory = new File(testFolder, "checkout");
@@ -347,7 +344,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		item1.setEmail("foo@foo.bar");
 		item1.setSavedBy("foobar");
 		item1.setTerms(terms1);
-		store.add(item1, ontology.getUniqueName());
+		store.add(item1, ontology.getName());
 		
 		
 		Frame frame4 = OboParserTools.parseFrame("FOO:4000","[Term]\n"+
@@ -392,7 +389,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		item2.setEmail("foo@foo.bar");
 		item2.setSavedBy("foobar");
 		item2.setTerms(terms2);
-		store.add(item2, ontology.getUniqueName());
+		store.add(item2, ontology.getName());
 		
 		return store;
 	}
@@ -421,13 +418,12 @@ public class SvnCommitTest extends TempTestFolderTools {
 		private final ISVNAuthenticationManager authManager;
 
 		private TestSvnHelper(IRIMapper iriMapper,
-				OntologyCleaner cleaner,
 				String mainOntology,
 				List<String> otherOntologyFileNames,
 				SVNURL repositoryURL,
 				ISVNAuthenticationManager authManager)
 		{
-			super(iriMapper, cleaner, mainOntology, otherOntologyFileNames);
+			super(iriMapper, mainOntology, otherOntologyFileNames);
 			this.repositoryURL = repositoryURL;
 			this.authManager = authManager;
 		}

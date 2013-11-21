@@ -15,16 +15,8 @@
 			<xsd:element name="hint" type="xsd:string" maxOccurs="1"
 				minOccurs="0">
 			</xsd:element>
-			<xsd:element name="ontology" type="ontologyType"
-				maxOccurs="1" minOccurs="1" />
-			<xsd:element name="external" type="externalType"
-				maxOccurs="1" minOccurs="0">
-			</xsd:element>
 			<xsd:element name="obonamespace" type="xsd:string"
 				maxOccurs="1" minOccurs="1" />
-			<xsd:element name="requires" type="xsd:string" maxOccurs="unbounded"
-				minOccurs="0">
-			</xsd:element>
 			<xsd:element name="fields" type="fieldsType" maxOccurs="1"
 				minOccurs="1" />
 			<xsd:element name="ruleFiles" type="ruleFilesType" maxOccurs="1"
@@ -71,12 +63,6 @@
     <xsd:sequence>
       <xsd:element name="branch" type="xsd:string" maxOccurs="1" minOccurs="0"/>
     </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:string" use="required"/>
   </xsd:complexType>
 
- <xsd:complexType name="externalType">
- 	<xsd:sequence>
- 		<xsd:element name="ontology" type="ontologyType" maxOccurs="unbounded" minOccurs="1"></xsd:element>
- 	</xsd:sequence>
- </xsd:complexType>
 </xsd:schema>

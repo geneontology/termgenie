@@ -7,9 +7,8 @@ import javax.annotation.Nullable;
 
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
-import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
+import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.svn.SvnTool;
 
@@ -34,7 +33,6 @@ public class SvnHelper {
 
 		@Inject
 		SvnHelperPassword(IRIMapper iriMapper,
-				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
@@ -43,7 +41,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -101,14 +99,13 @@ public class SvnHelper {
 
 		@Inject
 		SvnHelperAnonymous(IRIMapper iriMapper,
-				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
@@ -156,7 +153,6 @@ public class SvnHelper {
 	
 		@Inject
 		SvnHelperKeyFile(IRIMapper iriMapper,
-				OntologyCleaner cleaner,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
@@ -166,7 +162,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, cleaner, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;

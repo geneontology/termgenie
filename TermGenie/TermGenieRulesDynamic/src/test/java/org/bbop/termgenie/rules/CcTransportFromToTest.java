@@ -16,9 +16,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,7 +50,6 @@ public class CcTransportFromToTest {
 	}
 	
 	private static TermGenerationEngine generationEngine;
-	private static OntologyConfiguration configuration;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -61,12 +58,10 @@ public class CcTransportFromToTest {
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
-		configuration = injector.getInstance(OntologyConfiguration.class);
 	}
 
 	@Test
 	public void test_cc_transport_from_to() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		
@@ -83,7 +78,7 @@ public class CcTransportFromToTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(2, list.size());
@@ -108,7 +103,6 @@ public class CcTransportFromToTest {
 	
 	@Test
 	public void test_cc_transport() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		
@@ -121,7 +115,7 @@ public class CcTransportFromToTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(2, list.size());

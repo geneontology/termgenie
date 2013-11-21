@@ -6,7 +6,6 @@
 			regulation, negative regulations and positive regulation (for
 			biological processes). Names, synonyms and definitions are all
 			generated automatically</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -40,7 +39,6 @@
 		will generate the term '&lt;b&gt;G1 phase&lt;/b&gt; involved in &lt;b&gt;Meiosis'&lt;/b&gt;. 
 		 &lt;br/&gt; The new term is defined as 'is_a' &lt;b&gt;G1 phase&lt;/b&gt;,  
 		 'part_of' &lt;b&gt;Meiosis&lt;/b&gt;, and as the intersection of the input terms.</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="part" required="true">
@@ -69,7 +67,6 @@
 	<template name="involved_in_mf_bp">
 		<description>molecular function involved in other biological processes</description>
 		<hint>[molecular function] involved in [biological process]</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="part" required="true" label="molecular function">
@@ -97,7 +94,6 @@
 	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="process" required="true">

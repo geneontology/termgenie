@@ -16,11 +16,9 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
@@ -42,12 +40,11 @@ public class CellTypeOntologyTest {
 	private static boolean RENDER_TERMS = true;
 	
 	private static TermGenerationEngine generationEngine;
-	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		List<String> ignoreMappings = Arrays.asList("http://purl.obolibrary.org/obo/go.owl", "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl");
+		List<String> ignoreMappings = Arrays.asList("http://purl.obolibrary.org/obo/go.owl", "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl", "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl");
 		
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, null),
 				new XMLReloadingOntologyModule("ontology-configuration_cl.xml", ignoreMappings, null),
@@ -55,7 +52,6 @@ public class CellTypeOntologyTest {
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
-		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
 	
@@ -106,7 +102,7 @@ public class CellTypeOntologyTest {
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		
 		return list;
 	}
@@ -120,7 +116,7 @@ public class CellTypeOntologyTest {
 		if (RENDER_TERMS == false) {
 			return;
 		}
-		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override

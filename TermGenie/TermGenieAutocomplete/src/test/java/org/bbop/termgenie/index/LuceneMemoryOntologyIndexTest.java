@@ -9,12 +9,10 @@ import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.index.LuceneMemoryOntologyIndex.SearchResult;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -29,9 +27,7 @@ public class LuceneMemoryOntologyIndexTest {
 	public void testLuceneMemoryOntologyIndex() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
 				new ReasonerModule(null));
-		OntologyConfiguration configuration = injector.getInstance(OntologyConfiguration.class);
-		ConfiguredOntology go = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntology(go);
+		OntologyTaskManager ontology = injector.getInstance(OntologyLoader.class).getOntologyManager();
 		final ReasonerFactory factory = injector.getInstance(ReasonerFactory.class);
 
 		OntologyTask task = new OntologyTask() {

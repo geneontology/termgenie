@@ -3,7 +3,6 @@
  xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 	<template name="eq_simple" displayname="Entity Quality attribute">
 		<description>A biological attribute for the affect of a quality of some entity.</description>
-		<ontology name="Batto" />
 		<fields>
 			<field name="entity" required="true">
 				<ontology name="Batto">

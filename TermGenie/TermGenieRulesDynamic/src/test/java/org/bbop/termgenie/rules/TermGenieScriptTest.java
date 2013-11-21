@@ -18,8 +18,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.junit.BeforeClass;
@@ -33,7 +32,6 @@ import com.google.inject.Injector;
 public class TermGenieScriptTest {
 
 	private static TermGenerationEngine generationEngine;
-	private static OntologyConfiguration configuration;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -50,12 +48,10 @@ public class TermGenieScriptTest {
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
-		configuration = injector.getInstance(OntologyConfiguration.class);
 	}
 
 	@Test
 	public void test_lit_xref_warning() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -67,7 +63,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -82,7 +78,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_lit_xref_error() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -94,7 +89,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, true, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, true, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -106,7 +101,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_regulation_of() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -118,7 +112,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(3, list.size());
@@ -134,7 +128,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_regulation_of_extended_synonyms() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -145,7 +138,7 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -189,7 +182,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_regulation_of_weaker_check_of_ancestor() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -202,7 +194,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(3, list.size());
@@ -221,7 +213,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_regulation_of_fail() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -233,7 +224,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -245,7 +236,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_regulation_of_specific_relation() {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(0);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -256,7 +246,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -268,7 +258,6 @@ public class TermGenieScriptTest {
 
 	@Test
 	public void test_involved_in_relations() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(1);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -282,7 +271,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -313,7 +302,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_involved_in_mf_bp() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(2);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		
@@ -327,7 +315,7 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -360,7 +348,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_involved_in_mf_bp_existing() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(2);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		
@@ -374,7 +361,7 @@ public class TermGenieScriptTest {
 		
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -385,7 +372,6 @@ public class TermGenieScriptTest {
 	
 	@Test
 	public void test_occurs_in_relations() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
 		TermTemplate termTemplate = generationEngine.getAvailableTemplates().get(3);
 		TermGenerationParameters parameters = new TermGenerationParameters();
 
@@ -397,7 +383,7 @@ public class TermGenieScriptTest {
 
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(ontology, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 
 		assertNotNull(list);
 		assertEquals(1, list.size());

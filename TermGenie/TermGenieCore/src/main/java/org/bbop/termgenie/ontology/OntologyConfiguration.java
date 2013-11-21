@@ -1,18 +1,16 @@
 package org.bbop.termgenie.ontology;
 
-import java.util.Map;
-
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
+import org.bbop.termgenie.core.Ontology;
 
 /**
- * Information about the available {@link ConfiguredOntology}.
+ * Information about the available {@link Ontology}.
  */
 public interface OntologyConfiguration {
 
 	/**
-	 * Get the Configurations of the ontologies.
+	 * Get the Configuration details of the ontology.
 	 * 
 	 * @return ontology configuration map
 	 */
-	public Map<String, ConfiguredOntology> getOntologyConfigurations();
+	public Ontology getOntologyConfiguration();
 }

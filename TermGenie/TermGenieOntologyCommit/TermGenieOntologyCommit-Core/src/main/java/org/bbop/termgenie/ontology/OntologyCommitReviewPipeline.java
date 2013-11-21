@@ -70,7 +70,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			// add terms to local commit log
 			Date date = new Date();
 			final CommitHistoryItem historyItem = CommitHistoryTools.create(commitInfo.getTerms(), commitInfo.getCommitMessage(), commitInfo.getUserData(), date);
-			store.add(historyItem, source.getOntology().getUniqueName());
+			store.add(historyItem, source.getOntology().getName());
 			String diff = createDiff(historyItem, source);
 			final CommitResult commitResult = new CommitResult(true, "Your commit has been stored and awaits review by the ontology editors.", commitInfo.getTerms(), diff);
 			
@@ -95,7 +95,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			}
 			return commitResult;
 		} catch (CommitHistoryStoreException exception) {
-			String message = "Problems handling commit history for ontology: " + source.getOntology().getUniqueName();
+			String message = "Problems handling commit history for ontology: " + source.getOntology().getName();
 			throw error(message, exception);
 		}
 	}
@@ -105,7 +105,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	@Override
 	public List<CommitHistoryItem> getItemsForReview() throws CommitException {
 		try {
-			return store.getItemsForReview(source.getOntology().getUniqueName());
+			return store.getItemsForReview(source.getOntology().getName());
 		} catch (CommitHistoryStoreException exception) {
 			throw error("Could not retrieve history items from db.", exception);
 		}
@@ -138,7 +138,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	@Override
 	public List<Pair<String, String>> checkRecentCommits(List<String> labels) {
 		try {
-			return store.checkRecentCommits(source.getOntology().getUniqueName(), labels);
+			return store.checkRecentCommits(source.getOntology().getName(), labels);
 		} catch (CommitHistoryStoreException exception) {
 			Logger.getLogger(getClass()).error("Could not check for existing term labels due to db error.", exception);
 			return Collections.emptyList();
@@ -161,7 +161,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	@Override
 	public void updateItem(CommitHistoryItem item) throws CommitException {
 		try {
-			store.update(item, source.getOntology().getUniqueName());
+			store.update(item, source.getOntology().getName());
 		} catch (CommitHistoryStoreException exception) {
 			throw new CommitException("Could not update item in db", exception, false);
 		}
@@ -218,7 +218,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		File workFolder = null;
 		try {
 			String suffix = ".lock";
-			tempFile = File.createTempFile(source.getOntology().getUniqueName() + "commit-", suffix);
+			tempFile = File.createTempFile(source.getOntology().getName() + "commit-", suffix);
 			String tempFolderName = tempFile.getName().replace(suffix, "-folder");
 			workFolder = new File(tempFile.getParentFile(), tempFolderName);
 			FileUtils.forceMkdir(workFolder);
@@ -580,7 +580,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	}
 
 	private void finalizeCommitHistory(CommitHistoryItem item) throws CommitException {
-		final String uniqueName = source.getOntology().getUniqueName();
+		final String uniqueName = source.getOntology().getName();
 		try {
 			// set terms in commit log as committed
 			item.setCommitted(true);

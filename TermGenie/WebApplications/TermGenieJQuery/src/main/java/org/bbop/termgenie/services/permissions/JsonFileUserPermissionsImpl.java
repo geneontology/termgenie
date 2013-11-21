@@ -70,27 +70,27 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 
 	@Override
 	public boolean allowCommitReview(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_COMMIT_REVIEW);
+		return checkPermissions(userData, ontology.getName(), FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
 	public boolean allowCommit(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_WRITE);
+		return checkPermissions(userData, ontology.getName(), FLAG_ALLOW_WRITE);
 	}
 
 	@Override
 	public boolean allowFreeForm(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM);
+		return checkPermissions(userData, ontology.getName(), FLAG_ALLOW_FREE_FORM);
 	}
 
 	@Override
 	public boolean allowFreeFormCommit(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM_WRITE);
+		return checkPermissions(userData, ontology.getName(), FLAG_ALLOW_FREE_FORM_WRITE);
 	}
 
 	@Override
 	public boolean allowFreeFormLiteratureXrefOptional(UserData userData, Ontology ontology) {
-		return checkPermissions(userData, ontology.getUniqueName(), FLAG_ALLOW_FREE_FORM_LIT_XREF_OPTIONAL);
+		return checkPermissions(userData, ontology.getName(), FLAG_ALLOW_FREE_FORM_LIT_XREF_OPTIONAL);
 	}
 
 	private boolean checkPermissions(UserData userData, String group, String...flags) {
@@ -136,14 +136,14 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	@Override
 	public CommitUserData getCommitReviewUserData(UserData userData, Ontology ontology) {
 		return retrieveCommitUserData(userData,
-				ontology.getUniqueName(),
+				ontology.getName(),
 				ontology,
 				FLAG_ALLOW_COMMIT_REVIEW);
 	}
 
 	@Override
 	public CommitUserData getCommitUserData(UserData userData, Ontology ontology) {
-		return retrieveCommitUserData(userData, ontology.getUniqueName(), ontology, FLAG_ALLOW_WRITE);
+		return retrieveCommitUserData(userData, ontology.getName(), ontology, FLAG_ALLOW_WRITE);
 	}
 
 	private CommitUserData retrieveCommitUserData(UserData userData,
@@ -161,7 +161,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 				if (groupFlags != null) {
 					String groupValue = groupFlags.get(flag);
 					if (groupValue != null && "true".equals(groupValue.toLowerCase())) {
-						Map<String, String> ontologyFlags = termgeniePermissions.getPermissionFlags(ontology.getUniqueName());
+						Map<String, String> ontologyFlags = termgeniePermissions.getPermissionFlags(ontology.getName());
 						if (ontologyFlags != null) {
 							String screenname = ontologyFlags.get(FLAG_SCREEN_NAME);
 							return new CommitUserDataImpl(null, null, screenname);

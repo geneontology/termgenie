@@ -40,17 +40,15 @@ public class TermLookupServiceDefaultImpl implements TermLookupService {
 	
 	@Override
 	public void lookup(final String id, final LookupCallBack callback) {
-		List<OntologyTaskManager> ontologies = loader.getOntologies();
-		for (OntologyTaskManager manager : ontologies) {
-			try {
-				FindClassTask task = new FindClassTask(callback, id);
-				manager.runManagedTask(task);
-				if (task.success) {
-					return;
-				}
-			} catch (InvalidManagedInstanceException exception) {
-				callback.error("Could not determine state of the term due to an internal error (inconsistent state)", exception);
+		OntologyTaskManager manager = loader.getOntologyManager();
+		try {
+			FindClassTask task = new FindClassTask(callback, id);
+			manager.runManagedTask(task);
+			if (task.success) {
+				return;
 			}
+		} catch (InvalidManagedInstanceException exception) {
+			callback.error("Could not determine state of the term due to an internal error (inconsistent state)", exception);
 		}
 		if (holder != null && holder.store != null) {
 			try {

@@ -3,7 +3,6 @@
  xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 	<template name="cell_apoptosis">
 		<description>Apoptotic process for a cell type</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="celltype" required="true">

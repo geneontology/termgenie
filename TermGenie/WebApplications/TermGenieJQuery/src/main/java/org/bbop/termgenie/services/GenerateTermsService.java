@@ -11,26 +11,23 @@ import org.json.rpc.server.ProcessStateAware;
 public interface GenerateTermsService extends AutoCompleteResources{
 
 	/**
-	 * Retrieve the available term templates parameters for the given ontology;
+	 * Retrieve the available term templates.
 	 * 
 	 * @param sessionId an id which can be used to retrieve the session object.
-	 * @param ontology
 	 * @return gwtTermTemplates
 	 */
-	public List<JsonTermTemplate> availableTermTemplates(String sessionId, String ontology);
+	public List<JsonTermTemplate> availableTermTemplates(String sessionId);
 
 	/**
 	 * Generate terms and return the proposed terms for review.
 	 * 
 	 * @param sessionId an id which can be used to retrieve the session object.
-	 * @param ontology
 	 * @param allParameters
 	 * @param processState
 	 * @return JsonGenerationResponse, detailing errors and possible terms.
 	 */
 	@ProcessStateAware
 	public JsonGenerationResponse generateTerms(String sessionId,
-			String ontology,
 			List<JsonTermGenerationInput> allParameters,
 			ProcessState processState);
 }

@@ -32,7 +32,6 @@ import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.services.visualization.TermHierarchyModule;
 import org.bbop.termgenie.services.visualization.TermHierarchyRenderer;
-import org.bbop.termgenie.tools.TermGenieToolsModule;
 import org.bbop.termgenie.user.simple.SimpleUserDataModule;
 import org.json.rpc.server.InjectingJsonRpcExecutor;
 
@@ -117,7 +116,6 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
-		modules.add(new TermGenieToolsModule(applicationProperties));
 		modules.add(new ManagementServiceModule(applicationProperties));
 		add(modules, getServiceModule(), true, "ServiceModule");
 		add(modules, getAuthenticationModule(), true, "Authentication");

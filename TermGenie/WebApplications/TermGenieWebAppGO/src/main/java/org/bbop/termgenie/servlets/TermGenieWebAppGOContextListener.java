@@ -131,7 +131,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		List<String> additional = Collections.singletonList("editors/gene_ontology_xp_write.obo");
 		boolean loadExternal = true;
 		
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, "GeneOntology", additional, loadExternal){
+		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal){
 
 			@Override
 			protected TermFilter<OBODoc> provideTermFilter() {

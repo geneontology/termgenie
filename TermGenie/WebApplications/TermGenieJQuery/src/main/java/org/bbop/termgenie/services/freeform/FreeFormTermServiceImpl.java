@@ -12,8 +12,6 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
-import org.bbop.termgenie.core.management.MultiResourceTaskManager.MultiResourceManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
@@ -21,8 +19,9 @@ import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdent
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.freeform.FreeFormTermValidator;
 import org.bbop.termgenie.freeform.FreeFormValidationResponse;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
@@ -48,18 +47,18 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	private final FreeFormTermValidator validator;
 	private final Ontology ontology;
 	private final OntologyTaskManager targetOntology;
-	private final MultiOntologyTaskManager manager;
 	private final OntologyTermSuggestor suggestor;
 	private final InternalFreeFormCommitService commitService;
+
+	private final String defaultSubset;
 	
 	@Inject
 	public FreeFormTermServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
 			UserDataProvider userDataProvider,
-			@Named("CommitTargetOntology") OntologyTaskManager targetOntology,
-			@Named("FreeFormDefaultOntology") Ontology ontology,
+			OntologyLoader loader,
 			OntologyTermSuggestor suggestor,
-			MultiOntologyTaskManager manager,
+			@Named("FreeFormAutocompleteDefaultSubset") String defaultSubset,
 			TermCommitService commitService,
 			FreeFormTermValidator validator)
 	{
@@ -68,10 +67,10 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		this.permissions = permissions;
 		this.userDataProvider = userDataProvider;
 		this.suggestor = suggestor;
+		this.defaultSubset = defaultSubset;
 		this.validator = validator;
-		this.targetOntology = targetOntology;
-		this.ontology = ontology;
-		this.manager = manager;
+		this.targetOntology = loader.getOntologyManager();
+		this.ontology = targetOntology.getOntology();
 		if (commitService instanceof InternalFreeFormCommitService) {
 			this.commitService = (InternalFreeFormCommitService) commitService;
 		}
@@ -185,14 +184,12 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		if (max < 0 || max > 10) {
 			max = 10;
 		}
-		Ontology ontology;
+		String ontology;
 		if (oboNamespace == null || oboNamespace.isEmpty()) {
-			ontology = this.ontology;
+			ontology = defaultSubset;
 		}
 		else {
-			ontology = new Ontology(this.ontology.getUniqueName(), oboNamespace, this.ontology.getRoots(), this.ontology.getImportRewrites()) {
-				// intentionally empty
-			};
+			ontology = oboNamespace;
 		}
 		// query for terms
 		List<TermSuggestion> autocompleteList = suggestor.suggestTerms(query, ontology, max);
@@ -200,7 +197,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			JsonTermSuggestion[] result = new JsonTermSuggestion[autocompleteList.size()];
 			for (int i = 0; i < result.length; i++) {
 				TermSuggestion termSuggestion = autocompleteList.get(i);
-				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontology.getUniqueName(), termSuggestion.getIdentifier());
+				JsonOntologyTermIdentifier jsonId = new JsonOntologyTermIdentifier(ontology, termSuggestion.getIdentifier());
 				result[i] = new JsonTermSuggestion(termSuggestion.getLabel(), jsonId , termSuggestion.getDescription(), termSuggestion.getSynonyms());
 			}
 			return result;
@@ -219,7 +216,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			final FreeFormValidationResponse response = validator.validate(request, isEditor, state);
 			ConvertToJson task = new ConvertToJson(response);
 			try {
-				manager.runManagedTask(task, ontology);
+				targetOntology.runManagedTask(task);
 			} catch (InvalidManagedInstanceException exception) {
 				String message = "Error during term validation, due to an inconsistent ontology";
 				logger.error(message, exception);
@@ -272,7 +269,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		return response;
 	}
 
-	static class ConvertToJson implements MultiResourceManagedTask<OWLGraphWrapper, Ontology> {
+	static class ConvertToJson extends OntologyTask {
 		
 		final FreeFormValidationResponse response;
 		JsonFreeFormValidationResponse json;
@@ -285,12 +282,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		}
 
 		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested)
-				throws InvalidManagedInstanceException
-		{
-			OWLGraphWrapper graph = requested.get(0);
+		protected void runCatching(OWLGraphWrapper graph) throws TaskException, Exception {
 			json = JsonFreeFormValidationResponse.convert(response, graph);
-			return null;
 		}
 		
 	}

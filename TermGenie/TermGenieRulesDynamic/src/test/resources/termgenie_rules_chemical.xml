@@ -5,7 +5,6 @@
 		<description>Select all three subtemplates to generate
 terms for the "metabolic triad". Names, synonyms and definitions are all
 generated automatically</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -34,7 +33,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transport">
 		<description>transport of a chemical entity (biological process)</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -58,7 +56,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -84,7 +81,6 @@ generated automatically</description>
 		<description>Create transmembrane transporter activity terms (molecular function) with chemical entities.&lt;br/&gt;
 		Select &lt;b&gt;at least one&lt;/b&gt; type of genus. &lt;br/&gt;
 		If in doubt, use the first one: transmembrane transporter activity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="subject" required="true">
@@ -114,7 +110,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_response_to">
 		<description>Create response to and cellular response to a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -142,7 +137,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_homeostasis">
 		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -170,7 +164,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transporter">
 		<description>Create transmembrane transporter terms (biological process) with chemical entities.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="subject" required="true">
@@ -194,7 +187,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transporter_activity">
 		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -218,7 +210,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_import">
 		<description>import of a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -242,7 +233,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_export">
 		<description>export of a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -266,7 +256,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transport_from_to">
 		<description>transport of a chemical entity from and/or to a cellular component</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="chemical" required="true">
@@ -305,7 +294,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_import_into">
 		<description>transport of a chemical into a cellular component</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="subject" required="true">

@@ -143,7 +143,8 @@ public abstract class GenericTaskManager<T> {
 			lock.acquire();
 			hasLock = true;
 			if (inValid) {
-				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
+				managed = handleInvalid(managed);
+				
 			}
 			if (managed == null) {
 				managed = createManaged();
@@ -165,6 +166,16 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 	
+	/**
+	 * Allow a custom handling of invalid states of the manager.
+	 * 
+	 * @param managed
+	 * @throws InvalidManagedInstanceException
+	 */
+	protected T handleInvalid(T managed) throws InvalidManagedInstanceException {
+		throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
+	}
+
 	public final void dispose() {
 		boolean hasLock = false;
 		try {

@@ -56,7 +56,6 @@
 		<module>TermGenieWebAppHPO</module>
 		<module>TermGenieWebAppUberon</module>
 		<module>TermGenieWebAppOMP</module>
-		<module>TermGenieWebAppAll</module>
 		<module>TermGenieWebAppBatto</module>
 		<module>TermGenieWebAppBattoTest</module>
 	</modules>

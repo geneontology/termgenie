@@ -11,11 +11,11 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonCommitResult;
 import org.bbop.termgenie.data.JsonExportResult;
 import org.bbop.termgenie.data.JsonOntologyTerm;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
-import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Frame;
@@ -33,35 +33,27 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	protected static final Logger logger = Logger.getLogger(TermCommitService.class);
 
 	protected final InternalSessionHandler sessionHandler;
-	protected final OntologyTools ontologyTools;
+	protected final OntologyTaskManager manager;
 
 	/**
 	 * @param ontologyTools
 	 * @param sessionHandler
 	 */
 	@Inject
-	protected NoCommitTermCommitServiceImpl(OntologyTools ontologyTools,
-			InternalSessionHandler sessionHandler)
+	protected NoCommitTermCommitServiceImpl(InternalSessionHandler sessionHandler, OntologyLoader loader)
 	{
 		super();
-		this.ontologyTools = ontologyTools;
 		this.sessionHandler = sessionHandler;
+		manager = loader.getOntologyManager();
 	}
 
 	@Override
 	public JsonExportResult exportTerms(String sessionId,
 			JsonOntologyTerm[] terms,
-			String ontologyName,
 			HttpSession session)
 	{
 		JsonExportResult result = new JsonExportResult();
 
-		OntologyTaskManager manager = getOntologyManager(ontologyName);
-		if (manager == null) {
-			result.setSuccess(false);
-			result.setMessage("Unknown ontology: " + ontologyName);
-			return result;
-		}
 		UserData userData = sessionHandler.getUserData(session);
 		CreateExportDiffTask task = new CreateExportDiffTask(terms, userData);
 		try {
@@ -140,14 +132,9 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 		}
 	}
 
-	protected OntologyTaskManager getOntologyManager(String ontologyName) {
-		return ontologyTools.getManager(ontologyName);
-	}
-
 	@Override
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
-			String ontology,
 			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState)

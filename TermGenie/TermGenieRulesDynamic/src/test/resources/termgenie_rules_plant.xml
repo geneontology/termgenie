@@ -3,7 +3,6 @@
  xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 	<template name="plant_development">
 		<description>Development of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -26,7 +25,6 @@
 	</template>
 	<template name="plant_formation">
 		<description>Formation of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -49,7 +47,6 @@
 	</template>
 	<template name="plant_maturation">
 		<description>Maturation of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -72,7 +69,6 @@
 	</template>
 	<template name="plant_morphogenesis">
 		<description>Morphogenesis of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -95,7 +91,6 @@
 	</template>
 	<template name="plant_structural_organization">
 		<description>Structural organization of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">

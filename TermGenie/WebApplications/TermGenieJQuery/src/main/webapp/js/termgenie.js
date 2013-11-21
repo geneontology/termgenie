@@ -76,7 +76,6 @@ function termgenie(){
 	              'generate.getAutoCompleteResource',
 	              'ontology.availableOntologies',
 	              'ontology.autocomplete',
-	              'commit.isValidUser',
 	              'commit.exportTerms',
 	              'commit.commitTerms',
 	              'user.createSession',
@@ -264,7 +263,7 @@ function termgenie(){
 		mySession.getSessionId(function(sessionId){
 			// start async rpc to retrieve available templates
 			jsonService.generate.availableTermTemplates({
-				params:[sessionId, ontology],
+				params:[sessionId],
 				onSuccess: function(result) {
 					// clear busy message
 					elem.empty();
@@ -331,7 +330,7 @@ function termgenie(){
 				setStep2HeaderInfo(status.parameters);
 				mySession.getSessionId(function(sessionId){
 					jsonService.generate.generateTerms({
-						params:[sessionId, ontology, status.parameters],
+						params:[sessionId, status.parameters],
 						onSuccess: function(result) {
 							renderStep3(result, ontology);
 						},
@@ -1542,7 +1541,7 @@ function termgenie(){
 					// try to commit
 					mySession.getSessionId(function(sessionId){
 						jsonService.commit.commitTerms({
-							params: [sessionId, terms, ontology, sendConfirmationEMail],
+							params: [sessionId, terms, sendConfirmationEMail],
 							onSuccess: function(result) {
 								step4Container.empty();
 								renderCommitResult(result, step4Container);
@@ -1567,7 +1566,7 @@ function termgenie(){
 					// just generate the info for the export a obo/owl
 					mySession.getSessionId(function(sessionId){
 						jsonService.commit.exportTerms({
-							params: [sessionId, terms, ontology],
+							params: [sessionId, terms],
 							onSuccess: function(result) {
 								step4Container.empty();
 								renderExportResult(result, step4Container);
@@ -1773,7 +1772,7 @@ function termgenie(){
 			var renderHierarchyButton = jQuery('#Generated-Terms-Hierarchy-Preview-Button');
 			renderHierarchyButton.click(function(){
 				jsonService.renderer.visualizeGeneratedTerms({
-					params: [generatedTerms, ontology],
+					params: [generatedTerms],
 					onSuccess: function(result) {
 						if(result.success === true) {
 							window.open(result.message);

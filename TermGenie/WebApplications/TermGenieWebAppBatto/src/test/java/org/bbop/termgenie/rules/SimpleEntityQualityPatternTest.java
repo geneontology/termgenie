@@ -14,11 +14,9 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +32,6 @@ import com.google.inject.Injector;
 public class SimpleEntityQualityPatternTest {
 
 	private static TermGenerationEngine generationEngine;
-	private static ConfiguredOntology batto;
 	private static OntologyLoader loader;
 	
 	@BeforeClass
@@ -46,12 +43,11 @@ public class SimpleEntityQualityPatternTest {
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
-		batto = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("Batto");
 	}
 	
 	@Test
 	public void testManchesterSyntaxTool() throws Exception {
-		OntologyTaskManager ontologyManager = loader.getOntology(batto);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
@@ -88,7 +84,7 @@ public class SimpleEntityQualityPatternTest {
 	public void test_eq_simple_1() {
 		
 		List<TermGenerationInput> generationTasks = createEQSimpleTask("UBERON:0000120", "PATO:0000970"); // blood brain barrier permeability
-		List<TermGenerationOutput> list = generationEngine.generateTerms(batto, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);

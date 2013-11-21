@@ -17,19 +17,18 @@ import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
@@ -56,7 +55,6 @@ import owltools.io.ParserWrapper.OboAndOwlNameProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 @Singleton
 public class TermCommitReviewServiceImpl implements TermCommitReviewService {
@@ -66,21 +64,20 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
 	private final OntologyCommitReviewPipelineStages stages;
+	private final OntologyTaskManager manager;
 	private final Ontology ontology;
-	private final MultiOntologyTaskManager manager;
 	
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
 			UserPermissions permissions,
-			@Named("CommitTargetOntology") OntologyTaskManager ontology,
-			MultiOntologyTaskManager manager,
+			OntologyLoader loader,
 			OntologyCommitReviewPipelineStages stages)
 	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
-		this.ontology = ontology.getOntology();
-		this.manager = manager;
+		this.manager = loader.getOntologyManager();
+		this.ontology = manager.getOntology();
 		this.stages = stages;
 	}
 
@@ -144,7 +141,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 	protected List<JsonCommitReviewEntry> createEntries(List<CommitHistoryItem> items) throws OWLOntologyCreationException, InvalidManagedInstanceException, OBOFormatParserException {
 		CreateReviewEntriesTask task = new CreateReviewEntriesTask(items);
-		manager.runManagedTask(task, ontology);
+		manager.runManagedTask(task);
 		if (task.owlException != null) {
 			throw task.owlException;
 		}
@@ -154,7 +151,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		return task.result;
 	}
 	
-	private class CreateReviewEntriesTask extends MultiOntologyTask {
+	private class CreateReviewEntriesTask extends OntologyTask {
 
 		private final List<CommitHistoryItem> items;
 		
@@ -171,9 +168,8 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 
 		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested) {
+		public void runCatching(OWLGraphWrapper graph) {
 			Owl2Obo owl2Obo = new Owl2Obo();
-			OWLGraphWrapper graph = requested.get(0);
 			try {
 				OBODoc oboDoc = owl2Obo.convert(graph.getSourceOntology());
 				NameProvider provider = new OboAndOwlNameProvider(oboDoc, graph);
@@ -193,7 +189,6 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			} catch (OBOFormatParserException exception) {
 				this.oboException = exception;
 			}
-			return null;
 		}
 	}
 	
@@ -272,7 +267,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 		JsonCommitReviewCommitResult json;
 		try {
-			json = JsonCommitReviewCommitResult.success(task.historyIds, task.commits, ontology, manager);
+			json = JsonCommitReviewCommitResult.success(task.historyIds, task.commits, manager);
 		} catch (InvalidManagedInstanceException exception) {
 			logger.error("Could not create data for successfull commit result", exception);
 			return JsonCommitReviewCommitResult.error("Commit successfull, but could not create data for successfull commit result display: "+exception.getMessage());

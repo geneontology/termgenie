@@ -29,6 +29,7 @@ import org.bbop.termgenie.ontology.InternalCommitInfo;
 import org.bbop.termgenie.ontology.OntologyIdManager;
 import org.bbop.termgenie.ontology.OntologyIdManager.OntologyIdManagerTask;
 import org.bbop.termgenie.ontology.OntologyIdProvider;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
@@ -36,7 +37,6 @@ import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.services.freeform.InternalFreeFormCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
-import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Obo2Owl;
@@ -62,27 +62,24 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	private final OntologyIdManager primaryIdProvider;
 	private final OntologyIdManager secondaryIdProvider;
 	protected final UserPermissions permissions;
-	private final OntologyTaskManager source;
 	private String tempIdPrefix;
 
 	@Inject
-	public DefaultTermCommitServiceImpl(OntologyTools ontologyTools,
-			InternalSessionHandler sessionHandler,
+	public DefaultTermCommitServiceImpl(InternalSessionHandler sessionHandler,
+			OntologyLoader loader,
 			Committer committer,
-			final @Named("CommitTargetOntology") OntologyTaskManager source,
 			final @Named("PrimaryOntologyIdManager") OntologyIdManager primaryIdProvider,
 			final @Named("SecondaryOntologyIdManager") OntologyIdManager secondaryIdProvider,
 			final TermGenerationEngine generationEngine,
 			UserPermissions permissions)
 	{
-		super(ontologyTools, sessionHandler);
+		super(sessionHandler, loader);
 		this.committer = committer;
 		this.primaryIdProvider = primaryIdProvider;
 		this.secondaryIdProvider = secondaryIdProvider;
 		this.permissions = permissions;
-		this.source = source;
 		try {
-			source.runManagedTask(new OntologyTask() {
+			manager.runManagedTask(new OntologyTask() {
 
 				@Override
 				protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
@@ -92,10 +89,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		} catch (InvalidManagedInstanceException exception) {
 			throw new RuntimeException(exception);
 		}
-	}
-
-	protected Ontology getTargetOntology() {
-		return source.getOntology();
 	}
 
 	/**
@@ -160,20 +153,10 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	@Override
 	public JsonCommitResult commitTerms(String sessionId,
 			JsonOntologyTerm[] terms,
-			String ontologyName,
 			boolean sendConfirmationEMail,
 			HttpSession session,
 			ProcessState processState)
 	{
-		// check if its the correct ontology
-		OntologyTaskManager manager = getOntologyManager(ontologyName);
-		if (manager == null) {
-			return error("Unknown ontology: " + ontologyName);
-		}
-		if (!getTargetOntology().getUniqueName().equals(manager.getOntology().getUniqueName())) {
-			return error("Can only commit to " + getTargetOntology().getUniqueName() + ", but requested ontology was: " + ontologyName);
-		}
-
 		// check if session is valid, get user name
 		boolean validSession = sessionHandler.isValidSession(sessionId, session);
 		if (!validSession) {

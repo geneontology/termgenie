@@ -4,9 +4,8 @@ import java.io.File;
 
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 
@@ -21,11 +20,10 @@ public final class CvsHelperAnonymous extends OboScmHelper {
 
 	@Inject
 	CvsHelperAnonymous(IRIMapper iriMapper,
-			OntologyCleaner cleaner,
 			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cleaner, cvsOntologyFileName, null);
+		super(iriMapper, cvsOntologyFileName, null);
 		this.cvsRoot = cvsRoot;
 	}
 

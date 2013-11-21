@@ -16,12 +16,10 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
@@ -60,7 +58,6 @@ public class ImportTest {
 	}
 
 	private static TermGenerationEngine generationEngine;
-	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
 
 	@BeforeClass
@@ -71,7 +68,6 @@ public class ImportTest {
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
-		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
 
@@ -80,7 +76,7 @@ public class ImportTest {
 		TermTemplate termTemplate = getImportTemplate();
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		
@@ -98,7 +94,7 @@ public class ImportTest {
 		String id = "CHEBI:32644"; // methioninate
 		
 		List<TermGenerationInput> generationTasks = createResponseToTask(termTemplate, id);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
@@ -108,7 +104,7 @@ public class ImportTest {
 	}
 	
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
-		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override

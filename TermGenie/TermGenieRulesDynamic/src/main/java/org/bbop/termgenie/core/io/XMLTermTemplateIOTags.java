@@ -10,9 +10,7 @@ interface XMLTermTemplateIOTags {
 	static final String TAG_description = "description";
 	static final String TAG_hint = "hint";
 	static final String TAG_ontology = "ontology";
-	static final String TAG_external = "external";
 	static final String TAG_obonamespace = "obonamespace";
-	static final String TAG_requires = "requires";
 	static final String TAG_fields = "fields";
 	static final String TAG_field = "field";
 	static final String TAG_ruleFiles = "ruleFiles";

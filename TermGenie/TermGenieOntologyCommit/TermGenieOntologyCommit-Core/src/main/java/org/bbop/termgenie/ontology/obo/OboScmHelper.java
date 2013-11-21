@@ -20,7 +20,6 @@ import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -50,7 +49,6 @@ public abstract class OboScmHelper {
 	private final List<String> targetOntologyFileNames;
 
 	protected OboScmHelper(IRIMapper iriMapper,
-			OntologyCleaner cleaner,
 			String svnOntologyFileName,
 			List<String> svnAdditionalOntologyFileNames)
 	{
@@ -59,7 +57,7 @@ public abstract class OboScmHelper {
 		if (svnAdditionalOntologyFileNames != null) {
 			targetOntologyFileNames.addAll(svnAdditionalOntologyFileNames);
 		}
-		loader = new DirectOntologyLoader(iriMapper, cleaner);
+		loader = new DirectOntologyLoader(iriMapper);
 	}
 
 	public abstract boolean isSupportAnonymus();
@@ -331,8 +329,8 @@ public abstract class OboScmHelper {
 
 	private static final class DirectOntologyLoader extends BaseOntologyLoader {
 
-		private DirectOntologyLoader(IRIMapper iriMapper, OntologyCleaner cleaner) {
-			super(iriMapper, cleaner);
+		private DirectOntologyLoader(IRIMapper iriMapper) {
+			super(iriMapper);
 		}
 
 		OBODoc loadOBO(File file, String ontology, Map<String, String> importRewrites) throws IOException, OBOFormatParserException {

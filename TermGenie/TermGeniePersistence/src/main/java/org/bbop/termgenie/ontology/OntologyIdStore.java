@@ -72,7 +72,7 @@ class OntologyIdStore {
 			int next = current + 1;
 			if (next >= maximum) {
 				entityManager.getTransaction().rollback();
-				error("Upper limit (" + Integer.toString(maximum) + ") of the ID range reached for ontology: " + ontology.getUniqueName());
+				error("Upper limit (" + Integer.toString(maximum) + ") of the ID range reached for ontology: " + ontology.getName());
 			}
 			info.setCurrent(next);
 			String pattern = info.getPattern();
@@ -111,7 +111,7 @@ class OntologyIdStore {
 	}
 
 	private OntologyIdInfo getInfo(Ontology ontology, EntityManager entityManager) {
-		return getInfo(ontology.getUniqueName(), entityManager);
+		return getInfo(ontology.getName(), entityManager);
 	}
 
 	private OntologyIdInfo getInfo(String ontologyName, EntityManager entityManager) {

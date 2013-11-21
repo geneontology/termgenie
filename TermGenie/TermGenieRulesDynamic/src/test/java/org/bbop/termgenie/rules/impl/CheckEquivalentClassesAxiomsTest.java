@@ -8,8 +8,7 @@ import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +20,6 @@ import com.google.inject.Injector;
 
 public class CheckEquivalentClassesAxiomsTest {
 
-	private static OntologyConfiguration configuration;
 	private static OntologyLoader loader;
 
 	@BeforeClass
@@ -35,14 +33,12 @@ public class CheckEquivalentClassesAxiomsTest {
 			}
 		});
 
-		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 
 	@Test
 	public void test_check_for_regulation_in_axioms() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontologyTaskManager = loader.getOntology(ontology);
+		OntologyTaskManager ontologyTaskManager = loader.getOntologyManager();
 		ontologyTaskManager.runManagedTask(new OntologyTaskManager.OntologyTask() {
 
 			@Override

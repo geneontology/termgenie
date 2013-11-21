@@ -47,14 +47,12 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	 * @param tempIdPrefix
 	 * @param patternID
 	 * @param factory
-	 * @param auxiliaryOntologies 
 	 * @param state 
 	 * @param requireLiteratureReference
 	 * @param useIsInferred
 	 */
 	public TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
-			Collection<OWLGraphWrapper> auxiliaryOntologies,
 			String tempIdPrefix,
 			String patternID,
 			ReasonerFactory factory,
@@ -65,9 +63,6 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		super();
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
-		for (OWLGraphWrapper wrapper : auxiliaryOntologies) {
-			ontologies.addAll(wrapper.getAllOntologies());
-		}
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
 		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred);
 	}

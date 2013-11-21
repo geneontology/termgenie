@@ -13,8 +13,7 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import com.google.inject.Injector;
 
 public class ELKReasonerTest {
 
-	private static OntologyConfiguration configuration;
 	private static OntologyLoader loader;
 	private static ReasonerFactory reasonerFactory;
 
@@ -45,15 +43,13 @@ public class ELKReasonerTest {
 			}
 		}, new ReasonerModule(null));
 
-		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
 		reasonerFactory = injector.getInstance(ReasonerFactory.class);
 	}
 
 	@Test
 	public void test1() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		ontologyManager.runManagedTask(new OntologyTask(){
 
 			@Override

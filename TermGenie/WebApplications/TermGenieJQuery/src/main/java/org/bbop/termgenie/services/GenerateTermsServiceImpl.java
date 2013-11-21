@@ -3,10 +3,8 @@ package org.bbop.termgenie.services;
 import static org.bbop.termgenie.tools.ErrorMessages.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +13,6 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -33,10 +30,10 @@ import org.bbop.termgenie.data.JsonTermTemplate;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonCardinality;
 import org.bbop.termgenie.data.JsonTermTemplate.JsonTemplateField;
 import org.bbop.termgenie.data.JsonValidationHint;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.tools.FieldValidatorTool;
-import org.bbop.termgenie.tools.OntologyTools;
 import org.bbop.termgenie.user.OrcidUserData;
 import org.bbop.termgenie.user.UserDataProvider;
 import org.bbop.termgenie.user.XrefUserData;
@@ -51,25 +48,19 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	private static final Logger logger = Logger.getLogger(GenerateTermsServiceImpl.class);
 
-	private final TemplateCache TEMPLATE_CACHE = TemplateCache.getInstance();
-	private final OntologyTools ontologyTools;
 	private final TermGenerationEngine termGeneration;
+	private final OntologyTaskManager manager;
 	private final JsonTemplateTools jsonTools;
 	private final UserDataProvider userDataProvider;
 
-	/**
-	 * @param ontologyTools
-	 * @param termGeneration
-	 * @param userDataProvider
-	 */
 	@Inject
-	GenerateTermsServiceImpl(OntologyTools ontologyTools,
-			TermGenerationEngine termGeneration,
-			UserDataProvider userDataProvider)
+	GenerateTermsServiceImpl(TermGenerationEngine termGeneration,
+				OntologyLoader loader,
+				UserDataProvider userDataProvider)
 	{
 		super();
-		this.ontologyTools = ontologyTools;
 		this.termGeneration = termGeneration;
+		this.manager = loader.getOntologyManager();
 		this.userDataProvider = userDataProvider;
 		this.jsonTools = new JsonTemplateTools();
 	}
@@ -137,13 +128,8 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	}
 	
 	@Override
-	public List<JsonTermTemplate> availableTermTemplates(String sessionId, String ontologyName) {
-		// sanity check
-		if (ontologyName == null) {
-			// silently ignore this
-			return Collections.emptyList();
-		}
-		Collection<TermTemplate> templates = getTermTemplates(ontologyName);
+	public List<JsonTermTemplate> availableTermTemplates(String sessionId) {
+		List<TermTemplate> templates = termGeneration.getAvailableTemplates();
 		if (templates.isEmpty()) {
 			// short cut for empty results.
 			return Collections.emptyList();
@@ -164,22 +150,12 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 	 */
 	@Override
 	public JsonGenerationResponse generateTerms(String sessionId,
-			String ontologyName,
 			List<JsonTermGenerationInput> allParameters,
 			ProcessState processState)
 	{
 		// sanity checks
-		if (ontologyName == null || ontologyName.isEmpty()) {
-			return error(NO_ONTOLOGY);
-		}
 		if (allParameters == null) {
 			return error(NO_TERM_GENERATION_PARAMETERS);
-		}
-
-		// retrieve target ontology
-		OntologyTaskManager manager = ontologyTools.getManager(ontologyName);
-		if (manager == null) {
-			return error(NO_ONTOLOGY);
 		}
 
 		// term generation parameter validation
@@ -195,7 +171,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			}
 			// retrieve the template from the server, do not trust the submitted
 			// one.
-			TermTemplate template = getTermTemplate(ontologyName, one.getName());
+			TermTemplate template = getTermTemplate(one.getName());
 			if (template == null) {
 				return error("Unknow template specified: " + one.getName());
 			}
@@ -215,12 +191,11 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 		try {
 			// generate term candidates
-			List<TermGenerationInput> generationTasks = createGenerationTasks(ontologyName,
-					allParameters);
+			List<TermGenerationInput> generationTasks = createGenerationTasks(allParameters);
 			// this the place for a future hook to make this requirement user specific
 			// at the moment this is a warning.
 			boolean requireLiteratureReference = false; 
-			List<TermGenerationOutput> candidates = termGeneration.generateTerms(manager.getOntology(), generationTasks, requireLiteratureReference, processState);
+			List<TermGenerationOutput> candidates = termGeneration.generateTerms(generationTasks, requireLiteratureReference, processState);
 
 			// validate candidates
 			if (candidates == null || candidates.isEmpty()) {
@@ -234,7 +209,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			// return response
 			return generationResponse;
 		} catch (Exception exception) {
-			logger.warn("An error occured during the term generation for the parameters: {ontologyName: " + ontologyName + ", allParameters: " + allParameters + "}",
+			logger.warn("An error occured during the term generation for the parameters: {allParameters: " + allParameters + "}",
 					exception);
 			return error("An internal error occured on the server. Please contact the developers if the problem persists.");
 		}
@@ -295,13 +270,12 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		
 	}
 
-	private List<TermGenerationInput> createGenerationTasks(String ontologyName,
-			List<JsonTermGenerationInput> allParameters)
+	private List<TermGenerationInput> createGenerationTasks(List<JsonTermGenerationInput> allParameters)
 	{
 		List<TermGenerationInput> result = new ArrayList<TermGenerationInput>();
 		for (JsonTermGenerationInput jsonInput : allParameters) {
 			JsonTermTemplate jsonTemplate = jsonInput.getTermTemplate();
-			TermTemplate template = getTermTemplate(ontologyName, jsonTemplate.getName());
+			TermTemplate template = getTermTemplate(jsonTemplate.getName());
 			TermGenerationParameters parameters = jsonTools.createTermGenerationParameters(jsonInput.getTermGenerationParameter());
 			TermGenerationInput input = new TermGenerationInput(template, parameters);
 			result.add(input);
@@ -309,47 +283,16 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 		return result;
 	}
 
-	private Collection<TermTemplate> getTermTemplates(String ontology) {
-		Collection<TermTemplate> templates;
-		synchronized (TEMPLATE_CACHE) {
-			templates = TEMPLATE_CACHE.getTemplates(ontology);
-			if (templates == null) {
-				templates = requestTemplates(ontology);
-				TEMPLATE_CACHE.put(ontology, templates);
+	private TermTemplate getTermTemplate(String name) {
+		List<TermTemplate> templates = termGeneration.getAvailableTemplates();
+		for (TermTemplate termTemplate : templates) {
+			if (name.equals(termTemplate.getName())) {
+				return termTemplate;
 			}
 		}
-		return templates;
+		return null;
 	}
 
-	private TermTemplate getTermTemplate(String ontology, String name) {
-		TermTemplate template;
-		synchronized (TEMPLATE_CACHE) {
-			template = TEMPLATE_CACHE.getTemplate(ontology, name);
-			if (template == null) {
-				Collection<TermTemplate> templates = TEMPLATE_CACHE.getTemplates(ontology);
-				if (templates == null) {
-					templates = requestTemplates(ontology);
-					TEMPLATE_CACHE.put(ontology, templates);
-				}
-				template = TEMPLATE_CACHE.getTemplate(ontology, name);
-			}
-		}
-		return template;
-	}
-
-	/**
-	 * Request the templates for a given ontology.
-	 * 
-	 * @param ontology
-	 * @return templates, never null
-	 */
-	protected Collection<TermTemplate> requestTemplates(String ontology) {
-		List<TermTemplate> templates = ontologyTools.getTermTemplates(ontology);
-		if (templates == null) {
-			templates = Collections.emptyList();
-		}
-		return templates;
-	}
 
 	private static final class JsonTermTempleSorter implements Comparator<JsonTermTemplate> {
 
@@ -405,14 +348,9 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 				jsonField.setFunctionalPrefixesIds(ids.toArray(new String[0]));
 			}
 			jsonField.setPreSelected(field.isPreSelected());
-			if (field.hasCorrespondingOntologies()) {
-				List<Ontology> ontologies = field.getCorrespondingOntologies();
-				String[] ontologyNames = new String[ontologies.size()];
-				for (int i = 0; i < ontologyNames.length; i++) {
-					Ontology ontology = ontologies.get(i);
-					ontologyNames[i] = ontologyTools.getOntologyName(ontology);
-				}
-				jsonField.setOntologies(ontologyNames);
+			if (field.getSubset() != null) {
+				String subSetName = field.getSubset().getName();
+				jsonField.setOntologies(new String[] {subSetName});
 			}
 			return jsonField;
 		}
@@ -444,51 +382,4 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 
 	}
 
-	static class TemplateCache {
-
-		private static volatile TemplateCache instance = null;
-		private final Map<String, Map<String, TermTemplate>> templates;
-
-		private TemplateCache() {
-			templates = new HashMap<String, Map<String, TermTemplate>>();
-		}
-
-		public synchronized static TemplateCache getInstance() {
-			if (instance == null) {
-				instance = new TemplateCache();
-			}
-			return instance;
-		}
-
-		void put(String ontology, Collection<TermTemplate> templates) {
-			Map<String, TermTemplate> namedValues = new HashMap<String, TermTemplate>();
-			for (TermTemplate template : templates) {
-				namedValues.put(template.getName(), template);
-			}
-			if (namedValues.isEmpty()) {
-				namedValues = Collections.emptyMap();
-			}
-			this.templates.put(ontology, namedValues);
-		}
-
-		boolean hasOntology(String ontology) {
-			return templates.containsKey(ontology);
-		}
-
-		Collection<TermTemplate> getTemplates(String ontology) {
-			Map<String, TermTemplate> namedValues = templates.get(ontology);
-			if (namedValues == null) {
-				return null;
-			}
-			return namedValues.values();
-		}
-
-		TermTemplate getTemplate(String ontology, String templateName) {
-			Map<String, TermTemplate> namedValues = templates.get(ontology);
-			if (namedValues == null) {
-				return null;
-			}
-			return namedValues.get(templateName);
-		}
-	}
 }

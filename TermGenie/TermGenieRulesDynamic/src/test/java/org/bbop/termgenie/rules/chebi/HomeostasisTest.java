@@ -16,12 +16,10 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
@@ -60,7 +58,6 @@ public class HomeostasisTest {
 	}
 
 	private static TermGenerationEngine generationEngine;
-	private static ConfiguredOntology go;
 	private static OntologyLoader loader;
 
 	@BeforeClass
@@ -71,7 +68,6 @@ public class HomeostasisTest {
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
-		go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
 	}
 	
 	@Test
@@ -80,7 +76,7 @@ public class HomeostasisTest {
 		List<String> prefixIds = Arrays.asList("GO:0048878","GO:0055082");
 		String id = "CHEBI:4534"; // difenoxin // this is a chemical synthesized compound, probably never used in GO
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(2, list.size());
 		
@@ -105,7 +101,7 @@ public class HomeostasisTest {
 		String id = "CHEBI:15377"; // water
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
@@ -120,7 +116,7 @@ public class HomeostasisTest {
 		String id = "CHEBI:29412"; // oxonium  H3O+
 		
 		List<TermGenerationInput> generationTasks = createTransmembraneTransportTask(termTemplate, id, prefixIds);
-		List<TermGenerationOutput> list = generationEngine.generateTerms(go, generationTasks, false, null);
+		List<TermGenerationOutput> list = generationEngine.generateTerms(generationTasks, false, null);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output1 = list.get(0);
@@ -130,7 +126,7 @@ public class HomeostasisTest {
 	}
 	
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
-		OntologyTaskManager ontologyManager = loader.getOntology(go);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override

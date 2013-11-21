@@ -93,7 +93,7 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 	@Override
 	protected IOCModule getCommitModule() {
 		boolean loadExternal = false;
-		return new CommitSvnAnonymousModule(localSVNFolder, remoteTargetFile, applicationProperties, "HumanPhenotype", null, loadExternal);
+		return new CommitSvnAnonymousModule(localSVNFolder, remoteTargetFile, applicationProperties, null, loadExternal);
 	}
 
 	// configure module to review terms before final commit

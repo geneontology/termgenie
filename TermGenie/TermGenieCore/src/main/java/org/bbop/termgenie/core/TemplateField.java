@@ -3,6 +3,8 @@ package org.bbop.termgenie.core;
 import java.util.Collections;
 import java.util.List;
 
+import org.bbop.termgenie.core.Ontology.OntologySubset;
+
 /**
  * Specifications for a field in an ontology term generation template.
  */
@@ -18,7 +20,7 @@ public class TemplateField {
 	private final List<String> functionalPrefixesIds;
 	private final boolean preSelected;
 	
-	private final List<Ontology> correspondingOntologies;
+	private final OntologySubset subset;
 	private final String remoteResource;
 
 	/**
@@ -98,7 +100,7 @@ public class TemplateField {
 	 * @param functionalPrefixes
 	 * @param functionalPrefixesIds
 	 * @param preSelected
-	 * @param correspondingOntologies
+	 * @param subset
 	 * @param remoteResource 
 	 */
 	public TemplateField(String name,
@@ -109,7 +111,7 @@ public class TemplateField {
 			List<String> functionalPrefixes,
 			List<String> functionalPrefixesIds,
 			boolean preSelected,
-			List<Ontology> correspondingOntologies,
+			OntologySubset subset,
 			String remoteResource)
 	{
 		super();
@@ -131,7 +133,7 @@ public class TemplateField {
 			this.functionalPrefixesIds = Collections.unmodifiableList(functionalPrefixesIds);
 		}
 		this.preSelected = preSelected;
-		this.correspondingOntologies = correspondingOntologies;
+		this.subset = subset;
 		this.remoteResource = remoteResource;
 	}
 
@@ -192,12 +194,8 @@ public class TemplateField {
 		return preSelected;
 	}
 
-	public List<Ontology> getCorrespondingOntologies() {
-		return correspondingOntologies;
-	}
-
-	public boolean hasCorrespondingOntologies() {
-		return correspondingOntologies != null && !correspondingOntologies.isEmpty();
+	public OntologySubset getSubset() {
+		return subset;
 	}
 
 	/**
@@ -231,10 +229,10 @@ public class TemplateField {
 			builder.append("functionalPrefixes=");
 			builder.append(functionalPrefixes);
 		}
-		if (correspondingOntologies != null) {
+		if (subset != null) {
 			builder.append(", ");
-			builder.append("correspondingOntologies=");
-			builder.append(correspondingOntologies);
+			builder.append("subset=");
+			builder.append(subset.getName());
 		}
 		if (remoteResource != null) {
 			builder.append(", ");

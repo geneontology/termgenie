@@ -9,13 +9,12 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologySubset;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
-import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,14 +31,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule(),
-				new IOCModule(null) {
-
-					@Override
-					protected void configure() {
-						bind(TemplateOntologyHelper.class, TemplateOntologyHelperImpl.class);
-					}
-				});
+		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule("ontology-configuration_simple.xml"));
 		instance = new XMLTermTemplateIO(injector.getInstance(OntologyConfiguration.class));
 	}
 
@@ -72,9 +64,6 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 			assertEquals(t1.getOboNamespace(), t2.getOboNamespace());
 			assertArrayEquals(t1.getRuleFiles().toArray(), t2.getRuleFiles().toArray());
 			assertEquals(t1.getMethodName(), t2.getMethodName());
-			assertOntology(t1.getCorrespondingOntology(), t2.getCorrespondingOntology());
-			assertOntologies(t1.getExternal(), t2.getExternal());
-			assertList(t1.getRequires(), t2.getRequires());
 			assertFields(t1.getFields(), t2.getFields());
 		}
 	}
@@ -96,7 +85,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 		assertEquals(field1.getRemoteResource(), field2.getRemoteResource());
 		assertEquals(field1.isRequired(), field2.isRequired());
 		assertEquals(field1.getCardinality(), field2.getCardinality());
-		assertOntologies(field1.getCorrespondingOntologies(), field2.getCorrespondingOntologies());
+		assertSubsets(field1.getSubset(), field2.getSubset());
 		assertList(field1.getFunctionalPrefixes(), field2.getFunctionalPrefixes());
 		assertList(field1.getFunctionalPrefixesIds(), field2.getFunctionalPrefixesIds());
 		assertEquals(field1.isPreSelected(), field2.isPreSelected());
@@ -110,21 +99,11 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 		}
 	}
 
-	private void assertOntologies(List<Ontology> l1, List<Ontology> l2) {
-		if (l1 != l2) {
-			assertNotNull(l1);
-			assertNotNull(l2);
-			assertEquals(l1.size(), l2.size());
-			for (int i = 0; i < l1.size(); i++) {
-				assertOntology(l1.get(i), l2.get(i));
-			}
-		}
-	}
-
-	private void assertOntology(Ontology o1, Ontology o2) {
-		if (o1 != o2) {
-			assertEquals(o1.getUniqueName(), o2.getUniqueName());
-			assertEquals(o1.getBranch(), o2.getBranch());
+	private void assertSubsets(OntologySubset s1, OntologySubset s2) {
+		if (s1 != s2) {
+			assertNotNull(s1);
+			assertNotNull(s2);
+			assertEquals(s1.getName(), s2.getName());
 		}
 	}
 

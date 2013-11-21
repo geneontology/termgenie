@@ -9,7 +9,6 @@
 &lt;br/&gt;[results in] : regulation of signal transduction   [** MUST BE A REGULATION TERM **]
 &lt;br/&gt;[regulator] : receptor internalization 
 		</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="process" required="true" label="results in">

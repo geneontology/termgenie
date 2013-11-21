@@ -105,7 +105,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 	private String ontologyId = null;
 
 	public OntologyTaskManager(Ontology ontology) throws InvalidManagedInstanceException {
-		super("OntologyTaskManager-" + ontology.getUniqueName());
+		super("OntologyTaskManager-" + ontology.getName());
 		this.ontology = ontology;
 		runManagedTask(new OntologyTask() {
 

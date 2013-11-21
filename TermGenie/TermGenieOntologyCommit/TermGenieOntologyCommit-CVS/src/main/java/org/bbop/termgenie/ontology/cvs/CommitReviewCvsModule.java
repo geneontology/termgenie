@@ -16,7 +16,6 @@ import org.obolibrary.oboformat.model.OBODoc;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 public class CommitReviewCvsModule extends AbstractCommitModule {
 
@@ -27,10 +26,9 @@ public class CommitReviewCvsModule extends AbstractCommitModule {
 	 * @param cvsOntologyFileName
 	 * @param cvsRoot
 	 * @param applicationProperties 
-	 * @param commitTargetOntologyName
 	 */
-	public CommitReviewCvsModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties, String commitTargetOntologyName) {
-		super(applicationProperties, commitTargetOntologyName);
+	public CommitReviewCvsModule(String cvsOntologyFileName, String cvsRoot, Properties applicationProperties) {
+		super(applicationProperties);
 		this.cvsOntologyFileName = cvsOntologyFileName;
 		this.cvsRoot = cvsRoot;
 	}
@@ -56,7 +54,7 @@ public class CommitReviewCvsModule extends AbstractCommitModule {
 	
 	@Singleton
 	@Provides
-	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
+	protected OntologyCommitReviewPipelineStages provideReviewStages(OntologyTaskManager source,
 			CommitHistoryStore store,
 			ReviewMailHandler handler,
 			OboScmHelper helper) {

@@ -6,7 +6,6 @@
 			regulation, negative regulations and positive regulation (for
 			biological processes). Names, synonyms and definitions are all
 			generated automatically</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -37,7 +36,6 @@
 			regulation, negative regulations and positive regulation (for
 			molecular functions). Names, synonyms and definitions are all
 			generated automatically</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -70,7 +68,6 @@
 		will generate the term '&lt;b&gt;G1 phase&lt;/b&gt; involved in &lt;b&gt;Meiosis'&lt;/b&gt;. 
 		 &lt;br/&gt; The new term is defined as 'is_a' &lt;b&gt;G1 phase&lt;/b&gt;,  
 		 'part_of' &lt;b&gt;Meiosis&lt;/b&gt;, and as the intersection of the input terms.</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="part" required="true">
@@ -99,7 +96,6 @@
 	<template name="involved_in_mf_bp">
 		<description>molecular function involved in other biological processes</description>
 		<hint>[molecular function] involved in [biological process]</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="part" required="true" label="molecular function">
@@ -128,7 +124,6 @@
 	</template>
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="process" required="true">
@@ -162,7 +157,6 @@
 &lt;br/&gt;[results in] : regulation of signal transduction   [** MUST BE A REGULATION TERM **]
 &lt;br/&gt;[regulator] : receptor internalization 
 		</hint>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="process" required="true" label="results in">
@@ -192,7 +186,6 @@
 	<template name="part_of_cell_component">
 		<description>cell components part of other cell components
 		</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>cellular_component</obonamespace>
 		<fields>
 			<field name="part" required="true">
@@ -221,10 +214,6 @@
 	<!-- 
 	<template name="protein_binding">
 		<description>binding to a protein</description>
-		<ontology name="GeneOntology" />
-		<external>
-			<ontology name="ProteinOntology"/>
-		</external>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -247,7 +236,6 @@
 	-->
 	<template name="chemical_transport">
 		<description>transport of a chemical entity (biological process)</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -271,7 +259,6 @@
 	</template>
 	<template name="chemical_transporter_activity">
 		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -295,7 +282,6 @@
 	</template>
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -321,7 +307,6 @@
 		<description>Select all three subtemplates to generate
 terms for the "metabolic triad". Names, synonyms and definitions are all
 generated automatically</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -350,7 +335,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
 		<description>Create transmembrane transport terms (biological process) with chemical entities.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="subject" required="true">
@@ -376,7 +360,6 @@ generated automatically</description>
 		<description>Create transmembrane transporter activity terms (molecular function) with chemical entities.&lt;br/&gt;
 		Select &lt;b&gt;at least one&lt;/b&gt; type of genus. &lt;br/&gt;
 		If in doubt, use the first one: transmembrane transporter activity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>molecular_function</obonamespace>
 		<fields>
 			<field name="subject" required="true">
@@ -406,7 +389,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_response_to">
 		<description>Create response to and cellular response to a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -433,7 +415,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_homeostasis">
 		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -460,7 +441,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_import">
 		<description>import of a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -484,7 +464,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_export">
 		<description>export of a chemical entity</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -508,7 +487,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_import_into">
 		<description>transport of a chemical into a cellular component</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="subject" required="true">
@@ -538,7 +516,6 @@ generated automatically</description>
 	</template>
 	<template name="cc_transport_from_to">
 		<description>transport or vesicle-mediated transport from cellular component to cellular component</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="from" required="true">
@@ -571,7 +548,6 @@ generated automatically</description>
 	</template>
 	<template name="cc_transport">
 		<description>transport of a cellular component</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="component" required="true">
@@ -599,7 +575,6 @@ generated automatically</description>
 	</template>
 	<template name="chemical_transport_from_to">
 		<description>transport of a chemical entity from and/or to a cellular component</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="chemical" required="true">
@@ -638,7 +613,6 @@ generated automatically</description>
 	</template>
 	<template name="cc_assembly_disassembly">
 		<description>assembly or disassembly of a cellular component</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="component" required="true">
@@ -667,7 +641,6 @@ generated automatically</description>
 	</template>
 	<template name="plant_development">
 		<description>Development of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -691,7 +664,6 @@ generated automatically</description>
 	</template>
 	<template name="plant_formation">
 		<description>Formation of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -715,7 +687,6 @@ generated automatically</description>
 	</template>
 	<template name="plant_maturation">
 		<description>Maturation of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -739,7 +710,6 @@ generated automatically</description>
 	</template>
 	<template name="plant_morphogenesis">
 		<description>Morphogenesis of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -763,7 +733,6 @@ generated automatically</description>
 	</template>
 	<template name="plant_structural_organization">
 		<description>Structural organization of a plant structure.</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -787,7 +756,6 @@ generated automatically</description>
 	</template>
 	<template name="cell_apoptosis" displayname="cell_apoptotic_process">
 		<description>Apoptotic process for a cell type</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="celltype" required="true">
@@ -811,7 +779,6 @@ generated automatically</description>
 	</template>
 	<template name="protein_localization_to">
 		<description>protein localization and establishment of protein localization to a cellular component</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="component" required="true">
@@ -839,7 +806,6 @@ generated automatically</description>
 	</template>
 	<template name="protein_complex_by_activity">
 		<description>Define a protein complex by molecular function</description>
-		<ontology name="GeneOntology" />
 		<obonamespace>cellular_component</obonamespace>
 		<fields>
 			<field name="activity" required="true">
@@ -868,11 +834,6 @@ generated automatically</description>
 	<!--
 	<template name="biosynthesis_from">
 		<description>biosynthetic process</description>
-		<ontology name="GeneOntology"></ontology>
-		<external>
-			<ontology name="GOCHE"></ontology>
-			<ontology name="CHEBI"></ontology>
-		</external>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -887,10 +848,6 @@ generated automatically</description>
  <!-- 
 	<template name="metazoan_development">
 		<description>development of an animal anatomical structure</description>
-		<ontology name="GeneOntology" />
-		<external>
-			<ontology name="Uberon"/>
-		</external>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -912,10 +869,6 @@ generated automatically</description>
 	<!--
 	<template name="metazoan_morphogenesis">
 		<description>morphogenesis of an animal anatomical structure</description>
-		<ontology name="GeneOntology" />
-		<external>
-			<ontology name="Uberon"/>
-		</external>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
@@ -937,10 +890,6 @@ generated automatically</description>
 	<!-- 
 	<template name="structural_protein_complex">
 		<description>protein complex defined structurally</description>
-		<ontology name="GeneOntology" />
-		<external>
-			<ontology name="ProteinOntology"/>
-		</external>
 		<obonamespace>cellular_component</obonamespace>
 		<fields>
 			<field name="unit" required="true">

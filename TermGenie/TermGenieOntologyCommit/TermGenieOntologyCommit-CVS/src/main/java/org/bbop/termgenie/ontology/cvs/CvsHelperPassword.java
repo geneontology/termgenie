@@ -3,9 +3,8 @@ package org.bbop.termgenie.ontology.cvs;
 import java.io.File;
 
 import org.bbop.termgenie.cvs.CvsTools;
-import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCleaner;
 import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
+import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 
@@ -21,12 +20,11 @@ public final class CvsHelperPassword extends OboScmHelper {
 
 	@Inject
 	CvsHelperPassword(IRIMapper iriMapper,
-			OntologyCleaner cleaner,
 			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("CommitAdapterCVSPassword") String cvsPassword,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cleaner, cvsOntologyFileName, null);
+		super(iriMapper, cvsOntologyFileName, null);
 		this.cvsPassword = cvsPassword;
 		this.cvsRoot = cvsRoot;
 	}

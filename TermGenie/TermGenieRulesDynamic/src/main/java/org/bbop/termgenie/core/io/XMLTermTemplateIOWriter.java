@@ -14,7 +14,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologySubset;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -51,10 +51,7 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 				}
 				writeTag(TAG_description, termTemplate.getDescription(), writer);
 				writeTag(TAG_hint, termTemplate.getHint(), writer);
-				writeOntology(termTemplate.getCorrespondingOntology(), writer);
-				writeExternal(termTemplate.getExternal(), writer);
 				writeTag(TAG_obonamespace, termTemplate.getOboNamespace(), writer);
-				writeRequires(termTemplate.getRequires(), writer);
 				writeFields(termTemplate.getFields(), writer);
 				writeRules(termTemplate.getRuleFiles(), termTemplate.getMethodName(), writer);
 				writeCategories(termTemplate.getCategories(), writer);
@@ -107,11 +104,9 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 			if (templateField.getRemoteResource() != null) {
 				writer.writeAttribute(ATTR_remoteResource, templateField.getRemoteResource());
 			}
-			List<Ontology> ontologies = templateField.getCorrespondingOntologies();
-			if (ontologies != null) {
-				for (Ontology ontology : ontologies) {
-					writeOntology(ontology, writer);
-				}
+			OntologySubset subset = templateField.getSubset();
+			if (subset != null) {
+				writeSubset(subset, writer);
 			}
 			Cardinality cardinality = templateField.getCardinality();
 			if (cardinality.getMinimum() != 1 || cardinality.getMaximum() != 1) {
@@ -146,33 +141,10 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 		writer.writeEndElement();
 	}
 
-	private void writeRequires(List<String> requires, XMLStreamWriter writer)
-			throws XMLStreamException
-	{
-		if (requires != null) {
-			for (String require : requires) {
-				writeTag(TAG_requires, require, writer);
-			}
-		}
-	}
-
-	private void writeExternal(List<Ontology> external, XMLStreamWriter writer)
-			throws XMLStreamException
-	{
-		if (external != null) {
-			writer.writeStartElement(TAG_external);
-			for (Ontology ontology : external) {
-				writeOntology(ontology, writer);
-			}
-			writer.writeEndElement();
-		}
-	}
-
-	private void writeOntology(Ontology ontology, XMLStreamWriter writer) throws XMLStreamException
+	private void writeSubset(OntologySubset subset, XMLStreamWriter writer) throws XMLStreamException
 	{
 		writer.writeStartElement(TAG_ontology);
-		writer.writeAttribute(ATTR_name, ontology.getUniqueName());
-		writeTag(TAG_branch, ontology.getBranch(), writer);
+		writeTag(TAG_branch, subset.getName(), writer);
 		writer.writeEndElement();
 	}
 

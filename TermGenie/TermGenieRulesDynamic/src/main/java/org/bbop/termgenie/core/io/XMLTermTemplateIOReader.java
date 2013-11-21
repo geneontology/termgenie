@@ -3,7 +3,6 @@ package org.bbop.termgenie.core.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,18 +15,18 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologySubset;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 
 /**
  * Parse term templates from an XML stream.
  */
 class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 
-	private final Map<String, ConfiguredOntology> configurations;
+	private final Ontology configurations;
 	private final XMLInputFactory factory;
 
 	/**
@@ -35,7 +34,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 	 */
 	XMLTermTemplateIOReader(OntologyConfiguration ontologyConfiguration) {
 		super();
-		configurations = ontologyConfiguration.getOntologyConfigurations();
+		configurations = ontologyConfiguration.getOntologyConfiguration();
 		factory = XMLInputFactory.newInstance();
 	}
 
@@ -79,13 +78,10 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 
 	private static class TemplateParseData {
 
-		Ontology correspondingOntology = null;
 		String name = null;
 		String displayName = null;
 		String description = null;
 		List<TemplateField> fields = null;
-		List<Ontology> external = null;
-		List<String> requires = null;
 		String obo_namespace = null;
 		List<String> ruleFiles = null;
 		String methodName = null;
@@ -127,20 +123,8 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					else if (TAG_ruleFiles.equals(element)) {
 						current.ruleFiles = parseRuleFiles(parser, current);
 					}
-					else if (TAG_ontology.equals(element)) {
-						if (current.correspondingOntology != null) {
-							error("Multiple " + TAG_ontology + " tags found", parser);
-						}
-						current.correspondingOntology = parseOntology(parser);
-					}
-					else if (TAG_requires.equals(element)) {
-						current.requires = parseRequires(parser, current);
-					}
 					else if (TAG_fields.equals(element)) {
 						current.fields = parseFields(parser, current);
-					}
-					else if (TAG_external.equals(element)) {
-						current.external = parseExternal(parser, current);
 					}
 					else if (TAG_categories.equals(element)) {
 						current.categories = parseCategories(parser, current);
@@ -153,22 +137,30 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		}
 	}
 
-	private Ontology parseOntology(XMLStreamReader parser) throws XMLStreamException {
-		String name = getAttribute(parser, ATTR_name);
+	private OntologySubset parseSubset(XMLStreamReader parser) throws XMLStreamException {
 		String branch = null;
 		while (true) {
 			switch (parser.next()) {
 
 				case XMLStreamConstants.END_ELEMENT:
 					if (TAG_ontology.equals(parser.getLocalName())) {
-						Ontology ontology;
 						if (branch != null) {
-							ontology = configurations.get(branch);
+							OntologySubset result = null;
+							List<OntologySubset> subsets = configurations.getSubsets();
+							if (subsets != null) {
+								for (OntologySubset subset : subsets) {
+									if (branch.equals(subset.getName())) {
+										result = subset;
+										break;
+									}
+								}
+							}
+							if (result == null) {
+								error("Could not find branch: "+branch, parser);
+							}
+							return result;
 						}
-						else {
-							ontology = configurations.get(name);
-						}
-						return ontology;
+						error("Missing branch tag.", parser);
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:
@@ -181,25 +173,6 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					}
 					break;
 			}
-		}
-	}
-
-	private List<String> parseRequires(XMLStreamReader parser, TemplateParseData current)
-			throws XMLStreamException
-	{
-		String text = parseElementText(parser, TAG_requires);
-		if (current.requires == null) {
-			return Collections.singletonList(text);
-		}
-		else if (current.requires.size() == 1) {
-			List<String> result = new ArrayList<String>(2);
-			result.add(current.requires.get(0));
-			result.add(text);
-			return result;
-		}
-		else {
-			current.requires.add(text);
-			return current.requires;
 		}
 	}
 
@@ -316,7 +289,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		Cardinality cardinality = null;
 		List<String> functionalPrefixes = null;
 		List<String> functionalPrefixesIds = null;
-		List<Ontology> correspondingOntologies = null;
+		OntologySubset subset = null;
 		String preSelectedString = null;
 
 		while (true) {
@@ -328,23 +301,16 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 							cardinality = TemplateField.SINGLE_FIELD_CARDINALITY;
 						}
 						boolean preSelected = preSelectedString != null ? Boolean.parseBoolean(preSelectedString) : true;
-						return new TemplateField(name, label, hint, required, cardinality, functionalPrefixes, functionalPrefixesIds, preSelected, correspondingOntologies, remoteResource);
+						return new TemplateField(name, label, hint, required, cardinality, functionalPrefixes, functionalPrefixesIds, preSelected, subset, remoteResource);
 					}
 					break;
 				case XMLStreamConstants.START_ELEMENT:
 					String element = parser.getLocalName();
 					if (TAG_ontology.equals(element)) {
-						Ontology ontology = parseOntology(parser);
-						if (correspondingOntologies == null) {
-							correspondingOntologies = Collections.singletonList(ontology);
+						if (subset != null) {
+							error("Multiple " + TAG_ontology + " tags found", parser);
 						}
-						else if (correspondingOntologies.size() == 1) {
-							correspondingOntologies = new ArrayList<Ontology>(correspondingOntologies);
-							correspondingOntologies.add(ontology);
-						}
-						else {
-							correspondingOntologies.add(ontology);
-						}
+						subset = parseSubset(parser);
 					}
 					else if (TAG_cardinality.equals(element)) {
 						if (cardinality != null) {
@@ -383,35 +349,6 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		}
 	}
 
-	private List<Ontology> parseExternal(XMLStreamReader parser, TemplateParseData current)
-			throws XMLStreamException
-	{
-		if (current.external != null) {
-			error("Multiple " + TAG_external + " tags found", parser);
-		}
-		current.external = new ArrayList<Ontology>(1);
-		while (true) {
-			switch (parser.next()) {
-
-				case XMLStreamConstants.END_ELEMENT:
-					if (TAG_external.equals(parser.getLocalName())) {
-						return current.external;
-					}
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					String element = parser.getLocalName();
-					if (TAG_ontology.equals(element)) {
-						Ontology ontology = parseOntology(parser);
-						current.external.add(ontology);
-					}
-					else {
-						error("Unexpected tag: " + element, parser);
-					}
-					break;
-			}
-		}
-	}
-
 	static String getTextTag(XMLStreamReader parser, String tag, String value)
 			throws XMLStreamException
 	{
@@ -423,9 +360,6 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 	}
 
 	private void add(List<TermTemplate> result, TemplateParseData current, XMLStreamReader parser) {
-		if (current.correspondingOntology == null) {
-			error("Missing " + TAG_ontology + " tag", parser);
-		}
 		if (current.description == null) {
 			error("Missing " + TAG_description + " tag", parser);
 		}
@@ -438,7 +372,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		if (current.ruleFiles == null || current.ruleFiles.isEmpty()) {
 			error("Missing " + TAG_ruleFiles + " tag", parser);
 		}
-		TermTemplate template = new TermTemplate(current.correspondingOntology, current.name, current.displayName, current.description, current.fields, current.external, current.requires, current.obo_namespace, current.ruleFiles, current.methodName, current.hint, current.categories);
+		TermTemplate template = new TermTemplate(current.name, current.displayName, current.description, current.fields, current.obo_namespace, current.ruleFiles, current.methodName, current.hint, current.categories);
 		result.add(template);
 	}
 

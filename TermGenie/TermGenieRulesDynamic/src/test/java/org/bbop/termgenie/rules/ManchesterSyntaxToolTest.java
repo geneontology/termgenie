@@ -8,8 +8,7 @@ import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,13 +22,11 @@ import com.google.inject.Injector;
 
 public class ManchesterSyntaxToolTest {
 
-	private static OntologyConfiguration configuration;
 	private static OntologyLoader loader;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Injector injector = TermGenieGuice.createInjector(createOntologyModule());
-		configuration = injector.getInstance(OntologyConfiguration.class);
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 	
@@ -46,8 +43,7 @@ public class ManchesterSyntaxToolTest {
 
 	@Test
 	public void testManchesterSyntaxTool() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
@@ -67,8 +63,7 @@ public class ManchesterSyntaxToolTest {
 	
 	@Test
 	public void testManchesterSyntaxTool2() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override

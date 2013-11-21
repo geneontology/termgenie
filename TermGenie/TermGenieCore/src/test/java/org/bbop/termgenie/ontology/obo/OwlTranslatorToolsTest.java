@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
-import org.bbop.termgenie.ontology.impl.DefaultOntologyModuleTest.TestDefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
+import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,28 +31,17 @@ import com.google.inject.Injector;
 
 public class OwlTranslatorToolsTest {
 	
-	private static OntologyConfiguration configuration;
 	private static OntologyLoader loader;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule() {
-
-			@Override
-			protected void bindOntologyConfiguration() {
-				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple_go.xml");
-			}
-		});
-
-		configuration = injector.getInstance(OntologyConfiguration.class);
+		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule("ontology-configuration_simple_go.xml"));
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 
 	@Test
 	public void testExtractRelations() throws Exception {
-		ConfiguredOntology ontology = configuration.getOntologyConfigurations().get("GeneOntology");
-		OntologyTaskManager ontologyManager = loader.getOntology(ontology);
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask() {
 
 			@Override

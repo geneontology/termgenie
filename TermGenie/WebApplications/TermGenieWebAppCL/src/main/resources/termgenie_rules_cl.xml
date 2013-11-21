@@ -4,10 +4,6 @@
 
 	<template name="metazoan_location_specific_cell">
 		<description>A cell type differentiated by its anatomical location (animals)</description>
-		<ontology name="CL"/>
-		<external>
-			<ontology name="Uberon"/>
-		</external>
 		<obonamespace>cell</obonamespace>
 		<fields>
 			<field name="cell" required="true">
@@ -30,11 +26,6 @@
 
 	<template name="cell_by_surface_marker">
 		<description>A cell type differentiated by proteins or complexes on the plasma membrane</description>
-		<ontology name="CL"/>
-		<external>
-			<ontology name="ProteinOntology"/>
-			<ontology name="GeneOntology"/>
-		</external>
 		<obonamespace>cell</obonamespace>
 		<fields>
 			<field name="cell" required="true">

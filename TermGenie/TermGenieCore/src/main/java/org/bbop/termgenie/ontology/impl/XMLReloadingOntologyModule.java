@@ -9,7 +9,6 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.GlobalConfigModule;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.ResourceLoader;
 
@@ -24,7 +23,6 @@ import com.google.inject.name.Names;
 public class XMLReloadingOntologyModule extends ReloadingOntologyModule {
 
 	private static final String xmlOntologyConfigurationResourceName = "XMLOntologyConfigurationResource";
-	private final String configFile;
 	
 	/**
 	 * @param configFile
@@ -32,19 +30,13 @@ public class XMLReloadingOntologyModule extends ReloadingOntologyModule {
 	 * @param applicationProperties 
 	 */
 	public XMLReloadingOntologyModule(String configFile, List<String> ignoreMappings, Properties applicationProperties) {
-		super(ignoreMappings, applicationProperties);
-		this.configFile = configFile;
+		super(configFile, ignoreMappings, applicationProperties);
 	}
 
 	public XMLReloadingOntologyModule(List<String> ignoreMappings, Properties applicationProperties) {
 		this(XMLOntologyConfiguration.SETTINGS_FILE, ignoreMappings, applicationProperties);
 	}
 
-	@Override
-	protected void bindOntologyConfiguration() {
-		bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-		bind(xmlOntologyConfigurationResourceName, configFile);
-	}
 
 	@Override
 	public List<Pair<String, String>> getAdditionalData(Injector injector) {

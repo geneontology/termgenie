@@ -8,7 +8,7 @@ import org.bbop.termgenie.ontology.AbstractCommitModule;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.obo.DefaultOboTermFilter;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
@@ -18,7 +18,6 @@ import org.obolibrary.oboformat.model.OBODoc;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 
@@ -31,18 +30,16 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	 * @param svnRepository
 	 * @param svnOntologyFileName
 	 * @param applicationProperties
-	 * @param commitTargetOntologyName
 	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 */
 	protected AbstractCommitSvnModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
-			String commitTargetOntologyName,
 			List<String> additionalOntologyFileNames,
 			boolean svnLoadExternals)
 	{
-		super(applicationProperties, commitTargetOntologyName);
+		super(applicationProperties);
 		this.svnRepository = svnRepository;
 		this.svnOntologyFileName = svnOntologyFileName;
 		this.additionalOntologyFileNames = additionalOntologyFileNames;
@@ -62,13 +59,13 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 
 	@Singleton
 	@Provides
-	protected OntologyCommitReviewPipelineStages provideReviewStages(@Named("CommitTargetOntology") OntologyTaskManager source,
+	protected OntologyCommitReviewPipelineStages provideReviewStages(OntologyLoader loader,
 			CommitHistoryStore store,
 			TermFilter<OBODoc> filter,
 			ReviewMailHandler handler,
 			OboScmHelper helper)
 	{
-		return new OboCommitReviewPipeline(source, store, filter, handler, helper);
+		return new OboCommitReviewPipeline(loader.getOntologyManager(), store, filter, handler, helper);
 	}
 
 	@Singleton

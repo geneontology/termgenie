@@ -14,12 +14,10 @@ import org.bbop.termgenie.core.rules.ReasonerFactoryImpl;
 import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
 import org.bbop.termgenie.freeform.FreeFormTermValidatorImpl.ValidationTask;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.ConfiguredOntology;
 import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.tools.Pair;
@@ -70,9 +68,7 @@ public class FreeFormTermValidatorImplTest {
 		Injector injector = TermGenieGuice.createInjector(new FreeFormTestOntologyModule());
 
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
-		ConfiguredOntology go = injector.getInstance(OntologyConfiguration.class).getOntologyConfigurations().get("GeneOntology");
-		
-		OntologyTaskManager goManager = loader.getOntology(go);
+		OntologyTaskManager goManager = loader.getOntologyManager();
 		
 		goManager.runManagedTask(new OntologyTask(){
 

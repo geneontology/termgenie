@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface OntologyTermSuggestor {
 
-	public List<TermSuggestion> suggestTerms(String query, Ontology ontology, int maxCount);
+	public List<TermSuggestion> suggestTerms(String query, String subset, int maxCount);
 }

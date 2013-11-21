@@ -3,16 +3,14 @@ package org.bbop.termgenie.services.review;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager;
-import org.bbop.termgenie.ontology.MultiOntologyTaskManager.MultiOntologyTask;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -90,13 +88,13 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		return result;
 	}
 
-	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, Ontology ontology, MultiOntologyTaskManager manager) throws InvalidManagedInstanceException {
+	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, OntologyTaskManager manager) throws InvalidManagedInstanceException {
 		GenerateSuccessTask task = new GenerateSuccessTask(ids, commits);
-		manager.runManagedTask(task, ontology);
+		manager.runManagedTask(task);
 		return task.result;
 	}
 	
-	private static class GenerateSuccessTask extends MultiOntologyTask {
+	private static class GenerateSuccessTask extends OntologyTask {
 		
 		private final List<Integer> ids;
 		private final List<CommitResult> commits;
@@ -115,7 +113,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		
 
 		@Override
-		public List<Modified> run(List<OWLGraphWrapper> requested) {
+		public void runCatching(OWLGraphWrapper graph) {
 			result = new JsonCommitReviewCommitResult();
 			result.setSuccess(true);
 			List<JsonCommitDetails> details = new ArrayList<JsonCommitDetails>(commits.size());
@@ -125,12 +123,11 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 				json.setSuccess(commitResult.isSuccess());
 				json.setMessage(commitResult.getMessage());
 				json.setHistoryId(ids.get(i));
-				json.setTerms(convert(commitResult.getTerms(), requested.get(0)));
+				json.setTerms(convert(commitResult.getTerms(),graph));
 				json.setDiff(commitResult.getDiff());
 				details.add(json);
 			}
 			result.setDetails(details);
-			return null;
 		}
 
 	}

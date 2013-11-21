@@ -70,7 +70,7 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return new CommitSvnAnonymousModule(localSVNFolder, "extensions/bio-attributes.obo", applicationProperties, "Batto", Collections.<String>emptyList(), loadExternal);
+		return new CommitSvnAnonymousModule(localSVNFolder, "extensions/bio-attributes.obo", applicationProperties, Collections.<String>emptyList(), loadExternal);
 	}
 	
 	@Override

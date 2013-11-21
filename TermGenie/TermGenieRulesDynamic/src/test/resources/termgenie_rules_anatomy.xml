@@ -5,11 +5,12 @@
 		<description>Select all three subtemplates to generate
 terms for the "metabolic triad". Names, synonyms and definitions are all
 generated automatically</description>
-		<ontology name="GeneOntology"></ontology>
 		<obonamespace>biological_process</obonamespace>
 		<fields>
 			<field name="target" required="true">
-				<ontology name="UberonDevelopment"></ontology>
+				<ontology>
+					<branch>UberonDevelopment</branch>
+				</ontology>
 			</field>
 		</fields>
 		<ruleFiles>

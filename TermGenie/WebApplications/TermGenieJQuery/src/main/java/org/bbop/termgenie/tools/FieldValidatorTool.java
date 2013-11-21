@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.core.Ontology.OntologySubset;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TemplateField.Cardinality;
 import org.bbop.termgenie.core.TermTemplate;
@@ -100,8 +100,8 @@ public class FieldValidatorTool {
 	}
 
 	private static boolean hasOntologies(TemplateField field) {
-		List<Ontology> ontologies = field.getCorrespondingOntologies();
-		return ontologies != null && !ontologies.isEmpty();
+		OntologySubset ontologies = field.getSubset();
+		return ontologies != null;
 	}
 
 	private static boolean hasPrefixes(TemplateField field) {

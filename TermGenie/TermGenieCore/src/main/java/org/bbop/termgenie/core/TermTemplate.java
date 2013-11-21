@@ -8,40 +8,31 @@ import java.util.List;
  */
 public class TermTemplate {
 
-	private final Ontology correspondingOntology;
 	private final String name;
 	private final String displayName;
 	private final String description;
 	private final List<String> categories;
 	private final List<TemplateField> fields;
-	private final List<Ontology> external;
-	private final List<String> requires;
 	private final String obo_namespace;
 	private final List<String> ruleFiles;
 	private final String methodName;
 	private final String hint;
 
 	/**
-	 * @param correspondingOntology
 	 * @param name
 	 * @param displayName
 	 * @param description
 	 * @param fields
-	 * @param external
-	 * @param requires
 	 * @param obo_namespace
 	 * @param ruleFiles
 	 * @param methodName 
 	 * @param hint
 	 * @param categories
 	 */
-	public TermTemplate(Ontology correspondingOntology,
-			String name,
+	public TermTemplate(String name,
 			String displayName,
 			String description,
 			List<TemplateField> fields,
-			List<Ontology> external,
-			List<String> requires,
 			String obo_namespace,
 			List<String> ruleFiles,
 			String methodName,
@@ -49,7 +40,6 @@ public class TermTemplate {
 			List<String> categories)
 	{
 		super();
-		this.correspondingOntology = correspondingOntology;
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("The name, must never be empty");
 		}
@@ -59,18 +49,12 @@ public class TermTemplate {
 			throw new IllegalArgumentException("The field list, must never be empty");
 		}
 		this.fields = Collections.unmodifiableList(fields);
-		this.external = external != null ? Collections.unmodifiableList(external) : null;
-		this.requires = requires != null ? Collections.unmodifiableList(requires) : null;
 		this.obo_namespace = obo_namespace;
 		this.ruleFiles = ruleFiles;
 		this.methodName = methodName;
 		this.description = description;
 		this.hint = hint;
 		this.categories = categories;
-	}
-
-	public Ontology getCorrespondingOntology() {
-		return correspondingOntology;
 	}
 
 	/**
@@ -85,20 +69,6 @@ public class TermTemplate {
 	 */
 	public List<TemplateField> getFields() {
 		return fields;
-	}
-
-	/**
-	 * @return the external
-	 */
-	public List<Ontology> getExternal() {
-		return external;
-	}
-
-	/**
-	 * @return the requires
-	 */
-	public List<String> getRequires() {
-		return requires;
 	}
 
 	/**
@@ -168,10 +138,6 @@ public class TermTemplate {
 		return categories;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -184,11 +150,6 @@ public class TermTemplate {
 		if (name != null) {
 			builder.append("displayName=");
 			builder.append(displayName);
-			builder.append(", ");
-		}
-		if (correspondingOntology != null) {
-			builder.append("correspondingOntology=");
-			builder.append(correspondingOntology);
 			builder.append(", ");
 		}
 		if (description != null) {
