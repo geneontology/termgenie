@@ -4,7 +4,6 @@
 
 	<template name="metazoan_location_specific_anatomical_structure">
 		<description>location-specific anatomical structure</description>
-		<ontology name="Uberon"/>
 		<obonamespace>uberon</obonamespace>
 		<fields>
 			<field name="part" required="true">

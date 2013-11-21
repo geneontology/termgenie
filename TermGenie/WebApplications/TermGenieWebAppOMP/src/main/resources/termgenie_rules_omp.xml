@@ -4,11 +4,6 @@
 
 	<template name="omp_entity_quality">
 		<description>basic EQ template</description>
-		<ontology name="OMP"/>
-		<external>
-			<ontology name="GeneOntology"/>
-			<ontology name="PATO"/>
-		</external>
 		<obonamespace>omp</obonamespace>
 		<fields>
 			<field name="entity" required="true">
