@@ -124,6 +124,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
         specialPatterns.put("chemical_import_into", 1); // relations and chebi
         specialPatterns.put("cc_assembly_disassembly", 1); // relations
         specialPatterns.put("protein_complex_by_activity", 1); // relations
+        specialPatterns.put("single_multi_organism_process", 1); // relation and PATO term as differentia
         
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";

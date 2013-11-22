@@ -132,4 +132,29 @@
 			<category>protein complex</category>
 		</categories>
 	</template>
+	<template name="single_multi_organism_process">
+		<description>Create a single-organism or multi-organism version for a given biological_process.</description>
+		<obonamespace>biological_process</obonamespace>
+		<fields>
+			<field name="process" required="true">
+				<ontology name="GeneOntology">
+					<branch>biological_process</branch>
+				</ontology>
+				<prefixes preselected="true">
+					<prefix>single-organism</prefix>
+					<prefix>multi-organism</prefix>
+				</prefixes>
+			</field>
+			<field name="Literature_Ref" required="true" />
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/single_multi_organism_process.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>single-multi-organism</category>
+		</categories>
+	</template>
 </termgenietemplates>
