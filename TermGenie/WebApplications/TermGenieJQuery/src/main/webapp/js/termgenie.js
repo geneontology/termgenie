@@ -86,7 +86,6 @@ function termgenie(){
 	              'user.setValue',
 	              'user.getValues',
 	              'user.setValues',
-	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'renderer.renderHierarchy',
 	              'renderer.visualizeGeneratedTerms',

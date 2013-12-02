@@ -20,7 +20,6 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.authenticate.AuthenticationModule;
 import org.bbop.termgenie.services.authenticate.BrowserIdHandler;
-import org.bbop.termgenie.services.authenticate.OpenIdRequestHandler;
 import org.bbop.termgenie.services.freeform.FreeFormTermService;
 import org.bbop.termgenie.services.freeform.NoopFreeFormModule;
 import org.bbop.termgenie.services.history.RecentSubmissionsService;
@@ -49,12 +48,9 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	
 	protected final class TermGenieServletModule extends ServletModule {
 
-		public static final String OPENID_SERVLET_PATH = "/openid";
-
 		@Override
 		protected void configureServlets() {
 			serve("/jsonrpc").with(TermGenieJsonRPCServlet.class);
-			serve(OPENID_SERVLET_PATH).with(OpenIdResponseServlet.class);
 			serve("/termlookup").with(TermLookupServlet.class);
 		}
 
@@ -65,7 +61,6 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				OntologyService ontology,
 				TermCommitService commit,
 				SessionHandler user,
-				OpenIdRequestHandler openId,
 				BrowserIdHandler browserId,
 				TermCommitReviewService review,
 				RecentSubmissionsService history,
@@ -80,7 +75,6 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("ontology", ontology, OntologyService.class);
 			executor.addHandler("commit", commit, TermCommitService.class);
 			executor.addHandler("user", user, SessionHandler.class);
-			executor.addHandler("openid", openId, OpenIdRequestHandler.class);
 			executor.addHandler("browserid", browserId, BrowserIdHandler.class);
 			executor.addHandler("review", review, TermCommitReviewService.class);
 			executor.addHandler("recent", history, RecentSubmissionsService.class);
@@ -165,7 +159,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	 * @return module handling the authentication
 	 */
 	protected IOCModule getAuthenticationModule() {
-		return new AuthenticationModule(TermGenieServletModule.OPENID_SERVLET_PATH, applicationProperties);
+		return new AuthenticationModule(applicationProperties);
 	}
 
 	/**

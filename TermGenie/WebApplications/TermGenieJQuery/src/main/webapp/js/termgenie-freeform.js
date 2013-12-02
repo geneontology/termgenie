@@ -21,7 +21,6 @@ function TermGenieFreeForm(){
 	              'user.setValue',
 	              'user.getValues',
 	              'user.setValues',
-	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'progress.getProgress',
 	              'freeform.isEnabled',

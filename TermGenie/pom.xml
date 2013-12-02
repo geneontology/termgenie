@@ -159,27 +159,6 @@
 				<version>1.2.1</version>
 			</dependency>
 			<dependency>
-	        	<groupId>org.openid4java</groupId>
-	        	<artifactId>openid4java-consumer</artifactId>
-	        	<version>0.9.5</version>
-	        	<!-- 
-	        	  Do NOT upgrade to 0.9.6 until the bug
-	        	  http://code.google.com/p/openid4java/issues/detail?id=162
-	        	  is resolved. 
-	        	 -->
-	        	<type>pom</type>
-	        	<exclusions>
-	        		<exclusion>
-	        			<artifactId>guice</artifactId>
-	        			<groupId>com.google.code.guice</groupId>
-	        		</exclusion>
-	        		<exclusion>
-	        			<artifactId>commons-logging</artifactId>
-	        			<groupId>commons-logging</groupId>
-	        		</exclusion>
-	        	</exclusions>
-			</dependency>
-			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
 				<version>1.7.1</version>

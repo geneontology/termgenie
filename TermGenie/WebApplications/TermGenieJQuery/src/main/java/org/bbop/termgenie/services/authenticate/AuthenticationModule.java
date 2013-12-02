@@ -12,12 +12,12 @@ import com.google.inject.name.Named;
 
 /**
  * Module configuring different authentication implementations. Currently
- * supported: BrowserID and OpenId.
+ * supported: Persona (formerly known as BrowserID).
  */
 public class AuthenticationModule extends IOCModule {
 
 	/**
-	 * This is used to construct the callback URLs for the OpenId and BrowserID
+	 * This is used to construct the callback URLs for the Persona (BrowserID)
 	 * authentication. If a change is required use a command-line parameter to
 	 * overwrite for the named parameter "DefaultTermGenieUrl".
 	 */
@@ -26,55 +26,30 @@ public class AuthenticationModule extends IOCModule {
 	private static final String DEFAUL_BROWSER_ID_VERFICATION_URL = "https://browserid.org/verify";
 
 	private final String defaultTermGenieUrl;
-	private final String openIdServletPath;
 
 	/**
-	 * @param openIdServletPath
 	 * @param applicationProperties
 	 */
-	public AuthenticationModule(String openIdServletPath, Properties applicationProperties) {
-		this(DEFAULT_TERMGENIE_URL, openIdServletPath, applicationProperties);
+	public AuthenticationModule(Properties applicationProperties) {
+		this(DEFAULT_TERMGENIE_URL, applicationProperties);
 	}
 
 	/**
 	 * @param defaultTermGenieUrl
-	 * @param openIdServletPath
 	 * @param applicationProperties
 	 */
-	public AuthenticationModule(String defaultTermGenieUrl, String openIdServletPath, Properties applicationProperties) {
+	public AuthenticationModule(String defaultTermGenieUrl, Properties applicationProperties) {
 		super(applicationProperties);
-		this.openIdServletPath = openIdServletPath;
 		this.defaultTermGenieUrl = defaultTermGenieUrl;
 	}
 
 	@Override
 	protected void configure() {
 		bind("DefaultTermGenieUrl", defaultTermGenieUrl);
-		bind(OpenIdHandler.class, OpenIdHandlerImpl.class);
 		bind(BrowserIdHandler.class, BrowserIdHandlerImpl.class);
 		bind("BrowserIdVerificationUrl",DEFAUL_BROWSER_ID_VERFICATION_URL);
 	}
 
-	@Named("OpenIdHandlerReturnToUrl")
-	@Singleton
-	@Provides
-	protected String provideOpenIdHandlerReturnToUrl(@Named("DefaultTermGenieUrl") String termgenieURL)
-	{
-		if (termgenieURL.length() < 5 || !termgenieURL.startsWith("http")) {
-			throw new RuntimeException("Unexpected format for DefaultTermGenieUrl: " + termgenieURL);
-		}
-		if (termgenieURL.endsWith("/")) {
-			termgenieURL = termgenieURL.substring(0, termgenieURL.length() - 1);
-		}
-		return termgenieURL + openIdServletPath;
-	}
-
-	@Provides
-	@Singleton
-	protected OpenIdRequestHandler providesOpenIdRequestHandler(OpenIdHandler openIdHandler) {
-		return openIdHandler;
-	}
-	
 	@Provides
 	@Singleton
 	@Named("TermGenieBrowserIdAudience")

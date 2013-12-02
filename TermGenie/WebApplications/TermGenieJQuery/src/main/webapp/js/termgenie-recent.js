@@ -25,7 +25,6 @@ function TermGenieSubmissions(){
 	              'recent.isEnabled',
 	              'recent.canView',
 	              'recent.getRecentTerms',
-	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'progress.getProgress']
 	});

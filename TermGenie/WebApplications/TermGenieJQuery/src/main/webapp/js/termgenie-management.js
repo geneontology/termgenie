@@ -21,7 +21,6 @@ function TermGenieManagement(){
 	              'user.setValue',
 	              'user.getValues',
 	              'user.setValues',
-	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'management.isAuthorized',
 	              'management.getModuleDetails',

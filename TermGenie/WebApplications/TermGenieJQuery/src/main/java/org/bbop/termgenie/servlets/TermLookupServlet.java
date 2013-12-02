@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.lookup.TermLookupService;
 import org.bbop.termgenie.services.lookup.TermLookupService.LookupCallBack;
@@ -85,15 +84,15 @@ public class TermLookupServlet extends HttpServlet {
 
 	private void handleRequest(final HttpServletResponse resp, final JsonLookupRequest request) throws IOException {
 		if (request.action == null) {
-			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "No action specified.");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "No action specified.");
 			return;
 		}
 		if (!"lookup".equals(request.action)) {
-			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Wrong action specified: "+request.action);
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Wrong action specified: "+request.action);
 			return;
 		}
 		if (request.id == null || request.id.isEmpty()) {
-			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "No id specified.");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "No id specified.");
 			return;
 		}
 		final JsonLookupResponse jsonResponse = new JsonLookupResponse();
@@ -155,7 +154,7 @@ public class TermLookupServlet extends HttpServlet {
 	private void sendError(String message, Exception e, HttpServletResponse resp) {
 		try {
 			logger.warn("Error during term lookup: "+message, e);
-			resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, message);
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
 		} catch (IOException exception) {
 			logger.error("Could not send error message response.", exception);
 		}

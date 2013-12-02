@@ -22,7 +22,6 @@ function TermGenieReview(){
 	              'user.setValue',
 	              'user.getValues',
 	              'user.setValues',
-	              'openid.authRequest',
 	              'browserid.verifyAssertion',
 	              'review.isEnabled',
 	              'review.isAuthorized',
