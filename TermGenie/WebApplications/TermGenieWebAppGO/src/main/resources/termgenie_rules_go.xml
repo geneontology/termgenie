@@ -787,7 +787,7 @@ generated automatically</description>
 				</ontology>
 			</field>
 			<field name="Literature_Ref" required="true" />
-			<field name="DefX_Ref" remoteResource="GO.curators_dbxrefs">
+			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
 			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol] in PMID:xxx. [evidence code]&lt;/small&gt;"/>
