@@ -112,8 +112,8 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 	private final class ReloadingOntologyTaskManager extends OntologyTaskManager {
 	
-		private static final int MAX_RETRY_COUNT = 3;
-		int currentRetryCount = 0;
+//		private static final int MAX_RETRY_COUNT = 3;
+//		int currentRetryCount = 0;
 
 		private ReloadingOntologyTaskManager(Ontology ontology) throws InvalidManagedInstanceException
 		{
@@ -123,14 +123,14 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		@Override
 		protected OWLGraphWrapper createManaged() throws InstanceCreationException {
 			OWLGraphWrapper graph = loadOntology(getOntology());
-			currentRetryCount = 0;
+//			currentRetryCount = 0;
 			return graph;
 		}
 	
 		@Override
 		protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) throws InstanceCreationException {
 			OWLGraphWrapper graph = reloadOntology(getOntology(), managed);
-			currentRetryCount = 0;
+//			currentRetryCount = 0;
 			return graph;
 		}
 	
@@ -139,16 +139,16 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 			disposeResource(managed);
 		}
 	
-		@Override
-		protected OWLGraphWrapper handleInvalid(OWLGraphWrapper managed) throws InvalidManagedInstanceException {
-			if (currentRetryCount < MAX_RETRY_COUNT) {
-				LOGGER.info("Trying to recover from an invalid state. This number of previous attempts: "+currentRetryCount);
-				disposeResource(managed);
-				currentRetryCount += 1;
-				return null;
-			}
-			return super.handleInvalid(managed);
-		}
+//		@Override
+//		protected OWLGraphWrapper handleInvalid(OWLGraphWrapper managed) throws InvalidManagedInstanceException {
+//			if (currentRetryCount < MAX_RETRY_COUNT) {
+//				LOGGER.info("Trying to recover from an invalid state. This number of previous attempts: "+currentRetryCount);
+//				disposeResource(managed);
+//				currentRetryCount += 1;
+//				return null;
+//			}
+//			return super.handleInvalid(managed);
+//		}
 	}
 	
 }
