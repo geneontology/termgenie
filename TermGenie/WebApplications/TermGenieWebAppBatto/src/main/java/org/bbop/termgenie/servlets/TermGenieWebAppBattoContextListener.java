@@ -185,7 +185,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	@Override
 	protected IOCModule getReviewMailHandlerModule() {
 		
-		return new DefaultReviewMailHandlerModule(applicationProperties, "help@go.termgenie.org", "Batto TermGenie") {
+		return new DefaultReviewMailHandlerModule(applicationProperties, "help@go.termgenie.org", "OBA TermGenie") {
 			
 			@Override
 			protected MailHandler provideMailHandler() {
@@ -197,7 +197,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	@Override
 	protected IOCModule getFreeFormTermModule() {
 		List<String> oboNamespaces = null;
-		String defaultOntology = "default_batto";
+		String defaultOntology = "default_oba";
 		boolean addSubsetTag = false;
 		String subset = null;
 		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset);

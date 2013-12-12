@@ -5,12 +5,12 @@
 		<description>A biological attribute for the affect of a quality of some entity.</description>
 		<fields>
 			<field name="entity" required="true">
-				<ontology name="Batto">
+				<ontology name="OBA">
 					<branch>entity</branch>
 				</ontology>
 			</field>
 			<field name="quality" required="true">
-				<ontology name="Batto">
+				<ontology name="OBA">
 					<branch>quality</branch>
 				</ontology>
 			</field>
