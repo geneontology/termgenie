@@ -116,7 +116,19 @@ public class FileCachingIRIMapper implements IRIMapper {
 	
 	private InputStream tryHttpRequest(DefaultHttpClient client, HttpGet request, URL url, int count) throws IOException {
 		// try the load
-		final HttpResponse response = client.execute(request);
+		final HttpResponse response;
+		try {
+			response = client.execute(request);
+		}
+		catch (IOException e) {
+			if (count <= 0) {
+				// no more retry, handle the final error.
+				return handleError(url, new IOException("Could not load url: "+url, e));
+			}
+			logger.warn("Retry request for url: "+url+" after exception: "+e.getMessage());
+			defaultRandomWait();
+			return tryHttpRequest(client, request, url, count - 1);
+		}
 		final HttpEntity entity = response.getEntity();
 		final StatusLine statusLine = response.getStatusLine();
 		if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
@@ -137,14 +149,18 @@ public class FileCachingIRIMapper implements IRIMapper {
 			}
 			message.append("\n Retry request.");
 			logger.warn(message);
-			
-			// wait a random interval between 400 and 1500 ms
-			randomWait(400, 1500);
-			
+
+			defaultRandomWait();
+
 			// try again
 			return tryHttpRequest(client, request, url, count - 1);
 		}
 		return entity.getContent();
+	}
+	
+	private void defaultRandomWait() {
+		// wait a random interval between 400 and 1500 ms
+		randomWait(400, 1500);
 	}
 	
 	private void randomWait(int min, int max) {
