@@ -24,6 +24,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 import owltools.graph.OWLGraphWrapper;
@@ -125,9 +126,13 @@ public class FreeFormTermValidatorImplTest {
 		xref.setAnnotation("Fake comment");
 		request.setXrefs(Collections.<Xref>singletonList(xref));
 
+		request.setComment("Fake main comment");
+		
 		Pair<Frame,Set<OWLAxiom>> pair = noErrors(request, graph);
 
-		assertNotNull(pair.getOne());
+		Frame frame = pair.getOne();
+		assertNotNull(frame);
+		assertEquals("Fake main comment", frame.getTagValue(OboFormatTag.TAG_COMMENT, String.class));
 		assertNotNull(pair.getTwo());
 	
 	}
@@ -213,6 +218,8 @@ public class FreeFormTermValidatorImplTest {
 		private String definition;
 		private List<String> dbxrefs;
 
+		private String comment;
+		
 		private List<String> isA;
 		private List<String> partOf;
 		private List<String> hasPart;
@@ -253,6 +260,16 @@ public class FreeFormTermValidatorImplTest {
 
 		public void setDbxrefs(List<String> dbxrefs) {
 			this.dbxrefs = dbxrefs;
+		}
+
+		
+		@Override
+		public String getComment() {
+			return comment;
+		}
+
+		public void setComment(String comment) {
+			this.comment = comment;
 		}
 
 		@Override

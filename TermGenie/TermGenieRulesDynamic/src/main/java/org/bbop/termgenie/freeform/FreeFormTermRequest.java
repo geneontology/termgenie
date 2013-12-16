@@ -25,6 +25,11 @@ public interface FreeFormTermRequest {
 	public String getDefinition();
 
 	/**
+	 * @return the comment
+	 */
+	public String getComment();
+	
+	/**
 	 * @return the dbxrefs
 	 */
 	public List<String> getDbxrefs();

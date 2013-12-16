@@ -363,6 +363,8 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				return;
 			}
 			
+			String comment = StringUtils.trimToNull(request.getComment());
+			
 			// TODO check requested terms in the queue
 			// TODO check blacklist
 
@@ -672,6 +674,9 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				OboTools.addDefinition(frame, def, defXrefs);
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATION_DATE, getDate()));
 				frame.addClause(new Clause(OboFormatTag.TAG_CREATED_BY, "TermGenie"));
+				if (comment != null) {
+					frame.addClause(new Clause(OboFormatTag.TAG_COMMENT, comment));
+				}
 				if (namespace != null) {
 					frame.addClause(new Clause(OboFormatTag.TAG_NAMESPACE, namespace));
 				}

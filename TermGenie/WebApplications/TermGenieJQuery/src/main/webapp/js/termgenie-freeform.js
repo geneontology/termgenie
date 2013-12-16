@@ -103,7 +103,6 @@ function TermGenieFreeForm(){
 	 * Start free form input.
 	 */
 	function startFreeForm() {
-		// TODO place holder, implement proper free form input elements 
 		mainConfigurationPanel.load('TermGenieFreeFormContent.html', function() {
 			var myAccordion = MyAccordion('#accordion');
 			
@@ -195,6 +194,10 @@ function TermGenieFreeForm(){
 			var xrefInputs = createXrefInputs();
 			xrefInputs.disable();
 			
+			// comments
+			var commentInputs = createCommentInput();
+			commentInputs.disable();
+			
 			// validate input button
 			var validateButton = createValidateButton();
 			validateButton.disable();
@@ -212,6 +215,7 @@ function TermGenieFreeForm(){
 				defXrefsInput.enable();
 				synonymInput.enable();
 				xrefInputs.enable();
+				commentInputs.enable();
 				
 				// active validate button
 				validateButton.enable();
@@ -282,6 +286,7 @@ function TermGenieFreeForm(){
 					defXrefsInput.enable();
 					synonymInput.enable();
 					xrefInputs.enable();
+					commentInputs.enable();
 					
 					// active validate button
 					validateButton.enable();
@@ -352,6 +357,52 @@ function TermGenieFreeForm(){
 						defInputField.attr("disabled", "disabled"); // disable
 					},
 					getDef: function() {
+						return getVal();
+					},
+					validate: function() {
+						resetError();
+						var current = getVal();
+						if (current && current !== null && current.length > 0) {
+							return null;
+						}
+						setError();
+						return "A valid term definition is required."
+					}
+				};
+			};
+			
+			/**
+			 * Create an input object for the definition in the free form template.
+			 * 
+			 * @returns definition input object.
+			 */
+			function createCommentInput() {
+				// retrieve the pre-existing DOM element
+				var commentInputField = jQuery('#free-form-input-comment-field');
+				
+				function getVal() {
+					return commentInputField.val();
+				};
+				
+				function setError() {
+					commentInputField.addClass('termgenie-input-field-error');
+				};
+				
+				function resetError() {
+					commentInputField.removeClass('termgenie-input-field-error');
+				};
+				
+				/**
+				 * return the functions for this object
+				 */
+				return {
+					enable: function() {
+						commentInputField.removeAttr("disabled");
+					},
+					disable: function() {
+						commentInputField.attr("disabled", "disabled"); // disable
+					},
+					getComment: function() {
 						return getVal();
 					},
 					validate: function() {
@@ -1286,7 +1337,8 @@ function TermGenieFreeForm(){
 					partOf: relationsInput.getPartOf(),
 					hasPart: relationsInput.getHasPart(),
 					synonyms: synonymInput.getSynonyms(),
-					xrefs: xrefInputs.getXrefs()
+					xrefs: xrefInputs.getXrefs(),
+					comment: commentInputs.getComment()
 				};
 			};
 		

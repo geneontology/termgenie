@@ -1,3 +1,6 @@
+<div class="ServiceAnnouncement">
+	<b>IMPORTANT</b>: Before using this form, please check if there is an existing template for your term in <a href="http://go.termgenie.org">http://go.termgenie.org</a>.
+</div>
 <div id="accordion">
 	<h3>
 		<a class="myClickable"><b>Step 1:</b> Input</a>
@@ -33,7 +36,6 @@
 					<td align="right">is_a</td>
 					<td id="free-form-input-isa-cell"></td>
 				</tr>
-				<!-- 
 				<tr>
 					<td align="right">part_of</td>
 					<td id="free-form-input-partof-cell"></td>
@@ -42,7 +44,6 @@
 					<td align="right">has_part</td>
 					<td id="free-form-input-haspart-cell"></td>
 				</tr>
-				 -->
 				<tr>
 					<td colspan="2">Synonyms</td>
 				</tr>
@@ -58,11 +59,19 @@
 					<td id="free-form-input-xrefs-cell"></td>
 				</tr>
 				<tr>
-					<td colspan="2">Comment</td>
+					<td colspan="2">Optional: public definition comment</td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><textarea rows="1" cols="100" id="free-form-input-comment-field"></textarea></td>
+					<td><small>This optional text will appear as a definition comment in the
+					ontology and will be visible in GO browsers.<br/>
+					<i>Suggested format</i>: An example of this is [name of gene product, e.g. LysZ] in 
+					[species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in 
+					PMID:xxx [inferred from direct assay/mutant phenotype/etc.].</small></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><textarea rows="2" cols="100" id="free-form-input-comment-field"></textarea></td>
 				</tr>
 			</table>
 		</div>

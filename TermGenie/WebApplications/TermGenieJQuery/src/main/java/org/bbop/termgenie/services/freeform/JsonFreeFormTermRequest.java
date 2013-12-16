@@ -14,6 +14,8 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 
 	private String definition;
 	private List<String> dbxrefs;
+	
+	private String comment;
 
 	private List<String> isA;
 	private List<String> partOf;
@@ -70,6 +72,21 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	 */
 	public void setDbxrefs(List<String> dbxrefs) {
 		this.dbxrefs = dbxrefs;
+	}
+	
+	/**
+	 * @return the comment
+	 */
+	@Override
+	public String getComment() {
+		return comment;
+	}
+	
+	/**
+	 * @param comment the comment to set
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	@Override
