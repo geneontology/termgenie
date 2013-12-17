@@ -7,6 +7,7 @@
 			biological processes). Names, synonyms and definitions are all
 			generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000058</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -22,7 +23,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
@@ -37,6 +38,7 @@
 			molecular functions). Names, synonyms and definitions are all
 			generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000059</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -52,7 +54,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/all_regulation_mf.js</ruleFile>
@@ -69,6 +71,7 @@
 		 &lt;br/&gt; The new term is defined as 'is_a' &lt;b&gt;G1 phase&lt;/b&gt;,  
 		 'part_of' &lt;b&gt;Meiosis&lt;/b&gt;, and as the intersection of the input terms.</hint>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000060</definition-xref>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -84,7 +87,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in.js</ruleFile>
@@ -97,6 +100,7 @@
 		<description>molecular function involved in other biological processes</description>
 		<hint>[molecular function] involved in [biological process]</hint>
 		<obonamespace>molecular_function</obonamespace>
+		<definition-xref>GO_REF:0000061</definition-xref>
 		<fields>
 			<field name="part" required="true" label="molecular function">
 				<ontology name="GeneOntology">
@@ -112,7 +116,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
@@ -125,6 +129,7 @@
 	<template name="occurs_in">
 		<description>processes occurring in parts of the cell</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000062</definition-xref>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
@@ -140,7 +145,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
@@ -158,6 +163,7 @@
 &lt;br/&gt;[regulator] : receptor internalization 
 		</hint>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000063</definition-xref>
 		<fields>
 			<field name="process" required="true" label="results in">
 				<ontology name="GeneOntology">
@@ -173,7 +179,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/regulation_by.js</ruleFile>
@@ -187,6 +193,7 @@
 		<description>cell components part of other cell components
 		</description>
 		<obonamespace>cellular_component</obonamespace>
+		<definition-xref>GO_REF:0000064</definition-xref>
 		<fields>
 			<field name="part" required="true">
 				<ontology name="GeneOntology">
@@ -202,7 +209,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
@@ -223,7 +230,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/pro/protein_binding.js</ruleFile>
@@ -237,6 +244,7 @@
 	<template name="chemical_transport">
 		<description>transport of a chemical entity (biological process)</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000065</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -247,7 +255,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
@@ -260,6 +268,7 @@
 	<template name="chemical_transporter_activity">
 		<description>Create activity terms (molecular function) for transport of a chemical entity.</description>
 		<obonamespace>molecular_function</obonamespace>
+		<definition-xref>GO_REF:0000066</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -270,7 +279,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
@@ -283,6 +292,7 @@
 	<template name="chemical_binding">
 		<description>binding to a chemical entity</description>
 		<obonamespace>molecular_function</obonamespace>
+		<definition-xref>GO_REF:0000067</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -293,7 +303,7 @@
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
@@ -308,6 +318,7 @@
 terms for the "metabolic triad". Names, synonyms and definitions are all
 generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000068</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -323,7 +334,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
@@ -346,7 +357,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_bp.js</ruleFile>
@@ -377,7 +388,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
@@ -404,7 +415,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
@@ -430,7 +441,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
@@ -452,7 +463,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_import.js</ruleFile>
@@ -475,7 +486,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_export.js</ruleFile>
@@ -503,7 +514,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
@@ -536,7 +547,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport_from_to.js</ruleFile>
@@ -563,7 +574,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_transport.js</ruleFile>
@@ -600,7 +611,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/chebi/chemical_transport_from_to.js</ruleFile>
@@ -628,7 +639,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cc_assembly_disassembly.js</ruleFile>
@@ -652,7 +663,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_development.js</ruleFile>
@@ -675,7 +686,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_formation.js</ruleFile>
@@ -698,7 +709,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_maturation.js</ruleFile>
@@ -721,7 +732,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_morphogenesis.js</ruleFile>
@@ -744,7 +755,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/plant/plant_structural_organization.js</ruleFile>
@@ -767,7 +778,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cl/cell_apoptosis.js</ruleFile>
@@ -790,7 +801,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/cl/cell_differentiation.js</ruleFile>
@@ -816,7 +827,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/protein_localization_to.js</ruleFile>
@@ -839,7 +850,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/protein_complex_by_activity.js</ruleFile>
@@ -866,7 +877,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/single_multi_organism_process.js</ruleFile>
@@ -907,7 +918,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
@@ -928,7 +939,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_morphogenesis.js</ruleFile>
@@ -950,7 +961,7 @@ generated automatically</description>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [name of gene product, e.g. LysZ] in [species name, e.g. E. coli] [UniProt symbol, e.g. UniProt symbol Q13490] in PMID:xxx [inferred from direct assay/mutant phenotype/etc.].&lt;/small&gt;"/>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/go/pro/structural_protein_complex.js</ruleFile>
