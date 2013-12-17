@@ -7,6 +7,7 @@
 			biological processes). Names, synonyms and definitions are all
 			generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000058</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">

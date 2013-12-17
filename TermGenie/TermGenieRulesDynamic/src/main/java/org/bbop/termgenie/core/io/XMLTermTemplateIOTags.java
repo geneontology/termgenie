@@ -22,6 +22,7 @@ interface XMLTermTemplateIOTags {
 	static final String TAG_branch = "branch";
 	static final String TAG_categories = "categories";
 	static final String TAG_category = "category";
+	static final String TAG_definition_ref = "definition-xref";
 
 	static final String ATTR_name = "name";
 	static final String ATTR_label = "label";

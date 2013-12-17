@@ -17,6 +17,7 @@ public class TermTemplate {
 	private final List<String> ruleFiles;
 	private final String methodName;
 	private final String hint;
+	private final String definitionXref;
 
 	/**
 	 * @param name
@@ -28,6 +29,7 @@ public class TermTemplate {
 	 * @param methodName 
 	 * @param hint
 	 * @param categories
+	 * @param definitionXref
 	 */
 	public TermTemplate(String name,
 			String displayName,
@@ -37,7 +39,8 @@ public class TermTemplate {
 			List<String> ruleFiles,
 			String methodName,
 			String hint,
-			List<String> categories)
+			List<String> categories,
+			String definitionXref)
 	{
 		super();
 		if (name == null || name.isEmpty()) {
@@ -55,6 +58,7 @@ public class TermTemplate {
 		this.description = description;
 		this.hint = hint;
 		this.categories = categories;
+		this.definitionXref = definitionXref;
 	}
 
 	/**
@@ -136,6 +140,13 @@ public class TermTemplate {
 	 */
 	public List<String> getCategories() {
 		return categories;
+	}
+	
+	/**
+	 * @return the pattern-specific definitionXref or null
+	 */
+	public String getDefinitionXref() {
+		return definitionXref;
 	}
 
 	@Override

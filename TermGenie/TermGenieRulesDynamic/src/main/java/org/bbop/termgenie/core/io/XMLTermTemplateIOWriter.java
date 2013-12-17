@@ -52,6 +52,7 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 				writeTag(TAG_description, termTemplate.getDescription(), writer);
 				writeTag(TAG_hint, termTemplate.getHint(), writer);
 				writeTag(TAG_obonamespace, termTemplate.getOboNamespace(), writer);
+				writeTag(TAG_definition_ref, termTemplate.getDefinitionXref(), writer);
 				writeFields(termTemplate.getFields(), writer);
 				writeRules(termTemplate.getRuleFiles(), termTemplate.getMethodName(), writer);
 				writeCategories(termTemplate.getCategories(), writer);

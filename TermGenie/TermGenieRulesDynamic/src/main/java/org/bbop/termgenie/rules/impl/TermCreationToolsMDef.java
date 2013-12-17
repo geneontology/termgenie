@@ -351,6 +351,15 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			}
 			warnings.add(XrefTools.getLiteratureReferenceErrorString(true));
 		}
+		// check for a pattern-specific definition xrefs
+		String definitionXref = this.input.getTermTemplate().getDefinitionXref();
+		if (definitionXref != null) {
+			List<String> tempXrefs = new ArrayList<String>(defxrefs.size() + 1);
+			tempXrefs.addAll(defxrefs);
+			tempXrefs.add(definitionXref);
+			defxrefs = tempXrefs;
+		}
+		
 		// Check definition
 		String definitionErrors = TextualDefinitionTool.validateDefinition(definition);
 		if (definitionErrors != null) {

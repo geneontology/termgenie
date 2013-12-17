@@ -87,6 +87,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		String methodName = null;
 		String hint = null;
 		List<String> categories = null;
+		String definitionXref = null;
 	}
 
 	private void parseTemplate(XMLStreamReader parser, List<TermTemplate> result)
@@ -128,6 +129,11 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 					}
 					else if (TAG_categories.equals(element)) {
 						current.categories = parseCategories(parser, current);
+					}
+					else if (TAG_definition_ref.equals(element)) {
+						current.definitionXref = getTextTag(parser,
+								TAG_definition_ref, 
+								current.definitionXref);
 					}
 					else {
 						error("Unexpected tag: " + element, parser);
@@ -372,7 +378,7 @@ class XMLTermTemplateIOReader implements XMLTermTemplateIOTags {
 		if (current.ruleFiles == null || current.ruleFiles.isEmpty()) {
 			error("Missing " + TAG_ruleFiles + " tag", parser);
 		}
-		TermTemplate template = new TermTemplate(current.name, current.displayName, current.description, current.fields, current.obo_namespace, current.ruleFiles, current.methodName, current.hint, current.categories);
+		TermTemplate template = new TermTemplate(current.name, current.displayName, current.description, current.fields, current.obo_namespace, current.ruleFiles, current.methodName, current.hint, current.categories, current.definitionXref);
 		result.add(template);
 	}
 
