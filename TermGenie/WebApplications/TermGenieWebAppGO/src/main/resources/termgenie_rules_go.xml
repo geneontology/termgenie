@@ -347,6 +347,7 @@ generated automatically</description>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
 		<description>Create transmembrane transport terms (biological process) with chemical entities.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000069</definition-xref>
 		<fields>
 			<field name="subject" required="true">
 				<ontology name="GeneOntology">
@@ -372,6 +373,7 @@ generated automatically</description>
 		Select &lt;b&gt;at least one&lt;/b&gt; type of genus. &lt;br/&gt;
 		If in doubt, use the first one: transmembrane transporter activity</description>
 		<obonamespace>molecular_function</obonamespace>
+		<definition-xref>GO_REF:0000070</definition-xref>
 		<fields>
 			<field name="subject" required="true">
 				<ontology name="GeneOntology">
@@ -401,6 +403,7 @@ generated automatically</description>
 	<template name="chemical_response_to">
 		<description>Create response to and cellular response to a chemical entity</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000071</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -427,6 +430,7 @@ generated automatically</description>
 	<template name="chemical_homeostasis">
 		<description>Create chemical homeostasis and cellular chemical homeostasis terms with chemical entities.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000072</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -453,6 +457,7 @@ generated automatically</description>
 	<template name="chemical_import">
 		<description>import of a chemical entity</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000073</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -476,6 +481,7 @@ generated automatically</description>
 	<template name="chemical_export">
 		<description>export of a chemical entity</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000074</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -499,6 +505,7 @@ generated automatically</description>
 	<template name="chemical_import_into">
 		<description>transport of a chemical into a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000075</definition-xref>
 		<fields>
 			<field name="subject" required="true">
 				<ontology name="GeneOntology">
@@ -528,6 +535,7 @@ generated automatically</description>
 	<template name="cc_transport_from_to">
 		<description>transport or vesicle-mediated transport from cellular component to cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000076</definition-xref>
 		<fields>
 			<field name="from" required="true">
 				<ontology name="GeneOntology">
@@ -560,6 +568,7 @@ generated automatically</description>
 	<template name="cc_transport">
 		<description>transport of a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000077</definition-xref>
 		<fields>
 			<field name="component" required="true">
 				<ontology name="GeneOntology">
@@ -587,6 +596,7 @@ generated automatically</description>
 	<template name="chemical_transport_from_to">
 		<description>transport of a chemical entity from and/or to a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000078</definition-xref>
 		<fields>
 			<field name="chemical" required="true">
 				<ontology name="GeneOntology">
@@ -625,6 +635,7 @@ generated automatically</description>
 	<template name="cc_assembly_disassembly">
 		<description>assembly or disassembly of a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000079</definition-xref>
 		<fields>
 			<field name="component" required="true">
 				<ontology name="GeneOntology">
@@ -653,6 +664,7 @@ generated automatically</description>
 	<template name="plant_development">
 		<description>Development of a plant structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000080</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -676,6 +688,7 @@ generated automatically</description>
 	<template name="plant_formation">
 		<description>Formation of a plant structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000081</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -699,6 +712,7 @@ generated automatically</description>
 	<template name="plant_maturation">
 		<description>Maturation of a plant structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000082</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -722,6 +736,7 @@ generated automatically</description>
 	<template name="plant_morphogenesis">
 		<description>Morphogenesis of a plant structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000083</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -745,6 +760,7 @@ generated automatically</description>
 	<template name="plant_structural_organization">
 		<description>Structural organization of a plant structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000084</definition-xref>
 		<fields>
 			<field name="target" required="true">
 				<ontology name="GeneOntology">
@@ -768,6 +784,7 @@ generated automatically</description>
 	<template name="cell_apoptosis" displayname="cell_apoptotic_process">
 		<description>Apoptotic process for a cell type</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000085</definition-xref>
 		<fields>
 			<field name="celltype" required="true">
 				<ontology name="GeneOntology">
@@ -791,6 +808,7 @@ generated automatically</description>
 	<template name="cell_differentiation">
 		<description>Differentiation process for a cell type</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000086</definition-xref>
 		<fields>
 			<field name="celltype" required="true">
 				<ontology name="GeneOntology">
@@ -813,6 +831,7 @@ generated automatically</description>
 	<template name="protein_localization_to">
 		<description>protein localization and establishment of protein localization to a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000087</definition-xref>
 		<fields>
 			<field name="component" required="true">
 				<ontology name="GeneOntology">
@@ -840,6 +859,7 @@ generated automatically</description>
 	<template name="protein_complex_by_activity">
 		<description>Define a protein complex by molecular function</description>
 		<obonamespace>cellular_component</obonamespace>
+		<definition-xref>GO_REF:0000088</definition-xref>
 		<fields>
 			<field name="activity" required="true">
 				<ontology name="GeneOntology">
@@ -863,6 +883,7 @@ generated automatically</description>
 	<template name="single_multi_organism_process">
 		<description>Create a single-organism or multi-organism version for a given biological_process.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000089</definition-xref>
 		<fields>
 			<field name="process" required="true">
 				<ontology name="GeneOntology">
