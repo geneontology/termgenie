@@ -55,15 +55,7 @@ public class CellTypeOntologyTest {
 		String clTerm = "CL:0011003"; // magnocellular neurosecretory cell
 		String uberonTerm = "UBERON:0002028"; // hindbrain
 		TermGenerationOutput output = generateSingle(getTemplate("metazoan_location_specific_cell"), clTerm, uberonTerm);
-		
-		
-		Set<OWLAxiom> axioms = output.getOwlAxioms();
-		for (OWLAxiom owlAxiom : axioms) {
-			System.out.println(owlAxiom);
-		}
-		
-		Frame frame = output.getTerm();
-		renderFrame(frame);
+		render(output);
 		
 	}
 	
@@ -102,7 +94,13 @@ public class CellTypeOntologyTest {
 		throw new RuntimeException("No template found with name: "+name);
 	}
 	
-	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
+	private void render(TermGenerationOutput output) throws InvalidManagedInstanceException  {
+		System.out.println("-----------");
+		Set<OWLAxiom> axioms = output.getOwlAxioms();
+		for (OWLAxiom owlAxiom : axioms) {
+			System.out.println(owlAxiom);
+		}
+		final Frame frame = output.getTerm();
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
