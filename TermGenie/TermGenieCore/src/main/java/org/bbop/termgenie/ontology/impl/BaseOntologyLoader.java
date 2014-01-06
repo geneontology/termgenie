@@ -69,7 +69,7 @@ public class BaseOntologyLoader {
 				IRI id = event.getOntologyID().getOntologyIRI();
 				IRI source = event.getDocumentIRI();
 				
-				StringBuilder sb = new StringBuilder("Finished loading ontology");
+				StringBuilder sb = new StringBuilder("Finished loading ontology: ");
 				sb.append(id).append(" from ").append(source);
 				LOGGER.info(sb.toString());
 			}
