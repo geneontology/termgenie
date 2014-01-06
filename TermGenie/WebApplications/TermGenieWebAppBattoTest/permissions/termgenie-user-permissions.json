@@ -3,6 +3,6 @@
 		"termgenie-batto": "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
 	},
 	"hdietze@lbl.gov": {
-		"termgenie-batto": "(Batto, allowWrite, true), (Batto, allowCommitReview, true), (Batto, allowFreeForm, true), (Batto, allowFreeFormWrite, true), (termgenie-batto, allowManagement, true)"
+		"termgenie-batto": "(OBA, allowWrite, true), (OBA, allowCommitReview, true), (OBA, allowFreeForm, true), (OBA, allowFreeFormWrite, true), (termgenie-batto, allowManagement, true)"
 	}
 }
