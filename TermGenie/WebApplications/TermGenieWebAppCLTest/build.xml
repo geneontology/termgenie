@@ -6,24 +6,24 @@
 	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
 	<property name="webapp.db" location="${workdir}/termgenie-batto-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
-	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
-	<property name="webappparent" location="../TermGenieWebAppCL/src/main/webapp"/>
-	<property name="webapplocal" location="src/main/webapp"/>
+	<property name="webapp.jquery" location="../TermGenieJQuery/src/main/webapp"/>
+	<property name="webapp.parent" location="../TermGenieWebAppCL/src/main/webapp"/>
+	<property name="webapp.local" location="src/main/webapp"/>
 	
 	<target name="copywebapp">
 		<mkdir dir="${webapp.target}"/>
-		<copy todir="${webapptarget}">
-			<fileset dir="${webappjquery}">
+		<copy todir="${webapp.target}">
+			<fileset dir="${webapp.jquery}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>
-		<copy todir="${webapptarget}" overwrite="true">
-			<fileset dir="${webappparent}">
+		<copy todir="${webapp.target}" overwrite="true">
+			<fileset dir="${webapp.parent}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>
-		<copy todir="${webapptarget}" overwrite="true">
-			<fileset dir="${webapplocal}"/>
+		<copy todir="${webapp.target}" overwrite="true">
+			<fileset dir="${webapp.local}"/>
 		</copy>
 	</target>
 	
