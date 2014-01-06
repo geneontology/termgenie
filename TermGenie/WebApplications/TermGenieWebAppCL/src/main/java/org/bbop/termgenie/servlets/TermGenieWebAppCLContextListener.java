@@ -22,7 +22,9 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, applicationProperties);
+		boolean assertInferences = false;
+		boolean useIsInferred = false;
+		return new XMLDynamicRulesModule("termgenie_rules_cl.xml", useIsInferred, assertInferences, applicationProperties);
 	}
 
 }

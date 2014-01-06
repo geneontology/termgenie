@@ -73,7 +73,7 @@ public class ChemicalTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_chemical.xml", false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_chemical.xml", false, true, null),
 				new ChemicalTestOntologyModule(),
 				new ReasonerModule(null));
 

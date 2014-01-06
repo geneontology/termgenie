@@ -58,5 +58,6 @@
 		<module>TermGenieWebAppOMP</module>
 		<module>TermGenieWebAppBatto</module>
 		<module>TermGenieWebAppBattoTest</module>
+		<module>TermGenieWebAppCLTest</module>
 	</modules>
 </project>

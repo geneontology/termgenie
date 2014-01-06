@@ -120,7 +120,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_batto.xml", false, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_batto.xml", false, true, applicationProperties);
 	}
 	
 	@Override

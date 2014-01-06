@@ -35,7 +35,7 @@ public class TermGenieScriptTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", false, true, null),
 				new TestDefaultOntologyModule() {
 
 					@Override

@@ -50,6 +50,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	 * @param state 
 	 * @param requireLiteratureReference
 	 * @param useIsInferred
+	 * @param assertInferences
 	 */
 	public TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
@@ -58,13 +59,14 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			ReasonerFactory factory,
 			ProcessState state,
 			boolean requireLiteratureReference,
-			boolean useIsInferred)
+			boolean useIsInferred,
+			boolean assertInferences)
 	{
 		super();
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
-		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred);
+		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred, assertInferences);
 	}
 	
 	protected synchronized List<TermGenerationOutput> getResultList() {

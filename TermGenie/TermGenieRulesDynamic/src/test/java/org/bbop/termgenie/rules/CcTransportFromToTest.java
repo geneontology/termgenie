@@ -53,7 +53,7 @@ public class CcTransportFromToTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_other.xml", false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_other.xml", false, true, null),
 				new ChemicalTestOntologyModule(),
 				new ReasonerModule(null));
 

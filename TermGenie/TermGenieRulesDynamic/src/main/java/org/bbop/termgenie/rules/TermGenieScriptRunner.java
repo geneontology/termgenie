@@ -45,6 +45,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	private static final Logger logger = Logger.getLogger(TermGenieScriptRunner.class);
 
 	public static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
+	public static final String ASSERT_INFERERNCES_BOOLEAN_NAME = "TermGenieScriptRunnerAssertInferences";
 	
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
@@ -53,12 +54,14 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	private final String ontologyName;
 	private final ReasonerFactory factory;
 	private final boolean useIsInferred;
+	private final boolean assertInferences;
 
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates,
 			OntologyLoader loader,
 			ReasonerFactory factory,
-			@Named(USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred)
+			@Named(USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
+			@Named(ASSERT_INFERERNCES_BOOLEAN_NAME) boolean assertInferences)
 	{
 		super(false);
 		this.factory = factory;
@@ -68,6 +71,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		this.templates = templates;
 		this.scripts = new HashMap<TermTemplate, String>();
 		this.useIsInferred = useIsInferred;
+		this.assertInferences = assertInferences;
 		for (TermTemplate termTemplate : templates) {
 			scripts.put(termTemplate, loadScript(termTemplate));
 		}
@@ -250,7 +254,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				engine.put(ontologyName, graph);
 				
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred, assertInferences);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

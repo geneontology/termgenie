@@ -41,7 +41,7 @@ public class AnatomyTermGenieScriptTestRunner {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_anatomy.xml", false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_anatomy.xml", false, true, null),
 				new TestDefaultOntologyModule("ontology-configuration_anatomy.xml") {
 					@Override
 					protected void bindIRIMapper() {

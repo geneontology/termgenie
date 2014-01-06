@@ -40,7 +40,7 @@ public class PlantOntologyTest {
 	public static void beforeClass() {
 		List<String> ignoreMappings = Arrays.asList("http://purl.obolibrary.org/obo/po/releases/2013-05-27/po.owl", "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl");
 		
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_plant.xml", false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_plant.xml", false, true, null),
 				new XMLReloadingOntologyModule("ontology-configuration_plant.xml", ignoreMappings, null),
 				new ReasonerModule(null));
 

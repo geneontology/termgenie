@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.tools.Pair;
@@ -29,7 +28,7 @@ import owltools.graph.AxiomAnnotationTools;
 import owltools.graph.OWLGraphWrapper;
 
 
-public class InferAllRelationshipsTask implements ReasonerTask {
+public class InferAllRelationshipsTask implements RelationshipTask {
 	
 	private final OWLGraphWrapper ontology;
 	private final IRI iri;
@@ -115,6 +114,7 @@ public class InferAllRelationshipsTask implements ReasonerTask {
 	/**
 	 * @return the {@link InferredRelations}
 	 */
+	@Override
 	public final InferredRelations getInferredRelations() {
 		return result;
 	}

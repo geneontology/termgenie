@@ -39,7 +39,7 @@ public class UpdateRelationShipTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", true, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", true, true, null),
 				new TestDefaultOntologyModule() {
 
 					@Override

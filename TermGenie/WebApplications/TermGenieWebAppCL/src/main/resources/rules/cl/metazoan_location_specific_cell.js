@@ -3,7 +3,7 @@
 function metazoan_location_specific_cell() {
   var c = getSingleTerm("cell", CL);
   var a = getSingleTerm("location", CL);
-  if (c == null || a == null) {
+  if (c === null || a === null) {
     // check branch
     error("The specified terms do not correspond to the pattern");
     return;

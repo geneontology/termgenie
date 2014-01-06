@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
@@ -27,6 +27,8 @@ import org.bbop.termgenie.owl.CheckExistingTermsTask;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
 import org.bbop.termgenie.owl.OWLChangeTracker;
+import org.bbop.termgenie.owl.RelationshipTask;
+import org.bbop.termgenie.owl.SimpleRelationHandlingTask;
 import org.bbop.termgenie.rules.api.ChangeTracker;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsMDef.ExistingClasses;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsMDef.MDef;
@@ -62,6 +64,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	private final ManchesterSyntaxTool syntaxTool;
 	private final String targetOntologyId;
 	private final String tempIdPrefix;
+	private final boolean assertInferences;
 	private final boolean useIsInferred;
 	private final boolean requireLiteratureReference;
 	final ReasonerFactory factory;
@@ -91,7 +94,8 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			ManchesterSyntaxTool syntaxTool,
 			ProcessState state,
 			boolean requireLiteratureReference,
-			boolean useIsInferred)
+			boolean useIsInferred,
+			boolean assertInferences)
 	{
 		super();
 		this.input = input;
@@ -104,6 +108,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		this.tempIdPrefix = tempIdPrefix;
 		this.targetOntologyId = targetOntology.getOntologyId();
 		this.syntaxTool = syntaxTool;
+		this.assertInferences = assertInferences;
 		this.useIsInferred = useIsInferred;
 	}
 
@@ -207,7 +212,13 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		ReasonerTaskManager reasonerManager = factory.getDefaultTaskManager(targetOntology);
 		reasonerManager.setProcessState(state);
 		try {
-			InferAllRelationshipsTask task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
+			RelationshipTask task;
+			if (assertInferences) {
+				task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
+			}
+			else {
+				task = new SimpleRelationHandlingTask(targetOntology, iri, state);
+			}
 			reasonerManager.runManagedTask(task);
 			InferredRelations inferredRelations = task.getInferredRelations();
 			Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();

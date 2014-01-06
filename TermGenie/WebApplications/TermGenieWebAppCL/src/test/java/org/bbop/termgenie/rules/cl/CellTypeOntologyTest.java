@@ -3,9 +3,9 @@ package org.bbop.termgenie.rules.cl;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
@@ -25,10 +25,9 @@ import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
-import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -37,17 +36,13 @@ import com.google.inject.Injector;
 
 public class CellTypeOntologyTest {
 
-	private static boolean RENDER_TERMS = true;
-	
 	private static TermGenerationEngine generationEngine;
 	private static OntologyLoader loader;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		List<String> ignoreMappings = Arrays.asList("http://purl.obolibrary.org/obo/go.owl", "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl", "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl");
-		
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, null),
-				new XMLReloadingOntologyModule("ontology-configuration_cl.xml", ignoreMappings, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, false, null),
+				new XMLReloadingOntologyModule("ontology-configuration_cl.xml", null, null),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
@@ -56,37 +51,24 @@ public class CellTypeOntologyTest {
 	
 	
 	@Test
-	public void testPlantDevelopment() throws Exception {
-		String term = "CL:0011003"; // magnocellular neurosecretory cell
-		TermGenerationOutput output = generateSingle(term , getCellApotosisTemplate());
+	public void test() throws Exception {
+		String clTerm = "CL:0011003"; // magnocellular neurosecretory cell
+		String uberonTerm = "UBERON:0002028"; // hindbrain
+		TermGenerationOutput output = generateSingle(getTemplate("metazoan_location_specific_cell"), clTerm, uberonTerm);
+		
+		
+		Set<OWLAxiom> axioms = output.getOwlAxioms();
+		for (OWLAxiom owlAxiom : axioms) {
+			System.out.println(owlAxiom);
+		}
+		
 		Frame frame = output.getTerm();
 		renderFrame(frame);
 		
-		// check inferred specific parent
-		Collection<Clause> is_aClauses = frame.getClauses(OboFormatTag.TAG_IS_A);
-		assertEquals(1, is_aClauses.size());
-		assertEquals("GO:0051402", is_aClauses.iterator().next().getValue()); // neuron apoptotic process
-		
-		// check synonym count
-		Collection<Clause> synoyms = frame.getClauses(OboFormatTag.TAG_SYNONYM);
-		assertEquals(3, synoyms.size());
-		// check synonym scopes
-		int narrowCount = 0;
-		for (Clause clause : synoyms) {
-			Object syn = clause.getValue();
-			if (syn.toString().endsWith("apoptosis")) {
-				assertEquals("NARROW", clause.getValue2());
-				narrowCount += 1;
-			}
-			else {
-				assertEquals("EXACT", clause.getValue2());
-			}
-		}
-		assertEquals(2, narrowCount);
 	}
 	
-	private TermGenerationOutput generateSingle(String term, TermTemplate template) {
-		List<TermGenerationOutput> list = generate(term , template);
+	private TermGenerationOutput generateSingle(TermTemplate template, String...ids) {
+		List<TermGenerationOutput> list = generate(template, ids);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
@@ -94,11 +76,13 @@ public class CellTypeOntologyTest {
 		return output;
 	}
 	
-	private List<TermGenerationOutput> generate(String term, TermTemplate template) {
+	private List<TermGenerationOutput> generate(TermTemplate template, String...ids) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
-		TemplateField field = template.getFields().get(0);
-		parameters.setTermValues(field.getName(), Arrays.asList(term)); 
-	
+		List<TemplateField> fields = template.getFields();
+		for (int i = 0; i < ids.length; i++) {
+			TemplateField field = fields.get(i);
+			parameters.setTermValues(field.getName(), Arrays.asList(ids[i])); 
+		}
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
@@ -107,15 +91,18 @@ public class CellTypeOntologyTest {
 		return list;
 	}
 	
-	private TermTemplate getCellApotosisTemplate() {
-		List<TermTemplate> availableTemplates = generationEngine.getAvailableTemplates();
-		return availableTemplates.get(0);
+	private TermTemplate getTemplate(String name) {
+		List<TermTemplate> templates = generationEngine.getAvailableTemplates();
+		for (TermTemplate template : templates) {
+			String currentName = template.getName();
+			if (name.equals(currentName)) {
+				return template;
+			}
+		}
+		throw new RuntimeException("No template found with name: "+name);
 	}
 	
 	private void renderFrame(final Frame frame) throws InvalidManagedInstanceException  {
-		if (RENDER_TERMS == false) {
-			return;
-		}
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
