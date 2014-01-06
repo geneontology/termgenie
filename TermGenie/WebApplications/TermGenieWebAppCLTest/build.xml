@@ -1,0 +1,43 @@
+<project name="TermGenieWebAppBattoTest" basedir="." default="copywebapp">
+	<property name="workdir" location="work"/>
+	<property name="webapp.prepare" location="prepare"/>
+	<property name="webapp.target" location="${workdir}/ant-webapp"/>
+	<property name="webapp.svn" location="${workdir}/svn"/>
+	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
+	<property name="webapp.db" location="${workdir}/termgenie-batto-db"/>
+	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
+	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
+	<property name="webappcl" location="../TermGenieWebAppCL/src/main/webapp"/>
+	<property name="webapplocal" location="src/main/webapp"/>
+	
+	<target name="copywebapp">
+		<mkdir dir="${webapp.target}"/>
+		<copy todir="${webapp.target}">
+			<fileset dir="${webappjquery}">
+				<exclude name="**/web.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${webapp.target}">
+			<fileset dir="${webappcl}">
+				<exclude name="**/web.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${webapp.target}" overwrite="true">
+			<fileset dir="${webapplocal}"/>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${webapp.target}"/>
+		<delete dir="${webapp.svn}"/>
+		<delete dir="${webapp.db}"/>
+		<!--
+		<delete dir="${webapp.cache}"/>
+		-->
+		<delete dir="${webapp.checkout}"/>
+	</target>
+	
+	<target name="createsvn">
+		<exec executable="${webapp.prepare}/create_svn.sh" dir="${webapp.prepare}"></exec>
+	</target>
+</project>
