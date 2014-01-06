@@ -1,34 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
-	<ontology name="GeneOntology">
-		<source>http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo
-		</source>
-		<roots>
-			<root>GO:0008150</root>
-			<root>GO:0003674</root>
-			<root>GO:0005575</root>
-		</roots>
-		<ontologybranch name="macromolecular_complex">
-			<roots>
-				<root>GO:0032991</root>
-			</roots>
-		</ontologybranch>
-	</ontology>
-	<ontology name="ProteinOntology">
-		<source>ftp://ftp.pir.georgetown.edu/databases/ontology/pro_obo/pro.obo</source>
-		<roots>
-			<root>PR:000000001</root>
-		</roots>
-	</ontology>
-	<ontology name="Uberon">
-		<source>http://github.com/cmungall/uberon/raw/master/uberon.obo</source>
-		<roots>
-			<root>UBERON:0001062</root>
-		</roots>
-	</ontology>
 	<ontology name="CL" longName="Cell (Type) Ontology">
-		<source>http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo</source>
+		<source>http://purl.obolibrary.org/obo/cl.owl</source>
 		<roots>
 			<root>CL:0000000</root>
 		</roots>

@@ -7,22 +7,22 @@
 	<property name="webapp.db" location="${workdir}/termgenie-batto-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
 	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
-	<property name="webappcl" location="../TermGenieWebAppCL/src/main/webapp"/>
+	<property name="webappparent" location="../TermGenieWebAppCL/src/main/webapp"/>
 	<property name="webapplocal" location="src/main/webapp"/>
 	
 	<target name="copywebapp">
 		<mkdir dir="${webapp.target}"/>
-		<copy todir="${webapp.target}">
+		<copy todir="${webapptarget}">
 			<fileset dir="${webappjquery}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>
-		<copy todir="${webapp.target}">
-			<fileset dir="${webappcl}">
+		<copy todir="${webapptarget}" overwrite="true">
+			<fileset dir="${webappparent}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>
-		<copy todir="${webapp.target}" overwrite="true">
+		<copy todir="${webapptarget}" overwrite="true">
 			<fileset dir="${webapplocal}"/>
 		</copy>
 	</target>
@@ -31,9 +31,6 @@
 		<delete dir="${webapp.target}"/>
 		<delete dir="${webapp.svn}"/>
 		<delete dir="${webapp.db}"/>
-		<!--
-		<delete dir="${webapp.cache}"/>
-		-->
 		<delete dir="${webapp.checkout}"/>
 	</target>
 	
