@@ -1,0 +1,97 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>TermGenie Cell (Type) Ontology Web Application</title>
+
+<link rel="stylesheet" href="css/base/jquery-ui.css">
+<link type="text/css" rel="stylesheet" href="css/TermGenie.css">
+<script type="text/javascript" src="js/jquery/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui.custom.js"></script>
+<script type="text/javascript" src="js/jquery/ui-plugins/jquery.ui.extendedautocomplete.js"></script>
+<script type="text/javascript" src="js/jquery/ui-plugins/jquery.ui.extendedcombobox.js"></script>
+<script type="text/javascript" src="js/jquery/ui-plugins/termgenie-logging.js"></script>
+<script type="text/javascript" src="js/jsonrpc.js"></script>
+<script type="text/javascript" src="https://browserid.org/include.js"></script>
+<script type="text/javascript" src="js/jstree/jquery.jstree.js"></script>
+<script type="text/javascript" src="js/termgenie.js"></script>
+<script type="text/javascript" src="js/termgenie-session.js"></script>
+<script type="text/javascript" src="js/termgenie-login.js"></script>
+</head>
+
+<body>
+	<noscript>
+		<div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+			Your web browser must have JavaScript enabled in order for this
+			application to work correctly.</div>
+	</noscript>
+	<div class="mainbody">
+		<h1>TermGenie</h1>
+		<div class="tooldescription">This TermGenie instance is a tool for creating new terms for CL. 
+		It uses a pattern-based approach to rapidly generate new terms and place them appropriately 
+		within the ontology structure. All terms are reviewed by a senior editor before the final 
+		commit to the ontology.
+		</div>
+		<div id="accordion">
+			<h3><a class="myClickable"><b>Step 1:</b> Target Ontology <span id="span-step1-additional-header"></span></a></h3>
+			<div>
+				<span class="instructions">The first step is to select the
+					ontology for which the terms shall be generated.</span>
+				<div id="div-select-ontology"></div>
+			</div>
+			
+			<h3><a class="myClickable"><b>Step 2:</b> Templates <span id="span-step2-additional-header"></span></a></h3>
+			<div>
+				<span class="instructions">Once you have selected the
+						ontology, the available term generation patterns can be selected
+						from a menu.</span>
+				<div id="div-select-templates-and-parameters"></div>
+				<div class="div-submit-button">
+					<span>After selecting and filling templates, click on 
+					the 'Verify Input'-Button below to start the next step.</span>
+					<div style="margin-top:5px;"> 
+						<button type="button" id="button-termgeneration-start">Verify Input</button>
+						<div id="button-termgeneration-start-progress"></div>
+					</div>
+				</div>
+			</div>
+			
+			<h3><a class="myClickable"><b>Step 3:</b> Review and Submit <span id="span-step3-additional-header"></span></a></h3>
+			<div>
+				<div id="div-verification-and-review"></div>
+				<div id="div-step3-submit-panel" style="margin-top: 10px; display: none;">
+					<span class="textHint">Note:</span>
+					<span class="instructions">To submit the terms for review to the ontology 
+						a valid user name and password are required.<br/>
+						If 'Submit for Review' is disabled the generated terms are not commited and formated for export in the following step.</span>
+					<div>
+						<table>
+							<tbody>
+								<tr>
+									<td><button type="button" id="button-submit-for-commit-or-export">Preview</button></td>
+									<td><input type="checkbox" id="checkbox-try-commit" /> Submit for Review</td>
+								</tr>
+								<tr id="div-checkbox-send-submit-email">
+									<td></td>
+									<td><input type="checkbox" id="checkbox-send-submit-email" /> Send confirmation e-mail and details of requested terms</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<h3><a class="myClickable"><b>Step 4:</b> Final matters <span id="span-step4-additional-header"></span></a></h3>
+			<div>
+				<div id="termgenie-step4-content-container"></div>
+			</div>
+		</div>
+	</div>
+	<div style="font-size:8pt;text-align:center;margin-top:10px;">
+		<div>Impressum</div>
+		<div style="font-size:6pt;margin-top:5px;"><a id="termgenie-error-console-link">Error Console</a></div>
+	</div>
+</body>
+</html>

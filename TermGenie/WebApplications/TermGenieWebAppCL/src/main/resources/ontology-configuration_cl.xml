@@ -3,8 +3,48 @@
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="CL" longName="Cell (Type) Ontology">
 		<source>http://purl.obolibrary.org/obo/cl.owl</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go.owl</support>
+			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
+		</supports>
 		<roots>
-			<root>CL:0000000</root>
+			<root>GO:0008150</root>		<!-- biological_process -->
+			<root>GO:0003674</root>		<!-- molecular_function -->
+			<root>GO:0005575</root>		<!-- cellular_component -->
+			<root>CL:0000003</root> 	<!-- native cell -->
+			<root>UBERON:0001062</root> <!-- anatomical entity -->
 		</roots>
+		<ontologybranch name="biological_process">
+			<roots>
+				<root>GO:0008150</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="molecular_function">
+			<roots>
+				<root>GO:0003674</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="cellular_component">
+			<roots>
+				<root>GO:0005575</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="go">
+			<roots>
+				<root>GO:0008150</root>
+				<root>GO:0003674</root>
+				<root>GO:0005575</root>
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="native_cell">
+			<roots>
+				<root>CL:0000003</root> <!-- native cell -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="uberon">
+			<roots>
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
+			</roots>
+		</ontologybranch>
 	</ontology>
 </ontologyconfiguration>

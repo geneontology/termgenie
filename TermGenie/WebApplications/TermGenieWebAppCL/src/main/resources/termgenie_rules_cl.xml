@@ -7,10 +7,14 @@
 		<obonamespace>cell</obonamespace>
 		<fields>
 			<field name="cell" required="true">
-				<ontology name="CL"/>
+				<ontology name="CL">
+					<branch>native_cell</branch>
+				</ontology>
 			</field>
 			<field name="location" required="true">
-				<ontology name="Uberon"/>
+				<ontology name="CL">
+					<branch>uberon</branch>
+				</ontology>
 			</field>
 			<field name="Name" />
 			<field name="Definition" />
@@ -24,6 +28,7 @@
 		</ruleFiles>
 	</template>
 
+	<!-- 
 	<template name="cell_by_surface_marker">
 		<description>A cell type differentiated by proteins or complexes on the plasma membrane</description>
 		<obonamespace>cell</obonamespace>
@@ -48,4 +53,5 @@
 			<ruleFile>rules/cl/cell_by_surface_marker.js</ruleFile>
 		</ruleFiles>
 	</template>
+	 -->
 </termgenietemplates>
