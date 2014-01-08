@@ -10,7 +10,6 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
@@ -40,7 +39,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 			ReviewMailHandler handler,
 			OboScmHelper helper)
 	{
-		super(source, store, termFilter, handler, helper.isSupportAnonymus());
+		super(source, store, termFilter, handler);
 		this.helper = helper;
 		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
 	}
@@ -98,12 +97,9 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 	}
 
 	@Override
-	protected VersionControlAdapter prepareSCM(CommitMode mode,
-			String username,
-			String password,
-			OboCommitData data) throws CommitException
+	protected VersionControlAdapter prepareSCM(OboCommitData data) throws CommitException
 	{
-		return helper.createSCM(mode, username, password, data.getScmFolder());
+		return helper.createSCM(data.getScmFolder());
 	}
 
 	@Override
@@ -139,21 +135,6 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 			throws CommitException
 	{
 		helper.commitToRepository(commitMessage, scm, diff, state);
-	}
-
-	@Override
-	protected CommitMode getCommitMode() {
-		return helper.getCommitMode();
-	}
-
-	@Override
-	protected String getCommitUserName() {
-		return helper.getCommitUserName();
-	}
-
-	@Override
-	protected String getCommitPassword() {
-		return helper.getCommitPassword();
 	}
 
 	@Override

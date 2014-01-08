@@ -14,7 +14,6 @@ import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
@@ -48,19 +47,16 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	private final CommitHistoryStore store;
 	private final TermFilter<ONTOLOGY> termFilter;
 	private final ReviewMailHandler handler;
-	private final boolean supportAnonymus;
 
 	protected OntologyCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<ONTOLOGY> termFilter,
-			ReviewMailHandler handler,
-			boolean supportAnonymus)
+			ReviewMailHandler handler)
 	{
 		super();
 		this.source = source;
 		this.termFilter = termFilter;
 		this.handler = handler;
-		this.supportAnonymus = supportAnonymus;
 		this.store = store;
 	}
 
@@ -116,21 +112,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	{
 		// check commit info mode
 		if (historyIds != null && !historyIds.isEmpty()) {
-			CommitMode mode = getCommitMode();
-			String username = getCommitUserName();
-			String password = getCommitPassword();
-			if (mode == CommitMode.explicit) {
-				if (username == null) {
-					throw new CommitException("If explicit mode is selected, an username is required.", true);
-				}
-				if (password == null) {
-					throw new CommitException("If explicit mode is selected, a password is required.", true);
-				}
-			}
-			else if (mode == CommitMode.anonymus && !supportAnonymus) {
-				throw new CommitException("Anonymus mode is not supported for the commit.", true);
-			}
-			return commitInternal(historyIds, mode, username, password, state);
+			return commitInternal(historyIds, state);
 		}
 		return Collections.singletonList(CommitResult.ERROR);
 	}
@@ -168,23 +150,14 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		
 	}
 
-	protected abstract CommitMode getCommitMode();
-	
-	protected abstract String getCommitUserName();
-	
-	protected abstract String getCommitPassword();
-	
 	private List<CommitResult> commitInternal(List<Integer> historyIds,
-			CommitMode mode,
-			String username,
-			String password,
 			ProcessState state) throws CommitException
 	{
 		// setup temporary work folder
 		final WorkFolders workFolders = createTempDir();
 
 		try {
-			return commitInternal(historyIds, mode, username, password, workFolders, state);
+			return commitInternal(historyIds, workFolders, state);
 		}
 		finally {
 			// delete temp folder
@@ -235,14 +208,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	}
 
 	private List<CommitResult> commitInternal(List<Integer> historyIds,
-			CommitMode mode,
-			String username,
-			String password,
 			final WorkFolders workFolders, 
 			final ProcessState state) throws CommitException
 	{
 		ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
-		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, mode, username, password, workFolders, handler, state);
+		CommittingNameProviderTask task = new CommittingNameProviderTask(historyIds, workFolders, handler, state);
 		try {
 			source.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -258,9 +228,6 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	private class CommittingNameProviderTask implements ManagedTask<OWLGraphWrapper> {
 
 		private final List<Integer> historyIds;
-		private final CommitMode mode;
-		private final String username;
-		private final String password;
 		private final WorkFolders workFolders;
 		private final ProcessState state;
 		private final ReviewMailHandler handler;
@@ -268,17 +235,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		private CommitException exception;
 
 		CommittingNameProviderTask(List<Integer> historyIds,
-				CommitMode mode,
-				String username,
-				String password,
 				final WorkFolders workFolders,
 				ReviewMailHandler handler,
 				final ProcessState state)
 		{
 			this.historyIds = historyIds;
-			this.mode = mode;
-			this.username = username;
-			this.password = password;
 			this.workFolders = workFolders;
 			this.handler = handler;
 			this.state = state;
@@ -290,7 +251,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 				ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
 				WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
 
-				VersionControlAdapter scm = prepareSCM(mode, username, password, data);
+				VersionControlAdapter scm = prepareSCM(data);
 
 				ProcessState.addMessage(state, "Preparing target ontology.");
 				List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data, state);
@@ -479,17 +440,11 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	/**
 	 * Prepare the SCM module for retrieving the target ontology.
 	 * 
-	 * @param mode
-	 * @param username
-	 * @param password
 	 * @param data
 	 * @return SCM
 	 * @throws CommitException
 	 */
-	protected abstract VersionControlAdapter prepareSCM(CommitMode mode,
-			String username,
-			String password,
-			WORKFLOWDATA data) throws CommitException;
+	protected abstract VersionControlAdapter prepareSCM(WORKFLOWDATA data) throws CommitException;
 
 	/**
 	 * Update the scm content from the repository

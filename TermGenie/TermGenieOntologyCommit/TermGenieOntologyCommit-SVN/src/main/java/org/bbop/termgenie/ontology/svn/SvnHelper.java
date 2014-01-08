@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -50,43 +49,10 @@ public class SvnHelper {
 		}
 
 		@Override
-		public VersionControlAdapter createSCM(CommitMode commitMode,
-				String username,
-				String password,
-				File svnFolder)
+		public VersionControlAdapter createSCM(File svnFolder)
 		{
-			String realUsername;
-			String realPassword;
-			if (commitMode == CommitMode.internal) {
-				realUsername = svnUsername;
-				realPassword = svnPassword;
-			}
-			else {
-				realUsername = username;
-				realPassword = password;
-			}
-			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, realUsername, realPassword, svnConfigDir, svnLoadExternals);
+			SvnTool svn = SvnTool.createUsernamePasswordSVN(svnFolder, svnRepository, svnUsername, svnPassword, svnConfigDir, svnLoadExternals);
 			return svn;
-		}
-
-		@Override
-		public boolean isSupportAnonymus() {
-			return false;
-		}
-
-		@Override
-		public CommitMode getCommitMode() {
-			return CommitMode.explicit;
-		}
-
-		@Override
-		public String getCommitUserName() {
-			return svnUsername;
-		}
-
-		@Override
-		public String getCommitPassword() {
-			return svnPassword;
 		}
 	}
 
@@ -112,33 +78,11 @@ public class SvnHelper {
 		}
 
 		@Override
-		public VersionControlAdapter createSCM(CommitMode commitMode,
-				String username,
-				String password,
-				File svnFolder) throws CommitException
+		public VersionControlAdapter createSCM(File svnFolder) throws CommitException
 		{
 			return SvnTool.createAnonymousSVN(svnFolder, svnRepository, svnConfigDir, svnLoadExternals);
 		}
 
-		@Override
-		public boolean isSupportAnonymus() {
-			return true;
-		}
-
-		@Override
-		public CommitMode getCommitMode() {
-			return CommitMode.anonymus;
-		}
-
-		@Override
-		public String getCommitUserName() {
-			return null; // no username
-		}
-
-		@Override
-		public String getCommitPassword() {
-			return null; // no password
-		}
 	}
 
 	@Singleton
@@ -172,44 +116,12 @@ public class SvnHelper {
 		}
 	
 		@Override
-		public VersionControlAdapter createSCM(CommitMode commitMode,
-				String username,
-				String password,
-				File svnFolder)
+		public VersionControlAdapter createSCM(File svnFolder)
 		{
-			String realUsername;
-			String realPassword;
-			if (commitMode == CommitMode.internal) {
-				realUsername = svnUsername;
-				realPassword = svnPassword;
-			}
-			else {
-				realUsername = username;
-				realPassword = password;
-			}
-			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, realUsername, svnKeyFile, realPassword, svnConfigDir, svnLoadExternals);
+			SvnTool svn = SvnTool.createSSHKeySVN(svnFolder, svnRepository, svnUsername, svnKeyFile, svnPassword, svnConfigDir, svnLoadExternals);
 			return svn;
 		}
 	
-		@Override
-		public boolean isSupportAnonymus() {
-			return false;
-		}
-	
-		@Override
-		public CommitMode getCommitMode() {
-			return CommitMode.explicit;
-		}
-	
-		@Override
-		public String getCommitUserName() {
-			return svnUsername;
-		}
-	
-		@Override
-		public String getCommitPassword() {
-			return svnPassword;
-		}
 	}
 
 	private SvnHelper() {

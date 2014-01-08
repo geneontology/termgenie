@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
@@ -59,14 +58,6 @@ public abstract class OboScmHelper {
 		}
 		loader = new DirectOntologyLoader(iriMapper);
 	}
-
-	public abstract boolean isSupportAnonymus();
-
-	public abstract CommitMode getCommitMode();
-
-	public abstract String getCommitUserName();
-
-	public abstract String getCommitPassword();
 
 	public static class OboCommitData implements OntologyCommitPipelineData {
 
@@ -109,10 +100,7 @@ public abstract class OboScmHelper {
 		return data;
 	}
 
-	public abstract VersionControlAdapter createSCM(CommitMode commitMode,
-			String username,
-			String password,
-			File scmFolder) throws CommitException;
+	public abstract VersionControlAdapter createSCM(File scmFolder) throws CommitException;
 
 	public List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data, ProcessState state)
 			throws CommitException

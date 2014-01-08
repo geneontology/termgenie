@@ -27,7 +27,6 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.IRIMapper;
@@ -429,30 +428,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		}
 
 		@Override
-		public boolean isSupportAnonymus() {
-			return false;
-		}
-
-		@Override
-		public String getCommitUserName() {
-			return "";
-		}
-
-		@Override
-		public String getCommitPassword() {
-			return "";
-		}
-
-		@Override
-		public CommitMode getCommitMode() {
-			return CommitMode.internal;
-		}
-
-		@Override
-		public VersionControlAdapter createSCM(CommitMode commitMode,
-				String username,
-				String password,
-				File scmFolder) throws CommitException
+		public VersionControlAdapter createSCM(File scmFolder) throws CommitException
 		{
 			return new SvnTool(scmFolder, repositoryURL, authManager, true);
 		}

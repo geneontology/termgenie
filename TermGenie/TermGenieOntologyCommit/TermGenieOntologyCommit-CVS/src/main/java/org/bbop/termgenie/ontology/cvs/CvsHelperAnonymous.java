@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bbop.termgenie.cvs.CvsTools;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -28,31 +27,9 @@ public final class CvsHelperAnonymous extends OboScmHelper {
 	}
 
 	@Override
-	public VersionControlAdapter createSCM(CommitMode commitMode,
-			String username,
-			String password,
-			File cvsFolder) throws CommitException
+	public VersionControlAdapter createSCM(File cvsFolder) throws CommitException
 	{
 		return new CvsTools(cvsRoot, null, cvsFolder);
 	}
 
-	@Override
-	public boolean isSupportAnonymus() {
-		return true;
-	}
-
-	@Override
-	public CommitMode getCommitMode() {
-		return CommitMode.anonymus;
-	}
-
-	@Override
-	public String getCommitUserName() {
-		return null; // encoded in the cvs root
-	}
-
-	@Override
-	public String getCommitPassword() {
-		return null; // no password
-	}
 }

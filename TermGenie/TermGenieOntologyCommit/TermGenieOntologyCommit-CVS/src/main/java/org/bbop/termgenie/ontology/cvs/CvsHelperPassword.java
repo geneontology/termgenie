@@ -3,7 +3,6 @@ package org.bbop.termgenie.ontology.cvs;
 import java.io.File;
 
 import org.bbop.termgenie.cvs.CvsTools;
-import org.bbop.termgenie.ontology.CommitInfo.CommitMode;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -30,39 +29,9 @@ public final class CvsHelperPassword extends OboScmHelper {
 	}
 
 	@Override
-	public VersionControlAdapter createSCM(CommitMode commitMode,
-			String username,
-			String password,
-			File cvsFolder)
+	public VersionControlAdapter createSCM(File cvsFolder)
 	{
-		String realPassword;
-		if (commitMode == CommitMode.internal) {
-			realPassword = cvsPassword;
-		}
-		else {
-			realPassword = password;
-		}
-		CvsTools cvs = new CvsTools(cvsRoot, realPassword, cvsFolder);
+		CvsTools cvs = new CvsTools(cvsRoot, cvsPassword, cvsFolder);
 		return cvs;
-	}
-
-	@Override
-	public boolean isSupportAnonymus() {
-		return false;
-	}
-
-	@Override
-	public CommitMode getCommitMode() {
-		return CommitMode.explicit;
-	}
-
-	@Override
-	public String getCommitUserName() {
-		return ""; // encoded in the cvs root
-	}
-
-	@Override
-	public String getCommitPassword() {
-		return cvsPassword;
 	}
 }
