@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
@@ -16,6 +17,7 @@ import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitHistoryStore.CommitHistoryStoreException;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.ScmHelper.ScmCommitData;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
@@ -32,13 +34,13 @@ import difflib.Patch;
  * Main steps for directly committing ontology changes to an ontology file in an
  * SCM repository.
  * 
- * @param <WORKFLOWDATA> the data during the commit process
  * @param <ONTOLOGY> the type of target ontology
  */
-public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends OntologyCommitPipelineData, ONTOLOGY> implements
+public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		OntologyCommitReviewPipelineStages.AfterReview,
 		OntologyCommitReviewPipelineStages.BeforeReview,
-		Committer
+		Committer,
+		OntologyCommitReviewPipelineStages
 {
 	private static final Logger logger = Logger.getLogger(OntologyCommitReviewPipeline.class);
 	
@@ -47,19 +49,39 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	private final CommitHistoryStore store;
 	private final TermFilter<ONTOLOGY> termFilter;
 	private final ReviewMailHandler handler;
+	private final ScmHelper<ONTOLOGY> scmHelper;
+	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	protected OntologyCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<ONTOLOGY> termFilter,
-			ReviewMailHandler handler)
+			ReviewMailHandler handler,
+			ScmHelper<ONTOLOGY> scmHelper)
 	{
 		super();
 		this.source = source;
 		this.termFilter = termFilter;
 		this.handler = handler;
 		this.store = store;
+		this.scmHelper = scmHelper;
+		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
 	}
 
+	@Override
+	public Committer getReviewCommitter() {
+		return this;
+	}
+
+	@Override
+	public BeforeReview getBeforeReview() {
+		return this;
+	}
+	
+	@Override
+	public final GenericTaskManager<AfterReview> getAfterReview() {
+		return afterReviewTaskManager;
+	}
+	
 	@Override
 	public CommitResult commit(CommitInfo commitInfo) throws CommitException {
 		try {
@@ -249,7 +271,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		public Modified run(OWLGraphWrapper graph) {
 			try {
 				ProcessState.addMessage(state, "Preparing to commit "+historyIds.size()+" items.");
-				WORKFLOWDATA data = prepareWorkflow(workFolders.workFolder);
+				ScmCommitData data = prepareWorkflow(workFolders.workFolder);
 
 				VersionControlAdapter scm = prepareSCM(data);
 
@@ -303,10 +325,10 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 			List<ONTOLOGY> targetOntologies,
 			OWLGraphWrapper graph,
 			VersionControlAdapter scm,
-			WORKFLOWDATA data) throws CommitException
+			ScmCommitData data) throws CommitException
 	{
 		ProcessState.addMessage(state, "Updating target ontology from repository.");
-		updateSCM(scm, targetOntologies, data, state);
+		updateSCM(scm, state);
 
 		ProcessState.addMessage(state, "Apply changes for commit item #'"+item.getId()+"' to ontology.");
 		
@@ -385,7 +407,7 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		// commit the changes to the repository
 		ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
 		String diff = diffBuilder.toString();
-		commitToRepository(item.getCommitMessage(), scm, data, diff, state);
+		commitToRepository(item.getCommitMessage(), scm, diff, state);
 		ProcessState.addMessage(state, "Successfull commit of patch", diff);
 
 		// set the commit also to success in the commit history
@@ -426,86 +448,45 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 		}
 	}
 
-	/**
-	 * Prepare the work-flow and its associated data. This includes also the
-	 * setup of sub folders.
-	 * 
-	 * @param workFolder
-	 * @param nameProvider
-	 * @return WORKFLOWDATA
-	 * @throws CommitException
-	 */
-	protected abstract WORKFLOWDATA prepareWorkflow(File workFolder) throws CommitException;
+	private ScmCommitData prepareWorkflow(File workFolder) throws CommitException {
+		return scmHelper.prepareWorkflow(workFolder);
+	}
 
-	/**
-	 * Prepare the SCM module for retrieving the target ontology.
-	 * 
-	 * @param data
-	 * @return SCM
-	 * @throws CommitException
-	 */
-	protected abstract VersionControlAdapter prepareSCM(WORKFLOWDATA data) throws CommitException;
+	private VersionControlAdapter prepareSCM(ScmCommitData data) throws CommitException
+	{
+		return scmHelper.createSCM(data.getScmFolder());
+	}
 
-	/**
-	 * Update the scm content from the repository
-	 * 
-	 * @param scm
-	 * @param targetOntology
-	 * @param data
-	 * @throws CommitException
-	 */
-	protected abstract void updateSCM(VersionControlAdapter scm, List<ONTOLOGY> targetOntologies, WORKFLOWDATA data, ProcessState state)
-			throws CommitException;
+	private void updateSCM(VersionControlAdapter scm, ProcessState state)
+			throws CommitException
+	{
+		scmHelper.updateSCM(scm, state);
+	}
 
-	/**
-	 * Retrieve the target ontology and load it into memory.
-	 * 
-	 * @param data
-	 * @return ONTOLOGY
-	 * @throws CommitException
-	 */
-	protected abstract List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, WORKFLOWDATA data, ProcessState state)
-			throws CommitException;
+	private List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, ScmCommitData data, ProcessState state)
+			throws CommitException
+	{
+		return scmHelper.retrieveTargetOntologies(scm, data, state);
+	}
 
-	/**
-	 * Apply the given changes to the ontology.
-	 * 
-	 * @param data
-	 * @param terms
-	 * @param ontology
-	 * @return true, if the changes have been applied successfully
-	 * @throws CommitException
-	 */
-	protected abstract boolean applyChanges(WORKFLOWDATA data,
-			List<CommitedOntologyTerm> terms,
-			ONTOLOGY ontology) throws CommitException;
+	protected boolean applyChanges(ScmCommitData data, List<CommitedOntologyTerm> terms, ONTOLOGY ontology)
+			throws CommitException
+	{
+		return scmHelper.applyHistoryChanges(data, terms, ontology);
+	}
 
-	/**
-	 * Write the ontology to file.
-	 * 
-	 * @param data
-	 * @param ontologies
-	 * @param savedBy
-	 * @throws CommitException
-	 */
-	protected abstract void createModifiedTargetFiles(WORKFLOWDATA data, List<ONTOLOGY> ontologies, OWLGraphWrapper graph, String savedBy)
-			throws CommitException;
+	private void createModifiedTargetFiles(ScmCommitData data, List<ONTOLOGY> ontology, OWLGraphWrapper graph, String savedBy)
+			throws CommitException
+	{
+		scmHelper.createModifiedTargetFiles(data, ontology, graph, savedBy);
+	}
 
-	/**
-	 * Execute the commit using the SCM tool.
-	 * 
-	 * @param username
-	 * @param scm
-	 * @param data
-	 * @param diff
-	 * @throws CommitException
-	 */
-	protected abstract void commitToRepository(String username,
-			VersionControlAdapter scm,
-			WORKFLOWDATA data,
-			String diff, 
-			ProcessState state) throws CommitException;
-
+	private void commitToRepository(String commitMessage, VersionControlAdapter scm, String diff, ProcessState state)
+			throws CommitException
+	{
+		scmHelper.commitToRepository(commitMessage, scm, diff, state);
+	}
+	
 	private CharSequence createUnifiedDiff(File originalFile,
 			File revisedFile,
 			String originalName,
@@ -547,41 +528,13 @@ public abstract class OntologyCommitReviewPipeline<WORKFLOWDATA extends Ontology
 	}
 
 	protected CommitException error(String message, Throwable exception) {
-		return error(message, exception, false, getClass());
+		logger.warn(message, exception);
+		return new CommitException(message, exception, false);
 	}
 
 	protected CommitException error(String message) {
-		return error(message, false, getClass());
+		logger.warn(message);
+		return new CommitException(message, false);
 	}
 	
-	public static CommitException error(String message, Throwable exception, boolean rollback, Class<?> cls) {
-		Logger.getLogger(cls).warn(message, exception);
-		return new CommitException(message, exception, rollback);
-	}
-
-	public static CommitException error(String message, boolean rollback, Class<?> cls) {
-		Logger.getLogger(cls).warn(message);
-		return new CommitException(message, rollback);
-	}
-
-	protected File createFolder(final File workFolder, String name) throws CommitException {
-		final File folder;
-		try {
-			folder = new File(workFolder, name);
-			FileUtils.forceMkdir(folder);
-		} catch (IOException exception) {
-			String message = "Could not create working directory " + name + " for the commit";
-			throw error(message, exception);
-		}
-		return folder;
-	}
-
-	protected void copyFileForCommit(File source, File target) throws CommitException {
-		try {
-			FileUtils.copyFile(source, target);
-		} catch (IOException exception) {
-			String message = "Could not write ontology changes to commit file";
-			throw new CommitException(message, exception, true);
-		}
-	}
 }

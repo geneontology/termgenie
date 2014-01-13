@@ -1,47 +1,32 @@
 package org.bbop.termgenie.ontology.obo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
-import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.mail.review.ReviewMailHandler;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryStore;
-import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
-import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.obo.OboWriterTools;
-import org.bbop.termgenie.ontology.obo.OboScmHelper.OboCommitData;
-import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.OBODoc;
 
 import owltools.graph.OWLGraphWrapper;
 
-public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCommitData, OBODoc> implements
-		OntologyCommitReviewPipelineStages
+public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OBODoc>
 {
-
-	protected final OboScmHelper helper;
-	private final AfterReviewTaskManager afterReviewTaskManager;
-
 	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<OBODoc> termFilter,
 			ReviewMailHandler handler,
 			OboScmHelper helper)
 	{
-		super(source, store, termFilter, handler);
-		this.helper = helper;
-		this.afterReviewTaskManager = new AfterReviewTaskManager("AfterReviewTaskManager", this);
+		super(source, store, termFilter, handler, helper);
 	}
 
 	@Override
@@ -88,107 +73,6 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OboCom
 				}
 				diff = OboWriterTools.writeTerms(ids, oboDoc);
 			}
-		}
-	}
-
-	@Override
-	protected OboCommitData prepareWorkflow(File workFolder) throws CommitException {
-		return helper.prepareWorkflow(workFolder);
-	}
-
-	@Override
-	protected VersionControlAdapter prepareSCM(OboCommitData data) throws CommitException
-	{
-		return helper.createSCM(data.getScmFolder());
-	}
-
-	@Override
-	protected void updateSCM(VersionControlAdapter scm, List<OBODoc> targetOntologies, OboCommitData data, ProcessState state)
-			throws CommitException
-	{
-		helper.updateSCM(scm, state);
-	}
-
-	@Override
-	protected List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data, ProcessState state)
-			throws CommitException
-	{
-		return helper.retrieveTargetOntologies(scm, data, state);
-	}
-
-	@Override
-	protected boolean applyChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc ontology)
-			throws CommitException
-	{
-		return helper.applyHistoryChanges(data, terms, ontology);
-	}
-
-	@Override
-	protected void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontology, OWLGraphWrapper graph, String savedBy)
-			throws CommitException
-	{
-		helper.createModifiedTargetFiles(data, ontology, graph, savedBy);
-	}
-
-	@Override
-	protected void commitToRepository(String commitMessage, VersionControlAdapter scm, OboCommitData data, String diff, ProcessState state)
-			throws CommitException
-	{
-		helper.commitToRepository(commitMessage, scm, diff, state);
-	}
-
-	@Override
-	public Committer getReviewCommitter() {
-		return this;
-	}
-
-	@Override
-	public BeforeReview getBeforeReview() {
-		return this;
-	}
-
-	@Override
-	public GenericTaskManager<AfterReview> getAfterReview() {
-		return afterReviewTaskManager;
-	}
-
-	
-	private static class AfterReviewTaskManager extends GenericTaskManager<AfterReview> {
-
-		private final AfterReview instance;
-		
-		/**
-		 * @param name
-		 * @param instance
-		 */
-		private AfterReviewTaskManager(String name, AfterReview instance) {
-			super(name);
-			this.instance = instance;
-		}
-
-		@Override
-		protected AfterReview createManaged() {
-			return instance;
-		}
-
-		@Override
-		protected AfterReview updateManaged(AfterReview managed) {
-			return instance;
-		}
-
-		@Override
-		protected AfterReview resetManaged(AfterReview managed) {
-			return instance;
-		}
-
-		@Override
-		protected void setChanged(boolean reset) {
-			// do nothing
-		}
-
-		@Override
-		protected void dispose(AfterReview managed) {
-			// do nothing
 		}
 	}
 }

@@ -19,7 +19,7 @@ import org.obolibrary.oboformat.model.OBODoc;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-abstract class AbstractCommitSvnModule extends AbstractCommitModule {
+abstract class AbstractOboCommitSvnModule extends AbstractCommitModule {
 
 	private final String svnRepository;
 	private final String svnOntologyFileName;
@@ -33,7 +33,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 */
-	protected AbstractCommitSvnModule(String svnRepository,
+	protected AbstractOboCommitSvnModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
 			List<String> additionalOntologyFileNames,
@@ -54,7 +54,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 		bindList("CommitAdapterSVNAdditionalOntologyFileNames", additionalOntologyFileNames, true);
 		bind("CommitAdapterSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
 		bind("CommitAdapterSVNLoadExternals", svnLoadExternals);
-		bindOBOSCMHelper();
+		bindScmHelper();
 	}
 
 	@Singleton
@@ -74,7 +74,7 @@ abstract class AbstractCommitSvnModule extends AbstractCommitModule {
 		return pipeline.getReviewCommitter();
 	}
 
-	protected abstract void bindOBOSCMHelper();
+	protected abstract void bindScmHelper();
 
 	@Singleton
 	@Provides

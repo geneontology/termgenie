@@ -4,23 +4,18 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
-import org.bbop.termgenie.ontology.obo.OboScmHelper;
+import org.bbop.termgenie.ontology.ScmHelper;
 
-public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
+public class CommitSvnUserKeyFileModule extends AbstractOboCommitSvnModule {
 
 	private final String svnUsername;
 	private final File svnKeyFile;
+	private final boolean obo;
+	private final boolean owl;
 
-	/**
-	 * @param svnRepository
-	 * @param svnOntologyFileName
-	 * @param svnUsername
-	 * @param svnKeyFile
-	 * @param applicationProperties
-	 * @param additionalOntologyFileNames 
-	 * @param svnLoadExternals
-	 */
-	public CommitSvnUserKeyFileModule(String svnRepository,
+	private CommitSvnUserKeyFileModule(boolean obo,
+			boolean owl,
+			String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			File svnKeyFile,
@@ -29,6 +24,8 @@ public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 			boolean svnLoadExternals)
 	{
 		super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+		this.obo = obo;
+		this.owl = owl;
 		this.svnUsername = svnUsername;
 		this.svnKeyFile = svnKeyFile;
 	}
@@ -42,7 +39,31 @@ public class CommitSvnUserKeyFileModule extends AbstractCommitSvnModule {
 	}
 
 	@Override
-	protected void bindOBOSCMHelper() {
-		bind(OboScmHelper.class, SvnHelper.SvnHelperKeyFile.class);
+	protected void bindScmHelper() {
+		if (obo) {
+			bind(ScmHelper.class, SvnHelper.OboSvnHelperKeyFile.class);
+		}
+		if (owl) {
+			bind(ScmHelper.class, SvnHelper.OwlSvnHelperKeyFile.class);
+		}
+	}
+	
+	public static CommitSvnUserKeyFileModule createOboModule(String svnRepository,
+			String svnOntologyFileName,
+			String svnUsername,
+			File svnKeyFile,
+			Properties applicationProperties,
+			List<String> additionalOntologyFileNames,
+			boolean svnLoadExternals) {
+		return new CommitSvnUserKeyFileModule(true, false, svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+	}
+	
+	public static CommitSvnUserKeyFileModule createOwlModule(String svnRepository,
+			String svnOntologyFileName,
+			String svnUsername,
+			File svnKeyFile,
+			Properties applicationProperties,
+			boolean svnLoadExternals) {
+		return new CommitSvnUserKeyFileModule(false, true, svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, null, svnLoadExternals);
 	}
 }

@@ -12,15 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.bbop.termgenie.core.process.ProcessState;
+import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.IRIMapper;
-import org.bbop.termgenie.ontology.OntologyCommitPipelineData;
-import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -42,101 +38,24 @@ import owltools.graph.OWLGraphWrapper;
  * Main steps for committing ontology changes to an OBO file in an SCM
  * repository.
  */
-public abstract class OboScmHelper {
+public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 
 	private final DirectOntologyLoader loader;
-	private final List<String> targetOntologyFileNames;
 
 	protected OboScmHelper(IRIMapper iriMapper,
 			String svnOntologyFileName,
 			List<String> svnAdditionalOntologyFileNames)
 	{
-		this.targetOntologyFileNames = new ArrayList<String>(1);
-		targetOntologyFileNames.add(svnOntologyFileName);
-		if (svnAdditionalOntologyFileNames != null) {
-			targetOntologyFileNames.addAll(svnAdditionalOntologyFileNames);
-		}
+		super(svnOntologyFileName, svnAdditionalOntologyFileNames);
 		loader = new DirectOntologyLoader(iriMapper);
 	}
 
-	public static class OboCommitData implements OntologyCommitPipelineData {
-
-		File scmFolder = null;
-		List<File> scmFileList = null;
-		List<File> patchFileList = null;
-
-		@Override
-		public List<File> getTargetFiles() {
-			return scmFileList;
-		}
-
-		@Override
-		public List<File> getModifiedTargetFiles() {
-			return patchFileList;
-		}
-
-		/**
-		 * @return the scmFolder
-		 */
-		public File getScmFolder() {
-			return scmFolder;
-		}
-	}
-
-	public OboCommitData prepareWorkflow(File workFolder) throws CommitException {
-		final OboCommitData data = new OboCommitData();
-
-		data.scmFolder = createFolder(workFolder, "scm");
-		final File patchedFolder = createFolder(workFolder, "patched");
-		int count = targetOntologyFileNames.size();
-		data.scmFileList = new ArrayList<File>(count);
-		data.patchFileList = new ArrayList<File>(count);
-		for(String name : targetOntologyFileNames) {
-			File scmFile = new File(data.scmFolder, name);
-			File patchFile = new File(patchedFolder, name);
-			data.scmFileList.add(scmFile);
-			data.patchFileList.add(patchFile);
-		}
-		return data;
-	}
-
+	@Override
 	public abstract VersionControlAdapter createSCM(File scmFolder) throws CommitException;
 
-	public List<OBODoc> retrieveTargetOntologies(VersionControlAdapter scm, OboCommitData data, ProcessState state)
-			throws CommitException
-	{
-		// check-out ontology from SCM repository
-		scmCheckout(scm, state);
-		
-		// load ontology
-		return loadOntologies(data.scmFileList);
-	}
-	
-	public void updateSCM(VersionControlAdapter scm, ProcessState state)
-			throws CommitException
-	{
-		try {
-			scm.connect();
-			scm.update(targetOntologyFileNames, state);
-		} catch (IOException exception) {
-			throw error("Could not update scm repository", exception, false);
-		} finally {
-			try {
-				scm.close();
-			} catch (IOException exception) {
-				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
-			}
-		}
-	}
 
-	/**
-	 * @param data
-	 * @param terms
-	 * @param oboDoc
-	 * @return true, if changes have been apply successfully
-	 * @throws CommitException
-	 */
-	public boolean applyHistoryChanges(OboCommitData data, List<CommitedOntologyTerm> terms, OBODoc oboDoc)
+	@Override
+	public boolean applyHistoryChanges(ScmCommitData data, List<CommitedOntologyTerm> terms, OBODoc oboDoc)
 			throws CommitException
 	{
 		try {
@@ -158,11 +77,13 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	public void createModifiedTargetFiles(OboCommitData data, List<OBODoc> ontologies, OWLGraphWrapper graph, String savedBy)
+	@Override
+	public void createModifiedTargetFiles(ScmCommitData data, List<OBODoc> ontologies, OWLGraphWrapper graph, String savedBy)
 			throws CommitException
 	{
 		int ontologyCount = ontologies.size();
 		final NameProvider nameProvider = new MultipleOboAndOwlNameProvider(ontologies, graph);
+		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
 		for (int i = 0; i < ontologyCount; i++) {
 			// write changed ontology to a file
 			final OBODoc ontology = ontologies.get(i);
@@ -177,7 +98,7 @@ public abstract class OboScmHelper {
 				// set auto-generated-by
 				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 			}
-			createOBOFile(data.patchFileList.get(i), ontology, nameProvider);
+			createOBOFile(modifiedTargetFiles.get(i), ontology, nameProvider);
 		}
 	}
 	
@@ -230,55 +151,6 @@ public abstract class OboScmHelper {
 		clause.setValue(value);
 	}
 
-	/**
-	 * @param commitMessage
-	 * @param scm
-	 * @param diff
-	 * @param state
-	 * @throws CommitException
-	 */
-	public void commitToRepository(String commitMessage,
-			VersionControlAdapter scm,
-			String diff,
-			ProcessState state) throws CommitException
-	{
-		try {
-			scm.connect();
-			scm.commit(commitMessage, targetOntologyFileNames, state);
-		} catch (IOException exception) {
-			throw error("Error during SCM commit", exception, false);
-		}
-		finally {
-			try {
-				scm.close();
-			} catch (IOException exception) {
-				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
-			}
-		}
-	}
-
-	private void scmCheckout(VersionControlAdapter scm, ProcessState state) throws CommitException {
-		try {
-			// scm checkout
-			scm.connect();
-			
-			boolean success = scm.checkout(targetOntologyFileNames, state);
-			if (!success) {
-				String message = "Could not checkout recent copy of the ontology";
-				throw error(message, true);
-			}
-		} catch (IOException exception) {
-			String message = "Could not checkout recent copy of the ontology";
-			throw error(message, exception, true);
-		}
-		finally {
-			try {
-				scm.close();
-			} catch (IOException exception) {
-				Logger.getLogger(getClass()).error("Could not close SCM tool.", exception);
-			}
-		}
-	}
 
 	private void createOBOFile(File oboFile, OBODoc oboDoc, NameProvider nameProvider) throws CommitException {
 		BufferedWriter bufferedWriter = null;
@@ -297,7 +169,8 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	private List<OBODoc> loadOntologies(List<File> scmFiles) throws CommitException {
+	@Override
+	protected List<OBODoc> loadOntologies(List<File> scmFiles) throws CommitException {
 		List<OBODoc> ontologies = new ArrayList<OBODoc>(scmFiles.size());
 		try {
 			// load OBO
@@ -326,32 +199,4 @@ public abstract class OboScmHelper {
 		}
 	}
 
-	protected File createFolder(final File workFolder, String name) throws CommitException {
-		final File folder;
-		try {
-			folder = new File(workFolder, name);
-			FileUtils.forceMkdir(folder);
-		} catch (IOException exception) {
-			String message = "Could not create working directory " + name + " for the commit";
-			throw error(message, exception, true);
-		}
-		return folder;
-	}
-
-	public void copyFileForCommit(File source, File target) throws CommitException {
-		try {
-			FileUtils.copyFile(source, target);
-		} catch (IOException exception) {
-			String message = "Could not write ontology changes to commit file";
-			throw error(message, exception, true);
-		}
-	}
-
-	protected CommitException error(String message, Throwable exception, boolean rollback) {
-		return OntologyCommitReviewPipeline.error(message, exception, rollback, getClass());
-	}
-
-	protected CommitException error(String message, boolean rollback) {
-		return OntologyCommitReviewPipeline.error(message, rollback, getClass());
-	}
 }
