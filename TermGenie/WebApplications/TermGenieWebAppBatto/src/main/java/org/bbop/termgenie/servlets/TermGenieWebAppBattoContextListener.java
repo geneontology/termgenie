@@ -115,7 +115,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 		List<String> additional = Collections.emptyList();
 		boolean loadExternal = true;
 		
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal);
+		return CommitSvnUserPasswdModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal);
 	}
 	
 	@Override

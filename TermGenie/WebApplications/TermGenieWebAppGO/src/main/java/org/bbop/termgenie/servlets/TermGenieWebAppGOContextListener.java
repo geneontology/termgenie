@@ -132,15 +132,9 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		String svnUserName = null; // no default value
 		List<String> additional = Collections.singletonList("editors/gene_ontology_xp_write.obo");
 		boolean loadExternal = true;
+		TermFilter<OBODoc> filter = new OboPatternSpecificTermFilter(specialPatterns);
 		
-		return new CommitSvnUserPasswdModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal){
-
-			@Override
-			protected TermFilter<OBODoc> provideTermFilter() {
-				return new OboPatternSpecificTermFilter(specialPatterns);
-			}
-			
-		};
+		return CommitSvnUserPasswdModule.createFilteredOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal, filter);
 	}
 	
 	

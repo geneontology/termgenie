@@ -3,62 +3,136 @@ package org.bbop.termgenie.ontology.svn;
 import java.util.List;
 import java.util.Properties;
 
+import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
+import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
+import org.obolibrary.oboformat.model.OBODoc;
 
-public class CommitSvnUserPasswdModule extends AbstractOboCommitSvnModule {
+public class CommitSvnUserPasswdModule {
 
-	private final String svnUsername;
-	private final boolean obo;
-	private final boolean owl;
+	private static class CommitOboSvnUserPasswdModule extends AbstractOboCommitSvnModule {
 
-	private CommitSvnUserPasswdModule(boolean obo,
-			boolean owl,
-			String svnRepository,
+		private final String svnUsername;
+
+		private CommitOboSvnUserPasswdModule(String svnRepository,
+				String svnOntologyFileName,
+				String svnUsername,
+				Properties applicationProperties,
+				List<String> additionalOntologyFileNames,
+				boolean svnLoadExternals)
+		{
+			super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			this.svnUsername = svnUsername;
+		}
+
+		@Override
+		protected void configure() {
+			super.configure();
+			bind("CommitAdapterSVNUsername", svnUsername);
+			bindSecret("CommitAdapterSVNPassword");
+		}
+
+		@Override
+		protected void bindScmHelper() {
+			bind(OboScmHelper.class, SvnHelper.OboSvnHelperPassword.class);
+		}
+	}
+
+	private static class CommitOwlSvnUserPasswdModule extends AbstractOwlCommitSvnModule {
+
+		private final String svnUsername;
+
+		private CommitOwlSvnUserPasswdModule(String svnRepository,
+				String svnOntologyFileName,
+				String svnUsername,
+				Properties applicationProperties,
+				boolean svnLoadExternals)
+		{
+			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
+			this.svnUsername = svnUsername;
+		}
+
+		@Override
+		protected void configure() {
+			super.configure();
+			bind("CommitAdapterSVNUsername", svnUsername);
+			bindSecret("CommitAdapterSVNPassword");
+		}
+
+		@Override
+		protected void bindScmHelper() {
+			bind(ScmHelper.class, SvnHelper.OwlSvnHelperPassword.class);
+		}
+	}
+
+	/**
+	 * Create an commit module for OBO and SVN with username and password authentication.
+	 * 
+	 * @param svnRepository
+	 * @param svnOntologyFileName
+	 * @param svnUsername
+	 * @param applicationProperties
+	 * @param additionalOntologyFileNames
+	 * @param svnLoadExternals
+	 * @return module
+	 */
+	public static IOCModule createOboModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
 			List<String> additionalOntologyFileNames,
 			boolean svnLoadExternals)
 	{
-		super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
-		this.obo = obo;
-		this.owl = owl;
-		this.svnUsername = svnUsername;
+		return new CommitOboSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
 	}
 
-	@Override
-	protected void configure() {
-		super.configure();
-		bind("CommitAdapterSVNUsername", svnUsername);
-		bindSecret("CommitAdapterSVNPassword");
-	}
-
-	@Override
-	protected void bindScmHelper() {
-		if (obo) {
-			bind(OboScmHelper.class, SvnHelper.OboSvnHelperPassword.class);
-		}
-		if (owl) {
-			bind(ScmHelper.class, SvnHelper.OwlSvnHelperPassword.class);
-		}
-	}
-	
-	public static CommitSvnUserPasswdModule createOboModule(String svnRepository,
+	/**
+	 * Create an commit module for OBO, OBOTermFilter and SVN with username and password authentication.
+	 * 
+	 * @param svnRepository
+	 * @param svnOntologyFileName
+	 * @param svnUsername
+	 * @param applicationProperties
+	 * @param additionalOntologyFileNames
+	 * @param svnLoadExternals
+	 * @param filter
+	 * @return module
+	 */
+	public static IOCModule createFilteredOboModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
 			List<String> additionalOntologyFileNames,
-			boolean svnLoadExternals) {
-		return new CommitSvnUserPasswdModule(true, false, svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			boolean svnLoadExternals,
+			final TermFilter<OBODoc> filter)
+	{
+		return new CommitOboSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals)
+		{
+
+			@Override
+			protected TermFilter<OBODoc> provideTermFilter() {
+				return filter;
+			}
+		};
 	}
-	
-	public static CommitSvnUserPasswdModule createOwlModule(String svnRepository,
+
+	/**
+	 * Create an commit module for OWL and SVN with username and password authentication.
+	 * 
+	 * @param svnRepository
+	 * @param svnOntologyFileName
+	 * @param svnUsername
+	 * @param applicationProperties
+	 * @param svnLoadExternals
+	 * @return module
+	 */
+	public static IOCModule createOwlModule(String svnRepository,
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
-			boolean svnLoadExternals) {
-		return new CommitSvnUserPasswdModule(false, true, svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			boolean svnLoadExternals)
+	{
+		return new CommitOwlSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, svnLoadExternals);
 	}
 }

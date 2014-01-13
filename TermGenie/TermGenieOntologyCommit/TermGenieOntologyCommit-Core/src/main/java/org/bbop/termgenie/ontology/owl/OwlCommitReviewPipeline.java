@@ -14,7 +14,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class OwlCommitReviewPipeline extends OntologyCommitReviewPipeline<OWLOntology>
 {
 
-	protected OwlCommitReviewPipeline(OntologyTaskManager source,
+	public OwlCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<OWLOntology> termFilter,
 			ReviewMailHandler handler,

@@ -10,6 +10,7 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
+import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
@@ -24,7 +25,7 @@ public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OBODoc
 			CommitHistoryStore store,
 			TermFilter<OBODoc> termFilter,
 			ReviewMailHandler handler,
-			OboScmHelper helper)
+			ScmHelper<OBODoc> helper)
 	{
 		super(source, store, termFilter, handler, helper);
 	}
