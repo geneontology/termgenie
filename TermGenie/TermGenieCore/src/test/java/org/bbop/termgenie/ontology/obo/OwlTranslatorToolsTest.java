@@ -40,6 +40,38 @@ public class OwlTranslatorToolsTest {
 	}
 
 	@Test
+	public void testFrameToOwl() throws Exception {
+		final Frame f = new Frame();
+		f.setId("FOO:00001");
+		f.addClause(new Clause(OboFormatTag.TAG_ID, "FOO:00001"));
+		f.addClause(new Clause(OboFormatTag.TAG_NAME, "Foooooooooo"));
+		f.addClause(new Clause(OboFormatTag.TAG_IS_A, "FOO:00000"));
+		Clause syn = new Clause(OboFormatTag.TAG_SYNONYM);
+		syn.addValue("baaaaaaaaar");
+		syn.addValue(OboFormatTag.TAG_EXACT.getTag());
+		f.addClause(syn);
+		
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
+		OntologyTask task = new OntologyTask() {
+
+			@Override
+			protected void runCatching(final OWLGraphWrapper wrapper)
+					throws TaskException, Exception
+			{
+				Set<OWLAxiom> axioms = OwlTranslatorTools.generateAxioms(f, wrapper.getSourceOntology());
+				String s = OwlStringTools.translateAxiomsToString(axioms);
+				System.out.println("-------");
+				System.out.println(s);
+				System.out.println("-------");
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			throw task.getException();
+		}
+	}
+	
+	@Test
 	public void testExtractRelations() throws Exception {
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask() {

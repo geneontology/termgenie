@@ -34,6 +34,7 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.services.freeform.InternalFreeFormCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
@@ -380,13 +381,23 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 			// update "Generated_by" tag with username
 			for (CommitObject<TermCommit> commitObject : commitTerms) {
+				TermCommit termCommit = commitObject.getObject();
+				Frame frame = termCommit.getTerm();
 				if (Modification.add == commitObject.getType()) {
-					TermCommit termCommit = commitObject.getObject();
-					Frame frame = termCommit.getTerm();
 					OboTools.updateClauseValues(frame,
 							OboFormatTag.TAG_CREATED_BY,
 							userData.getScmAlias());
 				}
+			}
+			
+			// update the axioms to reflect the latest changes in the frame
+			UpdateOwlTask updateTask = new UpdateOwlTask(commitTerms);
+			try {
+				manager.runManagedTask(updateTask);
+			} catch (InvalidManagedInstanceException exception) {
+				logger.error("Could not create data for successfull commit", exception);
+				result = error("Commit not successfull, could not update data commit: "+exception.getMessage());
+				return;
 			}
 
 			ProcessState.addMessage(processState, "Start - Writing terms to internal database for review.");
@@ -431,6 +442,31 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			return;
 		}
 
+		private class UpdateOwlTask extends OntologyTask {
+			
+			private final List<CommitObject<TermCommit>> commitTerms;
+
+			/**
+			 * @param commitTerms
+			 */
+			public UpdateOwlTask(List<CommitObject<TermCommit>> commitTerms) {
+				super();
+				this.commitTerms = commitTerms;
+			}
+			
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				for (CommitObject<TermCommit> commitObject : commitTerms) {
+					if (commitObject.getType() == Modification.add) {
+						TermCommit object = commitObject.getObject();
+						Frame frame = object.getTerm();
+						Set<OWLAxiom> axioms = OwlTranslatorTools.generateAxioms(frame, managed.getSourceOntology());
+						object.setOwlAxioms(axioms);
+					}
+				}
+			}
+		}
+		
 		private class CreateJsonTermsTask extends OntologyTask {
 
 			private final List<CommitObject<TermCommit>> commitTerms;

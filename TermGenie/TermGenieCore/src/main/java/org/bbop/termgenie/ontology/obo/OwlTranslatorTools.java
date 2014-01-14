@@ -14,6 +14,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.QualifierValue;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.IRI;
@@ -329,6 +330,12 @@ public class OwlTranslatorTools {
 				factory.getOWLLiteral(label));
 	}
 	
+	public static Set<OWLAxiom> generateAxioms(Frame frame, OWLOntology target) {
+		final Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		Obo2Owl tr = new Obo2OwlExtension(axioms, target);
+		tr.trTermFrame(frame);
+		return axioms;
+	}
 	
 	public static Set<OWLAxiom> translate(Collection<Clause> clauses, OWLClass cls, OWLOntology target) {
 		final Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
