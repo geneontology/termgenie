@@ -8,6 +8,9 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.TermFilter;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.semanticweb.owlapi.model.OWLOntology;
+
+import com.google.inject.TypeLiteral;
 
 public class CommitSvnUserKeyFileModule {
 
@@ -38,7 +41,8 @@ public class CommitSvnUserKeyFileModule {
 	
 		@Override
 		protected void bindScmHelper() {
-			bind(ScmHelper.class, SvnHelper.OboSvnHelperKeyFile.class);
+			bind(new TypeLiteral<ScmHelper<OBODoc>>() { /* empty */ }, 
+					SvnHelper.OboSvnHelperKeyFile.class);
 		}
 	}
 	
@@ -68,7 +72,8 @@ public class CommitSvnUserKeyFileModule {
 	
 		@Override
 		protected void bindScmHelper() {
-			bind(ScmHelper.class, SvnHelper.OwlSvnHelperKeyFile.class);
+			bind(new TypeLiteral<ScmHelper<OWLOntology>>() { /* empty */ }, 
+					SvnHelper.OwlSvnHelperKeyFile.class);
 		}
 	}
 	

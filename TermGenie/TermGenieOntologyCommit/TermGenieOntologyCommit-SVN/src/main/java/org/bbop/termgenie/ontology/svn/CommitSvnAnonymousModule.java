@@ -7,6 +7,9 @@ import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.TermFilter;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.semanticweb.owlapi.model.OWLOntology;
+
+import com.google.inject.TypeLiteral;
 
 public class CommitSvnAnonymousModule {
 
@@ -23,7 +26,8 @@ public class CommitSvnAnonymousModule {
 		
 		@Override
 		protected void bindScmHelper() {
-			bind(ScmHelper.class, SvnHelper.OboSvnHelperAnonymous.class);
+			bind(new TypeLiteral<ScmHelper<OBODoc>>() { /* empty */ }, 
+					SvnHelper.OboSvnHelperAnonymous.class);
 		}
 	}
 
@@ -39,7 +43,8 @@ public class CommitSvnAnonymousModule {
 		
 		@Override
 		protected void bindScmHelper() {
-			bind(ScmHelper.class, SvnHelper.OwlSvnHelperAnonymous.class);
+			bind(new TypeLiteral<ScmHelper<OWLOntology>>() { /* empty */ }, 
+					SvnHelper.OwlSvnHelperAnonymous.class);
 		}
 	}
 	

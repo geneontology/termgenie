@@ -6,8 +6,10 @@ import java.util.Properties;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.TermFilter;
-import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.obolibrary.oboformat.model.OBODoc;
+import org.semanticweb.owlapi.model.OWLOntology;
+
+import com.google.inject.TypeLiteral;
 
 public class CommitSvnUserPasswdModule {
 
@@ -35,7 +37,8 @@ public class CommitSvnUserPasswdModule {
 
 		@Override
 		protected void bindScmHelper() {
-			bind(OboScmHelper.class, SvnHelper.OboSvnHelperPassword.class);
+			bind(new TypeLiteral<ScmHelper<OBODoc>>() { /* empty */ }, 
+					SvnHelper.OboSvnHelperPassword.class);
 		}
 	}
 
@@ -62,7 +65,8 @@ public class CommitSvnUserPasswdModule {
 
 		@Override
 		protected void bindScmHelper() {
-			bind(ScmHelper.class, SvnHelper.OwlSvnHelperPassword.class);
+			bind(new TypeLiteral<ScmHelper<OWLOntology>>() { /* empty */ }, 
+					SvnHelper.OwlSvnHelperPassword.class);
 		}
 	}
 

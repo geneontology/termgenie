@@ -47,20 +47,17 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 
 	protected final OntologyTaskManager source;
 	private final CommitHistoryStore store;
-	private final TermFilter<ONTOLOGY> termFilter;
 	private final ReviewMailHandler handler;
 	private final ScmHelper<ONTOLOGY> scmHelper;
 	private final AfterReviewTaskManager afterReviewTaskManager;
 
 	protected OntologyCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
-			TermFilter<ONTOLOGY> termFilter,
 			ReviewMailHandler handler,
 			ScmHelper<ONTOLOGY> scmHelper)
 	{
 		super();
 		this.source = source;
-		this.termFilter = termFilter;
 		this.handler = handler;
 		this.store = store;
 		this.scmHelper = scmHelper;
@@ -344,7 +341,7 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 
 			List<CommitedOntologyTerm> changes;
 			if (ontologyCount > 1) {
-				changes = termFilter.filterTerms(item, targetOntology, targetOntologies, i);
+				changes = filterItems(item, targetOntology, targetOntologies, i);
 			}
 			else {
 				changes = item.getTerms();
@@ -421,6 +418,24 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		} catch (OBOFormatParserException exception) {
 			throw new CommitException("Commit to repository successful, but the generation of the result generated an error.", exception, false);
 		}
+	}
+
+	/**
+	 * @param item
+	 * @param targetOntology
+	 * @param targetOntologies
+	 * @param i
+	 * @return items to commit or null if no applicable
+	 */
+	protected List<CommitedOntologyTerm> filterItems(CommitHistoryItem item,
+			ONTOLOGY targetOntology,
+			List<ONTOLOGY> targetOntologies,
+			int i)
+	{
+		if (i == 0) {
+			return item.getTerms();
+		}
+		return null;
 	}
 	
 	private void assertFiles(List<File> files, int length, String name) throws CommitException {

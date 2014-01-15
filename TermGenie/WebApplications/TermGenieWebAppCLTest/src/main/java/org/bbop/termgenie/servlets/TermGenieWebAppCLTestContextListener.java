@@ -58,7 +58,7 @@ public class TermGenieWebAppCLTestContextListener extends TermGenieWebAppCLConte
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return CommitSvnAnonymousModule.createOboModule(localSVNFolder, "extensions/bio-attributes.obo", applicationProperties, Collections.<String>emptyList(), loadExternal);
+		return CommitSvnAnonymousModule.createOwlModule(localSVNFolder, "cl-edit.owl", applicationProperties, loadExternal);
 	}
 	
 	@Override

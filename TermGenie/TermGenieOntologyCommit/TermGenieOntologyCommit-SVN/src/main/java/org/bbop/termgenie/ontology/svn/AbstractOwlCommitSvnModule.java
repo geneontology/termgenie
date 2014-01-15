@@ -7,8 +7,6 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
-import org.bbop.termgenie.ontology.owl.DefaultOwlTermFilter;
 import org.bbop.termgenie.ontology.owl.OwlCommitReviewPipeline;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -36,16 +34,10 @@ abstract class AbstractOwlCommitSvnModule extends AbstractCommitSvnModule {
 	@Provides
 	protected OntologyCommitReviewPipelineStages provideReviewStages(OntologyLoader loader,
 			CommitHistoryStore store,
-			TermFilter<OWLOntology> filter,
 			ReviewMailHandler handler,
 			ScmHelper<OWLOntology> helper)
 	{
-		return new OwlCommitReviewPipeline(loader.getOntologyManager(), store, filter, handler, helper);
+		return new OwlCommitReviewPipeline(loader.getOntologyManager(), store, handler, helper);
 	}
 	
-	@Singleton
-	@Provides
-	protected TermFilter<OWLOntology> provideTermFilter() {
-		return new DefaultOwlTermFilter();
-	}
 }

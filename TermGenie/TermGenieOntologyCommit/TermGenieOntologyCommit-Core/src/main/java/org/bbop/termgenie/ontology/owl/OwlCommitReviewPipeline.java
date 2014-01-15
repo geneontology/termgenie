@@ -6,7 +6,6 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -16,11 +15,10 @@ public class OwlCommitReviewPipeline extends OntologyCommitReviewPipeline<OWLOnt
 
 	public OwlCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
-			TermFilter<OWLOntology> termFilter,
 			ReviewMailHandler handler,
 			ScmHelper<OWLOntology> scmHelper)
 	{
-		super(source, store, termFilter, handler, scmHelper);
+		super(source, store, handler, scmHelper);
 	}
 
 	@Override

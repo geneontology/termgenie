@@ -24,6 +24,8 @@ import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
+import org.bbop.termgenie.services.review.TermCommitReviewService;
+import org.bbop.termgenie.services.review.TermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -101,7 +103,7 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 			@Override
 			protected void bindEnabled() {
 				// TODO bind and OWL specific review service!!
-//				bind(TermCommitReviewService.class, OboTermCommitReviewServiceImpl.class);
+				bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
 			}
 		};
 	}

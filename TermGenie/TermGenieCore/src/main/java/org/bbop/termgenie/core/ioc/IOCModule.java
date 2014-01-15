@@ -399,6 +399,12 @@ public abstract class IOCModule extends AbstractModule {
 		boundClasses.put(interfaceClass, implementationClass);
 	}
 	
+	protected <T> void bind(TypeLiteral<T> typeLiteral, Class<? extends T> implementationClass) {
+		// use type literal for generic interfaces
+		bind(typeLiteral).to(implementationClass);
+		boundClasses.put(typeLiteral.getClass(), implementationClass);
+	}
+	
 	protected <T> void bind(Class<T> interfaceClass, String name, Class<? extends T> implementationClass) {
 		bind(interfaceClass).annotatedWith(Names.named(name)).to(implementationClass);
 		// TODO add to reporting

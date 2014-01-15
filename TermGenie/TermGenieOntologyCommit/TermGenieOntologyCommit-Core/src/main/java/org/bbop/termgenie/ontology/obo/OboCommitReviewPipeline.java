@@ -21,15 +21,29 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OBODoc>
 {
+	private final TermFilter<OBODoc> termFilter;
+
 	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
 			TermFilter<OBODoc> termFilter,
 			ReviewMailHandler handler,
 			ScmHelper<OBODoc> helper)
 	{
-		super(source, store, termFilter, handler, helper);
+		super(source, store, handler, helper);
+		this.termFilter = termFilter;
 	}
 
+	@Override
+	protected List<CommitedOntologyTerm> filterItems(CommitHistoryItem item,
+			OBODoc targetOntology,
+			List<OBODoc> targetOntologies,
+			int i)
+	{
+		List<CommitedOntologyTerm> changes;
+		changes = termFilter.filterTerms(item, targetOntology, targetOntologies, i);
+		return changes;
+	}
+	
 	@Override
 	protected String createDiff(CommitHistoryItem historyItem, OntologyTaskManager source)
 			throws CommitException
