@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,9 @@ import org.bbop.termgenie.ontology.obo.ComitAwareOboTools;
 import org.bbop.termgenie.ontology.obo.OboParserTools;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
+import org.bbop.termgenie.ontology.obo.OwlStringTools;
+import org.bbop.termgenie.ontology.obo.OwlTools;
+import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
@@ -47,6 +51,7 @@ import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
@@ -55,6 +60,7 @@ import owltools.io.ParserWrapper.OboAndOwlNameProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 @Singleton
 public class TermCommitReviewServiceImpl implements TermCommitReviewService {
@@ -66,6 +72,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	private final OntologyCommitReviewPipelineStages stages;
 	private final OntologyTaskManager manager;
 	private final Ontology ontology;
+	private boolean useOboDiff = true;
 	
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
@@ -81,6 +88,13 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		this.stages = stages;
 	}
 
+	@Inject(optional=true)
+	public void setUseOboDiff(@Named("TermCommitReviewServiceImpl.useOboDiff") @Nullable Boolean useOboDiff) {
+		if (useOboDiff != null) {
+			this.useOboDiff = useOboDiff.booleanValue();
+		}
+	}
+	
 	@Override
 	public boolean isEnabled() {
 		Committer reviewCommitter = stages.getReviewCommitter();
@@ -169,10 +183,14 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 		@Override
 		public void runCatching(OWLGraphWrapper graph) {
-			Owl2Obo owl2Obo = new Owl2Obo();
 			try {
-				OBODoc oboDoc = owl2Obo.convert(graph.getSourceOntology());
-				NameProvider provider = new OboAndOwlNameProvider(oboDoc, graph);
+				NameProvider provider = null;
+				OBODoc oboDoc = null;
+				if (useOboDiff) {
+					Owl2Obo owl2Obo = new Owl2Obo();
+					oboDoc = owl2Obo.convert(graph.getSourceOntology());
+					provider = new OboAndOwlNameProvider(oboDoc, graph);
+				}
 				result = new ArrayList<JsonCommitReviewEntry>(items.size());
 				for (CommitHistoryItem item : items) {
 					JsonCommitReviewEntry entry = new JsonCommitReviewEntry();
@@ -181,7 +199,13 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					entry.setDate(formatDate(item.getDate()));
 					entry.setCommitMessage(item.getCommitMessage());
 					entry.setEmail(item.getEmail());
-					entry.setDiffs(createJsonDiffs(item, oboDoc, provider));
+					if (useOboDiff) {
+						entry.setDiffs(createJsonDiffs(item, oboDoc, provider));
+					}
+					else {
+						entry.setDiffs(createJsonOwlDiffs(item));
+					}
+					
 					result.add(entry);
 				}
 			} catch (OWLOntologyCreationException exception) {
@@ -191,7 +215,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			}
 		}
 	}
-	
+
 	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc, NameProvider nameProvider) throws OBOFormatParserException {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
@@ -218,6 +242,26 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			if (changed != null && !changed.isEmpty()) {
 				jsonDiff.setRelations(JsonOntologyTerm.createJson(changed, nameProvider));
 			}
+		}
+		if (!result.isEmpty()) {
+			return result;
+		}
+		return null;
+	}
+	
+	private List<JsonDiff> createJsonOwlDiffs(CommitHistoryItem item) {
+		List<JsonDiff> result = new ArrayList<JsonDiff>();
+		List<CommitedOntologyTerm> terms = item.getTerms();
+		for (CommitedOntologyTerm term : terms) {
+			Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getAxioms());
+			JsonDiff jsonDiff = new JsonDiff();
+			jsonDiff.setOperation(term.getOperation());
+			jsonDiff.setId(term.getId());
+			jsonDiff.setUuid(term.getUuid());
+			jsonDiff.setObsolete(OwlTools.isObsolete(axioms));
+			jsonDiff.setPattern(term.getPattern());
+			jsonDiff.setOwlAxioms(term.getAxioms());
+			result.add(jsonDiff);
 		}
 		if (!result.isEmpty()) {
 			return result;
@@ -340,31 +384,45 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			StringBuilder sb = new StringBuilder(historyItem.getCommitMessage());
 			List<JsonDiff> diffs = entry.getDiffs();
 			for (JsonDiff jsonDiff : diffs) {
-				Frame termFrame = parseDiff(jsonDiff);
-				CommitedOntologyTerm term = getMatchingTerm(historyItem, jsonDiff.getUuid());
-				if (jsonDiff.isModified()) {
-					CommitHistoryTools.update(term, termFrame, jsonDiff.getOwlAxioms(), JsonDiff.getModification(jsonDiff));
-				}
-				sb.append('\n');
-				if(OboTools.isObsolete(termFrame)) {
-					term.setChanged(null); // do not change any relations for other terms
-					sb.append("OBSOLETE ");
+				final CommitedOntologyTerm term = getMatchingTerm(historyItem, jsonDiff.getUuid());
+				if (instance.useOboDiff) {
+					Frame termFrame = parseOboDiff(jsonDiff);
+					if (jsonDiff.isModified()) {
+						CommitHistoryTools.update(term, termFrame, jsonDiff.getOwlAxioms(), JsonDiff.getModification(jsonDiff));
+					}
+					sb.append('\n');
+					if(OboTools.isObsolete(termFrame)) {
+						term.setChanged(null); // do not change any relations for other terms
+						sb.append("OBSOLETE ");
+					}
+					else {
+						sb.append("Added ");
+					}
+					sb.append(termFrame.getId());
+					Object label = termFrame.getTagValue(OboFormatTag.TAG_NAME);
+					if (label != null) {
+						sb.append(" ");
+						sb.append(label);
+					}
 				}
 				else {
-					sb.append("Added ");
-				}
-				sb.append(termFrame.getId());
-				Object label = termFrame.getTagValue(OboFormatTag.TAG_NAME);
-				if (label != null) {
-					sb.append(" ");
-					sb.append(label);
+					try {
+						Set<OWLAxiom> axioms = parseOwlDiff(jsonDiff);
+						if (jsonDiff.isModified()) {
+							Frame termFrame = OwlTranslatorTools.generateFrame(axioms, jsonDiff.getId());
+							CommitHistoryTools.update(term, termFrame, OwlStringTools.translateAxiomsToString(axioms), JsonDiff.getModification(jsonDiff));
+						}
+					} catch (OWLOntologyCreationException exception) {
+						throw new CommitException("", exception, false);
+					}
 				}
 			}
+			
 			historyItem.setCommitMessage(sb.toString());
 			afterReview.updateItem(historyItem);
 		}
 
-		private Frame parseDiff(JsonDiff jsonDiff) {
+		private Frame parseOboDiff(JsonDiff jsonDiff) {
 			Frame frame = OboParserTools.parseFrame(jsonDiff.getId(), jsonDiff.getDiff());
 			if (frame == null) {
 				return null;
@@ -383,9 +441,18 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				obsoleteClause.addValue(Boolean.TRUE);
 				frame.addClause(obsoleteClause);
 				
-				instance.handleObsoleteFrame(jsonDiff, frame);
+				instance.handleObsoleteOboFrame(jsonDiff, frame);
 			}
 			return frame;
+		}
+		
+		private Set<OWLAxiom> parseOwlDiff(JsonDiff jsonDiff) {
+			Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonDiff.getOwlAxioms());
+			if (jsonDiff.isObsolete()) {
+				IRI classIRI = OwlTools.translateFrameIdToClassIRI(jsonDiff.getId());
+				OwlTools.addObsoleteAxiom(axioms, classIRI);
+			}
+			return axioms;
 		}
 
 		private CommitedOntologyTerm getMatchingTerm(CommitHistoryItem historyItem,
@@ -408,7 +475,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	 * @param jsonDiff
 	 * @param frame
 	 */
-	protected void handleObsoleteFrame(JsonDiff jsonDiff, Frame frame) {
+	protected void handleObsoleteOboFrame(JsonDiff jsonDiff, Frame frame) {
 		// remove all relations
 		OboTools.removeAllRelations(frame);
 		

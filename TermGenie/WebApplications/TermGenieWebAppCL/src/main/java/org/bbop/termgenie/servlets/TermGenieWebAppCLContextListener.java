@@ -102,8 +102,8 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 			
 			@Override
 			protected void bindEnabled() {
-				// TODO bind and OWL specific review service!!
 				bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
+				bind("TermCommitReviewServiceImpl.useOboDiff", Boolean.FALSE);
 			}
 		};
 	}

@@ -31,8 +31,8 @@ public class OboTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl 
 	 * @param frame
 	 */
 	@Override
-	protected void handleObsoleteFrame(JsonDiff jsonDiff, Frame frame) {
-		super.handleObsoleteFrame(jsonDiff, frame);
+	protected void handleObsoleteOboFrame(JsonDiff jsonDiff, Frame frame) {
+		super.handleObsoleteOboFrame(jsonDiff, frame);
 		
 		// Prefix Definition with "OBSOLETE. "
 		Clause defClause = frame.getClause(OboFormatTag.TAG_DEF);

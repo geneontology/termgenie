@@ -9,13 +9,21 @@ import java.util.Set;
 
 import org.coode.owlapi.functionalparser.OWLFunctionalSyntaxOWLParser;
 import org.coode.owlapi.functionalrenderer.OWLFunctionalSyntaxRenderer;
+import org.obolibrary.obo2owl.Obo2OWLConstants;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParserException;
 import org.semanticweb.owlapi.io.OWLRendererException;
 import org.semanticweb.owlapi.io.StringDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -60,11 +68,42 @@ public class OwlStringTools {
 		}
 	}
 
-	public static Set<OWLAxiom> replace(Set<OWLAxiom> axioms, Map<IRI, IRI> replacements) {
-		OWLObjectDuplicator duplicator = new OWLObjectDuplicator(translationManager.getOWLDataFactory(), replacements);
+	public static Set<OWLAxiom> replace(Set<OWLAxiom> axioms, Map<IRI, IRI> replacements, Map<String, String> idMappings) {
+		OWLDataFactory factory = translationManager.getOWLDataFactory();
+		OWLObjectDuplicator duplicator = new OWLObjectDuplicator(factory, replacements);
 		Set<OWLAxiom> replaced = new HashSet<OWLAxiom>();
+		IRI idIRI = IRI.create(Obo2OWLConstants.OIOVOCAB_IRI_PREFIX+OboFormatTag.TAG_ID.getTag());
+		OWLAnnotationProperty idProperty = factory.getOWLAnnotationProperty(idIRI);
 		for(OWLAxiom axiom : axioms) {
-			replaced.add(duplicator.<OWLAxiom>duplicateObject(axiom));
+			if (axiom instanceof OWLAnnotationAssertionAxiom) {
+				boolean addAxiom = true;
+				OWLAnnotationAssertionAxiom assertionAxiom = (OWLAnnotationAssertionAxiom) axiom;
+				if (idProperty.equals(assertionAxiom.getProperty())) {
+					OWLAnnotationValue value = assertionAxiom.getValue();
+					if (value instanceof OWLLiteral) {
+						String literal = ((OWLLiteral) value).getLiteral();
+						if (idMappings.containsKey(literal)) {
+							String permanentId = idMappings.get(literal);
+							OWLAnnotationSubject subject = assertionAxiom.getSubject();
+							if (subject instanceof IRI) {
+								IRI subjectIRI = (IRI) subject;
+								IRI replacedSubject = replacements.get(subjectIRI);
+								if (replacedSubject != null) {
+									subject = replacedSubject;
+								}
+							}
+							replaced.add(factory.getOWLAnnotationAssertionAxiom(subject, factory.getOWLAnnotation(idProperty, factory.getOWLLiteral(permanentId))));
+							addAxiom = false;
+						}
+					}
+				}
+				if (addAxiom) {
+					replaced.add(duplicator.<OWLAxiom>duplicateObject(axiom));
+				}
+			}
+			else {
+				replaced.add(duplicator.<OWLAxiom>duplicateObject(axiom));
+			}
 		}
 		return replaced;
 	}

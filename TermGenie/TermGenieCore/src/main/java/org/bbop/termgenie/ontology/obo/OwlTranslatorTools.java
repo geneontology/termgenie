@@ -15,8 +15,10 @@ import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.model.QualifierValue;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -34,6 +36,8 @@ import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLQuantifiedObjectRestriction;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
@@ -321,6 +325,15 @@ public class OwlTranslatorTools {
 	
 	private static String getId(OWLObject obj, OWLOntology ontology) {
 		return Owl2Obo.getIdentifierFromObject(obj, ontology, null);
+	}
+	
+	public static Frame generateFrame(Set<OWLAxiom> axioms, String id) throws OWLOntologyCreationException {
+		Owl2Obo owl2Obo = new Owl2Obo();
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+		OWLOntology temp = m.createOntology(axioms);
+		OBODoc oboDoc = owl2Obo.convert(temp);
+		Frame frame = oboDoc.getTermFrame(id);
+		return frame;
 	}
 	
 	public static OWLAxiom createLabelAxiom(String id, String label, OWLGraphWrapper graph) {

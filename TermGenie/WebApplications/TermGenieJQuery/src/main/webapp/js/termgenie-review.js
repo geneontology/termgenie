@@ -245,7 +245,14 @@ function TermGenieReview(){
 			
 			// render each diff
 			jQuery.each(entry.diffs, function(diffIndex, diff){
-				var preDiff = jQuery('<pre>'+diff.diff+'</pre>');
+				var preDiff;
+				if (diff.diff !== undefined) {
+					preDiff = jQuery('<pre>'+diff.diff+'</pre>');	
+				}
+				else if (diff.owlAxioms !== undefined ) {
+					var compactOWL = makeCompactOwl(diff.owlAxioms);
+					preDiff = jQuery('<pre>'+compactOWL+'</pre>');
+				}
 				var operation = jQuery('<div></div>');
 				if (diff.operation === 0) {
 					// add
@@ -268,39 +275,45 @@ function TermGenieReview(){
 				var diffRelationRows = [];
 				
 				if(obsolete !== true) {
-					var editButton = jQuery('<button>Edit term</button>');
-					operation.append(editButton);
-					editButton.click(function(){
-						var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
-						var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
-						editDialog.append(editField);
-						editDialog.dialog({
-							title: "Term Editor",
-							resizable: true,
-							height:450,
-							width: 600,
-							minHeight: 200,
-							minWidth: 200,
-							modal: true,
-							buttons: {
-								"Change": function() {
-									diff.modified = true;
-									diff.diff = editField.val();
-									preDiff.empty();
-									preDiff.append(diff.diff);
-									$( this ).dialog( "close" );
-								},
-								"Cancel": function() {
-									$( this ).dialog( "close" );
+					var editButton = null;
+					if (diff.diff !== undefined) {
+						// only allow edits for obo diff
+						editButton = jQuery('<button>Edit term</button>');
+						operation.append(editButton);
+						editButton.click(function(){
+							var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
+							var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
+							editDialog.append(editField);
+							editDialog.dialog({
+								title: "Term Editor",
+								resizable: true,
+								height:450,
+								width: 600,
+								minHeight: 200,
+								minWidth: 200,
+								modal: true,
+								buttons: {
+									"Change": function() {
+										diff.modified = true;
+										diff.diff = editField.val();
+										preDiff.empty();
+										preDiff.append(diff.diff);
+										$( this ).dialog( "close" );
+									},
+									"Cancel": function() {
+										$( this ).dialog( "close" );
+									}
 								}
-							}
+							});
 						});
-					});
+					}
 					var obsoleteButton = jQuery('<button>Make Obsolete</button>');
 					operation.append(obsoleteButton);
 					
 					obsoleteButton.click(function(){
-						editButton.remove();
+						if (editButton !== null) {
+							editButton.remove();
+						}
 						obsoleteButton.remove();
 						operation.append('<div class="termgenie-obsolete-term">Obsolete</div>');
 						diff.isObsolete = true;
@@ -446,6 +459,32 @@ function TermGenieReview(){
 				tr.append(td);
 			}
 			return tr;
+		}
+		
+		/**
+		 * Trim redundant parts of the OWL functional syntax String, i.e.
+		 * leading prefix declarations and surrounding whitespaces or newlines.
+		 * Also escape all HTML-pre relevant chars. 
+		 * 
+		 * @param fullOwlString
+		 *            the line based OWL representation in functional syntax
+		 * @returns string
+		 */
+		function makeCompactOwl(fullOwlString) {
+			var compactString = "";
+			// remove prefix strings and ontology declaration
+			jQuery.each(fullOwlString.split("\n"), function(index, line) {
+				if (line.indexOf("Prefix(") !== 0 && "Ontology(" != line && ")" != line) {
+					compactString += escapeHTML(line) + '\n';
+				}
+			});
+			// Trim white spaces
+			return compactString.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+			
+			function escapeHTML(text) {
+				 var chr = { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+				 return text.replace(/[\"&<>]/g, function (a) { return chr[a]; });
+			}
 		}
 	}
 	

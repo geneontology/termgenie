@@ -524,7 +524,10 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 
 		private Set<OWLAxiom> updateIdentifiers(Frame frame, Set<OWLAxiom> axioms, IdHandler idHandler) {
-			return updateIdentifiers(OboTools.getRelations(frame), axioms, idHandler);
+			List<Clause> clauses = new ArrayList<Clause>();
+			clauses.addAll(OboTools.getRelations(frame));
+			clauses.add(frame.getClause(OboFormatTag.TAG_ID));
+			return updateIdentifiers(clauses, axioms, idHandler);
 		}
 
 		private Set<OWLAxiom> updateIdentifiers(List<Clause> clauses, Set<OWLAxiom> axioms, IdHandler idHandler) {
@@ -551,7 +554,8 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				}
 			}
 			Map<IRI, IRI> replacements = idHandler.createIRIMap();
-			return OwlStringTools.replace(axioms, replacements);
+			Map<String, String> idMappings = idHandler.getFinalMappings();
+			return OwlStringTools.replace(axioms, replacements, idMappings);
 		}
 	}
 
@@ -661,6 +665,10 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				map.put(keyIRI, valueIRI);
 			}
 			return map ;
+		}
+		
+		Map<String, String> getFinalMappings() {
+			return new HashMap<String,String>(tempIdMap);
 		}
 	}
 

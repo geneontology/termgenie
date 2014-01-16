@@ -46,6 +46,9 @@ public class OwlTranslatorToolsTest {
 		f.addClause(new Clause(OboFormatTag.TAG_ID, "FOO:00001"));
 		f.addClause(new Clause(OboFormatTag.TAG_NAME, "Foooooooooo"));
 		f.addClause(new Clause(OboFormatTag.TAG_IS_A, "FOO:00000"));
+		Clause dep = new Clause(OboFormatTag.TAG_IS_OBSELETE);
+		dep.addValue(Boolean.TRUE);
+		f.addClause(dep);
 		Clause syn = new Clause(OboFormatTag.TAG_SYNONYM);
 		syn.addValue("baaaaaaaaar");
 		syn.addValue(OboFormatTag.TAG_EXACT.getTag());
