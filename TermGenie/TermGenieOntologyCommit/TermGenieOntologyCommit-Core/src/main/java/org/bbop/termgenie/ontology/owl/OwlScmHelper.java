@@ -100,7 +100,9 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 	protected List<OWLOntology> loadOntologies(List<File> scmFiles) throws CommitException {
 		// use a new manager to avoid 'already loaded' exceptions
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		manager.addIRIMapper(iriMapper);
+		if(iriMapper != null) {
+			manager.addIRIMapper(iriMapper);
+		}
 		List<OWLOntology> result = new ArrayList<OWLOntology>(scmFiles.size());
 		for (File file : scmFiles) {
 			IRI iri = IRI.create(file);
