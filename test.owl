@@ -6,4 +6,6 @@ Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
 
 
 Ontology(<http://purl.obolibrary.org/obo/cl.owl>
+
+Declaration(Class(<http://purl.obolibrary.org/obo/fake_class>))
 )
