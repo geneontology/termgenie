@@ -25,6 +25,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-apibinding</artifactId>
+			<version>3.4.2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieJQuery</artifactId>
 			<version>${project.parent.version}</version>
