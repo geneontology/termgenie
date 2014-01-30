@@ -258,7 +258,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			
 			// check proposed synonyms at the same time 
 			List<ISynonym> checkedSynonyms = null;
-			Map<CharSequence, String> proposedSynonyms = null;
+			Map<CharSequence, Pair<String, String>> proposedSynonyms = null;
 			
 			// each synonym has to have:
 			//  * label
@@ -268,7 +268,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			if (iSynonyms != null && !iSynonyms.isEmpty()) {
 				ProcessState.addMessage(state, "Prepare synonyms.");
 				checkedSynonyms = new ArrayList<ISynonym>();
-				proposedSynonyms = new HashMap<CharSequence, String>();
+				proposedSynonyms = new HashMap<CharSequence, Pair<String, String>>();
 				Set<String> done = new HashSet<String>();
 				for (ISynonym jsonSynonym : iSynonyms) {
 					String synLabel = StringUtils.trimToNull(jsonSynonym.getLabel());
@@ -297,7 +297,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						}
 					}
 					checkedSynonyms.add(jsonSynonym);
-					proposedSynonyms.put(normalizeLabel(synLabel), synLabel);
+					proposedSynonyms.put(normalizeLabel(synLabel), new Pair<String, String>(synLabel, scope));
 					done.add(lowerCase);
 				}
 			}
@@ -318,12 +318,20 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					addWarning("label", "The requested label is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 				}
 				if (proposedSynonyms != null) {
-					for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
+					for (Entry<CharSequence, Pair<String, String>> entry : proposedSynonyms.entrySet()) {
 						if (equals(currentNormalizedLabel, entry.getKey())) {
-							addError("synonym", "The requested synonym '"+entry.getValue()+"' is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+							Pair<String, String> pair = entry.getValue();
+							String orig = pair.getOne();
+							String origScope = pair.getTwo();
+							if (OboFormatTag.TAG_EXACT.getTag().equals(origScope)) {
+								addError("synonym", "The requested synonym '"+orig+"' is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");	
+							}
+							else {
+								addWarning("synonym", "The requested synonym '"+orig+"' is equal to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");	
+							}
 						}
 						else if (similar(currentNormalizedLabel, entry.getKey())) {
-							addWarning("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
+							addWarning("synonym", "The requested synonym '"+entry.getValue().getOne()+"' is similar to the term: "+graph.getIdentifier(current)+" '"+currentLabel+"'");
 						}
 					}
 				}
@@ -346,12 +354,20 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 									"The requested label is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
 						}
 						if (proposedSynonyms != null) {
-							for (Entry<CharSequence, String> entry : proposedSynonyms.entrySet()) {
+							for (Entry<CharSequence, Pair<String, String>> entry : proposedSynonyms.entrySet()) {
 								if (equals(normalizedSynLabel, entry.getKey())) {
-									addError("synonym", "The requested synonym '"+entry.getValue()+"' is equal to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+									Pair<String, String> pair = entry.getValue();
+									String orig = pair.getOne();
+									String origScope = pair.getTwo();
+									if (OboFormatTag.TAG_EXACT.getTag().equals(origScope)) {
+										addError("synonym", "The requested synonym '"+orig+"' is equal to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+									}
+									else {
+										addWarning("synonym", "The requested synonym '"+orig+"' is equal to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+									}
 								}
 								if (similar(normalizedSynLabel, entry.getKey())) {
-									addWarning("synonym", "The requested synonym '"+entry.getValue()+"' is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
+									addWarning("synonym", "The requested synonym '"+entry.getValue().getOne()+"' is similar to the synonym: '" + synLabel + "' of term: " + graph.getIdentifier(current) + " '" + currentLabel + "'");
 								}
 							}
 						}
