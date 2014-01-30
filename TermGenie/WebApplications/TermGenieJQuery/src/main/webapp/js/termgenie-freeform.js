@@ -1648,7 +1648,7 @@ function TermGenieFreeForm(){
 			
 			function submitClickHandler() {
 				// get check box status for e-mail send
-				var sendConfirmationEmail = sendEmailCheckBox.is(':checked');
+				var sendConfirmationEmail = jQuery('#checkbox-send-submit-email').is(':checked');
 				
 				// get and clear busyElement from step 3
 				var busyElement = jQuery('#button-submit-for-review-progress');
