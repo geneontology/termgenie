@@ -30,7 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class NoCommitTermCommitServiceImpl implements TermCommitService {
 
-	protected static final Logger logger = Logger.getLogger(TermCommitService.class);
+	private static final Logger logger = Logger.getLogger(TermCommitService.class);
 
 	protected final InternalSessionHandler sessionHandler;
 	protected final OntologyTaskManager manager;

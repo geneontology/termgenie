@@ -22,6 +22,8 @@ import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
+import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
+import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
@@ -361,6 +363,21 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				ProcessState.addMessage(state, "Finished updating internal database");
 				
 				commits = afterReview.commit(historyIds, state);
+				
+				if (logger.isInfoEnabled()) {
+					StringBuilder sb = new StringBuilder();
+					for (CommitResult r : commits) {
+						List<CommitObject<TermCommit>> terms = r.getTerms();
+						for (CommitObject<TermCommit> commitObject : terms) {
+							Frame frame = commitObject.getObject().getTerm();
+							String id = frame.getId();
+							String lbl = frame.getTagValue(OboFormatTag.TAG_NAME, String.class);
+							sb.append("\n");
+							sb.append(id).append(" '").append(lbl).append('\'');
+						}
+					}
+					logger.info("Finished commit after review for ids:"+sb);
+				}
 				
 				return Modified.no;
 			} catch (CommitException exception) {

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
@@ -59,6 +60,8 @@ import com.google.inject.name.Named;
 @Singleton
 public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl implements InternalFreeFormCommitService {
 
+	private static final Logger logger = Logger.getLogger(DefaultTermCommitServiceImpl.class);
+	
 	private final Committer committer;
 	private final OntologyIdManager primaryIdProvider;
 	private final OntologyIdManager secondaryIdProvider;
@@ -413,6 +416,17 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				// check commit status
 				if (!commitResult.isSuccess()) {
 					error("Commit operation did not succeed.");
+				}
+				if (logger.isInfoEnabled()) {
+					StringBuilder sb = new StringBuilder();
+					for (CommitObject<TermCommit> commitObject : commitResult.getTerms()) {
+						Frame frame = commitObject.getObject().getTerm();
+						String id = frame.getId();
+						String lbl = frame.getTagValue(OboFormatTag.TAG_NAME, String.class);
+						sb.append("\n");
+						sb.append(id).append(" '").append(lbl).append('\'');
+					}
+					logger.info("Successfully submitted terms: "+sb);
 				}
 
 				// create result
