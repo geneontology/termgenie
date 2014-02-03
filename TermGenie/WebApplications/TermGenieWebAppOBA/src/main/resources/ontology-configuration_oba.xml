@@ -3,9 +3,11 @@
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="OBA">
 		<source>http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo</source>
+		<!-- 
 		<supports>
 			<support>http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo</support>
 		</supports>
+		 -->
 		<roots>
 			<root>OBA:0000001</root>
 			<root>UBERON:0001062</root> <!-- anatomical entity -->
