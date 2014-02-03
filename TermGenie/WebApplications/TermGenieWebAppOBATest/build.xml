@@ -7,7 +7,7 @@
 	<property name="webapp.db" location="${workdir}/termgenie-oba-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
 	<property name="webapp.jquery" location="../TermGenieJQuery/src/main/webapp"/>
-	<property name="webapp.oba" location="../TermGenieWebAppBatto/src/main/webapp"/>
+	<property name="webapp.oba" location="../TermGenieWebAppOBA/src/main/webapp"/>
 	<property name="webapplocal" location="src/main/webapp"/>
 	
 	<target name="copywebapp">

@@ -7,10 +7,10 @@
 		<artifactId>WebApplications</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>TermGenieWebAppBattoTest</artifactId>
+	<artifactId>TermGenieWebAppOBATest</artifactId>
 	<packaging>war</packaging>
 
-	<name>TermGenieWebAppBattoTest</name>
+	<name>TermGenieWebAppOBATest</name>
 
 	<build>
 		<plugins>
@@ -26,13 +26,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieWebAppBatto</artifactId>
+			<artifactId>TermGenieWebAppOBA</artifactId>
 			<version>${project.parent.version}</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieWebAppBatto</artifactId>
+			<artifactId>TermGenieWebAppOBA</artifactId>
 			<version>${project.parent.version}</version>
 			<classifier>classes</classifier>
 			<scope>provided</scope>
