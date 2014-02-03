@@ -18,7 +18,7 @@ import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.semanticweb.owlapi.model.IRI;
 
 
-public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBattoContextListener {
+public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBAContextListener {
 
 	private final String localSVNFolder;
 	private final Map<IRI, String> mappedIRIs;
@@ -28,7 +28,7 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 	private final boolean cleanDownloadCache = false;
 	
 	
-	public TermGenieWebAppBattoTestContextListener() {
+	public TermGenieWebAppOBATestContextListener() {
 		try {
 			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
 		} catch (IOException exception) {
@@ -45,7 +45,7 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 	@Override
 	protected IOCModule getOntologyModule() {
 		try {
-			String configFile = "ontology-configuration_batto.xml";
+			String configFile = "ontology-configuration_oba.xml";
 			File localSVNCache = new File("./work/read-only-svn-checkout").getCanonicalFile();
 			localSVNCache.mkdirs();
 			if (cleanDownloadCache) {
@@ -60,7 +60,7 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 					"http://purl.obolibrary.org/obo/TEMP");
 			
-			Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappBattoLocalIRIMappings");
+			Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappOBALocalIRIMappings");
 			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs, localMappings);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -77,7 +77,7 @@ public class TermGenieWebAppBattoTestContextListener extends TermGenieWebAppBatt
 	protected PersistenceBasicModule getBasicPersistenceModule() {
 		try {
 			// basic persistence
-			File dbFolder = new File("./work/termgenie-batto-db").getAbsoluteFile();
+			File dbFolder = new File("./work/termgenie-oba-db").getAbsoluteFile();
 			Logger.getLogger(getClass()).info("Setting db folder to: "+dbFolder.getAbsolutePath());
 			FileUtils.forceMkdir(dbFolder);
 			return new PersistenceBasicModule(dbFolder, applicationProperties);

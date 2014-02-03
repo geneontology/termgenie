@@ -33,17 +33,17 @@ import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.semanticweb.owlapi.model.IRI;
 
 
-public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContextListener {
+public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextListener {
 
-	private static final Logger logger = Logger.getLogger(TermGenieWebAppBattoContextListener.class);
+	private static final Logger logger = Logger.getLogger(TermGenieWebAppOBAContextListener.class);
 	
-	public TermGenieWebAppBattoContextListener() {
-		super("TermGenieWebAppBattoConfigFile");
+	public TermGenieWebAppOBAContextListener() {
+		super("TermGenieWebAppOBAConfigFile");
 	}
 	
 	@Override
 	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule("termgenie-batto", applicationProperties);
+		return new UserPermissionsModule("termgenie-oba", applicationProperties);
 	}
 	
 	@Override
@@ -57,14 +57,14 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 			
 			@Override
 			public String getModuleName() {
-				return "TermGenieBatto-TermGenieServiceModule";
+				return "TermGenieOBA-TermGenieServiceModule";
 			}
 		};
 	}
 	
 	@Override
 	protected IOCModule getOntologyModule() {
-		String configFile = "ontology-configuration_batto.xml";
+		String configFile = "ontology-configuration_oba.xml";
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
@@ -85,7 +85,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
 				"http://purl.obolibrary.org/obo/TEMP");
 		
-		Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappBattoLocalIRIMappings");
+		Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappOBALocalIRIMappings");
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs, localMappings);
 	}
@@ -120,7 +120,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_batto.xml", false, true, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, applicationProperties);
 	}
 	
 	@Override
@@ -129,7 +129,7 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 
 			@Override
 			public String getModuleName() {
-				return "TermGenieBatto-TermCommitReviewServiceModule";
+				return "TermGenieOBA-TermCommitReviewServiceModule";
 			}
 			
 			@Override
@@ -156,23 +156,23 @@ public class TermGenieWebAppBattoContextListener extends AbstractTermGenieContex
 	}
 
 	protected AdvancedPersistenceModule getAdvancedPersistenceModule() {
-		return new AdvancedPersistenceModule("BATTO-ID-Manager-Primary", 
-				"ids/batto-id-manager-primary.conf",
-				"BATTO-ID-Manager-Secondary", 
-				"ids/batto-id-manager-secondary.conf", 
+		return new AdvancedPersistenceModule("OBA-ID-Manager-Primary", 
+				"ids/oba-id-manager-primary.conf",
+				"OBA-ID-Manager-Secondary", 
+				"ids/oba-id-manager-secondary.conf", 
 				applicationProperties);
 	}
 
 	protected PersistenceBasicModule getBasicPersistenceModule() {
 		try {
 			// basic persistence
-			String dbFolderString = IOCModule.getProperty("TermGenieWebappBattoDatabaseFolder", applicationProperties);
+			String dbFolderString = IOCModule.getProperty("TermGenieWebappOBADatabaseFolder", applicationProperties);
 			File dbFolder;
 			if (dbFolderString != null && !dbFolderString.isEmpty()) {
 				dbFolder = new File(dbFolderString);
 			}
 			else {
-				dbFolder = new File(FileUtils.getUserDirectory(), "termgenie-batto-db");
+				dbFolder = new File(FileUtils.getUserDirectory(), "termgenie-oba-db");
 			}
 			dbFolder = dbFolder.getCanonicalFile();
 			logger.info("Using db folder: "+dbFolder);

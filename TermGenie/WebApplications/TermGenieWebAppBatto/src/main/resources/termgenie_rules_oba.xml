@@ -20,7 +20,7 @@
 			</field>
 		</fields>
 		<ruleFiles>
-			<ruleFile>rules/batto/eq_simple.js</ruleFile>
+			<ruleFile>rules/oba/eq_simple.js</ruleFile>
 		</ruleFiles>
 	</template>
 </termgenietemplates>

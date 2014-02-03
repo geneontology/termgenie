@@ -1,24 +1,24 @@
-<project name="TermGenieWebAppBattoTest" basedir="." default="copywebapp">
+<project name="TermGenieWebAppOBATest" basedir="." default="copywebapp">
 	<property name="workdir" location="work"/>
 	<property name="webapp.prepare" location="prepare"/>
 	<property name="webapp.target" location="${workdir}/ant-webapp"/>
 	<property name="webapp.svn" location="${workdir}/svn"/>
 	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
-	<property name="webapp.db" location="${workdir}/termgenie-batto-db"/>
+	<property name="webapp.db" location="${workdir}/termgenie-oba-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
-	<property name="webappjquery" location="../TermGenieJQuery/src/main/webapp"/>
-	<property name="webappbatto" location="../TermGenieWebAppBatto/src/main/webapp"/>
+	<property name="webapp.jquery" location="../TermGenieJQuery/src/main/webapp"/>
+	<property name="webapp.oba" location="../TermGenieWebAppBatto/src/main/webapp"/>
 	<property name="webapplocal" location="src/main/webapp"/>
 	
 	<target name="copywebapp">
 		<mkdir dir="${webapp.target}"/>
 		<copy todir="${webapp.target}">
-			<fileset dir="${webappjquery}">
+			<fileset dir="${webapp.jquery}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>
 		<copy todir="${webapp.target}">
-			<fileset dir="${webappbatto}">
+			<fileset dir="${webapp.oba}">
 				<exclude name="**/web.xml"/>
 			</fileset>
 		</copy>

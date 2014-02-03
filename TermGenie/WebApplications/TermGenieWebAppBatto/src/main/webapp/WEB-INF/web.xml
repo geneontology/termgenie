@@ -13,7 +13,7 @@
   </filter-mapping>
 
  <listener>
- 	<listener-class>org.bbop.termgenie.servlets.TermGenieWebAppBattoContextListener</listener-class>
+ 	<listener-class>org.bbop.termgenie.servlets.TermGenieWebAppOBAContextListener</listener-class>
  </listener>
 
  <session-config>  <!--  30 minutes -->
