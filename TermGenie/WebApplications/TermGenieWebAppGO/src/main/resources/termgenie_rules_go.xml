@@ -19,7 +19,9 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -50,7 +52,9 @@
 					<prefix>positive_regulation</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -83,7 +87,9 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -112,7 +118,9 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -141,7 +149,9 @@
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -175,7 +185,9 @@
 					<branch>biological_process</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -205,7 +217,9 @@
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -226,7 +240,9 @@
 			<field name="target" required="true">
 				<ontology name="ProteinOntology" />
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -251,7 +267,9 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -275,7 +293,9 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -299,7 +319,9 @@
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -330,7 +352,9 @@ generated automatically</description>
 					<prefix>biosynthesis</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -354,7 +378,9 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -386,7 +412,9 @@ generated automatically</description>
 					<prefix id="GO:0042626">&lt;b&gt;ATPase activity&lt;/b&gt;, coupled to transmembrane movement of substances</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -414,7 +442,9 @@ generated automatically</description>
 					<prefix id="GO:0070887">cellular response to</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -441,7 +471,9 @@ generated automatically</description>
 					<prefix id="GO:0055082">cellular chemical homeostasis</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -464,7 +496,9 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -488,7 +522,9 @@ generated automatically</description>
 					<branch>chebi</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -517,7 +553,9 @@ generated automatically</description>
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -551,7 +589,9 @@ generated automatically</description>
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -579,7 +619,9 @@ generated automatically</description>
 					<prefix>vesicle-mediated transport</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -617,7 +659,9 @@ generated automatically</description>
 					<branch>cellular_component</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -646,7 +690,9 @@ generated automatically</description>
 					<prefix>disassembly</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -671,7 +717,9 @@ generated automatically</description>
 					<branch>Plant</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -695,7 +743,9 @@ generated automatically</description>
 					<branch>Plant</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -719,7 +769,9 @@ generated automatically</description>
 					<branch>Plant</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -743,7 +795,9 @@ generated automatically</description>
 					<branch>Plant</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -767,7 +821,9 @@ generated automatically</description>
 					<branch>Plant</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -791,7 +847,9 @@ generated automatically</description>
 					<branch>cell</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -815,7 +873,9 @@ generated automatically</description>
 					<branch>cell</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -842,7 +902,9 @@ generated automatically</description>
 					<prefix>establishment of protein localization</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -866,7 +928,9 @@ generated automatically</description>
 					<branch>molecular_function</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -894,7 +958,9 @@ generated automatically</description>
 					<prefix>multi-organism</prefix>
 				</prefixes>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -933,7 +999,9 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="Uberon" />
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="xref">
@@ -954,7 +1022,9 @@ generated automatically</description>
 			<field name="target" required="true">
 				<ontology name="Uberon"/>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="xref">
@@ -976,7 +1046,9 @@ generated automatically</description>
 				<ontology name="ProteinOntology" />
 				<cardinality>2..N</cardinality>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="Name" />
 			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="xref">

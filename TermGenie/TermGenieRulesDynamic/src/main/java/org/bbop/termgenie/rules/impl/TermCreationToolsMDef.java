@@ -445,7 +445,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	}
 
 	private List<String> getDefXrefs() {
-		return merge(getInputs("DefX_Ref"), getInputs("Literature_Ref"));
+		return merge(getInputs("DefX_Ref"), merge(getInputs("Literature_Ref"), getInputs("Literature_Refs")));
 	}
 	
 	private List<String> merge(List<String> l1, List<String> l2) {
