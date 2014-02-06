@@ -8,16 +8,16 @@ function biosynthesis_via() {
 	var tname = termname(t, ont);
 	var vname = termname(v, ont);
 
-	var label = tname + " biosynthetic process from "+vname;
+	var label = tname + " biosynthetic process via " + vname;
 	var definition = "The chemical reactions and pathways resulting in the formation of "
-					+ tname + "via "+ vname + ".";
+					+ tname + " via "+ vname + ".";
 
 	var synonyms = null;
-//	synonyms = termgenie.addSynonym(label, null, null, tname, ' biosynthesis', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' biosynthetic process', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' anabolism', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' formation', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' synthesis', 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' biosynthesis via ', vname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' biosynthetic process via ', vname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' anabolism via ', vname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' formation via ', vname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' synthesis via ', vname, 'EXACT');
 
 	var mdef = createMDef("GO_0009058 and 'has output' some ?T and 'has intermediate' some ?V");
 	mdef.addParameter('T', t, ont);

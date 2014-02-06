@@ -8,16 +8,16 @@ function biosynthesis_from() {
 	var tname = termname(t, ont);
 	var fname = termname(f, ont);
 
-	var label = tname + " biosynthetic process from "+fname;
+	var label = tname + " biosynthetic process from " + fname;
 	var definition = "The chemical reactions and pathways resulting in the formation of "
-					+ tname + "from "+ fname + ".";
+					+ tname + " from "+ fname + ".";
 
 	var synonyms = null;
-//	synonyms = termgenie.addSynonym(label, null, null, tname, ' biosynthesis', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' biosynthetic process', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' anabolism', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' formation', 'EXACT');
-//	synonyms = termgenie.addSynonym(label, synonyms, null, tname, ' synthesis', 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' biosynthesis from ', fname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' biosynthetic process from ', fname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' anabolism from ', fname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' formation from ', fname, 'EXACT');
+	synonyms = termgenie.addSynonym(label, synonyms, tname, ' synthesis from ', fname, 'EXACT');
 
 	var mdef = createMDef("GO_0009058 and 'has output' some ?T and 'has input' some ?F");
 	mdef.addParameter('T', t, ont);
