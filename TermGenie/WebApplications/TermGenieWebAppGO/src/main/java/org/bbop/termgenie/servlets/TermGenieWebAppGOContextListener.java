@@ -126,6 +126,10 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
         specialPatterns.put("protein_complex_by_activity", 1); // relations
         specialPatterns.put("single_multi_organism_process", 1); // relation and PATO term as differentia
         specialPatterns.put("cell_differentiation", 1); // relation + CL
+        specialPatterns.put("biosynthesis_from", 1); // chebi
+        specialPatterns.put("biosynthesis_via", 1); // chebi
+        specialPatterns.put("catabolism_to", 1); // chebi
+        specialPatterns.put("catabolism_via", 1); // chebi
         
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
