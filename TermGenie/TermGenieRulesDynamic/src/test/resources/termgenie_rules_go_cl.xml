@@ -11,7 +11,9 @@
 					<branch>cell</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -34,7 +36,9 @@
 					<branch>cell</branch>
 				</ontology>
 			</field>
-			<field name="Literature_Ref" required="true" />
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
