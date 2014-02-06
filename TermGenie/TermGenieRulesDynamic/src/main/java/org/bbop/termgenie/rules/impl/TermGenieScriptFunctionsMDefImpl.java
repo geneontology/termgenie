@@ -456,18 +456,6 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		}
 		
 		@Override
-		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies) {
-			// find corresponding ontology via label.
-			for (OWLGraphWrapper ontology : ontologies) {
-				String label = ontology.getLabel(x);
-				if (label != null) {
-					addParameter(name, x, ontology);
-					break;
-				}
-			}
-		}
-		
-		@Override
 		public String getExpression() {
 			return expression;
 		}

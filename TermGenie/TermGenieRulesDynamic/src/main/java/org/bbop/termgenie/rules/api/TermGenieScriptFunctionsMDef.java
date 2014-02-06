@@ -43,15 +43,6 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 		 */
 		public void addParameter(String name, OWLObject x, OWLGraphWrapper ontology);
 
-		/**
-		 * Bind the given parameter name with the given {@link OWLObject}.
-		 * 
-		 * @param name parameter name
-		 * @param x {@link OWLObject} to be bound as parameter value
-		 * @param ontologies corresponding ontologies for the {@link OWLObject}
-		 */
-		public void addParameter(String name, OWLObject x, OWLGraphWrapper[] ontologies);
-
 		public String getExpression();
 
 		public Map<String, String> getParameters();
