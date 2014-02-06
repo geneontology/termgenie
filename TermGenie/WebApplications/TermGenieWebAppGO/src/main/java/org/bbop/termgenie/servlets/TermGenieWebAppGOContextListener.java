@@ -130,7 +130,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
         specialPatterns.put("biosynthesis_via", 1); // chebi
         specialPatterns.put("catabolism_to", 1); // chebi
         specialPatterns.put("catabolism_via", 1); // chebi
-        
+        specialPatterns.put("cell_migration", 1); // CL + relations
+
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value

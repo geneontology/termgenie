@@ -888,6 +888,31 @@ generated automatically</description>
 			<category>Cell Type Ontology (CL)</category>
 		</categories>
 	</template>
+	<template name="cell_migration">
+		<description>Migration for a cell type</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000091</definition-xref>
+		<fields>
+			<field name="celltype" required="true">
+				<ontology name="GeneOntology">
+					<branch>cell</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cl/cell_migration.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>Cell Type Ontology (CL)</category>
+		</categories>
+	</template>
 	<template name="protein_localization_to">
 		<description>protein localization and establishment of protein localization to a cellular component</description>
 		<obonamespace>biological_process</obonamespace>
