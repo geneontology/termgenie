@@ -889,7 +889,7 @@ generated automatically</description>
 		</categories>
 	</template>
 	<template name="cell_migration">
-		<description>Migration for a cell type</description>
+		<description>Migration of a cell type</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000091</definition-xref>
 		<fields>
