@@ -74,7 +74,7 @@ function termgenie(){
 	    methods: ['generate.availableTermTemplates', 
 	              'generate.generateTerms',
 	              'generate.getAutoCompleteResource',
-	              'ontology.availableOntologies',
+	              'ontology.getOntologyStatus',
 	              'ontology.autocomplete',
 	              'commit.exportTerms',
 	              'commit.commitTerms',
@@ -110,25 +110,24 @@ function termgenie(){
 	// create busy icon and message to show during wait
 	jQuery('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
 	
-	// request sessionId and then start a request for the ontologies.
-	mySession.getSessionId(function(sessionId){
-		// use json-rpc to retrieve available ontologies
-		jsonService.ontology.availableOntologies({
-			params: [sessionId],
-			onSuccess: function(result) {
-				/*
-				 * Actual start code for the page.
-				 * 
-				 * Retrieve and create the content for the step 1. 
-				 */
-				createOntologySelector(result);
-			},
-			onException: function(e) {
-				jQuery('#div-select-ontology').empty();
-				jQuery.logSystemError('AvailableOntologies service call failed',e);
-				return true;
-			}
-		});	
+	// retrieve ontology status and start render it in step 1
+	jsonService.ontology.getOntologyStatus({
+		onSuccess: function(result) {
+			/*
+			 * Actual start code for the page.
+			 * 
+			 * Retrieve and create the content for the step 1.
+			 * 
+			 * The result contains the ontology name and the 
+			 * current status information.
+			 */
+			createOntologyStatusInformation(result);
+		},
+		onException: function(e) {
+			jQuery('#div-select-ontology').empty();
+			jQuery.logSystemError('AvailableOntologies service call failed',e);
+			return true;
+		}
 	});
 	
 	var remoteResourceCache = {};
@@ -165,46 +164,30 @@ function termgenie(){
 	}
 	
 	/**
-	 * Create a selector for the given list of ontologies.
+	 * Check the status object, if the status code is not okay, prevent requests and render a message.
 	 * 
-	 * Side conditions: 
-	 *   - assumes the list to be non-empty, 
-	 *   - if ontologies.length === 1, skip selection menu and go to next step 
+	 * Otherwise extract the ontology name and process to step 2.
 	 * 
-	 * @param ontologies list of ontology names
+	 * @param ontologyStatus status object
 	 */
-	function createOntologySelector(ontologies) {
-		var selectedValue;
-		var ontselect;
-		var elem;
-		// create selector for given ontologies
-		if (ontologies.length === 1) {
-			// short cut, if only one exists, skip this step
-			selectedValue = ontologies[0];
-			setStep1Header(selectedValue);
-			createTemplateSelector(selectedValue);
-			// go to the next panel and deactivate the first panel
-			setStep2Active(false);
-		} else {
-			ontselect = c_span('select-ontology-header','Available Ontologies') +
-			'<select id="select-ontology-select">';
-			jQuery.each(ontologies, function(intIndex, objValue){
-				ontselect += '<option value="'+objValue+'">'+objValue+'</option>';
-			});
-			ontselect += '</select>'+ c_button('select-ontology-button', 'Submit');
-			
-			// add to div
-			elem = jQuery('#div-select-ontology');
-			elem.empty();
-			elem.append(ontselect);
-			
-			// register click handler
-			jQuery('#select-ontology-button').click(function() {
-				var selectedValue = jQuery('#select-ontology-select').val();
-				setStep1Header(selectedValue);
-				createTemplateSelector(selectedValue);
-				setStep2Active(true);
-			});
+	function createOntologyStatusInformation(ontologyStatus) {
+		/*
+		  ontologyStatus: {
+				ontology: String,
+				okay: boolean,
+				message: String
+		  }
+		 */
+		var ontologyName = ontologyStatus.ontology;
+		// if the status is okay, go to step 2
+		if (ontologyStatus.okay === true) {
+			setStep1Header(ontologyName+' okay');
+			createTemplateSelector(ontologyName);
+			setStep2Active();
+		}
+		else {
+			// render message
+			jQuery('#div-step1-ontology-status').append(ontologyStatus.message);
 		}
 		
 		/**
@@ -219,13 +202,10 @@ function termgenie(){
 		}
 		
 		/**
-		 * Active the second step. Depending on the parameter, the pane 
-		 * for step 1 can be revisited.
-		 * 
-		 * @param step1Available boolean
+		 * Active the second step and deactivate step 1.
 		 */
 		function setStep2Active(step1Available) {
-			myAccordion.setPaneState(0, step1Available);
+			myAccordion.setPaneState(0, false);
 			myAccordion.enablePane(1);
 			myAccordion.activatePane(1);
 		}
