@@ -6,17 +6,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.scm.VersionControlAdapter;
@@ -43,10 +42,9 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 	private final DirectOntologyLoader loader;
 
 	protected OboScmHelper(IRIMapper iriMapper,
-			String svnOntologyFileName,
-			List<String> svnAdditionalOntologyFileNames)
+			String svnOntologyFileName)
 	{
-		super(svnOntologyFileName, svnAdditionalOntologyFileNames);
+		super(svnOntologyFileName);
 		loader = new DirectOntologyLoader(iriMapper);
 	}
 
@@ -78,55 +76,45 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 	}
 
 	@Override
-	public void createModifiedTargetFiles(ScmCommitData data, List<OBODoc> ontologies, OWLGraphWrapper graph, String savedBy)
+	public void createModifiedTargetFile(ScmCommitData data, OBODoc ontology, OWLGraphWrapper graph, String savedBy)
 			throws CommitException
 	{
-		int ontologyCount = ontologies.size();
-		final NameProvider nameProvider = new MultipleOboAndOwlNameProvider(ontologies, graph);
-		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
-		for (int i = 0; i < ontologyCount; i++) {
-			// write changed ontology to a file
-			final OBODoc ontology = ontologies.get(i);
-			Frame headerFrame = ontology.getHeaderFrame();
-			if (headerFrame != null) {
-				// set date
-				updateClause(headerFrame, OboFormatTag.TAG_DATE, new Date());
-				
-				// set saved-by
-				updateClause(headerFrame, OboFormatTag.TAG_SAVED_BY, savedBy);
-				
-				// set auto-generated-by
-				updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
-			}
-			createOBOFile(modifiedTargetFiles.get(i), ontology, nameProvider);
+		final NameProvider nameProvider = new MultipleOboAndOwlNameProvider(ontology, graph);
+		final File modifiedTargetFile = data.getModifiedTargetFile();
+		// write changed ontology to a file
+		Frame headerFrame = ontology.getHeaderFrame();
+		if (headerFrame != null) {
+			// set date
+			updateClause(headerFrame, OboFormatTag.TAG_DATE, new Date());
+
+			// set saved-by
+			updateClause(headerFrame, OboFormatTag.TAG_SAVED_BY, savedBy);
+
+			// set auto-generated-by
+			updateClause(headerFrame, OboFormatTag.TAG_AUTO_GENERATED_BY, "TermGenie 1.0");
 		}
+		createOBOFile(modifiedTargetFile, ontology, nameProvider);
 	}
 	
 	/**
-	 * Provide names for the {@link OBOFormatWriter} using an List of {@link OBODoc}
+	 * Provide names for the {@link OBOFormatWriter} using an {@link OBODoc}
 	 * first and an {@link OWLGraphWrapper} as secondary.
 	 */
 	public static class MultipleOboAndOwlNameProvider implements NameProvider {
 
-		private final List<NameProvider> providers;
+		private final NameProvider provider;
 		private final OWLGraphWrapper graph;
 		
-		public MultipleOboAndOwlNameProvider(List<OBODoc> oboDocs, OWLGraphWrapper wrapper) {
-			providers = new ArrayList<NameProvider>();
-			for(OBODoc oboDoc : oboDocs) {
-				providers.add(new OBODocNameProvider(oboDoc));
-			}
+		public MultipleOboAndOwlNameProvider(OBODoc oboDoc, OWLGraphWrapper wrapper) {
+			provider = new OBODocNameProvider(oboDoc);
 			this.graph = wrapper;
 		}
 
 		@Override
 		public String getName(String id) {
-			String name = null;
-			for(NameProvider nameProvider : providers) {
-				name = nameProvider.getName(id);
-				if (name != null) {
-					return name;
-				}
+			String name = provider.getName(id);
+			if (name != null) {
+				return name;
 			}
 			OWLObject owlObject = graph.getOWLObjectByIdentifier(id);
 			if (owlObject != null) {
@@ -137,7 +125,7 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 
 		@Override
 		public String getDefaultOboNamespace() {
-			return providers.get(0).getDefaultOboNamespace();
+			return provider.getDefaultOboNamespace();
 		}
 
 	}
@@ -170,14 +158,11 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 	}
 
 	@Override
-	protected List<OBODoc> loadOntologies(List<File> scmFiles) throws CommitException {
-		List<OBODoc> ontologies = new ArrayList<OBODoc>(scmFiles.size());
+	protected OBODoc loadOntology(File scmFile) throws CommitException {
 		try {
 			// load OBO
-			for(File scmFile : scmFiles) {
-				OBODoc ontology = loader.loadOBO(scmFile, null, null);
-				ontologies.add(ontology);
-			}
+			OBODoc ontology = loader.loadOBO(scmFile, null, null);
+			return ontology;
 		} catch (IOException exception) {
 			String message = "Could not load recent copy of the ontology";
 			throw error(message, exception, true);
@@ -185,7 +170,6 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 			String message = "Could not load recent copy of the ontology, due to an OBO format parse exception.";
 			throw error(message, exception, true);
 		}
-		return ontologies;
 	}
 
 	private static final class DirectOntologyLoader extends BaseOntologyLoader {

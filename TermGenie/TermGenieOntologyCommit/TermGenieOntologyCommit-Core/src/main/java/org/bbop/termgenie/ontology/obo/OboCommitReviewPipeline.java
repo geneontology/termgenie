@@ -11,7 +11,6 @@ import org.bbop.termgenie.ontology.OntologyCommitReviewPipeline;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.obolibrary.obo2owl.Owl2Obo;
@@ -21,29 +20,14 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OboCommitReviewPipeline extends OntologyCommitReviewPipeline<OBODoc>
 {
-	private final TermFilter<OBODoc> termFilter;
-
 	public OboCommitReviewPipeline(OntologyTaskManager source,
 			CommitHistoryStore store,
-			TermFilter<OBODoc> termFilter,
 			ReviewMailHandler handler,
 			ScmHelper<OBODoc> helper)
 	{
 		super(source, store, handler, helper);
-		this.termFilter = termFilter;
 	}
 
-	@Override
-	protected List<CommitedOntologyTerm> filterItems(CommitHistoryItem item,
-			OBODoc targetOntology,
-			List<OBODoc> targetOntologies,
-			int i)
-	{
-		List<CommitedOntologyTerm> changes;
-		changes = termFilter.filterTerms(item, targetOntology, targetOntologies, i);
-		return changes;
-	}
-	
 	@Override
 	protected String createDiff(CommitHistoryItem historyItem, OntologyTaskManager source)
 			throws CommitException

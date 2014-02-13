@@ -23,7 +23,7 @@ public final class CvsHelperPassword extends OboScmHelper {
 			@Named("CommitAdapterCVSPassword") String cvsPassword,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cvsOntologyFileName, null);
+		super(iriMapper, cvsOntologyFileName);
 		this.cvsPassword = cvsPassword;
 		this.cvsRoot = cvsRoot;
 	}

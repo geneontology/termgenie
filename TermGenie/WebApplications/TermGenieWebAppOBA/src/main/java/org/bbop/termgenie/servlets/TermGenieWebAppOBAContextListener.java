@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,10 +111,9 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "extensions/bio-attributes.obo";
 		String svnUserName = null; // no default value
-		List<String> additional = Collections.emptyList();
 		boolean loadExternal = true;
 		
-		return CommitSvnUserPasswdModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal);
+		return CommitSvnUserPasswdModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, loadExternal);
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package org.bbop.termgenie.ontology;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -22,32 +22,27 @@ public abstract class ScmHelper<ONTOLOGY> {
 	
 	private static final Logger LOG = Logger.getLogger(ScmHelper.class);
 
-	private final List<String> targetOntologyFileNames;
+	private final String targetOntologyFileName;
 
-	protected ScmHelper(String svnOntologyFileName,
-			List<String> svnAdditionalOntologyFileNames)
+	protected ScmHelper(String svnOntologyFileName)
 	{
-		this.targetOntologyFileNames = new ArrayList<String>(1);
-		targetOntologyFileNames.add(svnOntologyFileName);
-		if (svnAdditionalOntologyFileNames != null) {
-			targetOntologyFileNames.addAll(svnAdditionalOntologyFileNames);
-		}
+		this.targetOntologyFileName = svnOntologyFileName;
 	}
 
 	public static class ScmCommitData implements OntologyCommitPipelineData {
 
 		File scmFolder = null;
-		List<File> scmFileList = null;
-		List<File> patchFileList = null;
+		File scmFile = null;
+		File patchFile = null;
 
 		@Override
-		public List<File> getTargetFiles() {
-			return scmFileList;
+		public File getTargetFile() {
+			return scmFile;
 		}
 
 		@Override
-		public List<File> getModifiedTargetFiles() {
-			return patchFileList;
+		public File getModifiedTargetFile() {
+			return patchFile;
 		}
 
 		/**
@@ -63,28 +58,21 @@ public abstract class ScmHelper<ONTOLOGY> {
 
 		data.scmFolder = createFolder(workFolder, "scm");
 		final File patchedFolder = createFolder(workFolder, "patched");
-		int count = targetOntologyFileNames.size();
-		data.scmFileList = new ArrayList<File>(count);
-		data.patchFileList = new ArrayList<File>(count);
-		for(String name : targetOntologyFileNames) {
-			File scmFile = new File(data.scmFolder, name);
-			File patchFile = new File(patchedFolder, name);
-			data.scmFileList.add(scmFile);
-			data.patchFileList.add(patchFile);
-		}
+		data.scmFile = new File(data.scmFolder, targetOntologyFileName);
+		data.patchFile = new File(patchedFolder, targetOntologyFileName);
 		return data;
 	}
 
 	public abstract VersionControlAdapter createSCM(File scmFolder) throws CommitException;
 
-	public List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, ScmCommitData data, ProcessState state)
+	public ONTOLOGY retrieveTargetOntology(VersionControlAdapter scm, ScmCommitData data, ProcessState state)
 			throws CommitException
 	{
 		// check-out ontology from SCM repository
 		scmCheckout(scm, state);
 		
 		// load ontology
-		return loadOntologies(data.scmFileList);
+		return loadOntology(data.scmFile);
 	}
 	
 	public void updateSCM(VersionControlAdapter scm, ProcessState state)
@@ -92,7 +80,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 	{
 		try {
 			scm.connect();
-			scm.update(targetOntologyFileNames, state);
+			scm.update(Collections.singletonList(targetOntologyFileName), state);
 		} catch (IOException exception) {
 			throw error("Could not update scm repository", exception, false);
 		} finally {
@@ -114,7 +102,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 	public abstract boolean applyHistoryChanges(ScmCommitData data, List<CommitedOntologyTerm> terms, ONTOLOGY ontology)
 			throws CommitException;
 
-	public abstract void createModifiedTargetFiles(ScmCommitData data, List<ONTOLOGY> ontologies, OWLGraphWrapper graph, String savedBy)
+	public abstract void createModifiedTargetFile(ScmCommitData data, ONTOLOGY ontologies, OWLGraphWrapper graph, String savedBy)
 			throws CommitException;
 	
 	/**
@@ -131,7 +119,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 	{
 		try {
 			scm.connect();
-			scm.commit(commitMessage, targetOntologyFileNames, state);
+			scm.commit(commitMessage, Collections.singletonList(targetOntologyFileName), state);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}
@@ -149,7 +137,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 			// scm checkout
 			scm.connect();
 			
-			boolean success = scm.checkout(targetOntologyFileNames, state);
+			boolean success = scm.checkout(Collections.singletonList(targetOntologyFileName), state);
 			if (!success) {
 				String message = "Could not checkout recent copy of the ontology";
 				throw error(message, true);
@@ -167,7 +155,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 		}
 	}
 
-	protected abstract List<ONTOLOGY> loadOntologies(List<File> scmFiles) throws CommitException;
+	protected abstract ONTOLOGY loadOntology(File scmFile) throws CommitException;
 
 	protected File createFolder(final File workFolder, String name) throws CommitException {
 		final File folder;

@@ -1,9 +1,6 @@
 package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.IRIMapper;
@@ -35,13 +32,12 @@ public class SvnHelper {
 		OboSvnHelperPassword(IRIMapper iriMapper,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
-				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -102,11 +98,10 @@ public class SvnHelper {
 		OboSvnHelperAnonymous(IRIMapper iriMapper,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
-				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
@@ -162,14 +157,13 @@ public class SvnHelper {
 		OboSvnHelperKeyFile(IRIMapper iriMapper,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
-				@Named("CommitAdapterSVNAdditionalOntologyFileNames") @Nullable List<String> svnAdditionalOntologyFileNames,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
 				@Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName, svnAdditionalOntologyFileNames);
+			super(iriMapper, svnOntologyFileName);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;

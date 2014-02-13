@@ -8,11 +8,8 @@ import org.bbop.termgenie.ontology.CommitHistoryStore;
 import org.bbop.termgenie.ontology.Committer;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.TermFilter;
-import org.bbop.termgenie.ontology.obo.DefaultOboTermFilter;
 import org.bbop.termgenie.ontology.obo.OboCommitReviewPipeline;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
-import org.obolibrary.oboformat.model.OBODoc;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -58,8 +55,7 @@ public class CommitReviewCvsModule extends AbstractCommitModule {
 			CommitHistoryStore store,
 			ReviewMailHandler handler,
 			OboScmHelper helper) {
-		TermFilter<OBODoc> filter = new DefaultOboTermFilter();
-		return new OboCommitReviewPipeline(source, store, filter, handler, helper);
+		return new OboCommitReviewPipeline(source, store, handler, helper);
 	}
 
 	@Singleton

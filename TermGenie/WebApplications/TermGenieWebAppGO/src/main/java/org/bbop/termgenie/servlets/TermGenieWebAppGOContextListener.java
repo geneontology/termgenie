@@ -17,9 +17,7 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
-import org.bbop.termgenie.ontology.obo.OboPatternSpecificTermFilter;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -32,7 +30,6 @@ import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.user.go.GeneOntologyJsonUserDataModule;
-import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
@@ -76,18 +73,12 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		
 		// http://www.geneontology.org/ontology/editors/gene_ontology_write.obo
 		// editors/gene_ontology_write.obo
-		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_write.obo"), "editors/gene_ontology_write.obo");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go.owl"), "editors/gene_ontology_write.obo");
 			
-		// http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo
-		// editors/gene_ontology_xp_write.obo
-		mappedIRIs.put(IRI.create("http://www.geneontology.org/ontology/editors/gene_ontology_xp_write.obo"), "editors/gene_ontology_xp_write.obo");
-					
 		String catalogXML = "extensions/catalog-v001.xml";
 		
-		List<String> ignoreIRIs = Arrays.asList("http://purl.obolibrary.org/obo/go.owl",
-                "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
-                "http://purl.obolibrary.org/obo/go/editors/gene_ontology_xp_write.owl",
-                "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl",
+		List<String> ignoreIRIs = Arrays.asList(
+				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
                 "http://purl.obolibrary.org/obo/TEMP");
 		
 		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
@@ -95,51 +86,19 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_go.xml", false, true, applicationProperties);
+		boolean useIsInferred = false;
+		boolean assertInferences = true;
+		return new XMLDynamicRulesModule("termgenie_rules_go.xml", useIsInferred, assertInferences, applicationProperties);
 	}
 
 	@Override
 	protected IOCModule getCommitModule() {
-		final Map<String, Integer> specialPatterns = new HashMap<String, Integer>();
-		specialPatterns.put("chemical_transport", 1); // chebi
-		specialPatterns.put("chemical_transporter_activity", 1); // chebi
-		specialPatterns.put("chemical_binding", 1); // chebi
-		specialPatterns.put("metabolism_catabolism_biosynthesis", 1); // chebi
-		specialPatterns.put("chemical_transmembrane_transport_bp", 1); // chebi
-		specialPatterns.put("chemical_transmembrane_transport_mf", 1); // chebi
-		specialPatterns.put("chemical_response_to", 1); // chebi
-		specialPatterns.put("chemical_homeostasis", 1); // chebi
-        specialPatterns.put("chemical_import", 1); // chebi
-        specialPatterns.put("chemical_export", 1); // chebi
-        specialPatterns.put("cc_transport_from_to", 1); // relations are only defined in xp file
-        specialPatterns.put("cc_transport", 1); // relations are only defined in xp file
-        specialPatterns.put("chemical_transport_from_to", 1); // chebi + relations
-        specialPatterns.put("plant_development", 1); // PO + relations
-        specialPatterns.put("plant_formation", 1); // PO + relations
-        specialPatterns.put("plant_maturation", 1); // PO + relations
-        specialPatterns.put("plant_morphogenesis", 1); // PO + relations
-        specialPatterns.put("plant_structural_organization", 1); // PO + relations
-        specialPatterns.put("cell_apoptosis", 1); // CL
-        specialPatterns.put("protein_localization_to", 1); // relations are only defined in xp file
-        specialPatterns.put("chemical_import_into", 1); // relations and chebi
-        specialPatterns.put("cc_assembly_disassembly", 1); // relations
-        specialPatterns.put("protein_complex_by_activity", 1); // relations
-        specialPatterns.put("single_multi_organism_process", 1); // relation and PATO term as differentia
-        specialPatterns.put("cell_differentiation", 1); // relation + CL
-        specialPatterns.put("biosynthesis_from", 1); // chebi
-        specialPatterns.put("biosynthesis_via", 1); // chebi
-        specialPatterns.put("catabolism_to", 1); // chebi
-        specialPatterns.put("catabolism_via", 1); // chebi
-        specialPatterns.put("cell_migration", 1); // CL + relations
-
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "editors/gene_ontology_write.obo";
 		String svnUserName = null; // no default value
-		List<String> additional = Collections.singletonList("editors/gene_ontology_xp_write.obo");
 		boolean loadExternal = true;
-		TermFilter<OBODoc> filter = new OboPatternSpecificTermFilter(specialPatterns);
 		
-		return CommitSvnUserPasswdModule.createFilteredOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, additional, loadExternal, filter);
+		return CommitSvnUserPasswdModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, loadExternal);
 	}
 	
 	

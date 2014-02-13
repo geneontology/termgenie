@@ -22,7 +22,7 @@ public final class CvsHelperAnonymous extends OboScmHelper {
 			@Named("CommitAdapterCVSOntologyFileName") String cvsOntologyFileName,
 			@Named("CommitAdapterCVSRoot") String cvsRoot)
 	{
-		super(iriMapper, cvsOntologyFileName, null);
+		super(iriMapper, cvsOntologyFileName);
 		this.cvsRoot = cvsRoot;
 	}
 

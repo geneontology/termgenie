@@ -1,11 +1,9 @@
 package org.bbop.termgenie.ontology.svn;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -18,10 +16,9 @@ public class CommitSvnAnonymousModule {
 		private CommitOboSvnAnonymousModule(String svnRepository,
 				String svnOntologyFileName,
 				Properties applicationProperties,
-				List<String> additionalOntologyFileNames,
 				boolean svnLoadExternals)
 		{
-			super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 		}
 		
 		@Override
@@ -55,44 +52,15 @@ public class CommitSvnAnonymousModule {
 	 * @param svnRepository
 	 * @param svnOntologyFileName
 	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 * @return module
 	 */
 	public static IOCModule createOboModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
 			boolean svnLoadExternals)
 	{
-		return new CommitOboSvnAnonymousModule(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
-	}
-	
-	/**
-	 * Create an commit module for OBO, OBOTermFilter and SVN without authentication.
-	 * 
-	 * @param svnRepository
-	 * @param svnOntologyFileName
-	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
-	 * @param svnLoadExternals
-	 * @param filter
-	 * @return module
-	 */
-	public static IOCModule createFilteredOboModule(String svnRepository,
-			String svnOntologyFileName,
-			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
-			boolean svnLoadExternals,
-			final TermFilter<OBODoc> filter)
-	{
-		return new CommitOboSvnAnonymousModule(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals) {
-
-			@Override
-			protected TermFilter<OBODoc> provideTermFilter() {
-				return filter;
-			}
-		};
+		return new CommitOboSvnAnonymousModule(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 	}
 	
 	/**

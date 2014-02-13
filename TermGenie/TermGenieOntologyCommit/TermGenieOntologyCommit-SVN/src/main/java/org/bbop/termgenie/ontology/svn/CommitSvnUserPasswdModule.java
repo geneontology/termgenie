@@ -1,11 +1,9 @@
 package org.bbop.termgenie.ontology.svn;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -21,10 +19,9 @@ public class CommitSvnUserPasswdModule {
 				String svnOntologyFileName,
 				String svnUsername,
 				Properties applicationProperties,
-				List<String> additionalOntologyFileNames,
 				boolean svnLoadExternals)
 		{
-			super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 			this.svnUsername = svnUsername;
 		}
 
@@ -77,7 +74,6 @@ public class CommitSvnUserPasswdModule {
 	 * @param svnOntologyFileName
 	 * @param svnUsername
 	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 * @return module
 	 */
@@ -85,40 +81,9 @@ public class CommitSvnUserPasswdModule {
 			String svnOntologyFileName,
 			String svnUsername,
 			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
 			boolean svnLoadExternals)
 	{
-		return new CommitOboSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
-	}
-
-	/**
-	 * Create an commit module for OBO, OBOTermFilter and SVN with username and password authentication.
-	 * 
-	 * @param svnRepository
-	 * @param svnOntologyFileName
-	 * @param svnUsername
-	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
-	 * @param svnLoadExternals
-	 * @param filter
-	 * @return module
-	 */
-	public static IOCModule createFilteredOboModule(String svnRepository,
-			String svnOntologyFileName,
-			String svnUsername,
-			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
-			boolean svnLoadExternals,
-			final TermFilter<OBODoc> filter)
-	{
-		return new CommitOboSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, additionalOntologyFileNames, svnLoadExternals)
-		{
-
-			@Override
-			protected TermFilter<OBODoc> provideTermFilter() {
-				return filter;
-			}
-		};
+		return new CommitOboSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, svnLoadExternals);
 	}
 
 	/**

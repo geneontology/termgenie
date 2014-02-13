@@ -3,7 +3,6 @@ package org.bbop.termgenie.ontology.owl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 
 	protected OwlScmHelper(IRIMapper iriMapper, String svnOntologyFileName)
 	{
-		super(svnOntologyFileName, null);
+		super(svnOntologyFileName);
 		this.iriMapper = iriMapper;
 	}
 
@@ -62,28 +61,20 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 	}
 
 	@Override
-	public void createModifiedTargetFiles(ScmCommitData data,
-			List<OWLOntology> ontologies,
+	public void createModifiedTargetFile(ScmCommitData data,
+			OWLOntology ontology,
 			OWLGraphWrapper graph,
 			String savedBy) throws CommitException
 	{
-		int ontologyCount = ontologies.size();
-		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
-		for (int i = 0; i < ontologyCount; i++) {
-			// write changed ontology to a file
-			final OWLOntology ontology = ontologies.get(i);
-			createOwlFile(modifiedTargetFiles.get(i), ontology);
-		}
-	}
-	
-	private void createOwlFile(File owlFile, OWLOntology ontology) throws CommitException {
+		// write changed ontology to file
+		final File modifiedTargetFile = data.getModifiedTargetFile();
 		OutputStream outputStream = null;
 		try {
 			// check that all folders are created
-			owlFile.getParentFile().mkdirs();
+			modifiedTargetFile.getParentFile().mkdirs();
 			
 			// write OWL file
-			outputStream = new FileOutputStream(owlFile);
+			outputStream = new FileOutputStream(modifiedTargetFile);
 			OWLOntologyManager manager = ontology.getOWLOntologyManager();
 			manager.saveOntology(ontology, outputStream);
 		} catch (Exception exception) {
@@ -94,26 +85,21 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 			IOUtils.closeQuietly(outputStream);
 		}
 	}
-
-
+	
 	@Override
-	protected List<OWLOntology> loadOntologies(List<File> scmFiles) throws CommitException {
+	protected OWLOntology loadOntology(File scmFile) throws CommitException {
 		// use a new manager to avoid 'already loaded' exceptions
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		if(iriMapper != null) {
 			manager.addIRIMapper(iriMapper);
 		}
-		List<OWLOntology> result = new ArrayList<OWLOntology>(scmFiles.size());
-		for (File file : scmFiles) {
-			IRI iri = IRI.create(file);
-			try {
-				OWLOntology ontology = manager.loadOntology(iri);
-				result.add(ontology);
-			} catch (OWLOntologyCreationException exception) {
-				throw new CommitException("Could not load file: "+file.getAbsolutePath(), exception, true);
-			}
+		IRI iri = IRI.create(scmFile);
+		try {
+			OWLOntology ontology = manager.loadOntology(iri);
+			return ontology;
+		} catch (OWLOntologyCreationException exception) {
+			throw new CommitException("Could not load file: "+scmFile.getAbsolutePath(), exception, true);
 		}
-		return result;
 	}
 
 }

@@ -4,7 +4,7 @@
 	<groupId>org.bbop.termgenie</groupId>
 	<artifactId>TermGenie</artifactId>
 	<name>TermGenie</name>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<dependencies>

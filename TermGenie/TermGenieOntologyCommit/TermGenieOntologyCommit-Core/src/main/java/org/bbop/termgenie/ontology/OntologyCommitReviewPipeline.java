@@ -273,10 +273,10 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 				VersionControlAdapter scm = prepareSCM(data);
 
 				ProcessState.addMessage(state, "Preparing target ontology.");
-				List<ONTOLOGY> targetOntologies = retrieveTargetOntologies(scm, data, state);
+				ONTOLOGY targetOntology = retrieveTargetOntology(scm, data, state);
 				// check for valid ontology file
-				final List<File> scmTargetFiles = data.getTargetFiles();
-				if (scmTargetFiles == null || scmTargetFiles.isEmpty()) {
+				final File scmTargetFile = data.getTargetFile();
+				if (scmTargetFile == null) {
 					throw error("scm target file is null");
 				}
 
@@ -294,7 +294,7 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 						results.add(new CommitResult(false, "The item has already been marked as committed", null, null));
 						continue;
 					}
-					CommitResult result = handleItem(item, state, targetOntologies, graph, scm, data);
+					CommitResult result = handleItem(item, state, targetOntology, graph, scm, data);
 					if (result != null) {
 						results.add(result);
 						changed = true;
@@ -319,7 +319,7 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 	
 	protected CommitResult handleItem(CommitHistoryItem item,
 			ProcessState state,
-			List<ONTOLOGY> targetOntologies,
+			ONTOLOGY targetOntology,
 			OWLGraphWrapper graph,
 			VersionControlAdapter scm,
 			ScmCommitData data) throws CommitException
@@ -329,78 +329,60 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 
 		ProcessState.addMessage(state, "Apply changes for commit item #'"+item.getId()+"' to ontology.");
 		
-		final int ontologyCount = targetOntologies.size();
-		
-		List<File> targetFiles = data.getTargetFiles();
-		assertFiles(targetFiles, ontologyCount, "targetFiles");
+		File targetFile = data.getTargetFile();
 		
 		StringBuilder diffBuilder = new StringBuilder();
-		boolean[] changedOntology = new boolean[ontologyCount];
-		for (int i = 0; i < ontologyCount; i++) {
-			ONTOLOGY targetOntology = targetOntologies.get(i);
+		final boolean changedOntology;
+		List<CommitedOntologyTerm> changes = item.getTerms();
 
-			List<CommitedOntologyTerm> changes;
-			if (ontologyCount > 1) {
-				changes = filterItems(item, targetOntology, targetOntologies, i);
+		if (changes != null && !changes.isEmpty()) {
+			// apply changes to ontology in memory
+			final boolean success = applyChanges(data, changes, targetOntology);
+			if (!success) {
+				String message = "Could not apply changes to ontology.";
+				throw new CommitException(message, true);
 			}
-			else {
-				changes = item.getTerms();
-			}
-			
-			if (changes != null && !changes.isEmpty()) {
-				// apply changes to ontology in memory
-				final boolean success = applyChanges(data, changes, targetOntology);
-				if (!success) {
-					String message = "Could not apply changes to ontology.";
-					throw new CommitException(message, true);
-				}
-				changedOntology[i] = true;
-			}
-			else {
-				changedOntology[i] = false;
-			}
+			changedOntology = true;
+		}
+		else {
+			changedOntology = false;
 		}
 		
 		// write changed ontology to a file
 		ProcessState.addMessage(state, "Writing ontology to temporary file.");
-		createModifiedTargetFiles(data, targetOntologies, graph, item.getSavedBy());
+		createModifiedTargetFile(data, targetOntology, graph, item.getSavedBy());
 		
-		List<File> modifiedTargetFiles = data.getModifiedTargetFiles();
-		assertFiles(modifiedTargetFiles, ontologyCount, "modifiedTargetFiles");
-		
-		for (int i = 0; i < ontologyCount; i++) {	
-			// check for valid ontology files
-			File targetFile = targetFiles.get(i);
-			if (targetFile == null) {
-				throw error("target file is null");
-			}
-			File modifiedTargetFile = modifiedTargetFiles.get(i);
-			if (modifiedTargetFile == null) {
-				throw error("modified target file is null");
-			}
-			
-			if (changedOntology[i]) {
-				ProcessState.addMessage(state, "Creating ontology diff.");
-				// create the diff from the written and round-trip file
-				CharSequence diff = createUnifiedDiff(targetFile,
-						modifiedTargetFile,
-						"original",
-						"termgenie-changes");
-		
-				ProcessState.addMessage(state, "Prepare ontology file for commit.");
-				try {
-					FileUtils.copyFile(modifiedTargetFile, targetFile);
-				} catch (IOException exception) {
-					throw new CommitException("Could not prepare ontology file for commit.", exception, false);
-				}
-				// append diff to buffer
-				if (diffBuilder.length() > 0) {
-					diffBuilder.append("\n\n");
-					diffBuilder.append(diff);
-				}
-			}
+		File modifiedTargetFile = data.getModifiedTargetFile();
 
+		// check for valid ontology files
+		if (targetFile == null) {
+			throw error("target file is null");
 		}
+		if (modifiedTargetFile == null) {
+			throw error("modified target file is null");
+		}
+
+		if (changedOntology) {
+			ProcessState.addMessage(state, "Creating ontology diff.");
+			// create the diff from the written and round-trip file
+			CharSequence diff = createUnifiedDiff(targetFile,
+					modifiedTargetFile,
+					"original",
+					"termgenie-changes");
+
+			ProcessState.addMessage(state, "Prepare ontology file for commit.");
+			try {
+				FileUtils.copyFile(modifiedTargetFile, targetFile);
+			} catch (IOException exception) {
+				throw new CommitException("Could not prepare ontology file for commit.", exception, false);
+			}
+			// append diff to buffer
+			if (diffBuilder.length() > 0) {
+				diffBuilder.append("\n\n");
+				diffBuilder.append(diff);
+			}
+		}
+
 		// commit the changes to the repository
 		ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
 		String diff = diffBuilder.toString();
@@ -420,36 +402,6 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		}
 	}
 
-	/**
-	 * @param item
-	 * @param targetOntology
-	 * @param targetOntologies
-	 * @param i
-	 * @return items to commit or null if no applicable
-	 */
-	protected List<CommitedOntologyTerm> filterItems(CommitHistoryItem item,
-			ONTOLOGY targetOntology,
-			List<ONTOLOGY> targetOntologies,
-			int i)
-	{
-		if (i == 0) {
-			return item.getTerms();
-		}
-		return null;
-	}
-	
-	private void assertFiles(List<File> files, int length, String name) throws CommitException {
-		if (files == null) {
-			throw error(name+" file list is null");
-		}
-		if (files.isEmpty()) {
-			throw error(name+" file list is empty");
-		}
-		if (files.size() != length) {
-			throw error(name+" file list has unexpected length, expected: "+length+" but was: "+files.size());
-		}
-	}
-	
 	private List<CommitHistoryItem> retrieveItems(List<Integer> historyIds) throws CommitException {
 		try {
 			List<CommitHistoryItem> load = store.load(historyIds);
@@ -478,10 +430,10 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		scmHelper.updateSCM(scm, state);
 	}
 
-	private List<ONTOLOGY> retrieveTargetOntologies(VersionControlAdapter scm, ScmCommitData data, ProcessState state)
+	private ONTOLOGY retrieveTargetOntology(VersionControlAdapter scm, ScmCommitData data, ProcessState state)
 			throws CommitException
 	{
-		return scmHelper.retrieveTargetOntologies(scm, data, state);
+		return scmHelper.retrieveTargetOntology(scm, data, state);
 	}
 
 	protected boolean applyChanges(ScmCommitData data, List<CommitedOntologyTerm> terms, ONTOLOGY ontology)
@@ -490,10 +442,10 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		return scmHelper.applyHistoryChanges(data, terms, ontology);
 	}
 
-	private void createModifiedTargetFiles(ScmCommitData data, List<ONTOLOGY> ontology, OWLGraphWrapper graph, String savedBy)
+	private void createModifiedTargetFile(ScmCommitData data, ONTOLOGY ontology, OWLGraphWrapper graph, String savedBy)
 			throws CommitException
 	{
-		scmHelper.createModifiedTargetFiles(data, ontology, graph, savedBy);
+		scmHelper.createModifiedTargetFile(data, ontology, graph, savedBy);
 	}
 
 	private void commitToRepository(String commitMessage, VersionControlAdapter scm, String diff, ProcessState state)

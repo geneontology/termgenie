@@ -1,12 +1,10 @@
 package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
-import java.util.List;
 import java.util.Properties;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.ScmHelper;
-import org.bbop.termgenie.ontology.TermFilter;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -23,10 +21,9 @@ public class CommitSvnUserKeyFileModule {
 				String svnUsername,
 				File svnKeyFile,
 				Properties applicationProperties,
-				List<String> additionalOntologyFileNames,
 				boolean svnLoadExternals)
 		{
-			super(svnRepository, svnOntologyFileName, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
+			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
 		}
@@ -85,7 +82,6 @@ public class CommitSvnUserKeyFileModule {
 	 * @param svnUsername
 	 * @param svnKeyFile
 	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 * @return module
 	 */
@@ -94,39 +90,8 @@ public class CommitSvnUserKeyFileModule {
 			String svnUsername,
 			File svnKeyFile,
 			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
 			boolean svnLoadExternals) {
-		return new CommitOboSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, additionalOntologyFileNames, svnLoadExternals);
-	}
-	
-	/**
-	 * Create an commit module for OBO, OBOTermFilter and SVN with public/private key authentication.
-	 * 
-	 * @param svnRepository
-	 * @param svnOntologyFileName
-	 * @param svnUsername
-	 * @param svnKeyFile
-	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
-	 * @param svnLoadExternals
-	 * @param filter
-	 * @return module
-	 */
-	public static IOCModule createFilteredOboModule(String svnRepository,
-			String svnOntologyFileName,
-			String svnUsername,
-			File svnKeyFile,
-			Properties applicationProperties,
-			List<String> additionalOntologyFileNames,
-			boolean svnLoadExternals,
-			final TermFilter<OBODoc> filter) {
-		return new CommitOboSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, additionalOntologyFileNames, svnLoadExternals) {
-
-			@Override
-			protected TermFilter<OBODoc> provideTermFilter() {
-				return filter;
-			}
-		};
+		return new CommitOboSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals);
 	}
 	
 	/**

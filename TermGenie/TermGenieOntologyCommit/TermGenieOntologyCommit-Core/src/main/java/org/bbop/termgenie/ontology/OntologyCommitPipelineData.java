@@ -1,12 +1,11 @@
 package org.bbop.termgenie.ontology;
 
 import java.io.File;
-import java.util.List;
 
 public interface OntologyCommitPipelineData {
 
-	public List<File> getTargetFiles();
+	public File getTargetFile();
 
-	public List<File> getModifiedTargetFiles();
+	public File getModifiedTargetFile();
 
 }
