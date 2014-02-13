@@ -2,10 +2,10 @@ package org.bbop.termgenie.rpc;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.services.OntologyService;
+import org.bbop.termgenie.services.OntologyService.JsonOntologyStatus;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import org.json.rpc.server.InjectingGsonTypeChecker;
@@ -21,12 +21,16 @@ public class SimpleJsonRPCTestClient {
 		JsonRpcInvoker invoker = new JsonRpcInvoker(new InjectingGsonTypeChecker());
 		OntologyService service = invoker.get(transport, "ontology", OntologyService.class);
 
-		String[] availableOntologies = service.availableOntologies(null);
-		System.out.println(Arrays.toString(availableOntologies));
-
+		JsonOntologyStatus ontologyStatus = service.getOntologyStatus();
+		System.out.println("Ontology status: ");
+		System.out.println(" ontology: "+ontologyStatus.ontology);
+		System.out.println(" okay:     "+ontologyStatus.okay);
+		System.out.println(" message:  "+ontologyStatus.message);
+		System.out.println();
+		
 		JsonTermSuggestion[] suggestions = service.autocomplete(null,
 				"pig",
-				new String[] { "GeneOntology" },
+				"GeneOntology",
 				5);
 		for (JsonTermSuggestion suggestion : suggestions) {
 			System.out.println(suggestion);

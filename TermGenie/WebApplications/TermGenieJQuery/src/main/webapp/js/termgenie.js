@@ -415,14 +415,8 @@ function termgenie(){
 			}
 			layout += '<tr><td>Ontology Fields:</td></tr>';
 			jQuery.each(template.fields, function(index, field){
-				if(field.ontologies && field.ontologies.length > 0) {
-					var names = '';
-					jQuery.each(field.ontologies, function(index, ontology){
-						if (index > 0) {
-							names += ', ';
-						}
-						names += getOntologyName(ontology);
-					})
+				if(field.ontology !== undefined && field.ontology !== null) {
+					var names = getOntologyName(field.ontology);
 					layout += '<tr><td>'+field.name+'</td><td>'+names+'</td></tr>';
 				}
 			});
@@ -812,13 +806,8 @@ function termgenie(){
 					}
 					secondRow += '<td><span class="termgenie-term-template-field-name">'+fieldLabel+'</span></td>';
 					thirdRow += '<td><span class="termgenie-term-template-field-ontologies">';
-					if (field.ontologies && field.ontologies.length > 0) {
-						jQuery.each(field.ontologies, function(index, ontology){
-							if (index > 0) {
-								thirdRow += ', ';
-							}
-							thirdRow += getShortOntologyName(ontology);
-						});
+					if (field.ontology !== undefined && field.ontology !== null) {
+						thirdRow += getShortOntologyName(field.ontology);
 					}
 					if (field.hint !== undefined && field.hint.length > 0) {
 						thirdRow += field.hint;
@@ -889,20 +878,20 @@ function termgenie(){
 				});
 				
 				function createField(field, i, tdElement, choices) {
-					if (field.ontologies && field.ontologies.length > 0) {
+					if (field.ontology !== undefined && field.ontology !== null) {
 						var cardinality = field.cardinality;
 						if (cardinality.min === 1 && cardinality.max === 1) {
 							var prefixes = field.functionalPrefixes;
 							if (prefixes && prefixes.length > 0) {
-								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontologies, prefixes, field.functionalPrefixesIds, field.preSelected);
+								inputFields[i] = AutoCompleteOntologyInputPrefix(tdElement, i, field.ontology, prefixes, field.functionalPrefixesIds, field.preSelected);
 							}
 							else {
 								var optionalTerm = field.required === false;
-								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontologies, optionalTerm);	
+								inputFields[i] = AutoCompleteOntologyInput(tdElement, i, field.ontology, optionalTerm);	
 							}
 						}
 						else {
-							inputFields[i] = AutoCompleteOntologyInputList(tdElement, i, field.ontologies, cardinality.min, cardinality.max);
+							inputFields[i] = AutoCompleteOntologyInputList(tdElement, i, field.ontology, cardinality.min, cardinality.max);
 						}
 					}
 					else {
@@ -1123,12 +1112,12 @@ function termgenie(){
 		 * 
 		 * @param elem {DOM element} parent element
 		 * @param templatePos {int} position in the term template
-		 * @param ontologies {String[]} ontologies to be searched
+		 * @param currentOntology {String} ontologies to be searched
 		 * @param optionalTerm boolean if true, allow null entries
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function AutoCompleteOntologyInput(elem, templatePos, ontologies, optionalTerm) {
+		function AutoCompleteOntologyInput(elem, templatePos, currentOntology, optionalTerm) {
 			
 			var inputElement = jQuery('<input/>');
 			elem.append(inputElement);
@@ -1159,7 +1148,7 @@ function termgenie(){
 					
 					mySession.getSessionId(function(sessionId){
 						jsonService.ontology.autocomplete({
-							params:[sessionId, term, ontologies, 5],
+							params:[sessionId, term, currentOntology, 5],
 							onSuccess: function(data) {
 								if (myRequestIndex === requestIndex) {
 									if (data !== null || data.length > 0) {
@@ -1257,7 +1246,7 @@ function termgenie(){
 					}
 					else {
 						extractionResult.addError('No valid term. Please specify a term from '+
-							getShortOntologyNameList(field.ontologies), template, field);
+							getShortOntologyName(field.ontology), template, field);
 						setErrorState();
 						return false;
 					}
@@ -1270,13 +1259,13 @@ function termgenie(){
 		 * 
 		 * @param container {DOM element} parent element
 		 * @param templatePos {int} position in the term template
-		 * @param ontologies {String[]} ontologies to be searched
+		 * @param currentOntology {String} ontologies to be searched
 		 * @param min {int} minimum number of fields
 		 * @param max {int} maximum number of fields
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function AutoCompleteOntologyInputList(container, templatePos, ontologies, min, max) {
+		function AutoCompleteOntologyInputList(container, templatePos, currentOntology, min, max) {
 			
 			var list = [];
 			var listParent = createLayoutTable();
@@ -1292,7 +1281,7 @@ function termgenie(){
 					listElem.appendTo(listParent);
 					var tdElement = jQuery('<td></td>');
 					tdElement.appendTo(listElem);
-					list.push(AutoCompleteOntologyInput(tdElement, templatePos, ontologies));
+					list.push(AutoCompleteOntologyInput(tdElement, templatePos, currentOntology));
 				}
 			}
 			
@@ -1334,14 +1323,14 @@ function termgenie(){
 		 * 
 		 * @param elem {DOM element} parent element
 		 * @param templatePos {int} position in the term template
-		 * @param ontologies {String[]} ontologies to be searched
+		 * @param currentOntology {String} ontologies to be searched
 		 * @param prefixes {String[]} list of prefixes
 		 * @param prefixesIds {String[]} list of prefixesIds
 		 * @param preselect {boolean} pre-select prefix checkboxes
 		 * 
 		 * @returns functions for the widget (i.e. extractParameter())
 		 */
-		function AutoCompleteOntologyInputPrefix (elem, templatePos, ontologies, prefixes, prefixesIds, preselect) {
+		function AutoCompleteOntologyInputPrefix (elem, templatePos, currentOntology, prefixes, prefixesIds, preselect) {
 			if (preselect === undefined || preselect === null) {
 				preselect = true;
 			}
@@ -1359,7 +1348,7 @@ function termgenie(){
 			var prefixContainer = jQuery('<tr><td class="prefixInputFieldCell"></td></tr>');
 			prefixContainer.appendTo(container);
 			
-			var inputField = AutoCompleteOntologyInput(inputContainer.children(":first"), templatePos, ontologies);
+			var inputField = AutoCompleteOntologyInput(inputContainer.children(":first"), templatePos, currentOntology);
 			
 			var internalTable = createLayoutTable();
 			var checkboxes = [];
@@ -2584,23 +2573,6 @@ function termgenie(){
 	function getOntologyName(ontologyName) {
 		// replace the '|' char with a space
 		return ontologyName.replace(/\|/,' ');
-	}
-	
-	/**
-	 * Format the internal ontology name list into a short readable version.
-	 * 
-	 * @param ontologyNames String[]
-	 * @returns String better readable ontology name
-	 */
-	function getShortOntologyNameList(ontologyNames) {
-		var result = '';
-		jQuery.each(ontologyNames, function(index, ontologyName){
-			if (index > 0) {
-				result += ', ';
-			}
-			result += getShortOntologyName(ontologyName);
-		});
-		return result;
 	}
 	
 	/**

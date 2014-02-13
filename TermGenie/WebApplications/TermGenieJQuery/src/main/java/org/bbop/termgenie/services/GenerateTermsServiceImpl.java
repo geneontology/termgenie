@@ -350,7 +350,7 @@ public class GenerateTermsServiceImpl implements GenerateTermsService {
 			jsonField.setPreSelected(field.isPreSelected());
 			if (field.getSubset() != null) {
 				String subSetName = field.getSubset().getName();
-				jsonField.setOntologies(new String[] {subSetName});
+				jsonField.setOntology(subSetName);
 			}
 			return jsonField;
 		}

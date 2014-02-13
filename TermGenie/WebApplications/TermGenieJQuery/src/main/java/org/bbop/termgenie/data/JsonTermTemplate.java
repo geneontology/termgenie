@@ -154,7 +154,7 @@ public class JsonTermTemplate {
 		private boolean preSelected;
 		private String[] functionalPrefixes;
 		private String[] functionalPrefixesIds;
-		private String[] ontologies;
+		private String ontology;
 		private String remoteResource;
 
 		public JsonTemplateField() {
@@ -260,17 +260,17 @@ public class JsonTermTemplate {
 		}
 
 		/**
-		 * @return the ontologies
+		 * @return the ontology
 		 */
-		public String[] getOntologies() {
-			return ontologies;
+		public String getOntology() {
+			return ontology;
 		}
 
 		/**
-		 * @param ontologies the ontologies to set
+		 * @param ontology the ontology to set
 		 */
-		public void setOntologies(String[] ontologies) {
-			this.ontologies = ontologies;
+		public void setOntology(String ontology) {
+			this.ontology = ontology;
 		}
 
 		/**
@@ -327,9 +327,9 @@ public class JsonTermTemplate {
 				builder.append(Arrays.toString(functionalPrefixes));
 				builder.append(", ");
 			}
-			if (ontologies != null) {
-				builder.append("ontologies:");
-				builder.append(Arrays.toString(ontologies));
+			if (ontology != null) {
+				builder.append("ontology:");
+				builder.append(ontology);
 			}
 			builder.append("}");
 			return builder.toString();
