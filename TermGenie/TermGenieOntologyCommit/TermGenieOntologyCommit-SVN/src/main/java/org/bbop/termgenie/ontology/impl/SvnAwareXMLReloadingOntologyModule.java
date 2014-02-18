@@ -96,6 +96,47 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		};
 	}
 	
+	public static SvnAwareXMLReloadingOntologyModule createSshKeySvnModule(String configFile,
+			Properties applicationProperties,
+			String repositoryURL,
+			Map<IRI, String> mappedIRIs,
+			String catalogXML,
+			String workFolder,
+			String svnUsername,
+			String keyFile,
+			boolean loadExternal,
+			boolean usePassphrase,
+			List<String> ignoreMappings)
+	{
+		return new KeySvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, keyFile, loadExternal, usePassphrase, ignoreMappings);
+	}
+	
+	public static SvnAwareXMLReloadingOntologyModule createSshKeySvnModule(String configFile,
+			Properties applicationProperties,
+			String repositoryURL,
+			Map<IRI, String> mappedIRIs,
+			String catalogXML,
+			String workFolder,
+			String svnUsername,
+			String keyFile,
+			boolean loadExternal,
+			boolean usePassphrase,
+			List<String> ignoreMappings,
+			final Map<IRI, File> localMappings)
+	{
+		if (localMappings == null || localMappings.isEmpty()) {
+			return createSshKeySvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, keyFile, loadExternal, usePassphrase, ignoreMappings);
+		}
+		return new KeySvnAwareXMLReloadingOntologyModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUsername, keyFile, loadExternal, usePassphrase, ignoreMappings) {
+
+			@Override
+			protected IRIMapper getLocalIRIMapper() {
+				return new LocalIRIMapper(localMappings);
+			}
+			
+		};
+	}
+	
 
 	private final String repositoryURLDefault;
 	private final Map<IRI, String> mappedIRIs;
@@ -238,6 +279,71 @@ public abstract class SvnAwareXMLReloadingOntologyModule extends XMLReloadingOnt
 		{
 			final File workFolderFile = new File(workFolder);
 			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir, svnLoadExternal);
+			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
+			SvnIRIMapper svnMapper = new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
+			if (localIRIMapper == null) {
+				return svnMapper;
+			}
+			return new IRIMapperSwitch(localIRIMapper, svnMapper);
+		}
+	}
+	
+	static class KeySvnAwareXMLReloadingOntologyModule extends SvnAwareXMLReloadingOntologyModule {
+
+		private final String svnUsername;
+		private final String svnKeyFile;
+		private final boolean usePassphrase;
+
+		KeySvnAwareXMLReloadingOntologyModule(String configFile,
+				Properties applicationProperties,
+				String repositoryURL,
+				Map<IRI, String> mappedIRIs,
+				String catalogXML,
+				String workFolder,
+				String svnUsername,
+				String svnKeyFile,
+				boolean svnLoadExternal,
+				boolean usePassphrase,
+				List<String> ignoreMappings)
+		{
+			super(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, null, svnLoadExternal, ignoreMappings);
+			this.svnUsername = svnUsername;
+			this.svnKeyFile = svnKeyFile;
+			this.usePassphrase = usePassphrase;
+		}
+		
+
+		@Override
+		protected void bindAdditional() {
+			bind("SVNAwareIRIMapperUsername", svnUsername);
+			bind("SVNAwareIRIMapperKeyFile", svnKeyFile);
+			if (usePassphrase) {
+				bindSecret("SVNAwareIRIMapperPassword");	
+			}
+			else {
+				bindNull("SVNAwareIRIMapperPassword");
+			}
+			
+		}
+
+
+		@Provides
+		@Singleton
+		protected IRIMapper getIRIMapper(@Named("FallbackIRIMapper") IRIMapper fallbackIRIMapper,
+				@Named("LocalIRIMapper") @Nullable IRIMapper localIRIMapper,
+				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
+				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
+				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
+				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String workFolder,
+				@Named("SVNAwareIRIMapperUsername") String svnUsername,
+				@Named("SVNAwareIRIMapperKeyFile") String svnKeyFile,
+				@Named("SVNAwareIRIMapperPassword") @Nullable String svnPassword,
+				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
+				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
+		{
+			final File workFolderFile = new File(workFolder);
+			final File keyFile = new File(svnKeyFile);
+			final SvnTool svn = SvnTool.createSSHKeySVN(workFolderFile, repositoryURL, svnUsername, keyFile, svnPassword, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
 			SvnIRIMapper svnMapper = new SvnIRIMapper(fallbackIRIMapper, svn, checkout, mappedIRIs, catalogXML);
 			if (localIRIMapper == null) {
