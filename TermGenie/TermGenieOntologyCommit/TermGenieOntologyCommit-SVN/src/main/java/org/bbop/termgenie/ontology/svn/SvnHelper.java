@@ -2,6 +2,8 @@ package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
 
+import javax.annotation.Nullable;
+
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
@@ -159,7 +161,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
-				@Named("CommitAdapterSVNPassword") String svnPassword,
+				@Nullable @Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
@@ -197,7 +199,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
 				@Named("CommitAdapterSVNKeyFile") File svnKeyFile,
-				@Named("CommitAdapterSVNPassword") String svnPassword,
+				@Nullable @Named("CommitAdapterSVNPassword") String svnPassword,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{

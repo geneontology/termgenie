@@ -15,17 +15,20 @@ public class CommitSvnUserKeyFileModule {
 	private static class CommitOboSvnUserKeyFileModule extends AbstractOboCommitSvnModule {
 		private final String svnUsername;
 		private final File svnKeyFile;
+		private final boolean usePassphrase;
 	
 		private CommitOboSvnUserKeyFileModule(String svnRepository,
 				String svnOntologyFileName,
 				String svnUsername,
 				File svnKeyFile,
 				Properties applicationProperties,
-				boolean svnLoadExternals)
+				boolean svnLoadExternals,
+				boolean usePassphrase)
 		{
 			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
+			this.usePassphrase = usePassphrase;
 		}
 	
 		@Override
@@ -33,7 +36,12 @@ public class CommitSvnUserKeyFileModule {
 			super.configure();
 			bind("CommitAdapterSVNUsername", svnUsername);
 			bind("CommitAdapterSVNKeyFile", svnKeyFile);
-			bindSecret("CommitAdapterSVNPassword");
+			if (usePassphrase) {
+				bindSecret("CommitAdapterSVNPassword");
+			}
+			else {
+				bindNull("CommitAdapterSVNPassword");
+			}
 		}
 	
 		@Override
@@ -46,17 +54,20 @@ public class CommitSvnUserKeyFileModule {
 	private static class CommitOwlSvnUserKeyFileModule extends AbstractOwlCommitSvnModule {
 		private final String svnUsername;
 		private final File svnKeyFile;
+		private final boolean usePassphrase;
 	
 		private CommitOwlSvnUserKeyFileModule(String svnRepository,
 				String svnOntologyFileName,
 				String svnUsername,
 				File svnKeyFile,
 				Properties applicationProperties,
-				boolean svnLoadExternals)
+				boolean svnLoadExternals,
+				boolean usePassphrase)
 		{
 			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
+			this.usePassphrase = usePassphrase;
 		}
 	
 		@Override
@@ -64,7 +75,13 @@ public class CommitSvnUserKeyFileModule {
 			super.configure();
 			bind("CommitAdapterSVNUsername", svnUsername);
 			bind("CommitAdapterSVNKeyFile", svnKeyFile);
-			bindSecret("CommitAdapterSVNPassword");
+			if (usePassphrase) {
+				bindSecret("CommitAdapterSVNPassword");	
+			}
+			else {
+				bindNull("CommitAdapterSVNPassword");
+			}
+			
 		}
 	
 		@Override
@@ -83,6 +100,7 @@ public class CommitSvnUserKeyFileModule {
 	 * @param svnKeyFile
 	 * @param applicationProperties
 	 * @param svnLoadExternals
+	 * @param usePassphrase
 	 * @return module
 	 */
 	public static IOCModule createOboModule(String svnRepository,
@@ -90,8 +108,9 @@ public class CommitSvnUserKeyFileModule {
 			String svnUsername,
 			File svnKeyFile,
 			Properties applicationProperties,
-			boolean svnLoadExternals) {
-		return new CommitOboSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals);
+			boolean svnLoadExternals,
+			boolean usePassphrase) {
+		return new CommitOboSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals, usePassphrase);
 	}
 	
 	/**
@@ -103,6 +122,7 @@ public class CommitSvnUserKeyFileModule {
 	 * @param svnKeyFile
 	 * @param applicationProperties
 	 * @param svnLoadExternals
+	 * @param usePassphrase
 	 * @return module
 	 */
 	public static IOCModule createOwlModule(String svnRepository,
@@ -110,7 +130,8 @@ public class CommitSvnUserKeyFileModule {
 			String svnUsername,
 			File svnKeyFile,
 			Properties applicationProperties,
-			boolean svnLoadExternals) {
-		return new CommitOwlSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals);
+			boolean svnLoadExternals,
+			boolean usePassphrase) {
+		return new CommitOwlSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals, usePassphrase);
 	}
 }

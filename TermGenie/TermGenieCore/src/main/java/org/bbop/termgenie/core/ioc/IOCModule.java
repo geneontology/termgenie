@@ -22,6 +22,7 @@ import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Wrapper for guice configuration modules. E.g., allow overwrites for some
@@ -124,6 +125,16 @@ public abstract class IOCModule extends AbstractModule {
 	 */
 	protected void bind(String name, String value) {
 		bind(name, value, false);
+	}
+	
+	/**
+	 * Convenience method for binding a {@link String} parameter to a null value.<br>
+	 * Warning this will only work if the target has been annotated with {@link javax.annotation.Nullable}.
+	 * 
+	 * @param name
+	 */
+	protected void bindNull(String name) {
+		bind(String.class).annotatedWith(Names.named(name)).toProvider(Providers.<String>of(null));
 	}
 	
 	/**

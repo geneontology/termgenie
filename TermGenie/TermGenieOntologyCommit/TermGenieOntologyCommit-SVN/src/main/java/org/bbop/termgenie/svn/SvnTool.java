@@ -179,6 +179,14 @@ public class SvnTool implements VersionControlAdapter {
 		}
 	}
 	
+	/**
+	 * Simple 'svn add' for a single file. 
+	 * 
+	 * @param target
+	 * @param state
+	 * @return true if the add in the working copy was successful
+	 * @throws IOException
+	 */
 	public boolean add(String target, ProcessState state) throws IOException {
 		checkConnection();
 		SVNWCClient wcClient = ourClientManager.getWCClient();
