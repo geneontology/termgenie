@@ -24,6 +24,7 @@ import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+import org.tmatesoft.svn.core.wc.SVNWCClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.tmatesoft.svn.util.SVNDebugLog;
 import org.tmatesoft.svn.util.SVNDebugLogAdapter;
@@ -173,6 +174,18 @@ public class SvnTool implements VersionControlAdapter {
 			ProcessState.addMessage(state, endMessage);
 			logger.info(endMessage);
 			return success;
+		} catch (SVNException exception) {
+			throw new IOException(exception);
+		}
+	}
+	
+	public boolean add(String target, ProcessState state) throws IOException {
+		checkConnection();
+		SVNWCClient wcClient = ourClientManager.getWCClient();
+		try {
+			File path = new File(targetFolder, target).getAbsoluteFile();
+			wcClient.doAdd(path, false, false, false, SVNDepth.FILES, false, false);
+			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
 		}
