@@ -18,7 +18,7 @@ import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
+import org.bbop.termgenie.ontology.svn.CommitSvnUserKeyFileModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -67,7 +67,9 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
+		String keyFile = null;		// no default value
 		boolean loadExternal = true;
+		boolean usePassphrase = false;
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
@@ -86,7 +88,7 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		
 		Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappOBALocalIRIMappings");
 		
-		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs, localMappings);
+		return SvnAwareXMLReloadingOntologyModule.createSshKeySvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, keyFile, loadExternal, usePassphrase, ignoreIRIs, localMappings);
 	}
 	
 	protected Map<IRI, File> getLocalMappings(String prefix) {
@@ -110,10 +112,12 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
 		String remoteTargetFile = "extensions/bio-attributes.obo";
-		String svnUserName = null; // no default value
+		String svnUserName = null;	// no default value
+		File keyFile = null;		// no default value
 		boolean loadExternal = true;
+		boolean usePassphrase = false;
 		
-		return CommitSvnUserPasswdModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, loadExternal);
+		return CommitSvnUserKeyFileModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, keyFile , applicationProperties, loadExternal, usePassphrase);
 	}
 	
 	@Override
