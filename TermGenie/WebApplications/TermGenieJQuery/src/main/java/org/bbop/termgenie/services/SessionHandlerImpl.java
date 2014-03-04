@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.user.UserData;
 
@@ -69,8 +70,8 @@ public class SessionHandlerImpl implements SessionHandler {
 	
 	private static String getClientIpAddr(HttpServletRequest request) {
 		for (String ipHeader : IP_HEADERS) {
-			String ip = request.getHeader(ipHeader);  
-	        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+			String ip = StringUtils.trimToNull(request.getHeader(ipHeader));  
+	        if (ip != null && !"unknown".equalsIgnoreCase(ip)) {  
 	            return ip;  
 	        }
 		}
