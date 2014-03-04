@@ -21,7 +21,7 @@ public class LuceneOnlyClient implements OntologyTermSuggestor {
 	public LuceneOnlyClient(OntologyTaskManager manager, ReasonerFactory factory)
 	{
 		super();
-		index = BasicLuceneClient.create(manager, factory);
+		index = new BasicLuceneClient(manager, factory);
 	}
 
 	@Override

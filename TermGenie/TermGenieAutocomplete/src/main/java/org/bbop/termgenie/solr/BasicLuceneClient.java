@@ -41,54 +41,24 @@ public class BasicLuceneClient implements
 	 * 
 	 * @param ontologyManager
 	 * @param factory
-	 * @return new Instance of {@link BasicLuceneClient}
 	 */
-	public static BasicLuceneClient create(OntologyTaskManager ontologyManager, ReasonerFactory factory) {
+	public BasicLuceneClient(OntologyTaskManager ontologyManager, ReasonerFactory factory)
+	{
+		super();
 		Ontology ontology = ontologyManager.getOntology();
-		List<BranchDetails> branches = new ArrayList<BranchDetails>();
+		this.branches = new ArrayList<BranchDetails>();
 		List<OntologySubset> subsets = ontology.getSubsets();
 		if (subsets != null) {
 			for (OntologySubset subset : subsets) {
 				branches.add(new BranchDetails(subset.getName(), subset.getRoots(), subset.getDlQuery()));
 			}
 		}
-		return create(ontologyManager, ontology.getName(), ontology.getRoots(), ontology.getDlQuery(), branches, factory);
-	}
-
-	private static BasicLuceneClient create(OntologyTaskManager ontology,
-			String name,
-			List<String> roots,
-			String dlQuery,
-			List<BranchDetails> branches,
-			ReasonerFactory factory)
-	{
-		final BasicLuceneClient client = new BasicLuceneClient(name, roots, dlQuery, branches, ontology, factory);
-		client.setup();
-		return client;
-	}
-
-	/**
-	 * @param name
-	 * @param roots
-	 * @param dlQuery
-	 * @param branches
-	 * @param ontologyManager
-	 * @param factory
-	 */
-	protected BasicLuceneClient(String name,
-			List<String> roots,
-			String dlQuery,
-			List<BranchDetails> branches,
-			OntologyTaskManager ontologyManager,
-			ReasonerFactory factory)
-	{
-		super();
-		this.roots = roots;
-		this.dlQuery = dlQuery;
-		this.branches = branches;
+		this.roots = ontology.getRoots();
+		this.dlQuery = ontology.getDlQuery();
 		this.ontologyManager = ontologyManager;
 		this.factory = factory;
 		EventBus.subscribe(SecondaryOntologyChangeEvent.class, this);
+		setup();
 	}
 
 	void setup() {
