@@ -1,0 +1,19 @@
+format-version: 1.2
+ontology: foo
+
+[Term]
+id: FOO:0001
+name: foo-0001
+intersection_of: FOO:0001
+intersection_of: part_of CHEBI:24309 
+
+[Term]
+id: FOO:0002
+name: foo-0002
+is_a: FOO:0001
+
+[Typedef]
+id: part_of
+name: part_of
+xref: BFO:0000050
+is_transitive: true

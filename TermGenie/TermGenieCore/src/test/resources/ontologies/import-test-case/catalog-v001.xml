@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+	<uri name="http://test.purl.obolibrary.org/obo/base.obo" uri="base.obo"/>
+	<uri name="http://purl.obolibrary.org/obo/chebi.owl" uri="chebi.owl"/>
+	<uri name="http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl" uri="bio-chebi.owl"/>
+</catalog>
