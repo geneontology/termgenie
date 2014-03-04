@@ -30,7 +30,6 @@ public class BasicLuceneClient implements
 	private final String dlQuery;
 	private final List<BranchDetails> branches;
 	private final ReasonerFactory factory;
-	private OntologyTaskManager ontologyManager;
 
 	private LuceneMemoryOntologyIndex index;
 	
@@ -55,13 +54,12 @@ public class BasicLuceneClient implements
 		}
 		this.roots = ontology.getRoots();
 		this.dlQuery = ontology.getDlQuery();
-		this.ontologyManager = ontologyManager;
 		this.factory = factory;
 		EventBus.subscribe(SecondaryOntologyChangeEvent.class, this);
-		setup();
+		setup(ontologyManager);
 	}
 
-	void setup() {
+	void setup(OntologyTaskManager manager) {
 		LuceneMemoryOntologyIndex old = index;
 		try {
 			OntologyTask task = new OntologyTask() {
@@ -71,7 +69,7 @@ public class BasicLuceneClient implements
 					index = new LuceneMemoryOntologyIndex(graph, roots, dlQuery, branches, factory);
 				}
 			};
-			ontologyManager.runManagedTask(task);
+			manager.runManagedTask(task);
 			if (task.getException() != null) {
 				throw new RuntimeException(task.getException());
 			}
@@ -88,8 +86,7 @@ public class BasicLuceneClient implements
 	public synchronized void onEvent(SecondaryOntologyChangeEvent event) {
 		// ignore event, if it's just a reset
 		if (!event.isReset()) {
-			this.ontologyManager = event.getManager();
-			setup();
+			setup(event.getManager());
 		}
 	}
 
