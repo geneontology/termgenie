@@ -1,9 +1,11 @@
 package org.bbop.termgenie.core.rules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -13,10 +15,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
-import owltools.InferenceBuilder;
-import owltools.InferenceBuilder.ConsistencyReport;
 import owltools.graph.OWLGraphWrapper;
 import de.derivo.sparqldlapi.Query;
 import de.derivo.sparqldlapi.QueryArgument;
@@ -105,11 +104,11 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 		return result;
 	}
 	
-	public ConsistencyReport checkConsistency(OWLGraphWrapper wrapper){
+	public List<String> checkConsistency(OWLGraphWrapper wrapper){
 		try {
 			ConsistencyCheckTask task = new ConsistencyCheckTask(wrapper);
 			runManagedTask(task);
-			return task.report;
+			return task.errors;
 		} catch (InvalidManagedInstanceException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -118,18 +117,34 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	private final class ConsistencyCheckTask implements ReasonerTask {
 	
 		private final OWLGraphWrapper wrapper;
-		private ConsistencyReport report = null;
+		private List<String> errors = null;
 	
 		private ConsistencyCheckTask(OWLGraphWrapper wrapper) {
 			this.wrapper = wrapper;
 		}
 	
 		@Override
-		public Modified run(OWLReasoner managed) {
-			InferenceBuilder builder = new InferenceBuilder(wrapper, (OWLReasonerFactory)null, false);
-			builder.setReasoner(managed);
-			report = builder.performConsistencyChecks();
-			builder.setOWLGraphWrapper(null);
+		public Modified run(OWLReasoner reasoner) {
+			boolean consistent = reasoner.isConsistent();
+
+			errors = new ArrayList<String>();
+			if(!consistent){
+				errors.add("The ontology is not consistent");
+			}
+
+			Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
+			for(OWLClass cls : unsatisfiable) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Unsatisfiable: ").append(wrapper.getIdentifier(cls));
+				String lbl = wrapper.getLabel(cls);
+				if (lbl != null) {
+					sb.append(" '").append(lbl).append("'");
+				}
+				unsatisfiable.add(cls);
+			}
+			if (errors.isEmpty()) {
+				errors = null;
+			}
 			return Modified.no;
 		}
 	}

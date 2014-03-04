@@ -1,6 +1,5 @@
 package org.bbop.termgenie.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +13,7 @@ import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdent
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.semanticweb.owlapi.model.OWLEntity;
 
-import owltools.InferenceBuilder.ConsistencyReport;
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
@@ -51,32 +48,15 @@ public class OntologyServiceImpl implements OntologyService {
 			public Modified run(OWLGraphWrapper graph)
 			{
 				ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(graph);
-				ConsistencyReport report = reasonerManager.checkConsistency(graph);
-				boolean hasErrors = report.errors != null && !report.errors.isEmpty();
-				boolean hasUnsatisfiable = report.unsatisfiable != null && !report.unsatisfiable.isEmpty();
-				if (!hasErrors  && !hasUnsatisfiable) {
-					status.setOkay(true);	
-				}
-				else {
+				List<String> errors = reasonerManager.checkConsistency(graph);
+				if (errors != null && !errors.isEmpty()) {
 					String[] messages = null;
 					status.setOkay(false);
-					if (hasErrors) {
-						messages = report.errors.toArray(new String[report.errors.size()]);
-					}
-					else if (hasUnsatisfiable) {
-						List<String> generated = new ArrayList<String>(report.unsatisfiable.size());
-						for(OWLEntity entity : report.unsatisfiable) {
-							StringBuilder sb = new StringBuilder();
-							sb.append("Unsatisfiable: ").append(graph.getIdentifier(entity));
-							String lbl = graph.getLabel(entity);
-							if (lbl != null) {
-								sb.append(" '").append(lbl).append("'");
-							}
-							generated.add(sb.toString());
-						}
-						messages = generated.toArray(new String[generated.size()]);
-					}
+					messages = errors.toArray(new String[errors.size()]);
 					status.setMessages(messages);
+				}
+				else {
+					status.setOkay(true);	
 				}
 				return Modified.no;
 			}

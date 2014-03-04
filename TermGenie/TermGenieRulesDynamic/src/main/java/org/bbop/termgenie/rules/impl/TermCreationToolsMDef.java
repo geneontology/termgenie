@@ -55,7 +55,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
-import owltools.InferenceBuilder.ConsistencyReport;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -283,9 +282,9 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	protected boolean addTerm(String label, String definition, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<MDef> partOf, List<TermGenerationOutput> output) {
 		ProcessState.addMessage(state, "Checking state of current ontology.");
 		ReasonerTaskManager manager = factory.getDefaultTaskManager(targetOntology);
-		ConsistencyReport report = manager.checkConsistency(targetOntology);
-		if (report != null && report.errors != null && !report.errors.isEmpty()) {
-			for(String error : report.errors) {
+		List<String> errors = manager.checkConsistency(targetOntology);
+		if (errors != null && !errors.isEmpty()) {
+			for(String error : errors) {
 				output.add(singleError("Cannot safely create term, due to the following ontology error: "+error, input));
 			}
 			return false;

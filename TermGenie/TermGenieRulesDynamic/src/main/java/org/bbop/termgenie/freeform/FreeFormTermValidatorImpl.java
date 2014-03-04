@@ -51,7 +51,6 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-import owltools.InferenceBuilder.ConsistencyReport;
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -218,11 +217,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		{
 			ProcessState.addMessage(state, "Checking state of current ontology.");
 			ReasonerTaskManager manager = reasonerFactory.getDefaultTaskManager(graph);
-			ConsistencyReport report = manager.checkConsistency(graph);
-			if (report != null && report.errors != null && !report.errors.isEmpty()) {
-				errors = new ArrayList<FreeFormHint>(report.errors.size());
-				for(String error : report.errors) {
-					errors.add(new FreeFormHint("ontology", 
+			List<String> errors = manager.checkConsistency(graph);
+			if (errors != null && !errors.isEmpty()) {
+				this.errors = new ArrayList<FreeFormHint>(errors.size());
+				for(String error : errors) {
+					this.errors.add(new FreeFormHint("ontology", 
 							"Cannot safely create term, due to the following ontology error: "+error));
 				}
 			}
