@@ -8,7 +8,7 @@ import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.bbop.termgenie.core.rules.SharedReasoner;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.ontology.OntologyLoader;
@@ -47,8 +47,8 @@ public class OntologyServiceImpl implements OntologyService {
 			@Override
 			public Modified run(OWLGraphWrapper graph)
 			{
-				ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(graph);
-				List<String> errors = reasonerManager.checkConsistency(graph);
+				SharedReasoner reasoner = reasonerFactory.getSharedReasoner(graph);
+				List<String> errors = reasoner.checkConsistency(graph);
 				if (errors != null && !errors.isEmpty()) {
 					String[] messages = null;
 					status.setOkay(false);

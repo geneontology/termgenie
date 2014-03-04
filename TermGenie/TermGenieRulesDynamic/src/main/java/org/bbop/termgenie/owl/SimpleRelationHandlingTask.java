@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
+import org.bbop.termgenie.core.rules.SharedReasoner.ReasonerTask;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;

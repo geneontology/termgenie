@@ -36,7 +36,7 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.bbop.termgenie.core.TermSuggestion;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.bbop.termgenie.core.rules.SharedReasoner;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -193,16 +193,16 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		IndexWriterConfig conf = new IndexWriterConfig(version, analyzer);
 		IndexWriter writer = new IndexWriter(directory, conf);
 		Set<OWLObject> allOWLObjects;
-		ReasonerTaskManager taskManager = getReasonerManager(ontology, reasonerFactory);
+		SharedReasoner reasoner = reasonerFactory.getSharedReasoner(ontology);
 		if (dlQuery != null) {
-			allOWLObjects = taskManager.executeDLQuery(dlQuery, ontology);
+			allOWLObjects = reasoner.executeDLQuery(dlQuery, ontology);
 		}
 		else {
 			if (roots == null || roots.isEmpty()) {
 				allOWLObjects = ontology.getAllOWLObjects();
 			}
 			else {
-				allOWLObjects = getDecendantsReflexive(roots, ontology, taskManager);
+				allOWLObjects = getDecendantsReflexive(roots, ontology, reasoner);
 			}
 		}
 		BranchInfos branchInfos = null;
@@ -213,10 +213,10 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				String branchDLQuery = branch.getDlQuery();
 				List<String> ids = branch.getRoots();
 				if (ids != null && !ids.isEmpty()) {
-					branchInfos.add(name, getDecendantsReflexive(ids, ontology, taskManager));
+					branchInfos.add(name, getDecendantsReflexive(ids, ontology, reasoner));
 				}
 				else if (branchDLQuery != null) {
-					branchInfos.add(name, taskManager.executeDLQuery(branchDLQuery, ontology));
+					branchInfos.add(name, reasoner.executeDLQuery(branchDLQuery, ontology));
 				}
 			}
 			branchInfos.setup();
@@ -299,12 +299,6 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 		}
 	}
 
-	protected ReasonerTaskManager getReasonerManager(OWLGraphWrapper ontology,
-			ReasonerFactory reasonerFactory)
-	{
-		return reasonerFactory.getDefaultTaskManager(ontology);
-	}
-
 	private class BranchInfos {
 
 		List<String> names = new ArrayList<String>();
@@ -363,7 +357,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 
 	}
 
-	private Set<OWLObject> getDecendantsReflexive(List<String> ids, OWLGraphWrapper ontology, ReasonerTaskManager taskManager)
+	private Set<OWLObject> getDecendantsReflexive(List<String> ids, OWLGraphWrapper ontology, SharedReasoner reasoner)
 	{
 		Set<OWLObject> result = new HashSet<OWLObject>();
 		for (String id : ids) {
@@ -372,7 +366,7 @@ public class LuceneMemoryOntologyIndex implements Closeable {
 				throw new RuntimeException("Error: could not find term with id: " + id);
 			}
 			result.add(x);
-			Collection<OWLObject> owlObjects = taskManager.getDescendants(x, ontology);
+			Collection<OWLObject> owlObjects = reasoner.getDescendants(x, ontology);
 			if (owlObjects != null && !owlObjects.isEmpty()) {
 				for (OWLObject owlObject : owlObjects) {
 					if (!owlObject.isBottomEntity() && !owlObject.isTopEntity()) {

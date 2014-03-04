@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
+import org.bbop.termgenie.core.rules.SharedReasoner.ReasonerTask;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;

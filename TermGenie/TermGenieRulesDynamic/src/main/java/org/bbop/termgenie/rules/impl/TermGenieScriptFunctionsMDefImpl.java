@@ -15,7 +15,7 @@ import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInsta
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.bbop.termgenie.core.rules.SharedReasoner;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.rules.api.ChangeTracker;
@@ -206,8 +206,8 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			return true;
 		}
 		if (ontology != null) {
-			ReasonerTaskManager manager = tools.factory.getDefaultTaskManager(ontology);
-			Collection<OWLObject> ancestors = manager.getAncestors(x, ontology);
+			SharedReasoner reasoner = tools.factory.getSharedReasoner(ontology);
+			Collection<OWLObject> ancestors = reasoner.getAncestors(x, ontology);
 			if (ancestors != null) {
 				return ancestors.contains(parent);
 			}
@@ -252,7 +252,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 
 	@Override
 	public Set<OWLClass> getEquivalentClasses(final OWLClass cls, OWLGraphWrapper ontology) {
-		ReasonerTaskManager manager = this.tools.factory.getDefaultTaskManager(ontology);
+		SharedReasoner manager = this.tools.factory.getSharedReasoner(ontology);
 		final Set<OWLClass> result = new HashSet<OWLClass>();
 		ManagedTask<OWLReasoner> task = new ManagedTask<OWLReasoner>(){
 
@@ -528,11 +528,6 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		}
 	}
 	
-	@Override
-	public ExistingClasses checkExisting(MDef logicalDefinition) {
-		return tools.checkExisting(logicalDefinition);
-	}
-
 	public void dispose() {
 		syntaxTool.dispose();
 	}

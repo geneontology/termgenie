@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
-import org.bbop.termgenie.core.process.ProcessState;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.reasoner.NodeSet;
@@ -25,11 +24,11 @@ import de.derivo.sparqldlapi.QueryResult;
 import de.derivo.sparqldlapi.exceptions.QueryEngineException;
 import de.derivo.sparqldlapi.exceptions.QueryParserException;
 
-public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner> {
+public abstract class SharedReasoner extends GenericTaskManager<OWLReasoner> {
 
-	private static final Logger logger = Logger.getLogger(ReasonerTaskManager.class);
+	private static final Logger logger = Logger.getLogger(SharedReasoner.class);
 	
-	protected ReasonerTaskManager(String name) {
+	protected SharedReasoner(String name) {
 		super(name);
 	}
 
@@ -43,18 +42,6 @@ public abstract class ReasonerTaskManager extends GenericTaskManager<OWLReasoner
 	protected void setChanged(boolean reset) {
 		// do nothing for now
 	}
-	
-	/**
-	 * Set the {@link ProcessState} for the factory and reasoner.
-	 * 
-	 * @param state
-	 */
-	public abstract void setProcessState(ProcessState state);
-	
-	/**
-	 * Remove the current {@link ProcessState} from the factory and reasoner.
-	 */
-	public abstract void removeProcessState();
 	
 	/**
 	 * A task which requires a reasoner.

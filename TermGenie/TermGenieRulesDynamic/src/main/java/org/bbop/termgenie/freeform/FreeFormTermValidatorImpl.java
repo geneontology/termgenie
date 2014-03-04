@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
+import org.bbop.termgenie.core.rules.SharedReasoner;
 import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -50,6 +50,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
@@ -216,7 +217,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		public Modified runCatchingMod(OWLGraphWrapper graph)
 		{
 			ProcessState.addMessage(state, "Checking state of current ontology.");
-			ReasonerTaskManager manager = reasonerFactory.getDefaultTaskManager(graph);
+			SharedReasoner manager = reasonerFactory.getSharedReasoner(graph);
 			List<String> errors = manager.checkConsistency(graph);
 			if (errors != null && !errors.isEmpty()) {
 				this.errors = new ArrayList<FreeFormHint>(errors.size());
@@ -635,25 +636,17 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			final OWLOntology owlOntology = graph.getSourceOntology();
 			final OWLChangeTracker changeTracker = new OWLChangeTracker(owlOntology);
 			try {
-				
 				// add axioms
 				for(OWLAxiom axiom : preliminaryAxioms) {
 					changeTracker.apply(new AddAxiom(owlOntology, axiom));
 				}
-				reasonerFactory.updateBuffered(graph.getOntologyId());
-				ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(graph);
-				reasonerManager.setProcessState(state);
-				
+				OWLReasoner reasoner = reasonerFactory.createReasoner(graph, state);
 				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(graph, iri, changeTracker, idPrefix, state, useIsInferred);
 				try {
-					reasonerManager.runManagedTask(task);
-				} catch (InvalidManagedInstanceException exception) {
-					setError("relations", "Could not create releations due to an invalid reasoner: "+exception.getMessage());
-					return;
+					task.run(reasoner);
 				}
 				finally {
-					reasonerManager.dispose();
-					reasonerManager.removeProcessState();
+					reasoner.dispose();
 				}
 				InferredRelations inferredRelations = task.getInferredRelations();
 				Set<OWLClass> equivalentClasses = inferredRelations.getEquivalentClasses();

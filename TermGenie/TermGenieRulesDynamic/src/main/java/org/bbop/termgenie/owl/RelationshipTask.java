@@ -1,6 +1,6 @@
 package org.bbop.termgenie.owl;
 
-import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
+import org.bbop.termgenie.core.rules.SharedReasoner.ReasonerTask;
 
 public interface RelationshipTask extends ReasonerTask {
 

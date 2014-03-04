@@ -1,9 +1,7 @@
 package org.bbop.termgenie.rules.api;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -93,34 +91,4 @@ public interface TermGenieScriptFunctionsMDef extends TermGenieScriptFunctions {
 			MDef[] logicalDefinitions,
 			MDef[] partOf);
 	
-	public static class ExistingClasses {
-		
-		private final String def;
-		private final Map<String, String> labels;
-		
-		public ExistingClasses(String def) {
-			this.def = def;
-			this.labels = new HashMap<String, String>();
-		}
-		
-		public void add(String id, String label) {
-			labels.put(id, label);
-		}
-		
-		public String getDef() {
-			return def;
-		}
-		
-		public String[] getIds() {
-			Set<String> keys = labels.keySet();
-			return keys.toArray(new String[keys.size()]);
-		}
-		
-		public String getLabel(String id) {
-			return labels.get(id);
-		}
-	}
-	
-	public ExistingClasses checkExisting(MDef logicalDefinition);
-
 }

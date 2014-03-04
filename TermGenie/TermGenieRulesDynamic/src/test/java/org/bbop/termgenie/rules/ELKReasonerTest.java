@@ -5,10 +5,9 @@ import static org.junit.Assert.*;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
-import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
@@ -46,26 +45,18 @@ public class ELKReasonerTest {
 
 			@Override
 			protected void runCatching(final OWLGraphWrapper wrapper) throws TaskException, Exception {
-				ReasonerTaskManager reasonerTaskManager = reasonerFactory.getDefaultTaskManager(wrapper);
-				reasonerTaskManager.runManagedTask(new ManagedTask<OWLReasoner>() {
-
-					@Override
-					public Modified run(OWLReasoner reasoner)
-					{
-						assertTrue(reasoner.isConsistent());
-						OWLObject x = wrapper.getOWLObjectByIdentifier("GO:0006915");
-						try {
-							NodeSet<OWLClass> classes = reasoner.getSubClasses((OWLClassExpression) x, false);
-							assertFalse(classes.isEmpty());
-							Set<OWLClass> set = classes.getFlattened();
-							assertTrue(set.size() >= 48);
-						} catch (Throwable exception) {
-							exception.printStackTrace();
-							fail(exception.getMessage());
-						} 
-						return Modified.no;
-					}
-				});
+				OWLReasoner reasoner = reasonerFactory.createReasoner(wrapper, ProcessState.NO);
+				assertTrue(reasoner.isConsistent());
+				OWLObject x = wrapper.getOWLObjectByIdentifier("GO:0006915");
+				try {
+					NodeSet<OWLClass> classes = reasoner.getSubClasses((OWLClassExpression) x, false);
+					assertFalse(classes.isEmpty());
+					Set<OWLClass> set = classes.getFlattened();
+					assertTrue(set.size() >= 48);
+				} catch (Throwable exception) {
+					exception.printStackTrace();
+					fail(exception.getMessage());
+				} 
 			}
 		});
 

@@ -3,7 +3,7 @@ package org.bbop.termgenie.owl;
 import java.util.Set;
 
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.core.rules.ReasonerTaskManager.ReasonerTask;
+import org.bbop.termgenie.core.rules.SharedReasoner.ReasonerTask;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.reasoner.Node;
