@@ -2,12 +2,14 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.bbop.termgenie.core.Ontology;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
@@ -56,6 +58,15 @@ public class BaseOntologyLoader {
 		// WARNING: this is also called for invalid states
 		// always use a clean new Wrapper
 		// there are still issues with cleaning a manager from all previous ontologies
+		
+		// Step 1: try to clean up existing manager
+		OWLOntologyManager manager = pw.getManager();
+		Set<OWLOntology> ontologies = manager.getOntologies();
+		for (OWLOntology ontology : ontologies) {
+			manager.removeOntology(ontology);
+		}
+		
+		// Step 2: create a new wrapper and transfer IRI mappers
 		ParserWrapper newWrapper = new ParserWrapper();
 		newWrapper.addIRIMappers(pw.getIRIMappers());
 		pw = newWrapper;
