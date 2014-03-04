@@ -18,9 +18,9 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParamete
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
+import org.bbop.termgenie.rules.OldTestOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class PlantOntologyTest {
 		List<String> ignoreMappings = Arrays.asList("http://purl.obolibrary.org/obo/po/releases/2013-05-27/po.owl", "http://purl.obolibrary.org/obo/go/extensions/gene_ontology_xp.owl");
 		
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_plant.xml", false, true, null),
-				new XMLReloadingOntologyModule("ontology-configuration_plant.xml", ignoreMappings, null),
+				new OldTestOntologyModule("ontology-configuration_plant.xml", ignoreMappings),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

@@ -25,7 +25,7 @@ public class SimpleJsonRPCTestClient {
 		System.out.println("Ontology status: ");
 		System.out.println(" ontology: "+ontologyStatus.ontology);
 		System.out.println(" okay:     "+ontologyStatus.okay);
-		System.out.println(" message:  "+ontologyStatus.message);
+		System.out.println(" messages:  "+ontologyStatus.messages);
 		System.out.println();
 		
 		JsonTermSuggestion[] suggestions = service.autocomplete(null,

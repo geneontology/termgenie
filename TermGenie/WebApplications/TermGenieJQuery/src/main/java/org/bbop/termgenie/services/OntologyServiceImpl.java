@@ -1,13 +1,23 @@
 package org.bbop.termgenie.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
 import org.bbop.termgenie.core.TermSuggestion;
+import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
+import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
+import org.bbop.termgenie.core.rules.ReasonerFactory;
+import org.bbop.termgenie.core.rules.ReasonerTaskManager;
 import org.bbop.termgenie.data.JsonTermGenerationParameter.JsonOntologyTermIdentifier;
 import org.bbop.termgenie.data.JsonTermSuggestion;
 import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.ontology.OntologyTaskManager;
+import org.semanticweb.owlapi.model.OWLEntity;
+
+import owltools.InferenceBuilder.ConsistencyReport;
+import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -17,19 +27,66 @@ public class OntologyServiceImpl implements OntologyService {
 
 	private final OntologyTermSuggestor suggestor;
 	private final String availableOntology;
+	private final OntologyLoader loader;
+	private final ReasonerFactory reasonerFactory;
 
 	@Inject
-	OntologyServiceImpl(OntologyTermSuggestor suggestor, OntologyLoader loader) {
+	OntologyServiceImpl(OntologyTermSuggestor suggestor, OntologyLoader loader, ReasonerFactory reasonerFactory) {
 		super();
 		this.suggestor = suggestor;
+		this.loader = loader;
+		this.reasonerFactory = reasonerFactory;
 		this.availableOntology = loader.getOntologyManager().getOntology().getName();
 	}
 
 	@Override
 	public JsonOntologyStatus getOntologyStatus() {
-		JsonOntologyStatus status = new JsonOntologyStatus();
-		status.setOkay(true);
+		final JsonOntologyStatus status = new JsonOntologyStatus();
 		status.setOntology(availableOntology);
+		
+		OntologyTaskManager manager = loader.getOntologyManager();
+		ManagedTask<OWLGraphWrapper> checkTask = new ManagedTask<OWLGraphWrapper>(){
+
+			@Override
+			public Modified run(OWLGraphWrapper graph)
+			{
+				ReasonerTaskManager reasonerManager = reasonerFactory.getDefaultTaskManager(graph);
+				ConsistencyReport report = reasonerManager.checkConsistency(graph);
+				boolean hasErrors = report.errors != null && !report.errors.isEmpty();
+				boolean hasUnsatisfiable = report.unsatisfiable != null && !report.unsatisfiable.isEmpty();
+				if (!hasErrors  && !hasUnsatisfiable) {
+					status.setOkay(true);	
+				}
+				else {
+					String[] messages = null;
+					status.setOkay(false);
+					if (hasErrors) {
+						messages = report.errors.toArray(new String[report.errors.size()]);
+					}
+					else if (hasUnsatisfiable) {
+						List<String> generated = new ArrayList<String>(report.unsatisfiable.size());
+						for(OWLEntity entity : report.unsatisfiable) {
+							StringBuilder sb = new StringBuilder();
+							sb.append("Unsatisfiable: ").append(graph.getIdentifier(entity));
+							String lbl = graph.getLabel(entity);
+							if (lbl != null) {
+								sb.append(" '").append(lbl).append("'");
+							}
+							generated.add(sb.toString());
+						}
+						messages = generated.toArray(new String[generated.size()]);
+					}
+					status.setMessages(messages);
+				}
+				return Modified.no;
+			}
+		};
+		try {
+			manager.runManagedTask(checkTask);
+		} catch (InvalidManagedInstanceException exception) {
+			status.setOkay(false);
+			status.setMessages(new String[]{"The ontology is in an invalid state: "+exception.getMessage()});
+		}
 		return status;
 	}
 
@@ -64,42 +121,4 @@ public class OntologyServiceImpl implements OntologyService {
 		return result;
 	}
 	
-//	/**
-//	 * Merge two list by inserting it after the corresponding element in the
-//	 * target list.
-//	 * 
-//	 * @param <T>
-//	 * @param target
-//	 * @param insert
-//	 * @return merged list
-//	 */
-//	static <T> List<T> mergeLists(List<T> target, List<T> insert) {
-//		if (insert.isEmpty()) {
-//			return target;
-//		}
-//		if (target.isEmpty()) {
-//			target.addAll(insert);
-//			insert.clear();
-//			return target;
-//		}
-//
-//		int targetLength = target.size();
-//		int insertLength = insert.size();
-//		if (targetLength == insertLength) {
-//			target.add(insert.remove(insertLength - 1));
-//			insertLength = insert.size();
-//		}
-//		else if (targetLength < insertLength) {
-//			int fromIndex = Math.max(0, insertLength - (insertLength - targetLength + 1));
-//			List<T> subList = new ArrayList<T>(insert.subList(fromIndex, insertLength));
-//			target.addAll(subList);
-//			insert.removeAll(subList);
-//			insertLength = insert.size();
-//		}
-//		for (int i = insert.size() - 1; i >= 0; i--) {
-//			target.add(i + 1, insert.remove(i));
-//		}
-//		return target;
-//	}
-
 }

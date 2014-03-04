@@ -3,16 +3,11 @@ package org.bbop.termgenie.services.review;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
 import org.bbop.termgenie.data.JsonOntologyTerm;
 import org.bbop.termgenie.data.JsonResult;
 import org.bbop.termgenie.ontology.CommitInfo.TermCommit;
 import org.bbop.termgenie.ontology.CommitObject;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-
-import owltools.graph.OWLGraphWrapper;
 
 public class JsonCommitReviewCommitResult extends JsonResult {
 
@@ -88,51 +83,26 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		return result;
 	}
 
-	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits, OntologyTaskManager manager) throws InvalidManagedInstanceException {
-		GenerateSuccessTask task = new GenerateSuccessTask(ids, commits);
-		manager.runManagedTask(task);
-		return task.result;
+	static JsonCommitReviewCommitResult success(List<Integer> ids, List<CommitResult> commits) {
+		
+		JsonCommitReviewCommitResult result = new JsonCommitReviewCommitResult();
+		result.setSuccess(true);
+		List<JsonCommitDetails> details = new ArrayList<JsonCommitDetails>(commits.size());
+		for (int i = 0; i < ids.size(); i++) {
+			CommitResult commitResult = commits.get(i);
+			JsonCommitDetails json = new JsonCommitDetails();
+			json.setSuccess(commitResult.isSuccess());
+			json.setMessage(commitResult.getMessage());
+			json.setHistoryId(ids.get(i));
+			json.setTerms(convert(commitResult.getTerms()));
+			json.setDiff(commitResult.getDiff());
+			details.add(json);
+		}
+		result.setDetails(details);
+		return result;
 	}
 	
-	private static class GenerateSuccessTask extends OntologyTask {
-		
-		private final List<Integer> ids;
-		private final List<CommitResult> commits;
-		private JsonCommitReviewCommitResult result;
-
-		/**
-		 * @param ids
-		 * @param commits
-		 */
-		GenerateSuccessTask(List<Integer> ids, List<CommitResult> commits) {
-			super();
-			this.ids = ids;
-			this.commits = commits;
-		}
-		
-		
-
-		@Override
-		public void runCatching(OWLGraphWrapper graph) {
-			result = new JsonCommitReviewCommitResult();
-			result.setSuccess(true);
-			List<JsonCommitDetails> details = new ArrayList<JsonCommitDetails>(commits.size());
-			for (int i = 0; i < ids.size(); i++) {
-				CommitResult commitResult = commits.get(i);
-				JsonCommitDetails json = new JsonCommitDetails();
-				json.setSuccess(commitResult.isSuccess());
-				json.setMessage(commitResult.getMessage());
-				json.setHistoryId(ids.get(i));
-				json.setTerms(convert(commitResult.getTerms(),graph));
-				json.setDiff(commitResult.getDiff());
-				details.add(json);
-			}
-			result.setDetails(details);
-		}
-
-	}
-
-	private static List<JsonOntologyTerm> convert(List<CommitObject<TermCommit>> terms, OWLGraphWrapper wrapper)
+	private static List<JsonOntologyTerm> convert(List<CommitObject<TermCommit>> terms)
 	{
 		if (terms == null) {
 			return null;
@@ -140,7 +110,7 @@ public class JsonCommitReviewCommitResult extends JsonResult {
 		List<JsonOntologyTerm> jsonTerms = new ArrayList<JsonOntologyTerm>();
 		for (CommitObject<TermCommit> commitObject : terms) {
 			TermCommit object = commitObject.getObject();
-			jsonTerms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), wrapper, object.getPattern()));
+			jsonTerms.add(JsonOntologyTerm.createJson(object.getTerm(), object.getOwlAxioms(), object.getChanged(), null, object.getPattern()));
 		}
 		return jsonTerms;
 	}

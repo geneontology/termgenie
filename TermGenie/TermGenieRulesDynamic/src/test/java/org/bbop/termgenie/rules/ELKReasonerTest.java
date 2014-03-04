@@ -9,12 +9,9 @@ import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.ReasonerTaskManager;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -34,14 +31,9 @@ public class ELKReasonerTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule() {
-
-			@Override
-			protected void bindOntologyConfiguration() {
-				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
-			}
-		}, new ReasonerModule(null));
+		Injector injector = TermGenieGuice.createInjector(
+				new OldTestOntologyModule("ontology-configuration_simple.xml"),
+				new ReasonerModule(null));
 
 		loader = injector.getInstance(OntologyLoader.class);
 		reasonerFactory = injector.getInstance(ReasonerFactory.class);

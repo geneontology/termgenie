@@ -13,12 +13,10 @@ import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.ReasonerFactoryImpl;
 import org.bbop.termgenie.freeform.FreeFormTermRequest.Xref;
 import org.bbop.termgenie.freeform.FreeFormTermValidatorImpl.ValidationTask;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.rules.OldTestOntologyModule;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
@@ -31,8 +29,6 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
 import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 
 /**
@@ -42,31 +38,13 @@ public class FreeFormTermValidatorImplTest {
 	
 	private static ReasonerFactory factory = null;
 	private static OWLGraphWrapper graph = null;
-
-	
-	static final class FreeFormTestOntologyModule extends XMLReloadingOntologyModule {
-
-		FreeFormTestOntologyModule() {
-			super("ontology-configuration_freeform.xml", 
-					Arrays.asList("http://purl.obolibrary.org/obo/go.owl", "http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl"), null);
-		}
-
-		@Override
-		protected void bindIRIMapper() {
-			// do nothing, use @Provides instead
-		}
-	
-		@Singleton
-		@Provides
-		protected IRIMapper provideIRIMapper() {
-			String catalogXml = "src/test/resources/ontologies/catalog-v001.xml";
-			return new CatalogXmlIRIMapper(null, catalogXml);
-		}
-	}
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new FreeFormTestOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule(
+				"ontology-configuration_freeform.xml",
+				Arrays.asList("http://purl.obolibrary.org/obo/go.owl", 
+				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl")));
 
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
 		OntologyTaskManager goManager = loader.getOntologyManager();

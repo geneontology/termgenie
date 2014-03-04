@@ -16,12 +16,6 @@ import com.google.inject.Singleton;
 
 abstract class AbstractOwlCommitSvnModule extends AbstractCommitSvnModule {
 
-	/**
-	 * @param svnRepository
-	 * @param svnOntologyFileName
-	 * @param applicationProperties
-	 * @param svnLoadExternals
-	 */
 	protected AbstractOwlCommitSvnModule(String svnRepository,
 			String svnOntologyFileName,
 			Properties applicationProperties,

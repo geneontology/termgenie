@@ -52,17 +52,32 @@ public class SessionHandlerImpl implements SessionHandler {
 	@Override
 	public String createSession(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession(true);
+		String ip = getClientIpAddr(request);
 		String id = session.getId();
 		if (session.isNew()) {
 			session.setAttribute(TERM_GENIE_SESSION_OBJECT, createSessionObject());
-			logger.info("Created new session with id: " + id);
+			logger.info("Created new session with id: " + id+" from ip: "+ip);
 		}
 		else {
-			logger.info("Re-using session with id: " + id);
+			logger.info("Re-using session with id: " + id+" from ip: "+ip);
 		}
 		return id;
 	}
 
+	private static String[] IP_HEADERS = {"VIA", "X-Forwarded-For", "Proxy-Client-IP",
+		"WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
+	
+	private static String getClientIpAddr(HttpServletRequest request) {
+		for (String ipHeader : IP_HEADERS) {
+			String ip = request.getHeader(ipHeader);  
+	        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	            return ip;  
+	        }
+		}
+        String ip = request.getRemoteAddr();  
+        return ip;  
+    }  
+	
 	protected SessionObject createSessionObject() {
 		return new SessionObject();
 	}

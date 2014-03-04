@@ -6,17 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,8 +30,8 @@ import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -46,23 +41,27 @@ import com.google.inject.name.Named;
  * for updates.
  */
 @Singleton
-public class FileCachingIRIMapper implements IRIMapper {
+class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 
 	private static final Logger logger = Logger.getLogger(FileCachingIRIMapper.class);
 
 	private final FileValidity validityHelper;
 	private final File cacheDirectory;
-	private final Set<String> ignores;
+	private FileCachingFilter filter = null; 
 
+	public static interface FileCachingFilter {
+		
+		public boolean allowCaching(IRI iri);
+	}
+	
 	@Inject
 	FileCachingIRIMapper(@Named("FileCachingIRIMapperLocalCache") String localCache,
 			@Named("FileCachingIRIMapperPeriod") long period,
-			@Named("FileCachingIRIMapperTimeUnit") TimeUnit unit)
+			@Named("FileCachingIRIMapperTimeUnit") TimeUnit unit) throws IOException
 	{
 		super();
-		ignores = new HashSet<String>();
 		cacheDirectory = new File(localCache);
-		createFolder(cacheDirectory);
+		FileUtils.forceMkdir(cacheDirectory);
 		validityHelper = new FileValidity(TimeUnit.MILLISECONDS.convert(period, unit));
 
 		// use java.concurrent to schedule a periodic task of reloading the IRI
@@ -79,42 +78,25 @@ public class FileCachingIRIMapper implements IRIMapper {
 	}
 	
 	@Inject(optional=true)
-	public void setIgnores(@Named("FileCachingIRIMapperIgnoreMappings") List<String> ignoreMappings) {
-		if (ignoreMappings != null) {
-			synchronized (ignores) {
-				ignores.clear();
-				ignores.addAll(ignoreMappings);
-			}
-		}
+	void setFilter(FileCachingFilter filter) {
+		this.filter = filter;
 	}
 
 	protected void reloadIRIs() {
 		validityHelper.setInvalidRecursive(cacheDirectory);
 	}
 
-	protected InputStream getInputStream(URL url) throws IOException {
-		if ("ftp".equals(url.getProtocol().toLowerCase())) {
-			try {
-				return url.openStream();
-			} catch (IOException exception) {
-				return handleError(url, exception);
-			}
-		}
+	protected InputStream getInputStream(IRI iri) throws IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
-		try {
-			final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-			client.setRedirectStrategy(redirectStrategy);
-			final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
-			client.setHttpRequestRetryHandler(retryHandler);
-			final HttpGet request = new HttpGet(url.toURI());
-			return tryHttpRequest(client, request, url, 3);
-		} catch (URISyntaxException exception) {
-			// non-recoverable error
-			throw new IOException(exception);
-		}
+		final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+		client.setRedirectStrategy(redirectStrategy);
+		final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
+		client.setHttpRequestRetryHandler(retryHandler);
+		final HttpGet request = new HttpGet(iri.toURI());
+		return tryHttpRequest(client, request, iri, 3);
 	}
 	
-	private InputStream tryHttpRequest(DefaultHttpClient client, HttpGet request, URL url, int count) throws IOException {
+	private InputStream tryHttpRequest(DefaultHttpClient client, HttpGet request, IRI iri, int count) throws IOException {
 		// try the load
 		final HttpResponse response;
 		try {
@@ -123,18 +105,18 @@ public class FileCachingIRIMapper implements IRIMapper {
 		catch (IOException e) {
 			if (count <= 0) {
 				// no more retry, handle the final error.
-				return handleError(url, new IOException("Could not load url: "+url, e));
+				return handleError(iri, e);
 			}
-			logger.warn("Retry request for url: "+url+" after exception: "+e.getMessage());
+			logger.warn("Retry request for IRI: "+iri+" after exception: "+e.getMessage());
 			defaultRandomWait();
-			return tryHttpRequest(client, request, url, count - 1);
+			return tryHttpRequest(client, request, iri, count - 1);
 		}
 		final HttpEntity entity = response.getEntity();
 		final StatusLine statusLine = response.getStatusLine();
 		if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
 			StringBuilder message = new StringBuilder();
-			message.append("Web request for URL '");
-			message.append(url);
+			message.append("Web request for IRI '");
+			message.append(iri);
 			message.append("' failed with status code: ");
 			message.append(statusLine.getStatusCode());
 			String reasonPhrase = statusLine.getReasonPhrase();
@@ -145,7 +127,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			EntityUtils.consume(entity);
 			if (count <= 0) {
 				// no more retry, handle the final error.
-				return handleError(url, new IOException(message.toString()));
+				return handleError(iri, new IOException(message.toString()));
 			}
 			message.append("\n Retry request.");
 			logger.warn(message);
@@ -153,7 +135,7 @@ public class FileCachingIRIMapper implements IRIMapper {
 			defaultRandomWait();
 
 			// try again
-			return tryHttpRequest(client, request, url, count - 1);
+			return tryHttpRequest(client, request, iri, count - 1);
 		}
 		return entity.getContent();
 	}
@@ -180,123 +162,72 @@ public class FileCachingIRIMapper implements IRIMapper {
 	 * Overwrite this method to implement more sophisticated methods. E.g.,
 	 * fall-back on local copies, if the URL is not reachable.
 	 * 
-	 * @param url
+	 * @param iri
 	 * @param exception
 	 * @return inputStream
 	 * @throws IOException
 	 */
-	protected InputStream handleError(URL url, IOException exception) throws IOException {
-		logger.error("IOException during fetch of URL: "+url, exception);
+	protected InputStream handleError(IRI iri, IOException exception) throws IOException {
+		logger.error("IOException during fetch of IRI: "+iri, exception);
 		throw exception;
 	}
 	
 	@Override
 	public IRI getDocumentIRI(IRI ontologyIRI) {
-		URL url = mapUrl(ontologyIRI.toString());
-		if (url == null) {
+		if (filter != null && filter.allowCaching(ontologyIRI) == false) {
 			return null;
 		}
-		try {
-			return IRI.create(url);
-		} catch (URISyntaxException exception) {
-			logger.warn("Could not create IRI from URL: "+url, exception);
-			throw new RuntimeException(exception);
-		}
+		return mapIRI(ontologyIRI);
 	}
 
-	@Override
-	public URL mapUrl(String url) {
-		if (ignores.contains(url)) {
-			return null;
-		}
-		try {
-			final URL originalURL = new URL(url);
-			String protocol = originalURL.getProtocol().toLowerCase();
-			if (protocol.equals("file")) {
-				return originalURL;
-			}
-			else if (protocol.startsWith("http") || protocol.equals("ftp")) {
-				return mapUrl(originalURL);
-			}
-			else {
-				throw new RuntimeException("Unknown protocol: " + protocol);
-			}
-		} catch (MalformedURLException exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-
-	private synchronized URL mapUrl(URL originalURL) {
-		File localFile = localCacheFile(originalURL);
+	private synchronized IRI mapIRI(IRI originalIRI) {
+		boolean success = false;
+		File localFile = localCacheFile(originalIRI);
 		if (!isValid(localFile)) {
 			createFile(localFile);
-			download(originalURL, localFile);
+			success = download(originalIRI, localFile);
 		}
-		try {
-			return localFile.toURI().toURL();
-		} catch (MalformedURLException exception) {
-			throw new RuntimeException(exception);
+		if (success) {
+			return IRI.create(localFile);
 		}
+		return null;
 	}
 
-	protected void createFile(File localFile) {
+	protected boolean createFile(File localFile) {
 		File folder = localFile.getParentFile();
-		createFolder(folder);
 		try {
+			FileUtils.forceMkdir(folder);
 			localFile.createNewFile();
+			return true;
 		} catch (IOException exception) {
-			throw new RuntimeException(exception);
+			logger.warn("Could not create local file: "+localFile.getAbsolutePath(), exception);
+			return false;
 		}
 	}
 
-	private void download(URL originalURL, File localFile) {
-		IOException prevException = null;
+	private boolean download(IRI originalIRI, File localFile) {
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 		try {
-			logger.info("Downloading: "+originalURL+" to file: "+localFile.getAbsolutePath());
-			inputStream = getInputStream(originalURL);
+			logger.info("Downloading: "+originalIRI+" to file: "+localFile.getAbsolutePath());
+			inputStream = getInputStream(originalIRI);
+			if (inputStream == null) {
+				return false;
+			}
 			outputStream = new FileOutputStream(localFile);
 			IOUtils.copy(inputStream, outputStream);
-
+			outputStream.close();
+			setValid(localFile);
+			return true;
 		} catch (IOException exception) {
-			prevException = exception;
+			logger.warn("Could not download IRI: "+originalIRI, exception);
+			return false;
 		}
 		finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException exception) {
-					if (prevException == null) {
-						prevException = exception;
-					}
-					else {
-						logger.error("Problem closing inputStream.", exception);
-					}
-				}
-			}
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (IOException exception) {
-					if (prevException == null) {
-						prevException = exception;
-					}
-					else {
-						logger.error("Problem closing outputStream.", exception);
-					}
-				}
-			}
-			if (prevException != null) {
-				logger.warn("Could not download url: "+originalURL, prevException);
-				throw new RuntimeException(prevException);
-			}
-			/*
-			 * only set the file valid, if there were no exceptions and the
-			 * output stream is closed.
-			 */
-			setValid(localFile);
+			IOUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(outputStream);
 		}
+		
 	}
 
 	protected void setValid(File localFile) {
@@ -307,28 +238,18 @@ public class FileCachingIRIMapper implements IRIMapper {
 		return localFile.exists() && validityHelper.isValid(localFile);
 	}
 
-	protected File localCacheFile(File file) {
-		return new File(cacheDirectory, localCacheFilename(file));
-	}
-	
-	private File localCacheFile(URL url) {
-		return new File(cacheDirectory, localCacheFilename(url));
+	private File localCacheFile(IRI iri) {
+		return new File(cacheDirectory, localCacheFilename(iri));
 	}
 
-	static String localCacheFilename(URL url) {
+	static String localCacheFilename(IRI iri) {
+		URI uri = iri.toURI();
 		StringBuilder sb = new StringBuilder();
-		escapeToBuffer(sb, url.getHost());
-		escapeToBuffer(sb, url.getPath());
+		escapeToBuffer(sb, uri.getHost());
+		escapeToBuffer(sb, uri.getPath());
 		return sb.toString();
 	}
 	
-	static String localCacheFilename(File file) {
-		StringBuilder sb = new StringBuilder();
-		escapeToBuffer(sb, "local");
-		sb.append(file.getAbsolutePath());
-		return sb.toString();
-	}
-
 	static void escapeToBuffer(StringBuilder sb, String s) {
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
@@ -341,21 +262,6 @@ public class FileCachingIRIMapper implements IRIMapper {
 			else {
 				sb.append('_');
 			}
-		}
-	}
-
-	private static void createFolder(File folder) throws RuntimeException {
-		if (!folder.exists()) {
-			boolean success = folder.mkdirs();
-			if (!success) {
-				throw new RuntimeException("Could not create folder: " + folder.getAbsolutePath());
-			}
-		}
-		if (!folder.isDirectory()) {
-			throw new RuntimeException("The indicated location is not a folder: " + folder.getAbsolutePath());
-		}
-		if (!folder.canWrite()) {
-			throw new RuntimeException("Cannot write into the specified folder: " + folder.getAbsolutePath());
 		}
 	}
 

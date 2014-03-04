@@ -7,7 +7,6 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.semanticweb.owlapi.model.IRI;
 
 import com.google.inject.Provides;
@@ -58,7 +57,6 @@ public class CvsAwareXMLReloadingOntologyModule extends XMLReloadingOntologyModu
 
 	@Override
 	protected void bindIRIMapper() {
-		bind(IRIMapper.class, "FallbackIRIMapper", FileCachingIRIMapper.class);
 		bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(), "termgenie-download-cache").getAbsolutePath());
 		bind("FileCachingIRIMapperPeriod", new Long(6L));
 		bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);

@@ -311,14 +311,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			logger.error("Error during commit", task.exception);
 			return JsonCommitReviewCommitResult.error("Error during commit: "+task.exception.getMessage());
 		}
-		JsonCommitReviewCommitResult json;
-		try {
-			json = JsonCommitReviewCommitResult.success(task.historyIds, task.commits, manager);
-		} catch (InvalidManagedInstanceException exception) {
-			logger.error("Could not create data for successfull commit result", exception);
-			return JsonCommitReviewCommitResult.error("Commit successfull, but could not create data for successfull commit result display: "+exception.getMessage());
-		}
-		return json;
+		return JsonCommitReviewCommitResult.success(task.historyIds, task.commits);
 	}
 
 	private static final class CommitTask implements ManagedTask<AfterReview> {

@@ -7,30 +7,20 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.tools.TempTestFolderTools;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 
 public class SvnToolTest {
 
-	private static File testFolder;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		testFolder = TempTestFolderTools.createTestFolder(SvnToolTest.class);
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		TempTestFolderTools.deleteTestFolder(testFolder);
-	}
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
 	public void testAnonymousSVN() throws IOException {
 		ProcessState state = ProcessState.NO;
-		File svnfolder = new File(testFolder, "svn");
+		File svnfolder = folder.newFolder("svn");
 		String repositoryURL = "http://termgenie.googlecode.com/svn/trunk/";
 		String targetFolder = "TermGenie/TermGenieOntologyCommit/TermGenieOntologyCommit-SVN/src/main/java/org/bbop/termgenie/svn/";
 		SvnTool svnTool = SvnTool.createAnonymousSVN(svnfolder, repositoryURL+targetFolder, SvnTool.getDefaultSvnConfigDir(), true);

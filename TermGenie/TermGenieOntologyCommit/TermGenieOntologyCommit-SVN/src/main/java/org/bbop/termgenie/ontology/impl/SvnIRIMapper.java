@@ -9,20 +9,18 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.svn.SvnTool;
 import org.semanticweb.owlapi.model.IRI;
 
 public class SvnIRIMapper extends AbstractScmIRIMapper<SvnIRIMapper.SvnHandler>
 {
 
-	SvnIRIMapper(IRIMapper fallBackIRIMapper,
-			SvnTool svn,
+	SvnIRIMapper(SvnTool svn,
 			List<String> checkouts,
 			Map<IRI, String> mappedSVNFiles,
 			String catalogXml)
 	{
-		super(fallBackIRIMapper, new SvnHandler(svn, checkouts), mappedSVNFiles, catalogXml);
+		super(new SvnHandler(svn, checkouts), mappedSVNFiles, catalogXml);
 	}
 
 	static class SvnHandler implements AbstractScmIRIMapper.FileAwareReadOnlyScm {

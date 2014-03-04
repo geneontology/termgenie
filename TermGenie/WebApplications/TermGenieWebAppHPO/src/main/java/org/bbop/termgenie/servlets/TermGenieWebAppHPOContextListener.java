@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -57,9 +57,15 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 			File localSVNCache = new File("work/read-only-svn-checkout");
 			localSVNCache.mkdirs();
 			FileUtils.cleanDirectory(localSVNCache);
-			String fileCache = new File("./work/termgenie-download-cache").getAbsolutePath();
-			List<String> ignoreIRIs = null;
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties, localSVNFolder, mappedIRIs, null, localSVNCache.getAbsolutePath(), fileCache, svnLoadExternal, ignoreIRIs );
+			File fileCache = new File("./work/termgenie-download-cache").getAbsoluteFile();
+			
+			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule("ontology-configuration_hpo.xml" , applicationProperties);
+			m.setSvnAwareRepositoryURL(localSVNFolder);
+			m.setSvnAwareMappedIRIs(mappedIRIs);
+			m.setSvnAwareLoadExternal(svnLoadExternal);
+			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
+			m.setFileCache(fileCache);
+			return m;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}

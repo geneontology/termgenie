@@ -145,10 +145,6 @@ public abstract class GenericTaskManager<T> {
 			if (inValid) {
 				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
 			}
-//			if (inValid) {
-//				managed = handleInvalid(managed);
-//				
-//			}
 			if (managed == null) {
 				managed = createManaged();
 			}
@@ -208,6 +204,11 @@ public abstract class GenericTaskManager<T> {
 		super.finalize();
 	}
 
+	/**
+	 * Signal a change of the managed. This can be used to trigger specific change events.
+	 * 
+	 * @param reset set to true if the change is a pure reset
+	 */
 	protected abstract void setChanged(boolean reset);
 
 	/**
@@ -243,6 +244,9 @@ public abstract class GenericTaskManager<T> {
 			inValid = false;
 			
 			dispose(current);
+			
+			// also notice the change
+			setChanged(false);
 		} catch (InterruptedException exception) {
 			throw new RuntimeException(exception);
 		}

@@ -6,39 +6,29 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.bbop.termgenie.tools.TempTestFolderTools;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.semanticweb.owlapi.model.IRI;
 
 public class FileCachingIRIMapperTest {
 
-	private static File testFolder;
-
-	@BeforeClass
-	public static void beforeClass() {
-		testFolder = TempTestFolderTools.createTestFolder(FileCachingIRIMapperTest.class);
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		TempTestFolderTools.deleteTestFolder(testFolder);
-	}
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
 	public void testCaching() throws Exception {
-		String localCache = testFolder.getAbsolutePath();
+		String localCache = folder.newFolder().getAbsolutePath();
 		final List<String> requests = new ArrayList<String>();
 		FileCachingIRIMapper mapper = new FileCachingIRIMapper(localCache, 6L, TimeUnit.HOURS) {
 
 			@Override
-			protected InputStream getInputStream(URL url) throws IOException {
-				String s = url.toExternalForm();
+			protected InputStream getInputStream(IRI iri) throws IOException {
+				String s = iri.toURI().toASCIIString();
 				requests.add(s);
 				return new ByteArrayInputStream(s.getBytes());
 			}
@@ -59,10 +49,10 @@ public class FileCachingIRIMapperTest {
 
 		// query of the url is ignored for caching, use it a request indicator
 		// for the test
-		mapper.mapUrl("http://foo.bar/path1?q=1");
-		mapper.mapUrl("http://foo.bar/path1?q=2");
+		mapper.getDocumentIRI(IRI.create("http://foo.bar/path1?q=1"));
+		mapper.getDocumentIRI(IRI.create("http://foo.bar/path1?q=2"));
 		mapper.reloadIRIs();
-		mapper.mapUrl("http://foo.bar/path1?q=3");
+		mapper.getDocumentIRI(IRI.create("http://foo.bar/path1?q=3"));
 
 		assertEquals(3, requests.size());
 		assertEquals("http://foo.bar/path1?q=1", requests.get(0));
@@ -72,7 +62,7 @@ public class FileCachingIRIMapperTest {
 
 	@Test
 	public void testAutoReload() throws Exception {
-		String localCache = testFolder.getAbsolutePath();
+		String localCache = folder.newFolder().getAbsolutePath();
 		final List<String> requests = new ArrayList<String>();
 		new FileCachingIRIMapper(localCache, 200L, TimeUnit.MILLISECONDS) {
 
@@ -96,7 +86,7 @@ public class FileCachingIRIMapperTest {
 	@Test
 	public void testLocalCacheFilename() throws Exception {
 		assertEquals("www.foo.bar/test.obo",
-				FileCachingIRIMapper.localCacheFilename(new URL("http://www.foo.bar/test.obo")));
+				FileCachingIRIMapper.localCacheFilename(IRI.create("http://www.foo.bar/test.obo")));
 	}
 
 	@Test

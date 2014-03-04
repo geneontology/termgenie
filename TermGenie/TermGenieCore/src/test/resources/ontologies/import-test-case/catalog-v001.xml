@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-	<uri id="Automatically generated entry" name="http://test.purl.obolibrary.org/obo/base.obo" uri="base.obo"/>
-	<uri id="Automatically generated entry" name="http://test.purl.obolibrary.org/obo/base_xp.obo" uri="base_xp.obo"/>
-    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1336428437491" name="http://purl.obolibrary.org/obo/chebi.owl" uri="chebi.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1336428437491" name="http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl" uri="bio-chebi.owl"/>
-    </group>
-</catalog>

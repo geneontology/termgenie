@@ -2,36 +2,30 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
 
-import org.bbop.termgenie.ontology.IRIMapper;
+import org.bbop.termgenie.ontology.impl.AbstractScmIRIMapper.FileAwareReadOnlyScm;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
 import owltools.io.CatalogXmlIRIMapper;
 
-public abstract class AbstractScmIRIMapper<T extends AbstractScmIRIMapper.FileAwareReadOnlyScm> implements
-		IRIMapper
+public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> implements
+	OWLOntologyIRIMapper
 {
-
-	private final IRIMapper fallBackIRIMapper;
 	private final T scm;
 	private final String catalogXml;
 	private final Map<IRI, String> mappedFiles;
 
 	/**
-	 * @param fallBackIRIMapper
 	 * @param scm
 	 * @param catalogXml optional catalog XML file, null if not defined
 	 */
-	protected AbstractScmIRIMapper(IRIMapper fallBackIRIMapper,
-			T scm,
+	protected AbstractScmIRIMapper(T scm,
 			Map<IRI, String> mappedFiles,
 			String catalogXml)
 	{
-		this.fallBackIRIMapper = fallBackIRIMapper;
 		this.scm = scm;
 		this.mappedFiles = mappedFiles;
 		this.catalogXml = catalogXml;
@@ -72,18 +66,9 @@ public abstract class AbstractScmIRIMapper<T extends AbstractScmIRIMapper.FileAw
 				throw new RuntimeException(exception);
 			}
 		}
-		return fallBackIRIMapper.getDocumentIRI(ontologyIRI);
+		return null;
 	}
 
-	@Override
-	public URL mapUrl(String url) {
-		try {
-			return getDocumentIRI(IRI.create(url)).toURI().toURL();
-		} catch (MalformedURLException exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-	
 	protected static interface FileAwareReadOnlyScm {
 
 		public File retrieveFile(String file) throws IOException;

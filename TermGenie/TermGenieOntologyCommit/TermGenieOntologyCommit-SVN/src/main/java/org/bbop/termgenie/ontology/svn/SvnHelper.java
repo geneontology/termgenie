@@ -1,15 +1,16 @@
 package org.bbop.termgenie.ontology.svn;
 
 import java.io.File;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.obo.OboScmHelper;
 import org.bbop.termgenie.ontology.owl.OwlScmHelper;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.svn.SvnTool;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,7 +32,8 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 
 		@Inject
-		OboSvnHelperPassword(IRIMapper iriMapper,
+		OboSvnHelperPassword(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
@@ -39,7 +41,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -65,7 +67,9 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 
 		@Inject
-		OwlSvnHelperPassword(IRIMapper iriMapper,
+		OwlSvnHelperPassword(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
+				@Nullable @Named("CommitAdapterSVNCatalogXml") String catalogXml,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
@@ -73,7 +77,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers, catalogXml);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnPassword = svnPassword;
@@ -97,13 +101,14 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 
 		@Inject
-		OboSvnHelperAnonymous(IRIMapper iriMapper,
+		OboSvnHelperAnonymous(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
@@ -125,13 +130,15 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 
 		@Inject
-		OwlSvnHelperAnonymous(IRIMapper iriMapper,
+		OwlSvnHelperAnonymous(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
+				@Nullable @Named("CommitAdapterSVNCatalogXml") String catalogXml,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers, catalogXml);
 			this.svnRepository = svnRepository;
 			this.svnConfigDir = svnConfigDir;
 			this.svnLoadExternals = svnLoadExternals != null ? svnLoadExternals.booleanValue() : true;
@@ -156,7 +163,8 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 	
 		@Inject
-		OboSvnHelperKeyFile(IRIMapper iriMapper,
+		OboSvnHelperKeyFile(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
@@ -165,7 +173,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
@@ -194,7 +202,9 @@ public class SvnHelper {
 		private final boolean svnLoadExternals;
 	
 		@Inject
-		OwlSvnHelperKeyFile(IRIMapper iriMapper,
+		OwlSvnHelperKeyFile(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
+				@Nullable @Named("CommitAdapterSVNCatalogXml") String catalogXml,
 				@Named("CommitAdapterSVNRepositoryUrl") String svnRepository,
 				@Named("CommitAdapterSVNOntologyFileName") String svnOntologyFileName,
 				@Named("CommitAdapterSVNUsername") String svnUsername,
@@ -203,7 +213,7 @@ public class SvnHelper {
 				@Named("CommitAdapterSVNConfigDir") File svnConfigDir,
 				@Named("CommitAdapterSVNLoadExternals") Boolean svnLoadExternals)
 		{
-			super(iriMapper, svnOntologyFileName);
+			super(svnOntologyFileName, defaultMappers, catalogXml);
 			this.svnRepository = svnRepository;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;

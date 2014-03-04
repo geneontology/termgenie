@@ -2,16 +2,17 @@ package org.bbop.termgenie.servlets;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.semanticweb.owlapi.model.IRI;
@@ -51,16 +52,24 @@ public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBACon
 				FileUtils.cleanDirectory(localSVNCache);
 			}
 			
-			String fileCache = new File("./work/termgenie-download-cache").getAbsolutePath();
+			File fileCache = new File("./work/termgenie-download-cache").getCanonicalFile();
 			
-			List<String> ignoreIRIs = Arrays.asList(
-					"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
-					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl",
-					"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
-					"http://purl.obolibrary.org/obo/TEMP");
+			final Set<IRI> ignoreIRIs = new HashSet<IRI>();
+			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/oba.owl"));
+			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl")); 
+			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl"));
+			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"));
+			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 			
-			Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappOBALocalIRIMappings");
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs, localMappings);
+			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule(configFile , applicationProperties);
+			m.setSvnAwareRepositoryURL(localSVNFolder);
+			m.setSvnAwareMappedIRIs(mappedIRIs);
+			m.setSvnAwareCatalogXML(catalogXML);
+			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
+			m.setSvnAwareLoadExternal(loadExternal);
+			m.setFileCache(fileCache);
+			m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
+			return m;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}

@@ -2,13 +2,10 @@ package org.bbop.termgenie.rules.anatomy;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -17,14 +14,12 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.FileCachingIRIMapper;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
+import org.bbop.termgenie.rules.OldTestOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,15 +37,7 @@ public class AnatomyTermGenieScriptTestRunner {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_anatomy.xml", false, true, null),
-				new TestDefaultOntologyModule("ontology-configuration_anatomy.xml") {
-					@Override
-					protected void bindIRIMapper() {
-						bind(IRIMapper.class, FileCachingIRIMapper.class);
-						bind("FileCachingIRIMapperLocalCache", new File(FileUtils.getTempDirectory(),"termgenie-download-cache").getAbsolutePath());
-						bind("FileCachingIRIMapperPeriod", 6L);
-						bind("FileCachingIRIMapperTimeUnit", TimeUnit.HOURS);
-					}
-				},
+				new OldTestOntologyModule("ontology-configuration_anatomy.xml"),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

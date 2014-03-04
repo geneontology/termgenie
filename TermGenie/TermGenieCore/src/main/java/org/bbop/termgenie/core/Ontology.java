@@ -12,7 +12,6 @@ public final class Ontology {
 	private String name;
 	private List<String> roots;
 	private String dlQuery;
-	private Map<String, String> importRewrites;
 	private String source;
 	private List<String> additionals;
 	private List<OntologySubset> subsets;
@@ -48,7 +47,6 @@ public final class Ontology {
 		this.dlQuery = dlQuery;
 		this.additionals = additionals;
 		this.subsets = subsets;
-		this.importRewrites = importRewrites;
 	}
 
 	/**
@@ -91,20 +89,6 @@ public final class Ontology {
 	 */
 	public void setDlQuery(String dlQuery) {
 		this.dlQuery = dlQuery;
-	}
-
-	/**
-	 * @return the importRewrites
-	 */
-	public Map<String, String> getImportRewrites() {
-		return importRewrites;
-	}
-	
-	/**
-	 * @param importRewrites the importRewrites to set
-	 */
-	public void setImportRewrites(Map<String, String> importRewrites) {
-		this.importRewrites = importRewrites;
 	}
 
 	/**

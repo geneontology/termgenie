@@ -9,5 +9,10 @@ public interface OntologyLoader {
 	 * @return ontology managers
 	 */
 	public OntologyTaskManager getOntologyManager();
+	
+	/**
+	 * Tell the loader to reload all ontologies from source.
+	 */
+	public void reloadOntologies();
 
 }

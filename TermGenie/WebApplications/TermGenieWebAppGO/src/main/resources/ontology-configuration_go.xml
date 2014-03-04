@@ -2,7 +2,7 @@
 <ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="GeneOntology">
-		<source>http://purl.obolibrary.org/obo/go.owl</source>
+		<source>http://purl.obolibrary.org/obo/go.obo</source>
 		<supports>
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
 			<support>http://purl.obolibrary.org/obo/go/extensions/x-disjoint.owl</support>

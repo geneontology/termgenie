@@ -30,16 +30,21 @@ public class CommitSvnAnonymousModule {
 
 	private static class CommitOwlSvnAnonymousModule extends AbstractOwlCommitSvnModule {
 		
+		private final String catalogXml;
+
 		private CommitOwlSvnAnonymousModule(String svnRepository,
 				String svnOntologyFileName,
+				String catalogXml,
 				Properties applicationProperties,
 				boolean svnLoadExternals)
 		{
 			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
+			this.catalogXml = catalogXml;
 		}
 		
 		@Override
 		protected void bindScmHelper() {
+			bind("CommitAdapterSVNCatalogXml", catalogXml, true);
 			bind(new TypeLiteral<ScmHelper<OWLOntology>>() { /* empty */ }, 
 					SvnHelper.OwlSvnHelperAnonymous.class);
 		}
@@ -68,15 +73,17 @@ public class CommitSvnAnonymousModule {
 	 * 
 	 * @param svnRepository
 	 * @param svnOntologyFileName
+	 * @param catalogXml
 	 * @param applicationProperties
 	 * @param svnLoadExternals
 	 * @return module
 	 */
 	public static IOCModule createOwlModule(String svnRepository,
 			String svnOntologyFileName,
+			String catalogXml,
 			Properties applicationProperties,
 			boolean svnLoadExternals)
 	{
-		return new CommitOwlSvnAnonymousModule(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
+		return new CommitOwlSvnAnonymousModule(svnRepository, svnOntologyFileName, catalogXml, applicationProperties, svnLoadExternals);
 	}
 }

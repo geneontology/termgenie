@@ -1,7 +1,7 @@
 package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.OntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 
@@ -13,7 +13,7 @@ public class TermGenieContextListener extends AbstractTermGenieContextListener {
 	
 	@Override
 	protected IOCModule getOntologyModule() {
-		return new XMLReloadingOntologyModule("ontology-configuration_simple.xml", null, applicationProperties);
+		return new OntologyModule(applicationProperties, "ontology-configuration_simple.xml");
 	}
 
 	@Override

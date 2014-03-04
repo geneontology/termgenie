@@ -3,11 +3,12 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,8 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserKeyFileModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -79,16 +81,21 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 			
 		String catalogXML = "extensions/catalog-v001.xml";
 		
-		List<String> ignoreIRIs = Arrays.asList(
-				"http://purl.obolibrary.org/obo/oba.owl",
-				"http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
-				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl",
-				"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl",
-				"http://purl.obolibrary.org/obo/TEMP");
+		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/oba.owl"));
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl")); 
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl"));
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"));
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 		
-		Map<IRI, File> localMappings = getLocalMappings("TermGenieWebappOBALocalIRIMappings");
-		
-		return SvnAwareXMLReloadingOntologyModule.createSshKeySvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, keyFile, loadExternal, usePassphrase, ignoreIRIs, localMappings);
+		SvnAwareOntologyModule m = SvnAwareOntologyModule.createSshKeySvnModule(configFile, applicationProperties, svnUserName, keyFile, usePassphrase);
+		m.setSvnAwareRepositoryURL(repositoryURL);
+		m.setSvnAwareMappedIRIs(mappedIRIs);
+		m.setSvnAwareCatalogXML(catalogXML);
+		m.setSvnAwareWorkFolder(workFolder);
+		m.setSvnAwareLoadExternal(loadExternal);
+		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
+		return m;
 	}
 	
 	protected Map<IRI, File> getLocalMappings(String prefix) {

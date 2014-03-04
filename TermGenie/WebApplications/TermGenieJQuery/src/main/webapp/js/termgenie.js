@@ -111,8 +111,11 @@ function termgenie(){
 	jQuery('#div-select-ontology').append(createBusyMessage('Quering for available ontologies at the server.'));
 	
 	// retrieve ontology status and start render it in step 1
+	jQuery('#div-step1-ontology-status').empty();
+	jQuery('#div-step1-ontology-status').append(createBusyMessage('Checking ontology on the server.'));
 	jsonService.ontology.getOntologyStatus({
 		onSuccess: function(result) {
+			jQuery('#div-step1-ontology-status').empty();
 			/*
 			 * Actual start code for the page.
 			 * 
@@ -124,8 +127,10 @@ function termgenie(){
 			createOntologyStatusInformation(result);
 		},
 		onException: function(e) {
+			jQuery('#div-step1-ontology-status').empty();
 			jQuery('#div-select-ontology').empty();
-			jQuery.logSystemError('AvailableOntologies service call failed',e);
+			jQuery.logSystemError('getOntologyStatus service call failed',e);
+			jQuery('#div-step1-ontology-status').append('OntologyStatus service call failed. Please reload the page.');
 			return true;
 		}
 	});
@@ -175,19 +180,24 @@ function termgenie(){
 		  ontologyStatus: {
 				ontology: String,
 				okay: boolean,
-				message: String
+				messages: String[]
 		  }
 		 */
 		var ontologyName = ontologyStatus.ontology;
+		
 		// if the status is okay, go to step 2
 		if (ontologyStatus.okay === true) {
-			setStep1Header(ontologyName+' okay');
+			setStep1Header(ontologyName);
 			createTemplateSelector(ontologyName);
 			setStep2Active();
 		}
 		else {
 			// render message
-			jQuery('#div-step1-ontology-status').append(ontologyStatus.message);
+			var ulParent = jQuery('<ul></ul>');
+			jQuery.each(ontologyStatus.messages, function(index, message){
+				ulParent.append('<li>'+message+'</li>');
+			});
+			jQuery('#div-step1-ontology-status').append(ulParent);
 		}
 		
 		/**

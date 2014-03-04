@@ -5,11 +5,9 @@ import static org.junit.Assert.*;
 import java.util.Collections;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
+import org.bbop.termgenie.rules.OldTestOntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -24,15 +22,7 @@ public class CheckEquivalentClassesAxiomsTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule() {
-
-			@Override
-			protected void bindOntologyConfiguration() {
-				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
-			}
-		});
-
+		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule("ontology-configuration_simple.xml"));
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 

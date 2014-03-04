@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -29,7 +27,6 @@ import org.bbop.termgenie.ontology.CommitHistoryStoreImpl;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
 import org.bbop.termgenie.ontology.CommitObject.Modification;
 import org.bbop.termgenie.ontology.Committer.CommitResult;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.AfterReview;
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages.BeforeReview;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
@@ -44,17 +41,16 @@ import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.tools.ResourceLoader;
-import org.bbop.termgenie.tools.TempTestFolderTools;
 import org.bbop.termgenie.tools.Triple;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.obolibrary.obo2owl.Obo2Owl;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.tmatesoft.svn.core.SVNURL;
@@ -63,23 +59,26 @@ import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import owltools.graph.OWLGraphWrapper;
 
 
-public class SvnCommitTest extends TempTestFolderTools {
+public class SvnCommitTest {
 
-	private static File testFolder;
-	private static Triple<SvnTool, SVNURL, ISVNAuthenticationManager> svnTools;
+	@Rule
+	public TemporaryFolder testFolder = new TemporaryFolder();
+	private File currentFolder = null;
 
-	@BeforeClass
-	public static void beforeClass() throws Exception {
-		testFolder = createTestFolder(SvnCommitTest.class, true);
+	private Triple<SvnTool, SVNURL, ISVNAuthenticationManager> svnTools;
+
+	@Before
+	public void beforeClass() throws Exception {
+		currentFolder = this.testFolder.newFolder();
 		
 		// general layout
-		File repositoryDirectory = new File(testFolder, "repository");
+		File repositoryDirectory = new File(currentFolder, "repository");
 		FileUtils.forceMkdir(repositoryDirectory);
 		
-		File stagingDirectory = new File(testFolder, "staging");
+		File stagingDirectory = new File(currentFolder, "staging");
 		FileUtils.forceMkdir(stagingDirectory);
 		
-		File readOnlyDirectory = new File(testFolder, "readonly");
+		File readOnlyDirectory = new File(currentFolder, "readonly");
 		FileUtils.forceMkdir(readOnlyDirectory);
 		
 		TestResourceLoader loader = new TestResourceLoader();
@@ -96,10 +95,6 @@ public class SvnCommitTest extends TempTestFolderTools {
 		svnTools = SvnRepositoryTools.createLocalRepository(repositoryDirectory, stagingDirectory, readOnlyDirectory);
 	}
 	
-	@AfterClass
-	public static void afterClass() throws Exception {
-//		deleteTestFolder(testFolder);
-	}
 	
 	@Test
 	public void simpleCommit() throws Exception {
@@ -110,12 +105,10 @@ public class SvnCommitTest extends TempTestFolderTools {
 		
 		CommitHistoryStore store = createTestStore(ontology);
 		
-		IRIMapper iriMapper = new NoopIRIMapper();
-		
-		OboScmHelper helper = new TestSvnHelper(iriMapper, "trunk/ontology/svn-test-main.obo", svnTools.getTwo(), svnTools.getThree());
+		OboScmHelper helper = new TestSvnHelper("trunk/ontology/svn-test-main.obo", svnTools.getTwo(), svnTools.getThree());
 
 		// create commit pipeline with custom temp folder
-		final File checkoutDirectory = new File(testFolder, "checkout");
+		final File checkoutDirectory = new File(currentFolder, "checkout");
 		FileUtils.forceMkdir(checkoutDirectory);
 		OboCommitReviewPipeline p = new OboCommitReviewPipeline(source, store, new NoopReviewMailHandler(), helper) {
 
@@ -168,7 +161,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 		});
 	
 		
-		SvnTool svnTool = new SvnTool(new File(testFolder, "verification"), svnTools.getTwo(), svnTools.getThree(), true);
+		SvnTool svnTool = new SvnTool(new File(currentFolder, "verification"), svnTools.getTwo(), svnTools.getThree(), true);
 		svnTool.connect();
 		boolean checkout = svnTool.checkout(Arrays.asList("trunk/ontology/svn-test-main.obo"), ProcessState.NO);
 		svnTool.close();
@@ -264,7 +257,7 @@ public class SvnCommitTest extends TempTestFolderTools {
 	{
 		EntityManagerFactoryProvider provider = new EntityManagerFactoryProvider();
 		
-		CommitHistoryStore store = new CommitHistoryStoreImpl(provider.createFactory(new File(testFolder, "db"), EntityManagerFactoryProvider.HSQLDB, EntityManagerFactoryProvider.MODE_DEFAULT, "SvnTests"));
+		CommitHistoryStore store = new CommitHistoryStoreImpl(provider.createFactory(new File(currentFolder, "db"), EntityManagerFactoryProvider.HSQLDB, EntityManagerFactoryProvider.MODE_DEFAULT, "SvnTests"));
 		
 		Frame frame1 = OboParserTools.parseFrame("FOO:2001","[Term]\n"+
 		 "id: FOO:2001\n"+
@@ -348,35 +341,16 @@ public class SvnCommitTest extends TempTestFolderTools {
 		return store;
 	}
 	
-	
-	private static final class NoopIRIMapper implements IRIMapper {
-
-		@Override
-		public IRI getDocumentIRI(IRI ontologyIRI) {
-			return ontologyIRI;
-		}
-
-		@Override
-		public URL mapUrl(String url) {
-			try {
-				return new URL(url);
-			} catch (MalformedURLException exception) {
-				throw new RuntimeException(exception);
-			}
-		}
-	}
-
 	private static final class TestSvnHelper extends OboScmHelper {
 
 		private final SVNURL repositoryURL;
 		private final ISVNAuthenticationManager authManager;
 
-		private TestSvnHelper(IRIMapper iriMapper,
-				String mainOntology,
+		private TestSvnHelper(String mainOntology,
 				SVNURL repositoryURL,
 				ISVNAuthenticationManager authManager)
 		{
-			super(iriMapper, mainOntology);
+			super(mainOntology, null);
 			this.repositoryURL = repositoryURL;
 			this.authManager = authManager;
 		}

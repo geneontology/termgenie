@@ -2,14 +2,10 @@ package org.bbop.termgenie.rules;
 
 import static org.junit.Assert.*;
 
-import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
@@ -26,21 +22,10 @@ public class ManchesterSyntaxToolTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(createOntologyModule());
+		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule("ontology-configuration_simple.xml"));
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 	
-	private static IOCModule createOntologyModule() {
-		return new TestDefaultOntologyModule() {
-
-			@Override
-			protected void bindOntologyConfiguration() {
-				bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-				bind("XMLOntologyConfigurationResource", "ontology-configuration_simple.xml");
-			}
-		};
-	}
-
 	@Test
 	public void testManchesterSyntaxTool() throws Exception {
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();

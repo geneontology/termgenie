@@ -42,14 +42,17 @@ public class CommitSvnUserPasswdModule {
 	private static class CommitOwlSvnUserPasswdModule extends AbstractOwlCommitSvnModule {
 
 		private final String svnUsername;
+		private final String catalogXml;
 
 		private CommitOwlSvnUserPasswdModule(String svnRepository,
 				String svnOntologyFileName,
+				String catalogXml,
 				String svnUsername,
 				Properties applicationProperties,
 				boolean svnLoadExternals)
 		{
 			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
+			this.catalogXml = catalogXml;
 			this.svnUsername = svnUsername;
 		}
 
@@ -58,6 +61,7 @@ public class CommitSvnUserPasswdModule {
 			super.configure();
 			bind("CommitAdapterSVNUsername", svnUsername);
 			bindSecret("CommitAdapterSVNPassword");
+			bind("CommitAdapterSVNCatalogXml", catalogXml, true);
 		}
 
 		@Override
@@ -91,6 +95,7 @@ public class CommitSvnUserPasswdModule {
 	 * 
 	 * @param svnRepository
 	 * @param svnOntologyFileName
+	 * @param catalogXml
 	 * @param svnUsername
 	 * @param applicationProperties
 	 * @param svnLoadExternals
@@ -98,10 +103,11 @@ public class CommitSvnUserPasswdModule {
 	 */
 	public static IOCModule createOwlModule(String svnRepository,
 			String svnOntologyFileName,
+			String catalogXml,
 			String svnUsername,
 			Properties applicationProperties,
 			boolean svnLoadExternals)
 	{
-		return new CommitOwlSvnUserPasswdModule(svnRepository, svnOntologyFileName, svnUsername, applicationProperties, svnLoadExternals);
+		return new CommitOwlSvnUserPasswdModule(svnRepository, svnOntologyFileName, catalogXml, svnUsername, applicationProperties, svnLoadExternals);
 	}
 }

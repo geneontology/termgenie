@@ -3,12 +3,13 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -17,7 +18,8 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserKeyFileModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -65,7 +67,6 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_go.xml";
 		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
-		String workFolder = null;	// no default value
 		String svnUserName = null;	// no default value
 		String keyFile = null;		// no default value
 		boolean loadExternal = true;
@@ -74,15 +75,22 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
 		// http://purl.obolibrary.org/obo/go.owl ->  editors/gene_ontology_write.obo
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go.owl"), "editors/gene_ontology_write.obo");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go.obo"), "editors/gene_ontology_write.obo");
 			
 		String catalogXML = "extensions/catalog-v001.xml";
 		
-		List<String> ignoreIRIs = Arrays.asList(
-				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl",
-                "http://purl.obolibrary.org/obo/TEMP");
+		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go.owl"));
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl"));
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 		
-		return SvnAwareXMLReloadingOntologyModule.createSshKeySvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, keyFile, loadExternal, usePassphrase, ignoreIRIs);
+		SvnAwareOntologyModule m = SvnAwareOntologyModule.createSshKeySvnModule(configFile, applicationProperties, svnUserName, keyFile, usePassphrase);
+		m.setSvnAwareRepositoryURL(repositoryURL);
+		m.setSvnAwareCatalogXML(catalogXML);
+		m.setSvnAwareLoadExternal(loadExternal);
+		m.setSvnAwareMappedIRIs(mappedIRIs);
+		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
+		return m;
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package org.bbop.termgenie.ontology;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,10 +17,9 @@ import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
 import org.bbop.termgenie.tools.Pair;
-import org.bbop.termgenie.tools.TempTestFolderTools;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -29,21 +27,13 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 public class CommitHistoryStoreImplTest {
 
 	private static EntityManagerFactoryProvider provider = new EntityManagerFactoryProvider();
-	private static File testFolder;
-
-	@BeforeClass
-	public static void beforeClass() {
-		testFolder = TempTestFolderTools.createTestFolder(CommitHistoryStoreImplTest.class);
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		TempTestFolderTools.deleteTestFolder(testFolder);
-	}
-
+	
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+	
 	@Test
 	public void testCommitHistoryStoreImpl() throws Exception {
-		EntityManagerFactory emf = provider.createFactory(testFolder,
+		EntityManagerFactory emf = provider.createFactory(folder.newFolder(),
 				EntityManagerFactoryProvider.HSQLDB,
 				EntityManagerFactoryProvider.MODE_DEFAULT,
 				"CommitHistory");

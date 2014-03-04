@@ -3,57 +3,38 @@ package org.bbop.termgenie.ontology;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.ontology.OntologyIdStore.OntologyIdStoreException;
 import org.bbop.termgenie.presistence.EntityManagerFactoryProvider;
-import org.bbop.termgenie.tools.TempTestFolderTools;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class OntologyIdStoreTest {
 
 	private static EntityManagerFactoryProvider provider = new EntityManagerFactoryProvider();
-	private static File testFolder;
 
-	@BeforeClass
-	public static void beforeClass() {
-		testFolder = TempTestFolderTools.createTestFolder(OntologyIdStoreTest.class);
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		TempTestFolderTools.deleteTestFolder(testFolder);
-	}
-
-	@Before
-	public void before() throws IOException {
-		// clear test folder for each test
-		FileUtils.cleanDirectory(testFolder);
-	}
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
-	public void testOntologyIdStoreHsqlDB() {
+	public void testOntologyIdStoreHsqlDB() throws Exception {
 		testOntologyIdStore(EntityManagerFactoryProvider.HSQLDB);
 	}
 
 	@Test
-	public void testOntologyIdStoreH2() {
+	public void testOntologyIdStoreH2() throws Exception {
 		testOntologyIdStore(EntityManagerFactoryProvider.H2);
 	}
 
 	@SuppressWarnings("null")
-	private void testOntologyIdStore(String label) {
-		EntityManagerFactory emf = provider.createFactory(testFolder, label, EntityManagerFactoryProvider.MODE_SECONDARY_IDS, "OntologyIdStore");
+	private void testOntologyIdStore(String label) throws Exception {
+		EntityManagerFactory emf = provider.createFactory(folder.newFolder(), label, EntityManagerFactoryProvider.MODE_SECONDARY_IDS, "OntologyIdStore");
 		assertNotNull(emf);
 
 		String storeConfig = "testOntologyName \t foo:000000 \t 41 \t 48 \n" + //

@@ -3,11 +3,8 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -16,7 +13,7 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -27,7 +24,6 @@ import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
-import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextListener {
 	
@@ -61,16 +57,15 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_cl.xml";
 		String repositoryURL = "https://cell-ontology.googlecode.com/svn/trunk/src/ontology";
-		String workFolder = null; // no default value
 		String svnUserName = null; // no default value
 		boolean loadExternal = false;
 		String catalogXML = "catalog-v001.xml";
 		
-		// no special handling of certain IRIs
-		Map<IRI, String> mappedIRIs = Collections.emptyMap(); 
-		List<String> ignoreIRIs = Arrays.asList();
-		
-		return SvnAwareXMLReloadingOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, repositoryURL, mappedIRIs, catalogXML, workFolder, svnUserName, loadExternal, ignoreIRIs);
+		SvnAwareOntologyModule m = SvnAwareOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, svnUserName);
+		m.setSvnAwareRepositoryURL(repositoryURL);
+		m.setSvnAwareLoadExternal(loadExternal);
+		m.setSvnAwareCatalogXML(catalogXML);
+		return m;
 	}
 
 	@Override
@@ -85,10 +80,11 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
         
 		String repositoryURL = "https://cell-ontology.googlecode.com/svn/trunk/src/ontology";
 		String remoteTargetFile = "cl-edit.owl";
+		String catalogXml = "catalog-v001.xml";
 		String svnUserName = null; // no default value
 		boolean loadExternal = false;
 		
-		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, svnUserName, applicationProperties, loadExternal);
+		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, svnUserName, catalogXml, applicationProperties, loadExternal);
 	}
 	
 	@Override

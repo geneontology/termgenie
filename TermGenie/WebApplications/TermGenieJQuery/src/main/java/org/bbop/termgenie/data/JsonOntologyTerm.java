@@ -253,7 +253,10 @@ public class JsonOntologyTerm {
 	}
 
 	public static JsonOntologyTerm createJson(Frame source, Set<OWLAxiom> owlAxioms, List<Pair<Frame, Set<OWLAxiom>>> changed, OWLGraphWrapper wrapper, String pattern) {
-		NameProvider nameProvider = new OwlGraphWrapperNameProvider(wrapper);
+		NameProvider nameProvider = null;
+		if (wrapper != null) {
+			nameProvider = new OwlGraphWrapperNameProvider(wrapper);
+		}
 		JsonOntologyTerm term = new JsonOntologyTerm();
 		term.setTempId(source.getId());
 		

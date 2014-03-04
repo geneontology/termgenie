@@ -405,9 +405,25 @@ public abstract class IOCModule extends AbstractModule {
 		}
 	}
 	
+	protected <T> void bindNamedList(String name, List<T> values) {
+		bind(new TypeLiteral<List<T>>() { /* Intentionally empty */}).
+		annotatedWith(Names.named(name)).
+		toInstance(values);
+		StringBuilder sb = new StringBuilder();
+		for (T value : values) {
+			sb.append(value.getClass().getSimpleName()).append(" ");
+		}
+		configuredParameters.put(name, sb.toString());
+	}
+	
 	protected <T> void bind(Class<T> interfaceClass, Class<? extends T> implementationClass) {
 		bind(interfaceClass).to(implementationClass);
 		boundClasses.put(interfaceClass, implementationClass);
+	}
+	
+	protected <T> void bind(Class<T> interfaceClass, T implementation) {
+		bind(interfaceClass).toInstance(implementation);
+		boundClasses.put(interfaceClass, implementation.getClass());
 	}
 	
 	protected <T> void bind(TypeLiteral<T> typeLiteral, Class<? extends T> implementationClass) {
@@ -418,7 +434,7 @@ public abstract class IOCModule extends AbstractModule {
 	
 	protected <T> void bind(Class<T> interfaceClass, String name, Class<? extends T> implementationClass) {
 		bind(interfaceClass).annotatedWith(Names.named(name)).to(implementationClass);
-		// TODO add to reporting
+		configuredParameters.put(name, interfaceClass.getName()+" to "+implementationClass.getName());
 	}
 	
 	/**

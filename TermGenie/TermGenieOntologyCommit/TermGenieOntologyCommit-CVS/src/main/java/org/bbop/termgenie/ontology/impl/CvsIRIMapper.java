@@ -9,22 +9,20 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.cvs.CvsTools;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.semanticweb.owlapi.model.IRI;
 
 
 public class CvsIRIMapper extends AbstractScmIRIMapper<CvsIRIMapper.CvsHandler> {
 
 	
-	public CvsIRIMapper(IRIMapper fallBackIRIMapper,
-			String cvsRoot,
+	public CvsIRIMapper(String cvsRoot,
 			String cvsPassword,
 			File workFolder,
 			String checkout,
 			Map<IRI, String> mappedCVSFiles,
 			String catalogXml)
 	{
-		super(fallBackIRIMapper, new CvsHandler(cvsRoot, cvsPassword, workFolder, checkout), mappedCVSFiles, catalogXml);
+		super(new CvsHandler(cvsRoot, cvsPassword, workFolder, checkout), mappedCVSFiles, catalogXml);
 	}
 	
 	static class CvsHandler implements AbstractScmIRIMapper.FileAwareReadOnlyScm {

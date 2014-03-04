@@ -15,14 +15,12 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.CatalogXmlIRIMapper;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
+import org.bbop.termgenie.rules.OldTestOntologyModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,29 +31,8 @@ import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import owltools.graph.OWLGraphWrapper;
 
 import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 public class ChemicalTransportActivityTest {
-
-	static final class ChemicalTestOntologyModule extends XMLReloadingOntologyModule {
-
-		ChemicalTestOntologyModule() {
-			super("ontology-configuration_chemical.xml", null, null);
-		}
-
-		@Override
-		protected void bindIRIMapper() {
-			// do nothing, use @Provides instead
-		}
-	
-		@Singleton
-		@Provides
-		protected IRIMapper provideIRIMapper() {
-			String catalogXml = "src/test/resources/ontologies/catalog-v001.xml";
-			return new CatalogXmlIRIMapper(null, catalogXml);
-		}
-	}
 
 	private static TermGenerationEngine generationEngine;
 	private static OntologyLoader loader;
@@ -63,7 +40,7 @@ public class ChemicalTransportActivityTest {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_chemical.xml", false, true, null),
-				new ChemicalTestOntologyModule(),
+				OldTestOntologyModule.chemical(),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

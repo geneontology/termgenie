@@ -2,18 +2,14 @@ package org.bbop.termgenie.servlets;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
-import org.bbop.termgenie.ontology.impl.SvnAwareXMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
-import org.semanticweb.owlapi.model.IRI;
 
 
 public class TermGenieWebAppCLTestContextListener extends TermGenieWebAppCLContextListener {
@@ -42,14 +38,15 @@ public class TermGenieWebAppCLTestContextListener extends TermGenieWebAppCLConte
 			if (cleanDownloadCache) {
 				FileUtils.cleanDirectory(localSVNCache);
 			}
-			
-			String fileCache = new File("./work/termgenie-download-cache").getCanonicalPath();
+			File fileCache = new File("./work/termgenie-download-cache").getCanonicalFile();
 
-			// no special handling
-			List<String> ignoreIRIs = Collections.emptyList();
-			Map<IRI, String> mappedIRIs = Collections.emptyMap();
-			
-			return SvnAwareXMLReloadingOntologyModule.createAnonymousSvnModule(configFile , applicationProperties, localSVNFolder, mappedIRIs, catalogXML, localSVNCache.getAbsolutePath(), fileCache, loadExternal, ignoreIRIs);
+			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule(configFile , applicationProperties);
+			m.setSvnAwareRepositoryURL(localSVNFolder);
+			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
+			m.setSvnAwareCatalogXML(catalogXML);
+			m.setSvnAwareLoadExternal(loadExternal);
+			m.setFileCache(fileCache);
+			return m;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -58,7 +55,7 @@ public class TermGenieWebAppCLTestContextListener extends TermGenieWebAppCLConte
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return CommitSvnAnonymousModule.createOwlModule(localSVNFolder, "cl-edit.owl", applicationProperties, loadExternal);
+		return CommitSvnAnonymousModule.createOwlModule(localSVNFolder, "cl-edit.owl", catalogXML, applicationProperties, loadExternal);
 	}
 	
 	@Override

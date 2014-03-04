@@ -15,9 +15,6 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationInput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationOutput;
 import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParameters;
-import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
-import org.bbop.termgenie.ontology.impl.XMLOntologyConfiguration;
 import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
@@ -40,15 +37,7 @@ public class UpdateRelationShipTest {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_simple.xml", true, true, null),
-				new TestDefaultOntologyModule() {
-
-					@Override
-					protected void bindOntologyConfiguration() {
-						bind(OntologyConfiguration.class, XMLOntologyConfiguration.class);
-						bind("XMLOntologyConfigurationResource",
-								"ontology-configuration_simple.xml");
-					}
-				},
+				new OldTestOntologyModule("ontology-configuration_simple.xml"),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

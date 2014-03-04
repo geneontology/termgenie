@@ -5,7 +5,6 @@
 		<source>http://test.purl.obolibrary.org/obo/base.obo</source>
 		<supports>
 			<support>http://purl.obolibrary.org/obo/go/extensions/bio-chebi.owl</support>
-			<support>http://test.purl.obolibrary.org/obo/base_xp.obo</support>
 		</supports>
 		<roots>
 			<root>FOO:0001</root>

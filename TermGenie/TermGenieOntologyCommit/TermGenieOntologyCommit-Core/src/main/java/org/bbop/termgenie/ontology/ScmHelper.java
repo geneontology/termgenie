@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.scm.VersionControlAdapter;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -23,10 +24,12 @@ public abstract class ScmHelper<ONTOLOGY> {
 	private static final Logger LOG = Logger.getLogger(ScmHelper.class);
 
 	private final String targetOntologyFileName;
+	private final List<OWLOntologyIRIMapper> defaultMappers;
 
-	protected ScmHelper(String svnOntologyFileName)
+	protected ScmHelper(String svnOntologyFileName, List<OWLOntologyIRIMapper> defaultMappers)
 	{
 		this.targetOntologyFileName = svnOntologyFileName;
+		this.defaultMappers = defaultMappers;
 	}
 
 	public static class ScmCommitData implements OntologyCommitPipelineData {
@@ -72,7 +75,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 		scmCheckout(scm, state);
 		
 		// load ontology
-		return loadOntology(data.scmFile);
+		return loadOntology(data.scmFile, data, defaultMappers);
 	}
 	
 	public void updateSCM(VersionControlAdapter scm, ProcessState state)
@@ -155,7 +158,7 @@ public abstract class ScmHelper<ONTOLOGY> {
 		}
 	}
 
-	protected abstract ONTOLOGY loadOntology(File scmFile) throws CommitException;
+	protected abstract ONTOLOGY loadOntology(File scmFile, ScmCommitData data, List<OWLOntologyIRIMapper> defaultMappers) throws CommitException;
 
 	protected File createFolder(final File workFolder, String name) throws CommitException {
 		final File folder;

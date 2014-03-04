@@ -12,14 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.data.JsonResult;
-import org.bbop.termgenie.ontology.impl.ReloadingOntologyLoader;
+import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.management.JsonModuleConfigDetails.JsonPair;
 import org.bbop.termgenie.services.permissions.UserPermissions;
@@ -30,7 +29,6 @@ import org.bbop.termgenie.user.UserData;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 @Singleton
 public class ManagementServicesImpl implements ManagementServices {
@@ -39,29 +37,22 @@ public class ManagementServicesImpl implements ManagementServices {
 
 	private final InternalSessionHandler sessionHandler;
 	private final UserPermissions permissions;
-	private ReloadingOntologyLoader ontologyLoader = null;
+	private final OntologyLoader ontologyLoader;
 
 	/**
 	 * @param sessionHandler
 	 * @param permissions
 	 */
 	@Inject
-	ManagementServicesImpl(InternalSessionHandler sessionHandler, UserPermissions permissions) {
+	ManagementServicesImpl(InternalSessionHandler sessionHandler,
+			UserPermissions permissions,
+			OntologyLoader ontologyLoader)
+	{
 		super();
 		this.sessionHandler = sessionHandler;
 		this.permissions = permissions;
-	}
-
-	/**
-	 * @param ontologyLoader the ontologyLoader to set
-	 */
-	@Nullable
-	@Inject(optional=true)
-	public void setOntologyLoader(@Named("ReloadingOntologyLoader") ReloadingOntologyLoader ontologyLoader) {
 		this.ontologyLoader = ontologyLoader;
 	}
-
-
 
 	@Override
 	public List<JsonModuleConfigDetails> getModuleDetails(String sessionId,

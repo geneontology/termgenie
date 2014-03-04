@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -8,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
@@ -26,10 +27,10 @@ import com.google.inject.name.Named;
  * Load ontologies into memory and reload them from the source periodically.
  * Changed ontologies are recovered, by reloading the ontology from the source.
  * The source and local copy of an ontology are controlled by the configured
- * {@link IRIMapper}.
+ * {@link OWLOntologyIRIMapper}.
  */
 @Singleton
-public class ReloadingOntologyLoader extends BaseOntologyLoader implements OntologyLoader {
+class ReloadingOntologyLoader extends BaseOntologyLoader implements OntologyLoader {
 
 	protected final static Logger LOGGER = Logger.getLogger(ReloadingOntologyLoader.class);
 
@@ -37,13 +38,14 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 	@Inject
 	ReloadingOntologyLoader(OntologyConfiguration configuration,
-			IRIMapper iriMapper,
+			@Named("IRIMappers") List<OWLOntologyIRIMapper> iriMappers,
 			@Named("ReloadingOntologyLoaderPeriod") long period,
 			@Named("ReloadingOntologyLoaderTimeUnit") TimeUnit unit)
 	{
-		super(iriMapper);
+		super(iriMappers);
 		try {
-			manager = new ReloadingOntologyTaskManager(configuration.getOntologyConfiguration());
+			Ontology ontology = configuration.getOntologyConfiguration();
+			manager = new ReloadingOntologyTaskManager(ontology);
 		} catch (InvalidManagedInstanceException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -67,11 +69,13 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		}
 	}
 
+	@Override
 	public synchronized void reloadOntologies() {
 		try {
 			manager.updateManaged();
-		} catch (InvalidManagedInstanceException exception) {
-			throw new RuntimeException(exception);
+		} catch (InvalidManagedInstanceException first) {
+			LOGGER.info("Trying to recover an invalid ontology state during ontology reload.");
+			manager.recoverInvalid();
 		}
 	}
 
@@ -82,22 +86,7 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 	private OWLGraphWrapper loadOntology(Ontology ontology) {
 		try {
-			OWLGraphWrapper w = getResource(ontology, null);
-			return w;
-		} catch (UnknownOWLOntologyException exception) {
-			throw new RuntimeException(exception);
-		} catch (OWLOntologyCreationException exception) {
-			throw new RuntimeException(exception);
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
-		} catch (OBOFormatParserException exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-
-	private OWLGraphWrapper reloadOntology(Ontology ontology, OWLGraphWrapper oldGraph) {
-		try {
-			OWLGraphWrapper w = getResource(ontology, oldGraph);
+			OWLGraphWrapper w = getResource(ontology);
 			return w;
 		} catch (UnknownOWLOntologyException exception) {
 			throw new RuntimeException(exception);
@@ -112,9 +101,6 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 
 	private final class ReloadingOntologyTaskManager extends OntologyTaskManager {
 	
-//		private static final int MAX_RETRY_COUNT = 3;
-//		int currentRetryCount = 0;
-
 		private ReloadingOntologyTaskManager(Ontology ontology) throws InvalidManagedInstanceException
 		{
 			super(ontology);
@@ -123,32 +109,22 @@ public class ReloadingOntologyLoader extends BaseOntologyLoader implements Ontol
 		@Override
 		protected OWLGraphWrapper createManaged() throws InstanceCreationException {
 			OWLGraphWrapper graph = loadOntology(getOntology());
-//			currentRetryCount = 0;
 			return graph;
 		}
 	
 		@Override
 		protected OWLGraphWrapper updateManaged(OWLGraphWrapper managed) throws InstanceCreationException {
-			OWLGraphWrapper graph = reloadOntology(getOntology(), managed);
-//			currentRetryCount = 0;
-			return graph;
+			// do not load the ontology immediately
+			// this is a blocking call, while returning the ontology after the commit
+			disposeOntologies();
+			return null;
 		}
 	
 		@Override
 		protected void dispose(OWLGraphWrapper managed) {
-			disposeResource(managed);
+			disposeOntologies();
 		}
 	
-//		@Override
-//		protected OWLGraphWrapper handleInvalid(OWLGraphWrapper managed) throws InvalidManagedInstanceException {
-//			if (currentRetryCount < MAX_RETRY_COUNT) {
-//				LOGGER.info("Trying to recover from an invalid state. This number of previous attempts: "+currentRetryCount);
-//				disposeResource(managed);
-//				currentRetryCount += 1;
-//				return null;
-//			}
-//			return super.handleInvalid(managed);
-//		}
 	}
 	
 }

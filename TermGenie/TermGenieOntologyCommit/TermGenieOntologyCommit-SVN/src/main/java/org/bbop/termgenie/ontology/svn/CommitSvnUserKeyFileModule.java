@@ -55,9 +55,11 @@ public class CommitSvnUserKeyFileModule {
 		private final String svnUsername;
 		private final File svnKeyFile;
 		private final boolean usePassphrase;
+		private final String catalogXml;
 	
 		private CommitOwlSvnUserKeyFileModule(String svnRepository,
 				String svnOntologyFileName,
+				String catalogXml,
 				String svnUsername,
 				File svnKeyFile,
 				Properties applicationProperties,
@@ -65,6 +67,7 @@ public class CommitSvnUserKeyFileModule {
 				boolean usePassphrase)
 		{
 			super(svnRepository, svnOntologyFileName, applicationProperties, svnLoadExternals);
+			this.catalogXml = catalogXml;
 			this.svnUsername = svnUsername;
 			this.svnKeyFile = svnKeyFile;
 			this.usePassphrase = usePassphrase;
@@ -81,7 +84,7 @@ public class CommitSvnUserKeyFileModule {
 			else {
 				bindNull("CommitAdapterSVNPassword");
 			}
-			
+			bind("CommitAdapterSVNCatalogXml", catalogXml, true);
 		}
 	
 		@Override
@@ -118,6 +121,7 @@ public class CommitSvnUserKeyFileModule {
 	 * 
 	 * @param svnRepository
 	 * @param svnOntologyFileName
+	 * @param catalogXml
 	 * @param svnUsername
 	 * @param svnKeyFile
 	 * @param applicationProperties
@@ -127,11 +131,12 @@ public class CommitSvnUserKeyFileModule {
 	 */
 	public static IOCModule createOwlModule(String svnRepository,
 			String svnOntologyFileName,
+			String catalogXml,
 			String svnUsername,
 			File svnKeyFile,
 			Properties applicationProperties,
 			boolean svnLoadExternals,
 			boolean usePassphrase) {
-		return new CommitOwlSvnUserKeyFileModule(svnRepository, svnOntologyFileName, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals, usePassphrase);
+		return new CommitOwlSvnUserKeyFileModule(svnRepository, svnOntologyFileName, catalogXml, svnUsername, svnKeyFile, applicationProperties, svnLoadExternals, usePassphrase);
 	}
 }

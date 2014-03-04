@@ -8,28 +8,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.ontology.CommitException;
 import org.bbop.termgenie.ontology.CommitHistoryTools;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
-import org.bbop.termgenie.ontology.impl.BaseOntologyLoader;
 import org.bbop.termgenie.scm.VersionControlAdapter;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.obolibrary.oboformat.parser.OBOFormatParser;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.OBODocNameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -39,13 +38,8 @@ import owltools.graph.OWLGraphWrapper;
  */
 public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 
-	private final DirectOntologyLoader loader;
-
-	protected OboScmHelper(IRIMapper iriMapper,
-			String svnOntologyFileName)
-	{
-		super(svnOntologyFileName);
-		loader = new DirectOntologyLoader(iriMapper);
+	protected OboScmHelper(String svnOntologyFileName, List<OWLOntologyIRIMapper> defaultMappers) {
+		super(svnOntologyFileName, defaultMappers);
 	}
 
 	@Override
@@ -158,10 +152,11 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 	}
 
 	@Override
-	protected OBODoc loadOntology(File scmFile) throws CommitException {
+	protected OBODoc loadOntology(File scmFile, ScmCommitData data, List<OWLOntologyIRIMapper> defaultMappers) throws CommitException {
 		try {
 			// load OBO
-			OBODoc ontology = loader.loadOBO(scmFile, null, null);
+			OBOFormatParser p = new OBOFormatParser();
+			OBODoc ontology = p.parse(scmFile);
 			return ontology;
 		} catch (IOException exception) {
 			String message = "Could not load recent copy of the ontology";
@@ -169,17 +164,6 @@ public abstract class OboScmHelper extends ScmHelper<OBODoc> {
 		} catch (OBOFormatParserException exception) {
 			String message = "Could not load recent copy of the ontology, due to an OBO format parse exception.";
 			throw error(message, exception, true);
-		}
-	}
-
-	private static final class DirectOntologyLoader extends BaseOntologyLoader {
-
-		private DirectOntologyLoader(IRIMapper iriMapper) {
-			super(iriMapper);
-		}
-
-		OBODoc loadOBO(File file, String ontology, Map<String, String> importRewrites) throws IOException, OBOFormatParserException {
-			return loadOBO(ontology, file.toURI().toURL(), importRewrites);
 		}
 	}
 

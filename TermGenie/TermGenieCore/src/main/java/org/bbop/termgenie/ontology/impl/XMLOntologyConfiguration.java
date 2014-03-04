@@ -3,9 +3,7 @@ package org.bbop.termgenie.ontology.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -37,14 +35,9 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 	private static final String TAG_root = "root";
 	private static final String TAG_dlquery = "dlquery";
 	private static final String TAG_ontologybranch = "ontologybranch";
-	private static final String TAG_importrewrites = "importrewrites";
-	private static final String TAG_importrewrite = "importrewrite";
 
 	private static final String ATTR_name = "name";
 	
-	private static final String ATTR_source = "source";
-	private static final String ATTR_target = "target";
-
 	private final Ontology configuration;
 
 	@Inject
@@ -158,9 +151,6 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 						subsets.add(subset);
 					}
 				}
-				else if (TAG_importrewrites.equals(element)) {
-					parseImportRewrites(parser, current);
-				}
 				else {
 					error("Unexpected tag: " + element, parser);
 				}
@@ -186,15 +176,6 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 		current.setRoots(parseList(parser, TAG_roots, TAG_root));
 	}
 	
-	private void parseImportRewrites(XMLStreamReader parser, Ontology current)
-			throws XMLStreamException
-	{
-		if (current.getImportRewrites() != null) {
-			error("Multiple " + TAG_importrewrites + " tags found", parser);
-		}
-		current.setImportRewrites(parseMap(parser, TAG_importrewrites, TAG_importrewrite, ATTR_source, ATTR_target));
-	}
-
 	private OntologySubset parseOntologyBranch(XMLStreamReader parser) throws XMLStreamException
 	{
 		String name = getAttribute(parser, ATTR_name);
@@ -263,32 +244,6 @@ public class XMLOntologyConfiguration extends ResourceLoader implements Ontology
 		}
 	}
 	
-	private Map<String, String> parseMap(XMLStreamReader parser, String tag, String subTag, String keyTag, String valueTag)
-			throws XMLStreamException
-	{
-		Map<String, String> result = null;
-		while (true) {
-			switch (parser.next()) {
-				case XMLStreamConstants.END_ELEMENT:
-					if (tag.equals(parser.getLocalName())) {
-						return result;
-					}
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					if (subTag.equals(parser.getLocalName())) {
-						String key = getAttribute(parser, keyTag);
-						String value = getAttribute(parser, valueTag);
-						if (result == null) {
-							result = new HashMap<String, String>();
-						}
-						result.put(key, value);
-					}
-					break;
-			}
-		}
-		
-	}
-
 	private String parseElement(XMLStreamReader parser, String tag) throws XMLStreamException {
 		String text = null;
 		while (true) {

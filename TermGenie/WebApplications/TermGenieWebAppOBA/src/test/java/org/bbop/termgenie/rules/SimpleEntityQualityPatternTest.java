@@ -17,11 +17,10 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParamete
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.OntologyModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
-import org.obolibrary.oboformat.model.Frame;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
@@ -36,9 +35,11 @@ public class SimpleEntityQualityPatternTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
+		OntologyModule ontologyModule = new OntologyModule("ontology-configuration_oba.xml");
+		ontologyModule.setFileCacheIgnoreMappings("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
+						"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl");
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, null),
-				new XMLReloadingOntologyModule("ontology-configuration_oba.xml", 
-						Arrays.asList("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", "http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"), null),
+				ontologyModule,
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
@@ -88,9 +89,7 @@ public class SimpleEntityQualityPatternTest {
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
-		assertNull(output.getError(), output.getError());
-		Frame term = output.getTerm();
-		System.out.println(term);
+		assertEquals("The term OBA:1000001 with the same label 'blood brain barrier permeability' already exists", output.getError());
 		
 		
 	}

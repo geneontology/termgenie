@@ -2,13 +2,14 @@ package org.bbop.termgenie.ontology.owl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.CommitException;
-import org.bbop.termgenie.ontology.IRIMapper;
 import org.bbop.termgenie.ontology.ScmHelper;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
 import org.bbop.termgenie.ontology.entities.SimpleCommitedOntologyTerm;
@@ -19,18 +20,23 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChangeException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderListener;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import owltools.graph.OWLGraphWrapper;
+import owltools.io.CatalogXmlIRIMapper;
 
 public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 
-	private final IRIMapper iriMapper;
+	private static final Logger LOG = Logger.getLogger(OwlScmHelper.class);
+	
+	private final String catalogXml;
 
-	protected OwlScmHelper(IRIMapper iriMapper, String svnOntologyFileName)
+	protected OwlScmHelper(String svnOntologyFileName, List<OWLOntologyIRIMapper> defaultMappers, String catalogXml)
 	{
-		super(svnOntologyFileName);
-		this.iriMapper = iriMapper;
+		super(svnOntologyFileName, defaultMappers);
+		this.catalogXml = catalogXml;
 	}
 
 	@Override
@@ -87,15 +93,42 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 	}
 	
 	@Override
-	protected OWLOntology loadOntology(File scmFile) throws CommitException {
+	protected OWLOntology loadOntology(File scmFile, ScmCommitData data, List<OWLOntologyIRIMapper> defaultMappers) throws CommitException {
 		// use a new manager to avoid 'already loaded' exceptions
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		if(iriMapper != null) {
-			manager.addIRIMapper(iriMapper);
+		// register a listener for logging
+		manager.addOntologyLoaderListener(new OWLOntologyLoaderListener() {
+			
+			@Override
+			public void startedLoadingOntology(LoadingStartedEvent event) {
+				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI source = event.getDocumentIRI();
+				LOG.info("Start loading from SCM for commit, id: "+id+" source: "+source);
+				
+			}
+			
+			@Override
+			public void finishedLoadingOntology(LoadingFinishedEvent event) {
+				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI source = event.getDocumentIRI();
+				LOG.info("Finished loading from SCM for commit, id: "+id+" source: "+source);
+			}
+		});
+		if(defaultMappers != null) {
+			for (OWLOntologyIRIMapper iriMapper : defaultMappers) {
+				manager.addIRIMapper(iriMapper);
+			}
 		}
-		IRI iri = IRI.create(scmFile);
+		if (catalogXml != null) {
+			File catalogFile = new File(data.getScmFolder(), catalogXml).getAbsoluteFile();
+			try {
+				manager.addIRIMapper(new CatalogXmlIRIMapper(catalogFile.getCanonicalFile()));
+			} catch (IOException exception) {
+				throw new CommitException("Could not load catalog file: "+catalogFile, exception, true);
+			}
+		}
 		try {
-			OWLOntology ontology = manager.loadOntology(iri);
+			OWLOntology ontology = manager.loadOntologyFromOntologyDocument(scmFile);
 			return ontology;
 		} catch (OWLOntologyCreationException exception) {
 			throw new CommitException("Could not load file: "+scmFile.getAbsolutePath(), exception, true);

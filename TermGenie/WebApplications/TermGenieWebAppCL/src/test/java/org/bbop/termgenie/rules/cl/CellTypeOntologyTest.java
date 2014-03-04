@@ -19,7 +19,7 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParamete
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.XMLReloadingOntologyModule;
+import org.bbop.termgenie.ontology.impl.OntologyModule;
 import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -42,7 +42,7 @@ public class CellTypeOntologyTest {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, false, null),
-				new XMLReloadingOntologyModule("ontology-configuration_cl.xml", null, null),
+				new OntologyModule("ontology-configuration_cl.xml"),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);

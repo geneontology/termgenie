@@ -19,7 +19,7 @@ public interface OntologyService {
 	public static class JsonOntologyStatus {
 		public String ontology;
 		public boolean okay;
-		public String message;
+		public String[] messages;
 		
 		/**
 		 * @return the ontology
@@ -50,17 +50,17 @@ public interface OntologyService {
 		}
 		
 		/**
-		 * @return the message
+		 * @return the messages
 		 */
-		public String getMessage() {
-			return message;
+		public String[] getMessages() {
+			return messages;
 		}
 		
 		/**
-		 * @param message the message to set
+		 * @param messages the messages to set
 		 */
-		public void setMessage(String message) {
-			this.message = message;
+		public void setMessages(String[] messages) {
+			this.messages = messages;
 		}
 	}
 	

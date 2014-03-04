@@ -233,7 +233,7 @@ public class SvnTool implements VersionControlAdapter {
 				paths[i] = new File(targetFolder, targets.get(i)).getAbsoluteFile();
 			}
 			updateClient.doUpdate(paths, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
-			logger.info("Finished update for targets: "+targets);
+			logger.debug("Finished update for targets: "+targets);
 			return true;
 		} catch (SVNException exception) {
 			throw new IOException(exception);

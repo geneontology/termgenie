@@ -14,7 +14,7 @@ import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.ontology.OntologyConfiguration;
-import org.bbop.termgenie.ontology.impl.TestDefaultOntologyModule;
+import org.bbop.termgenie.ontology.impl.OntologyModule;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class XMLTermTemplateIOTest extends ResourceLoader {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new TestDefaultOntologyModule("ontology-configuration_simple.xml"));
+		Injector injector = TermGenieGuice.createInjector(new OntologyModule("ontology-configuration_simple.xml"));
 		instance = new XMLTermTemplateIO(injector.getInstance(OntologyConfiguration.class));
 	}
 
