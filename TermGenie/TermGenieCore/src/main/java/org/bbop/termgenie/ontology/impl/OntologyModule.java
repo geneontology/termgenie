@@ -51,6 +51,8 @@ public class OntologyModule extends IOCModule {
 	private TimeUnit fileCacheUnit = TimeUnit.HOURS;
 	private List<String> ignoreMappings = null;
 	private FileCachingFilter cacheFilter = null;
+	private Long reloadPeriod = 6L;
+	private TimeUnit reloadUnit = TimeUnit.HOURS;
 
 	public OntologyModule(Properties applicationProperties, String ontologyConfigurationFile) {
 		super(applicationProperties);
@@ -77,12 +79,20 @@ public class OntologyModule extends IOCModule {
 		this.fileCache = fileCache;
 	}
 
-	public void setFileCachePeriod(Long fileCachePeriod) {
+	public void setFileCachePeriod(long fileCachePeriod) {
 		this.fileCachePeriod = fileCachePeriod;
 	}
 
 	public void setFileCacheUnit(TimeUnit fileCacheUnit) {
 		this.fileCacheUnit = fileCacheUnit;
+	}
+	
+	public void setOntologyReloadPeriod(long reloadPeriod) {
+		this.reloadPeriod = reloadPeriod;
+	}
+	
+	public void setOntologyReloadUnit(TimeUnit reloadUnit) {
+		this.reloadUnit = reloadUnit;
 	}
 
 	@Override
@@ -96,8 +106,8 @@ public class OntologyModule extends IOCModule {
 
 	protected void bindOntologyLoader() {
 		bind(OntologyLoader.class, ReloadingOntologyLoader.class);
-		bind("ReloadingOntologyLoaderPeriod", new Long(6L));
-		bind("ReloadingOntologyLoaderTimeUnit", TimeUnit.HOURS);
+		bind("ReloadingOntologyLoaderPeriod", reloadPeriod);
+		bind("ReloadingOntologyLoaderTimeUnit", reloadUnit);
 	}
 
 	protected void bindOntologyConfiguration() {
