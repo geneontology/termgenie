@@ -1,7 +1,6 @@
 package org.bbop.termgenie.core;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Wrapper of an ontology, provides additional methods for identifying the
@@ -30,15 +29,13 @@ public final class Ontology {
 	 * @param dlQuery
 	 * @param additionals
 	 * @param subsets
-	 * @param importRewrites
 	 */
 	public Ontology(String name,
 			String source,
 			List<String> roots,
 			String dlQuery,
 			List<String> additionals,
-			List<OntologySubset> subsets,
-			Map<String, String> importRewrites)
+			List<OntologySubset> subsets)
 	{
 		super();
 		this.name = name;

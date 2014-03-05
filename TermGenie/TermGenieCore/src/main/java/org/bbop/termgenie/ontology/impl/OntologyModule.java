@@ -34,7 +34,7 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 /**
- * Abstract module providing the default ontologies.
+ * Module providing the ontology.
  * 
  * @see OntologyLoader
  * @see OntologyConfiguration

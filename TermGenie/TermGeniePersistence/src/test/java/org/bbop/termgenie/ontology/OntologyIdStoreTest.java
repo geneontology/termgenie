@@ -48,9 +48,9 @@ public class OntologyIdStoreTest {
 		OntologyIdStore store = new OntologyIdStore(config, emf);
 		watch1.stop();
 
-		Ontology ontology = new Ontology("testOntologyName", null, null, null, null, null, null);
+		Ontology ontology = new Ontology("testOntologyName", null, null, null, null, null);
 		
-		Ontology longOntology = new Ontology("longOntology", null, null, null, null, null, null);
+		Ontology longOntology = new Ontology("longOntology", null, null, null, null, null);
 
 		StopWatch watch2 = new StopWatch();
 		watch2.start();
