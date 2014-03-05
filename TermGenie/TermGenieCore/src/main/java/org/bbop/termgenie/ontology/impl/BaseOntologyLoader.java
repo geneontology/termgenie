@@ -1,6 +1,7 @@
 package org.bbop.termgenie.ontology.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -60,15 +61,17 @@ public class BaseOntologyLoader {
 		// there are still issues with cleaning a manager from all previous ontologies
 		
 		// Step 1: try to clean up existing manager
-		OWLOntologyManager manager = pw.getManager();
-		Set<OWLOntology> ontologies = manager.getOntologies();
+		List<OWLOntologyIRIMapper> mappers = new ArrayList<OWLOntologyIRIMapper>(pw.getIRIMappers());
+		OWLOntologyManager oldManager = pw.getManager();
+		Set<OWLOntology> ontologies = oldManager.getOntologies();
 		for (OWLOntology ontology : ontologies) {
-			manager.removeOntology(ontology);
+			oldManager.removeOntology(ontology);
 		}
+		oldManager.clearIRIMappers();
 		
 		// Step 2: create a new wrapper and transfer IRI mappers
 		ParserWrapper newWrapper = new ParserWrapper();
-		newWrapper.addIRIMappers(pw.getIRIMappers());
+		newWrapper.addIRIMappers(mappers);
 		pw = newWrapper;
 	}
 
