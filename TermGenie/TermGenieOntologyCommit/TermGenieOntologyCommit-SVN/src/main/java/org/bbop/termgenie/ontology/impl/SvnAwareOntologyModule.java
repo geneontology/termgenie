@@ -77,15 +77,22 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 		this.svnAwareLoadExternal = loadExternal;
 	}
 
+	static final String SVNAwareIRIMapperRepositoryURL = "SVNAwareIRIMapperRepositoryURL";
+	static final String SVNAwareIRIMapperWorkFolder = "SVNAwareIRIMapperWorkFolder";
+	static final String SVNAwareIRIMapperMappedIRIs = "SVNAwareIRIMapperMappedIRIs";
+	static final String SVNAwareIRIMapperCatalogXML = "SVNAwareIRIMapperCatalogXML";
+	static final String SVNAwareIRIMapperSVNConfigDir = "SVNAwareIRIMapperSVNConfigDir";
+	static final String SVNAwareIRIMapperSVNLoadExternal = "SVNAwareIRIMapperSVNLoadExternal";
+	
 	@Override
 	protected void bindIRIMappers() {
 		super.bindIRIMappers();
-		bind("SVNAwareIRIMapperRepositoryURL", svnAwareRepositoryURL);
-		bind("SVNAwareIRIMapperWorkFolder", svnAwareWorkFolder);
-		bindIRIMap("SVNAwareIRIMapperMappedIRIs", svnAwareMappedIRIs);
-		bind("SVNAwareIRIMapperCatalogXML", svnAwareCatalogXML, true);
-		bind("SVNAwareIRIMapperSVNConfigDir", SvnTool.getDefaultSvnConfigDir());
-		bind("SVNAwareIRIMapperSVNLoadExternal", svnAwareLoadExternal);
+		bind(SVNAwareIRIMapperRepositoryURL, svnAwareRepositoryURL);
+		bind(SVNAwareIRIMapperWorkFolder, svnAwareWorkFolder);
+		bindIRIMap(SVNAwareIRIMapperMappedIRIs, svnAwareMappedIRIs);
+		bind(SVNAwareIRIMapperCatalogXML, svnAwareCatalogXML, true);
+		bind(SVNAwareIRIMapperSVNConfigDir, SvnTool.getDefaultSvnConfigDir());
+		bind(SVNAwareIRIMapperSVNLoadExternal, svnAwareLoadExternal);
 		bindAdditional();
 	}
 	
@@ -103,12 +110,12 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 		@Singleton
 		@Named("PrimaryIRIMapper")
 		protected OWLOntologyIRIMapper getIRIMapper(
-				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
-				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
-				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
-				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String svnWorkFolder,
-				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
-				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
+				@Named(SVNAwareIRIMapperRepositoryURL) String repositoryURL,
+				@Named(SVNAwareIRIMapperCatalogXML) String catalogXML,
+				@Named(SVNAwareIRIMapperMappedIRIs) Map<IRI, String> mappedIRIs,
+				@Named(SVNAwareIRIMapperWorkFolder) @Nullable String svnWorkFolder,
+				@Named(SVNAwareIRIMapperSVNConfigDir) File svnConfigDir,
+				@Named(SVNAwareIRIMapperSVNLoadExternal) Boolean svnLoadExternal)
 		{
 			final File workFolderFile = new File(svnWorkFolder);
 			final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir, svnLoadExternal);
@@ -132,23 +139,25 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 
 		@Override
 		protected void bindAdditional() {
-			bind("SVNAwareIRIMapperUsername", svnUsername);
-			bindSecret("SVNAwareIRIMapperPassword");
+			bind(SVNAwareIRIMapperUsername, svnUsername);
+			bindSecret(SVNAwareIRIMapperPassword);
 		}
 
+		static final String SVNAwareIRIMapperUsername = "SVNAwareIRIMapperUsername";
+		static final String SVNAwareIRIMapperPassword = "SVNAwareIRIMapperPassword";
 
 		@Provides
 		@Singleton
 		@Named("PrimaryIRIMapper")
 		protected OWLOntologyIRIMapper getIRIMapper(
-				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
-				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
-				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
-				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String workFolder,
-				@Named("SVNAwareIRIMapperUsername") String svnUsername,
-				@Named("SVNAwareIRIMapperPassword") String svnPassword,
-				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
-				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
+				@Named(SVNAwareIRIMapperRepositoryURL) String repositoryURL,
+				@Named(SVNAwareIRIMapperCatalogXML) String catalogXML,
+				@Named(SVNAwareIRIMapperMappedIRIs) Map<IRI, String> mappedIRIs,
+				@Named(SVNAwareIRIMapperWorkFolder) @Nullable String workFolder,
+				@Named(SVNAwareIRIMapperUsername) String svnUsername,
+				@Named(SVNAwareIRIMapperPassword) String svnPassword,
+				@Named(SVNAwareIRIMapperSVNConfigDir) File svnConfigDir,
+				@Named(SVNAwareIRIMapperSVNLoadExternal) Boolean svnLoadExternal)
 		{
 			final File workFolderFile = new File(workFolder);
 			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir, svnLoadExternal);
@@ -180,15 +189,19 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 			this.usePassphrase = usePassphrase;
 		}
 
+		static final String SVNAwareIRIMapperUsername = "SVNAwareIRIMapperUsername";
+		static final String SVNAwareIRIMapperKeyFile = "SVNAwareIRIMapperKeyFile";
+		static final String SVNAwareIRIMapperPassword = "SVNAwareIRIMapperPassword";
+		
 		@Override
 		protected void bindAdditional() {
-			bind("SVNAwareIRIMapperUsername", svnUsername);
-			bind("SVNAwareIRIMapperKeyFile", svnKeyFile);
+			bind(SVNAwareIRIMapperUsername, svnUsername);
+			bind(SVNAwareIRIMapperKeyFile, svnKeyFile);
 			if (usePassphrase) {
-				bindSecret("SVNAwareIRIMapperPassword");	
+				bindSecret(SVNAwareIRIMapperPassword);	
 			}
 			else {
-				bindNull("SVNAwareIRIMapperPassword");
+				bindNull(SVNAwareIRIMapperPassword);
 			}
 		}
 
@@ -196,15 +209,15 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 		@Singleton
 		@Named("PrimaryIRIMapper")
 		protected OWLOntologyIRIMapper getIRIMapper(
-				@Named("SVNAwareIRIMapperRepositoryURL") String repositoryURL,
-				@Named("SVNAwareIRIMapperCatalogXML") String catalogXML,
-				@Named("SVNAwareIRIMapperMappedIRIs") Map<IRI, String> mappedIRIs,
-				@Named("SVNAwareIRIMapperWorkFolder") @Nullable String workFolder,
-				@Named("SVNAwareIRIMapperUsername") String svnUsername,
-				@Named("SVNAwareIRIMapperKeyFile") String svnKeyFile,
-				@Named("SVNAwareIRIMapperPassword") @Nullable String svnPassword,
-				@Named("SVNAwareIRIMapperSVNConfigDir") File svnConfigDir,
-				@Named("SVNAwareIRIMapperSVNLoadExternal") Boolean svnLoadExternal)
+				@Named(SVNAwareIRIMapperRepositoryURL) String repositoryURL,
+				@Named(SVNAwareIRIMapperCatalogXML) String catalogXML,
+				@Named(SVNAwareIRIMapperMappedIRIs) Map<IRI, String> mappedIRIs,
+				@Named(SVNAwareIRIMapperWorkFolder) @Nullable String workFolder,
+				@Named(SVNAwareIRIMapperUsername) String svnUsername,
+				@Named(SVNAwareIRIMapperKeyFile) String svnKeyFile,
+				@Named(SVNAwareIRIMapperPassword) @Nullable String svnPassword,
+				@Named(SVNAwareIRIMapperSVNConfigDir) File svnConfigDir,
+				@Named(SVNAwareIRIMapperSVNLoadExternal) Boolean svnLoadExternal)
 		{
 			final File workFolderFile = new File(workFolder);
 			final File keyFile = new File(svnKeyFile);
