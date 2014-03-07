@@ -22,7 +22,7 @@ function chemical_import_into() {
 			+ " into " + refname(target, ont) + ".";
 	var synonyms = null;
 	
-	var mdef = createMDef("GO_0006810 and 'has_target_end_location' some ?T and 'imports' some ?S");
+	var mdef = createMDef("GO_0006810 and 'has target end location' some ?T and 'imports' some ?S");
 	mdef.addParameter('S', subject, ont);
 	mdef.addParameter('T', target, ont);
 	createTerm(label, definition, synonyms, mdef);

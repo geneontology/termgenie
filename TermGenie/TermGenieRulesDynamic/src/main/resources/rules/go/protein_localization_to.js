@@ -29,7 +29,7 @@ function protein_localization_to() {
 		
 		//BE spelling for 'in' variation
 		synonyms = termgenie.addSynonym(label, synonyms, 'protein localisation in ', '', termnamec, 'EXACT');
-		var mdef = createMDef("GO_0008104 and 'has_target_end_location' some ?C");
+		var mdef = createMDef("GO_0008104 and 'has target end location' some ?C");
 		mdef.addParameter('C', c, go);
 		var success = createTerm(label, definition, synonyms, mdef);
 		if (success === true) {
@@ -51,10 +51,10 @@ function protein_localization_to() {
 		
 		//BE spelling for 'in' variation
 		synonyms = termgenie.addSynonym(label, synonyms, 'establishment of protein localisation in ', '', termnamec, 'EXACT');
-		var mdef = createMDef("GO_0045184 and 'has_target_end_location' some ?C");
+		var mdef = createMDef("GO_0045184 and 'has target end location' some ?C");
 		mdef.addParameter('C', c, go);
 		
-		var partOfExpression = createMDef("GO_0008104 and 'has_target_end_location' some ?C");
+		var partOfExpression = createMDef("GO_0008104 and 'has target end location' some ?C");
 		partOfExpression.addParameter('C', c, go);
 		
 		var success = termgenie.createTerm(label, definition, synonyms, [mdef], [partOfExpression]);

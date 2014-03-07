@@ -53,7 +53,7 @@ function regulation_triad_internal(x, prefixes, go) {
 				"down regulation of ", "down-regulation of ", "downregulation of ", "inhibition of " ],
 				["EXACT", "EXACT", "EXACT", "EXACT", "NARROW" ],
 				x, go, [], label);
-		var mdef = createMDef("GO_0065007 and 'negatively_regulates' some ?X");
+		var mdef = createMDef("GO_0065007 and 'negatively regulates' some ?X");
 		mdef.addParameter('X', x, go);
 		var success = createTerm(label, definition, synonyms, mdef);
 		if (success === true) {
@@ -71,7 +71,7 @@ function regulation_triad_internal(x, prefixes, go) {
 				"up regulation of ", "up-regulation of ", "upregulation of ", "activation of " ],
 				["EXACT", "EXACT", "EXACT", "EXACT", "NARROW" ],
 				x, go, [], label);
-		var mdef = createMDef("GO_0065007 and 'positively_regulates' some ?X");
+		var mdef = createMDef("GO_0065007 and 'positively regulates' some ?X");
 		mdef.addParameter('X', x, go);
 		var success = createTerm(label, definition, synonyms, mdef);
 		if (success === true) {

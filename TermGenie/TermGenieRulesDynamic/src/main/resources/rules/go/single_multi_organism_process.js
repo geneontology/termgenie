@@ -24,7 +24,7 @@ function single_multi_organism_process() {
 		var label = "single-organism " + name;
 		var definition = cRefName+" which involves only one organism.";
 		var synonyms = termgenie.addSynonym(label, null, "single organism ", name, "", "EXACT");
-		var mdef = createMDef("?P and 'bearer_of' some PATO_0002487");
+		var mdef = createMDef("?P and 'bearer of' some PATO_0002487");
 		mdef.addParameter('P', p, go);
 		var success = createTerm(label, definition, synonyms, mdef);
 		if (success === true) {
@@ -40,7 +40,7 @@ function single_multi_organism_process() {
 		var label = "multi-organism " + name;
 		var definition = cRefName + " which involves another organism.";
 		var synonyms = termgenie.addSynonym(label, null, "multi organism ", name, "", "EXACT");
-		var mdef = createMDef("?P and 'bearer_of' some PATO_0002486");
+		var mdef = createMDef("?P and 'bearer of' some PATO_0002486");
 		mdef.addParameter('P', p, go);
 		var success = createTerm(label, definition, synonyms, mdef);
 		if (success === true) {

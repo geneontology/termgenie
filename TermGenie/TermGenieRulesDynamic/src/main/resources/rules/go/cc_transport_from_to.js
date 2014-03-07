@@ -31,7 +31,7 @@ function cc_transport_from_to() {
 		var definition = "The directed movement of substances from " 
 						+ fromName + " to " + toName + ".";
 		var synonyms = termgenie.synonyms(null, from, go, " to ", to, go, " transport", null, label);
-		var mdef = createMDef("GO_0006810 and 'has_target_start_location' some ?F and 'has_target_end_location' some ?T");
+		var mdef = createMDef("GO_0006810 and 'has target start location' some ?F and 'has target end location' some ?T");
 		mdef.addParameter('F', from, go);
 		mdef.addParameter('T', to, go);
 		var success = createTerm(label, definition, synonyms, mdef);
@@ -50,7 +50,7 @@ function cc_transport_from_to() {
 		var definition = "The vesicle-mediated and directed movement of substances from " 
 						+ fromName + " to " + toName + ".";
 		var synonyms = termgenie.synonyms(null, from, go, " to ", to, go, " vesicle-mediated transport", null, label);
-		var mdef = createMDef("GO_0016192 and 'has_target_start_location' some ?F and 'has_target_end_location' some ?T");
+		var mdef = createMDef("GO_0016192 and 'has target start location' some ?F and 'has target end location' some ?T");
 		mdef.addParameter('F', from, go);
 		mdef.addParameter('T', to, go);
 		var success = createTerm(label, definition, synonyms, mdef);

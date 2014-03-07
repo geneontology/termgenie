@@ -65,12 +65,12 @@ function chemical_transport_from_to() {
 		if (hasFrom) {
 			label += " from " + fromName;
 			definition += " from " + fromName;
-			mdefString += " and 'has_target_start_location' some ?F";
+			mdefString += " and 'has target start location' some ?F";
 		}
 		if (hasTo) {
 			label += " to " + toName;
 			definition += " to " + toName;
-			mdefString += " and 'has_target_end_location' some ?T";
+			mdefString += " and 'has target end location' some ?T";
 		}
 		definition += ".";
 
@@ -104,12 +104,12 @@ function chemical_transport_from_to() {
 		if (hasFrom) {
 			label += " from " + fromName;
 			definition += " from " + fromName;
-			mdefString += " and 'has_target_start_location' some ?F";
+			mdefString += " and 'has target start location' some ?F";
 		}
 		if (hasTo) {
 			label += " to " + toName;
 			definition += " to " + toName;
-			mdefString += " and 'has_target_end_location' some ?T";
+			mdefString += " and 'has target end location' some ?T";
 		}
 		definition += ".";
 
