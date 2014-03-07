@@ -183,7 +183,10 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 	private synchronized IRI mapIRI(IRI originalIRI) {
 		boolean success = false;
 		File localFile = localCacheFile(originalIRI);
-		if (!isValid(localFile)) {
+		if (isValid(localFile)) {
+			success = true;
+		}
+		else{
 			createFile(localFile);
 			success = download(originalIRI, localFile);
 		}
