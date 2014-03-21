@@ -233,7 +233,7 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 		
 	}
 
-	protected void setValid(File localFile) {
+	protected void setValid(File localFile) throws IOException {
 		validityHelper.setValid(localFile);
 	}
 
@@ -311,7 +311,7 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 					String dateString = FileUtils.readFileToString(validityFile);
 					return df.get().parse(dateString);
 				} catch (IOException exception) {
-					throw new RuntimeException(exception);
+					FileUtils.deleteQuietly(validityFile);
 				} catch (ParseException exception) {
 					validityFile.delete();
 				}
@@ -319,12 +319,8 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 			return null;
 		}
 
-		private void setDate(Date date, File validityFile) {
-			try {
-				FileUtils.write(validityFile, df.get().format(date));
-			} catch (IOException exception) {
-				throw new RuntimeException(exception);
-			}
+		private void setDate(Date date, File validityFile) throws IOException {
+			FileUtils.write(validityFile, df.get().format(date));
 		}
 
 		private void deleteValidityFile(File file) {
@@ -334,7 +330,7 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 			}
 		}
 
-		void setValid(File file) {
+		void setValid(File file) throws IOException {
 			setDate(new Date(), getValidityFile(file));
 		}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.impl.AbstractScmIRIMapper.FileAwareReadOnlyScm;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
@@ -14,6 +15,8 @@ import owltools.io.CatalogXmlIRIMapper;
 public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> implements
 	OWLOntologyIRIMapper
 {
+	private static final Logger logger = Logger.getLogger(AbstractScmIRIMapper.class);
+	
 	private final T scm;
 	private final String catalogXml;
 	private final Map<IRI, String> mappedFiles;
@@ -34,6 +37,7 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 				File catalogXmlFile = scm.retrieveFile(catalogXml);
 				new owltools.io.CatalogXmlIRIMapper(catalogXmlFile);
 			} catch (IOException exception) {
+				logger.error("Could not create catalog-xml mapper: "+catalogXml, exception);
 				throw new RuntimeException(exception);
 			}
 		}
@@ -63,7 +67,7 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 					return iri;
 				}
 			} catch (IOException exception) {
-				throw new RuntimeException(exception);
+				logger.error("Could not map an IRI to a local file: "+ontologyIRI, exception);
 			}
 		}
 		return null;
