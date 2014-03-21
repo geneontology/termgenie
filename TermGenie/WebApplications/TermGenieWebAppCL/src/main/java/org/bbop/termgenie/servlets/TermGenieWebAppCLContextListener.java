@@ -84,7 +84,7 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 		String svnUserName = null; // no default value
 		boolean loadExternal = false;
 		
-		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, svnUserName, catalogXml, applicationProperties, loadExternal);
+		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, svnUserName, applicationProperties, loadExternal);
 	}
 	
 	@Override
