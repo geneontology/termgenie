@@ -21,5 +21,10 @@ public interface ReasonerFactory {
 	public SharedReasoner getSharedReasoner(OWLGraphWrapper ontology);
 	
 	public OWLReasoner createReasoner(OWLGraphWrapper graph, ProcessState state);
+	
+	/**
+	 * Cleanup method
+	 */
+	public void dispose();
 
 }

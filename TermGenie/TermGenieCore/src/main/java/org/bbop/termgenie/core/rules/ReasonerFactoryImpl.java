@@ -57,6 +57,16 @@ public class ReasonerFactoryImpl implements ReasonerFactory, EventSubscriber<Ont
 		return cached;
 	}
 	
+	@Override
+	public void dispose() {
+		synchronized (this) {
+			if (cached != null) {
+				cached.dispose();
+				cached = null;
+			}
+		}
+	}
+	
 	private SharedReasoner createSharedReasoner(OWLGraphWrapper graph) {
 		OWLOntology ontology = graph.getSourceOntology();
 		String name = "reasoner-manager-" + factory.getReasonerName() + "-" + ontology.getOntologyID();
