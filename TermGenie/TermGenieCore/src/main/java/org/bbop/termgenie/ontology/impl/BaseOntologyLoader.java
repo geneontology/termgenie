@@ -1,14 +1,12 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.Ontology;
-import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
@@ -17,6 +15,8 @@ import owltools.graph.OWLGraphWrapper;
 import owltools.io.ParserWrapper;
 
 public class BaseOntologyLoader {
+	
+	private static final Logger logger = Logger.getLogger(BaseOntologyLoader.class);
 
 	private ParserWrapper pw;
 
@@ -31,26 +31,49 @@ public class BaseOntologyLoader {
 	}
 
 	protected synchronized OWLGraphWrapper getResource(Ontology ontology)
-			throws OWLOntologyCreationException, IOException, UnknownOWLOntologyException, OBOFormatParserException
+			throws Exception
 	{
-		OWLGraphWrapper w = load(ontology.getSource());
+		OWLGraphWrapper w;
+		try {
+			w = load(ontology.getSource());
+		} catch (Exception exception) {
+			logger.error("Could not load ontology: "+ontology.getSource(), exception);
+			throw exception;
+		} 
 		if (w == null) {
 			return null;
 		}
 		final List<String> supports = ontology.getAdditionals();
 		if (supports != null) {
 			for (String support : supports) {
-				OWLOntology owl = loadOwl(support);
+				OWLOntology owl;
+				try {
+					owl = loadOwl(support);
+				} catch (Exception exception) {
+					logger.error("Could not load support ontology: "+support, exception);
+					throw exception;
+				}
 				if (owl != null) {
 					w.addSupportOntology(owl);
-					w.mergeOntology(owl);
+					
+					try {
+						w.mergeOntology(owl);
+					} catch (Exception exception) {
+						logger.error("Could not merge support ("+support+") into main ontology", exception);
+						throw exception;
+					}
 				}
 			}
 		}
 		w.addSupportOntologiesFromImportsClosure();
 		
 		// throws UnknownOWLOntologyException
-		w.getAllOntologies();
+		try {
+			w.getAllOntologies();
+		} catch (UnknownOWLOntologyException exception) {
+			logger.error("Error during the load of ontologies.", exception);
+			throw exception;
+		}
 		
 		return w;
 	}
@@ -75,9 +98,7 @@ public class BaseOntologyLoader {
 		pw = newWrapper;
 	}
 
-	protected OWLGraphWrapper load(String url)
-			throws OWLOntologyCreationException, IOException, OBOFormatParserException
-	{
+	protected OWLGraphWrapper load(String url) throws Exception {
 		OWLOntology owlOntology = loadOwl(url);
 		if (owlOntology == null) {
 			return null;
@@ -85,9 +106,7 @@ public class BaseOntologyLoader {
 		return new OWLGraphWrapper(owlOntology);
 	}
 	
-	protected OWLOntology loadOwl(String url)
-			throws OWLOntologyCreationException, IOException, OBOFormatParserException
-	{
+	protected OWLOntology loadOwl(String url) throws Exception {
 		return pw.parse(url);
 	}
 

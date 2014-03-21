@@ -1,6 +1,5 @@
 package org.bbop.termgenie.ontology.impl;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,10 +11,7 @@ import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInsta
 import org.bbop.termgenie.ontology.OntologyConfiguration;
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
-import org.obolibrary.oboformat.parser.OBOFormatParserException;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
-import org.semanticweb.owlapi.model.UnknownOWLOntologyException;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -88,13 +84,7 @@ class ReloadingOntologyLoader extends BaseOntologyLoader implements OntologyLoad
 		try {
 			OWLGraphWrapper w = getResource(ontology);
 			return w;
-		} catch (UnknownOWLOntologyException exception) {
-			throw new RuntimeException(exception);
-		} catch (OWLOntologyCreationException exception) {
-			throw new RuntimeException(exception);
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
-		} catch (OBOFormatParserException exception) {
+		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 	}
