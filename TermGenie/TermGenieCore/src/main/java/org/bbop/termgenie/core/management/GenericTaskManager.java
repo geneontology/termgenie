@@ -194,16 +194,6 @@ public abstract class GenericTaskManager<T> {
 		}
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		// this is a safe guard. If someone forgets to dispose an objects, 
-		// which needs to be disposed, try to do it in the finalize.
-		if (managed != null) {
-			dispose(managed);
-		}
-		super.finalize();
-	}
-
 	/**
 	 * Signal a change of the managed. This can be used to trigger specific change events.
 	 * 
