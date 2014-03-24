@@ -19,7 +19,6 @@
 	</dependencies>
 	<modules>
 		<module>TermGenieOntologyCommit-API</module>
-		<module>TermGenieOntologyCommit-CVS</module>
 		<module>TermGenieOntologyCommit-Core</module>
 		<module>TermGenieOntologyCommit-SVN</module>
 	</modules>
