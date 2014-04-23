@@ -3,6 +3,7 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -184,6 +185,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		oboNamespaces.add("molecular_function");
 		oboNamespaces.add("cellular_component");
 		String defaultOntology = "default_go";
-		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted");
+		List<String> additionalRelations = Arrays.asList("part_of","has_part", "capable_of", "capable_of_part_of");
+		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted", additionalRelations);
 	}
 }

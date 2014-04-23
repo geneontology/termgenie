@@ -13,13 +13,6 @@ import org.json.rpc.server.SessionAware;
 public interface FreeFormTermService extends AutoCompleteResources {
 
 	/**
-	 * Check if this service is enabled.
-	 * 
-	 * @return true, if this service is active
-	 */
-	public boolean isEnabled();
-
-	/**
 	 * Check the current session, for an authenticated user and check its
 	 * permissions to view the free form template
 	 * 
@@ -32,14 +25,13 @@ public interface FreeFormTermService extends AutoCompleteResources {
 	public boolean canView(String sessionId, HttpSession session);
 	
 	/**
-	 * Get the available OBO namespaces for the free form template.
+	 * Retrieve the configuration details for this free form instance. This may
+	 * include, the general availability of this service, target namespaces, and
+	 * additional relations.
 	 * 
-	 * @param sessionId
-	 * @param session
-	 * @return array of OBO namespaces
+	 * @return config info
 	 */
-	@SessionAware
-	public String[] getAvailableNamespaces(String sessionId, HttpSession session);
+	public JsonFreeFormConfig getConfig();
 	
 	/**
 	 * Auto complete the query with terms. If available search only in the given

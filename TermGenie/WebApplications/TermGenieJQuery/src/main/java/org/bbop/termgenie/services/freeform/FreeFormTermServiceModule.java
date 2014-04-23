@@ -13,9 +13,10 @@ public class FreeFormTermServiceModule extends FreeFormTermValidatorModule {
 			boolean addSubsetTag,
 			String defaultOntology,
 			List<String> oboNamespaces,
-			String subset)
+			String subset,
+			List<String> additionalRelations)
 	{
-		super(applicationProperties, addSubsetTag, oboNamespaces, subset);
+		super(applicationProperties, addSubsetTag, oboNamespaces, subset, additionalRelations);
 		this.defaultOntology = defaultOntology;
 	}
 

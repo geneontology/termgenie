@@ -1,6 +1,7 @@
 package org.bbop.termgenie.services.freeform;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bbop.termgenie.data.JsonOntologyTerm.JsonSynonym;
 import org.bbop.termgenie.freeform.FreeFormTermRequest;
@@ -18,9 +19,8 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 	private String comment;
 
 	private List<String> isA;
-	private List<String> partOf;
-	private List<String> hasPart;
-	private List<String> capableOf;
+	
+	private Map<String, List<String>> additionalRelations;
 
 	private List<JsonSynonym> synonyms;
 	
@@ -101,44 +101,19 @@ public class JsonFreeFormTermRequest implements FreeFormTermRequest {
 		this.isA = isA;
 	}
 
-	@Override
-	public List<String> getPartOf() {
-		return partOf;
-	}
-
 	/**
-	 * @param partOf the partOf to set
+	 * @return the additionalRelations
 	 */
-	public void setPartOf(List<String> partOf) {
-		this.partOf = partOf;
-	}
-	
 	@Override
-	public List<String> getHasPart() {
-		return hasPart;
-	}
-
-	
-	/**
-	 * @param hasPart the hasPart to set
-	 */
-	public void setHasPart(List<String> hasPart) {
-		this.hasPart = hasPart;
+	public Map<String, List<String>> getAdditionalRelations() {
+		return additionalRelations;
 	}
 	
 	/**
-	 * @return the capableOf
+	 * @param additionalRelations the additionalRelations to set
 	 */
-	@Override
-	public List<String> getCapableOf() {
-		return capableOf;
-	}
-
-	/**
-	 * @param capableOf the capableOf to set
-	 */
-	public void setCapableOf(List<String> capableOf) {
-		this.capableOf = capableOf;
+	public void setAdditionalRelations(Map<String, List<String>> additionalRelations) {
+		this.additionalRelations = additionalRelations;
 	}
 
 	/**

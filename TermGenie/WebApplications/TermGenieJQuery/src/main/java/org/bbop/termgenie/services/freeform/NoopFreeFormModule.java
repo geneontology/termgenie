@@ -25,9 +25,11 @@ public class NoopFreeFormModule extends IOCModule {
 	
 	public static class NoopFreeFormTermServiceImpl implements FreeFormTermService {
 
+		private static final JsonFreeFormConfig config = new JsonFreeFormConfig(false);
+		
 		@Override
-		public boolean isEnabled() {
-			return false;
+		public JsonFreeFormConfig getConfig() {
+			return config;
 		}
 
 		@Override
@@ -42,11 +44,6 @@ public class NoopFreeFormModule extends IOCModule {
 				ProcessState state)
 		{
 			return null;
-		}
-
-		@Override
-		public String[] getAvailableNamespaces(String sessionId, HttpSession session) {
-			return new String[0];
 		}
 
 		@Override

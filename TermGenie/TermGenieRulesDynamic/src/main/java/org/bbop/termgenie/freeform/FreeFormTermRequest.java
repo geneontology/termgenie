@@ -1,6 +1,7 @@
 package org.bbop.termgenie.freeform;
 
 import java.util.List;
+import java.util.Map;
 
 import owltools.graph.OWLGraphWrapper.ISynonym;
 
@@ -40,20 +41,10 @@ public interface FreeFormTermRequest {
 	public List<String> getIsA();
 
 	/**
-	 * @return the partOf
+	 * @return all additional relations
 	 */
-	public List<String> getPartOf();
+	public Map<String, List<String>> getAdditionalRelations();
 	
-	/**
-	 * @return the hasPart
-	 */
-	public List<String> getHasPart();
-	
-	/**
-	 * @return the capableOf
-	 */
-	public List<String> getCapableOf();
-
 	/**
 	 * @return the synonyms
 	 */

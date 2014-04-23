@@ -210,6 +210,7 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		String defaultOntology = "default_oba";
 		boolean addSubsetTag = false;
 		String subset = null;
-		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset);
+		List<String> additionalRelations = null;
+		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset, additionalRelations );
 	}
 }

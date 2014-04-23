@@ -67,6 +67,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	static final String ADD_SUBSET_TAG_PARAM = "FreeFormTermValidatorAddSubsetTag";
 	static final String SUBSET_PARAM = "FreeFormTermValidatorSubsetTag";
 	static final String SUPPORTED_NAMESPACES = "FreeFormValidatorOboNamespaces";
+	static final String ADDITIONAL_RELATIONS = "FreeFormAdditionalRelations";
 	
 	private final OntologyTaskManager ontology;
 	private final ReasonerFactory factory;
@@ -75,7 +76,8 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	
 	private final String idPrefix;
 
-	private List<String> oboNamespaces;
+	private List<String> oboNamespaces = null;
+	private List<String> additionalRelations = null;
 	private String subset = null;
 
 	@Inject
@@ -110,6 +112,12 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 		this.oboNamespaces = oboNamespaces;
 	}
 
+	@Inject(optional=true)
+	@Nullable
+	public void setAdditionalRelations(@Named(ADDITIONAL_RELATIONS) List<String> additionalRelations) {
+		this.additionalRelations = additionalRelations;
+	}
+	
 	private FreeFormValidationResponse error(String message) {
 		FreeFormValidationResponse response = new FreeFormValidationResponse();
 		response.setGeneralError(message);
@@ -134,6 +142,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 	@Override
 	public List<String> getOboNamespaces() {
 		return oboNamespaces;
+	}
+
+	@Override
+	public List<String> getAdditionalRelations() {
+		return additionalRelations;
 	}
 
 	@Override
@@ -426,96 +439,48 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			
 			// TODO should we test for too high level parents? blacklist?
 			
-			// optional part_of relations
-			Set<OWLClass> partOf = null;
-			OWLObjectProperty partOfProperty = null;
-			List<String> partOfList = request.getPartOf();			
-			if (partOfList != null && !partOfList.isEmpty()) {
-				// first: find property
-				partOfProperty = graph.getOWLObjectPropertyByIdentifier("part_of");
-				if (partOfProperty == null) {
-					setError("part_of", "Could not find the part_of property.");
-					return;
-				}
-				
-				// second: validate given classes 
-				partOf = new HashSet<OWLClass>();
-				for(String id : partOfList) {
-					if (id == null) {
-						addError("part_of parent", "null parent");
+			// additional relations (i.e. part_of, has_part, ...)
+			Map<OWLObjectProperty, Set<OWLClass>> additionalRelations = null;
+			Map<String, List<String>> requestedRelations = request.getAdditionalRelations();
+			if (requestedRelations != null && !requestedRelations.isEmpty()) {
+				additionalRelations = new HashMap<OWLObjectProperty, Set<OWLClass>>();
+				for(Entry<String, List<String>> entry : requestedRelations.entrySet()) {
+					String relId = entry.getKey();
+					// first: find property
+					final OWLObjectProperty prop = graph.getOWLObjectPropertyByIdentifier(relId);
+					if (prop == null) {
+						setError(relId, "Could not find the "+relId+" property.");
+						return;
+					}
+					
+					List<String> ids = entry.getValue();
+					if (ids == null || ids.isEmpty()) {
 						continue;
 					}
-					OWLClass cls = graph.getOWLClassByIdentifier(id);
-					if (cls == null) {
-						addError("part_of parent", "parent not found in ontology: "+id);
-						continue;
+					// second: validate given classes 
+					final Set<OWLClass> classes = new HashSet<OWLClass>();
+					for(String id : ids) {
+						if (id == null) {
+							addError(relId+" parent", "null parent");
+							continue;
+						}
+						OWLClass cls = graph.getOWLClassByIdentifier(id);
+						if (cls == null) {
+							addError(relId+" parent", "parent not found in ontology: "+id);
+							continue;
+						}
+						classes.add(cls);
 					}
-					partOf.add(cls);
+					if (!classes.isEmpty()) {
+						additionalRelations.put(prop, classes);
+					}
 				}
 			}
+			
 			if (errors != null) {
 				return;
 			}
 			
-			// optional has_part relations
-			Set<OWLClass> hasPart = null;
-			OWLObjectProperty hasPartProperty = null;
-			List<String> hasPartList = request.getHasPart();
-			if (hasPartList != null && !hasPartList.isEmpty()) {
-				// first find property
-				hasPartProperty = graph.getOWLObjectPropertyByIdentifier("has_part");
-				if (hasPartProperty == null) {
-					setError("has_part", "Could not find the has_part property.");
-					return;
-				}
-				
-				hasPart = new HashSet<OWLClass>();
-				for(String id : hasPartList) {
-					if (id == null) {
-						addError("has_part parent", "null parent");
-						continue;
-					}
-					OWLClass cls = graph.getOWLClassByIdentifier(id);
-					if (cls == null) {
-						addError("has_part parent", "parent not found in ontology: "+id);
-						continue;
-					}
-					hasPart.add(cls);
-				}
-			}
-			if (errors != null) {
-				return;
-			}
-			
-			// optional capable_of relations
-			Set<OWLClass> capableOf = null;
-			OWLObjectProperty capableOfProperty = null;
-			List<String> capableOfList = request.getCapableOf();
-			if (capableOfList != null && !capableOfList.isEmpty()) {
-				// first find property
-				capableOfProperty = graph.getOWLObjectPropertyByIdentifier("capable_of");
-				if (capableOfProperty == null) {
-					setError("capable_of", "Could not find the capable_of property.");
-					return;
-				}
-				capableOf = new HashSet<OWLClass>();
-				for(String id : capableOfList) {
-					if (id == null) {
-						addError("capable_of parent", "null parent");
-						continue;
-					}
-					OWLClass cls = graph.getOWLClassByIdentifier(id);
-					if (cls == null) {
-						addError("capable_of parent", "parent not found in ontology: "+id);
-						continue;
-					}
-					capableOf.add(cls);
-				}
-			}
-			if (errors != null) {
-				return;
-			}
-
 			// check definition
 			String def = StringUtils.trimToNull(request.getDefinition());
 			if (def == null || def.length() < 20) {
@@ -612,24 +577,14 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, superClass));
 			}
 			
-			if (partOf != null && !partOf.isEmpty()) {
-				for(OWLClass superClass : partOf) {
-					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(partOfProperty, superClass)));
+			if (additionalRelations != null && !additionalRelations.isEmpty()) {
+				for(OWLObjectProperty prop : additionalRelations.keySet()) {
+					Set<OWLClass> classes = additionalRelations.get(prop);
+					for (OWLClass cls : classes) {
+						preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(prop, cls)));
+					}
 				}
 			}
-			
-			if (hasPart != null && !hasPart.isEmpty()) {
-				for(OWLClass superClass : hasPart) {
-					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(hasPartProperty, superClass)));
-				}
-			}
-			
-			if (capableOf != null && !capableOf.isEmpty()) {
-				for(OWLClass superClass : capableOf) {
-					preliminaryAxioms.add(factory.getOWLSubClassOfAxiom(owlClass, factory.getOWLObjectSomeValuesFrom(capableOfProperty, superClass)));
-				}
-			}
-			
 			preliminaryAxioms.addAll(axioms);
 			
 			// add relationships to graph and use reasoner to infer relationships (remove redundant ones)

@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -135,7 +137,7 @@ public class FreeFormTermValidatorImplTest {
 		
 		request.setNamespace("biological_process");
 		request.setIsA(Arrays.asList("GO:0043473"));
-		request.setHasPart(Arrays.asList("GO:0048069", "GO:0048592"));
+		request.addRelation("has_part", Arrays.asList("GO:0048069", "GO:0048592"));
 		request.setDefinition("Foo bar bla bla bla bla bla bla bla bla bla bla.");
 		request.setDbxrefs(Arrays.asList("GOC:fake", "PMID:000000"));
 		
@@ -199,10 +201,10 @@ public class FreeFormTermValidatorImplTest {
 		private String comment;
 		
 		private List<String> isA;
-		private List<String> partOf;
-		private List<String> hasPart;
+		private Map<String, List<String>> additional = null;
 		
 		private List<Xref> xrefs;
+		
 		
 		@Override
 		public String getLabel() {
@@ -239,7 +241,6 @@ public class FreeFormTermValidatorImplTest {
 		public void setDbxrefs(List<String> dbxrefs) {
 			this.dbxrefs = dbxrefs;
 		}
-
 		
 		@Override
 		public String getComment() {
@@ -260,27 +261,7 @@ public class FreeFormTermValidatorImplTest {
 		}
 
 		@Override
-		public List<String> getPartOf() {
-			return partOf;
-		}
-
-		@SuppressWarnings("unused")
-		public void setPartOf(List<String> partOf) {
-			this.partOf = partOf;
-		}
-
-		@Override
-		public List<String> getHasPart() {
-			return hasPart;
-		}
-		
-		public void setHasPart(List<String> hasPart) {
-			this.hasPart = hasPart;
-		}
-
-		@Override
 		public List<? extends ISynonym> getISynonyms() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
@@ -297,10 +278,16 @@ public class FreeFormTermValidatorImplTest {
 		}
 
 		@Override
-		public List<String> getCapableOf() {
-			return null;
+		public Map<String, List<String>> getAdditionalRelations() {
+			return additional;
 		}
-		
+
+		public void addRelation(String rel, List<String> targets) {
+			if (additional == null) {
+				additional = new HashMap<String, List<String>>();
+			}
+			additional.put(rel, targets);
+		}
 	}
 
 }

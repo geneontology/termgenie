@@ -80,9 +80,20 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	}
 	
 	@Override
-	public boolean isEnabled() {
-		return true;
+	public JsonFreeFormConfig getConfig() {
+		JsonFreeFormConfig config = new JsonFreeFormConfig(true);
+		List<String> namespaces = validator.getOboNamespaces();
+		if (namespaces != null && !namespaces.isEmpty()) {
+			config.setOboNamespaces(namespaces.toArray(new String[namespaces.size()]));
+		}
+		List<String> relations = validator.getAdditionalRelations();
+		if (relations != null && !relations.isEmpty()) {
+			config.setAdditionalRelations(relations.toArray(new String[relations.size()]));
+		}
+		return config;
 	}
+
+
 
 	@Override
 	public boolean canView(String sessionId, HttpSession session) {
@@ -95,17 +106,6 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public String[] getAvailableNamespaces(String sessionId, HttpSession session) {
-		if (canView(sessionId, session)) {
-			List<String> namespaces = validator.getOboNamespaces();
-			if (namespaces != null && !namespaces.isEmpty()) {
-				return namespaces.toArray(new String[namespaces.size()]);
-			}
-		}
-		return null;
 	}
 
 	@Override

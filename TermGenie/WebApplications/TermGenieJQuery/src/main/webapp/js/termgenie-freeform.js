@@ -23,9 +23,8 @@ function TermGenieFreeForm(){
 	              'user.setValues',
 	              'browserid.verifyAssertion',
 	              'progress.getProgress',
-	              'freeform.isEnabled',
+	              'freeform.getConfig',
 	              'freeform.canView',
-	              'freeform.getAvailableNamespaces',
 	              'freeform.autocomplete',
 	              'freeform.validate',
 	              'freeform.submit',
@@ -48,12 +47,12 @@ function TermGenieFreeForm(){
 	function onLogin() {
 		mainMessagePanel.empty();
 		// request sessionId and then check if the free form feature is enabled
-		jsonService.freeform.isEnabled({
-			onSuccess: function(result) {
-				if (result === true) {
+		jsonService.freeform.getConfig({
+			onSuccess: function(config) {
+				if (config !== undefined && config.enabled === true) {
 					checkUserPermissions(function(hasPermission){ // on success
 						if (hasPermission === true) {
-							startFreeForm();
+							startFreeForm(config);
 						}
 						else {
 							setInsufficientUserRightsMessage(myLoginPanel.getCredentials());
@@ -102,24 +101,25 @@ function TermGenieFreeForm(){
 	/**
 	 * Start free form input.
 	 */
-	function startFreeForm() {
+	function startFreeForm(config) {
 		mainConfigurationPanel.load('TermGenieFreeFormContent.html', function() {
 			var myAccordion = MyAccordion('#accordion');
 			
 			mySession.getSessionId(function(sessionId){
-				jsonService.freeform.getAvailableNamespaces({
-					params: [sessionId],
-					onSuccess: function(oboNamespaces) {
-						getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion);
-					},
-					onException: function(e) {
-						jQuery.logSystemError('Could not retrieve OBO namespaces from server', e);
-					}
-				});	
+				getRemoteResourcesPopulateFreeForm(sessionId, config, myAccordion);
+//				jsonService.freeform.getAvailableNamespaces({
+//					params: [sessionId],
+//					onSuccess: function(oboNamespaces) {
+//						getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion);
+//					},
+//					onException: function(e) {
+//						jQuery.logSystemError('Could not retrieve OBO namespaces from server', e);
+//					}
+//				});	
 			});
 		});
 		
-		function getRemoteResourcesPopulateFreeForm(sessionId, oboNamespaces, myAccordion) {
+		function getRemoteResourcesPopulateFreeForm(sessionId, config, myAccordion) {
 			fetchRemoteResource('xref', function(xrefs) {
 				// process lines into choices
 				var choices = [];
@@ -128,13 +128,13 @@ function TermGenieFreeForm(){
 						choices.push(pair.value);
 					}
 				});
-				populateFreeFormInput(oboNamespaces, myAccordion, choices, []);
+				populateFreeFormInput(config, myAccordion, choices, []);
 			}, function(e){
 				// hidden error message
 				jQuery.logSystemError('RemoteResource service call failed',e, true);
 				
 				// render form without auto-complete for xrefs
-				populateFreeFormInput(oboNamespaces, myAccordion, [], []);
+				populateFreeFormInput(config, myAccordion, [], []);
 			});
 		};
 		
@@ -158,12 +158,15 @@ function TermGenieFreeForm(){
 		 * @param xrefChoices
 		 * @param orcids
 		 */
-		function populateFreeFormInput(oboNamespaces, myAccordion, xrefChoices, orcids) {
+		function populateFreeFormInput(config, myAccordion, xrefChoices, orcids) {
 			// label
 			var labelInput = createLabelInput();
 			
 			// namespace selector
 			var namespaceInput = null;
+			var oboNamespaces = config.oboNamespaces;
+			var additionalRelations = config.additionalRelations;
+
 			if (oboNamespaces !== undefined && oboNamespaces !== null && oboNamespaces.length > 0) {
 				namespaceInput = createNamespaceInput();
 			}
@@ -175,7 +178,7 @@ function TermGenieFreeForm(){
 			}
 			
 			// relations
-			var relationsInput = createRelationsInput();
+			var relationsInput = createRelationsInput(additionalRelations);
 			relationsInput.disable();
 			
 			// def
@@ -528,58 +531,68 @@ function TermGenieFreeForm(){
 			 * 
 			 * @returns relations object
 			 */
-			function createRelationsInput() {
+			function createRelationsInput(additionalRelations) {
 				var isaList = createIsAList();
-				var partOfList = createPartOfList();
-				var hasPartList = createHasPartList();
+				var relationLists = {};
+				var hasRelations = additionalRelations !== undefined 
+								&& additionalRelations !== null 
+								&& additionalRelations.length > 0;
 				
+				if (hasRelations) {
+					var lastRow = jQuery('#free-form-input-isa-row');
+					
+					jQuery.each(additionalRelations, function(pos, relId){
+						var containerRow = jQuery('<tr></tr>');
+						var containerTD = jQuery('<td></td>');
+						containerRow.append(jQuery('<td align="right">'+relId+'</td>'));
+						containerRow.append(containerTD);
+						containerRow.insertAfter(lastRow);
+						var relList = createRelationList(relId, containerTD);
+						relationLists[relId] = relList;
+						lastRow = containerRow;
+					});
+				}
 				return {
 					enable: function(oboNamespace) {
 						isaList.enable(oboNamespace);
-						if (partOfList !== null) {
-							partOfList.enable();
-						}
-						if (hasPartList !== null) {
-							hasPartList.enable();
-						}
+						jQuery.each(relationLists, function(relId){
+							relationLists[relId].enable();
+						});
 					},
 					disable: function() {
 						isaList.disable();
-						if (partOfList !== null) {
-							partOfList.disable();
-						}
-						if (hasPartList !== null) {
-							hasPartList.disable();
-						}
+						jQuery.each(relationLists, function(relId){
+							relationLists[relId].disable();
+						});
 					},
 					getIsA: function() {
 						return isaList.values();
 					},
-					getPartOf: function() {
-						if (partOfList === null) {
-							return null;
-						}
-						return partOfList.values();
-					},
-					getHasPart: function() {
-						if (hasPartList === null) {
-							return null;
-						}
-						return hasPartList.values();
+					getAllRelations: function() {
+						var allRelations = {};
+						jQuery.each(relationLists, function(relId){
+							var values = relationLists[relId].values();
+							allRelations[relId] = values;
+						});
+						return allRelations;
 					},
 					validate: function() {
 						var isaValidation = isaList.validate()
 						if (isaValidation !== undefined && isaValidation !== null) {
 							return isaValidation;
 						}
-						if (partOfList !== null) {
-							var partOfValidation = partOfList.validate();
-							if (partOfValidation !== undefined && partOfValidation !== null) {
-								return partOfValidation;
+						if (hasRelations) {
+							// use a for loop instead of jQuery.each for quick-fail (return)
+							// on the first validation error
+							for (var i=0;i<additionalRelations.length;i++) {
+								var relList = relationLists[additionalRelations[i]];
+								if (relList !== undefined && relList !== null) {
+									var validationError = relList.validate();
+									if (validationError !== undefined && validationError !== null) {
+										return validationError;
+									}
+								}
 							}
-						}
-						if (hasPartList !== null) {
-							return hasPartList.validate();
 						}
 						return null;
 					}
@@ -679,35 +692,16 @@ function TermGenieFreeForm(){
 				}
 				
 				/**
-				 * Create an input object for a list of partOf relations.
+				 * Create an input object for a list of classes for a given relation.
 				 * 
 				 * @returns partOf relation list object
 				 */
-				function createPartOfList() {
-					// retrieve the pre-existing DOM element
-					var globalPartOfContainer = jQuery('#free-form-input-partof-cell');
-					if (globalPartOfContainer === undefined || globalPartOfContainer === null) {
-						return null;
-					}
-					return createAutoCompleteRelationList(globalPartOfContainer);
+				function createRelationList(relId, globalContainer) {
+					return createAutoCompleteRelationList(globalContainer);
 				}
 				
 				/**
-				 * Create an input object for a list of hasPart relations.
-				 * 
-				 * @returns hasPart relation list object
-				 */
-				function createHasPartList() {
-					// retrieve the pre-existing DOM element
-					var globalHasPartContainer = jQuery('#free-form-input-haspart-cell');
-					if (globalHasPartContainer === undefined || globalHasPartContainer === null) {
-						return null;
-					}
-					return createAutoCompleteRelationList(globalHasPartContainer);
-				}
-				
-				/**
-				 * Create an input object for a list of relations.
+				 * Create an input object for a list of classes.
 				 * 
 				 * @returns relation list object
 				 */
@@ -1334,8 +1328,7 @@ function TermGenieFreeForm(){
 					definition: defInput.getDef(),
 					dbxrefs: defXrefsInput.getXrefs(),
 					isA: relationsInput.getIsA(),
-					partOf: relationsInput.getPartOf(),
-					hasPart: relationsInput.getHasPart(),
+					additionalRelations: relationsInput.getAllRelations(),
 					synonyms: synonymInput.getSynonyms(),
 					xrefs: xrefInputs.getXrefs(),
 					comment: commentInputs.getComment()

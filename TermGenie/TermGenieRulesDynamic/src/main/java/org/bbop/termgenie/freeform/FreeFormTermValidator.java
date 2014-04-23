@@ -18,6 +18,14 @@ public interface FreeFormTermValidator {
 	public List<String> getOboNamespaces();
 	
 	/**
+	 * Get the list of additional relations supported by this validator. By
+	 * default only is_a/subClassOf is supported.
+	 * 
+	 * @return list of relations
+	 */
+	public List<String> getAdditionalRelations();
+	
+	/**
 	 * Validate the given request.
 	 * 
 	 * @param request
