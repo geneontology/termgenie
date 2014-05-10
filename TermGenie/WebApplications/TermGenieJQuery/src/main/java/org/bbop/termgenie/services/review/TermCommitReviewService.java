@@ -9,12 +9,12 @@ import org.json.rpc.server.SessionAware;
 public interface TermCommitReviewService {
 
 	/**
-	 * Check if this service is enabled.
+	 * Retrieve the current service configuration. For example whether this service is enabled.
 	 * 
-	 * @return true, if this service is active
+	 * @return config
 	 */
-	public boolean isEnabled();
-
+	public JsonReviewConfig getConfig();
+	
 	/**
 	 * Check the current session, for an authenticated user and check its
 	 * permissions.

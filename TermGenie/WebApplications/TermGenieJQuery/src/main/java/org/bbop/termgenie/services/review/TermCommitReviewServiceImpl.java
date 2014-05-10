@@ -75,6 +75,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 	private final OntologyTaskManager manager;
 	private final Ontology ontology;
 	private boolean useOboDiff = true;
+	private boolean doAsciiCheck = false;
 	
 	@Inject
 	TermCommitReviewServiceImpl(InternalSessionHandler sessionHandler,
@@ -97,10 +98,18 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 	}
 	
+	@Inject(optional=true)
+	public void setDoAsciiCheck(@Named("TermCommitReviewServiceImpl.doAsciiCheck") @Nullable Boolean doAsciiCheck) {
+		this.doAsciiCheck = doAsciiCheck;
+	}
+
 	@Override
-	public boolean isEnabled() {
+	public JsonReviewConfig getConfig() {
+		JsonReviewConfig config = new JsonReviewConfig();
 		Committer reviewCommitter = stages.getReviewCommitter();
-		return reviewCommitter != null;
+		config.isEnabled = reviewCommitter != null;
+		config.useAsciiCheck = doAsciiCheck;
+		return config;
 	}
 
 	@Override

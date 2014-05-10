@@ -21,7 +21,6 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
-import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -105,18 +104,7 @@ public class TermGenieWebAppHPOContextListener extends AbstractTermGenieContextL
 	// configure module to review terms before final commit
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties) {
-
-			@Override
-			public String getModuleName() {
-				return "TermGenieHPO-TermCommitReviewServiceModule";
-			}
-			
-			@Override
-			protected void bindEnabled() {
-				bind(TermCommitReviewService.class, OboTermCommitReviewServiceImpl.class);
-			}
-		};
+		return new TermCommitReviewServiceModule(true, OboTermCommitReviewServiceImpl.class, applicationProperties);
 	}
 	
 	// Persistence: internal db for terms and id counter

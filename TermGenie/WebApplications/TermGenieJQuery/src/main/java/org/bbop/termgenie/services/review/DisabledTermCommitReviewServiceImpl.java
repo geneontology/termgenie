@@ -9,9 +9,15 @@ import org.bbop.termgenie.core.process.ProcessState;
  */
 public class DisabledTermCommitReviewServiceImpl implements TermCommitReviewService {
 
+	private final static JsonReviewConfig CONFIG;
+	static  {
+		CONFIG = new JsonReviewConfig();
+		CONFIG.isEnabled = false;
+	}
+	
 	@Override
-	public boolean isEnabled() {
-		return false;
+	public JsonReviewConfig getConfig() {
+		return CONFIG;
 	}
 
 	@Override

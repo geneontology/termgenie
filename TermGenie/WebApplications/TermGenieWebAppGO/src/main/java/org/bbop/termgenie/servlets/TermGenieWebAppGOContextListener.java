@@ -30,7 +30,6 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
-import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.user.go.GeneOntologyJsonUserDataModule;
 import org.semanticweb.owlapi.model.IRI;
@@ -117,18 +116,9 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties) {
-
-			@Override
-			public String getModuleName() {
-				return "TermGenieGO-TermCommitReviewServiceModule";
-			}
-			
-			@Override
-			protected void bindEnabled() {
-				bind(TermCommitReviewService.class, OboTermCommitReviewServiceImpl.class);
-			}
-		};
+		TermCommitReviewServiceModule module = new TermCommitReviewServiceModule(true, OboTermCommitReviewServiceImpl.class, applicationProperties);
+		module.setDoAsciiCheck(true);
+		return module;
 	}
 
 	@Override
@@ -186,6 +176,8 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		oboNamespaces.add("cellular_component");
 		String defaultOntology = "default_go";
 		List<String> additionalRelations = Arrays.asList("part_of","has_part", "capable_of", "capable_of_part_of");
-		return new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted", additionalRelations);
+		FreeFormTermServiceModule module = new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted", additionalRelations);
+		module.setDoAsciiCheck(true);
+		return module;
 	}
 }

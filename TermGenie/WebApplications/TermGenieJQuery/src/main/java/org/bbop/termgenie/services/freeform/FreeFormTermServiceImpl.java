@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -49,6 +50,8 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 	private final OntologyTaskManager targetOntology;
 	private final OntologyTermSuggestor suggestor;
 	private final InternalFreeFormCommitService commitService;
+	
+	private boolean doAsciiCheck = false;
 
 	private final String defaultSubset;
 	
@@ -79,6 +82,20 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		}
 	}
 	
+	
+	/**
+	 * @param doAsciiCheck the doAsciiCheck to set
+	 */
+	@Inject(optional=true)
+	public void setDoAsciiCheck(@Named("FreeFormDoAsciiCheck") @Nullable Boolean doAsciiCheck) {
+		if (doAsciiCheck != null) {
+			this.doAsciiCheck = doAsciiCheck.booleanValue();
+		}
+		else {
+			this.doAsciiCheck = false;
+		}
+	}
+
 	@Override
 	public JsonFreeFormConfig getConfig() {
 		JsonFreeFormConfig config = new JsonFreeFormConfig(true);
@@ -90,6 +107,7 @@ public class FreeFormTermServiceImpl implements FreeFormTermService {
 		if (relations != null && !relations.isEmpty()) {
 			config.setAdditionalRelations(relations.toArray(new String[relations.size()]));
 		}
+		config.setDoAsciiCheck(doAsciiCheck);
 		return config;
 	}
 

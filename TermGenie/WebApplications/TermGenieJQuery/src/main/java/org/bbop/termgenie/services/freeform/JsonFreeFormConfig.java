@@ -4,6 +4,7 @@ package org.bbop.termgenie.services.freeform;
 public class JsonFreeFormConfig {
 
 	boolean enabled;
+	boolean doAsciiCheck;
 	String[] oboNamespaces;
 	String[] additionalRelations;
 	
@@ -16,17 +17,19 @@ public class JsonFreeFormConfig {
 	 * @param enabled
 	 */
 	JsonFreeFormConfig(boolean enabled) {
-		this(enabled, null, null);
+		this(enabled, false, null, null);
 	}
 	
 	/**
 	 * @param enabled
+	 * @param doAsciiCheck
 	 * @param oboNamespaces
 	 * @param additionalRelations
 	 */
-	JsonFreeFormConfig(boolean enabled, String[] oboNamespaces, String[] additionalRelations) {
+	JsonFreeFormConfig(boolean enabled, boolean doAsciiCheck, String[] oboNamespaces, String[] additionalRelations) {
 		super();
 		this.enabled = enabled;
+		this.doAsciiCheck = doAsciiCheck;
 		this.oboNamespaces = oboNamespaces;
 		this.additionalRelations = additionalRelations;
 	}
@@ -71,6 +74,20 @@ public class JsonFreeFormConfig {
 	 */
 	public void setAdditionalRelations(String[] additionalRelations) {
 		this.additionalRelations = additionalRelations;
+	}
+
+	/**
+	 * @return the doAsciiCheck
+	 */
+	public boolean isDoAsciiCheck() {
+		return doAsciiCheck;
+	}
+
+	/**
+	 * @param doAsciiCheck the doAsciiCheck to set
+	 */
+	public void setDoAsciiCheck(boolean doAsciiCheck) {
+		this.doAsciiCheck = doAsciiCheck;
 	}
 	
 }

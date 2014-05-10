@@ -5,19 +5,50 @@ import java.util.Properties;
 import org.bbop.termgenie.core.ioc.IOCModule;
 
 
-public class TermCommitReviewServiceModule extends IOCModule {
+public final class TermCommitReviewServiceModule extends IOCModule {
 
 	private final boolean enabled;
+	private final Class<? extends TermCommitReviewService> enabledService;
+	
+	private boolean doAsciiCheck = false;
+	private boolean useOboDiff = true;
 	
 	/**
 	 * @param enabled
 	 * @param applicationProperties
 	 */
 	public TermCommitReviewServiceModule(boolean enabled, Properties applicationProperties) {
-		super(applicationProperties);
-		this.enabled = enabled;
+		this(enabled, TermCommitReviewServiceImpl.class, applicationProperties);
 	}
 	
+	/**
+	 * @param enabled
+	 * @param enabledService
+	 * @param applicationProperties
+	 */
+	public TermCommitReviewServiceModule(boolean enabled, 
+			Class<? extends TermCommitReviewService> enabledService,
+			Properties applicationProperties)
+	{
+		super(applicationProperties);
+		this.enabled = enabled;
+		this.enabledService = enabledService;
+	}
+	
+	/**
+	 * @param doAsciiCheck the doAsciiCheck to set
+	 */
+	public void setDoAsciiCheck(boolean doAsciiCheck) {
+		this.doAsciiCheck = doAsciiCheck;
+	}
+	
+	/**
+	 * @param useOboDiff the useOboDiff to set
+	 */
+	public void setUseOboDiff(boolean useOboDiff) {
+		this.useOboDiff = useOboDiff;
+	}
+
 	@Override
 	protected void configure() {
 		if (enabled) {
@@ -33,7 +64,9 @@ public class TermCommitReviewServiceModule extends IOCModule {
 	}
 
 	protected void bindEnabled() {
-		bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
+		bind(TermCommitReviewService.class, enabledService);
+		bind("TermCommitReviewServiceImpl.doAsciiCheck", doAsciiCheck);
+		bind("TermCommitReviewServiceImpl.useOboDiff", useOboDiff);
 	}
 	
 }

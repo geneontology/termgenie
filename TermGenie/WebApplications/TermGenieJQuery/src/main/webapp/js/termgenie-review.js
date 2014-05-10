@@ -23,7 +23,7 @@ function TermGenieReview(){
 	              'user.getValues',
 	              'user.setValues',
 	              'browserid.verifyAssertion',
-	              'review.isEnabled',
+	              'review.getConfig',
 	              'review.isAuthorized',
 	              'review.getPendingCommits',
 	              'review.commit',
@@ -47,12 +47,16 @@ function TermGenieReview(){
 	function onLogin() {
 		mainMessagePanel.empty();
 		// request sessionId and then check if the review feature is enabled
-		jsonService.review.isEnabled({
-			onSuccess: function(result) {
-				if (result === true) {
+		jsonService.review.getConfig({
+			onSuccess: function(reviewConfig) {
+				var isEnabled = false;
+				if (reviewConfig !== undefined && reviewConfig !== null) {
+					isEnabled = reviewConfig.isEnabled;
+				}
+				if (isEnabled === true) {
 					checkUserPermissions(function(hasPermission){ // on success
 						if (hasPermission === true) {
-							startLoadingReviewEntries();
+							startLoadingReviewEntries(reviewConfig);
 						}
 						else {
 							setInsufficientUserRightsMessage(myLoginPanel.getCredentials());
@@ -105,8 +109,10 @@ function TermGenieReview(){
 	
 	/**
 	 * Start loading the available review entries from server.
+	 * 
+	 * @param reviewConfig
 	 */
-	function startLoadingReviewEntries() {
+	function startLoadingReviewEntries(reviewConfig) {
 		// add busy message
 		mainReviewPanel.append(createBusyMessage('Retrieving commits from server.'));
 		// request sessionId and then try to load commits for review
@@ -117,7 +123,7 @@ function TermGenieReview(){
 					// empty the current content
 					mainReviewPanel.empty();
 					if (entries && entries.length > 0 && jQuery.isArray(entries)) {
-						createCommitReviewPanel(entries);
+						createCommitReviewPanel(entries, reviewConfig);
 					}
 					else {
 						setNoCommitsForReviewFoundMessage();
@@ -191,8 +197,9 @@ function TermGenieReview(){
 	 * Create the review panel for the given list of entries. 
 	 * 
 	 * @param entries JsonCommitReviewEntry[]
+	 * @param reviewConfig
 	 */
-	function createCommitReviewPanel(entries) {
+	function createCommitReviewPanel(entries, reviewConfig) {
 		if (entries.length > 1) {
 			mainReviewPanel.append('<div>There are '+entries.length+' pending commits to review.</div>');
 		}
@@ -294,11 +301,53 @@ function TermGenieReview(){
 								modal: true,
 								buttons: {
 									"Change": function() {
-										diff.modified = true;
-										diff.diff = editField.val();
-										preDiff.empty();
-										preDiff.append(diff.diff);
-										$( this ).dialog( "close" );
+										var errors = [];
+										var content = editField.val();
+										if (reviewConfig.useAsciiCheck === true) {
+											if (content !== undefined && content !== null) {
+												var lines = content.split("\n");
+												jQuery.each(lines, function(lineNumber, line) {
+													if (line.length > 0) {
+														for(var i=0;i<line.length;i++){
+															var c = line.charCodeAt(i);
+													        if (c >= 127 || c < 32){
+													            errors.push({
+													            	line: lineNumber,
+													            	index: i,
+													            	char: c
+													            });
+													        }
+													    }
+													}
+												});
+											}
+										}
+										if (errors.length === 0) {
+											diff.modified = true;
+											diff.diff = content;
+											preDiff.empty();
+											preDiff.append(diff.diff);
+											$( this ).dialog( "close" );
+										}
+										else {
+											var errorDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>')
+											errorDialog.append('There are non-ASCII characters. Please remove them before submitting.');
+											var errorList = jQuery('<ul></ul>');
+											errorDialog.append(errorList);
+											jQuery.each(errors, function(errorCount, errorDetails){
+												errorList.append('<li>'
+														+'Char: '+String.fromCharCode(errorDetails.char)
+														+ ' LineNumber: '+(errorDetails.line+1)
+														+ ' Position:'+(errorDetails.index+1)
+														+'</li>');
+											});
+											errorDialog.dialog({
+												title: "Error Dialog",
+												minHeight: 200,
+												minWidth: 200,
+												modal: true
+											});
+										}
 									},
 									"Cancel": function() {
 										$( this ).dialog( "close" );

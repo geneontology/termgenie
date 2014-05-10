@@ -21,8 +21,6 @@ import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
-import org.bbop.termgenie.services.review.TermCommitReviewService;
-import org.bbop.termgenie.services.review.TermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 
 public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextListener {
@@ -89,19 +87,9 @@ public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextLi
 	
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties) {
-
-			@Override
-			public String getModuleName() {
-				return "TermGenieCL-TermCommitReviewServiceModule";
-			}
-			
-			@Override
-			protected void bindEnabled() {
-				bind(TermCommitReviewService.class, TermCommitReviewServiceImpl.class);
-				bind("TermCommitReviewServiceImpl.useOboDiff", Boolean.FALSE);
-			}
-		};
+		TermCommitReviewServiceModule module = new TermCommitReviewServiceModule(true, applicationProperties);
+		module.setUseOboDiff(false);
+		return module;
 	}
 	
 	@Override

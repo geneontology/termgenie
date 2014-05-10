@@ -29,7 +29,6 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
-import org.bbop.termgenie.services.review.TermCommitReviewService;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -134,18 +133,7 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 	
 	@Override
 	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		return new TermCommitReviewServiceModule(true, applicationProperties) {
-
-			@Override
-			public String getModuleName() {
-				return "TermGenieOBA-TermCommitReviewServiceModule";
-			}
-			
-			@Override
-			protected void bindEnabled() {
-				bind(TermCommitReviewService.class, OboTermCommitReviewServiceImpl.class);
-			}
-		};
+		return new TermCommitReviewServiceModule(true, OboTermCommitReviewServiceImpl.class, applicationProperties);
 	}
 	
 
@@ -211,6 +199,8 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 		boolean addSubsetTag = false;
 		String subset = null;
 		List<String> additionalRelations = null;
-		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset, additionalRelations );
+		FreeFormTermServiceModule module = new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset, additionalRelations );
+		module.setDoAsciiCheck(false);
+		return module;
 	}
 }
