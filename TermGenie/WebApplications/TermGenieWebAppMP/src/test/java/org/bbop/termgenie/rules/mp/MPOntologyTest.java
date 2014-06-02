@@ -25,9 +25,11 @@ import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -42,13 +44,32 @@ public class MPOntologyTest {
 	@BeforeClass
 	public static void beforeClass() {
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_mp.xml", false, false, null),
-				new OntologyModule("ontology-configuration_mp.xml"),
+				new OntologyModule("ontology-configuration_mp_test.xml"),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 	
+	
+	@Test
+	public void testSyntax() throws Exception {
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
+				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
+				OWLClassExpression expression = tool.parseManchesterExpression("('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))");
+				assertNotNull(expression);
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
+	}
 	
 	@Test
 	public void test() throws Exception {
