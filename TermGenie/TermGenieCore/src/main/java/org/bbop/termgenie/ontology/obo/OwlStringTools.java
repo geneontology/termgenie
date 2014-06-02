@@ -3,6 +3,7 @@ package org.bbop.termgenie.ontology.obo;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +52,9 @@ public class OwlStringTools {
 	}
 	
 	public static Set<OWLAxiom> translateStringToAxioms(String axioms) {
+		if (axioms == null || axioms.isEmpty()) {
+			return Collections.emptySet();
+		}
 		try {
 			OWLFunctionalSyntaxOWLParser p = new OWLFunctionalSyntaxOWLParser();
 			OWLOntologyDocumentSource documentSource = new StringDocumentSource(axioms);

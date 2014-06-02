@@ -47,9 +47,13 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -222,7 +226,10 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			for (JsonOntologyTerm term : terms) {
 				List<String> relations = term.getRelations();
 				if (relations == null || relations.isEmpty()) {
-					missingRelations += 1;
+					Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getOwlAxioms());
+					if (axioms == null || axioms.isEmpty()) {
+						missingRelations += 1;
+					}
 				}
 				String label = term.getLabel();
 				labels.add(label);
@@ -474,10 +481,28 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 					if (commitObject.getType() == Modification.add) {
 						TermCommit object = commitObject.getObject();
 						Frame frame = object.getTerm();
+						Set<OWLAxiom> untranslatable = retrieveUntranslatableAxioms(object.getOwlAxioms());
 						Set<OWLAxiom> axioms = OwlTranslatorTools.generateAxioms(frame, managed.getSourceOntology());
+						if (untranslatable != null) {
+							axioms.addAll(untranslatable);
+						}
 						object.setOwlAxioms(axioms);
 					}
 				}
+			}
+		}
+		
+		private Set<OWLAxiom> retrieveUntranslatableAxioms(Set<OWLAxiom> axioms) {
+			Owl2Obo owl2Obo = new Owl2Obo();
+			owl2Obo.setDiscardUntranslatable(false);
+			try {
+				final OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+				final OWLOntology temp = m.createOntology(IRI.generateDocumentIRI());
+				m.addAxioms(temp, axioms);
+				owl2Obo.convert(temp);
+				return new HashSet<OWLAxiom>(owl2Obo.getUntranslatableAxioms());
+			} catch (OWLOntologyCreationException exception) {
+				throw new RuntimeException(exception);
 			}
 		}
 		
