@@ -60,5 +60,6 @@
 		<module>TermGenieWebAppOBATest</module>
 		<module>TermGenieWebAppCLTest</module>
 		<module>TermGenieWebAppMP</module>
+		<module>TermGenieWebAppMPTest</module>
 	</modules>
 </project>
