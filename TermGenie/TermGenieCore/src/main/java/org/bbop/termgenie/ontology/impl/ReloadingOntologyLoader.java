@@ -84,7 +84,7 @@ class ReloadingOntologyLoader extends BaseOntologyLoader implements OntologyLoad
 		try {
 			OWLGraphWrapper w = getResource(ontology);
 			return w;
-		} catch (Exception exception) {
+		} catch (Throwable exception) {
 			throw new RuntimeException(exception);
 		}
 	}

@@ -31,17 +31,19 @@ public class BaseOntologyLoader {
 	}
 
 	protected synchronized OWLGraphWrapper getResource(Ontology ontology)
-			throws Exception
+			throws Throwable
 	{
 		OWLGraphWrapper w;
 		try {
 			w = load(ontology.getSource());
-		} catch (Exception exception) {
+		} catch (Throwable exception) {
 			logger.error("Could not load ontology: "+ontology.getSource(), exception);
 			throw exception;
-		} 
+		}
+		
 		if (w == null) {
-			return null;
+			logger.error("Returned null ontology for: "+ontology.getSource());
+			throw new NullPointerException("An ontology should never be null: "+ontology.getSource());
 		}
 		final List<String> supports = ontology.getAdditionals();
 		if (supports != null) {
@@ -49,7 +51,7 @@ public class BaseOntologyLoader {
 				OWLOntology owl;
 				try {
 					owl = loadOwl(support);
-				} catch (Exception exception) {
+				} catch (Throwable exception) {
 					logger.error("Could not load support ontology: "+support, exception);
 					throw exception;
 				}
@@ -58,10 +60,14 @@ public class BaseOntologyLoader {
 					
 					try {
 						w.mergeOntology(owl);
-					} catch (Exception exception) {
+					} catch (Throwable exception) {
 						logger.error("Could not merge support ("+support+") into main ontology", exception);
 						throw exception;
 					}
+				}
+				else {
+					logger.error("Could not load support ("+support+"), loaded ontology is null");
+					throw new NullPointerException("An ontology should never be null: "+support);
 				}
 			}
 		}
