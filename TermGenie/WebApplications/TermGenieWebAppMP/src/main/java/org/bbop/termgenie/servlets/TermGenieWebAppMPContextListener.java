@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -14,6 +18,7 @@ import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
+import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -22,6 +27,7 @@ import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
+import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppMPContextListener extends AbstractTermGenieContextListener {
 	
@@ -59,10 +65,20 @@ public class TermGenieWebAppMPContextListener extends AbstractTermGenieContextLi
 		boolean loadExternal = false;
 		String catalogXML = "mp/catalog-v001.xml";
 		
+		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
+		
+		// http://purl.obolibrary.org/obo/mp.owl ->  mp/mp-edit.owl
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/mp.owl"), "mp/mp-edit.owl");
+		
+		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
+		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
+		
 		SvnAwareOntologyModule m = SvnAwareOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, svnUserName);
 		m.setSvnAwareRepositoryURL(repositoryURL);
 		m.setSvnAwareLoadExternal(loadExternal);
 		m.setSvnAwareCatalogXML(catalogXML);
+		m.setSvnAwareMappedIRIs(mappedIRIs);
+		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
 		return m;
 	}
 
