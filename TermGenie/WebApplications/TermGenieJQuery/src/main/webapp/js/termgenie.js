@@ -1819,7 +1819,12 @@ function termgenie(){
 			fieldPanels.defXRef = StringListFieldReviewPanel(tdElement, term.defXRef);
 			
 			// new header and row
-			interalLayoutTable.append('<tr class="header"><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr>')
+			if (term.relations !== undefined && term.relations !== null) {
+				interalLayoutTable.append('<tr class="header"><td>Synonyms</td><td>MetaData</td><td>Relations</td></tr>')
+			}
+			else {
+				interalLayoutTable.append('<tr class="header"><td>Synonyms</td><td>MetaData</td></tr>')
+			}
 			trElement = jQuery('<tr class="values"></tr>');
 			interalLayoutTable.append(trElement);
 			
@@ -1834,9 +1839,11 @@ function termgenie(){
 			MetaDataFieldReviewPanel(tdElement, term.metaData);
 			
 			// Relations
-			tdElement  = jQuery('<td></td>');
-			trElement.append(tdElement)
-			RelationFieldReviewPanel(tdElement, term.relations);
+			if (term.relations !== undefined && term.relations !== null) {
+				tdElement  = jQuery('<td></td>');
+				trElement.append(tdElement)
+				RelationFieldReviewPanel(tdElement, term.relations);
+			}
 			
 			// changed Relations
 			if(term.changed && term.changed.length > 0) {
