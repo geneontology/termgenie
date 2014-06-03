@@ -84,8 +84,8 @@ public class TermGenieWebAppMPContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		boolean assertInferences = false;
-		boolean useIsInferred = false;
+		boolean assertInferences = true;
+		boolean useIsInferred = true;
 		return new XMLDynamicRulesModule("termgenie_rules_mp.xml", useIsInferred, assertInferences, applicationProperties);
 	}
 
