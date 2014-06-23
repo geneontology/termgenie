@@ -17,14 +17,15 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
+import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
+import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.semanticweb.owlapi.model.IRI;
@@ -164,12 +165,15 @@ public class TermGenieWebAppMPContextListener extends AbstractTermGenieContextLi
 		};
 	}
 	
-//	@Override
-//	protected IOCModule getFreeFormTermModule() {
-//		List<String> oboNamespaces = null;
-//		String defaultOntology = "default_mp";
-//		boolean addSubsetTag = false;
-//		String subset = null;
-//		return new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset);
-//	}
+	@Override
+	protected IOCModule getFreeFormTermModule() {
+		List<String> oboNamespaces = null;
+		String defaultOntology = "default_mp";
+		boolean addSubsetTag = false;
+		String subset = null;
+		List<String> additionalRelations = null;
+		FreeFormTermServiceModule module = new FreeFormTermServiceModule(applicationProperties, addSubsetTag , defaultOntology, oboNamespaces, subset, additionalRelations );
+		module.setDoAsciiCheck(false);
+		return module;
+	}
 }
