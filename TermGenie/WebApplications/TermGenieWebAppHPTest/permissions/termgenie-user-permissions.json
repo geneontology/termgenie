@@ -1,0 +1,8 @@
+{
+	guid: {
+		"termgenie-hp": "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
+	},
+	"hdietze@lbl.gov": {
+		"termgenie-hp": "(HP, allowWrite, true), (HP, allowCommitReview, true), (HP, allowFreeForm, true), (HP, allowFreeFormWrite, true), (termgenie-hp, allowManagement, true)"
+	}
+}
