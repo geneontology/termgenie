@@ -7,7 +7,7 @@
 		<obonamespace>MPheno.ontology</obonamespace>
 		<fields>
 			<field name="entity" required="true">
-				<ontology name="CL">
+				<ontology name="MP">
 					<branch>entities</branch>
 				</ontology>
 			</field>
