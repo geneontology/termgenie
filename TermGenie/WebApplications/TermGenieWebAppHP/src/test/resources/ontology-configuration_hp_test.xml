@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="HP" longName="Human Phenotype Ontology">
+		<source>http://purl.obolibrary.org/obo/hp/hp-edit.owl</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/go.owl</support>
+			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
+			<support>http://purl.obolibrary.org/obo/cl.owl</support>
+			<support>http://purl.obolibrary.org/obo/pato.owl</support>
+		</supports>
+		<roots>
+			<root>HP:0000001</root>		<!-- All human phenotypes -->
+			<root>GO:0005575</root>		<!-- cellular_component -->
+			<root>CL:0000003</root> 	<!-- native cell -->
+			<root>UBERON:0001062</root> <!-- anatomical entity -->
+		</roots>
+		<ontologybranch name="entities">
+			<roots>
+				<root>GO:0005575</root> <!-- cellular_component -->
+				<root>CL:0000003</root> <!-- native cell -->
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="default_hp">
+			<roots>
+				<root>HP:0000001</root> <!-- All human phenotypes -->
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>

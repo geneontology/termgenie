@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
+
+	<template name="abnormal_morphology">
+		<description>Template for abormal phenotypes for entities from UBERON, CL, and GO-CC subset</description>
+		<obonamespace>human_phenotype</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="HP">
+					<branch>entities</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/hp/abnormal_morphology.js</ruleFile>
+		</ruleFiles>
+	</template>
+
+</termgenietemplates>
