@@ -10,7 +10,7 @@
 			<support>http://purl.obolibrary.org/obo/pato.owl</support>
 		</supports>
 		<roots>
-			<root>HP:0000001</root>		<!-- All human phenotypes -->
+			<root>HP:0000118</root>		<!-- Phenotypic abnormality -->
 			<root>GO:0005575</root>		<!-- cellular_component -->
 			<root>CL:0000003</root> 	<!-- native cell -->
 			<root>UBERON:0001062</root> <!-- anatomical entity -->
@@ -24,7 +24,7 @@
 		</ontologybranch>
 		<ontologybranch name="default_hp">
 			<roots>
-				<root>HP:0000001</root> <!-- All human phenotypes -->
+				<root>HP:0000118</root> <!-- Phenotypic abnormality -->
 			</roots>
 		</ontologybranch>
 	</ontology>

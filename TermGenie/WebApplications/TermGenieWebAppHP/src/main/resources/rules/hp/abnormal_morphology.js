@@ -2,7 +2,7 @@
 
 function abnormal_morphology() {
   var e = getSingleTerm("entity", HP);
-  var label = "abnormal " + termname(e, HP) + " morphology";
+  var label = "Abnormal " + termname(e, HP) + " morphology";
   var definition = "Any structural anomaly of " + refname(e, HP) + ".";
   var synonyms = null;
   // ('has part' some (pato:morphology and 'inheres in' some E and qualifier some abnormal))
