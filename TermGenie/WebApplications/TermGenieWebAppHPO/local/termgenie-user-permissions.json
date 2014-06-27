@@ -1,8 +1,0 @@
-{
-	"hdietze@lbl.gov": {
-		"termgenie-hpo": "(HumanPhenotype, allowWrite, true), (HumanPhenotype, allowCommitReview, true), (termgenie-hpo, allowManagement, true)"
-	},
-	"cjmungall@lbl.gov": {
-		"termgenie-hpo": "(HumanPhenotype, allowWrite, true), (HumanPhenotype, allowCommitReview, true), (termgenie-hpo, allowManagement, true)"
-	}
-}
