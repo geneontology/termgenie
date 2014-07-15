@@ -8,41 +8,19 @@
 		<version>1.2.5-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieWebAppHPTest</artifactId>
-	<packaging>war</packaging>
 
-	<name>TermGenieWebAppMPTest</name>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<dependentWarExcludes>WEB-INF/web.xml</dependentWarExcludes>   
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<name>TermGenieWebAppHPTest</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieWebAppHP</artifactId>
 			<version>${project.parent.version}</version>
-			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieWebAppHP</artifactId>
+			<artifactId>TermGenieWebAppTestStartup</artifactId>
 			<version>${project.parent.version}</version>
-			<classifier>classes</classifier>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bbop.termgenie</groupId>
-			<artifactId>TermGenieJQuery</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>classes</classifier>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

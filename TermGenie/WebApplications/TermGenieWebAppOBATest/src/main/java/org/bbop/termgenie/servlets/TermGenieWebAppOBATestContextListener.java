@@ -15,11 +15,24 @@ import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsD
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
+import org.bbop.termgenie.startup.JettyTestStartup;
 import org.semanticweb.owlapi.model.IRI;
 
 
 public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBAContextListener {
 
+	/**
+	 * This main will use an embedded jetty to start this TG instance.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int port = 8080;
+		String contextPath = "/termgenie-oba";
+		String webappPath = "work/ant-webapp";
+		JettyTestStartup.startup(port, contextPath, webappPath);
+	}
+	
 	private final String localSVNFolder;
 	private final Map<IRI, String> mappedIRIs;
 	private final String catalogXML;
@@ -85,7 +98,7 @@ public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBACon
 	protected PersistenceBasicModule getBasicPersistenceModule() {
 		try {
 			// basic persistence
-			File dbFolder = new File("./work/termgenie-oba-db").getAbsoluteFile();
+			File dbFolder = new File("./work/termgenie-oba-db").getCanonicalFile();
 			Logger.getLogger(getClass()).info("Setting db folder to: "+dbFolder.getAbsolutePath());
 			FileUtils.forceMkdir(dbFolder);
 			return new PersistenceBasicModule(dbFolder, applicationProperties);

@@ -49,6 +49,7 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
 	<modules>
 		<module>TermGenieJQuery</module>
 		<module>TermGenieWebAppGO</module>
@@ -62,5 +63,6 @@
 		<module>TermGenieWebAppMPTest</module>
 		<module>TermGenieWebAppHP</module>
 		<module>TermGenieWebAppHPTest</module>
+		<module>TermGenieWebAppTestStartup</module>
 	</modules>
 </project>

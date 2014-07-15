@@ -10,9 +10,22 @@ import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
+import org.bbop.termgenie.startup.JettyTestStartup;
 
 
 public class TermGenieWebAppHPTestContextListener extends TermGenieWebAppHPContextListener {
+	
+	/**
+	 * This main will use an embedded jetty to start this TG instance.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int port = 8080;
+		String contextPath = "/termgenie-hp";
+		String webappPath = "work/ant-webapp";
+		JettyTestStartup.startup(port, contextPath, webappPath);
+	}
 	
 	private final String localSVNFolder;
 	private final String catalogXML = "catalog-v001.xml";
