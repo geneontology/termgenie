@@ -54,8 +54,48 @@ import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.obolibrary.oboformat.parser.OBOFormatParserException;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLAsymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLAxiomVisitorEx;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLDatatypeDefinitionAxiom;
+import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
+import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointDataPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointObjectPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLEquivalentDataPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLEquivalentObjectPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLFunctionalDataPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLHasKeyAxiom;
+import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLInverseObjectPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLIrreflexiveObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLNegativeDataPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLNegativeObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
+import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubPropertyChainOfAxiom;
+import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.SWRLRule;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.io.ParserWrapper.OboAndOwlNameProvider;
@@ -469,7 +509,216 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonDiff.getOwlAxioms());
 			if (jsonDiff.isObsolete()) {
 				IRI classIRI = OwlTools.translateFrameIdToClassIRI(jsonDiff.getId());
+				// remove all relation and equivalent class axioms
+				Iterator<OWLAxiom> it = axioms.iterator();
+				while (it.hasNext()) {
+					OWLAxiom ax = it.next();
+					Boolean remove = ax.accept(new OWLAxiomVisitorEx<Boolean>() {
+
+						@Override
+						public Boolean visit(OWLSubAnnotationPropertyOfAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLAnnotationPropertyDomainAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLAnnotationPropertyRangeAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLSubClassOfAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLNegativeObjectPropertyAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLAsymmetricObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLReflexiveObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDisjointClassesAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLDataPropertyDomainAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLObjectPropertyDomainAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLEquivalentObjectPropertiesAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLNegativeDataPropertyAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDifferentIndividualsAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDisjointDataPropertiesAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDisjointObjectPropertiesAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLObjectPropertyRangeAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLObjectPropertyAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLFunctionalObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLSubObjectPropertyOfAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLDisjointUnionAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLDeclarationAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLAnnotationAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLSymmetricObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDataPropertyRangeAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLFunctionalDataPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLEquivalentDataPropertiesAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLClassAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLEquivalentClassesAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLDataPropertyAssertionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLTransitiveObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLIrreflexiveObjectPropertyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLSubDataPropertyOfAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLInverseFunctionalObjectPropertyAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLSameIndividualAxiom axiom) {
+							return Boolean.TRUE;
+						}
+
+						@Override
+						public Boolean visit(OWLSubPropertyChainOfAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLInverseObjectPropertiesAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLHasKeyAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(OWLDatatypeDefinitionAxiom axiom) {
+							return null;
+						}
+
+						@Override
+						public Boolean visit(SWRLRule rule) {
+							return null;
+						}
+						
+					});
+					if (remove != null && remove.booleanValue() == true) {
+						it.remove();
+					}
+					
+				}
+				// add obsolete annotation
 				OwlTools.addObsoleteAxiom(axioms, classIRI);
+				
 			}
 			return axioms;
 		}
