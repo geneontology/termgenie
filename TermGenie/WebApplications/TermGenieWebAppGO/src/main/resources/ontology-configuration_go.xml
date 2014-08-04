@@ -9,6 +9,7 @@
 			<support>http://purl.obolibrary.org/obo/cl-basic.owl</support>
 			<support>http://purl.obolibrary.org/obo/po.owl</support>
 			<support>http://purl.obolibrary.org/obo/pato.owl</support>
+			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
 		</supports>
 		<roots>
 			<root>GO:0008150</root>
@@ -17,6 +18,7 @@
 			<root>CHEBI:24431</root>
 			<root>CL:0000003</root> <!-- native cell -->
 			<root>PO:0025131</root> <!-- plant anatomical entity -->
+			<root>UBERON:0001062</root> <!-- anatomical entity -->
 		</roots>
 		<ontologybranch name="biological_process">
 			<roots>
@@ -58,6 +60,11 @@
 		<ontologybranch name="Plant">
 			<roots>
 				<root>PO:0025131</root> <!-- plant anatomical entity -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="uberon">
+			<roots>
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
 			</roots>
 		</ontologybranch>
 	</ontology>

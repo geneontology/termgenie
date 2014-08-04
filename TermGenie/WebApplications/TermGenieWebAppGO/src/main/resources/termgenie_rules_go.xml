@@ -1118,19 +1118,19 @@ generated automatically</description>
 			<category>metabolic</category>
 		</categories>
 	</template>
-	<!-- 
 	<template name="metazoan_development">
-		<description>development of an animal anatomical structure</description>
+		<description>Development of an animal (metazoan) anatomical structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000094</definition-xref>
 		<fields>
 			<field name="target" required="true">
-				<ontology name="Uberon" />
+				<ontology>
+					<branch>uberon</branch>
+				</ontology>
 			</field>
 			<field name="Literature_Refs" required="true" >
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -1140,7 +1140,6 @@ generated automatically</description>
 			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
 		</ruleFiles>
 	</template>
-	-->
 	<!--
 	<template name="metazoan_morphogenesis">
 		<description>morphogenesis of an animal anatomical structure</description>
