@@ -860,13 +860,13 @@ generated automatically</description>
 		</categories>
 	</template>
 	<template name="cell_differentiation">
-		<description>Differentiation process for a cell type</description>
+		<description>Differentiation process for a cell type (CL), including plant cells (PO).</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000086</definition-xref>
 		<fields>
 			<field name="celltype" required="true">
 				<ontology name="GeneOntology">
-					<branch>cell</branch>
+					<branch>cell_including_plant</branch>
 				</ontology>
 			</field>
 			<field name="Literature_Refs" required="true" >
@@ -882,6 +882,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Cell Type Ontology (CL)</category>
+			<category>Plant Ontology</category>
 		</categories>
 	</template>
 	<template name="cell_migration">
@@ -1139,6 +1140,10 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>Uberon</category>
+			<category>development</category>
+		</categories>
 	</template>
 	<!--
 	<template name="metazoan_morphogenesis">

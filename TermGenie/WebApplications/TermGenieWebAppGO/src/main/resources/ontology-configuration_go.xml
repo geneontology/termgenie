@@ -62,6 +62,12 @@
 				<root>PO:0025131</root> <!-- plant anatomical entity -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="cell_including_plant">
+			<roots>
+				<root>CL:0000003</root> <!-- native cell -->
+				<root>PO:0009002</root> <!-- plant cell -->
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="uberon">
 			<roots>
 				<root>UBERON:0001062</root> <!-- anatomical entity -->
