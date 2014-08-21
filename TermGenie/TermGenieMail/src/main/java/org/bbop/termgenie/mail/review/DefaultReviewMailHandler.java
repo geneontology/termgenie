@@ -47,8 +47,9 @@ public class DefaultReviewMailHandler implements ReviewMailHandler {
 
 	@Override
 	public void handleReviewMail(CommitHistoryItem item, NameProvider nameProvider) {
-		List<CommitedOntologyTerm> terms = item.getTerms();
-		StringBuilder body = new StringBuilder();
+		final List<CommitedOntologyTerm> terms = item.getTerms();
+		final String commitMessage = item.getCommitMessage();
+		final StringBuilder body = new StringBuilder();
 		final String init;
 		final String subject;
 		
@@ -92,8 +93,15 @@ public class DefaultReviewMailHandler implements ReviewMailHandler {
 		body.append(init);
 		
 		appendTerms(nameProvider, terms, body);
-		final String email = item.getEmail();
 
+		if (commitMessage != null) {
+			body.append('\n').append('\n');
+			body.append("Commit Message:\n");
+			body.append(commitMessage);
+		}
+
+		final String email = item.getEmail();
+		
 		try {
 			mailHandler.sendEmail(subject, body.toString(), fromAddress, fromName, email);
 			logger.info("Sent e-mail to user: "+email);
