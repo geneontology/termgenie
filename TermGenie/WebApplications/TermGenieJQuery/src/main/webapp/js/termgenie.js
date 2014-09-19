@@ -443,37 +443,58 @@ function termgenie(){
 		function TemplateTreeWidget(templates) {
 			// create template tree from the categories in the templates
 			// create a tree in memory
-			var templateTreeDataStructure = {};
+			var templateTreeDataStructure = {
+					children: {}
+			};
 			jQuery.each(templates, function(intIndex, objValue) {
 				var templateName = getTemplateName(objValue);
 				if (objValue.categories && objValue.categories !== null) {
 					jQuery.each(objValue.categories, function(catIndex, category) {
-						if (category === 'root') {
-							templateTreeDataStructure[category] = {
-								type: 'template',
-								label: templateName,
-								template: objValue 
-							}
-						}
-						else {
-							var node = templateTreeDataStructure[category];
-							if (node === undefined) {
-								node = {
-									type: 'meta',
-									label : category,
-									children: []
-								};
-								templateTreeDataStructure[category] = node;
-							}
-							node.children.push({
-								type: 'template',
-								label: templateName,
-								template: objValue 
-							});
-						}
+						handleCategory(category, templateName, objValue, templateTreeDataStructure);
 					});
 				}
 			});
+			
+			function handleCategory(category, templateName, templateObj, templateTree) {
+				if (category === null) {
+					// leaf node
+					templateTree.children[templateName] = {
+						type: 'template',
+						label: templateName,
+						template: templateObj 
+					};
+				}
+				else {
+					var currentCategory;
+					var trailingCategory;
+					
+					// check whether the category contains a slash as path separator
+					var slashPos = category.indexOf('/');
+					if (slashPos < 0) {
+						// no slash
+						currentCategory = category;
+						trailingCategory = null;
+					}
+					else {
+						// has a slash
+						currentCategory = category.substring(0, slashPos);
+						trailingCategory = category.substr(slashPos+1);
+					}
+					
+					// create node if necessary
+					var node = templateTree.children[currentCategory];
+					if (node === undefined) {
+						node = {
+							type: 'meta',
+							label : currentCategory,
+							children: {}
+						};
+						templateTree.children[currentCategory] = node;
+					}
+					// recursion
+					handleCategory(trailingCategory, templateName, templateObj, node);
+				}
+			}
 			
 			// render nodes of the tree as un-ordered list
 			// this list, will be later converted into a tree
@@ -483,7 +504,7 @@ function termgenie(){
 				if (node.type === 'meta') {
 					currentElem.attr('rel', 'meta');
 					currentElem.attr('class', 'termgenie-select-template-tree-node');
-					if (node.children && node.children.length !== 0) {
+					if (node.children) {
 						var childrenParent = jQuery('<ul></ul>');
 						jQuery.each(node.children, function(intIndex, childNode) {
 							renderNode(childNode, childrenParent);
@@ -509,7 +530,7 @@ function termgenie(){
 			}
 			
 			var templateTreeContent = jQuery('<ul></ul>');
-			jQuery.each(templateTreeDataStructure, function(intIndex, node) {
+			jQuery.each(templateTreeDataStructure.children, function(intIndex, node) {
 				renderNode(node, templateTreeContent);
 			});
 			var templateTreeDiv = jQuery('<div class="termgenie-select-template-tree"></div>');
