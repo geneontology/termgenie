@@ -31,7 +31,7 @@
 			<ruleFile>rules/go/all_regulation.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>regulation</category>
+			<category>Processes/Regulation</category>
 		</categories>
 	</template>
 	<template name="all_regulation_mf" displayname="regulation: molecular_function">
@@ -64,7 +64,7 @@
 			<ruleFile>rules/go/all_regulation_mf.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>regulation</category>
+			<category>Processes/Regulation</category>
 		</categories>
 	</template>
 	<template name="involved_in">
@@ -99,7 +99,8 @@
 			<ruleFile>rules/go/involved_in.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>processes</category>
+			<category>Processes</category>
+            <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
 	<template name="involved_in_mf_bp">
@@ -130,8 +131,8 @@
 			<ruleFile>rules/go/involved_in_mf_bp.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>molecular_function</category>
-			<category>processes</category>
+			<category>Molecular Function</category>
+            <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
 	<template name="occurs_in">
@@ -161,7 +162,8 @@
 			<ruleFile>rules/go/occurs_in.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>processes</category>
+			<category>Processes</category>
+            <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
 	<template name="regulation_by">
@@ -197,7 +199,8 @@
 			<ruleFile>rules/go/regulation_by.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>regulation</category>
+			<category>Processes/Regulation</category>
+            <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
 
@@ -229,7 +232,8 @@
 			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>cellular_component</category>
+			<category>Terms involving things/Cellular components</category>
+            <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
 	<!-- 
@@ -275,8 +279,9 @@
 			<ruleFile>rules/go/chebi/chemical_transport.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_transporter_activity">
@@ -301,8 +306,9 @@
 			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_binding">
@@ -327,8 +333,9 @@
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>molecular_function</category>
-			<category>chemicals</category>
+			<category>Molecular Function</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="metabolism_catabolism_biosynthesis">
@@ -360,8 +367,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/metabolism_catabolism_biosynthesis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>metabolic</category>
-			<category>chemicals</category>
+			<category>Processes/Metabolism</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_bp" displayname="chemical_transmembrane_transport">
@@ -386,8 +394,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/transmembrane_transport_bp.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport/Transmembrane</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_transmembrane_transport_mf" displayname="chemical_transmembrane_transporter_activity">
@@ -420,8 +429,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport/Transmembrane</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_response_to">
@@ -450,7 +460,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_response_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+            <category>Terms involving things/ChEBI</category>
+            <category>Processes</category>
 		</categories>
 	</template>
 	<template name="chemical_homeostasis">
@@ -479,7 +491,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_homeostasis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+            <category>Terms involving things/ChEBI</category>
+            <category>Processes</category>
 		</categories>
 	</template>
 	<template name="chemical_import">
@@ -504,8 +518,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_import.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport/Import</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+            <category>Terms involving things/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_export">
@@ -530,8 +545,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_export.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>chemicals</category>
+			<category>Processes/Transport</category>
+            <category>Terms involving things/ChEBI</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_import_into">
@@ -561,9 +577,9 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
-			<category>cellular_component</category>
-			<category>transport</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Terms involving things/Cellular components</category>
+			<category>Processes/Transport/Import</category>
 		</categories>
 	</template>
 	<template name="cc_transport_from_to">
@@ -597,8 +613,8 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_transport_from_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>cellular_component</category>
+			<category>Processes/Transport</category>
+			<category>Terms involving things/Cellular components</category>
 		</categories>
 	</template>
 	<template name="cc_transport">
@@ -627,8 +643,8 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_transport.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>cellular_component</category>
+			<category>Processes/Transport</category>
+			<category>Terms involving things/Cellular components</category>
 		</categories>
 	</template>
 	<template name="chemical_transport_from_to">
@@ -667,9 +683,10 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_transport_from_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>transport</category>
-			<category>cellular_component</category>
-			<category>chemicals</category>
+			<category>Processes/Transport</category>
+			<category>Terms involving things/Cellular components</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+            <category>Terms involving things/ChEBI</category>
 		</categories>
 	</template>
 	<template name="cc_assembly_disassembly">
@@ -698,9 +715,8 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_assembly_disassembly.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>cellular_component</category>
-			<category>assembly</category>
-			<category>disassembly</category>
+			<category>Terms involving things/Cellular components</category>
+			<category>Processes</category>
 		</categories>
 	</template>
 	<template name="plant_development">
@@ -725,8 +741,8 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_development.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Plant Ontology</category>
-			<category>development</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="plant_formation">
@@ -751,8 +767,8 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_formation.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Plant Ontology</category>
-			<category>formation</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="plant_maturation">
@@ -777,8 +793,8 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_maturation.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Plant Ontology</category>
-			<category>maturation</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="plant_morphogenesis">
@@ -803,8 +819,8 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_morphogenesis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Plant Ontology</category>
-			<category>morphogenesis</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="plant_structural_organization">
@@ -829,8 +845,8 @@ generated automatically</description>
 			<ruleFile>rules/go/plant/plant_structural_organization.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Plant Ontology</category>
-			<category>structural organization</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="cell_apoptosis" displayname="cell_apoptotic_process">
@@ -855,8 +871,8 @@ generated automatically</description>
 			<ruleFile>rules/go/cl/cell_apoptosis.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Cell Type Ontology (CL)</category>
-			<category>apoptosis</category>
+			<category>Linked Ontologies/GO to external ontology/Cell Type Ontology (CL)</category>
+			<category>Processes/Apoptosis</category>
 		</categories>
 	</template>
 	<template name="cell_differentiation">
@@ -881,8 +897,9 @@ generated automatically</description>
 			<ruleFile>rules/go/cl/cell_differentiation.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Cell Type Ontology (CL)</category>
-			<category>Plant Ontology</category>
+			<category>Linked Ontologies/GO to external ontology/Cell Type Ontology (CL)</category>
+			<category>Linked Ontologies/GO to external ontology/Plant Ontology</category>
+            <category>Processes/Development</category>
 		</categories>
 	</template>
 	<template name="cell_migration">
@@ -907,7 +924,8 @@ generated automatically</description>
 			<ruleFile>rules/go/cl/cell_migration.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Cell Type Ontology (CL)</category>
+			<category>Linked Ontologies/GO to external ontology/Cell Type Ontology (CL)</category>
+            <category>Processes</category>
 		</categories>
 	</template>
 	<template name="protein_localization_to">
@@ -936,8 +954,7 @@ generated automatically</description>
 			<ruleFile>rules/go/protein_localization_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>biological_process</category>
-			<category>localization</category>
+			<category>Processes/Transport</category>
 		</categories>
 	</template>
 	<template name="protein_complex_by_activity">
@@ -962,8 +979,8 @@ generated automatically</description>
 			<ruleFile>rules/go/protein_complex_by_activity.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>cellular_component</category>
-			<category>protein complex</category>
+			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving things/Protein complexes</category>
 		</categories>
 	</template>
 	<template name="single_multi_organism_process">
@@ -992,7 +1009,7 @@ generated automatically</description>
 			<ruleFile>rules/go/single_multi_organism_process.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>single-multi-organism</category>
+			<category>Processes</category>
 		</categories>
 	</template>
 	<template name="biosynthesis_from">
@@ -1022,8 +1039,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/biosynthesis_from.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
-			<category>metabolic</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Processes/Metabolism</category>
 		</categories>
 	</template>
 	<template name="biosynthesis_via">
@@ -1053,8 +1070,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/biosynthesis_via.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
-			<category>metabolic</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Processes/Metabolism</category>
 		</categories>
 	</template>
 	<template name="catabolism_to">
@@ -1084,8 +1101,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/catabolism_to.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
-			<category>metabolic</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Processes/Metabolism</category>
 		</categories>
 	</template>
 	<template name="catabolism_via">
@@ -1115,8 +1132,8 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/catabolism_via.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>chemicals</category>
-			<category>metabolic</category>
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Processes/Metabolism</category>
 		</categories>
 	</template>
 	<template name="metazoan_development">
@@ -1141,8 +1158,8 @@ generated automatically</description>
 			<ruleFile>rules/go/uberon/metazoan_development.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Uberon</category>
-			<category>development</category>
+			<category>Linked Ontologies/GO to external ontology/Uberon</category>
+			<category>Processes/Development</category>
 		</categories>
 	</template>
 	<!--
