@@ -233,8 +233,7 @@ function termgenie(){
 	 */
 	function createTemplateSelector(ontology) {
 		// create general layout
-		var termselect = c_div('div-template-selector', 
-				c_span('select-template-header','Select Template'))+
+		var termselect = c_div('div-template-selector', '')+
 				c_div('div-all-template-parameters','');
 		
 		// get intented dom element
@@ -381,37 +380,48 @@ function termgenie(){
 	 */
 	function createTemplateSelectorMenu(ontology, templates) {
 		var parent = jQuery('#div-template-selector');
+		var renderTreeOnly = templates.length > 15;
 		
-		// create layout
-		parent.append('<select id="select-add-template-select"></select>'+
-				c_button('button-add-template-select', 'Add template')+
-				c_button('button-view-templates-in-tree', 'View in Tree'));
+		if (renderTreeOnly === false) {
 		
-		// select dom element
-		var domElement = jQuery('#select-add-template-select');
+			// create layout
+			parent.append('<span class="select-template-header">Select Template</span>'
+					+'<select id="select-add-template-select"></select>'+
+					c_button('button-add-template-select', 'Add template')+
+					c_button('button-view-templates-in-tree', 'View in Tree'));
+		
+			// select dom element
+			var domElement = jQuery('#select-add-template-select');
+	
+			// foreach template create a menu entry, use index for retrieval
+			jQuery.each(templates, function(intIndex, objValue) {
+				var templateName = getTemplateName(objValue);
+				var option = jQuery('<option />');
+				option.text(templateName);
+				option.val(intIndex);
+				domElement.append(option);
+			});
+			
+			// make it a nice combo box, including an additional description of the template
+			domElement.extendedcombobox({
+				minWidth: 450,
+				minHeight: 250,
+				createInfoDiv: function() {
+					return '<div class="term-description-content"></div>';
+				},
+				createInfoDivContent: function(item) {
+					var template = templates[item.value];
+					return renderTemplateDesc(template);
+				}
+			});
+			
+			// click handler for adding a selected template
+			jQuery('#button-add-template-select').click(function (){
+				var intIndex = jQuery('#select-add-template-select').val();
+				termTemplateWidgetList.addTemplate(templates[intIndex]);
+			});
+		}
 
-		// foreach template create a menu entry, use index for retrieval
-		jQuery.each(templates, function(intIndex, objValue) {
-			var templateName = getTemplateName(objValue);
-			var option = jQuery('<option />');
-			option.text(templateName);
-			option.val(intIndex);
-			domElement.append(option);
-		});
-		
-		// make it a nice combo box, including an additional description of the template
-		domElement.extendedcombobox({
-			minWidth: 450,
-			minHeight: 250,
-			createInfoDiv: function() {
-				return '<div class="term-description-content"></div>';
-			},
-			createInfoDivContent: function(item) {
-				var template = templates[item.value];
-				return renderTemplateDesc(template);
-			}
-		});
-		
 		function renderTemplateDesc(template, styleClass) {
 			var layout;
 			if (!styleClass) {
@@ -433,12 +443,6 @@ function termgenie(){
 			layout += '</table>';
 			return layout;
 		}
-		
-		// click handler for adding a selected template
-		jQuery('#button-add-template-select').click(function (){
-			var intIndex = jQuery('#select-add-template-select').val();
-			termTemplateWidgetList.addTemplate(templates[intIndex]);
-		});
 		
 		function TemplateTreeWidget(templates) {
 			// create template tree from the categories in the templates
@@ -602,6 +606,7 @@ function termgenie(){
 					var treeClearSearchButton = jQuery('<button type="button" >Clear</button>');
 					treeClearSearchButton.click(function(){
 						templateTreeDiv.jstree('clear_search');
+						treeSearchInputField.val('');
 					});
 					
 					var treeSearchDiv = jQuery('<div></div>');
@@ -619,36 +624,53 @@ function termgenie(){
 		
 		var templateTreeWidgetInstance = new TemplateTreeWidget(templates);
 		
-		// create dialog
-		var templateTreeDialog = jQuery('<div title="Available TermGenieTemplates"></div>');
-		templateTreeWidgetInstance.appendTo(templateTreeDialog);
-		templateTreeDialog.dialog({
-			autoOpen: false,
-			minWidth: 500,
-			minHeight: 450,
-			modal: true,
-			buttons: {
-				"Add template": function() {
-					var currentSelection = templateTreeWidgetInstance.getSelected();
-					if (currentSelection !== null) {
-						
-						// add the current selection from the tree
-						termTemplateWidgetList.addTemplate(currentSelection);
-						
-						// only exit dialog, if the there was a selection
+		if (renderTreeOnly === false) {
+			// create dialog
+			var templateTreeDialog = jQuery('<div title="Available TermGenieTemplates"></div>');
+			templateTreeWidgetInstance.appendTo(templateTreeDialog);
+			templateTreeDialog.dialog({
+				autoOpen: false,
+				minWidth: 500,
+				minHeight: 450,
+				modal: true,
+				buttons: {
+					"Add template": function() {
+						var currentSelection = templateTreeWidgetInstance.getSelected();
+						if (currentSelection !== null) {
+							
+							// add the current selection from the tree
+							termTemplateWidgetList.addTemplate(currentSelection);
+							
+							// only exit dialog, if the there was a selection
+							$(this).dialog( "close" );
+						}
+					},
+					Cancel: function() {
 						$(this).dialog( "close" );
 					}
-				},
-				Cancel: function() {
-					$(this).dialog( "close" );
 				}
-			}
-		});
-		
-		// click handler for 'view in tree' button
-		jQuery('#button-view-templates-in-tree').click(function (){
-			templateTreeDialog.dialog( "open" );
-		});
+			});
+			
+			// click handler for 'view in tree' button
+			jQuery('#button-view-templates-in-tree').click(function (){
+				templateTreeDialog.dialog( "open" );
+			});
+		}
+		else {
+			// create a tree only selection
+			var templateTreeDiv = jQuery('<div></div>');
+			templateTreeWidgetInstance.appendTo(templateTreeDiv);
+			var treeAddButton = jQuery('<button type="button" style="margin-top:10px;margin-left:2px">Add template</button>');
+			treeAddButton.click(function (){
+				var currentSelection = templateTreeWidgetInstance.getSelected();
+				if (currentSelection !== null) {
+					// add the current selection from the tree
+					termTemplateWidgetList.addTemplate(currentSelection);
+				}
+			});
+			treeAddButton.appendTo(templateTreeDiv);
+			parent.append(templateTreeDiv);
+		}
 	}
 	
 	/**
