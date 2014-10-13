@@ -232,7 +232,7 @@
 			<ruleFile>rules/go/part_of_cell_component.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
             <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
@@ -280,7 +280,7 @@
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -307,7 +307,7 @@
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -334,7 +334,7 @@
 		</ruleFiles>
 		<categories>
 			<category>Molecular Function</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -368,7 +368,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Metabolism</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -395,7 +395,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport/Transmembrane</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -430,7 +430,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport/Transmembrane</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -461,7 +461,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
             <category>Processes</category>
 		</categories>
 	</template>
@@ -492,7 +492,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
             <category>Processes</category>
 		</categories>
 	</template>
@@ -520,7 +520,7 @@ generated automatically</description>
 		<categories>
 			<category>Processes/Transport/Import</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 		</categories>
 	</template>
 	<template name="chemical_export">
@@ -546,7 +546,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
 	</template>
@@ -578,7 +578,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Processes/Transport/Import</category>
 		</categories>
 	</template>
@@ -614,7 +614,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
 		</categories>
 	</template>
 	<template name="cc_transport">
@@ -644,7 +644,7 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
 		</categories>
 	</template>
 	<template name="chemical_transport_from_to">
@@ -684,9 +684,9 @@ generated automatically</description>
 		</ruleFiles>
 		<categories>
 			<category>Processes/Transport</category>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
-            <category>Terms involving things/ChEBI</category>
+            <category>Terms involving chemicals or components/ChEBI</category>
 		</categories>
 	</template>
 	<template name="cc_assembly_disassembly">
@@ -715,7 +715,7 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_assembly_disassembly.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Terms involving things/Cellular components</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Processes</category>
 		</categories>
 	</template>
@@ -979,8 +979,8 @@ generated automatically</description>
 			<ruleFile>rules/go/protein_complex_by_activity.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Terms involving things/Cellular components</category>
-			<category>Terms involving things/Protein complexes</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Terms involving chemicals or components/Protein complexes</category>
 		</categories>
 	</template>
 	<template name="single_multi_organism_process">
