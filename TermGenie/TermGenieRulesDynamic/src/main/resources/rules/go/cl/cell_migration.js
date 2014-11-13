@@ -7,7 +7,6 @@ function cell_migration() {
   var label = termname(c, go) + " migration";
   var definition = "The orderly movement of "+refname(c, go)+" from one site to another.";
   var synonyms = null;
-  // TODO unify relation with GO, wait for appropriate relation in RO 'results in movement of'?
   var mdef = createMDef("'cell migration' and 'results in movement of' some ?C"); 
   mdef.addParameter('C', c, go);
   createTerm(label, definition, synonyms, mdef);
