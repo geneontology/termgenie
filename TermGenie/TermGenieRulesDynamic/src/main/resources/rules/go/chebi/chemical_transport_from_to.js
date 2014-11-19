@@ -133,6 +133,46 @@ function chemical_transport_from_to() {
 			return;
 		}
 	}
+	
+	// transmembrane transport
+	if (termgenie.contains(prefixes, "transmembrane transport")) {
+		var label = "transmembrane " + chemicalName + " transport";
+		var definition = "The directed movement of "+chemicalName+" across a membrane";
+		var mdefString = "GO:0055085 and 'transports or maintains localization of' some ?X";
+		
+		if (hasFrom) {
+			label += " from " + fromName;
+			definition += " from " + fromName;
+			mdefString += " and 'has target start location' some ?F";
+		}
+		if (hasTo) {
+			label += " to " + toName;
+			definition += " to " + toName;
+			mdefString += " and 'has target end location' some ?T";
+		}
+		definition += ".";
+
+		var synonyms = null; // no synonyms
+		
+		var mdef = createMDef(mdefString);
+		mdef.addParameter('X', chemical, go);
+		
+		if (hasFrom) {
+			mdef.addParameter('F', from, go);
+		}
+		if (hasTo) {
+			mdef.addParameter('T', to, go);
+		}
+		
+		var success = createTerm(label, definition, synonyms, mdef);
+		if (success === true) {
+			termCount += 1;
+		}
+		else {
+			return;
+		}
+	}
+	
 	if (termCount === 0) {
 		error("Could not create a term for X, as no known transport type was selected");
 	}

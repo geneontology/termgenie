@@ -659,6 +659,7 @@ generated automatically</description>
 				<prefixes preselected="false">
 					<prefix>transport</prefix>
 					<prefix>vesicle-mediated transport</prefix>
+					<prefix>transmembrane transport</prefix>
 				</prefixes>
 			</field>
 			<field name="from">
