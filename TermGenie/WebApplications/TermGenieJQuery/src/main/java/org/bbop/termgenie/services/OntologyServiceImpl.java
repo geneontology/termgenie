@@ -1,6 +1,7 @@
 package org.bbop.termgenie.services;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bbop.termgenie.core.OntologyTermSuggestor;
@@ -26,6 +27,8 @@ public class OntologyServiceImpl implements OntologyService {
 	private final String availableOntology;
 	private final OntologyLoader loader;
 	private final ReasonerFactory reasonerFactory;
+	private long ontologyStatusTimeout = 5L;
+	private TimeUnit ontologyStatusTimeoutUnit = TimeUnit.MINUTES;
 
 	@Inject
 	OntologyServiceImpl(OntologyTermSuggestor suggestor, OntologyLoader loader, ReasonerFactory reasonerFactory) {
@@ -62,7 +65,11 @@ public class OntologyServiceImpl implements OntologyService {
 			}
 		};
 		try {
-			manager.runManagedTask(checkTask);
+			boolean locked = manager.runManagedTask(checkTask, ontologyStatusTimeout, ontologyStatusTimeoutUnit);
+			if (locked == false) {
+				status.setOkay(false);
+				status.setMessages(new String[]{"Could not accquire the lock for the ontology check. The server may be busy or in an inconsitent state."});
+			}
 		} catch (InvalidManagedInstanceException exception) {
 			status.setOkay(false);
 			status.setMessages(new String[]{"The ontology is in an invalid state: "+exception.getMessage()});

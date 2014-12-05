@@ -1,8 +1,10 @@
 package org.bbop.termgenie.core.management;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import org.bbop.termgenie.core.management.GenericTaskManager.ManagedTask.Modified;
+import org.bbop.termgenie.tools.Pair;
 
 /**
  * Provide basic runtime management for an instance. Allow limited concurrent
@@ -18,20 +20,22 @@ public abstract class GenericTaskManager<T> {
 	final String name;
 
 	/**
-	 * Create a new manager, with a binary and fair semaphore.
+	 * Create a new manager, with a binary and fair semaphore, no timeout.
 	 * 
 	 * @param name the name of this manager
 	 */
 	public GenericTaskManager(String name) {
 		this(name, 1); // binary and fair
 	}
-
+	
 	/**
 	 * Create a new manager, allowing n number of concurrent calls. Low Level,
 	 * only to be used in this package
 	 * 
 	 * @param name the name of this manager
 	 * @param n number of concurrent users
+	 * @param timeout
+	 * @param timeoutUnit
 	 */
 	GenericTaskManager(String name, int n) {
 		this.lock = new Semaphore(n, true); // fair
@@ -39,20 +43,62 @@ public abstract class GenericTaskManager<T> {
 	}
 
 	/**
-	 * Low level method to lock. Only to be used in this package
+	 * Low level method to lock with a timeout. Only to be used in this package
 	 * 
-	 * @return managed
+	 * @return pair of try lock status and managed instance (if available or null).
+	 * @throws InvalidManagedInstanceException 
+	 */
+	Pair<Boolean, T> getManaged(long timeout, TimeUnit timeoutUnit) throws InvalidManagedInstanceException {
+
+		try {
+			if (timeoutUnit != null){
+				boolean success = lock.tryAcquire(timeout, timeoutUnit);
+				if (success == false) {
+					return Pair.of(Boolean.FALSE, null);
+				}
+			}
+			else {
+				lock.acquire();
+
+			}
+			if (inValid) {
+				lock.release();
+				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
+			}
+			if (managed == null) {
+				managed = createManaged();
+				if (managed == null) {
+					lock.release();
+					throw new GenericTaskManagerException("The managed object in manager " + name + " must never be null!");
+				}
+			}
+			return Pair.of(Boolean.TRUE, managed);
+		} catch (InterruptedException exception) {
+			throw new GenericTaskManagerException("Interrupted during wait.", exception);
+		} catch (InstanceCreationException exception) {
+			inValid = true;
+			lock.release();
+			throw new InvalidManagedInstanceException("Could not create managed instance: "+exception.getMessage(), exception.getCause());
+		}
+	}
+	
+	/**
+	 * Low level method to lock no timeout. Only to be used in this package
+	 * 
+	 * @return pair of try lock status and managed instance (if available or null).
 	 * @throws InvalidManagedInstanceException 
 	 */
 	T getManaged() throws InvalidManagedInstanceException {
 		try {
 			lock.acquire();
 			if (inValid) {
+				lock.release();
 				throw new InvalidManagedInstanceException("Managed instance is in an invalid state");
 			}
 			if (managed == null) {
 				managed = createManaged();
 				if (managed == null) {
+					lock.release();
 					throw new GenericTaskManagerException("The managed object in manager " + name + " must never be null!");
 				}
 			}
@@ -61,6 +107,7 @@ public abstract class GenericTaskManager<T> {
 			throw new GenericTaskManagerException("Interrupted during wait.", exception);
 		} catch (InstanceCreationException exception) {
 			inValid = true;
+			lock.release();
 			throw new InvalidManagedInstanceException("Could not create managed instance: "+exception.getMessage(), exception.getCause());
 		}
 	}
@@ -206,13 +253,42 @@ public abstract class GenericTaskManager<T> {
 	 * managed instance.
 	 * 
 	 * @param task
+	 * @param timeout
+	 * @param timeoutUnit 
+	 * @return boolean, true if the lock was acquired
+	 * @throws InvalidManagedInstanceException 
+	 */
+	public final boolean runManagedTask(ManagedTask<T> task, long timeout, TimeUnit timeoutUnit) throws InvalidManagedInstanceException {
+		T managed = null;
+		Modified modified = Modified.no;
+		Pair<Boolean, T> pair = getManaged(timeout, timeoutUnit);
+		if (Boolean.FALSE.equals(pair.getOne())) {
+			return false;
+		}
+		managed = pair.getTwo();
+		try {
+			modified = task.run(managed);
+			return true;
+		}
+		finally {
+			if (managed != null) {
+				returnManaged(managed, modified);
+			}
+		}
+	}
+	
+	/**
+	 * Run a managed task. Encapsulate the wait and return operations for the
+	 * managed instance.
+	 * 
+	 * @param task
 	 * @throws InvalidManagedInstanceException 
 	 */
 	public final void runManagedTask(ManagedTask<T> task) throws InvalidManagedInstanceException {
 		T managed = null;
 		Modified modified = Modified.no;
+		managed = getManaged();
 		try {
-			managed = getManaged();
 			modified = task.run(managed);
 		}
 		finally {
