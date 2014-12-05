@@ -634,7 +634,7 @@ function termgenie(){
 				minHeight: 450,
 				modal: true,
 				buttons: {
-					"Add template": function() {
+					"Use template": function() {
 						var currentSelection = templateTreeWidgetInstance.getSelected();
 						if (currentSelection !== null) {
 							
@@ -660,7 +660,7 @@ function termgenie(){
 			// create a tree only selection
 			var templateTreeDiv = jQuery('<div></div>');
 			templateTreeWidgetInstance.appendTo(templateTreeDiv);
-			var treeAddButton = jQuery('<button type="button" style="margin-top:10px;margin-left:2px">Add template</button>');
+			var treeAddButton = jQuery('<button type="button" style="margin-top:10px;margin-left:2px">Use template</button>');
 			treeAddButton.click(function (){
 				var currentSelection = templateTreeWidgetInstance.getSelected();
 				if (currentSelection !== null) {
