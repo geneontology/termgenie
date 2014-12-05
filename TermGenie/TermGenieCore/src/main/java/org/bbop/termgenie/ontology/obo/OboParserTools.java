@@ -28,12 +28,11 @@ public class OboParserTools {
 		if (clause == null || clause.startsWith(OboFormatTag.TAG_ID.getTag()+": ")) {
 			return null;
 		}
-		Clause result = new Clause();
 		OBOFormatParser p = new OBOFormatParser();
 		BufferedReader reader = new BufferedReader(new StringReader(clause));
 		try {
 			p.setReader(reader);
-			p.parseTermFrameClause(result);
+			Clause result = p.parseTermFrameClause();
 			p.parseEOL(result);
 			if (result.getValue() == null) {
 				return result;
