@@ -412,7 +412,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			if (resultList != null && !resultList.isEmpty()) {
 				List<Pair<String, String>> pairs = new ArrayList<Pair<String,String>>();
 				for (CommitedOntologyTerm term : resultList) {
-					pairs.add(new Pair<String, String>(term.getId(), term.getLabel()));
+					pairs.add(Pair.of(term.getId(), term.getLabel()));
 				}
 				return pairs;
 			}
@@ -462,7 +462,7 @@ public class CommitHistoryStoreImpl implements CommitHistoryStore {
 			if (resultList != null && !resultList.isEmpty()) {
 				List<Pair<String, String>> pairs = new ArrayList<Pair<String,String>>();
 				for (CommitedOntologyTerm term : resultList) {
-					pairs.add(new Pair<String, String>(term.getId(), term.getLabel()));
+					pairs.add(Pair.of(term.getId(), term.getLabel()));
 				}
 				return pairs;
 			}

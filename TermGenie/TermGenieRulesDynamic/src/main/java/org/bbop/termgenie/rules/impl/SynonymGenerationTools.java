@@ -310,14 +310,14 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 					result.addAll(concats);
 				}
 				else {
-					result.add(new Pair<StringBuilder, String>(sb, pair.getTwo()));
+					result.add(Pair.of(sb, pair.getTwo()));
 				}
 			}
 		}
 		return result;
 	}
 
-	private static final Pair<Boolean, String> MISMATCH = new Pair<Boolean, String>(false, null);
+	private static final Pair<Boolean, String> MISMATCH = Pair.of(false, null);
 
 	protected Pair<Boolean, String> matchScopes(ISynonym s1, ISynonym s2) {
 		return matchScopes(s1.getScope(), s2.getScope());
@@ -331,25 +331,25 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			scope2 = OboFormatTag.TAG_RELATED.getTag();
 		}
 		if (scope1.equals(scope2)) {
-			return new Pair<Boolean, String>(true, scope1);
+			return Pair.of(true, scope1);
 		}
 		if (scope1.equals(OboFormatTag.TAG_BROAD.getTag()) || scope2.equals(OboFormatTag.TAG_BROAD.getTag())) {
 			// this is the only case for a miss match
 			return MISMATCH;
 		}
 		if (scope1.equals(OboFormatTag.TAG_EXACT.getTag())) {
-			return new Pair<Boolean, String>(true, scope2);
+			return Pair.of(true, scope2);
 		}
 		if (scope2.equals(OboFormatTag.TAG_EXACT.getTag())) {
-			return new Pair<Boolean, String>(true, scope1);
+			return Pair.of(true, scope1);
 		}
 		if (scope1.equals(OboFormatTag.TAG_NARROW.getTag())) {
-			return new Pair<Boolean, String>(true, scope2);
+			return Pair.of(true, scope2);
 		}
 		if (scope2.equals(OboFormatTag.TAG_NARROW.getTag())) {
-			return new Pair<Boolean, String>(true, scope1);
+			return Pair.of(true, scope1);
 		}
-		return new Pair<Boolean, String>(true, OboFormatTag.TAG_RELATED.getTag());
+		return Pair.of(true, OboFormatTag.TAG_RELATED.getTag());
 	}
 
 	private List<ISynonym> addLabel(OWLObject x, OWLGraphWrapper ontology, List<ISynonym> synonyms)

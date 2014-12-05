@@ -393,7 +393,7 @@ public class JsonOntologyTerm {
 				Frame frame = OboTools.createTermFrame(jsonChange.getId());
 				OboParserTools.parseClauses(frame, jsonChange.getChanges());
 				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonChange.getOwlAxioms());
-				changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
+				changed.add(Pair.of(frame, axioms));
 			}
 			
 		}

@@ -189,7 +189,7 @@ public class CommitHistoryTools {
 				Frame frame = translate(term.getId(), term.getObo());
 				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getAxioms());
 				if (frame != null) {
-					result.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
+					result.add(Pair.of(frame, axioms));
 				}
 			}
 		}
@@ -206,7 +206,7 @@ public class CommitHistoryTools {
 				Frame frame = translate(term.getId(), term.getObo());
 				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(term.getAxioms());
 				if (frame != null) {
-					result.add(new Pair<Frame, Set<OWLAxiom>>(frame, axioms));
+					result.add(Pair.of(frame, axioms));
 				}
 			}
 		}

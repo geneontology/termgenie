@@ -79,7 +79,7 @@ class OntologyIdStore {
 			DecimalFormat nf = new DecimalFormat(pattern);
 			entityManager.merge(info);
 			entityManager.getTransaction().commit();
-			return new Pair<String, Integer>(nf.format(current), next);
+			return Pair.of(nf.format(current), next);
 		} finally {
 			entityManager.close();
 		}

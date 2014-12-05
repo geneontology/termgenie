@@ -109,9 +109,9 @@ public class XMLDynamicRulesModule extends IOCModule {
 		try {
 			List<Pair<String, String>> result = new ArrayList<Pair<String,String>>();
 			String templates = IOUtils.toString(stream);
-			result.add(new Pair<String, String>(templateResource, templates));
+			result.add(Pair.of(templateResource, templates));
 			for(Entry<TermTemplate, String> scriptEntry : scriptRunner.scripts.entrySet()) {
-				result.add(new Pair<String, String>(scriptEntry.getKey().getName(), scriptEntry.getValue()));
+				result.add(Pair.of(scriptEntry.getKey().getName(), scriptEntry.getValue()));
 			}
 			return result;
 		} catch (IOException exception) {

@@ -97,7 +97,7 @@ public class InferAllRelationshipsTask implements RelationshipTask {
 					List<Clause> clauses = pair.getOne();
 					OBOFormatWriter.sortTermClauses(clauses);
 					frame.getClauses().addAll(clauses);
-					changed.add(new Pair<Frame, Set<OWLAxiom>>(frame, pair.getTwo()));
+					changed.add(Pair.of(frame, pair.getTwo()));
 
 				}
 			}

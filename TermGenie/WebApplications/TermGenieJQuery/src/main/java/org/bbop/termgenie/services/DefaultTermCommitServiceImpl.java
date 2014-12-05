@@ -559,7 +559,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				idProvider.rollbackId(ontology, idHandler.base);
 				throw new CommitException("Missing terms with tempIds: " + missingIds, true);
 			}
-			return new Pair<List<CommitObject<TermCommit>>, Integer>(commits, idHandler.base);
+			return Pair.of(commits, idHandler.base);
 		}
 
 		private Set<OWLAxiom> updateIdentifiers(Frame frame, Set<OWLAxiom> axioms, IdHandler idHandler) {

@@ -169,7 +169,7 @@ public class OntologyModule extends IOCModule {
 		XMLConfigReader reader = new XMLConfigReader(injector.getInstance(loadAsFileKey));
 		String config = reader.loadXmlConfig(configFile);
 		if (config != null) {
-			return Collections.singletonList(new Pair<String, String>(configFile, config));
+			return Collections.singletonList(Pair.of(configFile, config));
 		}
 		return null;
 	}

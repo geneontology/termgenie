@@ -55,7 +55,7 @@ public class OwlTranslatorTools {
 		handleEquivalenClasses(owlClass, ontology, result, relevantAxioms);
 
 		handleDisjoints(owlClass, ontology, result, relevantAxioms);
-		return new Pair<List<Clause>, Set<OWLAxiom>>(result, relevantAxioms);
+		return Pair.of(result, relevantAxioms);
 	}
 
 	private static void handleSubClass(OWLClass owlClass,

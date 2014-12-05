@@ -15,6 +15,10 @@ public class Pair<A, B> {
 		this.two = two;
 	}
 
+	public static <A,B> Pair<A,B> of(A a, B b) {
+		return new Pair<A, B>(a, b);
+	}
+	
 	/**
 	 * @return the one
 	 */

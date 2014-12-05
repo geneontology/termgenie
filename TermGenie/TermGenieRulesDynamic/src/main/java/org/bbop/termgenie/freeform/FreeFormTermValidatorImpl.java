@@ -310,7 +310,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 						}
 					}
 					checkedSynonyms.add(jsonSynonym);
-					proposedSynonyms.put(normalizeLabel(synLabel), new Pair<String, String>(synLabel, scope));
+					proposedSynonyms.put(normalizeLabel(synLabel), Pair.of(synLabel, scope));
 					done.add(lowerCase);
 				}
 			}
@@ -670,7 +670,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					frame.addClause(cl);
 				}
 				
-				term = new Pair<Frame, Set<OWLAxiom>>(frame, axioms);
+				term = Pair.of(frame, axioms);
 			}
 			finally {
 				ProcessState.addMessage(state, "Finished - Use reasoner to check constraints and relations.");

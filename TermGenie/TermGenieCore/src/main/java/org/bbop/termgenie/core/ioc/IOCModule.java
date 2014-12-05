@@ -59,7 +59,7 @@ public abstract class IOCModule extends AbstractModule {
 					if (named != null) {
 						name = named.value();
 					}
-					provided.add(new Pair<Method, String>(method, name));
+					provided.add(Pair.of(method, name));
 				}
 			}
 		}

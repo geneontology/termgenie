@@ -471,7 +471,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		OWLDataFactory factory = manager.getOWLDataFactory();
 		OWLClass owlClass = factory.getOWLClass(iri);
 		OWLDeclarationAxiom owlDeclarationAxiom = factory.getOWLDeclarationAxiom(owlClass);
-		return new Pair<OWLClass, OWLAxiom>(owlClass, owlDeclarationAxiom);
+		return Pair.<OWLClass, OWLAxiom>of(owlClass, owlDeclarationAxiom);
 	}
 	
 	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLChangeTracker changeTracker) {

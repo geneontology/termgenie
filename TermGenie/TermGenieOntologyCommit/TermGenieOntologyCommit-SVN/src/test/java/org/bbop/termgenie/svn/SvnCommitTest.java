@@ -309,7 +309,7 @@ public class SvnCommitTest {
 				 "relationship: has_participant FOO:0010\n"+
 				 "relationship: part_of GOO:0001\n");
 		
-		Pair<Frame, Set<OWLAxiom>> pair1 = new Pair<Frame, Set<OWLAxiom>>(frame5, Collections.<OWLAxiom>emptySet());
+		Pair<Frame, Set<OWLAxiom>> pair1 = Pair.of(frame5, Collections.<OWLAxiom>emptySet());
 		SimpleCommitedOntologyTerm changed1 = CommitHistoryTools.createSimple(pair1, Modification.modify);
 		
 		Frame frame6 = OboParserTools.parseFrame("FOO:9001","[Term]\n"+
@@ -321,7 +321,7 @@ public class SvnCommitTest {
 				 "relationship: has_participant FOO:0011\n"+
 				 "relationship: part_of FOO:0001\n");
 		
-		Pair<Frame, Set<OWLAxiom>> pair2 = new Pair<Frame, Set<OWLAxiom>>(frame6, Collections.<OWLAxiom>emptySet());
+		Pair<Frame, Set<OWLAxiom>> pair2 = Pair.of(frame6, Collections.<OWLAxiom>emptySet());
 		SimpleCommitedOntologyTerm changed2 = CommitHistoryTools.createSimple(pair2, Modification.modify);
 		
 		List<SimpleCommitedOntologyTerm> changed = Arrays.asList(changed1, changed2);
