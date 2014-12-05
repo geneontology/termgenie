@@ -111,6 +111,11 @@ public class SynonymGenerationToolsTest {
 		public Set<OWLAnonymousIndividual> getAnonymousIndividuals() {
 			return null;
 		}
+
+		@Override
+		public boolean containsEntityInSignature(OWLEntity owlEntity) {
+			return false;
+		}
 	}
 
 	@BeforeClass

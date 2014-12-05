@@ -259,8 +259,6 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					
 					result.add(entry);
 				}
-			} catch (OWLOntologyCreationException exception) {
-				this.owlException = exception;
 			} catch (OBOFormatParserException exception) {
 				this.oboException = exception;
 			}
