@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="ENVO" longName="Environment Ontology">
+		<source>https://envo.googlecode.com/svn/trunk/src/envo/envo-edit.owl</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
+			<support>http://purl.obolibrary.org/obo/po.owl</support>
+		</supports>
+		<roots>
+			<root>ENVO:00000000</root>		<!-- geographic feature -->
+			<root>PO:0025131</root>		<!-- plant anatomical entity -->
+			<root>UBERON:0001062</root> <!-- anatomical entity -->
+		</roots>
+		<ontologybranch name="entities">
+			<roots>
+				<root>PO:0025131</root> <!-- plant anatomical entity -->
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="default_envo">
+			<roots>
+				<root>ENVO:00000000</root> <!-- geographic feature -->
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>
