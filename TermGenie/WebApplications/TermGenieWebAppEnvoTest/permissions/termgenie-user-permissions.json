@@ -1,0 +1,8 @@
+{
+	guid: {
+		"termgenie-envo": "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
+	},
+	"hdietze@lbl.gov": {
+		"termgenie-envo": "(ENVO, allowWrite, true), (ENVO, allowCommitReview, true), (ENVO, allowFreeForm, true), (ENVO, allowFreeFormWrite, true), (termgenie-envo, allowManagement, true)"
+	}
+}
