@@ -1,13 +1,13 @@
-<project name="TermGenieWebAppHPTest" basedir="." default="copywebapp">
+<project name="TermGenieWebAppEnvoTest" basedir="." default="copywebapp">
 	<property name="workdir" location="work"/>
 	<property name="webapp.prepare" location="prepare"/>
 	<property name="webapp.target" location="${workdir}/ant-webapp"/>
 	<property name="webapp.svn" location="${workdir}/svn"/>
 	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
-	<property name="webapp.db" location="${workdir}/termgenie-mp-db"/>
+	<property name="webapp.db" location="${workdir}/termgenie-envo-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
 	<property name="webapp.jquery" location="../TermGenieJQuery/src/main/webapp"/>
-	<property name="webapp.parent" location="../TermGenieWebAppHP/src/main/webapp"/>
+	<property name="webapp.parent" location="../TermGenieWebAppEnvo/src/main/webapp"/>
 	<property name="webapp.local" location="src/main/webapp"/>
 	
 	<target name="copywebapp">
