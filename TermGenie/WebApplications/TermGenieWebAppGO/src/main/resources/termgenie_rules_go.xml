@@ -306,7 +306,7 @@
 			<ruleFile>rules/go/chebi/chemical_transporter_activity.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Processes/Transport</category>
+			<category>Molecular Function</category>
             <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
