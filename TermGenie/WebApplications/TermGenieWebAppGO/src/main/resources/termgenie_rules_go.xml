@@ -333,7 +333,7 @@
 			<ruleFile>rules/go/chebi/chemical_binding.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<category>Molecular Function</category>
+			
             <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 		</categories>
@@ -429,6 +429,7 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/transmembrane_transport_mf.js</ruleFile>
 		</ruleFiles>
 		<categories>
+			<category>Molecular Function</category>
 			<category>Processes/Transport/Transmembrane</category>
             <category>Terms involving chemicals or components/ChEBI</category>
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
