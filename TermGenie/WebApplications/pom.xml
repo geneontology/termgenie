@@ -54,15 +54,17 @@
 		<module>TermGenieJQuery</module>
 		<module>TermGenieWebAppGO</module>
 		<module>TermGenieWebAppCL</module>
+		<module>TermGenieWebAppCLTest</module>
 		<module>TermGenieWebAppUberon</module>
 		<module>TermGenieWebAppOMP</module>
 		<module>TermGenieWebAppOBA</module>
 		<module>TermGenieWebAppOBATest</module>
-		<module>TermGenieWebAppCLTest</module>
 		<module>TermGenieWebAppMP</module>
 		<module>TermGenieWebAppMPTest</module>
 		<module>TermGenieWebAppHP</module>
 		<module>TermGenieWebAppHPTest</module>
 		<module>TermGenieWebAppTestStartup</module>
+		<module>TermGenieWebAppEnvo</module>
+		<module>TermGenieWebAppEnvoTest</module>
 	</modules>
 </project>
