@@ -365,6 +365,21 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		return starts_with_vowl(name) ? "an " + name : "a " + name;
 	}
 
+	@Override
+	public String firstToUpperCase(String s) {
+		if (s != null && s.isEmpty() == false) {
+			char first = s.charAt(0);
+			if (Character.isLetter(first) && Character.isLowerCase(first)) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(Character.toUpperCase(first));
+				if (s.length() > 1) {
+					sb.append(s.substring(1));
+				}
+			}
+		}
+		return s;
+	}
+
 	private boolean starts_with_vowl(String name) {
 		char c = Character.toLowerCase(name.charAt(0));
 		switch (c) {

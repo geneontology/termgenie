@@ -246,6 +246,13 @@ public interface TermGenieScriptFunctions extends TermGenieScriptFunctionsSynony
 	 */
 	public boolean contains(String[] array, String value);
 
+	/**
+	 * Convert the first character to upper case.
+	 * 
+	 * @param s
+	 * @return string
+	 */
+	public String firstToUpperCase(String s);
 
 	/**
 	 * Concatenate two lists of the same type. Checks for null 
