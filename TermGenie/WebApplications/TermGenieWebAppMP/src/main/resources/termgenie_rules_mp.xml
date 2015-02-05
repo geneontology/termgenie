@@ -94,5 +94,36 @@
 			<ruleFile>rules/mp/abnormal_onset_process.js</ruleFile>
 		</ruleFiles>
 	</template>
+	
+	<template name="abnormal_levels" displayname="abnormal levels">
+		<description>Template for abnormal levels of a chemical (ChEBI) in a location (UBERON)</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="chemical" required="true">
+				<ontology name="MP">
+					<branch>chemicals</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix id="unspecified">unspecified</prefix>
+					<prefix id="greater">greater</prefix>
+					<prefix id="reduced">reduced</prefix>
+				</prefixes>
+			</field>
+			<field name="location" required="true">
+				<ontology name="MP">
+					<branch>uberon_location</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/abnormal_levels.js</ruleFile>
+		</ruleFiles>
+	</template>
 
 </termgenietemplates>

@@ -54,13 +54,15 @@ public class MPOntologyTest {
 	
 	@Test
 	public void testSyntax() throws Exception {
+		final String expr = "'has part' some ('quality' and 'inheres in' some (CHEBI_17234 and 'part of' some UBERON_3010346) and 'has component' some 'abnormal')";
+//		final String expr = "('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))";
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
-				OWLClassExpression expression = tool.parseManchesterExpression("('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))");
+				OWLClassExpression expression = tool.parseManchesterExpression(expr);
 				assertNotNull(expression);
 			}
 		};
@@ -113,6 +115,19 @@ public class MPOntologyTest {
 		render(output);
 	}
 	
+	@Test
+	public void test_abnormal_level() throws Exception {
+		String chemical = "CHEBI:17234"; // glucose
+		String location = "UBERON:3010346"; // globe (aka eye ball)
+		List<TermGenerationOutput> terms = generate(getTemplate("abnormal_levels"), Arrays.asList(chemical, location), "unspecified", "greater", "reduced");
+		assertNotNull(terms);
+		assertEquals(terms.get(0).getError(), 3, terms.size());
+		for (TermGenerationOutput output : terms) {
+			assertNull(output.getError(), output.getError());
+			render(output);
+		}
+	}
+	
 	private TermGenerationOutput generateSingle(TermTemplate template, String id, String...prefixes) {
 		List<TermGenerationOutput> list = generate(template, Arrays.asList(id), prefixes);
 		assertNotNull(list);
@@ -123,7 +138,7 @@ public class MPOntologyTest {
 	}
 	
 	private TermGenerationOutput generateSingleTwoFields(TermTemplate template, String...fields) {
-		List<TermGenerationOutput> list = generate(template, Arrays.asList(fields), null);
+		List<TermGenerationOutput> list = generate(template, Arrays.asList(fields));
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
@@ -131,7 +146,7 @@ public class MPOntologyTest {
 		return output;
 	}
 	
-	private List<TermGenerationOutput> generate(TermTemplate template, List<String> values, String[] prefixes) {
+	private List<TermGenerationOutput> generate(TermTemplate template, List<String> values, String...prefixes) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		List<TemplateField> fields = template.getFields();
 		for(int i=0;i<fields.size();i++) {
