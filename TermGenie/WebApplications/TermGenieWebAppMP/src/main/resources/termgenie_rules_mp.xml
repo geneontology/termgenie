@@ -22,5 +22,26 @@
 			<ruleFile>rules/mp/abnormal_morphology.js</ruleFile>
 		</ruleFiles>
 	</template>
+	
+	<template name="abnormal_process">
+		<description>Template for abormal processes (GO BP and MF)</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="MP">
+					<branch>occurent</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/abnormal_process.js</ruleFile>
+		</ruleFiles>
+	</template>
 
 </termgenietemplates>

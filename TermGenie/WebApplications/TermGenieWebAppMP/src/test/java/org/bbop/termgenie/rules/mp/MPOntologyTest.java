@@ -72,12 +72,23 @@ public class MPOntologyTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	public void test_abnormal_morphology() throws Exception {
 //		String id = "UBERON:0002028"; // hindbrain, exists already
 		String id = "GO:0005791"; // rough endoplasmic reticulum
 		TermGenerationOutput output = generateSingle(getTemplate("abnormal_morphology"), id);
 		render(output);
 		
+	}
+	
+	@Test
+	public void test_abnormal_process() throws Exception {
+		// String id = "GO:0001783"; // B cell apoptosis, exists already
+		// String id = "GO:0004031"; // aldehyde oxidase activity, exists already MP:0020026
+		// String id = "GO:0018488"; // aryl-aldehyde oxidase activity
+		String id = "GO:0002516"; // B cell deletion
+		// String id = "GO:0044691"; // tooth eruption, exists already MP:0000119
+		TermGenerationOutput output = generateSingle(getTemplate("abnormal_process"), id);
+		render(output);
 	}
 	
 	private TermGenerationOutput generateSingle(TermTemplate template, String id) {
