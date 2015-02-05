@@ -2,7 +2,7 @@
 <termgenietemplates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="termgenie_rules.xsd">
 
-	<template name="abnormal_morphology">
+	<template name="abnormal_morphology" displayname="abnormal morphology">
 		<description>Template for abormal phenotypes for entities from UBERON, CL, and GO-CC subset</description>
 		<obonamespace>MPheno.ontology</obonamespace>
 		<fields>
@@ -23,7 +23,7 @@
 		</ruleFiles>
 	</template>
 	
-	<template name="abnormal_process">
+	<template name="abnormal_process" displayname="abnormal process">
 		<description>Template for abormal processes (GO BP and MF)</description>
 		<obonamespace>MPheno.ontology</obonamespace>
 		<fields>
@@ -41,6 +41,57 @@
 		</fields>
 		<ruleFiles>
 			<ruleFile>rules/mp/abnormal_process.js</ruleFile>
+		</ruleFiles>
+	</template>
+	
+	<template name="late_early_onset_process" displayname="late/early onset of process">
+		<description>Template for late/early onset of processes</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="process" required="true">
+				<ontology name="MP">
+					<branch>occurent</branch>
+				</ontology>
+				<prefixes preselected="false">
+					<prefix id="late">late</prefix>
+					<prefix id="early">early</prefix>
+				</prefixes>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/abnormal_onset_process.js</ruleFile>
+		</ruleFiles>
+	</template>
+	
+	<template name="abnormal_onset_process" displayname="abnormal onset of process">
+		<description>Template for abnormal onset of processes. Check other template for early/late onset.</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="onset" required="true">
+				<ontology name="MP">
+					<branch>onset_quality</branch>
+				</ontology>
+			</field>
+			<field name="process" required="true">
+				<ontology name="MP">
+					<branch>occurent</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/abnormal_onset_process.js</ruleFile>
 		</ruleFiles>
 	</template>
 

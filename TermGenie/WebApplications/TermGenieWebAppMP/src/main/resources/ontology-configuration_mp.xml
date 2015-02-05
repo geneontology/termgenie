@@ -16,6 +16,7 @@
 			<root>GO:0005575</root>		<!-- cellular_component -->
 			<root>CL:0000003</root> 	<!-- native cell -->
 			<root>UBERON:0001062</root> <!-- anatomical entity -->
+			<root>PATO:0000001</root>	<!-- quality -->
 		</roots>
 		<ontologybranch name="entities">
 			<roots>
@@ -28,6 +29,11 @@
 			<roots>
 				<root>GO:0003674</root> <!-- molecular_function -->
 				<root>GO:0008150</root> <!-- biological_process -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="onset_quality">
+			<roots>
+				<root>PATO:0002325</root> <!-- onset quality -->
 			</roots>
 		</ontologybranch>
 		<ontologybranch name="default_mp">

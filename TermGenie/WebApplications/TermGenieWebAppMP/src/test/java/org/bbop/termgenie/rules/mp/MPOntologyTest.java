@@ -91,8 +91,30 @@ public class MPOntologyTest {
 		render(output);
 	}
 	
-	private TermGenerationOutput generateSingle(TermTemplate template, String id) {
-		List<TermGenerationOutput> list = generate(template, id);
+	@Test
+	public void test_early_onset_process() throws Exception {
+		String id = "GO:0044691"; // tooth eruption
+		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "early");
+		render(output);
+	}
+	
+	@Test
+	public void test_late_onset_process() throws Exception {
+		String id = "GO:0044691"; // tooth eruption
+		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "late");
+		render(output);
+	}
+	
+	@Test
+	public void test_abnormal_onset_process() throws Exception {
+		String process = "GO:0044691"; // tooth eruption
+		String onset = "PATO:0001484"; // recent
+		TermGenerationOutput output = generateSingleTwoFields(getTemplate("abnormal_onset_process"), onset, process);
+		render(output);
+	}
+	
+	private TermGenerationOutput generateSingle(TermTemplate template, String id, String...prefixes) {
+		List<TermGenerationOutput> list = generate(template, Arrays.asList(id), prefixes);
 		assertNotNull(list);
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
@@ -100,11 +122,28 @@ public class MPOntologyTest {
 		return output;
 	}
 	
-	private List<TermGenerationOutput> generate(TermTemplate template, String id) {
+	private TermGenerationOutput generateSingleTwoFields(TermTemplate template, String...fields) {
+		List<TermGenerationOutput> list = generate(template, Arrays.asList(fields), null);
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		TermGenerationOutput output = list.get(0);
+		assertNull(output.getError(), output.getError());
+		return output;
+	}
+	
+	private List<TermGenerationOutput> generate(TermTemplate template, List<String> values, String[] prefixes) {
 		TermGenerationParameters parameters = new TermGenerationParameters();
 		List<TemplateField> fields = template.getFields();
-		TemplateField field = fields.get(0);
-		parameters.setTermValues(field.getName(), Arrays.asList(id)); 
+		for(int i=0;i<fields.size();i++) {
+			if (values != null && values.size() > i) {
+				TemplateField field = fields.get(i);
+				parameters.setTermValues(field.getName(), Arrays.asList(values.get(i))); 
+				if (i==0 && prefixes != null && prefixes.length > 0) {
+					parameters.setStringValues(field.getName(), Arrays.asList(prefixes));
+				}	
+			}
+		}
+		
 		TermGenerationInput input = new TermGenerationInput(template, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
 		
