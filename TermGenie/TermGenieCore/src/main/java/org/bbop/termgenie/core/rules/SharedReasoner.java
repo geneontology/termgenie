@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
@@ -118,7 +119,7 @@ public abstract class SharedReasoner extends GenericTaskManager<OWLReasoner> {
 			}
 			else { 
 				Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
-					if (unsatisfiable.isEmpty() != false) {
+				if (!unsatisfiable.isEmpty()) {
 					errors = new ArrayList<String>(unsatisfiable.size());
 					for(OWLClass cls : unsatisfiable) {
 						StringBuilder sb = new StringBuilder();
