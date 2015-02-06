@@ -40,7 +40,8 @@ public class ReasonerFactoryImpl implements ReasonerFactory, EventSubscriber<Ont
 	@Override
 	public OWLReasoner createReasoner(OWLGraphWrapper graph, ProcessState state) {
 		OWLOntology ontology = graph.getSourceOntology();
-		logger.info("Creating reasoner for: "+ontology.getOntologyID());
+		int count = ontology.getAxiomCount();
+		logger.info("Creating reasoner for: "+ontology.getOntologyID()+" Axiom count: "+count);
 		ReasonerProgressWriter monitor = new ReasonerProgressWriter(state);
 		OWLReasonerConfiguration config = new SimpleConfiguration(monitor);
 		OWLReasoner reasoner = factory.createReasoner(ontology, config);
@@ -117,7 +118,8 @@ public class ReasonerFactoryImpl implements ReasonerFactory, EventSubscriber<Ont
 	
 		@Override
 		protected OWLReasoner createManaged() {
-			logger.info("Create reasoner: " + reasonerFactory.getReasonerName() + " for ontology: " + ontology.getOntologyID());
+			int count = ontology.getAxiomCount();
+			logger.info("Create reasoner: " + reasonerFactory.getReasonerName() + " for ontology: " + ontology.getOntologyID()+" axiom count: "+count);
 			OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
 			return reasoner;
 		}
