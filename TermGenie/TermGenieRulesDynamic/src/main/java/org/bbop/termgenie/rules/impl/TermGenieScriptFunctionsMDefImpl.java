@@ -367,7 +367,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 
 	@Override
 	public String firstToUpperCase(String s) {
-		return firstToUpperCase(s);
+		return firstLetterToUpperCase(s);
 	}
 	
 	static String firstLetterToUpperCase(String s) {
