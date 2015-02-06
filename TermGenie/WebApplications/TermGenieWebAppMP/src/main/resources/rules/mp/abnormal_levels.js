@@ -50,7 +50,7 @@ function abnormal_levels() {
 function abnormal_levels_unspecific(chemical, location) {
 
 	var label = "abnormal " + termname(location, MP) + " "+ termname(chemical, MP) + " level";
-	var definition = "Any change amount of " + termname(chemical, MP) + 
+	var definition = "Any change in the amount of " + termname(chemical, MP) + 
 					" in the " + termname(location, MP) + ".";
 	var synonyms = null;
 	// has_part some ('quality' and inheres_in some (?chemical and part_of some ?location) and 'has component' some 'abnormal')
