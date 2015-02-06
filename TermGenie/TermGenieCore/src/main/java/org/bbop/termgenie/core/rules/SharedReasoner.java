@@ -112,25 +112,24 @@ public abstract class SharedReasoner extends GenericTaskManager<OWLReasoner> {
 	
 		@Override
 		public Modified run(OWLReasoner reasoner) {
-			boolean consistent = reasoner.isConsistent();
-
-			errors = new ArrayList<String>();
+			final boolean consistent = reasoner.isConsistent();
 			if(!consistent){
-				errors.add("The ontology is not consistent");
+				errors = Collections.singletonList("The ontology is not consistent");
 			}
-
-			Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
-			for(OWLClass cls : unsatisfiable) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("Unsatisfiable: ").append(wrapper.getIdentifier(cls));
-				String lbl = wrapper.getLabel(cls);
-				if (lbl != null) {
-					sb.append(" '").append(lbl).append("'");
+			else { 
+				Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
+					if (unsatisfiable.isEmpty() != false) {
+					errors = new ArrayList<String>(unsatisfiable.size());
+					for(OWLClass cls : unsatisfiable) {
+						StringBuilder sb = new StringBuilder();
+						sb.append("Unsatisfiable: ").append(wrapper.getIdentifier(cls));
+						String lbl = wrapper.getLabel(cls);
+						if (lbl != null) {
+							sb.append(" '").append(lbl).append("'");
+						}
+						errors.add(sb.toString());
+					}
 				}
-				unsatisfiable.add(cls);
-			}
-			if (errors.isEmpty()) {
-				errors = null;
 			}
 			return Modified.no;
 		}
