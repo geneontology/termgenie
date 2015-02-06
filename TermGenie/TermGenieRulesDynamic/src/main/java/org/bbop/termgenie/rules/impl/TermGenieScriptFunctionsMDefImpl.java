@@ -367,14 +367,19 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 
 	@Override
 	public String firstToUpperCase(String s) {
+		return firstToUpperCase(s);
+	}
+	
+	static String firstLetterToUpperCase(String s) {
 		if (s != null && s.isEmpty() == false) {
 			char first = s.charAt(0);
-			if (Character.isLetter(first) && Character.isLowerCase(first)) {
+			if (Character.isLowerCase(first)) {
 				StringBuilder sb = new StringBuilder();
 				sb.append(Character.toUpperCase(first));
 				if (s.length() > 1) {
 					sb.append(s.substring(1));
 				}
+				return sb.toString();
 			}
 		}
 		return s;
