@@ -44,6 +44,32 @@
 		</ruleFiles>
 	</template>
 	
+	<template name="abnormal_process_in_location" displayname="abnormal process in location">
+		<description>Template for abormal processes in location</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="process" required="true">
+				<ontology name="MP">
+					<branch>occurent</branch>
+				</ontology>
+			</field>
+			<field name="location" required="true">
+				<ontology name="MP">
+					<branch>uberon_location</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/abnormal_process.js</ruleFile>
+		</ruleFiles>
+	</template>
+	
 	<template name="late_early_onset_process" displayname="late/early onset of process">
 		<description>Template for late/early onset of processes</description>
 		<obonamespace>MPheno.ontology</obonamespace>

@@ -94,6 +94,14 @@ public class MPOntologyTest {
 	}
 	
 	@Test
+	public void test_abnormal_process_in_location() throws Exception {
+		String process = "GO:0002516"; // B cell deletion
+		String location = "UBERON:0002106"; // spleen
+		TermGenerationOutput output = generateSingleTwoFields(getTemplate("abnormal_process_in_location"), process, location);
+		render(output);
+	}
+	
+	@Test
 	public void test_early_onset_process() throws Exception {
 		String id = "GO:0044691"; // tooth eruption
 		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "early");
@@ -118,7 +126,7 @@ public class MPOntologyTest {
 	@Test
 	public void test_abnormal_level() throws Exception {
 		String chemical = "CHEBI:17234"; // glucose
-		String location = "UBERON:3010346"; // globe (aka eye ball)
+		String location = "UBERON:0002106"; // spleen
 		List<TermGenerationOutput> terms = generate(getTemplate("abnormal_levels"), Arrays.asList(chemical, location), "unspecified", "greater", "reduced");
 		assertNotNull(terms);
 		assertEquals(terms.get(0).getError(), 3, terms.size());
