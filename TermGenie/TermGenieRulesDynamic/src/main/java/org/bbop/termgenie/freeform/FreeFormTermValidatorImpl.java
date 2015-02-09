@@ -596,6 +596,19 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 					changeTracker.apply(new AddAxiom(owlOntology, axiom));
 				}
 				OWLReasoner reasoner = reasonerFactory.createReasoner(graph, state);
+				ProcessState.addMessage(state, "Check for ontology consistency.");
+				if (reasoner.isConsistent() == false) {
+					setError("Ontology", "The ontology is inconsistent. No safe inferences are possible.");
+					return;
+				}
+				ProcessState.addMessage(state, "Check for unsatisfiable classes");
+				final Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
+				if (unsatisfiable.contains(graph.getOWLClass(iri))) {
+					setError("relations", "Cannot create class, the requested class is not satisfiable.");
+				}
+				else if (unsatisfiable.isEmpty() == false) {
+					setError("Ontology", "No safe inferences are possible. The ontology has unsatisfiable classes: "+unsatisfiable);
+				}
 				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(graph, iri, changeTracker, idPrefix, state, useIsInferred);
 				try {
 					task.run(reasoner);
@@ -606,21 +619,11 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 				InferredRelations inferredRelations = task.getInferredRelations();
 				Set<OWLClass> equivalentClasses = inferredRelations.getEquivalentClasses();
 				if (equivalentClasses != null && !equivalentClasses.isEmpty()) {
-					boolean hasOwlNothing = false;
 					StringBuilder sb = new StringBuilder();
 					for (OWLClass equivalentClass : equivalentClasses) {
-						if (equivalentClass.isBottomEntity()) {
-							hasOwlNothing = true;
-							break;
-						}
 						sb.append(' ').append(equivalentClass.getIRI());
 					}
-					if (hasOwlNothing) {
-						setError("relations", "Cannot create class, the requested class is not satisfiable.");
-					}
-					else {
-						setError("relations", "Cannot create class, there are equivalent named classes:"+sb);
-					}
+					setError("relations", "Cannot create class, there are equivalent named classes:"+sb);
 					return;
 				}
 				Set<OWLAxiom> classRelationAxioms = inferredRelations.getClassRelationAxioms();
