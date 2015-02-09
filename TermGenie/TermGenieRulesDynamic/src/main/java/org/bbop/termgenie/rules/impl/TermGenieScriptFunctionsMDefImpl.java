@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.management.GenericTaskManager.InvalidManagedInstanceException;
@@ -67,6 +68,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 		ontologies.addAll(targetOntology.getSupportOntologySet());
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
 		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred, assertInferences);
+		java.util.logging.Logger.getLogger("org.obolibrary").setLevel(Level.SEVERE);
 	}
 	
 	protected synchronized List<TermGenerationOutput> getResultList() {
