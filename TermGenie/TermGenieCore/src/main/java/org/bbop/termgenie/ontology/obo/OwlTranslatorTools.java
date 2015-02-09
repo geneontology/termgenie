@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.Set;
 
 import org.bbop.termgenie.tools.Pair;
@@ -45,6 +46,10 @@ import owltools.graph.OWLGraphWrapper;
 
 public class OwlTranslatorTools {
 
+	static {
+		java.util.logging.Logger.getLogger("org.obolibrary").setLevel(Level.SEVERE);
+	}
+	
 	public static Pair<List<Clause>, Set<OWLAxiom>> extractRelations(OWLClass owlClass, OWLGraphWrapper wrapper) {
 		OWLOntology ontology = wrapper.getSourceOntology();
 		List<Clause> result = new ArrayList<Clause>();
@@ -128,8 +133,7 @@ public class OwlTranslatorTools {
 			OWLSubClassOfAxiom ax,
 			OWLOntology ontology)
 	{
-		Clause c = new Clause();
-		c.setTag(OboFormatTag.TAG_RELATIONSHIP.getTag());
+		Clause c = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
 		c.addValue(getId(r.getProperty(), ontology));
 		c.addValue(fillerId);
 		addQualifiers(c, ax.getAnnotations());
@@ -141,8 +145,7 @@ public class OwlTranslatorTools {
 			OWLSubClassOfAxiom ax,
 			OWLOntology ontology)
 	{
-		Clause c = new Clause();
-		c.setTag(OboFormatTag.TAG_RELATIONSHIP.getTag());
+		Clause c = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
 		c.addValue(getId(restriction.getProperty(), ontology));
 		c.addValue(fillerId);
 		String q = "cardinality";
@@ -189,8 +192,7 @@ public class OwlTranslatorTools {
 
 		String cls2 = getId(ce2, ontology);
 		if (cls2 != null) {
-			Clause c = new Clause();
-			c.setTag(OboFormatTag.TAG_EQUIVALENT_TO.getTag());
+			Clause c = new Clause(OboFormatTag.TAG_EQUIVALENT_TO.getTag());
 			c.setValue(cls2);
 			result.add(c);
 			addQualifiers(c, axiom.getAnnotations());
@@ -199,8 +201,7 @@ public class OwlTranslatorTools {
 			Set<OWLClassExpression> operands = ((OWLObjectUnionOf) ce2).getOperands();
 			for(OWLClassExpression oce : operands){
 				String id = getId(oce, ontology);
-				Clause c = new Clause();
-				c.setTag(OboFormatTag.TAG_UNION_OF.getTag());
+				Clause c = new Clause(OboFormatTag.TAG_UNION_OF.getTag());
 
 				if(id != null){
 					c.setValue(id);
@@ -225,8 +226,7 @@ public class OwlTranslatorTools {
 				}
 
 				if(cls2 != null){
-					Clause c = new Clause();
-					c.setTag(OboFormatTag.TAG_INTERSECTION_OF.getTag());
+					Clause c = new Clause(OboFormatTag.TAG_INTERSECTION_OF.getTag());
 
 					if(r != null) {
 						c.addValue(r);
