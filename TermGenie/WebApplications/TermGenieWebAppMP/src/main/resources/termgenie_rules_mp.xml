@@ -70,8 +70,8 @@
 		</ruleFiles>
 	</template>
 	
-	<template name="late_early_onset_process" displayname="late/early onset of process">
-		<description>Template for late/early onset of processes</description>
+	<template name="late_early_onset_process" displayname="delayed/early onset of process">
+		<description>Template for delayed/early onset of processes. This template will create separate classes, not a class that is both.</description>
 		<obonamespace>MPheno.ontology</obonamespace>
 		<fields>
 			<field name="process" required="true">
@@ -79,7 +79,7 @@
 					<branch>occurent</branch>
 				</ontology>
 				<prefixes preselected="false">
-					<prefix id="late">late</prefix>
+					<prefix id="late">delayed</prefix>
 					<prefix id="early">early</prefix>
 				</prefixes>
 			</field>
@@ -96,7 +96,7 @@
 	</template>
 	
 	<template name="abnormal_onset_process" displayname="abnormal onset of process">
-		<description>Template for abnormal onset of processes. Check other template for early/late onset.</description>
+		<description>Template for abnormal onset of processes. Check other template for delayed/late onset.</description>
 		<obonamespace>MPheno.ontology</obonamespace>
 		<fields>
 			<field name="onset" required="true">
@@ -121,6 +121,7 @@
 		</ruleFiles>
 	</template>
 	
+	<!-- 
 	<template name="abnormal_levels" displayname="abnormal levels">
 		<description>Template for abnormal levels of a chemical (ChEBI) in a location (UBERON)</description>
 		<obonamespace>MPheno.ontology</obonamespace>
@@ -151,5 +152,5 @@
 			<ruleFile>rules/mp/abnormal_levels.js</ruleFile>
 		</ruleFiles>
 	</template>
-
+	 -->
 </termgenietemplates>

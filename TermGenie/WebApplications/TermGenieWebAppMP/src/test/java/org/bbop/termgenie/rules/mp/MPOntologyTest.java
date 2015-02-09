@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,12 +25,22 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.writer.OBOFormatWriter.NameProvider;
+import org.semanticweb.elk.owlapi.ElkReasonerFactory;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import owltools.graph.OWLGraphWrapper;
 
@@ -43,12 +54,67 @@ public class MPOntologyTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_mp.xml", false, false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_mp.xml", true, true, null),
 				new OntologyModule("ontology-configuration_mp_test.xml"),
 				new ReasonerModule(null));
 
 		generationEngine = injector.getInstance(TermGenerationEngine.class);
 		loader = injector.getInstance(OntologyLoader.class);
+	}
+	
+	@Test
+	public void testReasoning() throws Exception {
+		final String expr = "('has part' some (PATO_0000694 and 'inheres in' some GO_0001570 and 'has component' some PATO_0000460))";
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(final OWLGraphWrapper graph) throws TaskException, Exception {
+				OWLOntologyManager manager = graph.getManager();
+				OWLDataFactory factory = graph.getDataFactory();
+				final OWLClass owlThing = factory.getOWLThing();
+				OWLOntology target = graph.getSourceOntology();
+				Set<OWLAxiom> added = new HashSet<OWLAxiom>();
+				OWLReasoner reasoner = null;
+				OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+				try {
+					IRI clsIRI = IRI.generateDocumentIRI();
+					OWLClass cls = factory.getOWLClass(clsIRI);
+					added.add(factory.getOWLDeclarationAxiom(cls));
+					
+					ManchesterSyntaxTool tool = new ManchesterSyntaxTool(target, null);
+					OWLClassExpression expression = tool.parseManchesterExpression(expr);
+					added.add(factory.getOWLEquivalentClassesAxiom(cls, expression));
+					
+					manager.addAxioms(target, added);
+					
+					reasoner = reasonerFactory.createReasoner(target);
+					
+					final Set<OWLClass> equiv = reasoner.getEquivalentClasses(cls).getEntitiesMinus(cls);
+					final Set<OWLClass> direct = reasoner.getSuperClasses(cls, true).getFlattened();
+					direct.remove(owlThing);
+					final Set<OWLClass> indirect = reasoner.getSuperClasses(cls, false).getFlattened();
+					indirect.remove(owlThing);
+					assertTrue(equiv.isEmpty());
+					assertTrue(direct.size() > 0);
+					assertTrue(indirect.size() > direct.size());
+					
+				}
+				finally {
+					if (reasoner != null) {
+						reasoner.dispose();
+					}
+					if (!added.isEmpty()) {
+						manager.removeAxioms(target, added);
+					}
+				}
+			}
+		};
+		ontologyManager.runManagedTask(task);
+		if (task.getException() != null) {
+			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
+			fail(message);	
+		}
 	}
 	
 	
@@ -109,9 +175,9 @@ public class MPOntologyTest {
 	}
 	
 	@Test
-	public void test_late_onset_process() throws Exception {
-		String id = "GO:0044691"; // tooth eruption
-		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "late");
+	public void test_delayed_onset_process() throws Exception {
+		String id = "GO:0061648"; // tooth replacement
+		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "delayed");
 		render(output);
 	}
 	
@@ -124,6 +190,7 @@ public class MPOntologyTest {
 	}
 	
 	@Test
+	@Ignore("Deactivated template using chebi, loading full chebi leads to broken inferences!")
 	public void test_abnormal_level() throws Exception {
 		String chemical = "CHEBI:17234"; // glucose
 		String location = "UBERON:0002106"; // spleen
@@ -132,6 +199,14 @@ public class MPOntologyTest {
 		assertEquals(terms.get(0).getError(), 3, terms.size());
 		for (TermGenerationOutput output : terms) {
 			assertNull(output.getError(), output.getError());
+			Set<OWLAxiom> axioms = output.getOwlAxioms();
+			int subClassCount = 0;
+			for (OWLAxiom axiom : axioms) {
+				if (axiom instanceof OWLSubClassOfAxiom) {
+					subClassCount+= 1;
+				}
+			}
+			assertTrue(subClassCount > 0);
 			render(output);
 		}
 	}
@@ -142,6 +217,14 @@ public class MPOntologyTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		assertNull(output.getError(), output.getError());
+		Set<OWLAxiom> axioms = output.getOwlAxioms();
+		int subClassCount = 0;
+		for (OWLAxiom axiom : axioms) {
+			if (axiom instanceof OWLSubClassOfAxiom) {
+				subClassCount+= 1;
+			}
+		}
+		assertTrue(subClassCount > 0);
 		return output;
 	}
 	
@@ -151,6 +234,14 @@ public class MPOntologyTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		assertNull(output.getError(), output.getError());
+		Set<OWLAxiom> axioms = output.getOwlAxioms();
+		int subClassCount = 0;
+		for (OWLAxiom axiom : axioms) {
+			if (axiom instanceof OWLSubClassOfAxiom) {
+				subClassCount+= 1;
+			}
+		}
+		assertTrue(subClassCount > 0);
 		return output;
 	}
 	

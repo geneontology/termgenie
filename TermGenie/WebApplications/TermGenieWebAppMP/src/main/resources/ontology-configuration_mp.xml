@@ -8,7 +8,7 @@
 			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
 			<support>http://purl.obolibrary.org/obo/cl.owl</support>
 			<support>http://purl.obolibrary.org/obo/pato.owl</support>
-			<support>http://purl.obolibrary.org/obo/chebi.owl</support>
+			<!-- <support>http://purl.obolibrary.org/obo/chebi.owl</support> -->
 		</supports>
 		<roots>
 			<root>MP:0000001</root>		<!-- mammalian phenotype -->
@@ -18,7 +18,7 @@
 			<root>CL:0000003</root> 	<!-- native cell -->
 			<root>UBERON:0001062</root> <!-- anatomical entity -->
 			<root>PATO:0000001</root>	<!-- quality -->
-			<root>CHEBI:24431</root>	<!-- chemical entity -->
+			<!-- <root>CHEBI:24431</root> -->	<!-- chemical entity -->
 		</roots>
 		<ontologybranch name="entities">
 			<roots>
@@ -43,11 +43,13 @@
 				<root>MP:0000001</root> <!-- mammalian phenotype -->
 			</roots>
 		</ontologybranch>
+		<!-- 
 		<ontologybranch name="chemicals">
 			<roots>
-				<root>CHEBI:24431</root> <!-- chemical entity -->
+				<root>CHEBI:24431</root> <!- - chemical entity - ->
 			</roots>
 		</ontologybranch>
+		 -->
 		<ontologybranch name="uberon_location">
 			<roots>
 				<root>UBERON:0001062</root> <!-- anatomical entity -->
