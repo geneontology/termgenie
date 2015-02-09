@@ -4,13 +4,13 @@ function late_early_onset_process() {
 	var process = getSingleTerm('process', MP);
 	var prefixes = getInputs('process');
 	var count = 0;
-	if (termgenie.contains(prefixes, 'late')) {
+	if (termgenie.contains(prefixes, 'delayed')) {
 		var late = MP.getOWLClassByIdentifier('PATO:0000502');
 		if (late === null) {
 			error('Could not find class PATO:0000502');
 			return;
 		}
-		var success = internal_abnormal_onset_process(process, late, 'late');
+		var success = internal_abnormal_onset_process(process, late, 'delayed');
 		if (success === true) {
 			count += 1;
 		}
@@ -53,7 +53,7 @@ function internal_abnormal_onset_process(process, onsetQuality, onsetLabel) {
 	var definition = "The "+onsetLabel+" onset of the process of " + refname(process, MP) + ".";
 	var synonyms = null;
 	// 'has part' some (‘onset quality’ and (‘inheres in part of’) some ‘process) and (‘has component’ some abnormal))
-	var mdef = createMDef("('has part' some (?Q and 'inheres in part of' some ?P and 'has component' some PATO_0000460))");
+	var mdef = createMDef("('has part' some (?Q and 'inheres in' some ?P and 'has component' some PATO_0000460))");
 	mdef.addParameter('Q', onsetQuality, MP);
 	mdef.addParameter('P', process, MP);
 	return createTerm(label, definition, synonyms, mdef);
