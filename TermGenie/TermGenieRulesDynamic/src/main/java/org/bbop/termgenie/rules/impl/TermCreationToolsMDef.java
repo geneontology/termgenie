@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
 import org.bbop.termgenie.core.rules.SharedReasoner;
@@ -204,6 +205,26 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		}
 		OWLReasoner reasoner = factory.createReasoner(targetOntology, state);
 		try {
+			ProcessState.addMessage(state, "Check for ontology consistency.");
+			if (reasoner.isConsistent() == false) {
+				throw new RelationCreationException("The ontology is inconsistent. No safe inferences are possible.");
+			}
+			ProcessState.addMessage(state, "Check for unsatisfiable classes");
+			final Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
+			if (unsatisfiable.isEmpty() == false) {
+				Logger.getLogger(TermCreationToolsMDef.class).warn("Unsatisfiable classes: "+unsatisfiable);
+				if (unsatisfiable.contains(targetOntology.getOWLClass(iri))) {
+					return InferredRelations.UNSATISFIABLE;
+				}
+				StringBuilder sb = new StringBuilder();
+				for (OWLClass owlClass : unsatisfiable) {
+					if (sb.length() > 0) {
+						sb.append(", ");
+					}
+					sb.append(targetOntology.getIdentifier(owlClass));
+				}
+				throw new RelationCreationException("No safe inferences are possible. The ontology has unsatisfiable classes: "+sb);
+			}
 			RelationshipTask task;
 			if (assertInferences) {
 				task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
@@ -275,11 +296,10 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		List<String> errors = manager.checkConsistency(targetOntology);
 		if (errors != null && !errors.isEmpty()) {
 			for(String error : errors) {
-				output.add(singleError("Cannot safely create term, due to the following ontology error: "+error, input));
+				output.add(singleError("Cannot safely create term: "+error, input));
 			}
 			return false;
 		}
-		
 		ProcessState.addMessage(state, "Start creating term.");
 		final List<String> warnings = new ArrayList<String>(1);
 		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
@@ -392,14 +412,14 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	
 		try {
 			InferredRelations inferredRelations = createRelations(logicalDefinition, partOf, owlNewId, label, changeTracker);
+			if (inferredRelations.isUnsatisfiable()) {
+				output.add(singleError("Failed to create the term "+label+
+						" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
+						" The term is not satisfiable.", input));
+				return false;
+			}
 			if (inferredRelations.getEquivalentClasses() != null) {
 				for (OWLClass owlClass : inferredRelations.getEquivalentClasses()) {
-					if (owlClass.isBottomEntity()) {
-						output.add(singleError("Failed to create the term "+label+
-								" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
-								" The term is not satisfiable.", input));
-						return false;
-					}
 					output.add(singleError("Failed to create the term "+label+
 							" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
 							" The term " + targetOntology.getIdentifier(owlClass) +" '"+ targetOntology.getLabel(owlClass) +

@@ -13,12 +13,21 @@ import org.semanticweb.owlapi.model.OWLClass;
 public class InferredRelations {
 
 	public static final InferredRelations EMPTY = new InferredRelations(Collections.<Clause> emptyList(), Collections.<OWLAxiom> emptySet(), null);
+	public static final InferredRelations UNSATISFIABLE = new InferredRelations(true);
 
 	List<Clause> classRelations = null;
 	Set<OWLAxiom> classRelationAxioms = null;
 	List<Pair<Frame, Set<OWLAxiom>>> changed = null;
 	Set<OWLClass> equivalentClasses = null;
+	boolean unsatisfiable = false;
 
+	/**
+	 * @param unsatisfiable
+	 */
+	InferredRelations(boolean unsatisfiable) {
+		this.unsatisfiable = unsatisfiable;
+	}
+	
 	/**
 	 * @param equivalentClasses
 	 */
@@ -73,5 +82,12 @@ public class InferredRelations {
 	 */
 	public Set<OWLClass> getEquivalentClasses() {
 		return equivalentClasses;
+	}
+	
+	/**
+	 * @return the unsatisfiable
+	 */
+	public boolean isUnsatisfiable() {
+		return unsatisfiable;
 	}
 }
