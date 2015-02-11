@@ -25,7 +25,6 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.oboformat.model.Frame;
@@ -190,7 +189,6 @@ public class MPOntologyTest {
 	}
 	
 	@Test
-	@Ignore("Deactivated template using chebi, loading full chebi leads to broken inferences!")
 	public void test_abnormal_level() throws Exception {
 		String chemical = "CHEBI:17234"; // glucose
 		String location = "UBERON:0002106"; // spleen
