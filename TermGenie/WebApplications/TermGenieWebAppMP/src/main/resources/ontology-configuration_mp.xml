@@ -18,7 +18,7 @@
 			<root>CL:0000003</root> 	<!-- native cell -->
 			<root>UBERON:0001062</root> <!-- anatomical entity -->
 			<root>PATO:0000001</root>	<!-- quality -->
-			<!-- <root>CHEBI:24431</root> -->	<!-- chemical entity -->
+			<root>CHEBI:24431</root>	<!-- chemical entity -->
 		</roots>
 		<ontologybranch name="entities">
 			<roots>
@@ -45,7 +45,7 @@
 		</ontologybranch>
 		<ontologybranch name="chemicals">
 			<roots>
-				<root>CHEBI:24431</root> <!- - chemical entity - ->
+				<root>CHEBI:24431</root> <!-- chemical entity -->
 			</roots>
 		</ontologybranch>
 		<ontologybranch name="uberon_location">
