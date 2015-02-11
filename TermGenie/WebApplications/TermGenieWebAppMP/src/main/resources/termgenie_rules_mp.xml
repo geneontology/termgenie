@@ -121,7 +121,6 @@
 		</ruleFiles>
 	</template>
 	
-	<!-- 
 	<template name="abnormal_levels" displayname="abnormal levels">
 		<description>Template for abnormal levels of a chemical (ChEBI) in a location (UBERON)</description>
 		<obonamespace>MPheno.ontology</obonamespace>
@@ -152,5 +151,4 @@
 			<ruleFile>rules/mp/abnormal_levels.js</ruleFile>
 		</ruleFiles>
 	</template>
-	 -->
 </termgenietemplates>

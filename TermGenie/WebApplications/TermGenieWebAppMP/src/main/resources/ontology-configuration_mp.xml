@@ -43,13 +43,11 @@
 				<root>MP:0000001</root> <!-- mammalian phenotype -->
 			</roots>
 		</ontologybranch>
-		<!-- 
 		<ontologybranch name="chemicals">
 			<roots>
 				<root>CHEBI:24431</root> <!- - chemical entity - ->
 			</roots>
 		</ontologybranch>
-		 -->
 		<ontologybranch name="uberon_location">
 			<roots>
 				<root>UBERON:0001062</root> <!-- anatomical entity -->
