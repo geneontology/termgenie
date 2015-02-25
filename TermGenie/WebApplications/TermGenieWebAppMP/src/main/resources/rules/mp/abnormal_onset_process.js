@@ -52,8 +52,8 @@ function internal_abnormal_onset_process(process, onsetQuality, onsetLabel) {
 	var label = onsetLabel+ " onset of " + termname(process, MP);
 	var definition = "The "+onsetLabel+" onset of the process of " + refname(process, MP) + ".";
 	var synonyms = null;
-	// 'has part' some (‘onset quality’ and (‘inheres in part of’) some ‘process) and (‘has component’ some abnormal))
-	var mdef = createMDef("('has part' some (?Q and 'inheres in' some ?P and 'has component' some PATO_0000460))");
+	// 'has part' some ('onset quality' and 'inheres in' some 'process') and ('has modifier' some abnormal))
+	var mdef = createMDef("('has part' some (?Q and 'inheres in' some ?P and 'has modifier' some PATO_0000460))");
 	mdef.addParameter('Q', onsetQuality, MP);
 	mdef.addParameter('P', process, MP);
 	return createTerm(label, definition, synonyms, mdef);

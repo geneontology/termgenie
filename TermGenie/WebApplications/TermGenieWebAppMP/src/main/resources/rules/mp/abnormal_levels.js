@@ -53,8 +53,8 @@ function abnormal_levels_unspecific(chemical, location) {
 	var definition = "Any change in the amount of " + termname(chemical, MP) + 
 					" in the " + termname(location, MP) + ".";
 	var synonyms = null;
-	// has_part some ('quality' and inheres_in some (?chemical and part_of some ?location) and 'has component' some 'abnormal')
-	var mdef = createMDef("'has part' some ('quality' and 'inheres in' some (?chemical and 'part of' some ?location) and 'has component' some 'abnormal')");
+	// has_part some ('quality' and inheres_in some (?chemical and part_of some ?location) and 'has modifier' some 'abnormal')
+	var mdef = createMDef("'has part' some ('quality' and 'inheres in' some (?chemical and 'part of' some ?location) and 'has modifier' some 'abnormal')");
 	mdef.addParameter('chemical', chemical, MP);
 	mdef.addParameter('location', location, MP);
 	return createTerm(label, definition, synonyms, mdef);
