@@ -1770,7 +1770,7 @@ function termgenie(){
 			
 			generatedTermContainer.append('<div class="term-generation-details-heading">Proposed new terms by TermGenie</div>');
 			generatedTermContainer.append('<div class="term-generation-details-description">Your request produced the following list of term candidates:</div>');
-			generatedTermContainer.append('<div>Optional: Create an image with the generated term hierarchy: <button id="Generated-Terms-Hierarchy-Preview-Button">Generate Image</button> (Opens a new window.)</div>');
+			//generatedTermContainer.append('<div>Optional: Create an image with the generated term hierarchy: <button id="Generated-Terms-Hierarchy-Preview-Button">Generate Image</button> (Opens a new window.)</div>');
 			var layout = jQuery('<table cellpadding="5" class="termgenie-proposed-terms-table"></table>');
 			generatedTermContainer.append(layout);
 			
@@ -1790,6 +1790,7 @@ function termgenie(){
 			
 			
 			// add button to render terms in hierarchy image
+			/*
 			var renderHierarchyButton = jQuery('#Generated-Terms-Hierarchy-Preview-Button');
 			renderHierarchyButton.click(function(){
 				jsonService.renderer.visualizeGeneratedTerms({
@@ -1809,6 +1810,7 @@ function termgenie(){
 					}
 				});
 			});
+			*/
 			
 			return {
 				checkBoxes: checkBoxes,
