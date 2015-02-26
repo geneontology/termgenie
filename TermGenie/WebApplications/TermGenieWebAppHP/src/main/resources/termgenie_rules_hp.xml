@@ -22,5 +22,26 @@
 			<ruleFile>rules/hp/abnormal_morphology.js</ruleFile>
 		</ruleFiles>
 	</template>
+	<template name="abnormal_anatomy">
+		<description>Template for abnormal anatomy (UBERON)</description>
+		<obonamespace>human_phenotype</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="HP">
+					<branch>anatomy</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/hp/abnormal_anatomy.js</ruleFile>
+		</ruleFiles>
+	</template>
+
 
 </termgenietemplates>

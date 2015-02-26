@@ -43,7 +43,7 @@ public class HPOntologyTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_hp.xml", false, false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_hp.xml", true, true, null),
 				new OntologyModule("ontology-configuration_hp_test.xml"),
 				new ReasonerModule(null));
 
@@ -54,13 +54,15 @@ public class HPOntologyTest {
 	
 	@Test
 	public void testSyntax() throws Exception {
+		//final String expr = "('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))";
+		final String expr = "'has part' some (PATO_0000001 and ('inheres in' some UBERON_0012167) and ('has modifier' some PATO_0000460))";
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
-				OWLClassExpression expression = tool.parseManchesterExpression("('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))");
+				OWLClassExpression expression = tool.parseManchesterExpression(expr);
 				assertNotNull(expression);
 			}
 		};
@@ -72,12 +74,19 @@ public class HPOntologyTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	public void testAbnormalMorphology() throws Exception {
 //		String id = "UBERON:0002028"; // hindbrain, exists already
 		String id = "GO:0005791"; // rough endoplasmic reticulum
 		TermGenerationOutput output = generateSingle(getTemplate("abnormal_morphology"), id);
 		render(output);
 		
+	}
+	
+	@Test
+	public void testAbnormalAnatomy() throws Exception {
+		String id = "UBERON:0012167"; // buccal fat pad
+		TermGenerationOutput output = generateSingle(getTemplate("abnormal_anatomy"), id);
+		render(output);
 	}
 	
 	private TermGenerationOutput generateSingle(TermTemplate template, String id) {

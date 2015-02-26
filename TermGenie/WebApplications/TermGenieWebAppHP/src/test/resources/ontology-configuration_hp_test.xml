@@ -22,6 +22,11 @@
 				<root>UBERON:0001062</root> <!-- anatomical entity -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="anatomy">
+			<roots>
+				<root>UBERON:0001062</root> <!-- anatomical entity -->
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="default_hp">
 			<roots>
 				<root>HP:0000001</root> <!-- All human phenotypes -->
