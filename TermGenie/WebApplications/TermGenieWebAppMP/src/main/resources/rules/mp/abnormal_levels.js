@@ -54,7 +54,7 @@ function abnormal_levels_unspecific(chemical, location) {
 					" in the " + termname(location, MP) + ".";
 	var synonyms = null;
 	// has_part some ('quality' and inheres_in some (?chemical and part_of some ?location) and 'has modifier' some 'abnormal')
-	var mdef = createMDef("'has part' some ('quality' and 'inheres in' some (?chemical and 'part of' some ?location) and 'has modifier' some 'abnormal')");
+	var mdef = createMDef("'has part' some (PATO_0000001 and 'inheres in' some (?chemical and 'part of' some ?location) and 'has modifier' some PATO_0000460)");
 	mdef.addParameter('chemical', chemical, MP);
 	mdef.addParameter('location', location, MP);
 	return createTerm(label, definition, synonyms, mdef);
@@ -67,8 +67,8 @@ function abnormal_levels_directed(chemical, location, quality, qualityLabel) {
 	var definition = termgenie.firstToUpperCase(qualityLabel)+ " amount of " + termname(chemical, MP) + 
 					" in the " + termname(location, MP) + ".";
 	var synonyms = null;
-	// has_part some (?quality and inheres_in some (?chemical and part_of some ?location))
-	var mdef = createMDef("'has part' some (?quality and 'inheres in' some (?chemical and 'part of' some ?location))");
+	// has_part some (?quality and inheres_in some (?chemical and part_of some ?location) and 'has modifier' some 'abnormal')
+	var mdef = createMDef("'has part' some (?quality and 'inheres in' some (?chemical and 'part of' some ?location) and 'has modifier' some PATO_0000460)");
 	mdef.addParameter('chemical', chemical, MP);
 	mdef.addParameter('location', location, MP);
 	mdef.addParameter('quality', quality, MP);
