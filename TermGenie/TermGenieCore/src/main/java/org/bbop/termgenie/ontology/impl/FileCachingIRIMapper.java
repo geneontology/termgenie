@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.ContentEncodingHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
@@ -87,7 +88,7 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 	}
 
 	protected InputStream getInputStream(IRI iri) throws IOException {
-		DefaultHttpClient client = new DefaultHttpClient();
+		DefaultHttpClient client = new ContentEncodingHttpClient();
 		final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		client.setRedirectStrategy(redirectStrategy);
 		final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
