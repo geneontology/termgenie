@@ -56,8 +56,6 @@ public class BaseOntologyLoader {
 					throw exception;
 				}
 				if (owl != null) {
-					w.addSupportOntology(owl);
-					
 					try {
 						w.mergeOntology(owl);
 					} catch (Throwable exception) {
@@ -71,7 +69,6 @@ public class BaseOntologyLoader {
 				}
 			}
 		}
-		w.addSupportOntologiesFromImportsClosure();
 		
 		// throws UnknownOWLOntologyException
 		try {
