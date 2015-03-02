@@ -2,12 +2,14 @@ package org.bbop.termgenie.rules.mp;
 
 import static org.junit.Assert.*;
 
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
@@ -25,6 +27,7 @@ import org.bbop.termgenie.ontology.obo.OboWriterTools;
 import org.bbop.termgenie.ontology.obo.OwlGraphWrapperNameProvider;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.oboformat.model.Frame;
@@ -62,8 +65,31 @@ public class MPOntologyTest {
 	}
 	
 	@Test
+	@Ignore("Deactivated, reasoning seems to work now.")
+	public void writeOntologyFile() throws Exception {
+		OntologyTaskManager ontologyManager = loader.getOntologyManager();
+		OntologyTask task = new OntologyTask(){
+
+			@Override
+			protected void runCatching(OWLGraphWrapper graph) throws TaskException, Exception {
+				OWLOntology source = graph.getSourceOntology();
+				OWLOntologyManager m = graph.getManager();
+				FileOutputStream outputStream = null;
+				try {
+					outputStream = new FileOutputStream("mp-test.owl");
+					m.saveOntology(source, outputStream);
+				}
+				finally {
+					IOUtils.closeQuietly(outputStream);
+				}
+			}
+		};
+		ontologyManager.runManagedTask(task);
+	}
+	
+	@Test
 	public void testReasoning() throws Exception {
-		final String expr = "('has part' some (PATO_0000694 and 'inheres in' some GO_0001570 and 'has component' some PATO_0000460))";
+		final String expr = "('has part' some (PATO_0000694 and 'inheres in' some GO_0001570 and 'has modifier' some PATO_0000460))";
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
@@ -119,7 +145,7 @@ public class MPOntologyTest {
 	
 	@Test
 	public void testSyntax() throws Exception {
-		final String expr = "'has part' some ('quality' and 'inheres in' some (CHEBI_17234 and 'part of' some UBERON_3010346) and 'has component' some 'abnormal')";
+		final String expr = "'has part' some (PATO_0000001 and 'inheres in' some (CHEBI_17234 and 'part of' some UBERON_3010346) and 'has component' some PATO_0000460)";
 //		final String expr = "('has part' some (PATO_0000051 and 'inheres in' some UBERON_0002028 and 'has component' some PATO_0000460))";
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
@@ -142,8 +168,7 @@ public class MPOntologyTest {
 	public void test_abnormal_morphology() throws Exception {
 //		String id = "UBERON:0002028"; // hindbrain, exists already
 		String id = "GO:0005791"; // rough endoplasmic reticulum
-		TermGenerationOutput output = generateSingle(getTemplate("abnormal_morphology"), id);
-		render(output);
+		generateSingle(getTemplate("abnormal_morphology"), id);
 		
 	}
 	
@@ -154,38 +179,33 @@ public class MPOntologyTest {
 		// String id = "GO:0018488"; // aryl-aldehyde oxidase activity
 		String id = "GO:0002516"; // B cell deletion
 		// String id = "GO:0044691"; // tooth eruption, exists already MP:0000119
-		TermGenerationOutput output = generateSingle(getTemplate("abnormal_process"), id);
-		render(output);
+		generateSingle(getTemplate("abnormal_process"), id);
 	}
 	
 	@Test
 	public void test_abnormal_process_in_location() throws Exception {
 		String process = "GO:0002516"; // B cell deletion
 		String location = "UBERON:0002106"; // spleen
-		TermGenerationOutput output = generateSingleTwoFields(getTemplate("abnormal_process_in_location"), process, location);
-		render(output);
+		generateSingleTwoFields(getTemplate("abnormal_process_in_location"), process, location);
 	}
 	
 	@Test
 	public void test_early_onset_process() throws Exception {
-		String id = "GO:0044691"; // tooth eruption
-		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "early");
-		render(output);
+		String id = "GO:0061648"; // tooth replacement
+		generateSingle(getTemplate("late_early_onset_process"), id, "early");
 	}
 	
 	@Test
 	public void test_delayed_onset_process() throws Exception {
 		String id = "GO:0061648"; // tooth replacement
-		TermGenerationOutput output = generateSingle(getTemplate("late_early_onset_process"), id, "delayed");
-		render(output);
+		generateSingle(getTemplate("late_early_onset_process"), id, "delayed");
 	}
 	
 	@Test
 	public void test_abnormal_onset_process() throws Exception {
 		String process = "GO:0044691"; // tooth eruption
 		String onset = "PATO:0001484"; // recent
-		TermGenerationOutput output = generateSingleTwoFields(getTemplate("abnormal_onset_process"), onset, process);
-		render(output);
+		generateSingleTwoFields(getTemplate("abnormal_onset_process"), onset, process);
 	}
 	
 	@Test
@@ -204,12 +224,12 @@ public class MPOntologyTest {
 					subClassCount+= 1;
 				}
 			}
-			assertTrue(subClassCount > 0);
 			render(output);
+			assertTrue(subClassCount > 0);
 		}
 	}
 	
-	private TermGenerationOutput generateSingle(TermTemplate template, String id, String...prefixes) {
+	private void generateSingle(TermTemplate template, String id, String...prefixes) {
 		List<TermGenerationOutput> list = generate(template, Arrays.asList(id), prefixes);
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -222,11 +242,11 @@ public class MPOntologyTest {
 				subClassCount+= 1;
 			}
 		}
+		render(output);
 		assertTrue(subClassCount > 0);
-		return output;
 	}
 	
-	private TermGenerationOutput generateSingleTwoFields(TermTemplate template, String...fields) {
+	private void generateSingleTwoFields(TermTemplate template, String...fields) {
 		List<TermGenerationOutput> list = generate(template, Arrays.asList(fields));
 		assertNotNull(list);
 		assertEquals(1, list.size());
@@ -239,8 +259,8 @@ public class MPOntologyTest {
 				subClassCount+= 1;
 			}
 		}
+		render(output);
 		assertTrue(subClassCount > 0);
-		return output;
 	}
 	
 	private List<TermGenerationOutput> generate(TermTemplate template, List<String> values, String...prefixes) {
@@ -275,7 +295,7 @@ public class MPOntologyTest {
 		throw new RuntimeException("No template found with name: "+name);
 	}
 	
-	private void render(TermGenerationOutput output) throws InvalidManagedInstanceException  {
+	private void render(TermGenerationOutput output) {
 		System.out.println("-----------");
 		Set<OWLAxiom> axioms = output.getOwlAxioms();
 		for (OWLAxiom owlAxiom : axioms) {
@@ -294,7 +314,11 @@ public class MPOntologyTest {
 				System.out.println("-----------");
 			}
 		};
-		ontologyManager.runManagedTask(task);
+		try {
+			ontologyManager.runManagedTask(task);
+		} catch (InvalidManagedInstanceException exception) {
+			throw new RuntimeException(exception);
+		}
 		if (task.getException() != null) {
 			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
 			fail(message);	
