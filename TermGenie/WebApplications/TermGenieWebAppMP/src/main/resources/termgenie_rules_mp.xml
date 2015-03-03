@@ -70,6 +70,32 @@
 		</ruleFiles>
 	</template>
 	
+	<template name="generic_entity_quality" displayname="generic EQ">
+		<description>Generic template for entity and quality</description>
+		<obonamespace>MPheno.ontology</obonamespace>
+		<fields>
+			<field name="entity" required="true">
+				<ontology name="MP">
+					<branch>occurent</branch>
+				</ontology>
+			</field>
+			<field name="quality" required="true">
+				<ontology name="MP">
+					<branch>pato_quality</branch>
+				</ontology>
+			</field>
+			<field name="Name" />
+			<field name="Definition" />
+			<field name="DefX_Ref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" />
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/mp/generic_entity_quality.js</ruleFile>
+		</ruleFiles>
+	</template>
+	
 	<template name="late_early_onset_process" displayname="delayed/early onset of process">
 		<description>Template for delayed/early onset of processes. This template will create separate classes, not a class that is both.</description>
 		<obonamespace>MPheno.ontology</obonamespace>

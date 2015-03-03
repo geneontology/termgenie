@@ -38,6 +38,11 @@
 				<root>PATO:0002325</root> <!-- onset quality -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="pato_quality">
+			<roots>
+				<root>PATO:0000001</root> <!-- quality -->
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="default_mp">
 			<roots>
 				<root>MP:0000001</root> <!-- mammalian phenotype -->

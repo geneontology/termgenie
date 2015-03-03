@@ -165,11 +165,18 @@ public class MPOntologyTest {
 	}
 	
 	@Test
+	public void test_generic_entity_quality() throws Exception {
+		//String e = "UBERON:0002106"; // spleen, exists already with same log def
+		String e = "UBERON:0002110"; // gall bladder
+		String q = "PATO:0000470"; // increased amount
+		generateSingleTwoFields(getTemplate("generic_entity_quality"), e, q);
+	}
+	
+	@Test
 	public void test_abnormal_morphology() throws Exception {
 //		String id = "UBERON:0002028"; // hindbrain, exists already
 		String id = "GO:0005791"; // rough endoplasmic reticulum
 		generateSingle(getTemplate("abnormal_morphology"), id);
-		
 	}
 	
 	@Test
