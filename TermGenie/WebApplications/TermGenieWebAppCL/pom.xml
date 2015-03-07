@@ -24,11 +24,11 @@
 	</build>
 
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-apibinding</artifactId>
 			<version>3.4.2</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieJQuery</artifactId>

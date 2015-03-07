@@ -9,12 +9,12 @@
 	<name>TermGeniePersistence</name>
 	<description>Persistence Layer for TermGenie</description>
 	<properties>
-		<openjpa.version>2.1.1</openjpa.version>
+		<openjpa.version>2.2.2</openjpa.version>
 	</properties>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa-maven-plugin</artifactId>
 				<configuration>
 	                <includes>**/entities/*.class</includes>
@@ -22,7 +22,7 @@
 	                <addDefaultConstructor>true</addDefaultConstructor>
 	                <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 	            </configuration>
-				<version>1.2</version>
+				<version>${openjpa.version}</version>
 				<executions>
 	                <execution>
 	                    <id>enhancer</id>
@@ -53,9 +53,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
+										<groupId>org.apache.openjpa</groupId>
 										<artifactId>openjpa-maven-plugin</artifactId>
-										<versionRange>[1.2,)</versionRange>
+										<versionRange>[2.2,)</versionRange>
 										<goals>
 											<goal>enhance</goal>
 										</goals>

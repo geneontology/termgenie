@@ -76,7 +76,7 @@
 		<fields>
 			<field name="entity" required="true">
 				<ontology name="MP">
-					<branch>occurent</branch>
+					<branch>entities</branch>
 				</ontology>
 			</field>
 			<field name="quality" required="true">
