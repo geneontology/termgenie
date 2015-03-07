@@ -251,10 +251,10 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 					entry.setCommitMessage(item.getCommitMessage());
 					entry.setEmail(item.getEmail());
 					if (useOboDiff) {
-						entry.setDiffs(createJsonDiffs(item, oboDoc, provider));
+						entry.setDiffs(createJsonDiffs(item, oboDoc, provider, graph));
 					}
 					else {
-						entry.setDiffs(createJsonOwlDiffs(item));
+						entry.setDiffs(createJsonOwlDiffs(item, graph));
 					}
 					
 					result.add(entry);
@@ -265,7 +265,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		}
 	}
 
-	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc, NameProvider nameProvider) throws OBOFormatParserException {
+	private List<JsonDiff> createJsonDiffs(CommitHistoryItem item, OBODoc oboDoc, NameProvider nameProvider, OWLGraphWrapper graph) throws OBOFormatParserException {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {
@@ -283,6 +283,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				try {
 					jsonDiff.setDiff(OboWriterTools.writeTerm(term.getId(), oboDoc, nameProvider));
 					jsonDiff.setOwlAxioms(term.getAxioms());
+					jsonDiff.setPrettyOwl(OwlStringTools.renderPretty(OwlStringTools.translateStringToAxioms(term.getAxioms()), graph));
 					result.add(jsonDiff);
 				} catch (IOException exception) {
 					logger.error("Could not create diff for pending commit", exception);
@@ -298,7 +299,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 		return null;
 	}
 	
-	private List<JsonDiff> createJsonOwlDiffs(CommitHistoryItem item) {
+	private List<JsonDiff> createJsonOwlDiffs(CommitHistoryItem item, OWLGraphWrapper graph) {
 		List<JsonDiff> result = new ArrayList<JsonDiff>();
 		List<CommitedOntologyTerm> terms = item.getTerms();
 		for (CommitedOntologyTerm term : terms) {
@@ -310,6 +311,7 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 			jsonDiff.setObsolete(OwlTools.isObsolete(axioms));
 			jsonDiff.setPattern(term.getPattern());
 			jsonDiff.setOwlAxioms(term.getAxioms());
+			jsonDiff.setPrettyOwl(OwlStringTools.renderPretty(axioms, graph));
 			result.add(jsonDiff);
 		}
 		if (!result.isEmpty()) {

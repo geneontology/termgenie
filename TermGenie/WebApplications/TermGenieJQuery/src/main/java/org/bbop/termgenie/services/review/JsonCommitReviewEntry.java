@@ -126,6 +126,7 @@ public class JsonCommitReviewEntry {
 		private String obsoleteComment = null;
 		private String diff;
 		private String owlAxioms;
+		private String prettyOwl;
 		private String pattern;
 
 		private List<JsonChange> relations = null;
@@ -285,6 +286,22 @@ public class JsonCommitReviewEntry {
 		 */
 		public void setPattern(String pattern) {
 			this.pattern = pattern;
+		}
+
+		
+		/**
+		 * @return the prettyOwl
+		 */
+		public String getPrettyOwl() {
+			return prettyOwl;
+		}
+
+		
+		/**
+		 * @param prettyOwl the prettyOwl to set
+		 */
+		public void setPrettyOwl(String prettyOwl) {
+			this.prettyOwl = prettyOwl;
 		}
 	}
 }

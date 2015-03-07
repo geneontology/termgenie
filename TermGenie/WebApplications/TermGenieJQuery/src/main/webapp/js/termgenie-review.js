@@ -256,9 +256,16 @@ function TermGenieReview(){
 				if (diff.diff !== undefined) {
 					preDiff = jQuery('<pre>'+diff.diff+'</pre>');	
 				}
+				else if (diff.prettyOwl !== undefined ) {
+					var compactOWL = makeCompactOwl(diff.prettyOwl);
+					preDiff = jQuery('<pre>'+compactOWL+'</pre>');
+				}
 				else if (diff.owlAxioms !== undefined ) {
 					var compactOWL = makeCompactOwl(diff.owlAxioms);
 					preDiff = jQuery('<pre>'+compactOWL+'</pre>');
+				}
+				else {
+					preDiff = jQuery('<pre></pre>');	
 				}
 				var operation = jQuery('<div></div>');
 				if (diff.operation === 0) {

@@ -31,6 +31,9 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnloadableImportException;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 
+import owltools.graph.OWLGraphWrapper;
+import owltools.io.OWLPrettyPrinter;
+
 
 public class OwlStringTools {
 	
@@ -110,5 +113,15 @@ public class OwlStringTools {
 			}
 		}
 		return replaced;
+	}
+	
+	public static String renderPretty(Set<OWLAxiom> axioms, OWLGraphWrapper graph) {
+		// OWLPrettyPrinter pp = new OWLPrettyPrinter(graph);
+		OWLPrettyPrinter pp = OWLPrettyPrinter.createManchesterSyntaxPrettyPrinter(graph);
+		StringBuilder sb = new StringBuilder();
+		for (OWLAxiom axiom : axioms) {
+			sb.append(pp.render(axiom)).append("\n");
+		}
+		return sb.toString();
 	}
 }
