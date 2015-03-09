@@ -296,7 +296,8 @@ function TermGenieReview(){
 						operation.append(editButton);
 						editButton.click(function(){
 							var editDialog = jQuery('<div style="width:100%;heigth:100%;display: block;"></div>');
-							var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: nowrap;">'+diff.diff+'</textarea>');
+							var editField = jQuery('<textarea rows="16" cols="40" style="width:100%;heigth:250px;font-family:monospace;white-space: pre;"></textarea>');
+							editField.val(diff.diff);
 							editDialog.append(editField);
 							editDialog.dialog({
 								title: "Term Editor",
