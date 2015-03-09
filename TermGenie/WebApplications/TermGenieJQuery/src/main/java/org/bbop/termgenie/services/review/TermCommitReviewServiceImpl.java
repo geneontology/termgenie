@@ -46,6 +46,7 @@ import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
+import org.obolibrary.obo2owl.OWLAPIOwl2Obo;
 import org.obolibrary.obo2owl.Owl2Obo;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
@@ -239,8 +240,19 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 				OBODoc oboDoc = null;
 				if (useOboDiff) {
 					Owl2Obo owl2Obo = new Owl2Obo();
-					oboDoc = owl2Obo.convert(graph.getSourceOntology());
-					provider = new OboAndOwlNameProvider(oboDoc, graph);
+					// de-activate logging for oboLogger translation errors are not important
+					// reset to previous level after conversion
+					final java.util.logging.Logger oboLogger = java.util.logging.Logger.getLogger(OWLAPIOwl2Obo.class.getName());
+					final java.util.logging.Level oboLevel = oboLogger.getLevel();
+					oboLogger.setLevel(java.util.logging.Level.OFF);
+					try {
+						oboDoc = owl2Obo.convert(graph.getSourceOntology());
+						provider = new OboAndOwlNameProvider(oboDoc, graph);
+					}
+					finally {
+						// set old level
+						oboLogger.setLevel(oboLevel);
+					}
 				}
 				result = new ArrayList<JsonCommitReviewEntry>(items.size());
 				for (CommitHistoryItem item : items) {
