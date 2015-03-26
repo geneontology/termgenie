@@ -53,6 +53,7 @@
 	<modules>
 		<module>TermGenieJQuery</module>
 		<module>TermGenieWebAppGO</module>
+		<module>TermGenieWebAppGOTest</module>
 		<module>TermGenieWebAppCL</module>
 		<module>TermGenieWebAppCLTest</module>
 		<module>TermGenieWebAppUberon</module>
