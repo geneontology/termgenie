@@ -79,7 +79,6 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
     private final TypeChecker typeChecker;
     private volatile boolean locked;
 
-    @SuppressWarnings("unchecked")
     public InjectingJsonRpcExecutor(Injector injector) {
         this.injector = injector;
 		this.typeChecker = new InjectingGsonTypeChecker();
@@ -91,7 +90,8 @@ public final class InjectingJsonRpcExecutor implements RpcIntroSpection {
         return locked;
     }
 
-    public <T> void addHandler(String name, T handler, Class<T>... classes) {
+    @SafeVarargs
+    public final <T> void addHandler(String name, T handler, Class<T>... classes) {
         if (locked) {
             throw new JsonRpcException("executor has been locked, can't add more handlers");
         }

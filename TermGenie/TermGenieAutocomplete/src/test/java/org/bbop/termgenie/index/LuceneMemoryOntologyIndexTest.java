@@ -34,6 +34,7 @@ public class LuceneMemoryOntologyIndexTest {
 			String label = g.getLabel(owlObject);
 			System.out.println(id + "  " + searchResult.score + "  " + label);
 		}
+		index.close();
 		assertEquals(2, results.size());
 	}
 

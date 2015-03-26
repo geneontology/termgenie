@@ -32,7 +32,6 @@ public class OntologyIdStoreTest {
 		testOntologyIdStore(EntityManagerFactoryProvider.H2);
 	}
 
-	@SuppressWarnings("null")
 	private void testOntologyIdStore(String label) throws Exception {
 		EntityManagerFactory emf = provider.createFactory(folder.newFolder(), label, EntityManagerFactoryProvider.MODE_SECONDARY_IDS, "OntologyIdStore");
 		assertNotNull(emf);

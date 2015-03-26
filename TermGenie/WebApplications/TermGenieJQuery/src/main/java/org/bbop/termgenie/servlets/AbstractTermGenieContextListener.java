@@ -56,7 +56,6 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 
 		@Provides
 		@Singleton
-		@SuppressWarnings("unchecked")
 		protected InjectingJsonRpcExecutor providesInjectingJsonRpcExecutor(GenerateTermsService generate,
 				OntologyService ontology,
 				TermCommitService commit,

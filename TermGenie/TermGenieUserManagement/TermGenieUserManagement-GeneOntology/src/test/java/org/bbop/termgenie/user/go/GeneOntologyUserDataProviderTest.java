@@ -8,6 +8,7 @@ import org.bbop.termgenie.user.UserData;
 import org.junit.Test;
 
 
+@Deprecated
 public class GeneOntologyUserDataProviderTest {
 
 	@Test
