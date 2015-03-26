@@ -53,7 +53,7 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 	private final boolean loadExternal;
 
 	public TermGenieWebAppGOTestContextListener() {
-		super("TermGenieWebAppGOMiniSVNConfigFile");
+		super("TermGenieWebAppGOTestConfigFile");
 		try {
 			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
 			ontologyFilePath = "editors/gene_ontology_write.obo";
