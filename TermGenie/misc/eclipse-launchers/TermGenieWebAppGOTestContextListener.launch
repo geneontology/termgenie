@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/TermGenieWebAppHPTest/src/main/java/org/bbop/termgenie/servlets/TermGenieWebAppHPTestContextListener.java"/>
+<listEntry value="/TermGenieWebAppGOTest/src/main/java/org/bbop/termgenie/servlets/TermGenieWebAppGOTestContextListener.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.bbop.termgenie.servlets.TermGenieWebAppHPTestContextListener"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TermGenieWebAppHPTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.bbop.termgenie.servlets.TermGenieWebAppGOTestContextListener"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TermGenieWebAppGOTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx4G -Dtermgenie.TermGenieWebAppHPConfigFile=./hp-config.properties -Djava.awt.headless=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx3G -Dtermgenie.TermGenieWebAppGOTestConfigFile=./go-config.properties -Djava.awt.headless=true"/>
 </launchConfiguration>
