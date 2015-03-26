@@ -14,10 +14,6 @@ import com.google.inject.name.Named;
 
 public class OldTestOntologyModule extends OntologyModule {
 
-	public static OntologyModule chemical() {
-		return new OldTestOntologyModule("ontology-configuration_chemical.xml");
-	}
-	
 	public OldTestOntologyModule(String config) {
 		super(config);
 	}
