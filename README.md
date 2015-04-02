@@ -25,9 +25,8 @@ TermGenie allows biocurators to generate new classes based on formally specified
 TermGenie is a web-based class-generation system that complements traditional ontology development tools. All classes added through pre-defined templates are guaranteed to have OWL equivalence axioms that are used for automatic classification and in some cases inter-ontology linkage. At the same time, the system is simple and intuitive and can be used by most biocurators without extensive training. 
 
 #Technical descriptions
-* Building TermGenie: MavenHowTo
-* Running TermGenie in Eclipse guide: RunTermGenieInEclipse
-* General Description of TermGenie and its modules: TermGenieProjectOverview
+
+For details on how to build TermGenie using Maven, run TermGenie in Eclipse for debugging, or a description of TermGenie and its modules, please check the wiki pages of the project.
 
 #TermGenie Instances
 Instances exist for the following ontologies:
