@@ -166,24 +166,28 @@
             <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
-	<!-- 
 	<template name="regulation_by">
 		<description>processes regulated by other regulating processes
 		</description>
 		<hint>
 		Example: regulation of signal transduction by receptor internalization
-&lt;br/&gt;[results in] : regulation of signal transduction   [** MUST BE A REGULATION TERM **]
-&lt;br/&gt;[regulator] : receptor internalization 
+&lt;br/&gt;[target] : signal transduction   [** MUST NOT BE A REGULATION TERM **]
+&lt;br/&gt;[source] : receptor internalization 
 		</hint>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000063</definition-xref>
 		<fields>
-			<field name="process" required="true" label="results in">
+			<field name="target" required="true">
 				<ontology name="GeneOntology">
-					<branch>regulation of biological process</branch>
+					<branch>BP_or_MF</branch>
 				</ontology>
+				<prefixes preselected="false">
+					<prefix>regulation</prefix>
+					<prefix>negative_regulation</prefix>
+					<prefix>positive_regulation</prefix>
+				</prefixes>
 			</field>
-			<field name="regulator" required="true">
+			<field name="source" required="true">
 				<ontology name="GeneOntology">
 					<branch>biological_process</branch>
 				</ontology>
@@ -204,7 +208,6 @@
             <category>Linked Ontologies/GO to GO</category>
 		</categories>
 	</template>
-	 -->
 	<template name="part_of_cell_component">
 		<description>cell components part of other cell components
 		</description>

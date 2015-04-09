@@ -30,14 +30,15 @@
 				<root>GO:0003674</root>
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="BP_or_MF">
+			<roots>
+				<root>GO:0008150</root>
+				<root>GO:0003674</root>
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="cellular_component">
 			<roots>
 				<root>GO:0005575</root>
-			</roots>
-		</ontologybranch>
-		<ontologybranch name="regulation of biological process">
-			<roots>
-				<root>GO:0050789</root>
 			</roots>
 		</ontologybranch>
 		<ontologybranch name="chebi">
