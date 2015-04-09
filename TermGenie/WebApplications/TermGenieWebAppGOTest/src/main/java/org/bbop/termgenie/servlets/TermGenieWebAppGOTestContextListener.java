@@ -63,7 +63,7 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 			// editors/gene_ontology_write.obo
 			mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go.obo"), ontologyFilePath);
 			
-			catalogXML = "catalog-v001.xml";
+			catalogXML = "editors/catalog-v001.xml";
 			loadExternal = true;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
