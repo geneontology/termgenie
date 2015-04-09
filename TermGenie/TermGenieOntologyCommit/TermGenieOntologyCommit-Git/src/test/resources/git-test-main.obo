@@ -1,0 +1,68 @@
+format-version: 1.2
+ontology: foo
+
+[Term]
+id: FOO:0001
+name: foo-0001
+
+[Term]
+id: FOO:0002
+name: foo-0002
+is_a: FOO:0001
+
+[Term]
+id: FOO:0003
+name: foo-0003
+is_a: FOO:0001
+
+[Term]
+id: FOO:0004
+name: foo-0004
+is_a: FOO:0003
+
+[Term]
+id: FOO:2000
+name: foo-2000
+is_a: FOO:0003
+intersection_of: FOO:0003 
+intersection_of: part_of GOO:0001
+
+[Term]
+id: FOO:8000
+name: foo-8000
+is_a: FOO:0003
+intersection_of: FOO:0003 
+intersection_of: part_of GOO:8000
+
+[Term]
+id: FOO:8001
+name: foo-8001
+is_a: FOO:8000
+intersection_of: FOO:8000
+intersection_of: part_of GOO:8001
+
+[Term]
+id: FOO:8002
+name: foo-8002
+is_a: FOO:8001
+intersection_of: FOO:8001
+intersection_of: part_of GOO:8002
+
+[Term]
+id: FOO:9000
+name: foo-9000
+
+[Term]
+id: FOO:9001
+name: foo-9001
+
+[Typedef]
+id: part_of
+name: part_of
+xref: BFO:0000050
+is_transitive: true
+
+[Typedef]
+id: has_participant
+name: has participant
+xref: BFO:0000057
