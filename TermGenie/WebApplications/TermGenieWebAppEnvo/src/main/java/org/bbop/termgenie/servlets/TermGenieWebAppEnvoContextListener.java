@@ -17,9 +17,9 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
+import org.bbop.termgenie.ontology.git.CommitGitUserPasswdModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -65,24 +65,22 @@ public class TermGenieWebAppEnvoContextListener extends AbstractTermGenieContext
 	@Override
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_envo.xml";
-		String repositoryURL = "https://envo.googlecode.com/svn/trunk/src/envo";
-		String svnUserName = null; // no default value
-		boolean loadExternal = false;
-		String catalogXML = "catalog-v001.xml";
+		String repositoryURL = "https://github.com/EnvironmentOntology/envo.git";
+		String catalogXML = "src/envo/catalog-v001.xml";
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
 		// http://purl.obolibrary.org/obo/envo.owl ->  envo-edit.owl
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/envo.owl"), "envo-edit.owl");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/envo.owl"), "src/envo/envo-edit.owl");
 		
 		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
 		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 		
-		SvnAwareOntologyModule m = SvnAwareOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, svnUserName);
-		m.setSvnAwareRepositoryURL(repositoryURL);
-		m.setSvnAwareLoadExternal(loadExternal);
-		m.setSvnAwareCatalogXML(catalogXML);
-		m.setSvnAwareMappedIRIs(mappedIRIs);
+		// no need to authenticate for the read-only loads
+		GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+		m.setGitAwareRepositoryURL(repositoryURL);
+		m.setGitAwareCatalogXML(catalogXML);
+		m.setGitAwareMappedIRIs(mappedIRIs);
 		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
 		return m;
 	}
@@ -97,13 +95,12 @@ public class TermGenieWebAppEnvoContextListener extends AbstractTermGenieContext
 	@Override
 	protected IOCModule getCommitModule() {
         
-		String repositoryURL = "https://envo.googlecode.com/svn/trunk/src/envo";
-		String remoteTargetFile = "envo-edit.owl";
-		String catalogXml = "catalog-v001.xml";
-		String svnUserName = null; // no default value
-		boolean loadExternal = false;
+		String repositoryURL = "https://github.com/EnvironmentOntology/envo.git";
+		String remoteTargetFile = "src/envo/envo-edit.owl";
+		String catalogXml = "src/envo/catalog-v001.xml";
+		String gitUserName = null; // no default value
 		
-		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, svnUserName, applicationProperties, loadExternal);
+		return CommitGitUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, gitUserName, applicationProperties);
 	}
 	
 	@Override

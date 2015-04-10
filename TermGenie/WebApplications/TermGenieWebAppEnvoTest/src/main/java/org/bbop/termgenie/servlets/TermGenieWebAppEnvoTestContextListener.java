@@ -8,8 +8,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
+import org.bbop.termgenie.ontology.git.CommitGitAnonymousModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.startup.JettyTestStartup;
 import org.semanticweb.owlapi.model.IRI;
@@ -26,20 +26,20 @@ public class TermGenieWebAppEnvoTestContextListener extends TermGenieWebAppEnvoC
 		int port = 8080;
 		String contextPath = "/termgenie-envo";
 		String webappPath = "work/ant-webapp";
-		java.util.logging.Logger.getLogger("com.sun.net.ssl").setLevel(java.util.logging.Level.ALL);
+//		java.util.logging.Logger.getLogger("com.sun.net.ssl").setLevel(java.util.logging.Level.ALL);
 		JettyTestStartup.startup(port, contextPath, webappPath);
 	}
 	
-	private final String localSVNFolder;
-	private final String catalogXML = "catalog-v001.xml";
-	private final boolean loadExternal = false;
+	private final String localGitFolder;
+	private final String catalogXML = "src/envo/catalog-v001.xml";
+	private final String gitOntologyFileName = "src/envo/envo-edit.owl";
 	
 	private final boolean cleanDownloadCache = false;
 	
 	
 	public TermGenieWebAppEnvoTestContextListener() {
 		try {
-			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
+			localGitFolder = new File("./work/envo").getCanonicalPath();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -49,20 +49,19 @@ public class TermGenieWebAppEnvoTestContextListener extends TermGenieWebAppEnvoC
 	protected IOCModule getOntologyModule() {
 		try {
 			String configFile = "ontology-configuration_envo.xml";
-			File localSVNCache = new File("./work/read-only-svn-checkout").getCanonicalFile();
-			localSVNCache.mkdirs();
+			File localGitCache = new File("./work/read-only-git-checkout").getCanonicalFile();
+			localGitCache.mkdirs();
 			if (cleanDownloadCache) {
-				FileUtils.cleanDirectory(localSVNCache);
+				FileUtils.cleanDirectory(localGitCache);
 			}
 			File fileCache = new File("./work/termgenie-download-cache").getCanonicalFile();
 
-			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule(configFile , applicationProperties);
-			m.setSvnAwareRepositoryURL(localSVNFolder);
-			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
-			m.setSvnAwareCatalogXML(catalogXML);
-			m.setSvnAwareLoadExternal(loadExternal);
+			GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+			m.setGitAwareRepositoryURL(localGitFolder);
+			m.setGitAwareWorkFolder(localGitCache.getAbsolutePath());
+			m.setGitAwareCatalogXML(catalogXML);
 			m.setFileCache(fileCache);
-			m.setSvnAwareMappedIRIs(Collections.singletonMap(IRI.create("http://purl.obolibrary.org/obo/envo.owl"), "envo-edit.owl"));
+			m.setGitAwareMappedIRIs(Collections.singletonMap(IRI.create("http://purl.obolibrary.org/obo/envo.owl"), gitOntologyFileName));
 			return m;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -72,7 +71,8 @@ public class TermGenieWebAppEnvoTestContextListener extends TermGenieWebAppEnvoC
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return CommitSvnAnonymousModule.createOwlModule(localSVNFolder, "envo-edit.owl", catalogXML, applicationProperties, loadExternal);
+		
+		return CommitGitAnonymousModule.createOwlModule(localGitFolder, gitOntologyFileName, catalogXML, applicationProperties);
 	}
 	
 	@Override

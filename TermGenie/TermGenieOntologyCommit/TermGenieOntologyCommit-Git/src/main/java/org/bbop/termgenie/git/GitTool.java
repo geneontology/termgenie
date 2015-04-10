@@ -2,7 +2,9 @@ package org.bbop.termgenie.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
@@ -134,6 +136,11 @@ public class GitTool implements VersionControlAdapter {
 	@Override
 	public boolean checkout(List<String> targetFiles, ProcessState state) throws IOException {
 		try {
+			if (ProcessState.NO != state || LOGGER.isInfoEnabled()) {
+				String msg = "Start git clone for files: "+targetFiles+" URL: "+repositoryURL;
+				LOGGER.info(msg+" into folder: "+targetFolder);
+				ProcessState.addMessage(state, msg);
+			}
 			// git clone
 			CloneCommand clone = Git.cloneRepository()
 			        .setURI(repositoryURL)
@@ -149,6 +156,11 @@ public class GitTool implements VersionControlAdapter {
 					return false;
 				}
 			}
+			if (ProcessState.NO != state || LOGGER.isInfoEnabled()) {
+				String msg = "Finished checkout for files: "+targetFiles;
+				ProcessState.addMessage(state, msg);
+				LOGGER.info(msg);
+			}
 			return true;
 		} catch (InvalidRemoteException exception) {
 			throw new IOException(exception);
@@ -163,6 +175,7 @@ public class GitTool implements VersionControlAdapter {
 	public boolean commit(String message, List<String> targetFiles, String user, String userEmail, ProcessState state)
 			throws IOException
 	{
+		LOGGER.info("Start git commit for targets: "+targetFiles+" URL: "+repositoryURL);
 		// git commit
 		CommitCommand commit = gitInstance.commit().setMessage(message).setAuthor(user, userEmail);
 		for (String targetFile : targetFiles) {
@@ -185,14 +198,15 @@ public class GitTool implements VersionControlAdapter {
 		} catch (GitAPIException exception) {
 			throw new IOException(exception);
 		}
+		LOGGER.info("Finished git commit for targets: "+targetFiles);
 		
+		LOGGER.info("Start git push to URL: "+repositoryURL);
 		// git push
-		PushCommand push = gitInstance.push()
-				.setProgressMonitor(new GitProgressMonitor(state))
-				.setCredentialsProvider(credentialsProvider);
+		PushCommand push = gitInstance.push().setProgressMonitor(new GitProgressMonitor(state));
 		setCredentials(push);
 		try {
 			push.call();
+			LOGGER.info("Finished git push");
 			return true;
 		} catch (InvalidRemoteException exception) {
 			throw new IOException(exception);
@@ -205,11 +219,13 @@ public class GitTool implements VersionControlAdapter {
 
 	@Override
 	public boolean update(List<String> targetFiles, ProcessState state) throws IOException {
+		LOGGER.info("Start git pull for URL: "+repositoryURL);
 		// git pull
 		PullCommand pull = gitInstance.pull().setProgressMonitor(new GitProgressMonitor(state));
 		setCredentials(pull);
 		try {
 			PullResult pullResult = pull.call();
+			LOGGER.info("Finished git pull");
 			return pullResult.isSuccessful();
 		} catch (WrongRepositoryStateException exception) {
 			throw new IOException(exception);
@@ -236,7 +252,7 @@ public class GitTool implements VersionControlAdapter {
 		
 		private final ProcessState state;
 		
-		private String currentTask = null;
+		private LinkedList<String> currentTasks = new LinkedList<String>();
 
 		GitProgressMonitor(ProcessState state) {
 			this.state = state;
@@ -259,20 +275,19 @@ public class GitTool implements VersionControlAdapter {
 		
 		@Override
 		public void beginTask(String title, int totalWork) {
-			currentTask = title;
-			if (ProcessState.NO != state) {
-				ProcessState.addMessage(state, "Git task start: "+title);
-			}
-			LOGGER.info("Git task start: "+title);
+			currentTasks.push(title);
+			String msg = "Git task start: "+title;
+			ProcessState.addMessage(state, msg);
+			LOGGER.info(msg);
 		}
 
 		@Override
 		public void endTask() {
-			if (currentTask != null) {
-				if (ProcessState.NO != state) {
-					ProcessState.addMessage(state, "Git task end: "+currentTask);
-				}
-				LOGGER.info("Git task end: "+currentTask);
+			if (currentTasks.isEmpty() == false) {
+				String title = currentTasks.pop();
+				String msg = "Git task end: "+title;
+				ProcessState.addMessage(state, msg);
+				LOGGER.info(msg);
 			}
 		}
 	}

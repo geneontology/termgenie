@@ -55,7 +55,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.apache.openjpa</groupId>
 										<artifactId>openjpa-maven-plugin</artifactId>
-										<versionRange>[2.2,)</versionRange>
+										<versionRange>[${openjpa.version},)</versionRange>
 										<goals>
 											<goal>enhance</goal>
 										</goals>
