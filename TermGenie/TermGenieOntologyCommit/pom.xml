@@ -21,5 +21,6 @@
 		<module>TermGenieOntologyCommit-API</module>
 		<module>TermGenieOntologyCommit-Core</module>
 		<module>TermGenieOntologyCommit-SVN</module>
+		<module>TermGenieOntologyCommit-Git</module>
 	</modules>
 </project>
