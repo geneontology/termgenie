@@ -45,12 +45,14 @@ public interface VersionControlAdapter extends Closeable {
 	 * 
 	 * @param message the commit message
 	 * @param targetFiles the files or folders to commit
+	 * @param userEmail mail address for logging purposes
+	 * @param user user name for logging purposes
 	 * @param state 
 	 * @return true, if the VC commit operation successfully finished
 	 * @throws IOException in case of connection problems
 	 * @throws IllegalStateException in case the connection is not open
 	 */
-	public boolean commit(String message, List<String> targetFiles, ProcessState state) throws IOException;
+	public boolean commit(String message, List<String> targetFiles, String user, String userEmail, ProcessState state) throws IOException;
 
 	/**
 	 * Update the current working copy from the VC repository.

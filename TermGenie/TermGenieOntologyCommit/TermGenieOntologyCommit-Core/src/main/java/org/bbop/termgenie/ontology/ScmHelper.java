@@ -112,17 +112,21 @@ public abstract class ScmHelper<ONTOLOGY> {
 	 * @param commitMessage
 	 * @param scm
 	 * @param diff
+	 * @param userEmail 
+	 * @param user 
 	 * @param state
 	 * @throws CommitException
 	 */
 	public void commitToRepository(String commitMessage,
 			VersionControlAdapter scm,
 			String diff,
+			String user, 
+			String userEmail, 
 			ProcessState state) throws CommitException
 	{
 		try {
 			scm.connect();
-			scm.commit(commitMessage, Collections.singletonList(targetOntologyFileName), state);
+			scm.commit(commitMessage, Collections.singletonList(targetOntologyFileName), user, userEmail, state);
 		} catch (IOException exception) {
 			throw error("Error during SCM commit", exception, false);
 		}

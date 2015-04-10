@@ -200,7 +200,7 @@ public class SvnTool implements VersionControlAdapter {
 	}
 
 	@Override
-	public boolean commit(String message, List<String> targets, ProcessState state) throws IOException {
+	public boolean commit(String message, List<String> targets, String user, String userEmail, ProcessState state) throws IOException {
 		checkConnection();
 		logger.info("Start commit for targets: "+targets+" URL: "+repositoryURL);
 		SVNCommitClient commitClient = ourClientManager.getCommitClient();

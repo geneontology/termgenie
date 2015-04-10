@@ -386,7 +386,7 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		// commit the changes to the repository
 		ProcessState.addMessage(state, "Attempting to commit for item: "+item.getId());
 		String diff = diffBuilder.toString();
-		commitToRepository(item.getCommitMessage(), scm, diff, state);
+		commitToRepository(item.getCommitMessage(), scm, diff, item.getSavedBy(), item.getEmail(), state);
 		ProcessState.addMessage(state, "Successfull commit of patch", diff);
 
 		// set the commit also to success in the commit history
@@ -448,10 +448,10 @@ public abstract class OntologyCommitReviewPipeline<ONTOLOGY> implements
 		scmHelper.createModifiedTargetFile(data, ontology, graph, savedBy);
 	}
 
-	private void commitToRepository(String commitMessage, VersionControlAdapter scm, String diff, ProcessState state)
+	private void commitToRepository(String commitMessage, VersionControlAdapter scm, String diff, String user, String userEmail, ProcessState state)
 			throws CommitException
 	{
-		scmHelper.commitToRepository(commitMessage, scm, diff, state);
+		scmHelper.commitToRepository(commitMessage, scm, diff, user, userEmail, state);
 	}
 	
 	private CharSequence createUnifiedDiff(File originalFile,
