@@ -177,7 +177,9 @@ public class GitTool implements VersionControlAdapter {
 	{
 		LOGGER.info("Start git commit for targets: "+targetFiles+" URL: "+repositoryURL);
 		// git commit
-		CommitCommand commit = gitInstance.commit().setMessage(message).setAuthor(user, userEmail);
+		CommitCommand commit = gitInstance.commit().setMessage(message).
+				setAuthor(user, userEmail).
+				setCommitter(user, userEmail);
 		for (String targetFile : targetFiles) {
 			commit = commit.setOnly(targetFile);
 		}
