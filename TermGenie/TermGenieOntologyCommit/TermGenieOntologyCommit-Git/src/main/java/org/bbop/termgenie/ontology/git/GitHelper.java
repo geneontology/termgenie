@@ -49,6 +49,32 @@ public class GitHelper {
 	}
 	
 	@Singleton
+	public static final class OboGitHelperToken extends OboScmHelper {
+
+		private final String GitRepository;
+		private final String GitToken;
+
+		@Inject
+		OboGitHelperToken(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
+				@Named("CommitAdapterGitRepositoryUrl") String GitRepository,
+				@Named("CommitAdapterGitOntologyFileName") String GitOntologyFileName,
+				@Named("CommitAdapterGitToken") String GitToken)
+		{
+			super(GitOntologyFileName, defaultMappers);
+			this.GitRepository = GitRepository;
+			this.GitToken = GitToken;
+		}
+
+		@Override
+		public VersionControlAdapter createSCM(File GitFolder)
+		{
+			GitTool Git = GitTool.createUsernamePasswordGit(GitFolder, GitRepository, GitToken, "");
+			return Git;
+		}
+	}
+	
+	@Singleton
 	public static final class OwlGitHelperPassword extends OwlScmHelper {
 
 		private final String GitRepository;
@@ -74,6 +100,33 @@ public class GitHelper {
 		public VersionControlAdapter createSCM(File GitFolder)
 		{
 			GitTool Git = GitTool.createUsernamePasswordGit(GitFolder, GitRepository, GitUsername, GitPassword);
+			return Git;
+		}
+	}
+	
+	@Singleton
+	public static final class OwlGitHelperToken extends OwlScmHelper {
+
+		private final String GitRepository;
+		private final String GitToken;
+
+		@Inject
+		OwlGitHelperToken(
+				@Named("DefaultIRIMappers") List<OWLOntologyIRIMapper> defaultMappers,
+				@Nullable @Named("CommitAdapterGitCatalogXml") String catalogXml,
+				@Named("CommitAdapterGitRepositoryUrl") String GitRepository,
+				@Named("CommitAdapterGitOntologyFileName") String GitOntologyFileName,
+				@Named("CommitAdapterGitToken") String GitToken)
+		{
+			super(GitOntologyFileName, defaultMappers, catalogXml);
+			this.GitRepository = GitRepository;
+			this.GitToken = GitToken;
+		}
+
+		@Override
+		public VersionControlAdapter createSCM(File GitFolder)
+		{
+			GitTool Git = GitTool.createUsernamePasswordGit(GitFolder, GitRepository, GitToken, "");
 			return Git;
 		}
 	}

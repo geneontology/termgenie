@@ -17,7 +17,7 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
-import org.bbop.termgenie.ontology.git.CommitGitUserPasswdModule;
+import org.bbop.termgenie.ontology.git.CommitGitTokenModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
 import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
@@ -98,9 +98,8 @@ public class TermGenieWebAppEnvoContextListener extends AbstractTermGenieContext
 		String repositoryURL = "https://github.com/EnvironmentOntology/envo.git";
 		String remoteTargetFile = "src/envo/envo-edit.owl";
 		String catalogXml = "src/envo/catalog-v001.xml";
-		String gitUserName = null; // no default value
 		
-		return CommitGitUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, gitUserName, applicationProperties);
+		return CommitGitTokenModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, applicationProperties);
 	}
 	
 	@Override
