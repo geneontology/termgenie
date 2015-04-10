@@ -36,6 +36,6 @@ Instances exist for the following ontologies:
 * [CL TermGenie](http://cl.termgenie.org)
 * [HP TermGenie](http://hp.termgenie.org)
 * [MP TermGenie](http://mp.termgenie.org)
-* [~~ENVO TermGenie~~](http://envo.termgenie.org) (Currently offline)
+* [ENVO TermGenie](http://envo.termgenie.org)
 
 To get write access to any of these TG instances, contact the administrators of the ontology (list available from obofoundry.org)
