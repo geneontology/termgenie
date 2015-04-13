@@ -1,12 +1,16 @@
 package org.bbop.termgenie.ontology.impl;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,21 +19,16 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import javax.inject.Singleton;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.ContentEncodingHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.util.EntityUtils;
+import org.apache.commons.io.input.BOMInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
@@ -88,57 +87,118 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 	}
 
 	protected InputStream getInputStream(IRI iri) throws IOException {
-		DefaultHttpClient client = new ContentEncodingHttpClient();
-		final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-		client.setRedirectStrategy(redirectStrategy);
-		final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
-		client.setHttpRequestRetryHandler(retryHandler);
-		final HttpGet request = new HttpGet(iri.toURI());
-		return tryHttpRequest(client, request, iri, 3);
+		final URL url = iri.toURI().toURL();
+		return getInputStream(url, 3);
 	}
 	
-	private InputStream tryHttpRequest(DefaultHttpClient client, HttpGet request, IRI iri, int count) throws IOException {
-		// try the load
-		final HttpResponse response;
+	protected InputStream getInputStream(final URL originalURL, int retryCount) throws IOException {
+		final String originalProtocol = originalURL.getProtocol();
+		URLConnection connection;
+		HttpURLConnection httpURLConnection = null;
+		
+		// setup
 		try {
-			response = client.execute(request);
+			connection = originalURL.openConnection();
+			connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+			if (connection instanceof HttpURLConnection) {
+				httpURLConnection = (HttpURLConnection) connection;
+				httpURLConnection.setInstanceFollowRedirects(true);
+			}
+			connection.connect();
 		}
 		catch (IOException e) {
-			if (count <= 0) {
-				// no more retry, handle the final error.
-				return handleError(iri, e);
-			}
-			logger.warn("Retry request for IRI: "+iri+" after exception: "+e.getMessage());
-			defaultRandomWait();
-			return tryHttpRequest(client, request, iri, count - 1);
+			return retryRequest(originalURL, e, retryCount);
 		}
-		final HttpEntity entity = response.getEntity();
-		final StatusLine statusLine = response.getStatusLine();
-		if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-			StringBuilder message = new StringBuilder();
-			message.append("Web request for IRI '");
-			message.append(iri);
-			message.append("' failed with status code: ");
-			message.append(statusLine.getStatusCode());
-			String reasonPhrase = statusLine.getReasonPhrase();
-			if (reasonPhrase != null) {
-				message.append(" reason: ");
-				message.append(reasonPhrase);
+		
+		// check status code
+		int status = 200;
+		if (httpURLConnection != null) {
+			try {
+				status = httpURLConnection.getResponseCode();
+			} catch (IOException e) {
+				return retryRequest(originalURL, e, retryCount);
 			}
-			EntityUtils.consume(entity);
-			if (count <= 0) {
-				// no more retry, handle the final error.
-				return handleError(iri, new IOException(message.toString()));
-			}
-			message.append("\n Retry request.");
-			logger.warn(message);
-
-			defaultRandomWait();
-
-			// try again
-			return tryHttpRequest(client, request, iri, count - 1);
 		}
-		return entity.getContent();
+		// handle unexpected status code
+		if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                    || status == HttpURLConnection.HTTP_MOVED_PERM
+                    || status == HttpURLConnection.HTTP_SEE_OTHER) {
+			 String location = connection.getHeaderField("Location");
+			 URL newURL = new URL(location);
+			 String newProtocol = newURL.getProtocol();
+			 if (!originalProtocol.equals(newProtocol)) {
+				return getInputStream(newURL, retryCount);
+			 }
+		}
+		else if (status != 200) {
+			// try to check error stream
+			String errorMsg = getErrorMsg(httpURLConnection);
+			
+			// construct message for exception
+			StringBuilder sb = new StringBuilder("Unexpected HTTP status code: "+status);
+			
+			if (errorMsg != null) {
+				sb.append(" Details: ");
+				sb.append(errorMsg);
+			}
+			IOException e = new IOException(sb.toString());
+			return retryRequest(originalURL, e, retryCount);
+		}
+		InputStream response = null;
+		String contentEncoding = connection.getContentEncoding();
+		try {
+			response = getInputStreamFromContentEncoding(connection, contentEncoding);
+		} catch (IOException exception) {
+			IOUtils.closeQuietly(response);
+			return retryRequest(originalURL, exception, retryCount);
+		}
+		// wrap into stream to ignore Byte Order Marks
+		response = new BOMInputStream(response);
+		return response;
+	}
+	
+	private InputStream getInputStreamFromContentEncoding(URLConnection conn,
+            String contentEncoding) throws IOException {
+        InputStream is;
+        if ("gzip".equals(contentEncoding)) {
+            is = new BufferedInputStream(new GZIPInputStream(
+                    conn.getInputStream()));
+        } else if ("deflate".equals(contentEncoding)) {
+            is = new BufferedInputStream(new InflaterInputStream(
+                    conn.getInputStream(), new Inflater(true)));
+        } else {
+            is = new BufferedInputStream(conn.getInputStream());
+        }
+        return is;
+    }
+
+	protected InputStream retryRequest(URL url, IOException e, int retryCount) throws IOException {
+		if (retryCount > 0) {
+			int remaining = retryCount - 1;
+			defaultRandomWait();
+			logger.warn("Retry request for URL: "+url+" after exception: "+e.getMessage());
+			return getInputStream(url, remaining);
+		}
+		return handleError(url, e);
+	}
+	
+	private static String getErrorMsg(HttpURLConnection connection) {
+		String errorMsg = null;
+		InputStream errorStream = null;
+		try {
+			errorStream = connection.getErrorStream();
+			if (errorStream != null) {
+				errorMsg = IOUtils.toString(errorStream);
+			}
+			errorMsg = StringUtils.trimToNull(errorMsg);
+		}
+		catch (IOException e) {
+			// ignore errors, while trying to retrieve the error message
+		}
+		finally {
+			IOUtils.closeQuietly(errorStream);
+		}
+		return errorMsg;
 	}
 	
 	private void defaultRandomWait() {
@@ -163,13 +223,13 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 	 * Overwrite this method to implement more sophisticated methods. E.g.,
 	 * fall-back on local copies, if the URL is not reachable.
 	 * 
-	 * @param iri
+	 * @param url
 	 * @param exception
 	 * @return inputStream
 	 * @throws IOException
 	 */
-	protected InputStream handleError(IRI iri, IOException exception) throws IOException {
-		logger.error("IOException during fetch of IRI: "+iri, exception);
+	protected InputStream handleError(URL url, IOException exception) throws IOException {
+		logger.error("IOException during fetch of IRI: "+url, exception);
 		throw exception;
 	}
 	

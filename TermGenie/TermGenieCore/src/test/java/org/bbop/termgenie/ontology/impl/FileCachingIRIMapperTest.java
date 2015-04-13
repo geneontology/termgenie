@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -95,5 +96,14 @@ public class FileCachingIRIMapperTest {
 		FileCachingIRIMapper.escapeToBuffer(sb, "/t?ui+7.obo");
 		assertEquals(File.separator + "t_ui_7.obo", sb.toString());
 	}
-
+	
+	@Test
+	public void testGetInputStream() throws Exception {
+		String localCache = folder.newFolder().getAbsolutePath();
+		FileCachingIRIMapper m = new FileCachingIRIMapper(localCache , 1L, TimeUnit.HOURS);
+		IRI iri = IRI.create("https://raw.githubusercontent.com/geneontology/termgenie/master/TermGenie/TermGenieCore/pom.xml");
+		InputStream inputStream = m.getInputStream(iri);
+		String content = IOUtils.toString(inputStream);
+		assertTrue(content.startsWith("<project "));
+	}
 }
