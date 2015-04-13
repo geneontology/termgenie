@@ -60,9 +60,5 @@
 			<artifactId>TermGenieMail</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
 	</dependencies>
 </project>

@@ -1,25 +1,19 @@
 package org.bbop.termgenie.services.authenticate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.InternalSessionHandler;
+import org.bbop.termgenie.tools.UrlTools;
 import org.bbop.termgenie.user.UserData;
 import org.bbop.termgenie.user.UserDataProvider;
 
@@ -36,7 +30,6 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 
 	private static final Gson gson = new Gson();
 	
-	private final DefaultHttpClient client = new DefaultHttpClient();
 	private final String browserIdVerificationUrl;
 	private final String termgenieBrowserIdAudience;
 	private final InternalSessionHandler sessionHandler;
@@ -63,49 +56,67 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 			HttpServletResponse resp,
 			HttpSession httpSession)
 	{
-		HttpPost post = new HttpPost(browserIdVerificationUrl);
 		try {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>(2);
-			pairs.add(new BasicNameValuePair("assertion", assertion));
-			String host = req.getHeader(HTTP.TARGET_HOST);
+			String host = req.getHeader("Host");
 			// host is only defined in HTTP 1.1 not in 1.0
 			// in most cases this should work, but keep the configuration as fall-back
 			String audienceValue = host != null ? host : termgenieBrowserIdAudience;
-			pairs.add(new BasicNameValuePair("audience", audienceValue));
-			post.setEntity(new UrlEncodedFormEntity(pairs));
-
-			HttpResponse response;
-			synchronized (client) {
-				response = client.execute(post);
-			}
-			StatusLine statusLine = response.getStatusLine();
-			HttpEntity entity = response.getEntity();
-			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-				String json = EntityUtils.toString(entity);
-				BrowserIdVerificationResponse details = gson.fromJson(json,
-						BrowserIdVerificationResponse.class);
-				if (details.status != null) {
-					if ("okay".equals(details.status)) {
-						if (details.email != null) {
-							// TODO verify 'details.issuer' and
-							// 'details.validUntil'
-							UserData userData  = userDataProvider.getUserDataPerEMail(details.email);
-							sessionHandler.setAuthenticated(userData, httpSession);
-							return new JsonUserData(userData);
-						}
-					}
-					else {
-						return new JsonUserData("BrowserID could not be verified status: " + details.status + " reason: " + details.reason);
+			
+			String json = postRequest(browserIdVerificationUrl, assertion, audienceValue);
+			
+			BrowserIdVerificationResponse details = gson.fromJson(json, BrowserIdVerificationResponse.class);
+			if (details.status != null) {
+				if ("okay".equals(details.status)) {
+					if (details.email != null) {
+						// TODO verify 'details.issuer' and
+						// 'details.validUntil'
+						UserData userData  = userDataProvider.getUserDataPerEMail(details.email);
+						sessionHandler.setAuthenticated(userData, httpSession);
+						return new JsonUserData(userData);
 					}
 				}
-			}
-			else {
-				EntityUtils.consume(entity);
+				else {
+					return new JsonUserData("BrowserID could not be verified status: " + details.status + " reason: " + details.reason);
+				}
 			}
 			return new JsonUserData("BrowserID could not be verified.");
 		} catch (Exception exception) {
 			logger.warn("Could not verify browserId", exception);
 			return new JsonUserData("Internal error during BrowserID verification: " + exception.getMessage());
+		}
+	}
+	
+	private String postRequest(String urlString, String assertion, String audience) throws IOException {
+		// URL
+		URL url = new URL(urlString);
+		
+		// POST data
+		String data = "assertion=" + URLEncoder.encode(assertion, "UTF-8") +"&"
+					+ "audience=" + URLEncoder.encode(audience, "UTF-8");
+
+		// prepare connection
+		HttpURLConnection con = UrlTools.preparePost(url, data);
+		
+		// execute post, by opening the input stream
+		InputStream response = null;
+		try {
+			response = con.getInputStream();
+			int status = con.getResponseCode();
+			if (status != 200) {
+				throw UrlTools.createStatusCodeException(status, con);
+			}
+			String charset = UrlTools.getCharset(con);
+			String responseString;
+			if (charset != null) {
+				responseString = IOUtils.toString(response, charset);
+			}
+			else {
+				responseString = IOUtils.toString(response);
+			}
+			return responseString;
+		}
+		finally {
+			IOUtils.closeQuietly(response);
 		}
 	}
 

@@ -28,8 +28,8 @@ import javax.inject.Singleton;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BOMInputStream;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.tools.UrlTools;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 
@@ -131,17 +131,7 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 			 }
 		}
 		else if (status != 200) {
-			// try to check error stream
-			String errorMsg = getErrorMsg(httpURLConnection);
-			
-			// construct message for exception
-			StringBuilder sb = new StringBuilder("Unexpected HTTP status code: "+status);
-			
-			if (errorMsg != null) {
-				sb.append(" Details: ");
-				sb.append(errorMsg);
-			}
-			IOException e = new IOException(sb.toString());
+			IOException e = UrlTools.createStatusCodeException(status, httpURLConnection);
 			return retryRequest(originalURL, e, retryCount);
 		}
 		InputStream response = null;
@@ -180,25 +170,6 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 			return getInputStream(url, remaining);
 		}
 		return handleError(url, e);
-	}
-	
-	private static String getErrorMsg(HttpURLConnection connection) {
-		String errorMsg = null;
-		InputStream errorStream = null;
-		try {
-			errorStream = connection.getErrorStream();
-			if (errorStream != null) {
-				errorMsg = IOUtils.toString(errorStream);
-			}
-			errorMsg = StringUtils.trimToNull(errorMsg);
-		}
-		catch (IOException e) {
-			// ignore errors, while trying to retrieve the error message
-		}
-		finally {
-			IOUtils.closeQuietly(errorStream);
-		}
-		return errorMsg;
 	}
 	
 	private void defaultRandomWait() {
