@@ -2,12 +2,14 @@
 <ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
 	<ontology name="OBA">
-		<source>http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo</source>
-		<!-- 
+		<source>http://purl.obolibrary.org/obo/oba.owl</source>
 		<supports>
-			<support>http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo</support>
+			<support>http://purl.obolibrary.org/obo/cl.owl</support>
+			<support>http://purl.obolibrary.org/obo/go.owl</support>
+			<support>http://purl.obolibrary.org/obo/uberon.owl</support>
+			<support>http://purl.obolibrary.org/obo/pato.owl</support>
+			<support>http://purl.obolibrary.org/obo/po.owl</support>
 		</supports>
-		 -->
 		<roots>
 			<root>OBA:0000001</root>
 			<root>UBERON:0001062</root> <!-- anatomical entity -->

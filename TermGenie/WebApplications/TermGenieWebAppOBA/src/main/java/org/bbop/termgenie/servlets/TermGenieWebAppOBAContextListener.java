@@ -18,9 +18,9 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
+import org.bbop.termgenie.ontology.git.CommitGitTokenModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnUserKeyFileModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -65,34 +65,22 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 	@Override
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_oba.xml";
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
+		String repositoryURL = "https://github.com/obophenotype/bio-attribute-ontology.git";
 		String workFolder = null; // no default value
-		String svnUserName = null; // no default value
-		String keyFile = null;		// no default value
-		boolean loadExternal = true;
-		boolean usePassphrase = false;
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
-		
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo"), "extensions/bio-attributes.obo");
-		
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo"), "extensions/x-attribute.obo");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/oba.owl"), "src/ontology/oba-edit.obo");
 			
-		String catalogXML = "extensions/catalog-v001.xml";
+		String catalogXML = "src/ontology/catalog-v001.xml";
 		
 		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
-		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/oba.owl"));
-		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl")); 
-		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl"));
-		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"));
 		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 		
-		SvnAwareOntologyModule m = SvnAwareOntologyModule.createSshKeySvnModule(configFile, applicationProperties, svnUserName, keyFile, usePassphrase);
-		m.setSvnAwareRepositoryURL(repositoryURL);
-		m.setSvnAwareMappedIRIs(mappedIRIs);
-		m.setSvnAwareCatalogXML(catalogXML);
-		m.setSvnAwareWorkFolder(workFolder);
-		m.setSvnAwareLoadExternal(loadExternal);
+		GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+		m.setGitAwareRepositoryURL(repositoryURL);
+		m.setGitAwareMappedIRIs(mappedIRIs);
+		m.setGitAwareCatalogXML(catalogXML);
+		m.setGitAwareWorkFolder(workFolder);
 		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
 		return m;
 	}
@@ -115,15 +103,9 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 
 	@Override
 	protected IOCModule getCommitModule() {
-		
-		String repositoryURL = "svn+ssh://ext.geneontology.org/share/go/svn/trunk/ontology";
-		String remoteTargetFile = "extensions/bio-attributes.obo";
-		String svnUserName = null;	// no default value
-		File keyFile = null;		// no default value
-		boolean loadExternal = true;
-		boolean usePassphrase = false;
-		
-		return CommitSvnUserKeyFileModule.createOboModule(repositoryURL, remoteTargetFile, svnUserName, keyFile , applicationProperties, loadExternal, usePassphrase);
+		String repositoryURL = "https://github.com/obophenotype/bio-attribute-ontology.git";
+		String remoteTargetFile = "src/ontology/oba-edit.obo";
+		return CommitGitTokenModule.createOboModule(repositoryURL, remoteTargetFile, applicationProperties);
 	}
 	
 	@Override

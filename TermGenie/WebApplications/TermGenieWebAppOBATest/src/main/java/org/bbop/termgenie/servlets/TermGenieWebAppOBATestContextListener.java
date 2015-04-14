@@ -11,9 +11,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
+import org.bbop.termgenie.ontology.git.CommitGitAnonymousModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.startup.JettyTestStartup;
 import org.semanticweb.owlapi.model.IRI;
@@ -33,53 +33,45 @@ public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBACon
 		JettyTestStartup.startup(port, contextPath, webappPath);
 	}
 	
-	private final String localSVNFolder;
+	private final String localGitFolder;
 	private final Map<IRI, String> mappedIRIs;
 	private final String catalogXML;
-	private final boolean loadExternal;
 	
 	private final boolean cleanDownloadCache = false;
 	
 	
 	public TermGenieWebAppOBATestContextListener() {
 		try {
-			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
+			localGitFolder = new File("./work/git").getCanonicalPath();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 		mappedIRIs = new HashMap<IRI, String>();
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.obo"), "extensions/bio-attributes.obo");
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo"), "extensions/x-attribute.obo");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/oba.owl"), "src/ontology/oba-edit.obo");
 		
-		catalogXML = "extensions/catalog-v001.xml";
-		loadExternal = true;
+		catalogXML = "src/ontology/catalog-v001.xml";
 	}
 	
 	@Override
 	protected IOCModule getOntologyModule() {
 		try {
 			String configFile = "ontology-configuration_oba.xml";
-			File localSVNCache = new File("./work/read-only-svn-checkout").getCanonicalFile();
-			localSVNCache.mkdirs();
+			File localGitCache = new File("./work/read-only-git-checkout").getCanonicalFile();
+			localGitCache.mkdirs();
 			if (cleanDownloadCache) {
-				FileUtils.cleanDirectory(localSVNCache);
+				FileUtils.cleanDirectory(localGitCache);
 			}
 			
 			File fileCache = new File("./work/termgenie-download-cache").getCanonicalFile();
 			
 			final Set<IRI> ignoreIRIs = new HashSet<IRI>();
-			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/oba.owl"));
-			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl")); 
-			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.owl"));
-			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl"));
 			ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 			
-			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule(configFile , applicationProperties);
-			m.setSvnAwareRepositoryURL(localSVNFolder);
-			m.setSvnAwareMappedIRIs(mappedIRIs);
-			m.setSvnAwareCatalogXML(catalogXML);
-			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
-			m.setSvnAwareLoadExternal(loadExternal);
+			GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+			m.setGitAwareRepositoryURL(localGitFolder);
+			m.setGitAwareMappedIRIs(mappedIRIs);
+			m.setGitAwareCatalogXML(catalogXML);
+			m.setGitAwareWorkFolder(localGitCache.getAbsolutePath());
 			m.setFileCache(fileCache);
 			m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
 			return m;
@@ -91,7 +83,7 @@ public class TermGenieWebAppOBATestContextListener extends TermGenieWebAppOBACon
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return CommitSvnAnonymousModule.createOboModule(localSVNFolder, "extensions/bio-attributes.obo", applicationProperties, loadExternal);
+		return CommitGitAnonymousModule.createOboModule(localGitFolder, "src/ontology/oba-edit.obo", applicationProperties);
 	}
 	
 	@Override
