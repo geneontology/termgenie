@@ -19,7 +19,6 @@ import com.google.inject.name.Named;
 @Singleton
 public class JsonFileUserPermissionsImpl implements UserPermissions {
 
-	private static final String FLAG_SCREEN_NAME = "screenname";
 	private static final String FLAG_ALLOW_WRITE = "allowWrite";
 	private static final String FLAG_ALLOW_COMMIT_REVIEW = "allowCommitReview";
 	private static final String FLAG_ALLOW_MANAGEMENT = "allowManagement";
@@ -133,77 +132,77 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		return checkPermissions(userData, applicationName, FLAG_ALLOW_MANAGEMENT);
 	}
 
-	@Override
-	public CommitUserData getCommitReviewUserData(UserData userData, Ontology ontology) {
-		return retrieveCommitUserData(userData,
-				ontology.getName(),
-				ontology,
-				FLAG_ALLOW_COMMIT_REVIEW);
-	}
+//	@Override
+//	public CommitUserData getCommitReviewUserData(UserData userData, Ontology ontology) {
+//		return retrieveCommitUserData(userData,
+//				ontology.getName(),
+//				ontology,
+//				FLAG_ALLOW_COMMIT_REVIEW);
+//	}
+//
+//	@Override
+//	public CommitUserData getCommitUserData(UserData userData, Ontology ontology) {
+//		return retrieveCommitUserData(userData, ontology.getName(), ontology, FLAG_ALLOW_WRITE);
+//	}
+//
+//	private CommitUserData retrieveCommitUserData(UserData userData,
+//			String group,
+//			Ontology ontology,
+//			String flag)
+//	{
+//		PermissionsData permissions = loadFile(jsonPermissionsFile);
+//		if (permissions != null && userData != null) {
+//			String guid = userData.getGuid();
+//			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
+//					applicationName);
+//			if (termgeniePermissions != null) {
+//				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
+//				if (groupFlags != null) {
+//					String groupValue = groupFlags.get(flag);
+//					if (groupValue != null && "true".equals(groupValue.toLowerCase())) {
+//						Map<String, String> ontologyFlags = termgeniePermissions.getPermissionFlags(ontology.getName());
+//						if (ontologyFlags != null) {
+//							String screenname = ontologyFlags.get(FLAG_SCREEN_NAME);
+//							return new CommitUserDataImpl(null, null, screenname);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
-	@Override
-	public CommitUserData getCommitUserData(UserData userData, Ontology ontology) {
-		return retrieveCommitUserData(userData, ontology.getName(), ontology, FLAG_ALLOW_WRITE);
-	}
-
-	private CommitUserData retrieveCommitUserData(UserData userData,
-			String group,
-			Ontology ontology,
-			String flag)
-	{
-		PermissionsData permissions = loadFile(jsonPermissionsFile);
-		if (permissions != null && userData != null) {
-			String guid = userData.getGuid();
-			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
-					applicationName);
-			if (termgeniePermissions != null) {
-				Map<String, String> groupFlags = termgeniePermissions.getPermissionFlags(group);
-				if (groupFlags != null) {
-					String groupValue = groupFlags.get(flag);
-					if (groupValue != null && "true".equals(groupValue.toLowerCase())) {
-						Map<String, String> ontologyFlags = termgeniePermissions.getPermissionFlags(ontology.getName());
-						if (ontologyFlags != null) {
-							String screenname = ontologyFlags.get(FLAG_SCREEN_NAME);
-							return new CommitUserDataImpl(null, null, screenname);
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private static class CommitUserDataImpl implements CommitUserData {
-
-		private final String username;
-		private final String password;
-		private final String screenname;
-
-		/**
-		 * @param username
-		 * @param password
-		 * @param screenname
-		 */
-		CommitUserDataImpl(String username, String password, String screenname) {
-			super();
-			this.username = username;
-			this.password = password;
-			this.screenname = screenname;
-		}
-
-		@Override
-		public String getUsername() {
-			return username;
-		}
-
-		@Override
-		public String getPassword() {
-			return password;
-		}
-
-		@Override
-		public String getScreenname() {
-			return screenname;
-		}
-	}
+//	private static class CommitUserDataImpl implements CommitUserData {
+//
+//		private final String username;
+//		private final String password;
+//		private final String screenname;
+//
+//		/**
+//		 * @param username
+//		 * @param password
+//		 * @param screenname
+//		 */
+//		CommitUserDataImpl(String username, String password, String screenname) {
+//			super();
+//			this.username = username;
+//			this.password = password;
+//			this.screenname = screenname;
+//		}
+//
+//		@Override
+//		public String getUsername() {
+//			return username;
+//		}
+//
+//		@Override
+//		public String getPassword() {
+//			return password;
+//		}
+//
+//		@Override
+//		public String getScreenname() {
+//			return screenname;
+//		}
+//	}
 }

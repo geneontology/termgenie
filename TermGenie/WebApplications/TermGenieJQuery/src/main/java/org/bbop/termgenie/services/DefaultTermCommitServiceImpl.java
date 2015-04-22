@@ -38,7 +38,6 @@ import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.services.freeform.InternalFreeFormCommitService;
 import org.bbop.termgenie.services.permissions.UserPermissions;
-import org.bbop.termgenie.services.permissions.UserPermissions.CommitUserData;
 import org.bbop.termgenie.tools.Pair;
 import org.bbop.termgenie.user.UserData;
 import org.obolibrary.obo2owl.Obo2Owl;
@@ -106,14 +105,12 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	 * @param terms
 	 * @param userData
 	 * @param commitMessage
-	 * @param commitUserData
 	 * @param sendConfirmationEMail
 	 * @return CommitInfo
 	 */
 	protected CommitInfo createCommitInfo(List<CommitObject<TermCommit>> terms,
 			String commitMessage,
 			UserData userData,
-			CommitUserData commitUserData,
 			boolean sendConfirmationEMail)
 	{
 		return new InternalCommitInfo(terms, commitMessage, userData, sendConfirmationEMail);
@@ -147,8 +144,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 		
 		String commitMessage = createDefaultCommitMessage(userData);
-		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()), sendConfirmationEMail, tempIdPrefix, processState);
+		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			secondaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -184,8 +180,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 
 		String commitMessage = createDefaultCommitMessage(userData);
-		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, permissions.getCommitUserData(userData,
-				manager.getOntology()), sendConfirmationEMail, tempIdPrefix, processState);
+		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			primaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -323,7 +318,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		 * @param terms
 		 * @param commitMessage
 		 * @param userData
-		 * @param commitUserData
 		 * @param sendConfirmationEMail
 		 * @param processState
 		 */
@@ -331,7 +325,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				JsonOntologyTerm[] terms,
 				String commitMessage,
 				UserData userData,
-				CommitUserData commitUserData,
 				boolean sendConfirmationEMail,
 				String tempIdPrefix,
 				ProcessState processState)
@@ -341,7 +334,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			this.terms = terms;
 			this.commitMessage = commitMessage;
 			this.userData = userData;
-			this.commitUserData = commitUserData;
 			this.sendConfirmationEMail = sendConfirmationEMail;
 			this.tempIdPrefix = tempIdPrefix;
 			this.processState = processState;
@@ -350,7 +342,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		private final OntologyTaskManager manager;
 		private final JsonOntologyTerm[] terms;
 		private final UserData userData;
-		private final CommitUserData commitUserData;
 
 		private JsonCommitResult result = error("The commit operation is not enabled.");
 
@@ -414,7 +405,6 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			CommitInfo commitInfo = createCommitInfo(commitTerms,
 					commitMessage,
 					userData,
-					commitUserData,
 					sendConfirmationEMail);
 			try {
 				// commit
