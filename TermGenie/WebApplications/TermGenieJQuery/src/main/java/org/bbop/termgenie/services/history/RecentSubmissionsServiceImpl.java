@@ -18,8 +18,8 @@ import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.entities.CommitHistoryItem;
 import org.bbop.termgenie.ontology.entities.CommitedOntologyTerm;
+import org.bbop.termgenie.permissions.UserPermissions;
 import org.bbop.termgenie.services.InternalSessionHandler;
-import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;

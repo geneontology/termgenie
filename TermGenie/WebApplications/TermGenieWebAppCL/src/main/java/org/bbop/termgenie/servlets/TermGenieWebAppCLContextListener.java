@@ -15,12 +15,12 @@ import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
+import org.bbop.termgenie.permissions.UserPermissionsModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
-import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 
 public class TermGenieWebAppCLContextListener extends AbstractTermGenieContextListener {

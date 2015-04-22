@@ -2,8 +2,8 @@ package org.bbop.termgenie.services.review;
 
 import org.bbop.termgenie.ontology.OntologyCommitReviewPipelineStages;
 import org.bbop.termgenie.ontology.OntologyLoader;
+import org.bbop.termgenie.permissions.UserPermissions;
 import org.bbop.termgenie.services.InternalSessionHandler;
-import org.bbop.termgenie.services.permissions.UserPermissions;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;

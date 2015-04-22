@@ -1,4 +1,4 @@
-package org.bbop.termgenie.services.permissions;
+package org.bbop.termgenie.permissions;
 
 import java.lang.reflect.Type;
 import java.util.Collections;

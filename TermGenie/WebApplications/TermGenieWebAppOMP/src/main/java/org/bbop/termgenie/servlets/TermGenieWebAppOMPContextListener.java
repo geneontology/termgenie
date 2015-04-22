@@ -2,8 +2,8 @@ package org.bbop.termgenie.servlets;
 
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.ontology.impl.OntologyModule;
+import org.bbop.termgenie.permissions.UserPermissionsModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
-import org.bbop.termgenie.services.permissions.UserPermissionsModule;
 
 public class TermGenieWebAppOMPContextListener extends AbstractTermGenieContextListener {
 

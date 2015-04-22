@@ -1,4 +1,4 @@
-package org.bbop.termgenie.services.permissions;
+package org.bbop.termgenie.permissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.services.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.permissions.PermissionsData.TermGeniePermissions;
 import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;

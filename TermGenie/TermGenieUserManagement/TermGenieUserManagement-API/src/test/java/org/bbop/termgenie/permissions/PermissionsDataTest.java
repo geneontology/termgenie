@@ -1,11 +1,13 @@
-package org.bbop.termgenie.services.permissions;
+package org.bbop.termgenie.permissions;
 
 import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.bbop.termgenie.services.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.permissions.JsonFileUserPermissionsImpl;
+import org.bbop.termgenie.permissions.PermissionsData;
+import org.bbop.termgenie.permissions.PermissionsData.TermGeniePermissions;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.Test;
 
