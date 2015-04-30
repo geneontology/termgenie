@@ -224,17 +224,20 @@ public class SvnTool implements VersionControlAdapter {
 	@Override
 	public boolean update(List<String> targets, ProcessState state) throws IOException {
 		checkConnection();
-		logger.info("Start update for targets: "+targets+" URL: "+repositoryURL);
+		logger.info("Start update for URL: "+repositoryURL);
 		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
 		updateClient.setIgnoreExternals(!loadExternal);
 		try {
-			File[] paths = new File[targets.size()];
-			for (int i = 0; i < targets.size(); i++) {
-				paths[i] = new File(targetFolder, targets.get(i)).getAbsoluteFile();
+			updateClient.doUpdate(targetFolder, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
+			logger.debug("Finished update");
+			boolean success = true;
+			if (targets != null) {
+				for(String targetFile : targets) {
+					File file = new File(targetFolder, targetFile);
+					success = success && file.isFile() && file.canRead() && file.canWrite();
+				}
 			}
-			updateClient.doUpdate(paths, SVNRevision.HEAD, SVNDepth.INFINITY, true, false);
-			logger.debug("Finished update for targets: "+targets);
-			return true;
+			return success;
 		} catch (SVNException exception) {
 			throw new IOException(exception);
 		}
