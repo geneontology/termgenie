@@ -2,9 +2,9 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -18,18 +18,21 @@ public class GitIRIMapper extends AbstractScmIRIMapper<GitIRIMapper.GitHandler> 
 	GitIRIMapper(GitTool git,
 			List<String> checkouts,
 			Map<IRI, String> mappedSVNFiles,
+			Set<IRI> updateTriggers,
 			String catalogXml)
 	{
-		super(new GitHandler(git, checkouts), mappedSVNFiles, catalogXml);
+		super(new GitHandler(git, checkouts), mappedSVNFiles, updateTriggers, catalogXml);
 	}
 	
 	static class GitHandler implements AbstractScmIRIMapper.FileAwareReadOnlyScm {
 
 		private final GitTool git;
+		private List<String> checkouts;
 
 		GitHandler(GitTool git, List<String> checkouts) {
 			super();
 			this.git = git;
+			this.checkouts = checkouts;
 			try {
 				File targetFolder = git.getTargetFolder();
 				// create work directory
@@ -59,16 +62,10 @@ public class GitIRIMapper extends AbstractScmIRIMapper<GitIRIMapper.GitHandler> 
 		}
 
 		@Override
-		public void updateFile(File file) throws IOException {
-			String path = file.getCanonicalPath();
-			File targetFolder = git.getTargetFolder();
-			final String targetPath = targetFolder.getCanonicalPath();
-			if (path.startsWith(targetPath)) {
-				path = path.substring(targetPath.length());
-			}
+		public void updateSCM() throws IOException {
 			try {
 				git.connect();
-				git.update(Collections.singletonList(path), ProcessState.NO);
+				git.update(checkouts, ProcessState.NO);
 			}
 			finally {
 				try {

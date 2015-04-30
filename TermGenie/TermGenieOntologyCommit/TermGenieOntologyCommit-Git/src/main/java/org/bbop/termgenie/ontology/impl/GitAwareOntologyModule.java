@@ -107,7 +107,7 @@ public class GitAwareOntologyModule extends OntologyModule {
 			final File workFolderFile = new File(gitWorkFolder);
 			final GitTool git = GitTool.createAnonymousGit(workFolderFile, repositoryURL);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, catalogXML);
+			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return gitMapper;
 		}
 	}
@@ -147,7 +147,7 @@ public class GitAwareOntologyModule extends OntologyModule {
 			final File workFolderFile = new File(workFolder);
 			final GitTool git = GitTool.createUsernamePasswordGit(workFolderFile, repositoryURL, gitUsername, gitPassword);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, catalogXML);
+			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return gitMapper;
 		}
 	}
@@ -198,7 +198,7 @@ public class GitAwareOntologyModule extends OntologyModule {
 			final File keyFile = new File(gitKeyFile);
 			final GitTool git = GitTool.createSSHKeyGit(workFolderFile, repositoryURL, keyFile, gitPassword);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, catalogXML);
+			GitIRIMapper gitMapper = new GitIRIMapper(git, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return gitMapper;
 		}
 	}

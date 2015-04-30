@@ -2,8 +2,8 @@ package org.bbop.termgenie.ontology.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.ontology.impl.AbstractScmIRIMapper.FileAwareReadOnlyScm;
@@ -20,6 +20,7 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 	private final T scm;
 	private final String catalogXml;
 	private final Map<IRI, String> mappedFiles;
+	private final Set<IRI> updateTriggers;
 
 	/**
 	 * @param scm
@@ -27,10 +28,12 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 	 */
 	protected AbstractScmIRIMapper(T scm,
 			Map<IRI, String> mappedFiles,
+			Set<IRI> updateTriggers,
 			String catalogXml)
 	{
 		this.scm = scm;
 		this.mappedFiles = mappedFiles;
+		this.updateTriggers = updateTriggers;
 		this.catalogXml = catalogXml;
 		if (catalogXml != null) {
 			try {
@@ -47,6 +50,9 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 	public IRI getDocumentIRI(IRI ontologyIRI) {
 		synchronized (scm) {
 			try {
+				if (updateTriggers.contains(ontologyIRI)) {
+					scm.updateSCM();
+				}
 				IRI iri = null;
 				if (mappedFiles.containsKey(ontologyIRI)) {
 					String scmFile = mappedFiles.get(ontologyIRI);
@@ -57,15 +63,7 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 					CatalogXmlIRIMapper catalogXMLMapper = new owltools.io.CatalogXmlIRIMapper(catalogXmlFile);
 					iri = catalogXMLMapper.getDocumentIRI(ontologyIRI);
 				}
-				if (iri != null) {
-					final URI uri = iri.toURI();
-					final String scheme = uri.getScheme();
-					if (scheme == null || "file".equals(scheme)) {
-						File file = new File(uri);
-						scm.updateFile(file);
-					}
-					return iri;
-				}
+				return iri;
 			} catch (IOException exception) {
 				logger.error("Could not map an IRI to a local file: "+ontologyIRI, exception);
 			}
@@ -77,7 +75,7 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 
 		public File retrieveFile(String file) throws IOException;
 
-		public void updateFile(File file) throws IOException;
+		public void updateSCM() throws IOException;
 
 	}
 }

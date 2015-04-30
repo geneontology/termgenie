@@ -120,7 +120,7 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 			final File workFolderFile = new File(svnWorkFolder);
 			final SvnTool svn = SvnTool.createAnonymousSVN(workFolderFile, repositoryURL, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, catalogXML);
+			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return svnMapper;
 		}
 	}
@@ -162,7 +162,7 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 			final File workFolderFile = new File(workFolder);
 			final SvnTool svn = SvnTool.createUsernamePasswordSVN(workFolderFile, repositoryURL, svnUsername, svnPassword, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, catalogXML);
+			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return svnMapper;
 		}
 	}
@@ -223,7 +223,7 @@ public abstract class SvnAwareOntologyModule extends OntologyModule {
 			final File keyFile = new File(svnKeyFile);
 			final SvnTool svn = SvnTool.createSSHKeySVN(workFolderFile, repositoryURL, svnUsername, keyFile, svnPassword, svnConfigDir, svnLoadExternal);
 			List<String> checkout = new ArrayList<String>(mappedIRIs.values());
-			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, catalogXML);
+			SvnIRIMapper svnMapper = new SvnIRIMapper(svn, checkout, mappedIRIs, mappedIRIs.keySet(), catalogXML);
 			return svnMapper;
 		}
 	}
