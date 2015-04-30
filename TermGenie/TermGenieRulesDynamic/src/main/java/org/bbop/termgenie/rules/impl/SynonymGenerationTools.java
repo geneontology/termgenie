@@ -2,6 +2,7 @@ package org.bbop.termgenie.rules.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +13,9 @@ import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsSynonyms;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLObject;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import owltools.graph.OWLGraphWrapper;
 import owltools.graph.OWLGraphWrapper.ISynonym;
@@ -367,9 +371,9 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 		return label;
 	}
 
-	List<ISynonym> addSynonym(List<ISynonym> results,
+	static List<ISynonym> addSynonym(List<ISynonym> results,
 			String scope,
-			String newLabel,
+			final String newLabel,
 			String label)
 	{
 		if (!newLabel.equals(label)) {
@@ -380,6 +384,23 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 			}
 			if (results == null) {
 				results = new ArrayList<ISynonym>();
+			}
+			else {
+				// check that the current synonym is not already in the list
+				Collection<ISynonym> sameLabels = Collections2.filter(results, new Predicate<ISynonym>() {
+
+					@Override
+					public boolean apply(ISynonym input) {
+						if (input != null) {
+							return newLabel.equals(input.getLabel());
+						}
+						return false;
+					}});
+				if (sameLabels.isEmpty() == false) {
+					// do not make this complicated here
+					// make an arbitrary choice by removing the previous ones.
+					results.removeAll(sameLabels);
+				}
 			}
 			results.add(new Synonym(newLabel, scope, null, Collections.singleton("GOC:TermGenie")));
 		}

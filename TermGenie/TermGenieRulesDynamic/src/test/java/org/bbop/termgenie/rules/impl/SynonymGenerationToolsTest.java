@@ -296,4 +296,19 @@ public class SynonymGenerationToolsTest {
 		assertEquals(tag.getTag(), match.getTwo());
 	}
 
+	@Test
+	public void testAddSynonym() throws Exception {
+		List<ISynonym> results = new ArrayList<ISynonym>();
+		
+		// spike list with one normal and two redundant synonyms
+		results.add(new Synonym("single", "scope", null, Collections.<String>emptySet()));
+		results.add(new Synonym("redundant", "scope", null, Collections.<String>emptySet()));
+		results.add(new Synonym("redundant", "scope", null, Collections.<String>emptySet()));
+		
+		// try to add anonther redundant
+		SynonymGenerationTools.addSynonym(results , "scope", "redundant", "label");
+		
+		// only two synonyms left, no redundancies
+		assertEquals(2, results.size());
+	}
 }
