@@ -1214,4 +1214,64 @@ generated automatically</description>
 			<ruleFile>rules/go/pro/structural_protein_complex.js</ruleFile>
 		</ruleFiles>
 	</template> -->
+	<template name="cc_binding" displayname="cellular component binding">
+		<description>binding of a cellular component</description>
+		<obonamespace>molecular_function</obonamespace>
+		<definition-xref>GO_REF:000102</definition-xref>
+		<fields>
+			<field name="component" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cc_binding.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<!-- 
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Molecular Function</category>
+			<category>Linked Ontologies/GO to GO</category>
+             -->
+			<category>experimental</category>
+		</categories>
+	</template>
+	<template name="cc_organization" displayname="cellular component organization">
+		<description>organization of a cellular component</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:000103</definition-xref>
+		<fields>
+			<field name="component" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/cc_organization.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<!-- 
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Processes</category>
+			<category>Linked Ontologies/GO to GO</category>
+             -->
+			<category>experimental</category>
+		</categories>
+	</template>
 </termgenietemplates>
