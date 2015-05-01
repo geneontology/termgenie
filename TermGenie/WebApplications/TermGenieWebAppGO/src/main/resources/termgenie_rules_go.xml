@@ -1274,4 +1274,109 @@ generated automatically</description>
 			<category>experimental</category>
 		</categories>
 	</template>
+	<template name="import_across_plasma_membrane">
+		<description>transport of a chemical from outside of a cell, across the plasma membrane and into the cytoplasmic compartment</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000075</definition-xref>
+		<fields>
+			<field name="imported" required="true">
+				<ontology name="GeneOntology">
+					<branch>imported</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<!-- 
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Processes/Transport/Import</category>
+			 -->
+			<category>experimental</category>
+		</categories>
+	</template>
+	<template name="import_across_membrane">
+		<description>Transport of a chemical across a membrane into a cellular component. This transport may happen through a channel or pore.  It does not cover an import via vesicle fusion, as in this case the transport does not involve crossing the membrane.</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000075</definition-xref>
+		<fields>
+			<field name="cargo" required="true">
+				<ontology name="GeneOntology">
+					<branch>imported</branch>
+				</ontology>
+			</field>
+			<field name="membrane" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="start" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="end" required="true">
+				<ontology name="GeneOntology">
+					<branch>cellular_component</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<!-- 
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Processes/Transport/Import</category>
+			 -->
+			<category>experimental</category>
+		</categories>
+	</template>
+	<template name="import_into_cell">
+		<description>Transport of a chemical from outside of a cell into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000075</definition-xref>
+		<fields>
+			<field name="imported" required="true">
+				<ontology name="GeneOntology">
+					<branch>imported</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<!-- 
+			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
+			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Processes/Transport/Import</category>
+			 -->
+			<category>experimental</category>
+		</categories>
+	</template>
 </termgenietemplates>

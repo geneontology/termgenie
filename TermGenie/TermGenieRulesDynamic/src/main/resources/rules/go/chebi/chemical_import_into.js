@@ -22,8 +22,77 @@ function chemical_import_into() {
 			+ " into " + refname(target, ont) + ".";
 	var synonyms = null;
 	
-	var mdef = createMDef("GO_0006810 and 'has target end location' some ?T and 'imports' some ?S");
+	var mdef = createMDef("GO_0006810 " +
+			"and ('has target end location' some ?T) " +
+			"and ('imports' some ?S)");
 	mdef.addParameter('S', subject, ont);
 	mdef.addParameter('T', target, ont);
+	createTerm(label, definition, synonyms, mdef);
+}
+
+
+function import_across_plasma_membrane() {
+	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
+	var c = getSingleTerm("imported", ont);
+	
+	var label = termname(c, ont) + " import across plasma membrane";
+	
+	var definition = "The directed movement of "
+			+ refname(c, ont)
+			+ " from outside of a cell into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.";
+	var synonyms = null;
+	
+	var mdef = createMDef("GO_0006810 " +
+			"and ('has target start location' some GO_0005576) " +
+			"and ('has target end location' some GO_0005829) " +
+			"and ('results in transport across' some GO_0005886) " +
+			"and ('imports' some ?C)");
+	mdef.addParameter('C', c, ont);
+	createTerm(label, definition, synonyms, mdef);
+}
+
+function import_across_membrane() {
+	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
+	var cargo = getSingleTerm("cargo", ont);
+	var membrane = getSingleTerm("membrane", ont);
+	var start = getSingleTerm("start", ont);
+	var end = getSingleTerm("end", ont);
+	
+	var label = termname(cargo, ont) + " import across "+ termname(membrane, ont);
+	var definition = "The directed import of some "
+		+ termname(cargo, ont)
+		+ " from " + refname(start, ont) 
+		+ " across " + refname(membrane, ont)
+		+ " into "+ refname(end, ont) + ".";
+	var synonyms = null;
+	
+	var mdef = createMDef("GO_0006810 "+
+		    "and ('has target start location' some ?S)"+
+		    "and ('has target end location' some ?E)"+
+		    "and ('imports' some ?C)"+
+		    "and ('results in transport across' some ?M)");
+	mdef.addParameter('C', cargo, ont);
+	mdef.addParameter('S', start, ont);
+	mdef.addParameter('E', end, ont);
+	mdef.addParameter('M', membrane, ont);
+	createTerm(label, definition, synonyms, mdef);
+}
+
+function import_into_cell() {
+	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
+	var c = getSingleTerm("imported", ont);
+	
+	var label = termname(c, ont) + " import into cell";
+	
+	var definition = "The directed movement of "
+			+ refname(c, ont)
+			+ " from outside of a cell, across the plasma membrane and into the cytoplasmic compartment.";
+	var synonyms = null;
+	
+	var mdef = createMDef("GO_0006810 " +
+			"and ('has target start location' some GO_0005576) " +
+			"and ('has target end location' some GO_0044424) " +
+			"and ('imports' some ?C)");
+	mdef.addParameter('C', c, ont);
 	createTerm(label, definition, synonyms, mdef);
 }

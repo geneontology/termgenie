@@ -46,6 +46,17 @@
 				<root>CHEBI:24431</root> <!-- chemical entity -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="imported">
+			<roots>
+				<root>CHEBI:24431</root> <!-- chemical entity -->
+				<root>GO:0043234</root> <!-- macromolecular complex -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="membrane">
+			<roots>
+				<root>GO:0016020</root> <!-- membrane -->
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="default_go">
 			<roots>
 				<root>GO:0008150</root>
