@@ -46,7 +46,7 @@
 				<root>CHEBI:24431</root> <!-- chemical entity -->
 			</roots>
 		</ontologybranch>
-		<ontologybranch name="imported">
+		<ontologybranch name="chebi_or_complex">
 			<roots>
 				<root>CHEBI:24431</root> <!-- chemical entity -->
 				<root>GO:0043234</root> <!-- macromolecular complex -->

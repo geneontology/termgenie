@@ -1281,7 +1281,7 @@ generated automatically</description>
 		<fields>
 			<field name="imported" required="true">
 				<ontology name="GeneOntology">
-					<branch>imported</branch>
+					<branch>chebi_or_complex</branch>
 				</ontology>
 			</field>
 			<field name="Literature_Refs" required="true" >
@@ -1311,7 +1311,7 @@ generated automatically</description>
 		<fields>
 			<field name="cargo" required="true">
 				<ontology name="GeneOntology">
-					<branch>imported</branch>
+					<branch>chebi_or_complex</branch>
 				</ontology>
 			</field>
 			<field name="membrane" required="true">
@@ -1356,7 +1356,7 @@ generated automatically</description>
 		<fields>
 			<field name="imported" required="true">
 				<ontology name="GeneOntology">
-					<branch>imported</branch>
+					<branch>chebi_or_complex</branch>
 				</ontology>
 			</field>
 			<field name="Literature_Refs" required="true" >
