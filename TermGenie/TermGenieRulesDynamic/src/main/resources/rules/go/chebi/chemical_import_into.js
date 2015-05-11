@@ -38,7 +38,7 @@ function import_across_plasma_membrane() {
 	var label = termname(c, ont) + " import across plasma membrane";
 	
 	var definition = "The directed movement of "
-			+ refname(c, ont)
+			+ termname(c, ont)
 			+ " from outside of a cell into the cytoplasmic compartment.";
 	var synonyms = null;
 	
@@ -85,7 +85,7 @@ function import_into_cell() {
 	var label = termname(c, ont) + " import into cell";
 	
 	var definition = "The directed movement of "
-			+ refname(c, ont)
+			+ termname(c, ont)
 			+ " from outside of a cell, across the plasma membrane and into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.";
 	var synonyms = null;
 	
