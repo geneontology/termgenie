@@ -59,11 +59,11 @@ function import_across_membrane() {
 	var end = getSingleTerm("end", ont);
 	
 	var label = termname(cargo, ont) + " import across "+ termname(membrane, ont);
-	var definition = "The directed import of some "
+	var definition = "The directed import of "
 		+ termname(cargo, ont)
-		+ " from " + refname(start, ont) 
-		+ " across " + refname(membrane, ont)
-		+ " into "+ refname(end, ont) + ".";
+		+ " from the " + termname(start, ont) 
+		+ " across the " + termname(membrane, ont)
+		+ " into the "+ termname(end, ont) + ".";
 	var synonyms = null;
 	
 	var mdef = createMDef("GO_0006810 "+
