@@ -39,7 +39,7 @@ function import_across_plasma_membrane() {
 	
 	var definition = "The directed movement of "
 			+ refname(c, ont)
-			+ " from outside of a cell into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.";
+			+ " from outside of a cell into the cytoplasmic compartment.";
 	var synonyms = null;
 	
 	var mdef = createMDef("GO_0006810 " +
@@ -53,7 +53,7 @@ function import_across_plasma_membrane() {
 
 function import_across_membrane() {
 	var ont = GeneOntology; // the graph wrapper contains all info, including CHEBI
-	var cargo = getSingleTerm("cargo", ont);
+	var cargo = getSingleTerm("imported", ont);
 	var membrane = getSingleTerm("membrane", ont);
 	var start = getSingleTerm("start", ont);
 	var end = getSingleTerm("end", ont);
@@ -86,7 +86,7 @@ function import_into_cell() {
 	
 	var definition = "The directed movement of "
 			+ refname(c, ont)
-			+ " from outside of a cell, across the plasma membrane and into the cytoplasmic compartment.";
+			+ " from outside of a cell, across the plasma membrane and into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.";
 	var synonyms = null;
 	
 	var mdef = createMDef("GO_0006810 " +

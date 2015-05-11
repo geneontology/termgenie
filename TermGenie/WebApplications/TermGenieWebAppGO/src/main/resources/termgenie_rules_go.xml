@@ -1309,7 +1309,7 @@ generated automatically</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000075</definition-xref>
 		<fields>
-			<field name="cargo" required="true">
+			<field name="imported" required="true">
 				<ontology name="GeneOntology">
 					<branch>chebi_or_complex</branch>
 				</ontology>
