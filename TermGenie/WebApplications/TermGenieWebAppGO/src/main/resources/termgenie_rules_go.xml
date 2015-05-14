@@ -1236,12 +1236,10 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_binding.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<!-- 
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Molecular Function</category>
 			<category>Linked Ontologies/GO to GO</category>
-             -->
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="cc_organization" displayname="cellular component organization">
@@ -1266,16 +1264,14 @@ generated automatically</description>
 			<ruleFile>rules/go/cc_organization.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<!-- 
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Processes</category>
 			<category>Linked Ontologies/GO to GO</category>
-             -->
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_across_plasma_membrane">
-		<description>transport of a chemical from outside of a cell, across the plasma membrane and into the cytoplasmic compartment</description>
+		<description>transport of a chemical or complex from outside of a cell, across the plasma membrane and into the cytoplasmic compartment</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000075</definition-xref>
 		<fields>
@@ -1296,16 +1292,15 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<!-- 
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Terms involving chemicals or components/ChEBI</category
 			<category>Processes/Transport/Import</category>
-			 -->
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_across_membrane">
-		<description>Transport of a chemical across a membrane into a cellular component. This transport may happen through a channel or pore.  It does not cover an import via vesicle fusion, as in this case the transport does not involve crossing the membrane.</description>
+		<description>Transport of a chemical or complex across a membrane into a cellular component. This transport may happen through a channel or pore.  It does not cover an import via vesicle fusion, as in this case the transport does not involve crossing the membrane.</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000075</definition-xref>
 		<fields>
@@ -1341,16 +1336,15 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<!-- 
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Terms involving chemicals or components/ChEBI</category
 			<category>Processes/Transport/Import</category>
-			 -->
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_into_cell">
-		<description>Transport of a chemical from outside of a cell into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.</description>
+		<description>Transport of a chemical or complex from outside of a cell into the cytoplasmic compartment. This may occur via transport across the plasma membrane or via endocytosis.</description>
 		<obonamespace>biological_process</obonamespace>
 		<definition-xref>GO_REF:0000075</definition-xref>
 		<fields>
@@ -1371,12 +1365,11 @@ generated automatically</description>
 			<ruleFile>rules/go/chebi/chemical_import_into.js</ruleFile>
 		</ruleFiles>
 		<categories>
-			<!-- 
 			<category>Linked Ontologies/GO to external ontology/ChEBI</category>
 			<category>Terms involving chemicals or components/Cellular components</category>
+			<category>Terms involving chemicals or components/ChEBI</category
 			<category>Processes/Transport/Import</category>
-			 -->
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 </termgenietemplates>
