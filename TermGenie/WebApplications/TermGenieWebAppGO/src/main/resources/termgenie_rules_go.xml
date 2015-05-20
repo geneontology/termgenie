@@ -1311,7 +1311,7 @@ generated automatically</description>
 			</field>
 			<field name="membrane" required="true">
 				<ontology name="GeneOntology">
-					<branch>cellular_component</branch>
+					<branch>membrane</branch>
 				</ontology>
 			</field>
 			<field name="start" required="true">
