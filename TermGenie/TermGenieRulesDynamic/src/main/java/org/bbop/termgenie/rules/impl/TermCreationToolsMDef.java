@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.process.ProcessState;
 import org.bbop.termgenie.core.rules.ReasonerFactory;
@@ -290,7 +291,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		return null;
 	}
 
-	protected boolean addTerm(String label, String definition, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<MDef> partOf, List<TermGenerationOutput> output) {
+	protected boolean addTerm(String label, String definition, List<String> comments, List<ISynonym> synonyms, List<MDef> logicalDefinition, List<MDef> partOf, List<TermGenerationOutput> output) {
 		ProcessState.addMessage(state, "Checking state of current ontology.");
 		SharedReasoner manager = factory.getSharedReasoner(targetOntology);
 		List<String> errors = manager.checkConsistency(targetOntology);
@@ -393,6 +394,14 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		String comment = getInput("Comment");
 		if (comment != null && comment.length() > 0) {
 			term.addClause(new Clause(OboFormatTag.TAG_COMMENT, comment));
+		}
+		if (comments != null) {
+			for (String c : comments) {
+				c = StringUtils.trimToNull(c);
+				if (c != null) {
+					term.addClause(new Clause(OboFormatTag.TAG_COMMENT, c));
+				}
+			}
 		}
 		String oboNamespace = this.input.getTermTemplate().getOboNamespace();
 		if (oboNamespace != null) {

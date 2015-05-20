@@ -66,6 +66,12 @@ function import_across_membrane() {
 		+ " into the "+ termname(end, ont) + ".";
 	var synonyms = null;
 	
+	var comment = 'This term covers ' + termname(cargo, ont)
+				+ ' import *across* the ' + termname(membrane, ont)
+				+ ' through a channel or pore. It does not cover import via vesicle fusion with '
+				+ termname(membrane, ont)
+				+', as in this case transport does not involve crossing the membrane.';
+	
 	var mdef = createMDef("GO_0006810 "+
 		    "and ('has target start location' some ?S)"+
 		    "and ('has target end location' some ?E)"+
@@ -75,7 +81,7 @@ function import_across_membrane() {
 	mdef.addParameter('S', start, ont);
 	mdef.addParameter('E', end, ont);
 	mdef.addParameter('M', membrane, ont);
-	createTerm(label, definition, synonyms, mdef);
+	termgenie.createTerm(label, definition, synonyms, [mdef], null, comment);
 }
 
 function import_into_cell() {
