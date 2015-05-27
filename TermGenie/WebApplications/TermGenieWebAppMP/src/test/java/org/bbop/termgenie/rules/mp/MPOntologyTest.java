@@ -56,7 +56,7 @@ public class MPOntologyTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_mp.xml", true, true, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_mp.xml", true, true, true, null),
 				new OntologyModule("ontology-configuration_mp_test.xml"),
 				new ReasonerModule(null));
 

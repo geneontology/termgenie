@@ -43,7 +43,7 @@ public class HPOntologyTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_hp.xml", true, true, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_hp.xml", true, true, true, null),
 				new OntologyModule("ontology-configuration_hp_test.xml"),
 				new ReasonerModule(null));
 

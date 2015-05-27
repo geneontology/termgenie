@@ -89,7 +89,8 @@ public class TermGenieWebAppEnvoContextListener extends AbstractTermGenieContext
 	protected IOCModule getRulesModule() {
 		boolean assertInferences = true;
 		boolean useIsInferred = true;
-		return new XMLDynamicRulesModule("termgenie_rules_envo.xml", useIsInferred, assertInferences, applicationProperties);
+		boolean filterNonAsciiSynonyms = true;
+		return new XMLDynamicRulesModule("termgenie_rules_envo.xml", useIsInferred, assertInferences, filterNonAsciiSynonyms, applicationProperties);
 	}
 
 	@Override

@@ -120,7 +120,7 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_go.xml", true, true, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_go.xml", true, true, true, applicationProperties);
 	}
 
 	@Override

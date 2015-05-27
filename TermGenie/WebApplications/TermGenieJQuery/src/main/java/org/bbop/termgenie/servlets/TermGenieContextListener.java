@@ -18,7 +18,7 @@ public class TermGenieContextListener extends AbstractTermGenieContextListener {
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_simple.xml", false, true, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_simple.xml", false, true, false, applicationProperties);
 	}
 
 	@Override

@@ -52,6 +52,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	 * @param requireLiteratureReference
 	 * @param useIsInferred
 	 * @param assertInferences
+	 * @param filterNonAsciiSynonyms
 	 */
 	public TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
@@ -61,9 +62,10 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			ProcessState state,
 			boolean requireLiteratureReference,
 			boolean useIsInferred,
-			boolean assertInferences)
+			boolean assertInferences,
+			boolean filterNonAsciiSynonyms)
 	{
-		super();
+		super(filterNonAsciiSynonyms);
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);

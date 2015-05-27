@@ -41,7 +41,7 @@ public class CellTypeOntologyTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, false, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_cl.xml", false, false, true, null),
 				new OntologyModule("ontology-configuration_cl.xml"),
 				new ReasonerModule(null));
 

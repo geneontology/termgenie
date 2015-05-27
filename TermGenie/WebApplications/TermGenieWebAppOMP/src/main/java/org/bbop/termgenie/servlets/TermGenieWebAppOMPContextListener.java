@@ -23,7 +23,8 @@ public class TermGenieWebAppOMPContextListener extends AbstractTermGenieContextL
 
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_omp.xml", false, true, applicationProperties);
+		boolean filterNonAsciiSynonyms = true;
+		return new XMLDynamicRulesModule("termgenie_rules_omp.xml", false, true, filterNonAsciiSynonyms, applicationProperties);
 	}
 
 }

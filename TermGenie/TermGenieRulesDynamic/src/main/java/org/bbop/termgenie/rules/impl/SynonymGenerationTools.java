@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bbop.termgenie.rules.api.TermGenieScriptFunctionsSynonyms;
 import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
@@ -23,6 +24,12 @@ import owltools.graph.OWLGraphWrapper.Synonym;
 
 public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms {
 
+	private boolean filterNonAsciiSynonyms = false;
+	
+	public SynonymGenerationTools(boolean filterNonAsciiSynonyms) {
+		this.filterNonAsciiSynonyms = filterNonAsciiSynonyms;
+	}
+	
 	@Override
 	public List<ISynonym> synonyms(String prefix,
 			OWLObject x,
@@ -445,6 +452,16 @@ public class SynonymGenerationTools implements TermGenieScriptFunctionsSynonyms 
 						ISynonym synonym = iterator.next();
 						String category = synonym.getCategory();
 						if (category == null || !categories.contains(category)) {
+							iterator.remove();
+						}
+					}
+				}
+				if (filterNonAsciiSynonyms && oboSynonyms.isEmpty() == false) {
+					Iterator<ISynonym> iterator = oboSynonyms.iterator();
+					while (iterator.hasNext()) {
+						ISynonym synonym = iterator.next();
+						String label = synonym.getLabel();
+						if (StringUtils.isAsciiPrintable(label) == false) {
 							iterator.remove();
 						}
 					}

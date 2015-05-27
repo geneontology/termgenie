@@ -46,6 +46,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 
 	public static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
 	public static final String ASSERT_INFERERNCES_BOOLEAN_NAME = "TermGenieScriptRunnerAssertInferences";
+	public static final String FILTER_NON_ASCII_SYNONYMS = "TermGenieScriptRunnerFilterNonAsciiSynonyms";
 	
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
@@ -55,13 +56,15 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	private final ReasonerFactory factory;
 	private final boolean useIsInferred;
 	private final boolean assertInferences;
+	private final boolean filterNonAsciiSynonyms;
 
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates,
 			OntologyLoader loader,
 			ReasonerFactory factory,
 			@Named(USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
-			@Named(ASSERT_INFERERNCES_BOOLEAN_NAME) boolean assertInferences)
+			@Named(ASSERT_INFERERNCES_BOOLEAN_NAME) boolean assertInferences,
+			@Named(FILTER_NON_ASCII_SYNONYMS) boolean filterNonAsciiSynonyms)
 	{
 		super(false);
 		this.factory = factory;
@@ -72,6 +75,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		this.scripts = new HashMap<TermTemplate, String>();
 		this.useIsInferred = useIsInferred;
 		this.assertInferences = assertInferences;
+		this.filterNonAsciiSynonyms = filterNonAsciiSynonyms;
 		for (TermTemplate termTemplate : templates) {
 			scripts.put(termTemplate, loadScript(termTemplate));
 		}
@@ -166,7 +170,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			if (methodName == null) {
 				methodName = termTemplate.getName();
 			}
-			GenerationTask task = new GenerationTask(input, script, methodName, templateId, factory, processState, requireLiteratureReference, useIsInferred);
+			GenerationTask task = new GenerationTask(input, script, methodName, templateId, factory, processState, requireLiteratureReference, useIsInferred, filterNonAsciiSynonyms);
 			try {
 				ontologyTaskManager.runManagedTask(task);
 			} catch (InvalidManagedInstanceException exception) {
@@ -215,6 +219,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		private final ProcessState state;
 		private final boolean requireLiteratureReference;
 		private final boolean useIsInferred;
+		private final boolean filterNonAsciiSynonyms;
 		
 		List<TermGenerationOutput> result = null;
 
@@ -225,7 +230,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				ReasonerFactory factory,
 				ProcessState state,
 				boolean requireLiteratureReference,
-				boolean useIsInferred)
+				boolean useIsInferred,
+				boolean filterNonAsciiSynonyms)
 		{
 			this.input = input;
 			this.script = script;
@@ -235,6 +241,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			this.state = state;
 			this.requireLiteratureReference = requireLiteratureReference;
 			this.useIsInferred = useIsInferred;
+			this.filterNonAsciiSynonyms = filterNonAsciiSynonyms;
 		}
 
 		@Override
@@ -254,7 +261,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				engine.put(ontologyName, graph);
 				
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred, assertInferences);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred, assertInferences, filterNonAsciiSynonyms);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

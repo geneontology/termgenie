@@ -38,7 +38,7 @@ public class SimpleEntityQualityPatternTest {
 		OntologyModule ontologyModule = new OntologyModule("ontology-configuration_oba.xml");
 		ontologyModule.setFileCacheIgnoreMappings("http://purl.obolibrary.org/obo/go/extensions/bio-attributes.owl", 
 						"http://purl.obolibrary.org/obo/go/extensions/x-attribute.obo.owl");
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, true, null),
 				ontologyModule,
 				new ReasonerModule(null));
 

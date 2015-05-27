@@ -50,7 +50,7 @@ public class EnvoTemplateTest {
 		// setup modules
 		boolean assertInferences = true;
 		boolean useIsInferred = true;
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_envo.xml", useIsInferred, assertInferences, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_envo.xml", useIsInferred, assertInferences, true, null),
 				new OntologyModule("ontology-configuration_envo_test.xml"),
 				new ReasonerModule(null));
 

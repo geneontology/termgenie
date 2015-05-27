@@ -110,7 +110,7 @@ public class TermGenieWebAppOBAContextListener extends AbstractTermGenieContextL
 	
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, applicationProperties);
+		return new XMLDynamicRulesModule("termgenie_rules_oba.xml", false, true, true, applicationProperties);
 	}
 	
 	@Override

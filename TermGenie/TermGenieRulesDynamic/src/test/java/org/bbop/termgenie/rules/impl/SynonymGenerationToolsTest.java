@@ -122,7 +122,7 @@ public class SynonymGenerationToolsTest {
 	public static void beforeClass() {
 		final Map<OWLObject, String> labels = new HashMap<OWLObject, String>();
 		final Map<OWLObject, List<ISynonym>> source = new HashMap<OWLObject, List<ISynonym>>();
-		tool = new SynonymGenerationTools() {
+		tool = new SynonymGenerationTools(false) {
 
 			@Override
 			protected List<ISynonym> getSynonyms(OWLObject id, OWLGraphWrapper ontology, String requiredPrefix, boolean ignoreSynonyms) {
