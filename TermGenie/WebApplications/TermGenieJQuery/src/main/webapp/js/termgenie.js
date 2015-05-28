@@ -1,6 +1,66 @@
 function termgenie(){
 	
 	/**
+	 * Singleton instance for a rule base xref validator.
+	 * Checks for generic xref and additional rules for PMIDs 
+	 */
+	var XRefValidator = (function() {
+		var defaultXrefPattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
+		var numericPattern = /^\d+$/;  // digits only
+		
+		var instance = {
+				validate: function(value) {
+					
+					var matching = defaultXrefPattern.test(value); 
+					if (matching === false) {
+						return 'The input does not conform to the expected pattern. '
+						+'An XRef consists of a prefix and suffix with a colon (:) as separator and no whitespaces';
+					}
+					// check for PMID prefix
+					// to upper case
+					var upperCase = value.toUpperCase();
+					
+					// starts with PMID
+					var isPMID = upperCase.indexOf('PMID:') === 0
+					if (isPMID === true) {
+						// check that PMID is in uppercase
+						var prefix = value.substring(0,4);
+						if (prefix != 'PMID') {
+							return 'A PMID must start with all captial letters "PMID:"';
+						}
+						
+						var afterColon = value.substring(5);
+						// extra check for valid PMID
+						// expect only numerics after the colon
+						matching = numericPattern.test(afterColon);
+						if (matching === false) {
+							return 'The input does not conform to the expected pattern. '
+							+'A PMID: should only contain numbers after the colon.';
+						}
+						// check minimal length
+						if (afterColon.length < 4) {
+							return 'The PMID appears to be too short';
+						}
+						
+						// paranoid check forbid the usage of PMID:12345 or similar
+						if (afterColon.indexOf('0123') === 0
+							|| afterColon.indexOf('1234') === 0
+							|| afterColon.indexOf('2345') === 0) {
+							return 'The PMID appears to be fake';
+						}
+					}
+					return null;
+				}
+			};
+		
+	    return {
+	        getInstance: function () {
+	            return instance;
+	        }
+	    };
+	})();
+	
+	/**
 	 * Provide an Accordion with the additional functionality to 
 	 * enable/disable individual panes for click events.
 	 * 
@@ -958,18 +1018,21 @@ function termgenie(){
 						}
 						else {
 							var validator = undefined;
-							if (field.name == 'DefX_Ref') {
+							if (field.name == 'DefX_Ref' || field.name == 'Literature_Refs') {
 								validator = function(text, template, field, extractionResult) {
 									if(!text || text.length < 3) {
-										extractionResult.addError('The field "'+field.name+'" is too short. Def_XRef consists of a prefix and suffix with a colon (:) as separator', template, field);
+										extractionResult.addError('The field "'+field.name+'" is too short. '
+												+ field.name
+												+ ' consists of a prefix and suffix with a colon (:) as separator', template, field);
 										return false;
 									}
-									var pattern = /^\S+:\S+$/; // {non-whitespace}+ colon {non-whitespace}+ [whole string]
-									var matching = pattern.test(text); 
-									if (matching === false) {
-										extractionResult.addError('The field "'+field.name+'" does not conform to the expected pattern. Def_XRef consists of a prefix and suffix with a colon (:) as separator and no whitespaces', template, field);
+									var xrefValidatorInstance = XRefValidator.getInstance();
+									var validateResult = xrefValidatorInstance.validate(text);
+									if (validateResult != null) {
+										extractionResult.addError('Validation error in field "'+field.name+'":'+validateResult, template, field);
+										return false
 									}
-									return matching;
+									return true;
 								};
 							}
 							inputFields[i] = TextFieldInputList(tdElement, i, cardinality.min, cardinality.max, validator, choices);
