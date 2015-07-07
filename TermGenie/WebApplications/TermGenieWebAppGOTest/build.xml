@@ -10,7 +10,7 @@
 	<property name="webapp.parent" location="../TermGenieWebAppGO/src/main/webapp"/>
 	<property name="webapp.local" location="src/main/webapp"/>
 	
-	<target name="copywebapp">
+	<target name="copywebapp" depends="create_workdir">
 		<mkdir dir="${webapp.target}"/>
 		<copy todir="${webapp.target}">
 			<fileset dir="${webapp.jquery}">
@@ -34,7 +34,11 @@
 		<delete dir="${webapp.checkout}"/>
 	</target>
 	
-	<target name="createsvn">
+	<target name="createsvn" depends="create_workdir">
 		<exec executable="${webapp.prepare}/create_svn.sh" dir="${webapp.prepare}"></exec>
+	</target>
+	
+	<target name="create_workdir">
+		<mkdir dir="${workdir}"/>
 	</target>
 </project>
