@@ -41,6 +41,11 @@
 				<root>GO:0005575</root>
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="macromolecular_complex">
+			<roots>
+				<root>GO:0032991</root>
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="chebi">
 			<roots>
 				<root>CHEBI:24431</root> <!-- chemical entity -->
