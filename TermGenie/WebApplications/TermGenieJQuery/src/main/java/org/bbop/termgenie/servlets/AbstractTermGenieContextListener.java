@@ -24,6 +24,8 @@ import org.bbop.termgenie.services.freeform.FreeFormTermService;
 import org.bbop.termgenie.services.freeform.NoopFreeFormModule;
 import org.bbop.termgenie.services.history.RecentSubmissionsService;
 import org.bbop.termgenie.services.history.RecentSubmissionsServiceModule;
+import org.bbop.termgenie.services.info.InfoServices;
+import org.bbop.termgenie.services.info.InfoServicesModule;
 import org.bbop.termgenie.services.lookup.TermLookupServiceDefaultModule;
 import org.bbop.termgenie.services.management.ManagementServiceModule;
 import org.bbop.termgenie.services.management.ManagementServices;
@@ -66,6 +68,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 				ManagementServices management,
 				TermHierarchyRenderer renderer,
 				FreeFormTermService freeform,
+				InfoServices info,
 				ProgressMonitor progress)
 		{
 			InjectingJsonRpcExecutor executor = new InjectingJsonRpcExecutor(getInjector());
@@ -80,6 +83,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 			executor.addHandler("management", management, ManagementServices.class);
 			executor.addHandler("renderer", renderer, TermHierarchyRenderer.class);
 			executor.addHandler("freeform", freeform, FreeFormTermService.class);
+			executor.addHandler("info", info, InfoServices.class);
 			return executor;
 		}
 	}
@@ -124,6 +128,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		add(modules, getReviewMailHandlerModule(), true, "ReviewMailHandlerModule");
 		add(modules, getTermLookupModule(), true, "TermLookupModule");
 		add(modules, getFreeFormTermModule(), true, "FreeFormModule");
+		add(modules, getInfoServicesModule(), true, "InfoServiceModule");
 		Collection<IOCModule> additionalModules = getAdditionalModules();
 		if (additionalModules != null && !additionalModules.isEmpty()) {
 			for (IOCModule module : additionalModules) {
@@ -222,6 +227,10 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	
 	protected IOCModule getFreeFormTermModule() {
 		return new NoopFreeFormModule(applicationProperties);
+	}
+	
+	protected IOCModule getInfoServicesModule() {
+		return new InfoServicesModule(applicationProperties);
 	}
 	
 	/**
