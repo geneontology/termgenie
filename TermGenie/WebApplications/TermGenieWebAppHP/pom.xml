@@ -10,7 +10,7 @@
 	<artifactId>TermGenieWebAppHP</artifactId>
 	<packaging>war</packaging>
 
-	<name>TermGenieWebAppMP</name>
+	<name>TermGenieWebAppHP</name>
 
 	<build>
 		<plugins>
