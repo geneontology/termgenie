@@ -6,7 +6,9 @@ import com.google.inject.Inject;
 
 public class InfoServicesImpl implements InfoServices {
 	
-	private final String termgenieBuildDate;
+	private final String termgenieBuildTimestamp;
+	private final String termgenieRevision;
+	private final String termgenieRevisionUrl;
 	private final String owlapiVersion;
 	private final String reasonerName;
 	private final String reasonerVersion;
@@ -14,11 +16,21 @@ public class InfoServicesImpl implements InfoServices {
 	@Inject
 	public InfoServicesImpl(ReasonerFactory rf) {
 		super();
-		String termgenieTimestamp = owltools.version.VersionInfo.getManifestVersion("termgenie-build-timestamp");
-		termgenieBuildDate = termgenieTimestamp == null ? "unknown" : termgenieTimestamp;
-		owlapiVersion = org.semanticweb.owlapi.util.VersionInfo.getVersionInfo().getVersion();
+		termgenieBuildTimestamp = getManifestTag("termgenie-build-timestamp", "unknown");
+		termgenieRevision = getManifestTag("git-revision-sha1", "unknown");
+		termgenieRevisionUrl = getManifestTag("git-revision-url", "unknown");
+		owlapiVersion = getOwlApiVersion();
 		this.reasonerName = rf.getReasonerName();
 		this.reasonerVersion = rf.getReasonerVersion();
+	}
+	
+	private static String getManifestTag(String tag, String defaultValue) {
+		String value = owltools.version.VersionInfo.getManifestVersion(tag);
+		return value == null ? defaultValue : value;
+	}
+	
+	private static String getOwlApiVersion() {
+		return org.semanticweb.owlapi.util.VersionInfo.getVersionInfo().getVersion();
 	}
 
 	@Override
@@ -26,7 +38,9 @@ public class InfoServicesImpl implements InfoServices {
 		JsonInfoDetails details = new JsonInfoDetails();
 		
 		// termgenie
-		details.setTermgenieVersion(termgenieBuildDate);
+		details.setTermgenieBuildTimestamp(termgenieBuildTimestamp);
+		details.setTermgenieRevision(termgenieRevision);
+		details.setTermgenieRevisionUrl(termgenieRevisionUrl);
 		
 		// owlapi
 		details.setOwlapiVersion(owlapiVersion);

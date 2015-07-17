@@ -171,15 +171,15 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 	</properties>
 
-	<url>https://code.google.com/p/termgenie/</url>
+	<url>https://github.com/geneontology/termgenie/</url>
 	<issueManagement>
-	<url>https://code.google.com/p/termgenie/issues/list</url>
+		<url>https://github.com/geneontology/termgenie/issues</url>
 	</issueManagement>
 	<inceptionYear>2011</inceptionYear>
-	<developers>
-	</developers>
 	<scm>
-		<url>https://termgenie.googlecode.com/svn/trunk/</url>
+		<url>https://github.com/geneontology/termgenie.git</url>
+		<!-- used by buildnumber-maven-plugin -->
+		<connection>scm:git:git://github.com/geneontology/termgenie.git</connection>
 	</scm>
 	<organization>
 		<name>BBOP</name>
@@ -242,6 +242,21 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<plugin>
+				<!-- used to add ${buildNumber} -->
+				<!-- requires scm connection -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -263,6 +278,9 @@
 						<archive>
 							<manifestEntries>
 								<termgenie-build-timestamp>${maven.build.timestamp}</termgenie-build-timestamp>
+								<!-- requires the buildnumber-maven-plugin -->
+								<git-revision-sha1>${buildNumber}</git-revision-sha1>
+								<git-revision-url>https://github.com/geneontology/termgenie/commit/${buildNumber}</git-revision-url>
 							</manifestEntries>
 						</archive>
 					</configuration>

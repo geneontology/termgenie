@@ -3,7 +3,9 @@ package org.bbop.termgenie.services.info;
 public class JsonInfoDetails {
 
 	private String owlapiVersion;
-	private String termgenieVersion;
+	private String termgenieBuildTimestamp;
+	private String termgenieRevision;
+	private String termgenieRevisionUrl;
 	private String reasonerName;
 	private String reasonerVersion;
 
@@ -22,17 +24,45 @@ public class JsonInfoDetails {
 	}
 
 	/**
-	 * @return the termgenieVersion
+	 * @return the termgenieBuildTimestamp
 	 */
-	public String getTermgenieVersion() {
-		return termgenieVersion;
+	public String getTermgenieBuildTimestamp() {
+		return termgenieBuildTimestamp;
 	}
 
 	/**
-	 * @param termgenieVersion the termgenieVersion to set
+	 * @param termgenieBuildTimestamp the termgenieBuildTimestamp to set
 	 */
-	public void setTermgenieVersion(String termgenieVersion) {
-		this.termgenieVersion = termgenieVersion;
+	public void setTermgenieBuildTimestamp(String termgenieBuildTimestamp) {
+		this.termgenieBuildTimestamp = termgenieBuildTimestamp;
+	}
+
+	/**
+	 * @return the termgenieRevision
+	 */
+	public String getTermgenieRevision() {
+		return termgenieRevision;
+	}
+
+	/**
+	 * @param termgenieRevision the termgenieRevision to set
+	 */
+	public void setTermgenieRevision(String termgenieRevision) {
+		this.termgenieRevision = termgenieRevision;
+	}
+
+	/**
+	 * @return the termgenieRevisionUrl
+	 */
+	public String getTermgenieRevisionUrl() {
+		return termgenieRevisionUrl;
+	}
+
+	/**
+	 * @param termgenieRevisionUrl the termgenieRevisionUrl to set
+	 */
+	public void setTermgenieRevisionUrl(String termgenieRevisionUrl) {
+		this.termgenieRevisionUrl = termgenieRevisionUrl;
 	}
 
 	/**
