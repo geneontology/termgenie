@@ -20,7 +20,6 @@ abstract class AbstractOboCommitGitModule extends AbstractCommitGitModule {
 	 * @param gitRepository
 	 * @param gitOntologyFileName
 	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
 	 */
 	protected AbstractOboCommitGitModule(String gitRepository,
 			String gitOntologyFileName,

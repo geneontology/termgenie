@@ -42,6 +42,7 @@ public class ManagementServicesImpl implements ManagementServices {
 	/**
 	 * @param sessionHandler
 	 * @param permissions
+	 * @param ontologyLoader
 	 */
 	@Inject
 	ManagementServicesImpl(InternalSessionHandler sessionHandler,

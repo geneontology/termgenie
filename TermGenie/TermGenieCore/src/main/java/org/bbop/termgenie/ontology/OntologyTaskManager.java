@@ -74,7 +74,7 @@ public abstract class OntologyTaskManager extends GenericTaskManager<OWLGraphWra
 		
 		/**
 		 * @param managed
-		 * @return
+		 * @return modification state
 		 * @throws TaskException
 		 * @throws Exception
 		 */

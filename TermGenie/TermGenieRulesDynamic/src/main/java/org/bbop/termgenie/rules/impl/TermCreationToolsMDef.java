@@ -82,6 +82,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	 * @param state
 	 * @param requireLiteratureReference
 	 * @param useIsInferred
+	 * @param assertInferences
 	 */
 	TermCreationToolsMDef(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,

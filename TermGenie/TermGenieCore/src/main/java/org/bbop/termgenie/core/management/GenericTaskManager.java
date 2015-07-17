@@ -34,8 +34,6 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @param name the name of this manager
 	 * @param n number of concurrent users
-	 * @param timeout
-	 * @param timeoutUnit
 	 */
 	GenericTaskManager(String name, int n) {
 		this.lock = new Semaphore(n, true); // fair
@@ -45,6 +43,8 @@ public abstract class GenericTaskManager<T> {
 	/**
 	 * Low level method to lock with a timeout. Only to be used in this package
 	 * 
+	 * @param timeout 
+	 * @param timeoutUnit 
 	 * @return pair of try lock status and managed instance (if available or null).
 	 * @throws InvalidManagedInstanceException 
 	 */
@@ -151,6 +151,7 @@ public abstract class GenericTaskManager<T> {
 	 * Create a managed instance.
 	 * 
 	 * @return managed instance
+	 * @throws InstanceCreationException
 	 */
 	protected abstract T createManaged() throws InstanceCreationException;
 
@@ -159,6 +160,7 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @param managed current managed instance
 	 * @return updated managed instance
+	 * @throws InstanceCreationException
 	 */
 	protected abstract T updateManaged(T managed) throws InstanceCreationException;
 
@@ -167,6 +169,7 @@ public abstract class GenericTaskManager<T> {
 	 * 
 	 * @param managed current managed instance
 	 * @return updated managed instance
+	 * @throws InstanceCreationException
 	 */
 	protected abstract T resetManaged(T managed) throws InstanceCreationException;
 

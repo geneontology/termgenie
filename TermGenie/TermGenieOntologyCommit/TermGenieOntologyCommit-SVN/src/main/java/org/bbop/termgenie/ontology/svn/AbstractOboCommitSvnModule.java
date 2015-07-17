@@ -19,7 +19,6 @@ abstract class AbstractOboCommitSvnModule extends AbstractCommitSvnModule {
 	 * @param svnRepository
 	 * @param svnOntologyFileName
 	 * @param applicationProperties
-	 * @param additionalOntologyFileNames
 	 * @param svnLoadExternals
 	 */
 	protected AbstractOboCommitSvnModule(String svnRepository,

@@ -36,8 +36,8 @@ public class NoCommitTermCommitServiceImpl implements TermCommitService {
 	protected final OntologyTaskManager manager;
 
 	/**
-	 * @param ontologyTools
 	 * @param sessionHandler
+	 * @param loader
 	 */
 	@Inject
 	protected NoCommitTermCommitServiceImpl(InternalSessionHandler sessionHandler, OntologyLoader loader)

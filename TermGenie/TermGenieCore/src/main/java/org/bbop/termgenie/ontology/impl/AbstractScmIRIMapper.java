@@ -24,6 +24,8 @@ public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> imple
 
 	/**
 	 * @param scm
+	 * @param mappedFiles
+	 * @param updateTriggers
 	 * @param catalogXml optional catalog XML file, null if not defined
 	 */
 	protected AbstractScmIRIMapper(T scm,

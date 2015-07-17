@@ -23,7 +23,7 @@ class OntologyIdStore {
 	 * {@link EntityManagerFactory}.
 	 * 
 	 * @param configuration the configuration
-	 * @param entityManager the entity manager for persistence
+	 * @param entityManagerFactory entity manager for persistence
 	 */
 	OntologyIdStore(OntologyIdStoreConfiguration configuration, EntityManagerFactory entityManagerFactory) {
 		super();
@@ -59,7 +59,7 @@ class OntologyIdStore {
 
 	/**
 	 * @param ontology
-	 * @param entityManager
+	 * @param entityManagerFactory 
 	 * @return newId
 	 */
 	Pair<String, Integer> getNewId(Ontology ontology, EntityManagerFactory entityManagerFactory) {
@@ -90,8 +90,8 @@ class OntologyIdStore {
 	 * 
 	 * @param ontology
 	 * @param id
-	 * @param entityManager
-	 * @return
+	 * @param entityManagerFactory
+	 * @return true after successful rollback
 	 */
 	boolean rollbackId(Ontology ontology, Integer id, EntityManagerFactory entityManagerFactory) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();

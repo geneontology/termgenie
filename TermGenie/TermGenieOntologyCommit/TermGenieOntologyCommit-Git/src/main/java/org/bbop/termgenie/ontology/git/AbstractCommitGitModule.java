@@ -19,7 +19,6 @@ abstract class AbstractCommitGitModule extends AbstractCommitModule {
 	 * @param gitRepository
 	 * @param gitOntologyFileName
 	 * @param applicationProperties
-	 * @param gitLoadExternals
 	 */
 	protected AbstractCommitGitModule(String gitRepository,
 			String gitOntologyFileName,

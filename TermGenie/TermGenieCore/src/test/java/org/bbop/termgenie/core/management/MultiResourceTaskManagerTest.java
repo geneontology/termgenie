@@ -95,6 +95,7 @@ public class MultiResourceTaskManagerTest {
 		MultiResourceTaskManager<String, String> testManager = new MultiResourceTaskManager<String, String>(name, managers)
 		{
 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected String[] getAdditionalInformations(GenericTaskManager<String>...managers) {
 				String[] infos = new String[managers.length];
@@ -131,7 +132,7 @@ public class MultiResourceTaskManagerTest {
 
 		/**
 		 * @param testManager
-		 * @param task
+		 * @param events
 		 * @param requested
 		 */
 		protected TestMultiThread(MultiResourceTaskManager<String, String> testManager,
@@ -190,8 +191,7 @@ public class MultiResourceTaskManagerTest {
 
 		/**
 		 * @param testManager
-		 * @param task
-		 * @param requested
+		 * @param events
 		 */
 		protected TestSingleThread(TestGenericTaskManager testManager,
 				List<String> events)

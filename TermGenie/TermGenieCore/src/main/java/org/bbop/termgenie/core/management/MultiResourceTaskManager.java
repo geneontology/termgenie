@@ -24,6 +24,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	private final Semaphore lock;
 	private final String name;
 
+	@SuppressWarnings("unchecked")
 	protected MultiResourceTaskManager(String name, GenericTaskManager<RESOURCETYPE>...managers) {
 		super();
 		this.name = name;
@@ -33,6 +34,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 		// binary is required to avoid deadlocks
 	}
 
+	@SuppressWarnings("unchecked")
 	protected abstract INFOTYPE[] getAdditionalInformations(GenericTaskManager<RESOURCETYPE>...managers);
 
 	/**
@@ -129,6 +131,7 @@ public abstract class MultiResourceTaskManager<RESOURCETYPE, INFOTYPE> {
 	 * @param requested
 	 * @throws InvalidManagedInstanceException 
 	 */
+	@SuppressWarnings("unchecked")
 	public final void runManagedTask(MultiResourceManagedTask<RESOURCETYPE, INFOTYPE> task,
 			INFOTYPE...requested) throws InvalidManagedInstanceException
 	{

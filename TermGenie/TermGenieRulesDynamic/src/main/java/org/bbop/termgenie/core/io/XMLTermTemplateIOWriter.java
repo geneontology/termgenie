@@ -34,7 +34,6 @@ class XMLTermTemplateIOWriter implements XMLTermTemplateIOTags {
 	/**
 	 * @param templates
 	 * @param outputStream
-	 * @throws XMLStreamException
 	 */
 	void writeTemplates(Collection<TermTemplate> templates, OutputStream outputStream) {
 		try {
