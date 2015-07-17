@@ -49,6 +49,17 @@ public class ReasonerFactoryImpl implements ReasonerFactory, EventSubscriber<Ont
 	}
 	
 	@Override
+	public String getReasonerName() {
+		return factory.getReasonerName();
+	}
+
+	@Override
+	public String getReasonerVersion() {
+		// TODO find a convenient way to not hard code the version
+		return "0.4.1";
+	}
+
+	@Override
 	public SharedReasoner getSharedReasoner(OWLGraphWrapper ontology) {
 		synchronized (this) {
 			if (cached == null) {

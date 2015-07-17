@@ -168,6 +168,7 @@
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 	</properties>
 
 	<url>https://code.google.com/p/termgenie/</url>
@@ -185,82 +186,89 @@
 		<url>http://berkeleybop.org/</url>
 	</organization>
 	<build>
-	  	<plugins>
-	  		<plugin>
-	  			<groupId>org.apache.maven.plugins</groupId>
-	  			<artifactId>maven-compiler-plugin</artifactId>
-	  			<version>2.5.1</version>
-	  			<configuration>
-	  				<source>1.7</source>
-	  				<target>1.7</target>
-	  			</configuration>
-	  		</plugin>
-	  		<plugin>
-	  			<groupId>org.apache.maven.plugins</groupId>
-	  			<artifactId>maven-surefire-plugin</artifactId>
-	  			<version>2.12.2</version>
-	  			<configuration>
-	  				<argLine>-Xmx3G</argLine>
-	  			</configuration>
-	  		</plugin>
-	  		<plugin>
-	  			<groupId>org.apache.maven.plugins</groupId>
-	  			<artifactId>maven-source-plugin</artifactId>
-	  			<version>2.2</version>
-	  			<executions>
-	  				<execution>
-	  					<id>attach-sources</id>
-	  					<goals>
-	  						<goal>jar</goal>
-	  					</goals>
-	  				</execution>
-	  			</executions>
-	  		</plugin>
-	  		<plugin>
-	  			<groupId>org.apache.maven.plugins</groupId>
-	  			<artifactId>maven-javadoc-plugin</artifactId>
-	  			<version>2.8.1</version>
-	  			<executions>
-	  				<execution>
-	  					<id>attach-javadocs</id>
-	  					<goals>
-	  						<goal>jar</goal>
-	  					</goals>
-	  				</execution>
-	  			</executions>
-	  		</plugin>
-	  		<plugin>
-	  			<groupId>org.apache.maven.plugins</groupId>
-	  			<artifactId>maven-deploy-plugin</artifactId>
-	  			<version>2.7</version>
-	  			<dependencies>
-	  				<dependency>
-	  					<groupId>org.apache.maven.wagon</groupId>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.2</version>
+				<configuration>
+					<argLine>-Xmx3G</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.wagon</groupId>
 						<artifactId>wagon-ssh</artifactId>
 						<version>1.0</version>
-	  				</dependency>
-	  			</dependencies>
-	  		</plugin>
-	  	</plugins>
-	  	<pluginManagement>
-	  		<plugins>
-	  			<plugin>
-	  				<groupId>org.apache.maven.plugins</groupId>
-	  				<artifactId>maven-war-plugin</artifactId>
-	  				<version>2.2</version>
-	  			</plugin>
-		  			<plugin>
-		  			<groupId>org.apache.maven.plugins</groupId>
-		  			<artifactId>maven-assembly-plugin</artifactId>
-		  			<version>2.3</version>
-		  		</plugin>
-		  		<plugin>
-		  			<groupId>org.apache.maven.plugins</groupId>
-		  			<artifactId>maven-jar-plugin</artifactId>
-		  			<version>2.4</version>
-		  		</plugin>
-	  		</plugins>
-	  	</pluginManagement>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<manifestEntries>
+								<termgenie-build-timestamp>${maven.build.timestamp}</termgenie-build-timestamp>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<repositories>

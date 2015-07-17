@@ -19,9 +19,25 @@ public interface ReasonerFactory {
 	 * @return taskManager
 	 */
 	public SharedReasoner getSharedReasoner(OWLGraphWrapper ontology);
-	
+
 	public OWLReasoner createReasoner(OWLGraphWrapper graph, ProcessState state);
-	
+
+	/**
+	 * Use this method to retrieve a name of the reasoner implementation for
+	 * info purposes,
+	 * 
+	 * @return name of the reasoner implementation
+	 */
+	public String getReasonerName();
+
+	/**
+	 * Use this method to retrieve a version string for the reasoner
+	 * implementation for info purposes.
+	 * 
+	 * @return version string
+	 */
+	public String getReasonerVersion();
+
 	/**
 	 * Cleanup method
 	 */
