@@ -52,6 +52,18 @@ public class OboTermCommitReviewServiceImpl extends TermCommitReviewServiceImpl 
 			frame.addClause(new Clause(OboFormatTag.TAG_DEF, "OBSOLETE."));
 		}
 		
+		// prefix obsolete term name with 'obsolete '
+		Clause lblFrame = frame.getClause(OboFormatTag.TAG_NAME);
+		if (lblFrame != null) {
+			String lbl = lblFrame.getValue(String.class);
+			if (lbl != null) {
+				if (lbl.startsWith("obsolete") == false) {
+					lbl = "obsolete " + lbl;
+					lblFrame.setValue(lbl);
+				}
+			}
+		}
+		
 		// add comment about obsolete
 		Clause commentClause = frame.getClause(OboFormatTag.TAG_COMMENT);
 		String comment = jsonDiff.getObsoleteComment();
