@@ -2,15 +2,17 @@ package org.bbop.termgenie.servlets;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
+import org.bbop.termgenie.ontology.git.CommitGitAnonymousModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.startup.JettyTestStartup;
+import org.semanticweb.owlapi.model.IRI;
 
 
 public class TermGenieWebAppMPTestContextListener extends TermGenieWebAppMPContextListener {
@@ -27,16 +29,15 @@ public class TermGenieWebAppMPTestContextListener extends TermGenieWebAppMPConte
 		JettyTestStartup.startup(port, contextPath, webappPath);
 	}
 	
-	private final String localSVNFolder;
-	private final String catalogXML = "catalog-v001.xml";
-	private final boolean loadExternal = false;
+	private final String localGitFolder;
+	private final String editFile = "src/ontology/mp-edit.owl";
 	
 	private final boolean cleanDownloadCache = false;
 	
 	
 	public TermGenieWebAppMPTestContextListener() {
 		try {
-			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
+			localGitFolder = new File("./work/git").getCanonicalPath();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -46,19 +47,18 @@ public class TermGenieWebAppMPTestContextListener extends TermGenieWebAppMPConte
 	protected IOCModule getOntologyModule() {
 		try {
 			String configFile = "ontology-configuration_mp.xml";
-			File localSVNCache = new File("./work/read-only-svn-checkout").getCanonicalFile();
-			localSVNCache.mkdirs();
+			File localGitCache = new File("./work/read-only-git-checkout").getCanonicalFile();
+			localGitCache.mkdirs();
 			if (cleanDownloadCache) {
-				FileUtils.cleanDirectory(localSVNCache);
+				FileUtils.cleanDirectory(localGitCache);
 			}
 			File fileCache = new File("./work/termgenie-download-cache").getCanonicalFile();
 
-			SvnAwareOntologyModule m = SvnAwareOntologyModule.createAnonymousSvnModule(configFile , applicationProperties);
-			m.setSvnAwareRepositoryURL(localSVNFolder);
-			m.setSvnAwareWorkFolder(localSVNCache.getAbsolutePath());
-			m.setSvnAwareCatalogXML(catalogXML);
-			m.setSvnAwareLoadExternal(loadExternal);
+			GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+			m.setGitAwareRepositoryURL(localGitFolder);
+			m.setGitAwareWorkFolder(localGitCache.getAbsolutePath());
 			m.setFileCache(fileCache);
+			m.setGitAwareMappedIRIs(Collections.singletonMap(IRI.create("http://purl.obolibrary.org/obo/mp.owl"), editFile));
 			return m;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -68,7 +68,7 @@ public class TermGenieWebAppMPTestContextListener extends TermGenieWebAppMPConte
 	
 	@Override
 	protected IOCModule getCommitModule() {
-		return CommitSvnAnonymousModule.createOwlModule(localSVNFolder, "mp-edit.owl", catalogXML, applicationProperties, loadExternal);
+		return CommitGitAnonymousModule.createOwlModule(localGitFolder, editFile, null, applicationProperties);
 	}
 	
 	@Override
