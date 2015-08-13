@@ -81,7 +81,7 @@ public class GitAwareOntologyModule extends OntologyModule {
 		bind(GitAwareIRIMapperRepositoryURL, gitAwareRepositoryURL);
 		bind(GitAwareIRIMapperWorkFolder, gitAwareWorkFolder);
 		bindIRIMap(GitAwareIRIMapperMappedIRIs, gitAwareMappedIRIs);
-		bind(GitAwareIRIMapperCatalogXML, gitAwareCatalogXML, true);
+		bind(GitAwareIRIMapperCatalogXML, gitAwareCatalogXML, true, true);
 		bindAdditional();
 	}
 	
@@ -100,7 +100,7 @@ public class GitAwareOntologyModule extends OntologyModule {
 		@Named("PrimaryIRIMapper")
 		protected OWLOntologyIRIMapper getIRIMapper(
 				@Named(GitAwareIRIMapperRepositoryURL) String repositoryURL,
-				@Named(GitAwareIRIMapperCatalogXML) String catalogXML,
+				@Named(GitAwareIRIMapperCatalogXML) @Nullable String catalogXML,
 				@Named(GitAwareIRIMapperMappedIRIs) Map<IRI, String> mappedIRIs,
 				@Named(GitAwareIRIMapperWorkFolder) @Nullable String gitWorkFolder)
 		{

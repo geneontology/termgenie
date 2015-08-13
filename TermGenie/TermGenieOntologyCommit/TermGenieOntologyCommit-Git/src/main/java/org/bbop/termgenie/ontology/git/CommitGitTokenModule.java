@@ -50,7 +50,7 @@ public class CommitGitTokenModule {
 		protected void configure() {
 			super.configure();
 			bindSecret("CommitAdapterGitToken");
-			bind("CommitAdapterGitCatalogXml", catalogXml, true);
+			bind("CommitAdapterGitCatalogXml", catalogXml, true, true);
 		}
 
 		@Override

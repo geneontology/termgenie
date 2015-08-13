@@ -124,7 +124,7 @@ public abstract class IOCModule extends AbstractModule {
 	 * @param value
 	 */
 	protected void bind(String name, String value) {
-		bind(name, value, false);
+		bind(name, value, false, false);
 	}
 	
 	/**
@@ -139,13 +139,27 @@ public abstract class IOCModule extends AbstractModule {
 	
 	/**
 	 * Convenience method for binding a {@link String} parameter. Check system
-	 * properties for overwrites. Allow null values, if optional is true.
+	 * properties for overwrites. Ignore null values, if optional is true.
 	 * 
 	 * @param name
 	 * @param value
 	 * @param optional
 	 */
 	protected void bind(String name, String value, boolean optional) {
+		bind(name, value, optional, false);
+	}
+	
+	/**
+	 * Convenience method for binding a {@link String} parameter. Check system
+	 * properties for overwrites. Allow null values, if optional is true.
+	 * Register null value if useNull is true.
+	 * 
+	 * @param name
+	 * @param value
+	 * @param optional
+	 * @param useNull
+	 */
+	protected void bind(String name, String value, boolean optional, boolean useNull) {
 		String property = getProperty(name);
 		if (property != null) {
 			value = property;
@@ -154,6 +168,10 @@ public abstract class IOCModule extends AbstractModule {
 			if(!optional) {
 				Logger.getLogger(getClass()).error("Named value '" + name + "' is null");
 				throw new RuntimeException("No value found for key: " + name);
+			}
+			if (useNull) {
+				bindNull(name);
+				configuredParameters.put(name, value);
 			}
 		}
 		else {

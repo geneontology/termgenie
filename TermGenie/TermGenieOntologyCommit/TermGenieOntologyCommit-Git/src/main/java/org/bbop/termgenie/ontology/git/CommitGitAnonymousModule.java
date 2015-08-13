@@ -42,7 +42,7 @@ public class CommitGitAnonymousModule {
 		
 		@Override
 		protected void bindScmHelper() {
-			bind("CommitAdapterGitCatalogXml", catalogXml, true);
+			bind("CommitAdapterGitCatalogXml", catalogXml, true, true);
 			bind(new TypeLiteral<ScmHelper<OWLOntology>>() { /* empty */ }, 
 					GitHelper.OwlGitHelperAnonymous.class);
 		}

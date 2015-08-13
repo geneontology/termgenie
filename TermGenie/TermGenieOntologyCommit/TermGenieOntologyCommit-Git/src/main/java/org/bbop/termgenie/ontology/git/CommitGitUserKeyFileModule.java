@@ -82,7 +82,7 @@ public class CommitGitUserKeyFileModule {
 			else {
 				bindNull("CommitAdapterGitPassword");
 			}
-			bind("CommitAdapterGitCatalogXml", catalogXml, true);
+			bind("CommitAdapterGitCatalogXml", catalogXml, true, true);
 		}
 	
 		@Override

@@ -59,7 +59,7 @@ public class CommitGitUserPasswdModule {
 			super.configure();
 			bind("CommitAdapterGitUsername", gitUsername);
 			bindSecret("CommitAdapterGitPassword");
-			bind("CommitAdapterGitCatalogXml", catalogXml, true);
+			bind("CommitAdapterGitCatalogXml", catalogXml, true, true);
 		}
 
 		@Override
