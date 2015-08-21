@@ -17,9 +17,9 @@ import org.bbop.termgenie.mail.MailHandler;
 import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
+import org.bbop.termgenie.ontology.git.CommitGitTokenModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
-import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
-import org.bbop.termgenie.ontology.svn.CommitSvnUserPasswdModule;
+import org.bbop.termgenie.ontology.impl.GitAwareOntologyModule;
 import org.bbop.termgenie.permissions.UserPermissionsModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
@@ -61,24 +61,21 @@ public class TermGenieWebAppHPContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getOntologyModule() {
 		String configFile = "ontology-configuration_hp.xml";
-		String repositoryURL = "https://phenotype-ontologies.googlecode.com/svn/trunk/src/ontology";
-		String svnUserName = null; // no default value
-		boolean loadExternal = false;
-		String catalogXML = "hp/catalog-v001.xml";
+		String repositoryURL = "https://github.com/obophenotype/human-phenotype-ontology.git";
+		String catalogXML = null;
 		
 		Map<IRI, String> mappedIRIs = new HashMap<IRI, String>();
 		
 		// http://purl.obolibrary.org/obo/hp.owl ->  hp/hp-edit.owl
-		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/hp.owl"), "hp/hp-edit.owl");
+		mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/hp.owl"), "src/ontology/hp-edit.owl");
 		
 		final Set<IRI> ignoreIRIs = new HashSet<IRI>();
 		ignoreIRIs.add(IRI.create("http://purl.obolibrary.org/obo/TEMP"));
 		
-		SvnAwareOntologyModule m = SvnAwareOntologyModule.createUsernamePasswordSvnModule(configFile, applicationProperties, svnUserName);
-		m.setSvnAwareRepositoryURL(repositoryURL);
-		m.setSvnAwareLoadExternal(loadExternal);
-		m.setSvnAwareCatalogXML(catalogXML);
-		m.setSvnAwareMappedIRIs(mappedIRIs);
+		GitAwareOntologyModule m = GitAwareOntologyModule.createAnonymousGitModule(configFile, applicationProperties);
+		m.setGitAwareRepositoryURL(repositoryURL);
+		m.setGitAwareCatalogXML(catalogXML);
+		m.setGitAwareMappedIRIs(mappedIRIs);
 		m.setFileCacheFilter(new IgnoresContainsDigits(ignoreIRIs));
 		return m;
 	}
@@ -95,12 +92,10 @@ public class TermGenieWebAppHPContextListener extends AbstractTermGenieContextLi
 	protected IOCModule getCommitModule() {
         
 		String repositoryURL = "https://phenotype-ontologies.googlecode.com/svn/trunk/src/ontology";
-		String remoteTargetFile = "hp/hp-edit.owl";
-		String catalogXml = "hp/catalog-v001.xml";
-		String svnUserName = null; // no default value
-		boolean loadExternal = false;
+		String remoteTargetFile = "src/ontology/hp-edit.owl";
+		String catalogXml = null;
 		
-		return CommitSvnUserPasswdModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, svnUserName, applicationProperties, loadExternal);
+		return CommitGitTokenModule.createOwlModule(repositoryURL, remoteTargetFile, catalogXml, applicationProperties);
 	}
 	
 	@Override

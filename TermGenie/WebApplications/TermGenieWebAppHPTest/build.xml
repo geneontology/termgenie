@@ -2,15 +2,15 @@
 	<property name="workdir" location="work"/>
 	<property name="webapp.prepare" location="prepare"/>
 	<property name="webapp.target" location="${workdir}/ant-webapp"/>
-	<property name="webapp.svn" location="${workdir}/svn"/>
-	<property name="webapp.checkout" location="${workdir}/read-only-svn-checkout"/>
+	<property name="webapp.git" location="${workdir}/git"/>
+	<property name="webapp.checkout" location="${workdir}/read-only-git-checkout"/>
 	<property name="webapp.db" location="${workdir}/termgenie-mp-db"/>
 	<property name="webapp.cache" location="${workdir}/termgenie-download-cache"/>
 	<property name="webapp.jquery" location="../TermGenieJQuery/src/main/webapp"/>
 	<property name="webapp.parent" location="../TermGenieWebAppHP/src/main/webapp"/>
 	<property name="webapp.local" location="src/main/webapp"/>
 	
-	<target name="copywebapp">
+	<target name="copywebapp" depends="create_workdir">
 		<mkdir dir="${webapp.target}"/>
 		<copy todir="${webapp.target}">
 			<fileset dir="${webapp.jquery}">
@@ -29,12 +29,16 @@
 	
 	<target name="clean">
 		<delete dir="${webapp.target}"/>
-		<delete dir="${webapp.svn}"/>
+		<delete dir="${webapp.git}"/>
 		<delete dir="${webapp.db}"/>
 		<delete dir="${webapp.checkout}"/>
 	</target>
 	
-	<target name="createsvn">
-		<exec executable="${webapp.prepare}/create_svn.sh" dir="${webapp.prepare}"></exec>
+	<target name="creategit" depends="create_workdir">
+		<exec executable="${webapp.prepare}/create_git.sh" dir="${webapp.prepare}"></exec>
+	</target>
+	
+	<target name="create_workdir">
+		<mkdir dir="${workdir}"/>
 	</target>
 </project>
