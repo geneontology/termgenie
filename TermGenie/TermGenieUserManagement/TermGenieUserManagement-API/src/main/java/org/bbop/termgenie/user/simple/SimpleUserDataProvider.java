@@ -32,8 +32,8 @@ public class SimpleUserDataProvider implements UserDataProvider {
 		}
 		return email;
 	}
-	
-	static String extractSCMAlias(String xref, String email) {
+
+	protected static String extractSCMAlias(String xref, String email) {
 		if (xref != null) {
 			int colonPos = xref.indexOf(':');
 			if (colonPos > 0 && colonPos < (xref.length() - 2)) {
@@ -56,16 +56,6 @@ public class SimpleUserDataProvider implements UserDataProvider {
 		if (userData.getScmAlias() == null) {
 			userData.setScmAlias(extractSCMAlias(userData.getXref(), userData.getEmail()));
 		}
-	}
-	
-	@Override
-	public UserData getUserDataPerGuid(String guid, List<String> emails) {
-		String email = emails.get(0);
-		String screenname = getNameFromEMail(email);
-		String xref = null;
-		String scmAlias = screenname;
-		String orcid = null;
-		return new UserData(screenname, guid, email, xref, scmAlias, orcid);
 	}
 
 	@Override

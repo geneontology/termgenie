@@ -15,15 +15,6 @@ public interface UserDataProvider {
 	public UserData getUserDataPerEMail(String email);
 	
 	/**
-	 * Retrieve the {@link UserData} for the given id, use e-mails as fall-back.
-	 * 
-	 * @param guid
-	 * @param emails
-	 * @return user data (never null)
-	 */
-	public UserData getUserDataPerGuid(String guid, List<String> emails);
-	
-	/**
 	 * Retrieve the list of available Xrefs.
 	 * 
 	 * @return list of xref information

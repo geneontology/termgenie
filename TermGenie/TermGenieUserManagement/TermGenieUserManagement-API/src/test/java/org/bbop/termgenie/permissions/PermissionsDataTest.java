@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.bbop.termgenie.permissions.JsonFileUserPermissionsImpl;
-import org.bbop.termgenie.permissions.PermissionsData;
-import org.bbop.termgenie.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.permissions.ComplexPermissionsData;
+import org.bbop.termgenie.permissions.ComplexPermissionsData.TermGeniePermissions;
 import org.bbop.termgenie.tools.ResourceLoader;
 import org.junit.Test;
 
@@ -20,32 +20,32 @@ public class PermissionsDataTest extends ResourceLoader {
 
 	@Test
 	public void testPermissionsDataIO() {
-		PermissionsData data1 = new PermissionsData();
-		PermissionsData.TermGeniePermissions details11 = new PermissionsData.TermGeniePermissions();
+		ComplexPermissionsData data1 = new ComplexPermissionsData();
+		ComplexPermissionsData.TermGeniePermissions details11 = new ComplexPermissionsData.TermGeniePermissions();
 		details11.addPermissions("GeneOntology", "allowWrite", "true");
-		PermissionsData.TermGeniePermissions details12 = new PermissionsData.TermGeniePermissions();
+		ComplexPermissionsData.TermGeniePermissions details12 = new ComplexPermissionsData.TermGeniePermissions();
 		details12.addPermissions("test-ontology", "allowWrite", "true");
 		details12.addPermissions("test-ontology", "screenname", "tt_P-:\")(*;");
-		PermissionsData.TermGeniePermissions details13 = new PermissionsData.TermGeniePermissions();
+		ComplexPermissionsData.TermGeniePermissions details13 = new ComplexPermissionsData.TermGeniePermissions();
 		details13.addPermissions("globalPermissions", "allowCommitReview", "true");
 		data1.userPermissions.put("user1", Collections.singletonMap("termgenie", details11));
 		data1.userPermissions.put("user2", Collections.singletonMap("termgenie", details12));
 		data1.userPermissions.put("user3@host.tld", Collections.singletonMap("termgenie", details13));
 		
-		String json1 = PermissionsData.writeToJson(data1);
+		String json1 = ComplexPermissionsData.writeToJson(data1);
 		assertNotNull(json1);
 		System.out.println(json1);
 
-		PermissionsData data2 = PermissionsData.loadFromJson(json1);
+		ComplexPermissionsData data2 = ComplexPermissionsData.loadFromJson(json1);
 		
 		assertEqualsData(data1, data2);
 		
-		String json2 = PermissionsData.writeToJson(data2);
+		String json2 = ComplexPermissionsData.writeToJson(data2);
 		
 		assertEquals(json1, json2);
 	}
 	
-	private void assertEqualsData(PermissionsData d1, PermissionsData d2) {
+	private void assertEqualsData(ComplexPermissionsData d1, ComplexPermissionsData d2) {
 		assertNotNull(d1);
 		assertNotNull(d2);
 		assertEquals(d1.userPermissions.size(), d2.userPermissions.size());
@@ -80,7 +80,7 @@ public class PermissionsDataTest extends ResourceLoader {
 	
 	@Test
 	public void testPermissionFile() {
-		PermissionsData permissions = JsonFileUserPermissionsImpl.loadInputSteam(loadResource("termgenie-user-permissions.json"));
+		ComplexPermissionsData permissions = JsonFileUserPermissionsImpl.loadInputSteam(loadResource("termgenie-user-permissions.json"));
 		assertFalse(permissions.userPermissions.isEmpty());
 	}
 

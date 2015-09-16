@@ -30,6 +30,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
+@Deprecated
 public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 
 	private static final Logger logger = Logger.getLogger(GeneOntologyJsonUserDataProvider.class);
@@ -77,7 +78,7 @@ public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 		}
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public UserData getUserDataPerEMail(String email) {
 		List<UserData> data = loadUserData(gocConfigResource);
@@ -89,20 +90,7 @@ public class GeneOntologyJsonUserDataProvider extends SimpleUserDataProvider {
 		logger.warn("Could not retrieve user data for email: "+email);
 		return super.getUserDataPerEMail(email);
 	}
-	
-	@Override
-	public UserData getUserDataPerGuid(String guid, List<String> emails) {
-		List<UserData> data = loadUserData(gocConfigResource);
-		for (UserData userData : data) {
-			if (guid.equals(userData.getGuid())) {
-				return userData;
-			}
-		}
-		logger.warn("Could not retrieve an xref for emails: "+emails);
-		return super.getUserDataPerGuid(guid, emails);
-	}
 
-	
 	@Override
 	public List<XrefUserData> getXrefUserData() {
 		List<UserData> data = loadUserData(gocConfigResource);

@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bbop.termgenie.core.Ontology;
-import org.bbop.termgenie.permissions.PermissionsData.TermGeniePermissions;
+import org.bbop.termgenie.permissions.ComplexPermissionsData.TermGeniePermissions;
 import org.bbop.termgenie.user.UserData;
 
 import com.google.inject.Inject;
@@ -38,27 +38,27 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 		if (!jsonPermissionsFile.isFile() || !jsonPermissionsFile.canRead()) {
 			throw new RuntimeException("Invalid permissions file: " + jsonPermissionsFile);
 		}
-		PermissionsData permissionsData = loadFile(jsonPermissionsFile);
-		if (permissionsData == null) {
+		ComplexPermissionsData complexPermissionsData = loadFile(jsonPermissionsFile);
+		if (complexPermissionsData == null) {
 			throw new RuntimeException("Empty permissions: " + jsonPermissionsFile);
 		}
 	}
 
-	static PermissionsData loadFile(File jsonPermissionsFile) {
+	static ComplexPermissionsData loadFile(File jsonPermissionsFile) {
 		try {
 			String configString = FileUtils.readFileToString(jsonPermissionsFile);
-			PermissionsData permissionsData = PermissionsData.loadFromJson(configString);
-			return permissionsData;
+			ComplexPermissionsData complexPermissionsData = ComplexPermissionsData.loadFromJson(configString);
+			return complexPermissionsData;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 	
-	static PermissionsData loadInputSteam(InputStream jsonPermissionsInputStream) {
+	static ComplexPermissionsData loadInputSteam(InputStream jsonPermissionsInputStream) {
 		try {
 			String configString = IOUtils.toString(jsonPermissionsInputStream);
-			PermissionsData permissionsData = PermissionsData.loadFromJson(configString);
-			return permissionsData;
+			ComplexPermissionsData complexPermissionsData = ComplexPermissionsData.loadFromJson(configString);
+			return complexPermissionsData;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -93,7 +93,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 	}
 
 	private boolean checkPermissions(UserData userData, String group, String...flags) {
-		PermissionsData permissions = loadFile(jsonPermissionsFile);
+		ComplexPermissionsData permissions = loadFile(jsonPermissionsFile);
 		if (permissions != null && userData != null) {
 			String guid = userData.getGuid();
 			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,
@@ -150,7 +150,7 @@ public class JsonFileUserPermissionsImpl implements UserPermissions {
 //			Ontology ontology,
 //			String flag)
 //	{
-//		PermissionsData permissions = loadFile(jsonPermissionsFile);
+//		ComplexPermissionsData permissions = loadFile(jsonPermissionsFile);
 //		if (permissions != null && userData != null) {
 //			String guid = userData.getGuid();
 //			TermGeniePermissions termgeniePermissions = permissions.getPermissions(guid,

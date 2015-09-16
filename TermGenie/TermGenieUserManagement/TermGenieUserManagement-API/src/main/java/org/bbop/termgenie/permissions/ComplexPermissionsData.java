@@ -18,13 +18,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-class PermissionsData {
+class ComplexPermissionsData {
 
-	private static final Logger logger = Logger.getLogger(PermissionsData.class);
+	private static final Logger logger = Logger.getLogger(ComplexPermissionsData.class);
 
 	private static final GsonBuilder gsonBuilder = new GsonBuilder();
 	static {
-		gsonBuilder.registerTypeAdapter(PermissionsData.class, new PermissionsDataHandler());
+		gsonBuilder.registerTypeAdapter(ComplexPermissionsData.class, new PermissionsDataHandler());
 		gsonBuilder.registerTypeAdapter(TermGeniePermissions.class,
 				new TermGeniePermissionsHandler());
 	}
@@ -32,7 +32,7 @@ class PermissionsData {
 
 	final Map<String, Map<String, TermGeniePermissions>> userPermissions;
 
-	PermissionsData() {
+	ComplexPermissionsData() {
 		userPermissions = new HashMap<String, Map<String, TermGeniePermissions>>();
 	}
 
@@ -46,16 +46,16 @@ class PermissionsData {
 		return null;
 	}
 
-	static PermissionsData loadFromJson(String jsonString) {
+	static ComplexPermissionsData loadFromJson(String jsonString) {
 		try {
-			return gson.fromJson(jsonString, PermissionsData.class);
+			return gson.fromJson(jsonString, ComplexPermissionsData.class);
 		} catch (JsonParseException exception) {
 			logger.error("Could not parse jsonString: " + jsonString, exception);
 		}
 		return null;
 	}
 
-	static String writeToJson(PermissionsData data) {
+	static String writeToJson(ComplexPermissionsData data) {
 		return gson.toJson(data);
 	}
 
@@ -174,16 +174,16 @@ class PermissionsData {
 	}
 
 	private static class PermissionsDataHandler implements
-			JsonSerializer<PermissionsData>,
-			JsonDeserializer<PermissionsData>
+			JsonSerializer<ComplexPermissionsData>,
+			JsonDeserializer<ComplexPermissionsData>
 	{
 
 		@Override
-		public PermissionsData deserialize(JsonElement json,
+		public ComplexPermissionsData deserialize(JsonElement json,
 				Type typeOfT,
 				JsonDeserializationContext context) throws JsonParseException
 		{
-			PermissionsData data = new PermissionsData();
+			ComplexPermissionsData data = new ComplexPermissionsData();
 			JsonObject jsonObject = json.getAsJsonObject();
 			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				Map<String, TermGeniePermissions> applicationsMap = new HashMap<String, TermGeniePermissions>();
@@ -200,7 +200,7 @@ class PermissionsData {
 		}
 
 		@Override
-		public JsonElement serialize(PermissionsData src,
+		public JsonElement serialize(ComplexPermissionsData src,
 				Type typeOfSrc,
 				JsonSerializationContext context)
 		{

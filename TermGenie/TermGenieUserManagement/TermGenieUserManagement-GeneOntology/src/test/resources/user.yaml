@@ -1,0 +1,25 @@
+-
+  nickname: 'Bar User'
+  email-md5:
+    - 841ac50d85af0ce25bb451c74a288aa8 # bar@fake.fake
+    - 1f9db74107b314f28a2da9643d653394 # bar2@fake.fake
+  authorizations:
+    minerva-go: true
+    termgenie-go:
+      allow-write: true
+  xref: 'GOC:bar'
+  uri: 'http://orcid.org/0000-0000-0000-0001'
+-
+  nickname: 'Foo User'
+  email-md5:
+    - 5b8c289b96c8e5bf586afbbe03a7cb7d # foo@fake.fake
+  authorizations:
+    minerva-go: false
+    termgenie-go:
+      allow-write: true
+      allow-review: true
+      allow-management: true
+      allow-freeform: true
+      allow-freeform-litxref-optional: false
+  xref: 'GOC:foo'
+  uri: 'http://orcid.org/0000-0000-0000-0002'
