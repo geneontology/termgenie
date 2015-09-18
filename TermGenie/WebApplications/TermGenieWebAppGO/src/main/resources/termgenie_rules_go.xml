@@ -1166,21 +1166,76 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
+			<category>experimental</category>
 		</categories>
 	</template>
-	<!--
-	<template name="metazoan_morphogenesis">
-		<description>morphogenesis of an animal anatomical structure</description>
+	<template name="metazoan_formation">
+		<description>Formation of an animal (metazoan) anatomical structure.</description>
 		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000081</definition-xref>
 		<fields>
 			<field name="target" required="true">
-				<ontology name="Uberon"/>
+				<ontology name="GeneOntology">
+					<branch>uberon</branch>
+				</ontology>
 			</field>
 			<field name="Literature_Refs" required="true" >
 				<cardinality>1..N</cardinality>
 			</field>
-			<field name="Name" />
-			<field name="Definition" />
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/uberon/metazoan_formation.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>Linked Ontologies/GO to external ontology/Uberon</category>
+			<category>Processes/Development</category>
+			<category>experimental</category>
+		</categories>
+	</template>
+	<template name="metazoan_maturation">
+		<description>Maturation of an animal (metazoan) anatomical structure.</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000082</definition-xref>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>uberon</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/uberon/metazoan_maturation.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>Linked Ontologies/GO to external ontology/Uberon</category>
+			<category>Processes/Development</category>
+			<category>experimental</category>
+		</categories>
+	</template>
+	<template name="metazoan_morphogenesis">
+		<description>Morphogenesis of an animal (metazoan) anatomical structure.</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000083</definition-xref>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>uberon</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
 			<field name="DefX_Ref" remoteResource="xref">
 				<cardinality>1..N</cardinality>
 			</field>
@@ -1189,8 +1244,39 @@ generated automatically</description>
 		<ruleFiles>
 			<ruleFile>rules/go/uberon/metazoan_morphogenesis.js</ruleFile>
 		</ruleFiles>
+		<categories>
+			<category>Linked Ontologies/GO to external ontology/Uberon</category>
+			<category>Processes/Development</category>
+			<category>experimental</category>
+		</categories>
 	</template>
-	-->
+	<template name="metazoan_structural_organization">
+		<description>Structural organization of an animal (metazoan) anatomical structure.</description>
+		<obonamespace>biological_process</obonamespace>
+		<definition-xref>GO_REF:0000084</definition-xref>
+		<fields>
+			<field name="target" required="true">
+				<ontology name="GeneOntology">
+					<branch>uberon</branch>
+				</ontology>
+			</field>
+			<field name="Literature_Refs" required="true" >
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="DefX_Ref" remoteResource="xref">
+				<cardinality>1..N</cardinality>
+			</field>
+			<field name="Comment" label="Optional: public definition comment" hint="&lt;small&gt;This optional text will appear as a definition comment in the ontology and will be visible in GO browsers.&lt;br/&gt;&lt;i&gt;Suggested format&lt;/i&gt;: An example of this is [insert name of gene product, e.g. LysZ] in [insert species name, e.g. E. coli] (UniProt symbol, e.g. UniProt symbol Q13490) in PMID:xxx (inferred from direct assay/mutant phenotype/etc.).&lt;/small&gt;"/>
+		</fields>
+		<ruleFiles>
+			<ruleFile>rules/go/uberon/metazoan_structural_organization.js</ruleFile>
+		</ruleFiles>
+		<categories>
+			<category>Linked Ontologies/GO to external ontology/Uberon</category>
+			<category>Processes/Development</category>
+			<category>experimental</category>
+		</categories>
+	</template>
 	<!-- 
 	<template name="structural_protein_complex">
 		<description>protein complex defined structurally</description>
