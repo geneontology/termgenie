@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.bbop.termgenie.core.Ontology;
+import org.bbop.termgenie.tools.GitYaml;
 import org.bbop.termgenie.tools.Md5Tool;
 import org.bbop.termgenie.user.UserData;
 
@@ -21,14 +22,15 @@ public class GoYamlUserPermissionsImpl implements UserPermissions {
 	static final String FLAG_ALLOW_FREE_FORM_LIT_XREF_OPTIONAL = "allow-freeform-litxref-optional";
 
 	private final String applicationName;
-	private final File yamlFile;
+	private final GitYaml gitYamlFile;
 
 	@Inject
-	GoYamlUserPermissionsImpl(@Named("YamlUserPermissionsFileName") String yamlPermissionsFileName,
+	GoYamlUserPermissionsImpl(GitYaml gitYamlFile,
 			@Named("YamlUserPermissionsApplicationName") String applicationName)
 	{
+		this.gitYamlFile = gitYamlFile;
 		this.applicationName = applicationName;
-		yamlFile = new File(yamlPermissionsFileName);
+		File yamlFile = gitYamlFile.getYamlFile();
 		if (!yamlFile.isFile() || !yamlFile.canRead()) {
 			throw new RuntimeException("Invalid permissions file: " + yamlFile);
 		}
@@ -70,7 +72,7 @@ public class GoYamlUserPermissionsImpl implements UserPermissions {
 	boolean checkPermissions(String guid, String flag) {
 		String md5Guid = Md5Tool.md5(guid);
 		Map<String, Boolean> userPermissions = 
-				GoYamlPermissionsTool.loadFromYaml(yamlFile, applicationName, md5Guid);
+				GoYamlPermissionsTool.loadFromYaml(gitYamlFile.getYamlFile(), applicationName, md5Guid);
 		if (userPermissions != null) {
 			return hasFlag(userPermissions, flag);
 		}

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.tools.GitYaml;
 import org.bbop.termgenie.tools.Md5Tool;
 import org.bbop.termgenie.tools.YamlTool;
 import org.bbop.termgenie.user.OrcidUserData;
@@ -17,20 +18,20 @@ import org.bbop.termgenie.user.simple.SimpleUserDataProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 @Singleton
 public class GoYamlUserDataProvider extends SimpleUserDataProvider {
 
 	private static final Logger logger = Logger.getLogger(GoYamlUserDataProvider.class);
 	
-	private final File yamlFile;
+	private final GitYaml gitYamlFile;
 
 	@Inject
-	GoYamlUserDataProvider(@Named("YamlUserDataFileName") String yamlResource)
+	GoYamlUserDataProvider(GitYaml gitYamlFile)
 	{
 		super();
-		yamlFile = new File(yamlResource);
+		this.gitYamlFile = gitYamlFile;
+		File yamlFile = gitYamlFile.getYamlFile();
 		if (!yamlFile.isFile() || !yamlFile.canRead()) {
 			throw new RuntimeException("Invalid permissions file: " + yamlFile);
 		}
@@ -100,7 +101,7 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
 
 	@Override
 	public UserData getUserDataPerEMail(final String email) {
-		List<Md5UserData> data = loadUserData(yamlFile);
+		List<Md5UserData> data = loadUserData(gitYamlFile.getYamlFile());
 		final String emailMd5 = Md5Tool.md5(email);
 		for (Md5UserData userData : data) {
 			List<String> md5s = userData.getMd5s();
@@ -126,7 +127,7 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
 
 	@Override
 	public List<XrefUserData> getXrefUserData() {
-		List<Md5UserData> data = loadUserData(yamlFile);
+		List<Md5UserData> data = loadUserData(gitYamlFile.getYamlFile());
 		List<XrefUserData> filtered = new ArrayList<XrefUserData>(data.size());
 		for(UserData elem : data) {
 			if (elem.getXref() != null) {
@@ -143,7 +144,7 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
 
 	@Override
 	public List<OrcidUserData> getOrcIdUserData() {
-		List<Md5UserData> data = loadUserData(yamlFile);
+		List<Md5UserData> data = loadUserData(gitYamlFile.getYamlFile());
 		List<OrcidUserData> filtered = new ArrayList<OrcidUserData>(data.size());
 		for(UserData elem : data) {
 			if (elem.getOrcid() != null) {

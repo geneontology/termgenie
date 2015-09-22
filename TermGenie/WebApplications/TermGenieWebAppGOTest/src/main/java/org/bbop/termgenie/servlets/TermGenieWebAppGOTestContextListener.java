@@ -3,9 +3,7 @@ package org.bbop.termgenie.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,24 +13,16 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
+import org.bbop.termgenie.mail.review.NoopReviewMailHandler;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnAnonymousModule;
-import org.bbop.termgenie.permissions.UserPermissionsModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
-import org.bbop.termgenie.rules.XMLDynamicRulesModule;
-import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
-import org.bbop.termgenie.services.TermCommitService;
-import org.bbop.termgenie.services.TermGenieServiceModule;
-import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
-import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
-import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
 import org.bbop.termgenie.startup.JettyTestStartup;
-import org.bbop.termgenie.user.go.GeneOntologyJsonUserDataModule;
 import org.semanticweb.owlapi.model.IRI;
 
-public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieContextListener {
+public class TermGenieWebAppGOTestContextListener extends TermGenieWebAppGOContextListener {
 
 	/**
 	 * This main will use an embedded jetty to start this TG instance.
@@ -71,27 +61,6 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 	}
 
 	@Override
-	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule("termgenie-go", applicationProperties);
-	}
-
-	@Override
-	protected TermGenieServiceModule getServiceModule() {
-		return new TermGenieServiceModule(applicationProperties) {
-
-			@Override
-			protected void bindTermCommitService() {
-				bind(TermCommitService.class, DefaultTermCommitServiceImpl.class);
-			}
-			
-			@Override
-			public String getModuleName() {
-				return "TermGenieGOMini-TermGenieServiceModule";
-			}
-		};
-	}
-
-	@Override
 	protected IOCModule getOntologyModule() {
 		try {
 			String configFile = "ontology-configuration_go.xml";
@@ -119,25 +88,14 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 	}
 
 	@Override
-	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_go.xml", true, true, true, applicationProperties);
-	}
-
-	@Override
 	protected IOCModule getCommitModule() {
 		return CommitSvnAnonymousModule.createOboModule(localSVNFolder, ontologyFilePath, applicationProperties, loadExternal);
 	}
 
 	@Override
-	protected TermCommitReviewServiceModule getCommitReviewWebModule() {
-		TermCommitReviewServiceModule module = new TermCommitReviewServiceModule(true, OboTermCommitReviewServiceImpl.class, applicationProperties);
-		module.setDoAsciiCheck(true);
-		return module;
-	}
-
-	@Override
 	protected Collection<IOCModule> getAdditionalModules() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
+		modules.add(createGitYaml());
 		try {
 			// basic persistence
 			File dbFolder = new File("./work/termgenie-go-db").getAbsoluteFile();
@@ -157,23 +115,10 @@ public class TermGenieWebAppGOTestContextListener extends AbstractTermGenieConte
 	}
 
 	@Override
-	protected IOCModule getUserDataModule() {
-		String gocjson = "GO.user_data.json";
-		List<String> additionalXrefResources = Collections.singletonList("GO.curator_dbxrefs");
-		return new GeneOntologyJsonUserDataModule(applicationProperties, gocjson, additionalXrefResources);
+	protected IOCModule getReviewMailHandlerModule() {
+		// no e-mails for test instance
+		return new NoopReviewMailHandler.NoopReviewMailHandlerModule(applicationProperties);
 	}
 	
-	@Override
-	protected IOCModule getFreeFormTermModule() {
-		List<String> oboNamespaces = new ArrayList<String>();
-		oboNamespaces.add("biological_process");
-		oboNamespaces.add("molecular_function");
-		oboNamespaces.add("cellular_component");
-		String defaultOntology = "default_go";
-		List<String> additionalRelations = Arrays.asList("part_of","has_part", "capable_of");
-		FreeFormTermServiceModule module = new FreeFormTermServiceModule(applicationProperties, true, defaultOntology, oboNamespaces, "termgenie_unvetted", additionalRelations);
-		module.setDoAsciiCheck(true);
-		return module;
-	}
 	
 }

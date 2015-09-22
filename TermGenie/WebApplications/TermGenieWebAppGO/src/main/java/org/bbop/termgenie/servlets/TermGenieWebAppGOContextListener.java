@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -22,7 +22,7 @@ import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.ontology.impl.FileCachingIgnoreFilter.IgnoresContainsDigits;
 import org.bbop.termgenie.ontology.impl.SvnAwareOntologyModule;
 import org.bbop.termgenie.ontology.svn.CommitSvnUserKeyFileModule;
-import org.bbop.termgenie.permissions.UserPermissionsModule;
+import org.bbop.termgenie.permissions.GoYamlUserPermissionsModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
@@ -31,7 +31,8 @@ import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
 import org.bbop.termgenie.services.review.OboTermCommitReviewServiceImpl;
 import org.bbop.termgenie.services.review.TermCommitReviewServiceModule;
-import org.bbop.termgenie.user.go.GeneOntologyJsonUserDataModule;
+import org.bbop.termgenie.tools.GitYamlModule;
+import org.bbop.termgenie.user.go.GoYamlUserDataModule;
 import org.semanticweb.owlapi.model.IRI;
 
 public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextListener {
@@ -41,10 +42,15 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	public TermGenieWebAppGOContextListener() {
 		super("TermGenieWebAppGOConfigFile");
 	}
+
+	protected TermGenieWebAppGOContextListener(String name) {
+		super(name);
+	}
+	
 	
 	@Override
 	protected IOCModule getUserPermissionModule() {
-		return new UserPermissionsModule("termgenie-go", applicationProperties);
+		return new GoYamlUserPermissionsModule("termgenie-go", applicationProperties);
 	}
 	
 	@Override
@@ -125,6 +131,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected Collection<IOCModule> getAdditionalModules() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
+		modules.add(createGitYaml());
 		try {
 			// basic persistence
 			String dbFolderString = IOCModule.getProperty("TermGenieWebappGODatabaseFolder", applicationProperties);
@@ -150,11 +157,21 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 		return modules;
 	}
 
+
+
+	protected GitYamlModule createGitYaml() {
+		String repositoryURL = "https://github.com/geneontology/go-site.git";
+		String targetFile = "metadata/users.yaml";
+		String workFolder = null; // no default value
+		long period = 6l;
+		TimeUnit unit = TimeUnit.HOURS;
+		GitYamlModule gitYaml = new GitYamlModule(repositoryURL, targetFile, workFolder, period, unit, applicationProperties);
+		return gitYaml;
+	}
+
 	@Override
 	protected IOCModule getUserDataModule() {
-		String gocjson = "GO.user_data.json";
-		List<String> additionalXrefResources = Collections.emptyList();
-		return new GeneOntologyJsonUserDataModule(applicationProperties, gocjson, additionalXrefResources);
+		return new GoYamlUserDataModule(applicationProperties);
 	}
 	
 	@Override

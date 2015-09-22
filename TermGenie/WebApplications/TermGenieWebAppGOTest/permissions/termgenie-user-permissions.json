@@ -1,8 +1,0 @@
-{
-	guid: {
-		"termgenie-go": "(test-ontology, allowWrite, false),(test-ontology, screenname, foo)"
-	},
-	"hdietze@lbl.gov": {
-		"termgenie-go": "(GeneOntology, allowWrite, true), (GeneOntology, allowCommitReview, true), (GeneOntology, allowFreeForm, true), (GeneOntology, allowFreeFormWrite, true), (GeneOntology, allowFreeFormLitXrefOptional, true), (termgenie-go, allowManagement, true)"
-	}
-}

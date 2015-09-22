@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.List;
 
+import org.bbop.termgenie.tools.GitYaml;
 import org.bbop.termgenie.user.UserData;
 import org.bbop.termgenie.user.go.GoYamlUserDataProvider.Md5UserData;
 import org.junit.Test;
@@ -13,7 +14,18 @@ public class GoYamlUserDataProviderTest {
 
 	@Test
 	public void test() throws Exception {
-		GoYamlUserDataProvider p = new GoYamlUserDataProvider(new File("src/test/resources/user.yaml").getCanonicalPath());
+		GoYamlUserDataProvider p = new GoYamlUserDataProvider(new GitYaml() {
+			
+			@Override
+			public File getYamlFile() {
+				return new File("src/test/resources/user.yaml").getAbsoluteFile();
+			}
+
+			@Override
+			public void update() {
+				// do nothing
+			}
+		});
 		
 		UserData data = p.getUserDataPerEMail("foo@fake.fake");
 		assertNotNull(data);

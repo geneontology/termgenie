@@ -7,23 +7,17 @@ import org.bbop.termgenie.user.UserDataProvider;
 
 public class GoYamlUserDataModule extends IOCModule {
 
-	private final String yamlUserDataFileName;
-	
 	/**
 	 * @param applicationProperties
-	 * @param yamlUserDataFileName
 	 */
-	public GoYamlUserDataModule(Properties applicationProperties,
-			String yamlUserDataFileName)
+	public GoYamlUserDataModule(Properties applicationProperties)
 	{
 		super(applicationProperties);
-		this.yamlUserDataFileName = yamlUserDataFileName;
 	}
 
 	@Override
 	protected void configure() {
 		bind(UserDataProvider.class, GoYamlUserDataProvider.class);
-		bind("YamlUserDataFileName", yamlUserDataFileName);
 	}
 
 }

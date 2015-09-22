@@ -21,7 +21,6 @@ public class GoYamlUserPermissionsModule extends IOCModule {
 	@Override
 	protected void configure() {
 		bind(UserPermissions.class, GoYamlUserPermissionsImpl.class);
-		bind("YamlUserPermissionsFileName");
 		bind("YamlUserPermissionsApplicationName", applicationName);
 	}
 }
