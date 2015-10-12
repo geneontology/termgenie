@@ -1166,7 +1166,7 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="metazoan_formation">
@@ -1193,7 +1193,7 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="metazoan_maturation">
@@ -1220,7 +1220,7 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="metazoan_morphogenesis">
@@ -1247,7 +1247,7 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<template name="metazoan_structural_organization">
@@ -1274,7 +1274,7 @@ generated automatically</description>
 		<categories>
 			<category>Linked Ontologies/GO to external ontology/Uberon</category>
 			<category>Processes/Development</category>
-			<category>experimental</category>
+			<category>new</category>
 		</categories>
 	</template>
 	<!-- 
@@ -1325,7 +1325,6 @@ generated automatically</description>
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Molecular Function</category>
 			<category>Linked Ontologies/GO to GO</category>
-			<category>new</category>
 		</categories>
 	</template>
 	<template name="cc_organization" displayname="cellular component organization">
@@ -1353,7 +1352,6 @@ generated automatically</description>
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Processes</category>
 			<category>Linked Ontologies/GO to GO</category>
-			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_across_plasma_membrane">
@@ -1382,7 +1380,6 @@ generated automatically</description>
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Terms involving chemicals or components/ChEBI</category>
 			<category>Processes/Transport/Import</category>
-			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_across_membrane">
@@ -1426,7 +1423,6 @@ generated automatically</description>
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Terms involving chemicals or components/ChEBI</category>
 			<category>Processes/Transport/Import</category>
-			<category>new</category>
 		</categories>
 	</template>
 	<template name="import_into_cell">
@@ -1455,7 +1451,6 @@ generated automatically</description>
 			<category>Terms involving chemicals or components/Cellular components</category>
 			<category>Terms involving chemicals or components/ChEBI</category>
 			<category>Processes/Transport/Import</category>
-			<category>new</category>
 		</categories>
 	</template>
 </termgenietemplates>
