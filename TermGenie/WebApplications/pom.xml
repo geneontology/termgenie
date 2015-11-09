@@ -67,5 +67,6 @@
 		<module>TermGenieWebAppTestStartup</module>
 		<module>TermGenieWebAppEnvo</module>
 		<module>TermGenieWebAppEnvoTest</module>
+		<module>TermGenieWebAppTO</module>
 	</modules>
 </project>
