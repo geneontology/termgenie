@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ontologyconfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="ontology-configuration.xsd">
+	<ontology name="TO">
+		<source>http://purl.obolibrary.org/obo/to.owl</source>
+		<supports>
+			<support>http://purl.obolibrary.org/obo/cl.owl</support>
+			<support>http://purl.obolibrary.org/obo/go.owl</support>
+			<support>http://purl.obolibrary.org/obo/pato.owl</support>
+			<support>http://purl.obolibrary.org/obo/po.owl</support>
+		</supports>
+		<roots>
+			<root>TO:0000387</root> <!-- plant trait -->
+			<root>CL:0000003</root> <!-- native cell -->
+			<root>GO:0005575</root> <!-- cellular component -->
+			<root>PATO:0000001</root> <!-- quality -->
+			<root>PO:0025131</root> <!-- plant anatomical entity -->
+		</roots>
+		<ontologybranch name="entity">
+			<!-- Entity: any term from uberon, CL or GO-CC -->
+			<roots>
+				<root>CL:0000003</root> <!-- native cell -->
+				<root>GO:0005575</root> <!-- cellular component -->
+				<root>PO:0025131</root> <!-- plant anatomical entity -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="quality">
+			<roots>
+				<root>PATO:0000001</root> <!-- quality -->
+			</roots>
+		</ontologybranch>
+		<ontologybranch name="default_to">
+			<roots>
+				<root>TO:0000387</root> <!-- plant trait -->
+			</roots>
+		</ontologybranch>
+	</ontology>
+</ontologyconfiguration>
