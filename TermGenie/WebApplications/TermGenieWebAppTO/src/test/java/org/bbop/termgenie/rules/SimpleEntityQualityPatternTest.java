@@ -55,20 +55,17 @@ public class SimpleEntityQualityPatternTest {
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), managed.getSupportOntologySet());
 				
-				// id: affects_quality , but label: 'has quality'
-				assertNotNull(managed.getOWLObjectByLabel("has quality")); 
-				assertNotNull(managed.getOWLObjectByIdentifier("affects_quality"));
-				assertNotNull(managed.getOWLObjectByLabel("attribute of"));
-				assertNotNull(managed.getOWLObjectByIdentifier("attribute_of"));
+				assertNotNull(managed.getOWLObjectByLabel("inheres in"));
+				assertNotNull(managed.getOWLObjectByIdentifier("RO:0000052"));
 				
-				assertNotNull(tool.parseManchesterExpression("'biological attribute'"));
+				assertNotNull(tool.parseManchesterExpression("'plant trait'"));
 				assertNotNull(tool.parseManchesterExpression("PO_0020123")); // root cap
 				assertNotNull(tool.parseManchesterExpression("PATO_0000970")); // permeability
 				
-				OWLClassExpression expression = tool.parseManchesterExpression("'biological attribute' and 'has quality' some PATO_0000970 and 'attribute of' some PO_0020123");
+				OWLClassExpression expression = tool.parseManchesterExpression("PATO_0000970 and 'inheres in' some PO_0020123");
 				assertNotNull(expression);
 				
-				expression = tool.parseManchesterExpression("'biological attribute' and affects_quality some PATO_0000970 and attribute_of some PO_0020123");
+				expression = tool.parseManchesterExpression("PATO_0000970 and 'inheres in' some PO_0020123");
 				assertNotNull(expression);
 				
 			}
