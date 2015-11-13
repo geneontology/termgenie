@@ -1,13 +1,20 @@
 package org.bbop.termgenie.rules;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.bbop.termgenie.core.TemplateField;
 import org.bbop.termgenie.core.TermTemplate;
+import org.bbop.termgenie.core.ioc.IOCModule;
 import org.bbop.termgenie.core.ioc.TermGenieGuice;
 import org.bbop.termgenie.core.rules.ReasonerModule;
 import org.bbop.termgenie.core.rules.TermGenerationEngine;
@@ -17,11 +24,12 @@ import org.bbop.termgenie.core.rules.TermGenerationEngine.TermGenerationParamete
 import org.bbop.termgenie.ontology.OntologyLoader;
 import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
-import org.bbop.termgenie.ontology.impl.OntologyModule;
+import org.bbop.termgenie.servlets.ToOntologyHelper;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
+import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import owltools.graph.OWLGraphWrapper;
@@ -33,10 +41,21 @@ public class SimpleEntityQualityPatternTest {
 
 	private static TermGenerationEngine generationEngine;
 	private static OntologyLoader loader;
+
+	private static File workFolder;
+	
+	private static IOCModule getOntologyModule() throws IOException {
+		File tempFile = File.createTempFile("junit", "", FileUtils.getTempDirectory()).getCanonicalFile();
+		FileUtils.deleteQuietly(tempFile);
+		workFolder = new File(tempFile.getParentFile(), tempFile.getName()+"-folder");
+		workFolder.mkdirs();
+		IOCModule m = ToOntologyHelper.createDefaultOntologyModule(workFolder.getAbsolutePath(), null);
+		return m;
+	}
 	
 	@BeforeClass
-	public static void beforeClass() {
-		OntologyModule ontologyModule = new OntologyModule("ontology-configuration_to.xml");
+	public static void beforeClass() throws IOException {
+		IOCModule ontologyModule = getOntologyModule();
 		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_to.xml", false, true, true, null),
 				ontologyModule,
 				new ReasonerModule(null));
@@ -45,7 +64,11 @@ public class SimpleEntityQualityPatternTest {
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 	
-	@Ignore("Ontology is missing the imports")
+	@AfterClass
+	public static void afterClass() throws Exception {
+		FileUtils.deleteDirectory(workFolder);
+	}
+	
 	@Test
 	public void testManchesterSyntaxTool() throws Exception {
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
@@ -56,6 +79,7 @@ public class SimpleEntityQualityPatternTest {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), managed.getSupportOntologySet());
 				
 				assertNotNull(managed.getOWLObjectByLabel("inheres in"));
+				assertNotNull(managed.getOWLObjectByIdentifier("inheres_in"));
 				assertNotNull(managed.getOWLObjectByIdentifier("RO:0000052"));
 				
 				assertNotNull(tool.parseManchesterExpression("'plant trait'"));
@@ -65,7 +89,7 @@ public class SimpleEntityQualityPatternTest {
 				OWLClassExpression expression = tool.parseManchesterExpression("PATO_0000970 and 'inheres in' some PO_0020123");
 				assertNotNull(expression);
 				
-				expression = tool.parseManchesterExpression("PATO_0000970 and 'inheres in' some PO_0020123");
+				expression = tool.parseManchesterExpression("PATO_0000970 and RO_0000052 some PO_0020123");
 				assertNotNull(expression);
 				
 			}
@@ -78,7 +102,6 @@ public class SimpleEntityQualityPatternTest {
 		
 	}
 
-	@Ignore("Ontology is missing the imports")
 	@Test
 	public void test_eq_simple_1() {
 		
@@ -88,7 +111,7 @@ public class SimpleEntityQualityPatternTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		assertNull(output.getError(), output.getError());
-		// TODO verify output
+		assertEquals("root cap permeability", output.getTerm().getTagValue(OboFormatTag.TAG_NAME));
 	}
 
 	private List<TermGenerationInput> createEQSimpleTask(String entity, String quality) {
