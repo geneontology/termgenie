@@ -10,15 +10,13 @@
 		</supports>
 		<roots>
 			<root>TO:0000387</root> <!-- plant trait -->
-			<root>CL:0000003</root> <!-- native cell -->
 			<root>GO:0005575</root> <!-- cellular component -->
 			<root>PATO:0000001</root> <!-- quality -->
 			<root>PO:0025131</root> <!-- plant anatomical entity -->
 		</roots>
 		<ontologybranch name="entity">
-			<!-- Entity: any term from uberon, CL or GO-CC -->
+			<!-- Entity: any term from plant or GO-CC -->
 			<roots>
-				<root>CL:0000003</root> <!-- native cell -->
 				<root>GO:0005575</root> <!-- cellular component -->
 				<root>PO:0025131</root> <!-- plant anatomical entity -->
 			</roots>
