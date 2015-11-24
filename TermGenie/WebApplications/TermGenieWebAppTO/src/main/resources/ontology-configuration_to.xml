@@ -4,7 +4,6 @@
 	<ontology name="TO">
 		<source>http://purl.obolibrary.org/obo/to.owl</source>
 		<supports>
-			<support>http://purl.obolibrary.org/obo/cl.owl</support>
 			<support>http://purl.obolibrary.org/obo/go.owl</support>
 			<support>http://purl.obolibrary.org/obo/pato.owl</support>
 			<support>http://purl.obolibrary.org/obo/po.owl</support>
