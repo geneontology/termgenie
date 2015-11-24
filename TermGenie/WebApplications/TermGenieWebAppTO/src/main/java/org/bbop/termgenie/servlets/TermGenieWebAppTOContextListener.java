@@ -67,7 +67,8 @@ public class TermGenieWebAppTOContextListener extends AbstractTermGenieContextLi
 	
 	@Override
 	protected IOCModule getRulesModule() {
-		return new XMLDynamicRulesModule("termgenie_rules_to.xml", false, true, true, applicationProperties);
+		boolean filterNonAsciiSynonyms = false; // allow japanese synonyms
+		return new XMLDynamicRulesModule("termgenie_rules_to.xml", false, true, filterNonAsciiSynonyms, applicationProperties);
 	}
 	
 	@Override

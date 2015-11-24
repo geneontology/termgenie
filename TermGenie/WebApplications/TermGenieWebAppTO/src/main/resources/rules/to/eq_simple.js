@@ -8,9 +8,7 @@ function eq_simple() {
 	var definition = "A trait which is associated with the "
 			+ termname(q, TO) + " of " + refname(e, TO) + ".";
 
-	var synonyms = null;
-	// String label, List<ISynonym> results, String prefix, String infix, String suffix, String scope
-	synonyms = termgenie.addSynonym(label, synonyms, null, label, ' trait', 'EXACT');
+	var synonyms = termgenie.synonyms(null, e, TO, " ", q, TO, "", null, label);
 	
 	var mdef = createMDef("?Q and 'inheres in' some ?E");
 	mdef.addParameter('E', e, TO);

@@ -1,13 +1,11 @@
 package org.bbop.termgenie.rules;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +27,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
+import org.obolibrary.oboformat.model.Clause;
+import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
@@ -55,8 +55,9 @@ public class SimpleEntityQualityPatternTest {
 	
 	@BeforeClass
 	public static void beforeClass() throws IOException {
+		boolean filterNonAsciiSynonyms = false; // allow japanese synonyms
 		IOCModule ontologyModule = getOntologyModule();
-		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_to.xml", false, true, true, null),
+		Injector injector = TermGenieGuice.createInjector(new XMLDynamicRulesModule("termgenie_rules_to.xml", false, true, filterNonAsciiSynonyms, null),
 				ontologyModule,
 				new ReasonerModule(null));
 
@@ -111,7 +112,14 @@ public class SimpleEntityQualityPatternTest {
 		assertEquals(1, list.size());
 		TermGenerationOutput output = list.get(0);
 		assertNull(output.getError(), output.getError());
-		assertEquals("root cap permeability", output.getTerm().getTagValue(OboFormatTag.TAG_NAME));
+		Frame term = output.getTerm();
+		assertEquals("root cap permeability", term.getTagValue(OboFormatTag.TAG_NAME));
+		Collection<Clause> synonymClauses = term.getClauses(OboFormatTag.TAG_SYNONYM);
+		System.out.println(synonymClauses.size());
+		for (Clause clause : synonymClauses) {
+			System.out.println(clause);
+		}
+		assertFalse(synonymClauses.isEmpty());
 	}
 
 	private List<TermGenerationInput> createEQSimpleTask(String entity, String quality) {
