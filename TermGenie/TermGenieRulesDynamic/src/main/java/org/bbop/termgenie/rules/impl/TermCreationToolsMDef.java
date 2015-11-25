@@ -70,6 +70,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	final ProcessState state;
 	private final String patternID;
 	private final OWLChangeTracker changeTracker;
+	private final String defaultXref;
 	private int count = 0;
 	
 	/**
@@ -83,6 +84,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	 * @param requireLiteratureReference
 	 * @param useIsInferred
 	 * @param assertInferences
+	 * @param defaultXref
 	 */
 	TermCreationToolsMDef(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
@@ -93,7 +95,8 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			ProcessState state,
 			boolean requireLiteratureReference,
 			boolean useIsInferred,
-			boolean assertInferences)
+			boolean assertInferences,
+			String defaultXref)
 	{
 		super();
 		this.input = input;
@@ -107,6 +110,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		this.syntaxTool = syntaxTool;
 		this.assertInferences = assertInferences;
 		this.useIsInferred = useIsInferred;
+		this.defaultXref = defaultXref;
 	}
 
 	
@@ -343,7 +347,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			
 			for (String defxref : defxrefs) {
 				// check if the termgenie def_xref is already in the list
-				hasXRef = hasXRef || defxref.equals("GOC:TermGenie");
+				hasXRef = hasXRef || defxref.equals(defaultXref);
 	
 				// simple defxref check
 				String xrefError = XrefTools.checkXref(defxref);
@@ -359,12 +363,12 @@ public class TermCreationToolsMDef implements ChangeTracker {
 				// add the termgenie def_xref
 				ArrayList<String> newlist = new ArrayList<String>(defxrefs.size() + 1);
 				newlist.addAll(defxrefs);
-				newlist.add("GOC:TermGenie");
+				newlist.add(defaultXref);
 				defxrefs = newlist;
 			}
 		}
 		else {
-			defxrefs = Collections.singletonList("GOC:TermGenie");
+			defxrefs = Collections.singletonList(defaultXref);
 		}
 		if (!hasLiteratureReference) {
 			if (requireLiteratureReference) {

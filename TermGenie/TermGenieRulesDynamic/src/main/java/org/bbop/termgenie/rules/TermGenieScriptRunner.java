@@ -47,6 +47,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	public static final String USE_IS_INFERRED_BOOLEAN_NAME = "TermGenieScriptRunnerUseInferred";
 	public static final String ASSERT_INFERERNCES_BOOLEAN_NAME = "TermGenieScriptRunnerAssertInferences";
 	public static final String FILTER_NON_ASCII_SYNONYMS = "TermGenieScriptRunnerFilterNonAsciiSynonyms";
+	public static final String DEFAULT_XREF = "TDefaultXref";
 	
 	private final JSEngineManager jsEngineManager;
 	private final List<TermTemplate> templates;
@@ -57,6 +58,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 	private final boolean useIsInferred;
 	private final boolean assertInferences;
 	private final boolean filterNonAsciiSynonyms;
+	private final String defaultXref;
 
 	@Inject
 	TermGenieScriptRunner(List<TermTemplate> templates,
@@ -64,7 +66,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			ReasonerFactory factory,
 			@Named(USE_IS_INFERRED_BOOLEAN_NAME) boolean useIsInferred,
 			@Named(ASSERT_INFERERNCES_BOOLEAN_NAME) boolean assertInferences,
-			@Named(FILTER_NON_ASCII_SYNONYMS) boolean filterNonAsciiSynonyms)
+			@Named(FILTER_NON_ASCII_SYNONYMS) boolean filterNonAsciiSynonyms,
+			@Named(DEFAULT_XREF) String defaultXref)
 	{
 		super(false);
 		this.factory = factory;
@@ -76,6 +79,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		this.useIsInferred = useIsInferred;
 		this.assertInferences = assertInferences;
 		this.filterNonAsciiSynonyms = filterNonAsciiSynonyms;
+		this.defaultXref = defaultXref;
 		for (TermTemplate termTemplate : templates) {
 			scripts.put(termTemplate, loadScript(termTemplate));
 		}
@@ -170,7 +174,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			if (methodName == null) {
 				methodName = termTemplate.getName();
 			}
-			GenerationTask task = new GenerationTask(input, script, methodName, templateId, factory, processState, requireLiteratureReference, useIsInferred, filterNonAsciiSynonyms);
+			GenerationTask task = new GenerationTask(input, script, methodName, templateId, factory, processState, requireLiteratureReference, useIsInferred, filterNonAsciiSynonyms, defaultXref);
 			try {
 				ontologyTaskManager.runManagedTask(task);
 			} catch (InvalidManagedInstanceException exception) {
@@ -220,6 +224,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 		private final boolean requireLiteratureReference;
 		private final boolean useIsInferred;
 		private final boolean filterNonAsciiSynonyms;
+		private final String defaultXref;
 		
 		List<TermGenerationOutput> result = null;
 
@@ -231,7 +236,8 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				ProcessState state,
 				boolean requireLiteratureReference,
 				boolean useIsInferred,
-				boolean filterNonAsciiSynonyms)
+				boolean filterNonAsciiSynonyms,
+				String defaultXref)
 		{
 			this.input = input;
 			this.script = script;
@@ -242,6 +248,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 			this.requireLiteratureReference = requireLiteratureReference;
 			this.useIsInferred = useIsInferred;
 			this.filterNonAsciiSynonyms = filterNonAsciiSynonyms;
+			this.defaultXref = defaultXref;
 		}
 
 		@Override
@@ -261,7 +268,7 @@ public class TermGenieScriptRunner extends ResourceLoader implements TermGenerat
 				engine.put(ontologyName, graph);
 				
 
-				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred, assertInferences, filterNonAsciiSynonyms);
+				functionsImpl = new TermGenieScriptFunctionsMDefImpl(input, graph, getTempIdPrefix(graph), templateId, factory, state, requireLiteratureReference, useIsInferred, assertInferences, filterNonAsciiSynonyms, defaultXref);
 				changeTracker = functionsImpl;
 				run(engine, functionsImpl);
 				result = functionsImpl.getResult();

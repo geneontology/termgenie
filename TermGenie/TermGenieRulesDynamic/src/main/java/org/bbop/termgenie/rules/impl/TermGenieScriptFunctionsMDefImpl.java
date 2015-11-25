@@ -53,6 +53,7 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 	 * @param useIsInferred
 	 * @param assertInferences
 	 * @param filterNonAsciiSynonyms
+	 * @param defaultXref
 	 */
 	public TermGenieScriptFunctionsMDefImpl(TermGenerationInput input,
 			OWLGraphWrapper targetOntology,
@@ -63,13 +64,14 @@ public class TermGenieScriptFunctionsMDefImpl extends SynonymGenerationTools imp
 			boolean requireLiteratureReference,
 			boolean useIsInferred,
 			boolean assertInferences,
-			boolean filterNonAsciiSynonyms)
+			boolean filterNonAsciiSynonyms,
+			String defaultXref)
 	{
 		super(filterNonAsciiSynonyms);
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		ontologies.addAll(targetOntology.getSupportOntologySet());
 		syntaxTool = new ManchesterSyntaxTool(targetOntology.getSourceOntology(), ontologies);
-		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred, assertInferences);
+		tools = new TermCreationToolsMDef(input, targetOntology, tempIdPrefix, patternID, factory, syntaxTool, state, requireLiteratureReference, useIsInferred, assertInferences, defaultXref);
 		java.util.logging.Logger.getLogger("org.obolibrary").setLevel(Level.SEVERE);
 	}
 	
