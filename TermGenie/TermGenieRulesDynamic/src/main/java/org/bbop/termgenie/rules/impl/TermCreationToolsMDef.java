@@ -476,7 +476,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			return l2;
 		}
 		if (l2 == null || l2.isEmpty()) {
-			return l2;
+			return l1;
 		}
 		List<String> r = new ArrayList<String>(l1.size() + l2.size());
 		r.addAll(l1);

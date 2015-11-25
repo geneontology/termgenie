@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.obolibrary.macro.ManchesterSyntaxTool;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
+import org.obolibrary.oboformat.model.Xref;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
@@ -120,6 +121,9 @@ public class SimpleEntityQualityPatternTest {
 			System.out.println(clause);
 		}
 		assertFalse(synonymClauses.isEmpty());
+		Clause defClause = term.getClause(OboFormatTag.TAG_DEF);
+		Collection<Xref> xrefs = defClause.getXrefs();
+		assertEquals(2, xrefs.size());
 	}
 
 	private List<TermGenerationInput> createEQSimpleTask(String entity, String quality) {
@@ -129,7 +133,10 @@ public class SimpleEntityQualityPatternTest {
 		parameters.setTermValues(entityField.getName(), Arrays.asList(entity));
 		
 		TemplateField qualityField = termTemplate.getFields().get(1);
-		parameters.setTermValues(qualityField.getName(), Arrays.asList(quality)); 
+		parameters.setTermValues(qualityField.getName(), Arrays.asList(quality));
+		
+		TemplateField defXRefField = termTemplate.getFields().get(3);
+		parameters.setStringValues(defXRefField.getName(), Arrays.asList("Foo:Bar"));
 	
 		TermGenerationInput input = new TermGenerationInput(termTemplate, parameters);
 		List<TermGenerationInput> generationTasks = Collections.singletonList(input);
