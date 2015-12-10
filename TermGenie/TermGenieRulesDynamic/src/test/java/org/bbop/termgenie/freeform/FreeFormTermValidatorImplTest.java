@@ -71,7 +71,7 @@ public class FreeFormTermValidatorImplTest {
 		errors(new TestFreeFormTermRequest(), "label", graph);
 
 		final TestFreeFormTermRequest request = new TestFreeFormTermRequest();
-		request.setLabel("too short");
+		request.setLabel("short");
 		errors(request, "label", graph);
 
 		// exact synonym for GO:0060444 ! branching involved in mammary gland duct morphogenesis

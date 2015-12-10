@@ -255,7 +255,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			requestedLabel = StringUtils.normalizeSpace(requestedLabel);
 			
-			if (checkLabelLength && requestedLabel.length() < 10) {
+			if (checkLabelLength && requestedLabel.length() < 7) {
 				setError("label", "The provided label is too short.");
 				return;
 			}
