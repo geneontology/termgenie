@@ -181,11 +181,6 @@
 				<ontology name="GeneOntology">
 					<branch>BP_or_MF</branch>
 				</ontology>
-				<prefixes preselected="false">
-					<prefix>regulation</prefix>
-					<prefix>negative_regulation</prefix>
-					<prefix>positive_regulation</prefix>
-				</prefixes>
 			</field>
 			<field name="source" required="true">
 				<ontology name="GeneOntology">
