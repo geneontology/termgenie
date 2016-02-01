@@ -25,13 +25,11 @@ import org.bbop.termgenie.ontology.OntologyTaskManager;
 import org.bbop.termgenie.ontology.OntologyTaskManager.OntologyTask;
 import org.bbop.termgenie.ontology.obo.OwlStringTools;
 import org.bbop.termgenie.services.review.JsonCommitReviewEntry.JsonDiff;
-import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.parameters.ChangeApplied;
 
 import owltools.gfx.OWLGraphLayoutRenderer;
 import owltools.graph.OWLGraphWrapper;
@@ -167,7 +165,7 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 				OWLOntology owlOntology = graph.getSourceOntology();
 				
 				final OWLOntologyManager manager = owlOntology.getOWLOntologyManager();
-				List<OWLOntologyChange> changed = manager.addAxioms(owlOntology, allAxioms);
+				final ChangeApplied applied = manager.addAxioms(owlOntology, allAxioms);
 				
 				try {
 					File workDirectory = new File(new File(realPath).getParentFile(), "data");
@@ -178,13 +176,8 @@ public class TermHierarchyRendererImpl implements TermHierarchyRenderer {
 					jsonResult.setSuccess(false);
 					jsonResult.setMessage(exception.getMessage());
 				} finally {
-					for(OWLOntologyChange c : changed) {
-						if (c instanceof AddAxiom) {
-							manager.removeAxiom(owlOntology, c.getAxiom());
-						}
-						else if (c instanceof RemoveAxiom) {
-							manager.addAxiom(owlOntology, c.getAxiom());
-						}
+					if (applied == ChangeApplied.SUCCESSFULLY) {
+						manager.removeAxioms(owlOntology, allAxioms);
 					}
 				}
 				return Modified.no;

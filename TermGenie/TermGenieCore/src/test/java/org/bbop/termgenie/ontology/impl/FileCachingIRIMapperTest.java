@@ -27,6 +27,9 @@ public class FileCachingIRIMapperTest {
 		final List<String> requests = new ArrayList<String>();
 		FileCachingIRIMapper mapper = new FileCachingIRIMapper(localCache, 6L, TimeUnit.HOURS) {
 
+			// generated
+			private static final long serialVersionUID = -975688185704041095L;
+
 			@Override
 			protected InputStream getInputStream(IRI iri) throws IOException {
 				String s = iri.toURI().toASCIIString();
@@ -66,6 +69,9 @@ public class FileCachingIRIMapperTest {
 		String localCache = folder.newFolder().getAbsolutePath();
 		final List<String> requests = new ArrayList<String>();
 		new FileCachingIRIMapper(localCache, 200L, TimeUnit.MILLISECONDS) {
+
+			// generated
+			private static final long serialVersionUID = 2257319253524839822L;
 
 			private int count = 0;
 

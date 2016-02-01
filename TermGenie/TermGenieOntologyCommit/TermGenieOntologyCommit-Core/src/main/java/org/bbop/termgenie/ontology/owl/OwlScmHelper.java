@@ -98,10 +98,13 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		// register a listener for logging
 		manager.addOntologyLoaderListener(new OWLOntologyLoaderListener() {
-			
+
+			// generated
+			private static final long serialVersionUID = -3636618634133069889L;
+
 			@Override
 			public void startedLoadingOntology(LoadingStartedEvent event) {
-				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI id = event.getOntologyID().getOntologyIRI().orNull();
 				IRI source = event.getDocumentIRI();
 				LOG.info("Start loading from SCM for commit, id: "+id+" source: "+source);
 				
@@ -109,20 +112,20 @@ public abstract class OwlScmHelper extends ScmHelper<OWLOntology> {
 			
 			@Override
 			public void finishedLoadingOntology(LoadingFinishedEvent event) {
-				IRI id = event.getOntologyID().getOntologyIRI();
+				IRI id = event.getOntologyID().getOntologyIRI().orNull();
 				IRI source = event.getDocumentIRI();
 				LOG.info("Finished loading from SCM for commit, id: "+id+" source: "+source);
 			}
 		});
 		if(defaultMappers != null) {
 			for (OWLOntologyIRIMapper iriMapper : defaultMappers) {
-				manager.addIRIMapper(iriMapper);
+				manager.getIRIMappers().add(iriMapper);
 			}
 		}
 		if (catalogXml != null) {
 			File catalogFile = new File(data.getScmFolder(), catalogXml).getAbsoluteFile();
 			try {
-				manager.addIRIMapper(new CatalogXmlIRIMapper(catalogFile.getCanonicalFile()));
+				manager.getIRIMappers().add(new CatalogXmlIRIMapper(catalogFile.getCanonicalFile()));
 			} catch (IOException exception) {
 				throw new CommitException("Could not load catalog file: "+catalogFile, exception, true);
 			}

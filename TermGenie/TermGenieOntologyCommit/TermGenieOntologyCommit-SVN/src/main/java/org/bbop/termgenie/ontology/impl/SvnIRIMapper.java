@@ -15,6 +15,9 @@ import org.semanticweb.owlapi.model.IRI;
 public class SvnIRIMapper extends AbstractScmIRIMapper<SvnIRIMapper.SvnHandler>
 {
 
+	// generated
+	private static final long serialVersionUID = 102176972751347816L;
+
 	SvnIRIMapper(SvnTool svn,
 			List<String> checkouts,
 			Map<IRI, String> mappedSVNFiles,

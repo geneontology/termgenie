@@ -149,7 +149,10 @@ public class ReasonerFactoryImpl implements ReasonerFactory, EventSubscriber<Ont
 	}
 	
 	private static final class ReasonerProgressWriter implements ReasonerProgressMonitor {
-		
+
+		// generated
+		private static final long serialVersionUID = -498190481039131419L;
+
 		private static final ThreadLocal<NumberFormat> nf = new ThreadLocal<NumberFormat>(){
 
 			@Override
