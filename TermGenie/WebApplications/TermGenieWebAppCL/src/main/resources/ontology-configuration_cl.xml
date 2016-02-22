@@ -41,6 +41,11 @@
 				<root>CL:0000003</root> <!-- native cell -->
 			</roots>
 		</ontologybranch>
+		<ontologybranch name="default_cl">
+			<roots>
+				<root>CL:0000003</root> <!-- native cell -->
+			</roots>
+		</ontologybranch>
 		<ontologybranch name="uberon">
 			<roots>
 				<root>UBERON:0001062</root> <!-- anatomical entity -->
