@@ -7,7 +7,7 @@ function cell_apoptosis() {
   var label = termname(c, go) + " apoptotic process";
   var definition = "Any apoptotic process in "+refname(c, go)+".";
   var synonyms = termgenie.synonyms(null, ['EXACT', 'NARROW'], c, go, [" apoptotic process", " apoptosis"], label);
-  var mdef = createMDef("'cell-type specific apoptotic process' and 'occurs in' some ?C");
+  var mdef = createMDef("GO_0006915 and 'occurs in' some ?C");
   mdef.addParameter('C', c, go);
   createTerm(label, definition, synonyms, mdef);
   
