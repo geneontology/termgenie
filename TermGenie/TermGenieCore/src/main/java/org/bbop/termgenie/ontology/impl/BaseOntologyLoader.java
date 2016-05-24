@@ -93,7 +93,7 @@ public class BaseOntologyLoader {
 		for (OWLOntology ontology : ontologies) {
 			oldManager.removeOntology(ontology);
 		}
-		oldManager.clearIRIMappers();
+		oldManager.getIRIMappers().clear();
 		
 		// Step 2: create a new wrapper and transfer IRI mappers
 		ParserWrapper newWrapper = new ParserWrapper();

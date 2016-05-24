@@ -15,6 +15,9 @@ import owltools.io.CatalogXmlIRIMapper;
 public abstract class AbstractScmIRIMapper<T extends FileAwareReadOnlyScm> implements
 	OWLOntologyIRIMapper
 {
+	// generated
+	private static final long serialVersionUID = 2768324941427474031L;
+
 	private static final Logger logger = Logger.getLogger(AbstractScmIRIMapper.class);
 	
 	private final T scm;

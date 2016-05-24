@@ -15,6 +15,9 @@ import org.semanticweb.owlapi.model.IRI;
 
 public class GitIRIMapper extends AbstractScmIRIMapper<GitIRIMapper.GitHandler> {
 
+	// generated
+	private static final long serialVersionUID = 624601115344754544L;
+
 	GitIRIMapper(GitTool git,
 			List<String> checkouts,
 			Map<IRI, String> mappedSVNFiles,
