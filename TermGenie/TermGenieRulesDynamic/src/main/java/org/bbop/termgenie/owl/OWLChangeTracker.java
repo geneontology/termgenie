@@ -12,13 +12,14 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyRenameException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
+import org.semanticweb.owlapi.model.parameters.ChangeApplied;
 
 
 public class OWLChangeTracker {
 	
 	private static final Logger logger = Logger.getLogger(OWLChangeTracker.class);
 	
-	protected ArrayList<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+	protected List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 	private final OWLOntology owlOntology;
 	private final OWLOntologyManager manager;
 
@@ -28,8 +29,8 @@ public class OWLChangeTracker {
 	}
 
 	public synchronized void apply(OWLOntologyChange change) {
-		List<OWLOntologyChange> changes = manager.applyChange(change);
-		if (changes != null && !changes.isEmpty()) {
+		ChangeApplied applied = manager.applyChange(change);
+		if (applied == ChangeApplied.SUCCESSFULLY) {
 			this.changes.addAll(changes);
 		}
 	}

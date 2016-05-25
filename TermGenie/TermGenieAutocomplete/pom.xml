@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.bbop.termgenie</groupId>
 		<artifactId>TermGenie</artifactId>
-		<version>1.2.5-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieAutocomplete</artifactId>
 	<name>TermGenieAutocomplete</name>

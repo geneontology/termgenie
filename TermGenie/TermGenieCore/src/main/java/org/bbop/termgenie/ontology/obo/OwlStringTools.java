@@ -8,11 +8,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.coode.owlapi.functionalparser.OWLFunctionalSyntaxOWLParser;
-import org.coode.owlapi.functionalrenderer.OWLFunctionalSyntaxRenderer;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.functional.parser.OWLFunctionalSyntaxOWLParser;
+import org.semanticweb.owlapi.functional.renderer.OWLFunctionalSyntaxRenderer;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParserException;
 import org.semanticweb.owlapi.io.OWLRendererException;
@@ -27,6 +27,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnloadableImportException;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
@@ -38,6 +39,7 @@ import owltools.io.OWLPrettyPrinter;
 public class OwlStringTools {
 	
 	static final OWLOntologyManager translationManager = OWLManager.createOWLOntologyManager();
+	static final OWLOntologyLoaderConfiguration loaderConfiguration = translationManager.getOntologyLoaderConfiguration();
 	
 	public static String translateAxiomsToString(Set<OWLAxiom> axioms) {
 		try {
@@ -62,7 +64,8 @@ public class OwlStringTools {
 			OWLFunctionalSyntaxOWLParser p = new OWLFunctionalSyntaxOWLParser();
 			OWLOntologyDocumentSource documentSource = new StringDocumentSource(axioms);
 			OWLOntology ontology = translationManager.createOntology();
-			p.parse(documentSource, ontology);
+			OWLOntologyLoaderConfiguration loaderConfiguration = ontology.getOWLOntologyManager().getOntologyLoaderConfiguration();
+			p.parse(documentSource, ontology, loaderConfiguration);
 			return ontology.getAxioms();
 		} catch (UnloadableImportException exception) {
 			throw new RuntimeException(exception);

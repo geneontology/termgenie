@@ -71,7 +71,7 @@ public class OboWriterTools {
 			Collection<Clause> clauses = frame.getClauses(tag);
 			if (clauses != null && !clauses.isEmpty()) {
 				for (Clause clause : clauses) {
-					oboWriter.write(clause, writer, nameProvider);						
+					OBOFormatWriter.write(clause, writer, nameProvider);
 				}
 			}	
 		}
@@ -80,7 +80,7 @@ public class OboWriterTools {
 	public static String writeClause(Clause clause, NameProvider nameProvider) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter writer = new BufferedWriter(stringWriter);
-		oboWriter.write(clause, writer, nameProvider);
+		OBOFormatWriter.write(clause, writer, nameProvider);
 		writer.close();
 		return stringWriter.getBuffer().toString();
 	}

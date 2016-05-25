@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.bbop.termgenie</groupId>
 		<artifactId>TermGenieOntologyCommit</artifactId>
-		<version>1.2.5-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>TermGenieOntologyCommit-API</artifactId>
 	<name>TermGenieOntologyCommit-API</name>

@@ -43,6 +43,9 @@ import com.google.inject.name.Named;
 @Singleton
 class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 
+	// generated
+	private static final long serialVersionUID = -3153869742047082195L;
+
 	private static final Logger logger = Logger.getLogger(FileCachingIRIMapper.class);
 
 	private final FileValidity validityHelper;

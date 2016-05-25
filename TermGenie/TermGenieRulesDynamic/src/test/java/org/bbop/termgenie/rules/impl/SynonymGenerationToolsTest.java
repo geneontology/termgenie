@@ -16,6 +16,7 @@ import org.bbop.termgenie.tools.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -115,6 +116,11 @@ public class SynonymGenerationToolsTest {
 		@Override
 		public boolean containsEntityInSignature(OWLEntity owlEntity) {
 			return false;
+		}
+
+		@Override
+		public Set<OWLAnnotationProperty> getAnnotationPropertiesInSignature() {
+			return null;
 		}
 	}
 
