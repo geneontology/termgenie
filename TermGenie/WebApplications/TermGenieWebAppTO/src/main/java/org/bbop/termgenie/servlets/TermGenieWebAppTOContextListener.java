@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.core.ioc.IOCModule;
-import org.bbop.termgenie.mail.MailHandler;
-import org.bbop.termgenie.mail.SimpleMailHandler;
 import org.bbop.termgenie.mail.review.DefaultReviewMailHandlerModule;
 import org.bbop.termgenie.ontology.AdvancedPersistenceModule;
 import org.bbop.termgenie.permissions.UserPermissionsModule;
@@ -124,13 +122,7 @@ public class TermGenieWebAppTOContextListener extends AbstractTermGenieContextLi
 	@Override
 	protected IOCModule getReviewMailHandlerModule() {
 		
-		return new DefaultReviewMailHandlerModule(applicationProperties, "help@go.termgenie.org", "TO TermGenie") {
-			
-			@Override
-			protected MailHandler provideMailHandler() {
-				return new SimpleMailHandler("smtp.lbl.gov");
-			}
-		};
+		return new DefaultReviewMailHandlerModule(applicationProperties, "help@go.termgenie.org", "TO TermGenie", "smtp.lbl.gov");
 	}
 	
 	@Override
