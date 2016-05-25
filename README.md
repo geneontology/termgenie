@@ -32,7 +32,7 @@ For details on how to build TermGenie using Maven, run TermGenie in Eclipse for 
 Instances exist for the following ontologies:
 
 * [GeneOntology TermGenie](http://go.termgenie.org)
-* [OBA TermGenie](http://oba.termgenie.org)
+* ~~OBA TermGenie~~ (Will be replaced with DOSDP)
 * [CL TermGenie](http://cl.termgenie.org)
 * [HP TermGenie](http://hp.termgenie.org)
 * [MP TermGenie](http://mp.termgenie.org)
