@@ -27,6 +27,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.0</version>
+			<classifier>no_aop</classifier>
+		</dependency>
+		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieWebAppEnvo</artifactId>
 			<version>${project.parent.version}</version>
