@@ -25,7 +25,6 @@ import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.owl.AddPartOfRelationshipsTask;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
-import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.owl.RelationshipTask;
 import org.bbop.termgenie.owl.SimpleRelationHandlingTask;
 import org.bbop.termgenie.rules.api.ChangeTracker;
@@ -39,7 +38,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ParserException;
-import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -48,8 +47,11 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
@@ -69,7 +71,6 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	final OWLGraphWrapper targetOntology;
 	final ProcessState state;
 	private final String patternID;
-	private final OWLChangeTracker changeTracker;
 	private final String defaultXref;
 	private int count = 0;
 	
@@ -105,7 +106,6 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		this.requireLiteratureReference = requireLiteratureReference;
 		this.patternID = tempIdPrefix + patternID;
 		this.factory = factory;
-		changeTracker = new OWLChangeTracker(targetOntology.getSourceOntology());
 		this.tempIdPrefix = tempIdPrefix;
 		this.syntaxTool = syntaxTool;
 		this.assertInferences = assertInferences;
@@ -175,25 +175,25 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			List<MDef> partOf,
 			String newId,
 			String label,
-			OWLChangeTracker changeTracker) throws RelationCreationException
+			OWLOntology disposable,
+			OWLGraphWrapper reference) throws RelationCreationException
 	{
 		if (logicalDefinitions == null || logicalDefinitions.isEmpty()) {
 			return InferredRelations.EMPTY;
 		}
 		ProcessState.addMessage(state, "Start inferring relationships from logical definition.");
-		OWLOntologyManager owlManager = targetOntology.getManager();
+		OWLOntologyManager owlManager = disposable.getOWLOntologyManager();
 		OWLDataFactory owlDataFactory = owlManager.getOWLDataFactory();
 		IRI iri = IRI.create(newId);
-		Pair<OWLClass,OWLAxiom> pair = addClass(iri, changeTracker);
-		addLabel(iri, label, changeTracker);
+		Pair<OWLClass,OWLAxiom> pair = addClass(iri, disposable);
+		addLabel(iri, label, disposable);
 		for (MDef def : logicalDefinitions) {
 			String expression = getFullExpression(def);
 			try {
 				OWLClassExpression owlClassExpression = syntaxTool.parseManchesterExpression(expression);
 				OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(pair.getOne(),
 						owlClassExpression);
-				changeTracker.apply(new AddAxiom(targetOntology.getSourceOntology(), axiom));
-
+				owlManager.addAxiom(disposable, axiom);
 			} catch (ParserException exception) {
 				throw new RelationCreationException("Could not create OWL class expressions from expression: " + expression, exception);
 			}
@@ -209,7 +209,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 				}
 			}
 		}
-		OWLReasoner reasoner = factory.createReasoner(targetOntology, state);
+		OWLReasoner reasoner = factory.createReasoner(disposable, state);
 		try {
 			ProcessState.addMessage(state, "Check for ontology consistency.");
 			if (reasoner.isConsistent() == false) {
@@ -219,7 +219,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			final Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
 			if (unsatisfiable.isEmpty() == false) {
 				Logger.getLogger(TermCreationToolsMDef.class).warn("Unsatisfiable classes: "+unsatisfiable);
-				if (unsatisfiable.contains(targetOntology.getOWLClass(iri))) {
+				if (unsatisfiable.contains(owlDataFactory.getOWLClass(iri))) {
 					return InferredRelations.UNSATISFIABLE;
 				}
 				StringBuilder sb = new StringBuilder();
@@ -227,16 +227,16 @@ public class TermCreationToolsMDef implements ChangeTracker {
 					if (sb.length() > 0) {
 						sb.append(", ");
 					}
-					sb.append(targetOntology.getIdentifier(owlClass));
+					sb.append(Owl2Obo.getIdentifier(owlClass.getIRI()));
 				}
 				throw new RelationCreationException("No safe inferences are possible. The ontology has unsatisfiable classes: "+sb);
 			}
 			RelationshipTask task;
 			if (assertInferences) {
-				task = new InferAllRelationshipsTask(targetOntology, iri, changeTracker, tempIdPrefix, state, useIsInferred);
+				task = new InferAllRelationshipsTask(disposable, targetOntology, iri, tempIdPrefix, state, useIsInferred);
 			}
 			else {
-				task = new SimpleRelationHandlingTask(targetOntology, iri, state);
+				task = new SimpleRelationHandlingTask(disposable, targetOntology, iri, state);
 			}
 			task.run(reasoner);
 			InferredRelations inferredRelations = task.getInferredRelations();
@@ -260,7 +260,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			
 			ProcessState.addMessage(state, "Start checking for part_of relationships.");
 			if (!partOfExpressions.isEmpty()) {
-				AddPartOfRelationshipsTask partOfTask = new AddPartOfRelationshipsTask(targetOntology, pair.getOne(), partOfExpressions , inferredRelations, state);
+				AddPartOfRelationshipsTask partOfTask = new AddPartOfRelationshipsTask(disposable, reference, pair.getOne(), partOfExpressions , inferredRelations, state);
 				partOfTask.run(reasoner);
 			}
 			ProcessState.addMessage(state, "Finished checking for part_of relationships.");
@@ -423,9 +423,15 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		IRI iri = IRI.create(owlNewId);
 		String oboNewId = Owl2Obo.getIdentifier(iri);
 		OboTools.addTermId(term, oboNewId);
-	
+		final OWLOntologyManager owlManager = targetOntology.getManager();
+		OWLOntology disposable = null;
 		try {
-			InferredRelations inferredRelations = createRelations(logicalDefinition, partOf, owlNewId, label, changeTracker);
+			disposable = owlManager.createOntology(IRI.generateDocumentIRI());
+			OWLOntologyID id = targetOntology.getSourceOntology().getOntologyID();
+			OWLImportsDeclaration importDeclaration = owlManager.getOWLDataFactory().getOWLImportsDeclaration(id.getDefaultDocumentIRI().orNull());
+			owlManager.applyChange(new AddImport(disposable, importDeclaration));
+			
+			InferredRelations inferredRelations = createRelations(logicalDefinition, partOf, owlNewId, label, disposable, targetOntology);
 			if (inferredRelations.isUnsatisfiable()) {
 				output.add(singleError("Failed to create the term "+label+
 						" with the logical definition: "+ renderLogicalDefinition(logicalDefinition) +
@@ -445,7 +451,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 			if (inferredRelations.getClassRelationAxioms() != null) {
 				axioms.addAll(inferredRelations.getClassRelationAxioms());
 			}
-			OWLClass cls = targetOntology.getManager().getOWLDataFactory().getOWLClass(iri);
+			OWLClass cls = owlManager.getOWLDataFactory().getOWLClass(iri);
 			axioms.addAll(OwlTranslatorTools.translate(term.getClauses(), cls , targetOntology.getSourceOntology()));
 			
 			List<Clause> relations = inferredRelations.getClassRelations();
@@ -459,12 +465,20 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		} catch (RelationCreationException exception) {
 			output.add(singleError(exception.getMessage(), input));
 			return false;
-		} 
+		} catch (OWLOntologyCreationException exception) {
+			output.add(singleError("Could not create test setup for relation inference: "+exception.getMessage(), input));
+			return false;
+		}
 //		catch (Throwable t) {
 //			Logger.getLogger(TermCreationToolsMDef.class).error(t.getMessage(), t);
 //			output.add(singleError(t.getMessage(), input));
 //			return false;
 //		}
+		finally{
+			if (disposable != null) {
+				owlManager.removeOntology(disposable);
+			}
+		}
 	}
 
 	private List<String> getDefXrefs() {
@@ -498,7 +512,7 @@ public class TermCreationToolsMDef implements ChangeTracker {
 	
 	@Override
 	public boolean hasChanges() {
-		return changeTracker.undoChanges() == false;
+		return false;
 	}
 
 	static Pair<OWLClass, OWLAxiom> createClass(IRI iri, OWLOntologyManager manager) {
@@ -508,21 +522,22 @@ public class TermCreationToolsMDef implements ChangeTracker {
 		return Pair.<OWLClass, OWLAxiom>of(owlClass, owlDeclarationAxiom);
 	}
 	
-	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLChangeTracker changeTracker) {
-		OWLOntology target = changeTracker.getTarget();
-		Pair<OWLClass,OWLAxiom> pair = createClass(iri, target.getOWLOntologyManager());
-		changeTracker.apply(new AddAxiom(target, pair.getTwo()));
+	static Pair<OWLClass, OWLAxiom> addClass(IRI iri, OWLOntology disposable) {
+		OWLOntologyManager manager = disposable.getOWLOntologyManager();
+		Pair<OWLClass,OWLAxiom> pair = createClass(iri, manager);
+		manager.addAxiom(disposable, pair.getTwo());
 		return pair;
 	}
 	
 	static void addLabel(IRI iri,
 			String label,
-			OWLChangeTracker changeTracker)
+			OWLOntology disposable)
 	{
-		OWLDataFactory owlDataFactory = changeTracker.getTarget().getOWLOntologyManager().getOWLDataFactory();
-		OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(owlDataFactory.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()),
+		OWLOntologyManager manager = disposable.getOWLOntologyManager();
+		OWLDataFactory factory = manager.getOWLDataFactory();
+		OWLAnnotationAssertionAxiom axiom = factory.getOWLAnnotationAssertionAxiom(factory.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()),
 				iri,
-				owlDataFactory.getOWLLiteral(label));
-		changeTracker.apply(new AddAxiom(changeTracker.getTarget(), axiom));
+				factory.getOWLLiteral(label));
+		manager.addAxiom(disposable, axiom);
 	}
 }

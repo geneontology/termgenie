@@ -22,39 +22,33 @@ public class ManchesterSyntaxToolTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule("ontology-configuration_simple.xml"));
+		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule());
 		loader = injector.getInstance(OntologyLoader.class);
 	}
 	
 	@Test
-	public void testManchesterSyntaxTool() throws Exception {
-		OntologyTaskManager ontologyManager = loader.getOntologyManager();
-		OntologyTask task = new OntologyTask(){
-
-			@Override
-			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
-				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology());
-				OWLClassExpression expression = tool.parseManchesterExpression("GO_0019660 and 'occurs in' some GO_0005777");
-				assertNotNull(expression);
-			}
-		};
-		ontologyManager.runManagedTask(task);
-		if (task.getException() != null) {
-			String message  = task.getMessage() != null ? task.getMessage() : task.getException().getMessage();
-			fail(message);	
-		}
-		
+	public void testManchesterSyntaxTool1() throws Exception {
+		runExpression("GO_0019660 and 'occurs in' some GO_0005777");
 	}
 	
 	@Test
 	public void testManchesterSyntaxTool2() throws Exception {
+		runExpression("GO_0046836 and 'part of' some GO_0051402");
+	}
+	
+	@Test
+	public void testManchesterSyntaxTool5() throws Exception {
+		runExpression("GO_0046836 and BFO_0000050 some GO_0051402");
+	}
+	
+	private void runExpression(final String expressionString) throws Exception {
 		OntologyTaskManager ontologyManager = loader.getOntologyManager();
 		OntologyTask task = new OntologyTask(){
 
 			@Override
 			protected void runCatching(OWLGraphWrapper managed) throws TaskException, Exception {
 				ManchesterSyntaxTool tool = new ManchesterSyntaxTool(managed.getSourceOntology(), null);
-				OWLClassExpression expression = tool.parseManchesterExpression("GO_0046836 and 'part_of' some GO_0051402");
+				OWLClassExpression expression = tool.parseManchesterExpression(expressionString);
 				assertNotNull(expression);
 			}
 		};
@@ -65,5 +59,4 @@ public class ManchesterSyntaxToolTest {
 		}
 		
 	}
-
 }

@@ -11,10 +11,10 @@ import org.obolibrary.oboformat.model.Clause;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
-
 
 /**
  * {@link ReasonerTask} which uses a reasoner to check for equivalent classes.
@@ -23,15 +23,18 @@ import owltools.graph.OWLGraphWrapper;
  */
 public class SimpleRelationHandlingTask implements RelationshipTask {
 	
-	private final OWLGraphWrapper ontology;
+	private final OWLOntology ontology;
+	private final OWLGraphWrapper reference;
 	private final IRI iri;
 	private final ProcessState state;
 	
 	private InferredRelations result;
+	
 
-	public SimpleRelationHandlingTask(OWLGraphWrapper ontology, IRI iri, ProcessState state) {
+	public SimpleRelationHandlingTask(OWLOntology ontology, OWLGraphWrapper reference, IRI iri, ProcessState state) {
 		super();
 		this.ontology = ontology;
+		this.reference = reference;
 		this.iri = iri;
 		this.state = state;
 	}
@@ -40,13 +43,13 @@ public class SimpleRelationHandlingTask implements RelationshipTask {
 	public Modified run(OWLReasoner reasoner) {
 		// First check for equivalent classes
 		ProcessState.addMessage(state, "Check for equivalent classes of new term");
-		OWLClass owlClass = ontology.getOWLClass(iri);
+		OWLClass owlClass = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLClass(iri);
 		Set<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass).getEntitiesMinus(owlClass);
 		if (!equivalentClasses.isEmpty()) {
 			result = new InferredRelations(equivalentClasses);
 			return Modified.no;
 		}
-		Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, ontology);
+		Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, ontology, reference);
 		result = new InferredRelations(pair.getOne(), pair.getTwo(), null);
 		return Modified.no;
 	}

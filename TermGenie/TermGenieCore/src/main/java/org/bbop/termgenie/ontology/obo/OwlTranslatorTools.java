@@ -50,25 +50,25 @@ public class OwlTranslatorTools {
 		java.util.logging.Logger.getLogger("org.obolibrary").setLevel(Level.SEVERE);
 	}
 	
-	public static Pair<List<Clause>, Set<OWLAxiom>> extractRelations(OWLClass owlClass, OWLGraphWrapper wrapper) {
-		OWLOntology ontology = wrapper.getSourceOntology();
+	public static Pair<List<Clause>, Set<OWLAxiom>> extractRelations(OWLClass owlClass, OWLOntology ontology, OWLGraphWrapper wrapper) {
 		List<Clause> result = new ArrayList<Clause>();
 		Set<OWLAxiom> relevantAxioms = new HashSet<OWLAxiom>();
 
-		handleSubClass(owlClass, ontology, result, relevantAxioms);
+		handleSubClass(owlClass, ontology, wrapper, result, relevantAxioms);
 
-		handleEquivalenClasses(owlClass, ontology, result, relevantAxioms);
+		handleEquivalenClasses(owlClass, ontology, wrapper, result, relevantAxioms);
 
-		handleDisjoints(owlClass, ontology, result, relevantAxioms);
+		handleDisjoints(owlClass, ontology, wrapper, result, relevantAxioms);
 		return Pair.of(result, relevantAxioms);
 	}
 
 	private static void handleSubClass(OWLClass owlClass,
-			OWLOntology ontology,
+			OWLOntology source,
+			OWLGraphWrapper wrapper,
 			List<Clause> result,
 			Set<OWLAxiom> relevantAxioms)
 	{
-		Set<OWLSubClassOfAxiom> subClassAxioms = ontology.getSubClassAxiomsForSubClass(owlClass);
+		Set<OWLSubClassOfAxiom> subClassAxioms = source.getSubClassAxiomsForSubClass(owlClass);
 		if (subClassAxioms == null || subClassAxioms.isEmpty()) {
 			return;
 		}
@@ -77,7 +77,7 @@ public class OwlTranslatorTools {
 		for (OWLSubClassOfAxiom axiom : subClassAxioms) {
 			OWLClassExpression sup = axiom.getSuperClass();
 			if (sup instanceof OWLClass) {
-				String target = getId(sup, ontology);
+				String target = getId(sup, wrapper);
 				Clause clause = new Clause(OboFormatTag.TAG_IS_A, target);
 				addQualifiers(clause, axiom.getAnnotations());
 				result.add(clause);
@@ -86,19 +86,19 @@ public class OwlTranslatorTools {
 				// OWLObjectSomeValuesFrom
 				// OWLObjectAllValuesFrom
 				OWLQuantifiedObjectRestriction r = (OWLQuantifiedObjectRestriction) sup;
-				String fillerId = getId(r.getFiller(), ontology);
+				String fillerId = getId(r.getFiller(), wrapper);
 
 				if(fillerId != null){
-					result.add(createRelationshipClauseWithRestrictions(r, fillerId, axiom, ontology));
+					result.add(createRelationshipClauseWithRestrictions(r, fillerId, axiom, wrapper));
 				}
 			} else if (sup instanceof OWLObjectCardinalityRestriction) {
 				// OWLObjectExactCardinality
 				// OWLObjectMinCardinality
 				// OWLObjectMaxCardinality
 				OWLObjectCardinalityRestriction cardinality = (OWLObjectCardinalityRestriction) sup;
-				String fillerId = getId(cardinality.getFiller(), ontology);
+				String fillerId = getId(cardinality.getFiller(), wrapper);
 				if(fillerId != null){
-					result.add(createRelationshipClauseWithCardinality(cardinality, fillerId, axiom, ontology));
+					result.add(createRelationshipClauseWithCardinality(cardinality, fillerId, axiom, wrapper));
 				}
 			} else if (sup instanceof OWLObjectIntersectionOf) {
 				OWLObjectIntersectionOf i = (OWLObjectIntersectionOf) sup;
@@ -106,16 +106,16 @@ public class OwlTranslatorTools {
 				for(OWLClassExpression operand : i.getOperands()) {
 					if (operand instanceof OWLQuantifiedObjectRestriction) {
 						OWLQuantifiedObjectRestriction restriction = (OWLQuantifiedObjectRestriction) operand;
-						String fillerId = getId(restriction.getFiller(), ontology);
+						String fillerId = getId(restriction.getFiller(), wrapper);
 						if(fillerId == null){
-							clauses.add(createRelationshipClauseWithRestrictions(restriction, fillerId, axiom, ontology));
+							clauses.add(createRelationshipClauseWithRestrictions(restriction, fillerId, axiom, wrapper));
 						}
 					}
 					else if (operand instanceof OWLObjectCardinalityRestriction) {
 						OWLObjectCardinalityRestriction restriction = (OWLObjectCardinalityRestriction) operand;
-						String fillerId = getId(restriction.getFiller(), ontology);
+						String fillerId = getId(restriction.getFiller(), wrapper);
 						if(fillerId == null){
-							clauses.add(createRelationshipClauseWithCardinality(restriction, fillerId, axiom, ontology));
+							clauses.add(createRelationshipClauseWithCardinality(restriction, fillerId, axiom, wrapper));
 						}
 					}
 				}
@@ -131,10 +131,10 @@ public class OwlTranslatorTools {
 	private static Clause createRelationshipClauseWithRestrictions(OWLQuantifiedObjectRestriction r,
 			String fillerId,
 			OWLSubClassOfAxiom ax,
-			OWLOntology ontology)
+			OWLGraphWrapper wrapper)
 	{
 		Clause c = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
-		c.addValue(getId(r.getProperty(), ontology));
+		c.addValue(getId(r.getProperty(), wrapper));
 		c.addValue(fillerId);
 		addQualifiers(c, ax.getAnnotations());
 		return c;
@@ -143,10 +143,10 @@ public class OwlTranslatorTools {
 	private static Clause createRelationshipClauseWithCardinality(OWLObjectCardinalityRestriction restriction,
 			String fillerId,
 			OWLSubClassOfAxiom ax,
-			OWLOntology ontology)
+			OWLGraphWrapper wrapper)
 	{
 		Clause c = new Clause(OboFormatTag.TAG_RELATIONSHIP.getTag());
-		c.addValue(getId(restriction.getProperty(), ontology));
+		c.addValue(getId(restriction.getProperty(), wrapper));
 		c.addValue(fillerId);
 		String q = "cardinality";
 		if (restriction instanceof OWLObjectMinCardinality) {
@@ -161,22 +161,23 @@ public class OwlTranslatorTools {
 	}
 
 	private static void handleEquivalenClasses(OWLClass owlClass,
-			OWLOntology ontology,
+			OWLOntology source,
+			OWLGraphWrapper wrapper,
 			List<Clause> result,
 			Set<OWLAxiom> relevantAxioms)
 	{
-		Set<OWLEquivalentClassesAxiom> equivalentClassesAxioms = ontology.getEquivalentClassesAxioms(owlClass);
+		Set<OWLEquivalentClassesAxiom> equivalentClassesAxioms = source.getEquivalentClassesAxioms(owlClass);
 		if (equivalentClassesAxioms != null && !equivalentClassesAxioms.isEmpty()) {
 			relevantAxioms.addAll(equivalentClassesAxioms);
 			for (OWLEquivalentClassesAxiom axiom : equivalentClassesAxioms) {
-				handleEquivalenClassesAxiom(owlClass, axiom, ontology, result);
+				handleEquivalenClassesAxiom(owlClass, axiom, wrapper, result);
 			}
 		}
 	}
 
 	private static void handleEquivalenClassesAxiom(OWLClass owlClass,
 			OWLEquivalentClassesAxiom axiom,
-			OWLOntology ontology,
+			OWLGraphWrapper ontology,
 			List<Clause> result)
 	{
 		Set<OWLClassExpression> expressions = axiom.getClassExpressionsMinus(owlClass);
@@ -265,12 +266,13 @@ public class OwlTranslatorTools {
 	}
 	
 	private static void handleDisjoints(OWLClass owlClass,
-			OWLOntology ontology,
+			OWLOntology source,
+			OWLGraphWrapper wrapper,
 			List<Clause> result,
 			Set<OWLAxiom> relevantAxioms)
 	{
 		// DISJOINT_FROM
-		Set<OWLDisjointClassesAxiom> disjointClassesAxioms = ontology.getDisjointClassesAxioms(owlClass);
+		Set<OWLDisjointClassesAxiom> disjointClassesAxioms = source.getDisjointClassesAxioms(owlClass);
 		if (disjointClassesAxioms != null && !disjointClassesAxioms.isEmpty()) {
 			relevantAxioms.addAll(disjointClassesAxioms);
 			for (OWLDisjointClassesAxiom axiom : disjointClassesAxioms) {
@@ -278,7 +280,7 @@ public class OwlTranslatorTools {
 				for (OWLClassExpression expression : expressions) {
 					if (expression instanceof OWLClass) {
 						OWLClass targetClass = (OWLClass) expression;
-						String target = getId(targetClass, ontology);
+						String target = getId(targetClass, wrapper);
 						if (target != null) {
 							Clause c = new Clause(OboFormatTag.TAG_DISJOINT_FROM, target);
 							addQualifiers(c, axiom.getAnnotations());
@@ -321,6 +323,10 @@ public class OwlTranslatorTools {
 			c.addQualifierValue(qv);
 
 		}
+	}
+	
+	private static String getId(OWLObject obj, OWLGraphWrapper graph) {
+		return getId(obj, graph.getSourceOntology());
 	}
 	
 	private static String getId(OWLObject obj, OWLOntology ontology) {

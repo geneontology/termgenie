@@ -12,7 +12,7 @@ function eq_simple() {
 	// String label, List<ISynonym> results, String prefix, String infix, String suffix, String scope
 	synonyms = termgenie.addSynonym(label, synonyms, null, label, ' trait', 'EXACT');
 	
-	var mdef = createMDef("'biological attribute' and affects_quality some ?Q and attribute_of some ?E");
+	var mdef = createMDef("'biological attribute' and 'affects quality' some ?Q and attribute_of some ?E");
 	mdef.addParameter('E', e, OBA);
 	mdef.addParameter('Q', q, OBA);
 	createTerm(label, definition, synonyms, mdef);

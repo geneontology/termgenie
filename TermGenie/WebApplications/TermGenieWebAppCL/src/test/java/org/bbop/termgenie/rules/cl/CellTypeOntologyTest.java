@@ -52,7 +52,8 @@ public class CellTypeOntologyTest {
 	
 	@Test
 	public void test() throws Exception {
-		String clTerm = "CL:0011003"; // magnocellular neurosecretory cell
+		//String clTerm = "CL:0011003"; // magnocellular neurosecretory cell
+		String clTerm = "CL:0002028"; // basophil mast progenitor cell
 		String uberonTerm = "UBERON:0002028"; // hindbrain
 		TermGenerationOutput output = generateSingle(getTemplate("metazoan_location_specific_cell"), clTerm, uberonTerm);
 		render(output);

@@ -212,6 +212,10 @@ class FileCachingIRIMapper implements OWLOntologyIRIMapper {
 		if (filter != null && filter.allowCaching(ontologyIRI) == false) {
 			return null;
 		}
+		if (ontologyIRI.toString().startsWith("owlapi:ontology")) {
+			// skip generated IRIs
+			return null;
+		}
 		return mapIRI(ontologyIRI);
 	}
 

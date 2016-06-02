@@ -1,6 +1,7 @@
 package org.bbop.termgenie.core.rules;
 
 import org.bbop.termgenie.core.process.ProcessState;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
@@ -20,7 +21,7 @@ public interface ReasonerFactory {
 	 */
 	public SharedReasoner getSharedReasoner(OWLGraphWrapper ontology);
 
-	public OWLReasoner createReasoner(OWLGraphWrapper graph, ProcessState state);
+	public OWLReasoner createReasoner(OWLOntology ontology, ProcessState state);
 
 	/**
 	 * Use this method to retrieve a name of the reasoner implementation for

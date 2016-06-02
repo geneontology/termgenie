@@ -14,7 +14,7 @@ function cell_by_surface_marker() {
   var label = termname(p, two) + " " + termname(c, CL);
   var definition = "Any "+termname(c, CL)+" that has "+termname(p, two)+" on the plasma membrane.";
   var synonyms = null; // TODO
-  var mdef = createMDef("?C and 'has_plasma_membrane_part' some ?P");
+  var mdef = createMDef("?C and 'has plasma membrane part' some ?P");
   mdef.addParameter('C', c, CL);
   mdef.addParameter('P', p, two);
   // cdef.property("multivalued(has_plasma_membrane_part)");

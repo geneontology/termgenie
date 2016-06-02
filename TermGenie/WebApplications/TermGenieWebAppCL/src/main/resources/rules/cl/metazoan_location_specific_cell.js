@@ -11,7 +11,7 @@ function metazoan_location_specific_cell() {
   var label = termname(a, CL) + " " + termname(c, CL);
   var definition = "Any "+termname(c, CL)+" that is part of a "+termname(a, CL)+".";
   var synonyms = null; // TODO
-  var mdef = createMDef("?C and 'part_of' some ?A");
+  var mdef = createMDef("?C and 'part of' some ?A");
   mdef.addParameter('C', c, CL);
   mdef.addParameter('A', a, CL);
   createTerm(label, definition, synonyms, mdef);

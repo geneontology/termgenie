@@ -12,6 +12,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -26,21 +27,24 @@ import owltools.graph.OWLGraphWrapper;
  */
 public class AddPartOfRelationshipsTask implements ReasonerTask {
 	
-	private final OWLGraphWrapper ontology;
+	private final OWLOntology ontology;
+	private final OWLGraphWrapper reference;
 	private final Set<OWLClassExpression> partOfExpressions;
 	private final InferredRelations allRelations;
 	private final OWLClass cls;
 	
 	/**
 	 * @param ontology
+	 * @param reference
 	 * @param cls
 	 * @param partOfExpressions
 	 * @param allRelations
 	 * @param state
 	 */
-	public AddPartOfRelationshipsTask(OWLGraphWrapper ontology, OWLClass cls, Set<OWLClassExpression> partOfExpressions, InferredRelations allRelations, ProcessState state) {
+	public AddPartOfRelationshipsTask(OWLOntology ontology, OWLGraphWrapper reference, OWLClass cls, Set<OWLClassExpression> partOfExpressions, InferredRelations allRelations, ProcessState state) {
 		super();
 		this.ontology = ontology;
+		this.reference = reference;
 		this.cls = cls;
 		this.partOfExpressions = partOfExpressions;
 		this.allRelations = allRelations;
@@ -52,10 +56,10 @@ public class AddPartOfRelationshipsTask implements ReasonerTask {
 		// Use the given class expressions to check for matching classes.
 		// Add the classes as part of relations.
 		
-		OWLOntologyManager manager = ontology.getSourceOntology().getOWLOntologyManager();
+		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		OWLDataFactory factory = manager.getOWLDataFactory();
 		final OWLClass owlNothing = factory.getOWLNothing();
-		final OWLObjectProperty partOf = ontology.getOWLObjectPropertyByIdentifier("part_of");
+		final OWLObjectProperty partOf = reference.getOWLObjectPropertyByIdentifier("part_of");
 		
 		// use a set to ensure that part_of links are only added once.
 		Set<OWLClass> usedClasses = new HashSet<OWLClass>();
@@ -67,7 +71,7 @@ public class AddPartOfRelationshipsTask implements ReasonerTask {
 				for (OWLClass candidate : classes) {
 					if (usedClasses.add(candidate)) {
 						// create part_of clause
-						String oboId = ontology.getIdentifier(candidate);
+						String oboId = reference.getIdentifier(candidate);
 						Clause cl = new Clause(OboFormatTag.TAG_RELATIONSHIP);
 						cl.addValue("part_of");
 						cl.addValue(oboId);

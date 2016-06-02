@@ -3,7 +3,6 @@ package org.bbop.termgenie.rules.impl;
 import static org.junit.Assert.*;
 
 import org.bbop.termgenie.ontology.obo.OboTools;
-import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.junit.Test;
 import org.obolibrary.obo2owl.Obo2OWLConstants;
 import org.obolibrary.obo2owl.Obo2Owl;
@@ -28,13 +27,12 @@ public class AddLabelTest {
 		Obo2Owl obo2Owl = new Obo2Owl();
 		OWLOntology owlOntology = obo2Owl.convert(obodoc);
 		
-		OWLChangeTracker changeTracker = new OWLChangeTracker(owlOntology);
 		IRI newOwlClass = obo2Owl.oboIdToIRI(frame.getId());
-		TermCreationToolsMDef.addLabel(newOwlClass, "Test-Label", changeTracker);
+		TermCreationToolsMDef.addLabel(newOwlClass, "Test-Label", owlOntology);
 		
 		IRI iri = IRI.create(Obo2OWLConstants.DEFAULT_IRI_PREFIX+"GO_TEMP-foo-02");
-		TermCreationToolsMDef.addClass(iri, changeTracker);
-		TermCreationToolsMDef.addLabel(iri, "Test-Label2", changeTracker);
+		TermCreationToolsMDef.addClass(iri, owlOntology);
+		TermCreationToolsMDef.addLabel(iri, "Test-Label2", owlOntology);
 		
 		
 		Owl2Obo owl2Obo = new Owl2Obo();

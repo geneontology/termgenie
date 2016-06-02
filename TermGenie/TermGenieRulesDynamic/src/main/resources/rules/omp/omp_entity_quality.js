@@ -12,7 +12,7 @@ function omp_entity_quality() {
   var label = termname(q, PATO) + " of " + termname(e, go);
   var definition = "Any "+termname(q, PATO)+" of "+termname(e, go)+".";
   var synonyms = null; // TODO
-  var mdef = createMDef("?Q and 'inheres_in' some ?E");
+  var mdef = createMDef("?Q and 'inheres in' some ?E");
   mdef.addParameter('Q', q, PATO);
   mdef.addParameter('E', e, go);
   createTerm(label, definition, synonyms, mdef);

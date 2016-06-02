@@ -43,10 +43,7 @@ public class FreeFormTermValidatorImplTest {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule(
-				"ontology-configuration_freeform.xml",
-				Arrays.asList("http://purl.obolibrary.org/obo/go.owl", 
-				"http://purl.obolibrary.org/obo/go/extensions/x-chemical.owl")));
+		Injector injector = TermGenieGuice.createInjector(new OldTestOntologyModule());
 
 		OntologyLoader loader = injector.getInstance(OntologyLoader.class);
 		OntologyTaskManager goManager = loader.getOntologyManager();
@@ -123,11 +120,11 @@ public class FreeFormTermValidatorImplTest {
 		request.setLabel("H-NS complex fake test 2");
 		
 		request.setNamespace("cellular_component");
-		request.setIsA(Arrays.asList("GO:0044445", "GO:0005667"));
+		request.setIsA(Arrays.asList("GO:0044445", "GO:0008150"));
 		request.setDefinition("A protein-DNA complex involved in bacterial nucleoid condensation and negative regulation of global gene expression by directly binding to promoter regions. Recognizes both structural and sequence-specific motifs in double-stranded DNA and has binding preference for bent DNA.");
 		request.setDbxrefs(Arrays.asList("GOC:fake", "PMID:000000"));
 		
-		errors(request, "relations", graph);
+		errors(request, "is_a parent", graph);
 	}
 	
 	@Test

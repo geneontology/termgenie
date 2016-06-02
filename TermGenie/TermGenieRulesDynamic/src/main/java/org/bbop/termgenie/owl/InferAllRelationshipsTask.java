@@ -14,7 +14,6 @@ import org.bbop.termgenie.tools.Pair;
 import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.writer.OBOFormatWriter;
-import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -26,7 +25,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLRestriction;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
 
@@ -38,20 +36,21 @@ import com.google.common.collect.Sets;
 
 public class InferAllRelationshipsTask implements RelationshipTask {
 	
-	private final OWLGraphWrapper ontology;
+	private final OWLOntology disposable;
+	private OWLGraphWrapper reference;
 	private final IRI iri;
-	private final OWLChangeTracker changeTracker;
 	private final String tempIdPrefix;
 	private final ProcessState state;
 	private final boolean useIsInferred;
 	
 	private InferredRelations result;
+	
 
-	public InferAllRelationshipsTask(OWLGraphWrapper ontology, IRI iri, OWLChangeTracker changeTracker, String tempIdPrefix, ProcessState state, boolean useIsInferred) {
+	public InferAllRelationshipsTask(OWLOntology disposable, OWLGraphWrapper reference, IRI iri, String tempIdPrefix, ProcessState state, boolean useIsInferred) {
 		super();
-		this.ontology = ontology;
+		this.disposable = disposable;
+		this.reference = reference;
 		this.iri = iri;
-		this.changeTracker = changeTracker;
 		this.tempIdPrefix = tempIdPrefix;
 		this.state = state;
 		this.useIsInferred = useIsInferred;
@@ -62,7 +61,7 @@ public class InferAllRelationshipsTask implements RelationshipTask {
 		
 		// check for equivalent classes
 		ProcessState.addMessage(state, "Check for equivalent classes of new term");
-		OWLClass owlClass = ontology.getDataFactory().getOWLClass(iri);
+		OWLClass owlClass = disposable.getOWLOntologyManager().getOWLDataFactory().getOWLClass(iri);
 		Set<OWLClass> equivalentClasses = reasoner.getEquivalentClasses(owlClass).getEntitiesMinus(owlClass);
 		if (equivalentClasses.isEmpty() == false) {
 			result = new InferredRelations(equivalentClasses);
@@ -87,7 +86,7 @@ public class InferAllRelationshipsTask implements RelationshipTask {
 				if (!subClassIRI.startsWith(tempIdPrefix)) {
 					Frame frame = OboTools.createTermFrame(subClass);
 					Pair<List<Clause>, Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(subClass,
-							ontology);
+							disposable, reference);
 					List<Clause> clauses = pair.getOne();
 					OBOFormatWriter.sortTermClauses(clauses);
 					frame.getClauses().addAll(clauses);
@@ -98,7 +97,7 @@ public class InferAllRelationshipsTask implements RelationshipTask {
 			if (changed.isEmpty()) {
 				changed = null;
 			}
-			Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, ontology);
+			Pair<List<Clause>,Set<OWLAxiom>> pair = OwlTranslatorTools.extractRelations(owlClass, disposable, reference);
 			result = new InferredRelations(pair.getOne(), pair.getTwo(), changed);
 		}
 		return Modified.no;
@@ -107,17 +106,10 @@ public class InferAllRelationshipsTask implements RelationshipTask {
 	protected void applyInferences(OWLReasoner reasoner, OWLClass cls) {
 		Set<OWLAxiom> addAxioms = new HashSet<OWLAxiom>();
 		Set<OWLAxiom> removeAxioms = new HashSet<OWLAxiom>();
-		handleInferences(cls, reasoner, ontology.getSourceOntology(), 
-				addAxioms, removeAxioms, useIsInferred);
-		
-		for (OWLAxiom ax : addAxioms) {
-			AddAxiom addAx = new AddAxiom(ontology.getSourceOntology(), ax);
-			changeTracker.apply(addAx);
-		}
-		for(OWLAxiom ax : removeAxioms) {
-			RemoveAxiom addAx = new RemoveAxiom(ontology.getSourceOntology(), ax);
-			changeTracker.apply(addAx);
-		}
+		OWLOntologyManager manager = disposable.getOWLOntologyManager();
+		handleInferences(cls, reasoner, disposable, addAxioms, removeAxioms, useIsInferred);
+		manager.addAxioms(disposable, addAxioms);
+		manager.removeAxioms(disposable, removeAxioms);
 	}
 
 	/**

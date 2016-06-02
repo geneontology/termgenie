@@ -30,7 +30,6 @@ import org.bbop.termgenie.ontology.obo.OboTools;
 import org.bbop.termgenie.ontology.obo.OwlTranslatorTools;
 import org.bbop.termgenie.owl.InferAllRelationshipsTask;
 import org.bbop.termgenie.owl.InferredRelations;
-import org.bbop.termgenie.owl.OWLChangeTracker;
 import org.bbop.termgenie.rules.TemporaryIdentifierTools;
 import org.bbop.termgenie.rules.TermGenieScriptRunner;
 import org.bbop.termgenie.rules.impl.TextualDefinitionTool;
@@ -41,15 +40,18 @@ import org.obolibrary.oboformat.model.Clause;
 import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.Frame.FrameType;
 import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
-import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import owltools.graph.OWLGraphWrapper;
@@ -589,27 +591,37 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			
 			// add relationships to graph and use reasoner to infer relationships (remove redundant ones)
 			final OWLOntology owlOntology = graph.getSourceOntology();
-			final OWLChangeTracker changeTracker = new OWLChangeTracker(owlOntology);
+			final OWLOntology disposable;
+			try {
+				disposable = owlManager.createOntology(IRI.generateDocumentIRI());
+				owlManager.addAxioms(disposable, owlOntology.getAxioms());
+				for(OWLImportsDeclaration decl : owlOntology.getImportsDeclarations()) {
+					owlManager.applyChange(new AddImport(disposable, decl));
+				}
+				//owlManager.applyChange(new AddImport(disposable, factory.getOWLImportsDeclaration(owlOntology.getOntologyID().getDefaultDocumentIRI().orNull())));
+			} catch (OWLOntologyCreationException e) {
+				setError("Ontology", "Could not create test setup for relation inference: "+e.getMessage());
+				return;
+			}
 			try {
 				// add axioms
-				for(OWLAxiom axiom : preliminaryAxioms) {
-					changeTracker.apply(new AddAxiom(owlOntology, axiom));
-				}
-				OWLReasoner reasoner = reasonerFactory.createReasoner(graph, state);
+				owlManager.addAxioms(disposable, preliminaryAxioms);
+				OWLReasoner reasoner = reasonerFactory.createReasoner(disposable, state);
 				ProcessState.addMessage(state, "Check for ontology consistency.");
 				if (reasoner.isConsistent() == false) {
 					setError("Ontology", "The ontology is inconsistent. No safe inferences are possible.");
 					return;
 				}
 				ProcessState.addMessage(state, "Check for unsatisfiable classes");
-				final Set<OWLClass> unsatisfiable = reasoner.getUnsatisfiableClasses().getEntitiesMinusBottom();
+				Node<OWLClass> unsatisfiableClasses = reasoner.getUnsatisfiableClasses();
+				final Set<OWLClass> unsatisfiable = unsatisfiableClasses.getEntitiesMinusBottom();
 				if (unsatisfiable.contains(graph.getOWLClass(iri))) {
 					setError("relations", "Cannot create class, the requested class is not satisfiable.");
 				}
 				else if (unsatisfiable.isEmpty() == false) {
 					setError("Ontology", "No safe inferences are possible. The ontology has unsatisfiable classes: "+unsatisfiable);
 				}
-				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(graph, iri, changeTracker, idPrefix, state, useIsInferred);
+				final InferAllRelationshipsTask task = new InferAllRelationshipsTask(disposable, graph, iri, idPrefix, state, useIsInferred);
 				try {
 					task.run(reasoner);
 				}
@@ -677,11 +689,7 @@ public class FreeFormTermValidatorImpl implements FreeFormTermValidator {
 			}
 			finally {
 				ProcessState.addMessage(state, "Finished - Use reasoner to check constraints and relations.");
-				boolean success = changeTracker.undoChanges();
-				if (!success) {
-					// only reset the ontology, if the 
-					setReset();
-				}
+				owlManager.removeOntology(disposable);
 			}
 			return;
 		}
