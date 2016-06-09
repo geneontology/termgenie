@@ -24,6 +24,7 @@ import org.bbop.termgenie.permissions.GoYamlUserPermissionsModule;
 import org.bbop.termgenie.presistence.PersistenceBasicModule;
 import org.bbop.termgenie.rules.XMLDynamicRulesModule;
 import org.bbop.termgenie.services.DefaultTermCommitServiceImpl;
+import org.bbop.termgenie.services.PreSubmitFilter;
 import org.bbop.termgenie.services.TermCommitService;
 import org.bbop.termgenie.services.TermGenieServiceModule;
 import org.bbop.termgenie.services.freeform.FreeFormTermServiceModule;
@@ -58,6 +59,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 			@Override
 			protected void bindTermCommitService() {
 				bind(TermCommitService.class, DefaultTermCommitServiceImpl.class);
+				bind(PreSubmitFilter.class, NoInferencesPreSubmitFilter.class);
 			}
 			
 			@Override
@@ -99,7 +101,7 @@ public class TermGenieWebAppGOContextListener extends AbstractTermGenieContextLi
 
 	@Override
 	protected IOCModule getRulesModule() {
-		boolean useIsInferred = false;
+		boolean useIsInferred = true;
 		boolean assertInferences = true;
 		boolean filterNonAsciiSynonyms = true;
 		return new XMLDynamicRulesModule("termgenie_rules_go.xml", useIsInferred, assertInferences, filterNonAsciiSynonyms, applicationProperties);

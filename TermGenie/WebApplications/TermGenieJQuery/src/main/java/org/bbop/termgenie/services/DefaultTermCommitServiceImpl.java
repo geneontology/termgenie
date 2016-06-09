@@ -64,7 +64,8 @@ import com.google.inject.name.Named;
 public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl implements InternalFreeFormCommitService {
 
 	private static final Logger logger = Logger.getLogger(DefaultTermCommitServiceImpl.class);
-	
+
+	private final PreSubmitFilter submitFilter;
 	private final Committer committer;
 	private final OntologyIdManager primaryIdProvider;
 	private final OntologyIdManager secondaryIdProvider;
@@ -74,6 +75,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 	@Inject
 	public DefaultTermCommitServiceImpl(InternalSessionHandler sessionHandler,
 			OntologyLoader loader,
+			PreSubmitFilter submitFilter,
 			Committer committer,
 			final @Named("PrimaryOntologyIdManager") OntologyIdManager primaryIdProvider,
 			final @Named("SecondaryOntologyIdManager") OntologyIdManager secondaryIdProvider,
@@ -81,6 +83,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 			UserPermissions permissions)
 	{
 		super(sessionHandler, loader);
+		this.submitFilter = submitFilter;
 		this.committer = committer;
 		this.primaryIdProvider = primaryIdProvider;
 		this.secondaryIdProvider = secondaryIdProvider;
@@ -144,7 +147,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 		
 		String commitMessage = createDefaultCommitMessage(userData);
-		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
+		CommitTask task = new CommitTask(manager, submitFilter, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			secondaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -180,7 +183,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 
 		String commitMessage = createDefaultCommitMessage(userData);
-		CommitTask task = new CommitTask(manager, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
+		CommitTask task = new CommitTask(manager, submitFilter, terms, commitMessage, userData, sendConfirmationEMail, tempIdPrefix, processState);
 		try {
 			primaryIdProvider.runManagedTask(task);
 		} catch (InvalidManagedInstanceException exception) {
@@ -315,6 +318,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 		/**
 		 * @param manager
+		 * @param submitFilter
 		 * @param terms
 		 * @param commitMessage
 		 * @param userData
@@ -323,6 +327,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		 * @param processState
 		 */
 		CommitTask(OntologyTaskManager manager,
+				PreSubmitFilter submitFilter,
 				JsonOntologyTerm[] terms,
 				String commitMessage,
 				UserData userData,
@@ -332,6 +337,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		{
 			super();
 			this.manager = manager;
+			this.submitFilter = submitFilter;
 			this.terms = terms;
 			this.commitMessage = commitMessage;
 			this.userData = userData;
@@ -341,6 +347,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 		}
 
 		private final OntologyTaskManager manager;
+		private final PreSubmitFilter submitFilter;
 		private final JsonOntologyTerm[] terms;
 		private final UserData userData;
 
@@ -368,7 +375,7 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 				result = error(checkTermsTask.getMessage());
 				return;
 			}
-
+			
 			ProcessState.addMessage(processState, "Generating permanent identifier for terms.");
 			// create terms with new termIds
 			Pair<List<CommitObject<TermCommit>>, Integer> pair;
@@ -533,7 +540,12 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 						idHandler.create(jsonTerm.getTempId()));
 				Set<OWLAxiom> axioms = OwlStringTools.translateStringToAxioms(jsonTerm.getOwlAxioms());
 				axioms = updateIdentifiers(frame, axioms, idHandler);
+				
+				frame = submitFilter.filterFrame(frame);
+				axioms = submitFilter.filterAxioms(axioms);
 				List<Pair<Frame, Set<OWLAxiom>>> changed = JsonOntologyTerm.createChangedFrames(jsonTerm.getChanged());
+				changed = submitFilter.filterChanged(changed);
+				
 				if (changed != null && !changed.isEmpty()) {
 					for (Pair<Frame, Set<OWLAxiom>> pair : changed) {
 						pair.setTwo(updateIdentifiers(pair.getOne(), pair.getTwo(), idHandler));
