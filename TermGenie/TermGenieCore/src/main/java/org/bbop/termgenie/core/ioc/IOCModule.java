@@ -336,7 +336,7 @@ public abstract class IOCModule extends AbstractModule {
 	}
 	
 	/**
-	 * Convenience method for binding a Map<IRI, String> parameter. Check system
+	 * Convenience method for binding a Map&lt;IRI, String&gt; parameter. Check system
 	 * properties for overwrites.
 	 * 
 	 * @param name
