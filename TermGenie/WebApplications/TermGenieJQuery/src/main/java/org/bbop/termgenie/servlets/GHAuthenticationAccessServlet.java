@@ -12,13 +12,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.bbop.termgenie.services.InternalSessionHandler;
 import org.bbop.termgenie.services.info.ConfigurationHandler;
-import org.bbop.termgenie.services.lookup.TermLookupService;
+import org.bbop.termgenie.user.UserData;
+import org.bbop.termgenie.user.UserDataProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,14 +39,20 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 	// generated
 	private static final long serialVersionUID = 4604786454943166862L;
 
-//	private final TermLookupService lookupService;
-//	private final Gson gson;
+	private final Gson gson;
+	private final UserDataProvider userDataProvider;
+	private final InternalSessionHandler sessionHandler;
 
 	@Inject
-	public GHAuthenticationAccessServlet() {
+	public GHAuthenticationAccessServlet(
+			InternalSessionHandler sessionHandler,
+			UserDataProvider userDataProvider
+	) {
 		super();
 //		this.lookupService = lookupService;
-//		gson = new Gson();
+		this.gson = new Gson();
+		this.userDataProvider = userDataProvider;
+		this.sessionHandler = sessionHandler;
 	}
 
 
@@ -52,10 +61,7 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-
-		String requestString = req.toString();
-		String code = null ;
-
+		String code = req.getParameter("code");
 
 		String accessToken = getAccessToken(code);
 
@@ -63,13 +69,26 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 		HttpGet getRequest = new HttpGet("https://api.github.com/user?access_token="+accessToken);
 		HttpResponse response = httpClient.execute(getRequest);
 
-//		def jsonObject = (new JsonSlurper()).parse(url) as JSONObject
-//		// is authenticated:
-//		boolean isAuthenticated = jsonObject.containsKey("email")
-		
+		BufferedReader rd = new BufferedReader(
+				new InputStreamReader(response.getEntity().getContent()));
 
-//		UserData userData  = userDataProvider.getUserDataPerEMail(details.email);
-//		sessionHandler.setAuthenticated(userData, httpSession);
+		StringBuilder result = new StringBuilder();
+		String line = "";
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		GHUserResponse ghUserResponse = gson.fromJson(result.toString(), GHUserResponse.class);
+
+		boolean isAuthenticated = ghUserResponse.email!=null;
+
+		if(isAuthenticated){
+			UserData userData  = userDataProvider.getUserDataPerEMail(ghUserResponse.email);
+			HttpSession httpSession = req.getSession();
+			sessionHandler.setAuthenticated(userData, httpSession);
+		}
+		else{
+			throw new RuntimeException("Failed to authenticate");
+		}
 	}
 
 	private String getAccessToken(String code) throws IOException{
@@ -80,18 +99,11 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 
 		// https://developer.github.com/v3/oauth/#2-github-redirects-back-to-your-site
 		// TODO: 1 post to the client to get the acces token
-//		def parameterMap = [
-//		client_id: clientToken
-//				,client_secret : clientSecret
-//			, code: code
-//        ]
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 		urlParameters.add(new BasicNameValuePair("client_id",clientId));
 		urlParameters.add(new BasicNameValuePair("client_secret",clientSecret));
-//		parameterMap.each {
-//		urlParameters.add(new BasicNameValuePair(it.key,it.value))
-//	}
+		urlParameters.add(new BasicNameValuePair("code",code));
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost postRequest = new HttpPost("https://github.com/login/oauth/access_token");
@@ -114,17 +126,19 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 			result.append(line);
 		}
 
-		String resultString = result.toString();
+		GHAccessResponse ghAccessResponse = gson.fromJson(result.toString(), GHAccessResponse.class);
 
-
-//		def jsonSlurper = new JsonSlurper()
-//		JSONObject jsonObject = jsonSlurper.parseText(result.toString()) as JSONObject
-//		String accessToken = jsonObject.access_token
-//		return accessToken
-
-		String accessToken = "";
+		String accessToken = ghAccessResponse.access_token;
 		return accessToken ;
 	}
 
+	static class GHUserResponse {
+		String email;
+		String username;
+	}
+
+	static class GHAccessResponse {
+		String access_token;
+	}
 
 }
