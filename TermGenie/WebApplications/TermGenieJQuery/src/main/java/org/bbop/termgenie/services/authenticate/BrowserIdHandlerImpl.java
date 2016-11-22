@@ -39,7 +39,8 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 	public BrowserIdHandlerImpl(@Named("BrowserIdVerificationUrl") String browserIdVerificationUrl,
 			@Named("TermGenieBrowserIdAudience") String termgenieBrowserIdAudience,
 			InternalSessionHandler sessionHandler,
-			UserDataProvider userDataProvider)
+			UserDataProvider userDataProvider
+	)
 	{
 		super();
 		this.browserIdVerificationUrl = browserIdVerificationUrl;

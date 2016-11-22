@@ -39,3 +39,10 @@ Instances exist for the following ontologies:
 * [ENVO TermGenie](http://envo.termgenie.org)
 
 To get write access to any of these TG instances, contact the administrators of the ontology (list available from obofoundry.org)
+
+#Updates to TermeGene
+Need to install https://github.com/RitwikSaikia/jsonrpc/ locally and maven install the server code.
+
+Add user here:
+
+https://github.com/geneontology/go-site/blob/master/metadata/users.yaml

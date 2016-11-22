@@ -54,6 +54,8 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 		protected void configureServlets() {
 			serve("/jsonrpc").with(TermGenieJsonRPCServlet.class);
 			serve("/termlookup").with(TermLookupServlet.class);
+			serve("/gh-request").with(GHAuthenticationRequestServlet.class);
+			serve("/gh-access").with(GHAuthenticationAccessServlet.class);  // configured in GH
 		}
 
 		@Provides
