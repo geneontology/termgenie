@@ -106,7 +106,9 @@
 			var loginDialogPanel = LoginDialogPanel();
 			
 			loginClickElem.click(function(){
-				loginDialogPanel.open();
+                // http://localhost:8080/termgenie/gh-authenticate
+                // loginDialogPanel.open();
+				window.location.href = "http://localhost:8080/termgenie/gh-authenticate";
 			});
 			
 			logoutClickElem.click(function(){
