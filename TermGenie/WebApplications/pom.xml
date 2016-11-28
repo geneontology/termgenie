@@ -12,6 +12,7 @@
 
 	<name>WebApplications</name>
 
+	<!--May need to install this locally from here: https://github.com/RitwikSaikia/jsonrpc/-->
 	<repositories>
 		<repository>
 			<id>ritwik-mvn-repo</id>
