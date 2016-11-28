@@ -3,6 +3,7 @@ package org.bbop.termgenie.servlets;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.info.ConfigurationHandler;
 import org.bbop.termgenie.services.lookup.TermLookupService;
@@ -24,17 +25,22 @@ public class GHAuthenticationRequestServlet extends HttpServlet {
 	// generated
 	private static final long serialVersionUID = 4604786454943166862L;
 
+	private final String clientId ;
 
 	@Inject
-	public GHAuthenticationRequestServlet() {
+	public GHAuthenticationRequestServlet(
+			@Named("github_client_id")
+                String clientId
+	) {
 		super();
+		this.clientId = clientId ;
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		String clientId = ConfigurationHandler.getConfigurationHandler().getValue("client_id");
+//		String clientId = ConfigurationHandler.getConfigurationHandler().getValue("client_id");
 		String url="https://github.com/login/oauth/authorize?client_id="+clientId+"&scope=user:email";
 		resp.sendRedirect(url);
 	}

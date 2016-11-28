@@ -116,6 +116,7 @@ public abstract class AbstractTermGenieContextListener extends GuiceServletConte
 	private IOCModule[] getConfiguration() {
 		List<IOCModule> modules = new ArrayList<IOCModule>();
 		modules.add(new ManagementServiceModule(applicationProperties));
+		modules.add(new GHAuthenticationModule(applicationProperties));
 		add(modules, getServiceModule(), true, "ServiceModule");
 		add(modules, getAuthenticationModule(), true, "Authentication");
 		add(modules, getUserPermissionModule(), true, "UserPermission");

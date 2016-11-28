@@ -3,6 +3,7 @@ package org.bbop.termgenie.servlets;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -42,17 +43,25 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 	private final Gson gson;
 	private final UserDataProvider userDataProvider;
 	private final InternalSessionHandler sessionHandler;
+	private final String clientId ;
+	private final String clientSecret ;
 
 	@Inject
 	public GHAuthenticationAccessServlet(
 			InternalSessionHandler sessionHandler,
-			UserDataProvider userDataProvider
+			UserDataProvider userDataProvider,
+			@Named("github_client_id")
+			String clientId,
+			@Named("github_client_secret")
+			String clientSecret
 	) {
 		super();
 //		this.lookupService = lookupService;
 		this.gson = new Gson();
 		this.userDataProvider = userDataProvider;
 		this.sessionHandler = sessionHandler;
+		this.clientId = clientId ;
+		this.clientSecret = clientSecret;
 	}
 
 
@@ -94,15 +103,15 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 	private String getAccessToken(String code) throws IOException{
 		// we have to pull the returned "code" off of the server
 		// and then do a post to github to get the access_code
-		String clientId= ConfigurationHandler.getConfigurationHandler().getValue("client_id");
-		String clientSecret = ConfigurationHandler.getConfigurationHandler().getValue("github.client_secret");
+//		String clientId= ConfigurationHandler.getConfigurationHandler().getValue("client_id");
+//		String clientSecret = ConfigurationHandler.getConfigurationHandler().getValue("github.client_secret");
 
 		// https://developer.github.com/v3/oauth/#2-github-redirects-back-to-your-site
 		// TODO: 1 post to the client to get the acces token
 
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		urlParameters.add(new BasicNameValuePair("client_id",clientId));
-		urlParameters.add(new BasicNameValuePair("client_secret",clientSecret));
+		urlParameters.add(new BasicNameValuePair("client_id",this.clientId));
+		urlParameters.add(new BasicNameValuePair("client_secret",this.clientSecret));
 		urlParameters.add(new BasicNameValuePair("code",code));
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
