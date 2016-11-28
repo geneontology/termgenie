@@ -18,7 +18,7 @@ public class CommitObject<T> {
 	}
 
 	/**
-	 * Mark a new object of type <T> as added for the commit.
+	 * Mark a new object of type &lt;T&gt; as added for the commit.
 	 * 
 	 * @param <T> type
 	 * @param object the object to be committed
@@ -29,7 +29,7 @@ public class CommitObject<T> {
 	}
 
 	/**
-	 * Mark a new object of type <T> as modified for the commit.
+	 * Mark a new object of type &lt;T&gt; as modified for the commit.
 	 * 
 	 * @param <T> type
 	 * @param object the object to be committed
@@ -40,7 +40,7 @@ public class CommitObject<T> {
 	}
 
 	/**
-	 * Mark a new object of type <T> as to be deleted for the commit.
+	 * Mark a new object of type &lt;T&gt; as to be deleted for the commit.
 	 * 
 	 * @param <T> type
 	 * @param object the object to be committed

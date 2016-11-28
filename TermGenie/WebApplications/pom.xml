@@ -14,8 +14,8 @@
 
 	<repositories>
 		<repository>
-			<id>json-rpc</id>
-			<url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
+			<id>ritwik-mvn-repo</id>
+			<url>http://ritwik.net/mvn/releases/</url>
 		</repository>
 	</repositories>
 
