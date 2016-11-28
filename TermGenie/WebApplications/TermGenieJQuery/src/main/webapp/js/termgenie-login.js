@@ -108,7 +108,8 @@
 			loginClickElem.click(function(){
                 // http://localhost:8080/termgenie/gh-authenticate
                 // loginDialogPanel.open();
-				window.location.href = "http://localhost:8080/termgenie/gh-request";
+                // window.location.href = "http://localhost:8080/termgenie/gh-request";
+                window.location.href = "gh-request";
 			});
 			
 			logoutClickElem.click(function(){

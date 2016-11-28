@@ -46,14 +46,16 @@ public class TermGenieWebAppGOTestContextListener extends TermGenieWebAppGOConte
 		super("TermGenieWebAppGOTestConfigFile");
 		try {
 			localSVNFolder = "file://"+new File("./work/svn").getCanonicalPath();
-			ontologyFilePath = "editors/gene_ontology_write.obo";
+//			ontologyFilePath = "editors/gene_ontology_write.obo";
+			ontologyFilePath = "gene_ontology_write.obo";
 			mappedIRIs = new HashMap<IRI, String>();
 			
 			// http://purl.obolibrary.org/obo/go.obo
 			// editors/gene_ontology_write.obo
 			mappedIRIs.put(IRI.create("http://purl.obolibrary.org/obo/go.obo"), ontologyFilePath);
 			
-			catalogXML = "editors/catalog-v001.xml";
+//			catalogXML = "editors/catalog-v001.xml";
+			catalogXML = "catalog-v001.xml";
 			loadExternal = true;
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
