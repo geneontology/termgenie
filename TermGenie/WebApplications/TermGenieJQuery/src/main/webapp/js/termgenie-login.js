@@ -103,12 +103,12 @@
 			var logoutClickElem = jQuery('<span class="myClickable">Log out</span>');
 			var displayUsernameElem = jQuery('<div class="termgenie-username"></div>');
 			
-			var loginDialogPanel = LoginDialogPanel();
+			// var loginDialogPanel = LoginDialogPanel();
 			
 			loginClickElem.click(function(){
                 // http://localhost:8080/termgenie/gh-authenticate
                 // loginDialogPanel.open();
-				window.location.href = "http://localhost:8080/termgenie/gh-authenticate";
+				window.location.href = "http://localhost:8080/termgenie/gh-request";
 			});
 			
 			logoutClickElem.click(function(){
