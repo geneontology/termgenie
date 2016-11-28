@@ -29,6 +29,15 @@
 
 		</dependency>
 		<dependency>
+			<groupId>com.trilead</groupId>
+			<artifactId>trilead-ssh2</artifactId>
+			<version>1.0.0-build220</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId></groupId>-->
+			<!--<artifactId></artifactId>-->
+		<!--</dependency>-->
+		<dependency>
 			<groupId>org.bbop.termgenie</groupId>
 			<artifactId>TermGenieCore</artifactId>
 			<version>${project.parent.version}</version>
