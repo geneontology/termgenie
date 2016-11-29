@@ -28,10 +28,13 @@ public class InternalSessionHandlerImpl extends SessionHandlerImpl implements In
 	
 	@Override
 	public UserData getUserData(HttpSession session) {
+		System.out.println("InternalSessionHandlerImpl has session["+session+"]");
 		if (session != null) {
 			SessionObject sessionObject = getSessionObject(session);
+			System.out.println("InternalSessionHandlerImpl has sessionObject["+sessionObject+"]");
 			if (sessionObject != null) {
 				synchronized (sessionObject) {
+					System.out.println("InternalSessionHandlerImpl has userData["+sessionObject.getUserData()+"]");
 					return sessionObject.getUserData();
 				}
 			}

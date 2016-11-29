@@ -63,6 +63,7 @@ public class GoYamlUserPermissionsImpl implements UserPermissions {
 	}
 
 	private boolean checkPermissions(UserData userData, String flag) {
+		System.out.println("GoYamlUserPermissionsImpl checking permissions with "+userData + " and flag "+flag);
 		if (userData != null) {
 			return checkPermissions(userData.getGuid(), flag);
 		}
@@ -70,9 +71,9 @@ public class GoYamlUserPermissionsImpl implements UserPermissions {
 	}
 	
 	boolean checkPermissions(String guid, String flag) {
-		String md5Guid = Md5Tool.md5(guid);
+//		String md5Guid = Md5Tool.md5(guid);
 		Map<String, Boolean> userPermissions = 
-				GoYamlPermissionsTool.loadFromYaml(gitYamlFile.getYamlFile(), applicationName, md5Guid);
+				GoYamlPermissionsTool.loadFromYaml(gitYamlFile.getYamlFile(), applicationName, guid);
 		if (userPermissions != null) {
 			return hasFlag(userPermissions, flag);
 		}
@@ -82,6 +83,7 @@ public class GoYamlUserPermissionsImpl implements UserPermissions {
 	boolean hasFlag(Map<String, Boolean> groupFlags, String flag) {
 		boolean result = false;
 		Boolean value = groupFlags.get(flag);
+		System.out.println("GoYamlUserPermissionsImpl has flag? "+flag+ " value "+value);
 		if (value != null) {
 			result = value.booleanValue();
 		}

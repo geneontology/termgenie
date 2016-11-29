@@ -3,12 +3,7 @@ package org.bbop.termgenie.services.review;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpSession;
@@ -155,14 +150,24 @@ public class TermCommitReviewServiceImpl implements TermCommitReviewService {
 
 	@Override
 	public boolean isAuthorized(String sessionId, HttpSession session) {
+		System.out.println("TermCommitReviewServiceImpl trying to authorize session id: "+sessionId);
 		String screenname = sessionHandler.isAuthenticated(sessionId, session);
+		System.out.println("TermCommitReviewServiceImpl screen name: "+screenname);
+		Enumeration attributeNames = session.getAttributeNames();
+		while(attributeNames.hasMoreElements()){
+			String attributeName = attributeNames.nextElement().toString();
+			System.out.println("TermCommitReviewServiceImpl key["+attributeName+","+session.getAttribute(attributeName)+"]");
+		}
 		if (screenname != null) {
 			UserData userData = sessionHandler.getUserData(session);
+			System.out.println("TermCommitReviewServiceImpl user data["+userData.toString()+"]");
 			if (userData != null) {
 				boolean allowCommitReview = permissions.allowCommitReview(userData, ontology);
+				System.out.println("TermCommitReviewServiceImpl allow commit review?["+allowCommitReview+"]");
 				return allowCommitReview;
 			}
 		}
+		System.out.println("TermCommitReviewServiceImpl not found to be authorized, so returning");
 		return false;
 	}
 

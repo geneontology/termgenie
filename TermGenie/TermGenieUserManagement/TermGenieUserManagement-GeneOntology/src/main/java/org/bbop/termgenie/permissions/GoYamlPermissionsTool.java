@@ -52,22 +52,15 @@ class GoYamlPermissionsTool {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	static Map<String, Boolean> loadFromYaml(File yamlFile, String application, String md5Guid) {
+	static Map<String, Boolean> loadFromYaml(File yamlFile, String application, String guid) {
 		List<Map> userEntries = (List<Map>) YamlTool.load(yamlFile);
 		Map<String, Boolean> data = new HashMap<String, Boolean>();
 		for(Map userEntry : userEntries) {
-			boolean isUser = false;
-			List<String> emailMd5s =  (List<String>) userEntry.get("email-md5");
-			if (emailMd5s != null) {
-				for (String emailMd5 : emailMd5s) {
-					if (md5Guid.equalsIgnoreCase(emailMd5)) {
-						isUser = true;
-						break;
-					}
-				}
-			}
+			boolean isUser = hasGithubUser(userEntry,guid);
+			System.out.println("GoYamlPermissionsTool userEntry isUser: "+isUser + " for " + guid + " and has accounts: " + userEntry.containsKey("accounts"));
 			if (isUser) {
 				Map permissions = (Map) userEntry.get("authorizations");
+				System.out.println("GoYamlPermissionsTool "+ guid + " has permissions: "+ permissions + " and has applications " + permissions.get(application) + " for "+application);
 				if (permissions != null) {
 					Map applicationPermissions = (Map) permissions.get(application);
 					if (applicationPermissions != null) {
@@ -80,7 +73,19 @@ class GoYamlPermissionsTool {
 				}
 			}
 		}
+		System.out.println("GoYamlPermissionsTool returning data:  " + data.toString());
 		return data;
+	}
+
+	private static boolean hasGithubUser(Map userEntry, String guid) {
+		Map accountsMap = (Map) userEntry.get("accounts");
+		if(accountsMap!=null){
+			String githubUsername = (String) accountsMap.get("github");
+			if(githubUsername!=null && githubUsername.equals(guid)){
+				return true ;
+			}
+		}
+		return false ;
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -6,10 +6,7 @@ import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
@@ -123,11 +120,20 @@ public class ManagementServicesImpl implements ManagementServices {
 
 	@Override
 	public boolean isAuthorized(String sessionId, HttpSession session) {
+		System.out.println("ManagementServicesImpl isAuthorized "+sessionId + "");
 		String screenname = sessionHandler.isAuthenticated(sessionId, session);
+		System.out.println("ManagementServicesImpl screen name: "+screenname);
+		Enumeration attributeNames = session.getAttributeNames();
+		while(attributeNames.hasMoreElements()){
+			String attributeName = attributeNames.nextElement().toString();
+			System.out.println("ManagementServicesImpl key["+attributeName+","+session.getAttribute(attributeName)+"]");
+		}
 		if (screenname != null) {
 			UserData userData = sessionHandler.getUserData(session);
+			System.out.println("ManagementServicesImpl user data["+userData.toString()+"]");
 			if (userData != null) {
 				boolean allow = permissions.allowManagementAccess(userData);
+				System.out.println("ManagementServicesImpl allow management access? ["+allow+"]");
 				return allow;
 			}
 		}
