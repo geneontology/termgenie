@@ -55,16 +55,6 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
         if (userEntries != null && userEntries.isEmpty() == false) {
             List<UserData> userDataList = new ArrayList<UserData>(userEntries.size());
             for (Map userEntry : userEntries) {
-
-                // debug start
-                Set keySet = userEntry.keySet();
-                for(Object entryKey : keySet){
-                    System.out.println("key ["+entryKey+"]");
-                    System.out.println("value ["+userEntry.get(entryKey)+"]");
-                    System.out.println("github value ["+getStringValue("github", userEntry) +"]");
-                }
-                // debug end
-
                 UserData userData = new UserData();
                 userData.setScreenname(getStringValue("nickname", userEntry));
                 userData.setOrcid(getStringValue("uri", userEntry));
@@ -128,12 +118,9 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
 
     @Override
     public UserData getUserDataPerGithubLogin(final String login) {
-        System.out.println("absolute path: ["+gitYamlFile.getYamlFile().getAbsolutePath()+"]");
         List<UserData> data = loadRawUserData(gitYamlFile.getYamlFile());
-        System.out.println("data size: "+data.size());
         for (UserData userData : data) {
             String guid = userData.getGuid();
-            System.out.println("comparing guid["+guid+"] to login["+login+"]");
             if (guid != null && guid.equals(login)) {
                 return userData;
             }

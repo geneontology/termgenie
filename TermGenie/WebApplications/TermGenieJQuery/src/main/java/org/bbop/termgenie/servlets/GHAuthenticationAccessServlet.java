@@ -84,9 +84,7 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 		while ((line = rd.readLine()) != null) {
 			result.append(line);
 		}
-        System.out.println("GHAuthenticationAccessServlet result string: "+result.toString());
 		GHUserResponse ghUserResponse = gson.fromJson(result.toString(), GHUserResponse.class);
-        System.out.println("GHAuthenticationAccessServlet  json response: "+gson.toJson(ghUserResponse));
 		boolean isAuthenticated = ghUserResponse.login!=null;
 
 		if(isAuthenticated){
@@ -132,13 +130,9 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 			result.append(line);
 		}
 
-		System.out.println("getAccessToken result string: "+result.toString());
-
 		GHAccessResponse ghAccessResponse = gson.fromJson(result.toString(), GHAccessResponse.class);
-        System.out.println("getAccessToken  json response: "+gson.toJson(ghAccessResponse));
 
-		String accessToken = ghAccessResponse.access_token;
-		return accessToken ;
+		return ghAccessResponse.access_token;
 	}
 
 	static class GHUserResponse {
