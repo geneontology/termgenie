@@ -94,6 +94,7 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 			userData.setEmail(ghUserResponse.email);
 			HttpSession httpSession = req.getSession();
 			sessionHandler.setAuthenticated(userData, httpSession);
+			resp.sendRedirect("/");
 		}
 		else{
 			throw new RuntimeException("Failed to authenticate");
