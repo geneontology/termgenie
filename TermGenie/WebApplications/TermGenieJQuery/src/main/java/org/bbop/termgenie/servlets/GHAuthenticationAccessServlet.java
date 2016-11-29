@@ -10,11 +10,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.bbop.termgenie.services.InternalSessionHandler;
-import org.bbop.termgenie.services.info.ConfigurationHandler;
 import org.bbop.termgenie.user.UserData;
 import org.bbop.termgenie.user.UserDataProvider;
 
@@ -74,7 +73,7 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 
 		String accessToken = getAccessToken(code);
 
-		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet getRequest = new HttpGet("https://api.github.com/user?access_token="+accessToken);
 		HttpResponse response = httpClient.execute(getRequest);
 
@@ -114,8 +113,8 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 		urlParameters.add(new BasicNameValuePair("client_secret",this.clientSecret));
 		urlParameters.add(new BasicNameValuePair("code",code));
 
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost postRequest = new HttpPost("https://github.com/login/oauth/access_token");
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpPost postRequest = new HttpPost("https://github.com/login/oauth/access_token");
 		postRequest.addHeader("User-Agent", "TermGenie/1.0");
 		postRequest.addHeader("Accept","application/json");
 		postRequest.addHeader("Accept","application/xml");

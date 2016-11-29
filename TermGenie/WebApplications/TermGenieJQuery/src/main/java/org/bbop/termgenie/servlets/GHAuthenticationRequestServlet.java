@@ -1,12 +1,9 @@
 package org.bbop.termgenie.servlets;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import org.apache.log4j.Logger;
-import org.bbop.termgenie.services.info.ConfigurationHandler;
-import org.bbop.termgenie.services.lookup.TermLookupService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
