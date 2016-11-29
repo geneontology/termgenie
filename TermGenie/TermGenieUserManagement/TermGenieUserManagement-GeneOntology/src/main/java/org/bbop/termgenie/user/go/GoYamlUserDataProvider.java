@@ -69,7 +69,12 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
                 userData.setScreenname(getStringValue("nickname", userEntry));
                 userData.setOrcid(getStringValue("uri", userEntry));
                 userData.setXref(getStringValue("xref", userEntry));
-                userData.setGuid(getStringValue("github", userEntry));
+                if(userEntry.containsKey("accounts")){
+                    Map accountsMap = (Map) userEntry.get("accounts");
+                    if(accountsMap.containsKey("github")){
+                        userData.setGuid(accountsMap.get("github").toString());
+                    }
+                }
                 userDataList.add(userData);
             }
             return userDataList;
