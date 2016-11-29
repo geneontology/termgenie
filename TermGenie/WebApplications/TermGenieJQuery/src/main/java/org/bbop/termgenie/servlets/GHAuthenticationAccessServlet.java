@@ -55,7 +55,6 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 			String clientSecret
 	) {
 		super();
-//		this.lookupService = lookupService;
 		this.gson = new Gson();
 		this.userDataProvider = userDataProvider;
 		this.sessionHandler = sessionHandler;
@@ -102,8 +101,6 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 	private String getAccessToken(String code) throws IOException{
 		// we have to pull the returned "code" off of the server
 		// and then do a post to github to get the access_code
-//		String clientId= ConfigurationHandler.getConfigurationHandler().getValue("client_id");
-//		String clientSecret = ConfigurationHandler.getConfigurationHandler().getValue("github.client_secret");
 
 		// https://developer.github.com/v3/oauth/#2-github-redirects-back-to-your-site
 		// TODO: 1 post to the client to get the acces token
@@ -119,8 +116,6 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 		postRequest.addHeader("Accept","application/json");
 		postRequest.addHeader("Accept","application/xml");
 
-		System.out.println("posting '${urlParameters}'");
-
 		postRequest.setEntity(new UrlEncodedFormEntity(urlParameters));
 
 		HttpResponse response = httpClient.execute(postRequest);
@@ -134,7 +129,10 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 			result.append(line);
 		}
 
+		System.out.println("result string: "+result.toString());
+
 		GHAccessResponse ghAccessResponse = gson.fromJson(result.toString(), GHAccessResponse.class);
+        System.out.println("json response: "+gson.toJson(ghAccessResponse));
 
 		String accessToken = ghAccessResponse.access_token;
 		return accessToken ;
