@@ -64,7 +64,7 @@ public class SimpleUserDataProvider implements UserDataProvider {
 		}
 		// create an default scm name, use either the xref or extract from e-mail
 		if (userData.getScmAlias() == null) {
-			userData.setScmAlias(extractSCMAlias(userData.getXref(), userData.getEmail()));
+			userData.setScmAlias(extractSCMAlias(userData.getXref(), userData.getGuid()));
 		}
 	}
 

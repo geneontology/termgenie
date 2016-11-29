@@ -50,6 +50,15 @@ public class BrowserIdHandlerImpl implements BrowserIdHandler {
 		logger.info("Configuring BrowserID: verificationURL=" + browserIdVerificationUrl + " termgenieBrowserIdAudience=" + termgenieBrowserIdAudience);
 	}
 
+	/**
+	 * @deprecated Using GHAuthentication now.
+	 * @param sessionId
+	 * @param assertion
+	 * @param req
+	 * @param resp
+	 * @param httpSession
+	 * @return
+	 */
 	@Override
 	public JsonUserData verifyAssertion(String sessionId,
 			String assertion,
