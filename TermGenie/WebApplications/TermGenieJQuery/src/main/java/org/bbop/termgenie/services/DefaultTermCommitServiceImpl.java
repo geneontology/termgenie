@@ -195,12 +195,19 @@ public class DefaultTermCommitServiceImpl extends NoCommitTermCommitServiceImpl 
 
 	private String createDefaultCommitMessage(UserData userData) {
 		String name = userData.getScmAlias();
+		System.out.println(this.getClass().getName() + " name from userData: "+userData.toString() + " yields scm "+name);
+		if (name == null) {
+			name = userData.getGuid();
+		}
+		System.out.println(this.getClass().getName() + " name from guid: "+name );
 		if (name == null) {
 			name = userData.getScreenname();
 		}
+		System.out.println(this.getClass().getName() + " name from screen: "+name );
 		if (name == null) {
 			name = userData.getEmail();
 		}
+		System.out.println(this.getClass().getName() + " name from email: "+name );
 		return "TermGenie commit for user: " + name;
 	}
 
