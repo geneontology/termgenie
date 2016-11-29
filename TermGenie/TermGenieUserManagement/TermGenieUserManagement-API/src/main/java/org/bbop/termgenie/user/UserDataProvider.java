@@ -13,7 +13,15 @@ public interface UserDataProvider {
 	 * @return user data (never null)
 	 */
 	public UserData getUserDataPerEMail(String email);
-	
+
+	/**
+	 * Retrieve the {@link UserData} for the given e-mail
+	 *
+	 * @param login
+	 * @return user data (never null)
+	 */
+	public UserData getUserDataPerGithubLogin(String login);
+
 	/**
 	 * Retrieve the list of available Xrefs.
 	 * 

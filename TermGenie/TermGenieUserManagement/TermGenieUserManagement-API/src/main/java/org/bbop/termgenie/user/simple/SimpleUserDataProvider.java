@@ -25,6 +25,16 @@ public class SimpleUserDataProvider implements UserDataProvider {
 		return new UserData(screenname, guid, email, xref, scmAlias, orcid);
 	}
 
+	@Override
+	public UserData getUserDataPerGithubLogin(String login) {
+		String screenname = login;
+		String guid = login;
+		String xref = null;
+		String scmAlias = screenname;
+		String orcid = null;
+		return new UserData(screenname, guid, login, xref, scmAlias, orcid);
+	}
+
 	public static String getNameFromEMail(String email) {
 		int pos = email.indexOf('@');
 		if (pos > 0) {

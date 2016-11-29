@@ -87,10 +87,11 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
         System.out.println("GHAuthenticationAccessServlet result string: "+result.toString());
 		GHUserResponse ghUserResponse = gson.fromJson(result.toString(), GHUserResponse.class);
         System.out.println("GHAuthenticationAccessServlet  json response: "+gson.toJson(ghUserResponse));
-		boolean isAuthenticated = ghUserResponse.email!=null;
+		boolean isAuthenticated = ghUserResponse.login!=null;
 
 		if(isAuthenticated){
-			UserData userData  = userDataProvider.getUserDataPerEMail(ghUserResponse.email);
+			UserData userData  = userDataProvider.getUserDataPerGithubLogin(ghUserResponse.login);
+			userData.setEmail(ghUserResponse.email);
 			HttpSession httpSession = req.getSession();
 			sessionHandler.setAuthenticated(userData, httpSession);
 		}
@@ -141,7 +142,7 @@ public class GHAuthenticationAccessServlet extends HttpServlet {
 
 	static class GHUserResponse {
 		String email;
-		String username;
+		String login;
 	}
 
 	static class GHAccessResponse {
