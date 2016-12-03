@@ -56,14 +56,29 @@ public class GoYamlUserDataProvider extends SimpleUserDataProvider {
             List<UserData> userDataList = new ArrayList<UserData>(userEntries.size());
             for (Map userEntry : userEntries) {
                 UserData userData = new UserData();
-                userData.setScreenname(getStringValue("nickname", userEntry));
-                userData.setOrcid(getStringValue("uri", userEntry));
-                userData.setXref(getStringValue("xref", userEntry));
                 if(userEntry.containsKey("accounts")){
                     Map accountsMap = (Map) userEntry.get("accounts");
                     if(accountsMap.containsKey("github")){
                         userData.setGuid(accountsMap.get("github").toString());
                     }
+                }
+                userData.setScreenname(getStringValue("nickname", userEntry));
+                userData.setOrcid(getStringValue("uri", userEntry));
+                userData.setXref(getStringValue("xref", userEntry));
+                if(userData.getScreenname()==null){
+                    userData.setScreenname(userData.getGuid());
+                }
+                if(userData.getOrcid()==null){
+                    userData.setOrcid(userData.getGuid());
+                }
+                if(userData.getScmAlias()==null){
+                    userData.setScmAlias(userData.getGuid());
+                }
+                if(userData.getXref()==null){
+                    userData.setXref(userData.getGuid());
+                }
+                if(userData.getScreenname()==null){
+                    userData.setScreenname(userData.getGuid());
                 }
                 userDataList.add(userData);
             }
