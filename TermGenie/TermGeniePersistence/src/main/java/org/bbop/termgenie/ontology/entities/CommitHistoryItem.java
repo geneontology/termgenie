@@ -22,7 +22,7 @@ public class CommitHistoryItem {
 	private int version; // used to detect conflicting updates, do not modify
 	private Date date = null;
 	private String commitMessage = null;
-	private String email = null;
+	private String email = "unassigned@geneontology.termgenie.org";
 	private String savedBy = null;
 	private boolean committed = false;
 
@@ -91,9 +91,6 @@ public class CommitHistoryItem {
 	@Column(length=1023) // increase default length from 255
 	@Basic(optional=false)
 	public String getEmail() {
-		if(email==null){
-			return "unassigned@geneontology.termgenie.org";
-		}
 		return email;
 	}
 
