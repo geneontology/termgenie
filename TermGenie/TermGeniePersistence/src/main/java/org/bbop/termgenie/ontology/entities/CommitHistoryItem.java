@@ -91,6 +91,9 @@ public class CommitHistoryItem {
 	@Column(length=1023) // increase default length from 255
 	@Basic(optional=false)
 	public String getEmail() {
+		if(email==null){
+			return "unassigned@geneontology.termgenie.org";
+		}
 		return email;
 	}
 
