@@ -32,6 +32,10 @@ public class TLSMailHelper implements MailHandler {
 			List<String> cc,
 			List<String> bcc) throws EmailException
 	{
+		// https://github.com/geneontology/termgenie/issues/105
+		if(true){
+			return ;
+		}
 		Email email = new SimpleEmail();
 		email.setHostName(smtpHost);
 		email.setSmtpPort(smtpPort);
