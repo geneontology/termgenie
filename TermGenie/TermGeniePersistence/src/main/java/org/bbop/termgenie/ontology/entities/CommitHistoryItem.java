@@ -89,7 +89,7 @@ public class CommitHistoryItem {
 	 * @return the email
 	 */
 	@Column(length=1023) // increase default length from 255
-	@Basic(optional=false)
+	@Basic(optional=true)
 	public String getEmail() {
 		return email;
 	}
