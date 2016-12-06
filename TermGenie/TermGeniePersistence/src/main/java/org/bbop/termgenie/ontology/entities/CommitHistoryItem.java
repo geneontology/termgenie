@@ -22,7 +22,7 @@ public class CommitHistoryItem {
 	private int version; // used to detect conflicting updates, do not modify
 	private Date date = null;
 	private String commitMessage = null;
-	private String email = null;
+	private String email = "unassigned@geneontology.termgenie.org";
 	private String savedBy = null;
 	private boolean committed = false;
 
